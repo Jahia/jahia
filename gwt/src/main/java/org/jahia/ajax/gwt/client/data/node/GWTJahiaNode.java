@@ -65,6 +65,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private boolean expandOnLoad = false;
+    private boolean selectedOnLoad = false;
     private GWTJahiaNode referencedNode;
     private GWTJahiaPublicationInfo publicationInfo;
 
@@ -484,6 +485,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setExpandOnLoad(boolean expandOnLoad) {
         this.expandOnLoad = expandOnLoad;
+    }
+
+    public boolean isSelectedOnLoad() {
+        return selectedOnLoad;
+    }
+
+    public void setSelectedOnLoad(boolean selectedOnLoad) {
+        this.selectedOnLoad = selectedOnLoad;
     }
 
     @Override

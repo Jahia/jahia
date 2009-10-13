@@ -37,10 +37,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDropTarget;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -119,7 +116,7 @@ public class TableView extends TopRightComponent {
 	};
 
 	private LayoutContainer m_component;
-    private Grid<GWTJahiaNode> m_table;
+    private Grid<GWTJahiaNode> m_grid;
     private ListStore<GWTJahiaNode> store;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader ;
     private ManagerConfiguration configuration;
@@ -142,7 +139,7 @@ public class TableView extends TopRightComponent {
         loader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(privateProxy) {
             @Override
             protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
-                super.onLoadSuccess((GWTJahiaNode) gwtJahiaNode, gwtJahiaNodeListLoadResult);
+                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
                 if (getLinker() != null) {
                     getLinker().loaded() ;
                 }
@@ -169,22 +166,26 @@ public class TableView extends TopRightComponent {
         	checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
             columns.add(0, checkboxSelectionModel.getColumn());
         }
-        m_table = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
-        m_table.setBorders(true);
-        m_table.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "name");
+        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
+        m_grid.setBorders(true);
+        m_grid.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "name");
         if (checkboxSelectionModel != null) {
-        	m_table.setSelectionModel(checkboxSelectionModel);
-        	m_table.addPlugin(checkboxSelectionModel);
+        	m_grid.setSelectionModel(checkboxSelectionModel);
+        	m_grid.addPlugin(checkboxSelectionModel);
         }
-        m_table.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
-        m_table.addListener(Events.RowClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent event) {
-                getLinker().onTableItemSelected();
+        m_grid.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
+
+
+        // on selection change listener
+        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>(){
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
+              getLinker().onTableItemSelected();
             }
         });
-        m_table.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+
+        m_grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
-                List<GWTJahiaNode> sel = m_table.getSelectionModel().getSelectedItems();
+                List<GWTJahiaNode> sel = m_grid.getSelectionModel().getSelectedItems();
                 if (sel != null && sel.size() == 1) {
                     GWTJahiaNode el = sel.get(0);
                     if (el.isFile()) {
@@ -202,16 +203,16 @@ public class TableView extends TopRightComponent {
             }
         });
 
-        m_component.add(m_table);
+        m_component.add(m_grid);
     }
 
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-        DragSource source = new GridDragSource(m_table);
+        DragSource source = new GridDragSource(m_grid);
         source.addDNDListener(linker.getDndListener());
 
-        GridDropTarget target = new GridDropTarget(m_table) {
+        GridDropTarget target = new GridDropTarget(m_grid) {
             @Override
             protected void showFeedback(DNDEvent event) {
                 event.getStatus().setStatus(true);
@@ -251,13 +252,13 @@ public class TableView extends TopRightComponent {
     }
 
     public void setContextMenu(Menu menu) {
-        m_table.setContextMenu(menu);
+        m_grid.setContextMenu(menu);
     }
 
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            loader.load((GWTJahiaNode) root) ;
+            loader.load( root) ;
         }
     }
 
@@ -280,7 +281,7 @@ public class TableView extends TopRightComponent {
     }
 
     public Object getSelection() {
-        List<GWTJahiaNode> elts = m_table.getSelectionModel().getSelectedItems();
+        List<GWTJahiaNode> elts = m_grid.getSelectionModel().getSelectedItems();
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {
@@ -289,7 +290,6 @@ public class TableView extends TopRightComponent {
     }
 
     public void refresh() {
-        //m_table.getView().refresh(true);
         setContent(getLinker().getTreeSelection());
     }
 

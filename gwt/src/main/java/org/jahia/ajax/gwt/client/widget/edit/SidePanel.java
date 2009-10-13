@@ -164,7 +164,7 @@ public class SidePanel extends ContentPanel {
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeType>() {
             public Object render(GWTJahiaNodeType model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNodeType> gwtJahiaNodeTypeListStore, Grid<GWTJahiaNodeType> gwtJahiaNodeTypeGrid) {
-                return ContentModelIconProvider.getInstance().getIcon(model.getIcon()).getHTML();
+                return ContentModelIconProvider.getInstance().getIcon(model).getHTML();
             }
         });
         displayColumns.add(col);
@@ -240,7 +240,7 @@ public class SidePanel extends ContentPanel {
                 if (init) {
                     JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.GLOBAL_REPOSITORY, "", "", "", null, listAsyncCallback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls(null,(GWTJahiaNode) gwtJahiaFolder, "", "", "", null, false, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.GLOBAL_REPOSITORY,(GWTJahiaNode) gwtJahiaFolder, "", "", "", null, false, listAsyncCallback);
                 }
             }
         };

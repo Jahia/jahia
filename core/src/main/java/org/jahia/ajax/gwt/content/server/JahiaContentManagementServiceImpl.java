@@ -141,23 +141,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.acl = acl;
     }
 
-    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        if (openPaths == null || openPaths.length() == 0) {
+    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
-        return navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean());
+        return navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths,getSelecetedPath(), noFolders, true, retrieveParamBean());
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad( GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean()));
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        if (folder != null) {
+            saveSelectedPath(folder.getPath());
+        }
+        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths,folder.getPath(), noFolders, true, retrieveParamBean()));
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
-        if (openPaths == null || openPaths.length() == 0) {
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException {
+        if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
 
-        logger.debug(new StringBuilder("**************** retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
+        logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
         return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
     }
@@ -174,20 +177,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     logger.debug(s.toString());
                 }
 
-                // ToDo: save opened path as a preference
-                getThreadLocalRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, navigation.concatOpenPathsList(paths));
-                //preferencesService.setGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, navigation.concatOpenPathsList(paths), retrieveParamBean());
-            } else if (logger.isDebugEnabled()) {
-                logger.debug(new StringBuilder("no paths to save for ").append(repositoryType).toString());
-                //deleteGenericPreferenceValue(contentManager.SAVED_OPEN_PATHS + repositoryType);
+                saveOpenPathsForRepository(repositoryType, paths);
             }
         }
     }
 
-    private String getOpenPathsForRepository(String repositoryType) {
-        return (String) getThreadLocalRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
-        // ToDo: get opened path as from preference
-        // return preferencesService.getGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, retrieveParamBean());
+    public void saveSelectedPath(String path) throws GWTJahiaServiceException {
+        getThreadLocalRequest().getSession().setAttribute(navigation.SELECTED_PATH, path);
+    }
+
+    public String getSelecetedPath() throws GWTJahiaServiceException {
+        return (String) getThreadLocalRequest().getSession().getAttribute(navigation.SELECTED_PATH);
+    }
+
+    public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
+        getThreadLocalRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
+    }
+
+    private List<String> getOpenPathsForRepository(String repositoryType) {
+        return (List<String>) getThreadLocalRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {

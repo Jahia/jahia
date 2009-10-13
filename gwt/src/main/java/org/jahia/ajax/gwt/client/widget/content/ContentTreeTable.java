@@ -100,13 +100,13 @@ public class ContentTreeTable extends TopRightComponent {
             protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     if (rootPath != null) {
-                        service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), "", listAsyncCallback);
+                        service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
                     } else {
-                        service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), "", listAsyncCallback);
+                        service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
                     }
                     init = false;
                 } else {
-                    service.ls(null,(GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
+                    service.ls(JCRClientUtils.GLOBAL_REPOSITORY,(GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
                 }
             }
         };
@@ -117,20 +117,6 @@ public class ContentTreeTable extends TopRightComponent {
             public boolean hasChildren(GWTJahiaNode parent) {
                 return parent.hasChildren();
             }
-
-
-
-           /* protected void onLoadSuccess(Object parent, List<GWTJahiaNode> children) {
-                super.onLoadSuccess(parent, children);
-                for (GWTJahiaNode n : children) {
-                    n.setParent((GWTJahiaNode) parent);
-                }
-                if (selectPathAfterUpload != null) {
-                    selectPath(selectPathAfterUpload);
-                    ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
-                    setSelectPathAfterDataUpdate(null);
-                }
-            }  */
 
             protected void expandPreviousPaths() {
                 expandAllPreviousPaths(selectedNodes);

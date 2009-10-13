@@ -469,6 +469,7 @@ public class ContentDetails extends BottomRightComponent {
                 if (getLinker() != null) {
                     getLinker().loading("collecting properties...");
                 }
+
                 List<String> nodeTypes = new ArrayList<String>();
 
                 boolean writeable = true;

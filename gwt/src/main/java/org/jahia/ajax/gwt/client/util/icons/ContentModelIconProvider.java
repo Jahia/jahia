@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.util.icons;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
@@ -104,6 +103,34 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     public static final String CONTENTLIST = "icon-contentlist";
 
+
+    public static final String DEFAULT_NODE = "default_node";
+    public static final String FOLDER_CLOSE = "folder_close";
+    public static final String FOLDER_OPEN = "folder_open";
+    public static final String JNT_ADRESS = "jnt_adress";
+    public static final String JAHIA_FORUM = "jahiaForum:";
+    public static final String JNT_RICHTEXT = "jnt:richtext";
+    public static final String JNT_VIDEO = "jnt:video";
+    public static final String JNT_TEXT = "jnt:text";
+    public static final String JNT_FORM = "jnt:form";
+    public static final String JNT_IMAGE = "jnt:image";
+    public static final String JNT_MAIL = "jnt:mail";
+    public static final String JNT_PUBLICATION = "jnt:publication";
+    public static final String JNT_TAG = "jnt:tag";
+    public static final String JNT_CATEGORY = "jnt:category";
+    public static final String JNT_NEWS = "jnt:news";
+    public static final String JNT_PIECHART = "jnt:piechart";
+    public static final String JNT_FAQ = "jnt:faq";
+    public static final String JNT_BOOKMARK = "jnt_bookmark";
+    public static final String JNT_SITE = "jnt:site";
+    public static final String JNT_INTERVIEW = "jnt:interview                                        ";
+    public static final String JNT_COMMENT = "jnt:comment";
+    public static final String JNT_BLOGPOST = "jnt:blogpost";
+    public static final String JNT_EVENT = "jnt:event";
+    public static final String JNT_PEOPLE = "jnt:people";
+    public static final String PERCENT = "percent";
+
+
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
     private ContentModelIconProvider() {
@@ -127,7 +154,13 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public AbstractImagePrototype getIcon(GWTJahiaNode gwtJahiaNode) {
         if (gwtJahiaNode != null) {
             String ext = gwtJahiaNode.getExt();
-            return getIcon(ext);
+            String type = null;
+            if (gwtJahiaNode.getNodeTypes() != null && !gwtJahiaNode.getNodeTypes().isEmpty()) {
+                type = gwtJahiaNode.getNodeTypes().get(0);
+            }
+            boolean isFolder = ext != null && ext.equalsIgnoreCase(DIR);
+            boolean isOpened = gwtJahiaNode.isExpandOnLoad();
+            return getIcon(type, ext,isFolder,isOpened);
         }
         return CONTENT_ICONS.file();
     }
@@ -135,12 +168,74 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public AbstractImagePrototype getIcon(GWTJahiaNodeType gwtJahiaNodeType) {
         if (gwtJahiaNodeType != null) {
             String ext = gwtJahiaNodeType.getIcon();
-            return getIcon(ext);
+            String typeName = gwtJahiaNodeType.getName();
+            return getIcon(typeName, ext,false,false);
         }
-        return CONTENT_ICONS.file();
+        return CONTENT_ICONS.defaultNode();
     }
 
-    public AbstractImagePrototype getIcon(String ext) {
+    private AbstractImagePrototype getIcon(String type, String ext,boolean isFolder,boolean isOpened) {
+        if(isFolder) {
+            if(isOpened){
+               return CONTENT_ICONS.folderOpen();
+            }
+             return CONTENT_ICONS.folderClose();
+        }
+        if (type != null) {
+            if (ext.equalsIgnoreCase(DEFAULT_NODE)) {
+                return CONTENT_ICONS.defaultNode();
+            } else if (type.equalsIgnoreCase(FOLDER_CLOSE)) {
+                return CONTENT_ICONS.folderClose();
+            } else if (type.equalsIgnoreCase(FOLDER_OPEN)) {
+                return CONTENT_ICONS.folderOpen();
+            } else if (type.equalsIgnoreCase(JNT_ADRESS)) {
+                return CONTENT_ICONS.jntAdress();
+            }
+            // node type that begins with jahiaForum:
+            else if (type.indexOf(JAHIA_FORUM) == 0) {
+                return CONTENT_ICONS.jntForum();
+            } else if (type.equalsIgnoreCase(JNT_RICHTEXT)) {
+                return CONTENT_ICONS.jntRichText();
+            } else if (type.equalsIgnoreCase(JNT_VIDEO)) {
+                return CONTENT_ICONS.jntVideo();
+            } else if (type.equalsIgnoreCase(JNT_TEXT)) {
+                return CONTENT_ICONS.jntText();
+            } else if (type.equalsIgnoreCase(JNT_FORM)) {
+                return CONTENT_ICONS.jntForm();
+            } else if (type.equalsIgnoreCase(JNT_IMAGE)) {
+                return CONTENT_ICONS.jntImage();
+            } else if (type.equalsIgnoreCase(JNT_MAIL)) {
+                return CONTENT_ICONS.jntMail();
+            } else if (type.equalsIgnoreCase(JNT_PUBLICATION)) {
+                return CONTENT_ICONS.jntPublication();
+            } else if (type.equalsIgnoreCase(JNT_TAG)) {
+                return CONTENT_ICONS.jntTag();
+            } else if (type.equalsIgnoreCase(JNT_CATEGORY)) {
+                return CONTENT_ICONS.jntCategory();
+            } else if (type.equalsIgnoreCase(JNT_NEWS)) {
+                return CONTENT_ICONS.jntNews();
+            } else if (type.equalsIgnoreCase(JNT_PIECHART)) {
+                return CONTENT_ICONS.jntPieChart();
+            } else if (type.equalsIgnoreCase(JNT_FAQ)) {
+                return CONTENT_ICONS.jntFaq();
+            } else if (type.equalsIgnoreCase(JNT_BOOKMARK)) {
+                return CONTENT_ICONS.jntBookmark();
+            } else if (type.equalsIgnoreCase(JNT_SITE)) {
+                return CONTENT_ICONS.jntSite();
+            } else if (type.equalsIgnoreCase(JNT_INTERVIEW)) {
+                return CONTENT_ICONS.jntInterview();
+            } else if (type.equalsIgnoreCase(JNT_COMMENT)) {
+                return CONTENT_ICONS.jntComment();
+            } else if (type.equalsIgnoreCase(JNT_BLOGPOST)) {
+                return CONTENT_ICONS.jntBlogpost();
+            } else if (type.equalsIgnoreCase(JNT_EVENT)) {
+                return CONTENT_ICONS.jntEvent();
+            } else if (type.equalsIgnoreCase(JNT_PEOPLE)) {
+                return CONTENT_ICONS.jntPeople();
+            } else if (type.equalsIgnoreCase(PERCENT)) {
+                return CONTENT_ICONS.percent();
+            }
+        }
         if (ext != null) {
             if (ext.equalsIgnoreCase(CONTENT)) {
                 return CONTENT_ICONS.content();

@@ -52,7 +52,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowCloseListener;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -180,6 +179,7 @@ public class FolderTree extends LeftComponent {
 
     /**
      * Rename Search
+     *
      * @param selection
      */
     private void renameSearch(GWTJahiaNode selection) {
@@ -202,29 +202,11 @@ public class FolderTree extends LeftComponent {
             }
         }
     }
-
-    /**
-     * Save opened paths
-     */
-    public void saveOpenedPaths() {
-        Map<String, List<String>> openPathsForRepositoryType = new HashMap<String, List<String>>();
-        for (RepositoryTab tab : repositories) {
-            Log.debug("Add openedPath: "+tab.getOpenedPaths());
-            openPathsForRepositoryType.put(tab.getRepositoryType(), tab.getOpenedPaths());
-        }
-        service.saveOpenPaths(openPathsForRepositoryType, new AsyncCallback() {
-            public void onSuccess(Object o) {
-                 // nothing to do
-            }
-
-            public void onFailure(Throwable throwable) {
-                Window.alert("Could not save expanded paths into user preferences:\n\n" + throwable.getLocalizedMessage());
-            }
-        });
-    }
+ 
 
     /**
      * ChangeAccordionListener
+     *
      * @param <T>
      */
     private class ChangeAccordionListener<T extends ComponentEvent> implements Listener<T> {

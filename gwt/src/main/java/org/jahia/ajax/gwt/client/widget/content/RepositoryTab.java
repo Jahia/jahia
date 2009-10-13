@@ -67,12 +67,11 @@ public class RepositoryTab extends ContentPanel {
     // ToDo : find a better way to handle autoExpand tree (without multiple ajax call)
     private boolean init = true;
     private String repositoryType;
-    private CustomTreeLoader<GWTJahiaNode> loader;
+    private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private FolderTree folderTreeContainer;
-    private TreePanel<GWTJahiaNode> m_tree;
+    private CustomTreePanel m_tree;
     private JahiaContentManagementServiceAsync contentManagementService;
-    private List<String> openedPaths = new ArrayList<String>();
 
     /**
      * Constructor
@@ -108,7 +107,7 @@ public class RepositoryTab extends ContentPanel {
         };
 
         // tree globalRepositoryLoader
-        loader = new CustomTreeLoader<GWTJahiaNode>(privateProxy) {
+        loader = new BaseTreeLoader<GWTJahiaNode>(privateProxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
                 return parent.hasFolderChildren();
@@ -121,89 +120,28 @@ public class RepositoryTab extends ContentPanel {
                     init = false;
                 }
             }
-
-            protected void expandPreviousPaths() {
-//                expandAllPreviousPaths() ;
-            }
         };
 
         // tree store
         store = new FolderTreeStore<GWTJahiaNode>(loader);
 
         // tree component
-        m_tree = new TreePanel<GWTJahiaNode>(store) {
-            @Override
-            protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
-                super.onDataChanged(mTreeStoreEvent);
-                GWTJahiaNode p =  mTreeStoreEvent.getParent();
-                if (p == null) {
-                    expandChildren(store.getRootItems());
-                } else {
-                    expandChildren(store.getChildren(p));
-                }
-            }
-
-            /**
-             * Expand children
-             *
-             * @param children
-             */
-            private void expandChildren(List<GWTJahiaNode> children) {
-                for (GWTJahiaNode child : children) {
-                    if (child.isExpandOnLoad()) {
-                        setExpanded(child, true);
-                        openedPaths.add(child.getPath());
-                    }
-                }
-            }
-        };
-        m_tree.setIconProvider(ContentModelIconProvider.getInstance());
-        m_tree.setDisplayProperty("displayName");
-        m_tree.setBorders(false);
-
-        // tree selection listener
-        m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
-                getLinker().onTreeItemSelected();
-            }
-        });
-
-
-        // add listener after rendering
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                m_tree.addListener(Events.Expand, new Listener<TreePanelEvent>() {
-                    public void handleEvent(TreePanelEvent le) {
-                        String path = ((GWTJahiaNode) le.getItem()).getPath();
-                        if (!openedPaths.contains(path)) {
-                            openedPaths.add(path);
-                        }
-                        savePaths();
-                    }
-                });
-
-                m_tree.addListener(Events.Collapse, new Listener<TreePanelEvent>() {
-                    public void handleEvent(TreePanelEvent e) {
-                        String path = ((GWTJahiaNode) e.getItem()).getPath();
-                        openedPaths.remove(path);
-                        savePaths();
-                    }
-                });
-            }
-        });
-
+        m_tree = new CustomTreePanel(store);
+        m_tree.init();
 
         setScrollMode(Style.Scroll.AUTO);
         setHeading(label);
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                init = true;
-                loader.load();
+                refresh();
             }
         }));
         add(m_tree);
     }
 
+    /**
+     * init
+     */
     public void init() {
         loader.load();
 
@@ -259,110 +197,59 @@ public class RepositoryTab extends ContentPanel {
         target.setAutoExpand(true);
     }
 
+    /**
+     * Save Paths
+     */
     public void savePaths() {
-        folderTreeContainer.saveOpenedPaths();
+        contentManagementService.saveOpenPathsForRepository(repositoryType, getOpenedPaths(), new AsyncCallback() {
+            public void onSuccess(Object o) {
+                // nothing to do
+            }
+
+            public void onFailure(Throwable throwable) {
+                Log.error("Could not save expanded paths into user preferences:\n\n" + throwable.getLocalizedMessage(), throwable);
+            }
+        });
     }
 
-//    public void expandAllPreviousPaths() {
-//        if (previousPathsOpener == null) {
-//            previousPathsOpener = new PreviousPathsOpener<GWTJahiaNode>(m_tree, store, binder) ;
-//        }
-//        previousPathsOpener.expandPreviousPaths();
-//    }
 
-//    public List<String> getOpenedPaths() {
-//        List<TreeItem> expandedItems = getOpenedPaths(store.getRootItems().get(0)) ;
-//        List<String> expandedPaths = null ;
-//        if (expandedItems.size() > 0) {
-//            expandedPaths = new ArrayList<String>() ;
-//            for (TreeItem item: expandedItems) {
-//                expandedPaths.add(((GWTJahiaNode) item.getModel()).getPath()) ;
-//            }
-//        }
-//        return expandedPaths ;
-//    }
-
-//    private List<TreeItem> getOpenedPaths(GWTJahiaNode root) {
-//        List<TreeItem> items = new ArrayList<TreeItem>() ;
-//        boolean oneHasAlreadyBeenAdded = false ;
-//        for (ModelData md: root.getChildren()) {
-//            GWTJahiaNode it = (GWTJahiaNode) md;
-//            if (it.hasChildren()) {
-//                items.addAll(getOpenedPaths(it)) ;
-//                oneHasAlreadyBeenAdded = true ;
-////            } else if (it.getDepth() > 1 && !oneHasAlreadyBeenAdded) {
-////                items.add(it) ;
-////                oneHasAlreadyBeenAdded = true ;
-//            }
-//        }
-//        return items ;
-//    }
-
+    /**
+     * Open and select iem
+     *
+     * @param item
+     */
     public void openAndSelectItem(Object item) {
         if (item != null && this.isExpanded()) {
-            Log.debug("trying to expand");
-//            new TreeOpener(m_tree, "name", reducePath(m_tree, ((GWTJahiaNode) item).getPath()));
+            Log.debug("trying to expand: "+((GWTJahiaNode)item).getPath());
+            m_tree.addToOpenPaths((GWTJahiaNode)item);
+            refresh();
         }
     }
 
+    /**
+     * Refresh
+     */
     public void refresh() {
-//        if (this.isExpanded()) {
-//            TreeItem current = m_tree.getSelectedItem() ;
-//            if (current != null) {
-//                if (current.isExpanded()) {
-//                    loader.loadChildren(binder.getSelection().get(0)) ;
-//                } else {
-//                    if (repositoryType.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
-//                        TreeItem parent = current.getParentItem() ;
-//                        if (parent != null) {
-//                            loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
-//                        }
-//                    } else {
-//                        refreshSubTree(current);
-//                    }
-//                }
-//            }
-//        }
+        init = true;
+        store.removeAll();
+        loader.load();
     }
 
+    /**
+     * Get repository type
+     *
+     * @return
+     */
     public String getRepositoryType() {
         return repositoryType;
     }
 
-    private void refreshSubTree(TreeItem current) {
-//        List<TreeItem> privates = m_tree.getRootItem().getItems() ;
-//        if (privates.contains(current)) {
-//            if (current.isExpanded()) {
-//                loader.loadChildren((GWTJahiaNode) current.getModel()) ;
-//            } else {
-//                reloadSubTree();
-//            }
-//        } else {
-//            TreeItem parent = current.getParentItem() ;
-//            if (parent != null) {
-//                loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
-//            }
-//        }
-    }
 
-    private void reloadSubTree() {
-        init = true;
-        loader.load();
-    }
-
-    private String reducePath(TreePanel t, String path) {
-//        List<TreeItem> items = store.getRootItems().get(0).getChildren() ;
-//        if (items.size() > 0) {
-//            TreeItem privateRoot = items.get(0) ;
-//            String absPath = ((GWTJahiaNode) privateRoot.getModel()).getPath() ;
-//            int ind = absPath.lastIndexOf("/") ;
-//            String parentPath = absPath.substring(0, ind) ;
-//            return path.replace(parentPath, "") ;
-//        } else {
-        return path;
-//        }
-    }
-
+    /**
+     * Get selected item
+     *
+     * @return
+     */
     public GWTJahiaNode getSelectedItem() {
         List<GWTJahiaNode> selection = m_tree.getSelectionModel().getSelection();
         if (selection != null && selection.size() > 0) {
@@ -372,16 +259,29 @@ public class RepositoryTab extends ContentPanel {
         }
     }
 
+    /**
+     * Get the linker manager
+     *
+     * @return
+     */
     private ManagerLinker getLinker() {
         return folderTreeContainer.getLinker();
     }
 
+    /**
+     * deselecte on free search
+     */
     public void deselectOnFreeSearch() {
         m_tree.getSelectionModel().deselectAll();
     }
 
+    /**
+     * Get list of the opened Path
+     *
+     * @return
+     */
     public List<String> getOpenedPaths() {
-        return openedPaths;
+        return m_tree.getOpenedPaths();
     }
 
     /**
@@ -410,5 +310,109 @@ public class RepositoryTab extends ContentPanel {
         }
     }
 
+    /**
+     * This class extends the standard TreePanel to allow expand node if nested
+     */
+    private class CustomTreePanel extends TreePanel<GWTJahiaNode> {
+        private List<String> openedPaths = new ArrayList<String>();
 
+        private CustomTreePanel(TreeStore<GWTJahiaNode> gwtJahiaNodeTreeStore) {
+            super(gwtJahiaNodeTreeStore);
+
+        }
+
+        /**
+         * init method()
+         */
+        public void init() {
+            setIconProvider(ContentModelIconProvider.getInstance());
+
+
+            setDisplayProperty("displayName");
+            setBorders(false);
+            getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
+                    getLinker().onTreeItemSelected();
+                }
+            });
+
+            // add listener after rendering
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    addListener(Events.Expand, new Listener<TreePanelEvent>() {
+                        public void handleEvent(TreePanelEvent le) {
+                            GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) le.getItem();
+                            String path = gwtJahiaNode.getPath();
+                            if (!openedPaths.contains(path)) {
+                                openedPaths.add(path);
+                            }
+                            Log.debug("Save Path on expand " + openedPaths);
+                            gwtJahiaNode.setExpandOnLoad(true);
+                            refresh(gwtJahiaNode);
+                            savePaths();
+                        }
+                    });
+
+                    addListener(Events.Collapse, new Listener<TreePanelEvent>() {
+                        public void handleEvent(TreePanelEvent el) {
+                            GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getItem();
+                            String path = gwtJahiaNode.getPath();
+                            openedPaths.remove(path);
+                            Log.debug("Save Path on collapse " + openedPaths);
+                            gwtJahiaNode.setExpandOnLoad(false);
+                            refresh(gwtJahiaNode);
+                            savePaths();
+                        }
+                    });
+                }
+            });
+        }
+
+        @Override
+        protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
+            super.onDataChanged(mTreeStoreEvent);
+            GWTJahiaNode p = mTreeStoreEvent.getParent();
+            if (p == null) {
+                expandChildren(store.getRootItems());
+            } else {
+                expandChildren(store.getChildren(p));
+            }
+        }
+
+        /**
+         * Expand children
+         *
+         * @param children
+         */
+        private void expandChildren(List<GWTJahiaNode> children) {
+            for (GWTJahiaNode child : children) {
+                if (child.isExpandOnLoad()) {
+                    setExpanded(child, true);
+                    addToOpenPaths(child);
+                    if (child.isSelectedOnLoad()) {
+                        getSelectionModel().select(child, true);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Add to open paths
+         * @param child
+         */
+        public void addToOpenPaths(GWTJahiaNode child) {
+            if (!openedPaths.contains(child.getPath())) {
+                openedPaths.add(child.getPath());
+            }
+        }
+
+        /**
+         * Get opened path
+         *
+         * @return
+         */
+        public List<String> getOpenedPaths() {
+            return openedPaths;
+        }
+    }
 }

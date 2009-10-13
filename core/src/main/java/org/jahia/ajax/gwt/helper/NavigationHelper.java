@@ -84,8 +84,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
  */
 public class NavigationHelper {
     private static Logger logger = Logger.getLogger(NavigationHelper.class);
-    public final static String SAVED_OPEN_PATHS = "org.jahia.preferences.filemanager.savedopenpaths.";
-    public final static String OPEN_PATHS_SEPARATOR = "-_-";
+    public final static String SAVED_OPEN_PATHS = "org.jahia.contentmanager.savedopenpaths.";
+    public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
 
     private JCRStoreService jcrService;
     private RenderService renderService;
@@ -115,113 +115,27 @@ public class NavigationHelper {
         this.nodetypeIcons = nodetypeIcons;
     }
 
-    public String[] splitOpenPathList(String concatPaths) {
-        return concatPaths.split(OPEN_PATHS_SEPARATOR);
-    }
-
-
-    public String concatOpenPathsList(List<String> paths) {
-        if (paths == null || paths.size() == 0) {
-            return null;
-        }
-        StringBuilder b = new StringBuilder(paths.get(0));
-        for (int i = 1; i < paths.size(); i++) {
-            b.append(OPEN_PATHS_SEPARATOR).append(paths.get(i));
-        }
-        return b.toString();
-    }
-
-    /*
-     * Append the children corresponding to the open paths.
-     *
-     * @param node      the node to retrieve children of
-     * @param openPaths the list of previously open paths
-     * @param context   the processing context
-     * @param nodeTypes node types to include
-     * @param filters   the filters
-     * @param mimeTypes the mime types
-     * @param noFolders don't retrieve folders if true
-     * @throws GWTJahiaServiceException sthg bad happened
-     */
-    /* private void appendChildren(GWTJahiaNode parentNode, String[] openPaths, ProcessingContext context, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        logger.error("appending children for node " + parentNode.getPath());
-        if (parentNode.isFile()) {
-            return;
-        }
-        List<ModelData> nodes = new ArrayList<ModelData>();
-        List<GWTJahiaNode> childrenNodes = ls(parentNode, nodeTypes, mimeTypes, filters, null, noFolders, false, context);
-        logger.error("appending children for node " + parentNode.getPath() + ", found " + childrenNodes.size() + " nodes");
-        boolean addAll = false;
-        for (GWTJahiaNode childNode : childrenNodes) {
-            for (String openPath : openPaths) {
-                if (openPath.indexOf(childNode.getPath()) == 0) {
-                    addAll = true;
-                    logger.error("found at least one child in the path");
-                    break;
-                }
-            }
-            if (addAll) {
-                break;
-            }
-        }
-
-        if (addAll) {
-            for (GWTJahiaNode aNode : childrenNodes) {
-                boolean enableRec = false;
-                for (String openPath : openPaths) {
-                    if (openPath.indexOf(aNode.getPath()) == 0) {
-                        enableRec = true;
-                        break;
-                    }
-                }
-                logger.error("adding " + aNode.getName());
-                aNode.setParent(parentNode);
-                nodes.add(aNode);
-                if (!aNode.isFile() && enableRec) {
-                    logger.error("enable recursion for " + aNode.getName());
-                    appendChildren(aNode, openPaths, context, nodeTypes, mimeTypes, filters, noFolders);
-                }
-            }
-            parentNode.setChildren(nodes);
-        } else {
-            logger.error(parentNode.getPath() + " does not contain any more node to expand");
-        }
-    }*/
 
     /**
-     * Chech if node is expanded or not
+     * Check if note must be expanded
      *
      * @param parentNode
      * @param openPaths
      * @return
      */
-    private boolean expandOnLoad(GWTJahiaNode parentNode, String[] openPaths) {
+    private boolean expandOnLoad(GWTJahiaNode parentNode, List<String> openPaths) {
         // check if parentNode is expanded
         boolean expand = false;
-        for (String openPath : openPaths) {
-            if (openPath.indexOf(parentNode.getPath()) == 0) {
-                expand = true;
+        if (openPaths != null) {
+            for (String openPath : openPaths) {
+                if (openPath.indexOf(parentNode.getPath()) == 0) {
+                    expand = true;
 
-                break;
+                    break;
+                }
             }
         }
         return expand;
-    }
-
-    /**
-     * Chech if node is expanded or not
-     *
-     * @param parentNode
-     * @param openPathsAsStrg
-     * @return
-     */
-    private boolean expandOnLoad(GWTJahiaNode parentNode, String openPathsAsStrg) {
-        if (openPathsAsStrg == null) {
-            logger.debug(parentNode.getPath()+": openpath null");
-            return false;
-        }
-        logger.debug("open the following pathes: "+openPathsAsStrg);
-        return expandOnLoad(parentNode, splitOpenPathList(openPathsAsStrg));
     }
 
 
@@ -239,7 +153,7 @@ public class NavigationHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, String selectedPath, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
 
 
@@ -297,11 +211,7 @@ public class NavigationHelper {
                             logger.error(e.getMessage(), e);
                         }
                     }
-                    /*if (openPaths != null && openPaths.length() > 0) {
-                        logger.error("trying to append children");
-                        logger.error("********** " + openPaths);
-                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
-                    }  */
+
                     result.add(theNode);
                 } else {
                     if (logger.isDebugEnabled()) {
@@ -338,8 +248,13 @@ public class NavigationHelper {
         }
 
         // ToDo : find a better way to implement this. Avoid multiple ajax request
+        logger.error("****************** Selected path: "+selectedPath);
         for (GWTJahiaNode gwtJahiaNode : result) {
-            gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode,openPaths));
+            if (openPaths != null) {
+                gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode, openPaths));
+                gwtJahiaNode.setSelectedOnLoad(selectedPath != null && selectedPath.equalsIgnoreCase(gwtJahiaNode.getPath()));
+            }
+
         }
 
         Collections.sort(result);
@@ -390,7 +305,7 @@ public class NavigationHelper {
         return false;
     }
 
-    public List<GWTJahiaNode> retrieveRoot(String key, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> retrieveRoot(String key, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException {
         List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         if (nodeTypes == null) {
             nodeTypes = JCRClientUtils.FILE_NODETYPES;
@@ -539,12 +454,9 @@ public class NavigationHelper {
         }
 
         for (GWTJahiaNode userNode : userNodes) {
-            if (openPaths != null && openPaths.length() > 0) {
+            if (openPaths != null && openPaths.size() > 0) {
                 logger.debug("Path to open " + openPaths);
-                //appendChildren(userNode, splitOpenPathList(openPaths), jParams, nodeTypes, mimeTypes, filters, false);
-                userNode.setExpandOnLoad(expandOnLoad(userNode,openPaths));
-
-
+                userNode.setExpandOnLoad(expandOnLoad(userNode, openPaths));
             }
         }
 

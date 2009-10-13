@@ -125,7 +125,83 @@ public interface ContentIconsImageBundle extends ImageBundle {
 
     @Resource("icon-contentlist.png")
     public AbstractImagePrototype contentlist();
-    
+
+
+    @ImageBundle.Resource("jnt_video.png")
+    public AbstractImagePrototype jntVideo();
+
+    @Resource("percent.png")
+    public AbstractImagePrototype percent();
+
+    @Resource("jnt_adress.png")
+    public AbstractImagePrototype jntAdress();
+
+    @Resource("jnt_tag.png")
+    public AbstractImagePrototype jntTag();
+
+    @Resource("jnt_text.png")
+    public AbstractImagePrototype jntText();
+
+    @Resource("jnt_site.png")
+    public AbstractImagePrototype jntSite();
+
+    @Resource("jnt_richtext.png")
+    public AbstractImagePrototype jntRichText();
+
+    @Resource("jnt_publication.png")
+    public AbstractImagePrototype jntPublication();
+
+    @Resource("jnt_news.png")
+    public AbstractImagePrototype jntNews();
+
+    @Resource("jnt_piechart.png")
+    public AbstractImagePrototype jntPieChart();
+
+    @Resource("jnt_people.png")
+    public AbstractImagePrototype jntPeople();
+
+    @Resource("jnt_forum.png")
+    public AbstractImagePrototype jntForum();
+
+    @Resource("jnt_form.png")
+    public AbstractImagePrototype jntForm();
+
+    @Resource("jnt_mail.png")
+    public AbstractImagePrototype jntMail();
+
+    @Resource("jnt_image.png")
+    public AbstractImagePrototype jntImage();
+
+    @Resource("jnt_category.png")
+    public AbstractImagePrototype jntCategory();
+
+    @Resource("jnt_faq.png")
+    public AbstractImagePrototype jntFaq();
+
+    @Resource("jnt_bookmark.png")
+    public AbstractImagePrototype jntBookmark();
+
+    @Resource("jnt_interview.png")
+    public AbstractImagePrototype jntInterview();
+
+    @Resource("jnt_comment.png")
+    public AbstractImagePrototype jntComment();
+
+    @Resource("jnt_blogpost.png")
+    public AbstractImagePrototype jntBlogpost();
+
+    @Resource("jnt_event.png")
+    public AbstractImagePrototype jntEvent();
+
+    @Resource("default_node.png")
+    public AbstractImagePrototype defaultNode();
+
+    @Resource("folder_close.png")
+    public AbstractImagePrototype folderClose();
+
+    @Resource("folder_open.png")
+    public AbstractImagePrototype folderOpen();
+
 
 }
 

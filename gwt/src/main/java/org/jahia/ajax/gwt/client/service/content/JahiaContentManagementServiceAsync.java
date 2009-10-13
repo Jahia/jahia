@@ -51,14 +51,16 @@ import java.util.Set;
  */
 public interface JahiaContentManagementServiceAsync {
 
-    void ls(String repositoryType,GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
+    void ls(String repositoryType,GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
+    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
-    void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths, AsyncCallback<List<GWTJahiaNode>> async);
+    void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 
     void saveOpenPaths(Map<String, List<String>> pathsForRepositoryType, AsyncCallback async);
 
+    public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
+    
     void search(String searchString, int limit, AsyncCallback<List<GWTJahiaNode>> async);
 
     void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);

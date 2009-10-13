@@ -70,13 +70,15 @@ public interface JahiaContentManagementService extends RemoteService {
         }
     }
 
-    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders) throws GWTJahiaServiceException;
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException;
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, boolean noFolders) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException;
 
     public void saveOpenPaths(Map<String, List<String>> pathsForRepositoryType) throws GWTJahiaServiceException;
+
+    public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException;
 

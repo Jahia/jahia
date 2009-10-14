@@ -118,8 +118,8 @@ public class ManagerConfigurationFactory {
 
         fileManagerConfig.addColumn("providerKey");
         fileManagerConfig.addColumn("ext");
-        fileManagerConfig.addColumn("locked");
         fileManagerConfig.addColumn("name");
+        fileManagerConfig.addColumn("locked");
         fileManagerConfig.addColumn("path");
         fileManagerConfig.addColumn("size");
         fileManagerConfig.addColumn("lastModified");
@@ -171,8 +171,8 @@ public class ManagerConfigurationFactory {
 
         mashupManagerConfig.setToolbarGroup("mashup-manager");
 
-        mashupManagerConfig.addColumn("locked");
         mashupManagerConfig.addColumn("name");
+        mashupManagerConfig.addColumn("locked");
         mashupManagerConfig.addColumn("path");
         mashupManagerConfig.addColumn("lastModified");
 
@@ -230,8 +230,8 @@ public class ManagerConfigurationFactory {
         categoryManagerConfig.setToolbarGroup("category-manager");
 
         categoryManagerConfig.addColumn("ext");
-        categoryManagerConfig.addColumn("locked");
         categoryManagerConfig.addColumn("name");
+        categoryManagerConfig.addColumn("locked");
         categoryManagerConfig.addColumn("path");
 
         categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
@@ -300,9 +300,9 @@ public class ManagerConfigurationFactory {
 
         cfg.setToolbarGroup("site-manager");
 
-        cfg.addColumn("ext");
-        cfg.addColumn("locked");
+        cfg.addColumn("ext");      
         cfg.addColumn("name");
+        cfg.addColumn("locked");
         cfg.addColumn("lastModified");
         cfg.addColumn("lastModifiedBy");
         cfg.addColumn("publicationInfo");

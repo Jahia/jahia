@@ -302,9 +302,9 @@ public class TableView extends TopRightComponent {
         List<String> columnNames = new ArrayList<String>(configuration.getTableColumns());
         if (columnNames.isEmpty()) {
         	columnNames.add("providerKey");
-        	columnNames.add("ext");
-        	columnNames.add("locked");
+        	columnNames.add("ext");      	
         	columnNames.add("name");
+            columnNames.add("locked");
         	columnNames.add("path");
         	columnNames.add("size");
         	columnNames.add("publicationInfo");
@@ -330,7 +330,7 @@ public class TableView extends TopRightComponent {
                 col.setSortable(true);
                 col.setResizable(true);
             } else if ("locked".equals(columnName)) {
-                col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
+                col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 60);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(LOCKED_RENDERER);
                 col.setSortable(false);
@@ -345,7 +345,7 @@ public class TableView extends TopRightComponent {
 	            col.setResizable(true);
                 col.setHidden(true);
             } else if ("size".equals(columnName)) {
-                col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 160);
+                col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 140);
                 col.setResizable(true);
                 col.setAlignment(Style.HorizontalAlignment.LEFT);
                 col.setRenderer(SIZE_RENDERER);

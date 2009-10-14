@@ -79,6 +79,14 @@ public class GWTJahiaNodeVersion extends BaseModel {
         set("node", node);
     }
 
+    public String getAuthor() {
+        return get("author");
+    }
+
+    public void getAuthor(String author) {
+        set("author", author);
+    }
+
     public String getUUID() {
         return uuid;
     }

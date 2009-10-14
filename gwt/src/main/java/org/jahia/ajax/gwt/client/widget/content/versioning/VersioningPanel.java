@@ -74,6 +74,7 @@ public class VersioningPanel extends ContentPanel {
      * Render panel
      */
     public void render() {
+        // ToDo : Add resource-bundles in versioning panel
         setLayout(new FitLayout());
         setCollapsible(false);
         setFrame(false);
@@ -88,6 +89,8 @@ public class VersioningPanel extends ContentPanel {
         ColumnConfig col = new ColumnConfig("versionNumber", "version number", 100);
         columns.add(col);
         col = new ColumnConfig("date", "date", 200);
+        columns.add(col);
+        col = new ColumnConfig("author", "author", 200);
         columns.add(col);
 
         final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>();

@@ -229,6 +229,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
+
         contentManager.createFolder(parentPath, name, retrieveParamBean());
     }
 

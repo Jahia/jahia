@@ -174,7 +174,7 @@ public class EditActions {
      * @param linker
      */
     public static void delete(final Linker linker) {
-        if (!linker.getSelectedNodes().isEmpty()) {
+        if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
             List<String> paths = new ArrayList<String>();
             for (GWTJahiaNode node : linker.getSelectedNodes()) {
                 paths.add(node.getPath());

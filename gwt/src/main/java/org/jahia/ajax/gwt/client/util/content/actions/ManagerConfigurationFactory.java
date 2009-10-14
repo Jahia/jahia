@@ -229,6 +229,7 @@ public class ManagerConfigurationFactory {
 
         categoryManagerConfig.setToolbarGroup("category-manager");
 
+        categoryManagerConfig.addColumn("ext");
         categoryManagerConfig.addColumn("locked");
         categoryManagerConfig.addColumn("name");
         categoryManagerConfig.addColumn("path");

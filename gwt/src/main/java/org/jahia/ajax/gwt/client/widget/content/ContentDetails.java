@@ -720,11 +720,11 @@ public class ContentDetails extends BottomRightComponent {
 
             List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-            ColumnConfig col = new ColumnConfig("pageTitle", Messages.getResource("fm_page"), 100);
+            ColumnConfig col = new ColumnConfig("pageTitle", Messages.getResource("fm_page"), 150);
             columns.add(col);
             col = new ColumnConfig("url", "URL", 150);
             columns.add(col);
-            col = new ColumnConfig("lang", Messages.getResource("fm_language"), 30);
+            col = new ColumnConfig("lang", Messages.getResource("fm_language"), 130);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
             col = new ColumnConfig(Messages.getResource("fm_workflow"), 30);
@@ -736,8 +736,9 @@ public class ContentDetails extends BottomRightComponent {
                     return "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
                 }
             });
+            col.setHidden(true);
             columns.add(col);
-            col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 30);
+            col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 130);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
 

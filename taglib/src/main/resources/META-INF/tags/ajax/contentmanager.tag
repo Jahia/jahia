@@ -384,6 +384,9 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_workflow"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.versioned.label"
                             aliasResourceName="fm_versioned"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.version.version"
+                            aliasResourceName="fm_version"/>
+
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.live.label"
                             aliasResourceName="fm_live"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.staging.label"

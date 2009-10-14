@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.util.icons;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
@@ -112,6 +113,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String JNT_RICHTEXT = "jnt:richtext";
     public static final String JNT_VIDEO = "jnt:video";
     public static final String JNT_TEXT = "jnt:text";
+    public static final String JNT_FOLDER = "jnt:folder";
     public static final String JNT_FORM = "jnt:form";
     public static final String JNT_IMAGE = "jnt:image";
     public static final String JNT_MAIL = "jnt:mail";
@@ -158,7 +160,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
             if (gwtJahiaNode.getNodeTypes() != null && !gwtJahiaNode.getNodeTypes().isEmpty()) {
                 type = gwtJahiaNode.getNodeTypes().get(0);
             }
-            boolean isFolder = ext != null && ext.equalsIgnoreCase(DIR);
+            boolean isFolder = type != null && type.equalsIgnoreCase(JNT_FOLDER);
             boolean isOpened = gwtJahiaNode.isExpandOnLoad();
             return getIcon(type, ext,isFolder,isOpened);
         }
@@ -174,7 +176,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         return CONTENT_ICONS.defaultNode();
     }
 
-    private AbstractImagePrototype getIcon(String type, String ext,boolean isFolder,boolean isOpened) {
+    private AbstractImagePrototype getIcon(String type, String ext,boolean isFolder,boolean isOpened) {        
         if(isFolder) {
             if(isOpened){
                return CONTENT_ICONS.folderOpen();

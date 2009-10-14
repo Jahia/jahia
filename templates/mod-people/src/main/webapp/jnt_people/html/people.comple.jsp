@@ -27,8 +27,8 @@
 <div style="border:1px solid #CCCCCC; padding:5px">
     <jcr:nodeProperty var="picture" node="${currentNode}" name="peoplePicture"/>
     <c:if test="${not empty picture}">
-        <div style="border:1px solid #CCCCCC; margin-right:7px; margin-bottom:7px"">
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${peopleLastname} picture" align="left" width="60" height="60">
+        <div>
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${peopleLastname} picture" align="left" width="60" height="60" style="border:1px solid #CCCCCC; margin-right:7px; margin-bottom:3px"">
         </div>
     </c:if>
 
@@ -37,9 +37,9 @@
 
             <p><jcr:nodeProperty node="${currentNode}" name="peopleFunction"/></p>
              <p><jcr:nodeProperty node="${currentNode}" name="peopleBusinessUnit"/></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleCellular"/></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleTelephone"/></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleFax"/></p>
+            <p>M.:<jcr:nodeProperty node="${currentNode}" name="peopleCellular"/></p>
+            <p>T.:<jcr:nodeProperty node="${currentNode}" name="peopleTelephone"/></p>
+            <p>F.:<jcr:nodeProperty node="${currentNode}" name="peopleFax"/></p>
             <p><jcr:nodeProperty node="${currentNode}" name="peopleEmail" var="email"/>
             <a href='mailto:${email.string}'>${email.string}</a></p>
             <p><jcr:nodeProperty node="${currentNode}" name="peopleBiography"/>      </p>

@@ -198,6 +198,7 @@ public class TableView extends TopRightComponent {
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(sel.get(0));
+                        setContent(sel.get(0));
                     }
                 }
             }

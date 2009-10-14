@@ -220,9 +220,11 @@ public class RepositoryTab extends ContentPanel {
      */
     public void openAndSelectItem(Object item) {
         if (item != null && this.isExpanded()) {
-            Log.debug("trying to expand: "+((GWTJahiaNode)item).getPath());
-            m_tree.addToOpenPaths((GWTJahiaNode)item);
-            refresh();
+            GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
+            Log.debug("expand: "+gItem.getPath());
+            m_tree.addToOpenPaths(gItem);
+            m_tree.setExpanded(gItem,true);
+            m_tree.getSelectionModel().select(gItem,false);
         }
     }
 
@@ -389,9 +391,10 @@ public class RepositoryTab extends ContentPanel {
                 if (child.isExpandOnLoad()) {
                     setExpanded(child, true);
                     addToOpenPaths(child);
-                    if (child.isSelectedOnLoad()) {
+                    // ToDo : restore select state
+                   /* if (child.isSelectedOnLoad()) {
                         getSelectionModel().select(child, true);
-                    }
+                    }*/
                 }
             }
         }

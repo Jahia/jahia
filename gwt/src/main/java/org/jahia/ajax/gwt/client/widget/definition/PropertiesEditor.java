@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -57,7 +58,7 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
 //    private ComboBox<GWTJahiaNodeType> combo;
-//    private GWTJahiaNodeType nodeType;
+    //    private GWTJahiaNodeType nodeType;
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = false;
     private List<String> excludedItems;
@@ -103,7 +104,9 @@ public class PropertiesEditor extends FormPanel {
             setFieldWidth(550);
             setLabelWidth(180);
         }
-        setFrame(true);
+        setCollapsible(false);
+        setFrame(false);
+        setAnimCollapse(false);
         setBorders(false);
         setBodyBorder(false);
         setHeaderVisible(false);
@@ -162,8 +165,8 @@ public class PropertiesEditor extends FormPanel {
 
     private void renderForm() {
 //        if (combo.getSelection().size() > 0) {
-            removeAll();
-            fields = new HashMap<String, Field<?>>();
+        removeAll();
+        fields = new HashMap<String, Field<?>>();
 
         for (GWTJahiaNodeType nodeType : nodeTypes) {
             if (viewInheritedItems) {
@@ -194,8 +197,8 @@ public class PropertiesEditor extends FormPanel {
                 if (!definition.isNode()) {
                     property.setMultiple(((GWTJahiaPropertyDefinition) definition).isMultiple());
                 }
-                if (!definition.isNode() && ((GWTJahiaPropertyDefinition)definition).getDefaultValues() != null) {
-                    property.setValues(((GWTJahiaPropertyDefinition)definition).getDefaultValues());
+                if (!definition.isNode() && ((GWTJahiaPropertyDefinition) definition).getDefaultValues() != null) {
+                    property.setValues(((GWTJahiaPropertyDefinition) definition).getDefaultValues());
                 }
                 currentProperties.put(definition.getName(), property);
             }
@@ -265,7 +268,7 @@ public class PropertiesEditor extends FormPanel {
                 allItems.addAll(nodeType.getInheritedItems());
             }
             allItems.addAll(nodeType.getItems());
-            
+
             for (GWTJahiaItemDefinition definition : allItems) {
 
                 if (!definition.isProtected()) {
@@ -287,14 +290,12 @@ public class PropertiesEditor extends FormPanel {
         renderForm();
         layout();
     }
-    
+
     /**
      * Returns a list with property values, populated from the field value depending on its type.
-     * 
-     * @param fld
-     *            the form field, holding the value
-     * @param itemDef
-     *            the definition of the corresponding node/property
+     *
+     * @param fld     the form field, holding the value
+     * @param itemDef the definition of the corresponding node/property
      * @return a list with property values, populated from the field value depending on its type
      */
     private List<GWTJahiaNodePropertyValue> getPropertyValues(Field fld, GWTJahiaItemDefinition itemDef) {
@@ -304,7 +305,7 @@ public class PropertiesEditor extends FormPanel {
         } else {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
             if (fld instanceof ListField) {
-                List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>)fld).getSelection();
+                List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>) fld).getSelection();
                 for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
                     GWTJahiaNodePropertyValue propertyValue = getPropertyValue(valueDisplayBean, propDef.getRequiredType());
                     if (propertyValue != null) {
@@ -312,7 +313,7 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
             } else if (fld instanceof ContentPickerField) {
-                List<GWTJahiaNode> selection = ((ContentPickerField)fld).getValue();
+                List<GWTJahiaNode> selection = ((ContentPickerField) fld).getValue();
                 for (GWTJahiaNode node : selection) {
                     GWTJahiaNodePropertyValue propertyValue = new GWTJahiaNodePropertyValue(node);
                     values.add(propertyValue);
@@ -324,20 +325,18 @@ public class PropertiesEditor extends FormPanel {
 
         return values;
     }
-    
+
     /**
      * Converts the field value into its string representation, considering
      * field type.
-     * 
-     * @param fieldValue
-     *            the form field value
-     * @param requiredType
-     *            the expected field type
+     *
+     * @param fieldValue   the form field value
+     * @param requiredType the expected field type
      * @return string representation of the field value, converted based on its
      *         type
      */
     private GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue,
-            int requiredType) {
+                                                       int requiredType) {
         String propValueString = null;
         if (fieldValue != null) {
             if (fieldValue instanceof Date) {

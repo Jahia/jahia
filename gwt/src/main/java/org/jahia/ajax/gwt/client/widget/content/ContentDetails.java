@@ -208,13 +208,21 @@ public class ContentDetails extends BottomRightComponent {
         versioningTabItem.removeAll();
         selectedNodes = null;
         infoTabItem.setProcessed(false);
+        infoTabItem.setEnabled(false);
         propertiesTabItem.setProcessed(false);
+        propertiesTabItem.setEnabled(false);
         portletsTabItem.setProcessed(false);
+        portletsTabItem.setEnabled(false);
         rolesTabItem.setProcessed(false);
+        rolesTabItem.setEnabled(false);
         modesTabItem.setProcessed(false);
+        modesTabItem.setEnabled(false);
         authorizationsTabItem.setProcessed(false);
+        authorizationsTabItem.setEnabled(false);
         usagesTabItem.setProcessed(false);
+        usagesTabItem.setEnabled(false);
         versioningTabItem.setProcessed(false);
+        versioningTabItem.setEnabled(false);
     }
 
     public void fillData(Object selectedItem) {
@@ -258,14 +266,16 @@ public class ContentDetails extends BottomRightComponent {
                 }
                 authorizationsTabItem.setEnabled(true);
                 usagesTabItem.setEnabled(true);
+                versioningTabItem.setEnabled(true);                
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
-                propertiesTabItem.setEnabled(true);
+                propertiesTabItem.setEnabled(false);
                 portletsTabItem.setEnabled(false);
                 modesTabItem.setEnabled(false);
                 rolesTabItem.setEnabled(false);
                 authorizationsTabItem.setEnabled(false);
                 usagesTabItem.setEnabled(false);
+                versioningTabItem.setEnabled(false);
             }
 
 

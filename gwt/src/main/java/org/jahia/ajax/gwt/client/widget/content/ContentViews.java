@@ -230,7 +230,6 @@ public class ContentViews extends TopRightComponent {
         if (current != null) {
             searchField.clear();
             current.setContent(root);
-            getLinker().getBottomRightObject().fillData(root);
         }
     }
 

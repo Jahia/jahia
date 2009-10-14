@@ -66,5 +66,6 @@ public class AsyncTabItem extends TabItem {
      */
     public void setProcessed(boolean processed) {
         this.processed = processed;
+        
     }
 }

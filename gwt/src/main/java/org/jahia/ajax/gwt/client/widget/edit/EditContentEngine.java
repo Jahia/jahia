@@ -34,10 +34,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -275,14 +272,24 @@ public class EditContentEngine extends Window {
         if (!contentTab.isProcessed()) {
             if (!existingNode || (!isReference && node != null)) {
                 contentTab.setProcessed(true);
+                contentTab.setStyleName("x-panel-mc");
+
                 propertiesEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
                 propertiesEditor.setHeight(504);
+
+                FormPanel formPanel = getNamePanel();
+                contentTab.add(formPanel);
+
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             } else if (isReference && referencedNode != null) {
                 contentTab.setProcessed(true);
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
                 propertiesEditor.setHeight(504);
+
+                FormPanel formPanel = getNamePanel();
+                contentTab.add(formPanel);
+
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             }
@@ -290,10 +297,29 @@ public class EditContentEngine extends Window {
         }
     }
 
+    private FormPanel getNamePanel() {
+        FormPanel formPanel = new FormPanel();
+        formPanel.setFieldWidth(550);
+        formPanel.setLabelWidth(180);
+        formPanel.setFrame(false);
+        formPanel.setBorders(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setHeaderVisible(false);
+        TextField<String> name = new TextField<String>();
+        name.setFieldLabel("Name");
+        name.setName("name");
+        if (existingNode) {
+            name.setValue(node.getName());
+        }
+        formPanel.add(name);
+        return formPanel;
+    }
+
     private void createLayoutTab() {
         if (!layoutTab.isProcessed()) {
             if (!existingNode || (node != null)) {
                 layoutTab.setProcessed(true);
+                layoutTab.setStyleName("x-panel-mc");
                 layoutEditor = new PropertiesEditor(this.nodeTypes, this.props, false, true, GWTJahiaItemDefinition.LAYOUT, null, null, !existingNode || node.isWriteable(), true);
                 layoutEditor.setHeight(254);
                 layoutTab.add(layoutEditor);
@@ -339,6 +365,7 @@ public class EditContentEngine extends Window {
         if (!metadataTab.isProcessed()) {
             if (!existingNode || (node != null)) {
                 metadataTab.setProcessed(true);
+                metadataTab.setStyleName("x-panel-mc");
                 metadataEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.METADATA, null, null, !existingNode || node.isWriteable(), true);
                 metadataEditor.setHeight(504);
                 metadataTab.add(metadataEditor);

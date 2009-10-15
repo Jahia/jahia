@@ -421,7 +421,8 @@ public class SidePanel extends ContentPanel {
 
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null,node.isWriteable(), false);
 
-                    ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                    ToolBar toolBar = new ToolBar();
+                    propertiesEditor.setTopComponent(toolBar);
                     Button item = new Button(Messages.getResource("fm_save"));
                     item.setIconStyle("gwt-icons-save");
                     item.setEnabled(node.isWriteable() && !node.isLocked());

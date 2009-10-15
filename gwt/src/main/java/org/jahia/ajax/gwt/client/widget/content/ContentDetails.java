@@ -433,7 +433,9 @@ public class ContentDetails extends BottomRightComponent {
                         list.add("j:thumbnail");
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null,selectedNode.isWriteable(), false);
 
-                        ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                        ToolBar toolBar = new ToolBar();
+                        propertiesEditor.setTopComponent(toolBar);
+
                         Button item = new Button(Messages.getResource("fm_save"));
                         item.setIconStyle("gwt-icons-save");
                         item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
@@ -500,7 +502,9 @@ public class ContentDetails extends BottomRightComponent {
                     public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, true);
 
-                        ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                        ToolBar toolBar = new ToolBar();
+                        propertiesEditor.setTopComponent(toolBar);
+
                         Button item = new Button(Messages.getResource("fm_save"));
                         item.setEnabled(w);
                         item.setIconStyle("fm-save");

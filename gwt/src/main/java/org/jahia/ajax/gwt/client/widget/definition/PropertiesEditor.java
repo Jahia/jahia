@@ -159,7 +159,7 @@ public class PropertiesEditor extends FormPanel {
 //            toolBar.setVisible(true);
 //        }
 //
-        setTopComponent(new ToolBar());
+//        setTopComponent(new ToolBar());
         renderForm();
     }
 

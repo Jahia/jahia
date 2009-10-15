@@ -33,22 +33,20 @@ package org.jahia.services.content.rules;
 
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.api.Constants;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.*;
 import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -295,12 +293,13 @@ public class PropertyWrapper implements Updateable {
 
     public List<String> getStringValues() throws RepositoryException {
         List<String> r = new ArrayList<String>();
-        if (property != null) {
+        if (property != null && property.getDefinition().isMultiple()) {
             Value[] vs = property.getValues();
-            for (int i = 0; i < vs.length; i++) {
-                Value v = vs[i];
+            for (Value v : vs) {
                 r.add(v.getString());
             }
+        } else {
+            r.add(getStringValue());
         }
         return r;
     }

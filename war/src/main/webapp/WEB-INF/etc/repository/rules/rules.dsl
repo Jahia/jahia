@@ -79,3 +79,5 @@
 [consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", propertyValue, drools, false));
 [consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", {variable}, drools, false));
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
+[consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
+[consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);

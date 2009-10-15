@@ -71,6 +71,8 @@ import org.quartz.JobDetail;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Property;
+import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.security.Principal;
@@ -834,5 +836,33 @@ public class Service {
 
     private static JahiaGroup lookupGroup(String group, int siteId) {
         return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, group);        
+    }
+
+    public void incrementProperty(NodeWrapper node, String propertyName,
+            KnowledgeHelper drools) {
+        final Node jcrNode = node.getNode();
+        try {
+            long aLong = 0;
+            try {
+                final Property property = jcrNode.getProperty(propertyName);
+                aLong = property.getLong();
+            } catch (PathNotFoundException e) {
+                logger.debug("The property to increment "+propertyName+" does not exist yet",e);
+            }
+            jcrNode.setProperty(propertyName, aLong +1);
+        } catch (RepositoryException e) {
+            logger.error("Error during increment of property "+propertyName+" for node "+node,e);
+        }
+    }
+
+    public void addToProperty(NodeWrapper node, String propertyName, List value,
+            KnowledgeHelper drools) {
+        final Node jcrNode = node.getNode();
+        try {
+            final Property property = jcrNode.getProperty(propertyName);
+            jcrNode.setProperty(propertyName,property.getLong()+Long.valueOf((String) value.get(0)));
+        } catch (RepositoryException e) {
+            logger.error("Error while adding "+value+" to property "+propertyName+" for node "+node,e);
+        }
     }
 }

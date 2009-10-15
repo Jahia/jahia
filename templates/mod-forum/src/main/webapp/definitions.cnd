@@ -3,6 +3,9 @@
 [jahiaForum:post] > jnt:container
 smallText title
 bigText content
+integer nbOfVotes
+integer sumOfVotes
+integer lastVote
 
 [jahiaForum:thread] > jnt:container, jmix:interactiveContent
 smallText threadSubject

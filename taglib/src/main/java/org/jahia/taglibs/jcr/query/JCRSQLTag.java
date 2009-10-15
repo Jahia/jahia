@@ -52,7 +52,7 @@ import java.security.Principal;
 import java.util.Locale;
 
 /**
- * Tag implementation for exposing a result of XPath JCR query into the template scope.
+ * Tag implementation for exposing a result of SQL-2 JCR query into the template scope.
  */
 @SuppressWarnings("serial")
 public class JCRSQLTag extends AbstractJahiaTag {
@@ -84,19 +84,19 @@ public class JCRSQLTag extends AbstractJahiaTag {
     }
 
     /**
-     * Find Node iterator by principal and XPath expression.
+     * Find Node iterator by principal and SQL-2 expression.
      *
      * @param p
      *            the principal
-     * @param path
-     *            a JCR_SLQ2 expression to perform the query
+     * @param query
+     *            a JCR_SQL2 expression to perform the query
      * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
      */
-    private QueryResult findQueryResultBySQL(Principal p, String path) {
+    private QueryResult findQueryResultBySQL(Principal p, String query) {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
-            logger.debug("Find node by xpath[ " + path + " ]");
+            logger.debug("Find node by sql2[ " + query + " ]");
         }
         if (p instanceof JahiaGroup) {
             logger.warn("method not implemented for JahiaGroup");
@@ -113,20 +113,20 @@ public class JCRSQLTag extends AbstractJahiaTag {
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
 
                 if (queryManager != null) {
-                    Query q = queryManager.createQuery(path, Query.JCR_SQL2);
+                    Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                     if (limit > 0) { q.setLimit(limit);}
                     // execute query
                     queryResult = q.execute();
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Path[" + path + "] --> found [" + queryResult + "] values.");
+                        logger.debug("SQL2[" + query + "] --> found [" + queryResult + "] values.");
                     }
                 }
             } catch (javax.jcr.PathNotFoundException e) {
-                logger.debug("javax.jcr.PathNotFoundException: Path[" + path + "]");
+                logger.debug("javax.jcr.PathNotFoundException: SQL2[" + query + "]");
             } catch (javax.jcr.ItemNotFoundException e) {
                 logger.debug(e, e);
             } catch (javax.jcr.query.InvalidQueryException e) {
-                logger.error("InvalidQueryException ---> [" + path + "] is not valid.", e);
+                logger.error("InvalidQueryException ---> [" + query + "] is not valid.", e);
             }
             catch (RepositoryException e) {
                 logger.error(e, e);

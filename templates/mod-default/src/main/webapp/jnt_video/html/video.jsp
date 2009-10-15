@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+
 <jcr:nodeProperty node="${currentNode}" name="name" var="name"/>
 <jcr:nodeProperty node="${currentNode}" name="source" var="source"/>
 <jcr:nodeProperty node="${currentNode}" name="width" var="width"/>
@@ -20,19 +21,22 @@
 <jcr:nodeProperty node="${currentNode}" name="loop" var="loop"/>
 <jcr:nodeProperty node="${currentNode}" name="invokeURLs" var="invokeURLs"/>
 
-<embed
-        name='${name.string}'
-        pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"
-        src="${source.node.url}"
-        width='${width.long}'
-        height='${height.long}'
-        type="application/x-mplayer2"
-        autostart='${autostart.string}'
-        invokeURLs='${invokeURLs.string}'
-        enablecontextmenu='${enablecontextmenu.string}'
-        showstatusbar='${showstatusbar.string}'
-        showcontrols='${showcontrols.string}'
-        AutoSize='${autosize.string}'
-        displaysize='${displaysize.string}'
-        >
-</embed>
+
+<!-- we should write dynamically the type depending on the selected file -->
+
+
+<!-- avi : video/x-msvideo -->
+<!-- wmv : video/x-ms-wmv -->
+<!-- mpeg : video/mpeg -->
+<!-- mov : video/quicktime -->
+
+<object data="${source.node.url}" type="video/mpeg" width="${width.long}" height="${height.long}">
+  <param name="src" value="${source.node.url}">
+  <param name="autoplay" value="false">
+  <param name="autoStart" value="${autostart.string}">
+    <param name="controller" value="${showcontrols.string}" >
+  alt : <a href="${source.node.url}">${name.string}</a>
+</object>
+
+
+

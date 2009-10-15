@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -38,6 +39,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 
@@ -68,7 +70,7 @@ public class JCRFileContent {
         return null;
     }
 
-    public void uploadFile(InputStream is, String contentType) {
+    public void uploadFile(final InputStream is, String contentType) {
         try {
             Node content;
             if (objectNode.hasNode(Constants.JCR_CONTENT)) {
@@ -79,7 +81,11 @@ public class JCRFileContent {
             if (content.hasProperty(Constants.JCR_DATA)) {
                 content.getProperty(Constants.JCR_DATA).remove();
             }
-            content.setProperty(Constants.JCR_DATA, is);
+            try {
+                content.setProperty(Constants.JCR_DATA, new BinaryImpl(is));
+            } catch (IOException e) {
+                logger.error(e);
+            }
             if (contentType == null) {
                 contentType = "application/binary";
             }

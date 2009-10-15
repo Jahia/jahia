@@ -31,8 +31,8 @@
  */
 package org.jahia.services.content.rules;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -43,16 +43,15 @@ import org.drools.compiler.PackageBuilderErrors;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
-import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -266,14 +265,15 @@ public class RulesListener extends DefaultEventListener {
                         continue;
                     }
                     try {
-                        if (!event.getUserID().equals(JahiaLoginModule.SYSTEM) && !event.getPath().startsWith("/jcr:system/")) {
+                        if (!event.getPath().startsWith("/jcr:system/")) {
                             if (event.getType() == Event.NODE_ADDED) {
                                 Node n = (Node) s.getItem(event.getPath());
                                 if (n.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE)) {
-                                    NodeWrapper rn = eventsMap.get(n.getUUID());
+                                    final String identifier = n.getIdentifier();
+                                    NodeWrapper rn = eventsMap.get(identifier);
                                     if (rn == null) {
                                         rn = new NodeWrapper(n);
-                                        eventsMap.put(n.getUUID(), rn);
+                                        eventsMap.put(identifier, rn);
                                     }
                                     list.add(rn);
                                 }
@@ -290,10 +290,11 @@ public class RulesListener extends DefaultEventListener {
                                     if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState") || parent.isNodeType("jnt:translation")) {
                                         NodeWrapper rn;
                                         if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {
-                                            rn = eventsMap.get(parent.getUUID());
+                                            final String identifier = parent.getIdentifier();
+                                            rn = eventsMap.get(identifier);
                                             if (rn == null) {
                                                 rn = new NodeWrapper(parent);
-                                                eventsMap.put(parent.getUUID(), rn);
+                                                eventsMap.put(identifier, rn);
                                             }
                                         } else {
                                             rn = new NodeWrapper(parent);
@@ -306,10 +307,11 @@ public class RulesListener extends DefaultEventListener {
                                 try {
                                     parentPath = StringUtils.substringBeforeLast(event.getPath(),"/");
                                     Node parent = s.getNode(parentPath);
-                                    NodeWrapper w = eventsMap.get(parent.getUUID());
+                                    final String identifier = parent.getIdentifier();
+                                    NodeWrapper w = eventsMap.get(identifier);
                                     if (w == null) {
                                         w = new NodeWrapper(parent);
-                                        eventsMap.put(parent.getUUID(), w);
+                                        eventsMap.put(identifier, w);
                                     }
 
                                     list.add(new DeletedNodeWrapper(w, provider.decodeInternalName(event.getPath())));
@@ -323,7 +325,7 @@ public class RulesListener extends DefaultEventListener {
                                 if (!propertiesToIgnore.contains(propertyName)) {
                                     try {
                                         Node n = (Node) s.getItem(nodePath);
-                                        String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getUUID() : n.getPath();
+                                        String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getIdentifier() : n.getPath();
                                         NodeWrapper rn = eventsMap.get(key);
                                         if (rn == null) {
                                             rn = new NodeWrapper(n);
@@ -452,5 +454,5 @@ public class RulesListener extends DefaultEventListener {
             }
         }
     }
-
+       
 }

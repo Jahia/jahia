@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allTestPlanReport_subreport1_subreport1" pageWidth="555" pageHeight="802" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<parameter name="day" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(15)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select label as name,
+str_to_date(date_format(ts,'%k:%i:%s'),'%k:%i:%s') as format,
+cast(substring_index(
+            substring_index(SUBSTRING_INDEX(
+                GROUP_CONCAT(                 -- 1) make a sorted list of values
+                    time
+                    ORDER BY time
+                    SEPARATOR ','
+                )
+            ,   ','                           -- 2) cut at the comma
+            ,   90/100 * COUNT(*)        --    at the position beyond the 90% portion
+            ),',',-2),',',1) as unsigned) as result,
+count(id) as ids
+from samples 
+WHERE day(ts) = $P{day} 
+group by format,name
+having ids > 1
+order by name,format]]>
+	</queryString>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="format" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="result" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ids" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="29">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[90 % Time]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="711">
+			<timeSeriesChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="711"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<timeSeriesDataset timePeriod="Second">
+					<timeSeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<timePeriodExpression><![CDATA[$F{format}]]></timePeriodExpression>
+						<valueExpression><![CDATA[$F{result}]]></valueExpression>
+						<itemHyperlink/>
+					</timeSeries>
+				</timeSeriesDataset>
+				<timeSeriesPlot>
+					<plot/>
+					<timeAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</timeAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</timeSeriesPlot>
+			</timeSeriesChart>
+		</band>
+	</summary>
+</jasperReport>

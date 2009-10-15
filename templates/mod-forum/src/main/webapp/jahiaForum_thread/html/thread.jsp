@@ -20,7 +20,7 @@
 
         </div>
 
-        <c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status">
+        <c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status" end="20">
             <c:if test="${not status.last and not renderContext.editMode}">
                 <div class="forum-box forum-box-style${(status.index mod 2)+1}">
                     <template:module node="${subchild}" template="default"/>

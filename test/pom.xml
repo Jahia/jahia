@@ -16,6 +16,12 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>${jahia.package.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
@@ -39,18 +45,19 @@
             <groupId>org.apache.mahout.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
             <version>0.19.1</version>
-        </dependency>        
-        <!--<dependency>
+        </dependency>
+        <dependency>
             <groupId>jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>3.1.2</version>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>1.6.0</version>
-        </dependency>-->
+            <version>1.6.4</version>
+        </dependency>
     </dependencies>
+
     <profiles>
         <profile>
             <id>excludeBeforeJDK16</id>
@@ -58,20 +65,21 @@
                 <jdk>[1.5,1.6)</jdk>
             </activation>
             <build>
-              <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <excludes>
-                            <exclude>**/*CrawlingPageVisitorTest*.java</exclude>
-                            <exclude>**/*CrawlDBTestUtil*.java</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-              </plugins>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*CrawlingPageVisitorTest*.java</exclude>
+                                <exclude>**/*CrawlDBTestUtil*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
+
         <profile>
             <id>testJahia</id>
             <build>
@@ -108,7 +116,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.3</version>
                         <dependencies>
                             <dependency>
                                 <groupId>org.apache.ant</groupId>
@@ -118,7 +125,7 @@
                             <dependency>
                                 <groupId>com.jcraft</groupId>
                                 <artifactId>jsch</artifactId>
-                                <version>0.1.38</version>
+                                <version>0.1.41</version>
                             </dependency>
                         </dependencies>
                         <executions>
@@ -128,7 +135,8 @@
                                 <configuration>
                                     <tasks>
                                         <echo message="Starting tomcat"/>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                              toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
                                         <delete>
                                             <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*"/>
                                         </delete>
@@ -156,32 +164,111 @@
                                             <arg value="-force"/>
                                         </exec>
                                         <echo message="Undeploying jahia"/>
-                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
+                                        <!--<delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>-->
                                         <mkdir dir="${project.build.directory}/tomcatLogs"/>
-                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out" toDir="${project.build.directory}/tomcatLogs"/>
+                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out"
+                                              toDir="${project.build.directory}/tomcatLogs"/>
                                     </tasks>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                             </execution>
-                            <!--execution>
+
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-report-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>report-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jmeterTest</id>
+            <activation>
+                <property>
+                    <name>jahia.test.jmeter.path</name>
+                </property>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>target/jasper</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.41</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
                                 <id>start-jmeter-test</id>
                                 <phase>integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <echo message="Starting jmeter"/>
-                                        <exec executable="${jahia.test.jmeter.path}/bin/runTestPlan.sh"
-                                              dir="${jahia.test.jmeter.path}/bin"/>
+                                        <echo message="Deploy ACME Demo Web Site"/>
+                                        <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates.zip"
+                                              toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
+                                        <sleep seconds="90"/>
+                                        <echo message="Get the sitemape"/>
+                                        <exec executable="wget" dir="${project.build.directory}">
+                                            <arg line="-O rawpageurls.txt http://localhost:8080/jahia/cms/render/default/en/content/sites/ACME/home.sitemap.txt"/>
+                                        </exec>
+                                        <exec executable="sort" dir="${project.build.directory}"
+                                              output="${project.build.directory}/sortpageurls.txt"
+                                              input="${project.build.directory}/rawpageurls.txt"/>
+                                        <exec executable="uniq" dir="${project.build.directory}"
+                                              output="${project.build.directory}/uniqpageurls.txt"
+                                              input="${project.build.directory}/sortpageurls.txt"/>
+                                        <exec executable="grep" dir="${project.build.directory}"
+                                              output="${project.build.directory}/pageurls.txt"
+                                              input="${project.build.directory}/uniqpageurls.txt">
+                                            <arg line="-v '^$'"/>
+                                        </exec>
+                                        <copy toDir="${jahia.test.jmeter.path}/bin/testPlan">
+                                            <fileset dir="${pom.basedir}/src/main/scripts/jmeter/"/>
+                                        </copy>
+                                        <copy file="${project.build.directory}/pageurls.txt"
+                                              toDir="${jahia.test.jmeter.path}/bin/testPlan"/>
+                                        <delete dir="${jahia.test.jmeter.path}/bin/results"/>
+                                        <echo message="Starting jmeter tests"/>
+                                        <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
+                                              dir="${jahia.test.jmeter.path}/bin">
+                                            <arg line="-n -t testPlan/allPlanTest.jmx"/>
+                                        </exec>
                                     </tasks>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
-                            </execution-->
+                            </execution>
                         </executions>
                     </plugin>
-                    <!--<plugin>
+                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>jasperreports-maven-plugin</artifactId>
                         <configuration>
@@ -198,7 +285,12 @@
                             <dependency>
                                 <groupId>jasperreports</groupId>
                                 <artifactId>jasperreports</artifactId>
-                                <version>3.1.2</version>
+                                <version>3.5.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-nop</artifactId>
+                                <version>1.5.6</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -214,31 +306,44 @@
                             <dependency>
                                 <groupId>jasperreports</groupId>
                                 <artifactId>jasperreports</artifactId>
-                                <version>3.1.2</version>
+                                <version>3.5.0</version>
                             </dependency>
                         </dependencies>
                         <executions>
                             <execution>
+                                <id>Generate Jasper Reports</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <source>${pom.basedir}/src/main/scripts/generateJasperReports.groovy</source>
+                                    <properties>
+                                        <db-ip>127.0.0.1</db-ip>
+                                        <db-login>jahia</db-login>
+                                        <db-pwd>jahia</db-pwd>
+                                        <db-name>jmeterdata</db-name>
+                                        <jasperreport>allTestPlanReport</jasperreport>
+                                    </properties>
+                                    <source>${pom.basedir}/src/main/scripts/groovy/generateJasperReports.groovy</source>
                                 </configuration>
                             </execution>
-                        </executions>
-
-                    </plugin>-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <executions>
                             <execution>
-                                <phase>integration-test</phase>
+                                <id>Import JMeter Metrology Data</id>
+                                <phase>post-integration-test</phase>
                                 <goals>
-                                    <goal>report-only</goal>
+                                    <goal>execute</goal>
                                 </goals>
+                                <configuration>
+                                    <properties>
+                                        <db-ip>127.0.0.1</db-ip>
+                                        <db-login>jahia</db-login>
+                                        <db-pwd>jahia</db-pwd>
+                                        <db-name>jmeterdata</db-name>
+                                        <db-clean>true</db-clean>
+                                        <results-path>${jahia.test.jmeter.path}/bin/results</results-path>
+                                    </properties>
+                                    <source>${pom.basedir}/src/main/scripts/groovy/parseJMeterFiles.groovy</source>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -246,5 +351,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

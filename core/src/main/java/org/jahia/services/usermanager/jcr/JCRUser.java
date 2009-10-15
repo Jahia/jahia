@@ -300,7 +300,7 @@ public class JCRUser implements JahiaUser {
      *         otherwise
      */
     public boolean setPassword(String password) {
-        return setProperty(J_PASSWORD, password);
+        return setProperty(J_PASSWORD, JCRUserManagerProvider.encryptPassword(password));
     }
 
     /**

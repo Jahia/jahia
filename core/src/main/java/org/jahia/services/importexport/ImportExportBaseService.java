@@ -203,10 +203,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         JCRTemplate .getInstance().doExecuteWithSystemSession(new JCRCallback() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 JCRNodeWrapper dest = session.getNode("/content/imports");
-                                for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
+                                for (File file : files) {
                                     try {
-                                        File file = (File) iterator.next();
-                                        dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
+                                        dest.uploadFile(file.getName(), new FileInputStream(file),
+                                                        Jahia.getStaticServletConfig().getServletContext().getMimeType(
+                                                                file.getName()));
                                     } catch (Exception t) {
                                         logger.error("file observer error : ", t);
                                     }
@@ -218,8 +219,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     } catch (RepositoryException e) {
                         logger.error("error", e);
                     }
-                    for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
-                        File file = (File) iterator.next();
+                    for (File file : files) {
                         file.delete();
                     }
                 }

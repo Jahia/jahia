@@ -130,7 +130,7 @@ public class JCRTagUtils {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
     }
 
-    public static boolean isNodeType(JCRNodeWrapper node, String type) {
+    public static boolean isNodeType(JCRNodeWrapper node, String type) {        
         try {
             return node.isNodeType(type);
         } catch (RepositoryException e) {

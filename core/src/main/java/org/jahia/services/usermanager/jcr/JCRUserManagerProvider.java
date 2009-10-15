@@ -133,12 +133,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     String l_password;
                     if (!password.startsWith("SHA-1:")) {
                         // Encrypt the password
-                        l_password = encryptPassword(password);
+                        l_password = encryptPassword(password).substring(6);
                     } else {
                         l_password = password.substring(6);
                     }
 
-                    userNode.setProperty(JCRUser.J_PASSWORD, password);
+                    userNode.setProperty(JCRUser.J_PASSWORD, l_password);
                     userNode.setProperty(JCRUser.J_EXTERNAL, false);
                     for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                         String key = (String) entry.getKey();

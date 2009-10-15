@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allTestPlanReport_subreport1" pageWidth="555" pageHeight="802" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<parameter name="day" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(15)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/rincevent/projects/jahia6/enterprise/trunk/trunk/test/src/main/jasperreports/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select label as name,
+str_to_date(date_format(ts,'%k:%i:%s'),'%k:%i:%s') as format,
+round(avg(time))/1000 as result,
+count(id) as ids
+from samples 
+WHERE day(ts)=$P{day}
+group by format,label
+having ids > 1
+order by label,format]]>
+	</queryString>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="format" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="result" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ids" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="29">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Average Time]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="711">
+			<timeSeriesChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="674"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<timeSeriesDataset timePeriod="Second">
+					<timeSeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<timePeriodExpression><![CDATA[$F{format}]]></timePeriodExpression>
+						<valueExpression><![CDATA[$F{result}]]></valueExpression>
+						<itemHyperlink/>
+					</timeSeries>
+				</timeSeriesDataset>
+				<timeSeriesPlot>
+					<plot/>
+					<timeAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</timeAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</timeSeriesPlot>
+			</timeSeriesChart>
+			<break>
+				<reportElement x="0" y="674" width="555" height="1"/>
+			</break>
+			<subreport>
+				<reportElement x="0" y="675" width="555" height="23"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="day">
+					<subreportParameterExpression><![CDATA[$P{day}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "allTestPlanReport_subreport1_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

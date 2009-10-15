@@ -1,28 +1,24 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.decorator.JCRJahiaContentNode;
-import org.jahia.services.JahiaService;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.data.beans.ContainerBean;
-import org.jahia.data.JahiaData;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.content.ContentObject;
+import org.jahia.data.JahiaData;
+import org.jahia.data.beans.ContainerBean;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
-import org.jahia.content.ContentObject;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.settings.SettingsBean;
+import org.jahia.services.JahiaService;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -141,6 +137,8 @@ public class RenderService extends JahiaService {
                     }
                 } catch (IOException e) {
                     logger.error("Cannot execute wrapper "+wrapper,e);
+                } catch (TemplateNotFoundException e) {
+                    logger.debug("Cannot find wrapper "+wrapper,e);
                 }
             }
         } finally {

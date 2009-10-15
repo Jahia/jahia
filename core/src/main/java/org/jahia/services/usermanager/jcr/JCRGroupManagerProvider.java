@@ -469,7 +469,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         if (siteID1 == 0) {
                             usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
                         } else {
-                            String siteName = sitesService.getSite(siteID1).getSiteKey();
+                            final JahiaSite site = sitesService.getSite(siteID1);
+                            if(site==null) return null;
+                            String siteName = site.getSiteKey();
                             usersFolderNode = session.getNode(
                                     "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
                         }

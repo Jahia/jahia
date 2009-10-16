@@ -173,8 +173,6 @@ public class WizardWindow extends Window {
 
     @Override
     protected void onRender(Element parent, int pos) {
-        setLayout(new BorderLayout());
-
         prevBtn = new Button(getPreviousButtonText());
         nextBtn = new Button(getNextButtonText());
         cancelBtn = new Button(getCancelButtonText());
@@ -196,6 +194,7 @@ public class WizardWindow extends Window {
         setBottomComponent(buttonBar);
 
         super.onRender(parent, pos);
+        setLayout(new BorderLayout());
 
         headerPanel = new Header();
         add(headerPanel, new BorderLayoutData(LayoutRegion.NORTH, 60));

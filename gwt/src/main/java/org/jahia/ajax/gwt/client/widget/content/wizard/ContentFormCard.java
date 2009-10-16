@@ -53,7 +53,7 @@ import java.util.Map;
 
 /**
  * Wizard card responsible for displaying a form for entering content data.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ContentFormCard extends ContentWizardCard {
@@ -118,12 +118,9 @@ public class ContentFormCard extends ContentWizardCard {
                 new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {
                         Log.error("Error", caught);
-                        MessageBox
-                                .alert(
-                                        Messages
-                                                .get(
-                                                        "add_content_wizard_card_form_error_title",
-                                                        "Error"),
+                        MessageBox.alert(Messages.get(
+                                                "add_content_wizard_card_form_error_title",
+                                                "Error"),
                                         Messages
                                                 .get(
                                                         "add_content_wizard_card_form_error_save",
@@ -142,8 +139,8 @@ public class ContentFormCard extends ContentWizardCard {
                                 .info(
                                         Messages
                                                 .get(
-                                                        "add_content_wizard_card_form_success_title",
-                                                        "Info"),
+                                                "add_content_wizard_card_form_success_title",
+                                                "Info"),
                                         Messages
                                                 .get(
                                                         "add_content_wizard_card_form_success_save",
@@ -151,6 +148,8 @@ public class ContentFormCard extends ContentWizardCard {
                                                 + getWizardData().getNodeName(),
                                         null);
                         getWizardWindow().hide();
+                        getWizardWindow().getLinker().loaded();
+                        getWizardWindow().getLinker().refresh();
                     }
                 });
     }

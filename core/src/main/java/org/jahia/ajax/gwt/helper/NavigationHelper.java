@@ -204,6 +204,7 @@ public class NavigationHelper {
                 }
                 if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
+                    logger.error("******************** "+theNode.getPath());
                     if (displayAllVirtualSites) {
                         try {
                             theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
@@ -248,7 +249,7 @@ public class NavigationHelper {
         }
 
         // ToDo : find a better way to implement this. Avoid multiple ajax request
-        logger.error("****************** Selected path: "+selectedPath);
+        logger.debug(" Selected path: "+selectedPath);
         for (GWTJahiaNode gwtJahiaNode : result) {
             if (openPaths != null) {
                 gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode, openPaths));

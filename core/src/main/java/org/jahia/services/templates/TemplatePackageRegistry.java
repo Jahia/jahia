@@ -142,6 +142,8 @@ class TemplatePackageRegistry {
         fileNameRegistry.put(templatePackage.getFileName(), templatePackage);
         File rootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), templatePackage.getRootFolder());
 
+        templatePackage.getLookupPath().add(templatePackage.getRootFolderPath());
+
         try {
             File classesFolder = new File(rootFolder, "WEB-INF/classes");
             if (classesFolder.exists()) {

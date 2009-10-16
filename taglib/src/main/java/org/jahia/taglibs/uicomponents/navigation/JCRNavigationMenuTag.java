@@ -254,31 +254,18 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
     }
 
     public class NavMenuItemBean implements Comparable<NavMenuItemBean> {
-        private String title = "";
-        private String url = "";
         private String separator = "";
         private int level = 0;
         private boolean firstInLevel = false;
         private boolean lastInLevel = false;
         private boolean inPath = false;
         private boolean selected = false;
-        private boolean markedForDelete = false;
-        private String displayLink = "";
         private int itemCount = 0;
-        private boolean noPageSet = false;
         private NavMenuItemBean parentItem = null;
         private JCRNodeWrapper node = null;
 
         public String getSeparator() {
             return separator;
-        }
-
-        public boolean isNoPageSet() {
-            return noPageSet;
-        }
-
-        public void setNoPageSet(boolean noPageSet) {
-            this.noPageSet = noPageSet;
         }
 
         public void setSeparator(String separator) {
@@ -291,14 +278,6 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
         public void setItemCount(int itemCount) {
             this.itemCount = itemCount;
-        }
-
-        public String getDisplayLink() {
-            return displayLink;
-        }
-
-        public void setDisplayLink(String displayLink) {
-            this.displayLink = displayLink;
         }
 
         public boolean isFirstInLevel() {
@@ -333,36 +312,12 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             this.level = level;
         }
 
-        public boolean isMarkedForDelete() {
-            return markedForDelete;
-        }
-
-        public void setMarkedForDelete(boolean markedForDelete) {
-            this.markedForDelete = markedForDelete;
-        }
-
         public boolean isSelected() {
             return selected;
         }
 
         public void setSelected(boolean selected) {
             this.selected = selected;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
         }
 
         public NavMenuItemBean getParentItem() {
@@ -407,41 +362,39 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             if (level != that.level) {
                 return false;
             }
-            if (markedForDelete != that.markedForDelete) {
-                return false;
-            }
             if (selected != that.selected) {
                 return false;
             }
-            if (displayLink != null ? !displayLink.equals(that.displayLink) : that.displayLink != null) {
-                return false;
-            }
-            if (!title.equals(that.title)) {
-                return false;
-            }
-            if (url != null ? !url.equals(that.url) : that.url != null) {
-                return false;
-            }
 
-            return true;
+            try {
+                return getNode().getIdentifier().equals(that.getNode().getIdentifier());
+            } catch (RepositoryException e) {
+                return true;
+            }
         }
 
         @Override
         public int hashCode() {
-            int result = title != null ? title.hashCode() : 0;
-            result = 31 * result + (url != null ? url.hashCode() : 0);
+            int result = 0;
+            try {
+                result = getNode().getProperty("jcr:title").getString() != null ? getNode().getProperty("jcr:title").getString().hashCode() : 0;
+            } catch (RepositoryException e) {
+                logger.error(e);
+            }
             result = 31 * result + level;
             result = 31 * result + (firstInLevel ? 1 : 0);
             result = 31 * result + (lastInLevel ? 1 : 0);
             result = 31 * result + (inPath ? 1 : 0);
             result = 31 * result + (selected ? 1 : 0);
-            result = 31 * result + (markedForDelete ? 1 : 0);
-            result = 31 * result + (displayLink != null ? displayLink.hashCode() : 0);
             return result;
         }
 
         public int compareTo(NavMenuItemBean navMenuB) throws ClassCastException {
-            return getTitle().compareTo(navMenuB.getTitle());
+            try {
+                return getNode().getProperty("jcr:title").getString().compareTo(navMenuB.getNode().getProperty("jcr:title").getString());
+            } catch (RepositoryException e) {
+                return -1;
+            }
         }
     }
 }

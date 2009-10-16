@@ -31,17 +31,16 @@
  */
 package org.jahia.services.templates;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.settings.SettingsBean;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
-
 /**
  * Template packages registry service.
  *
@@ -59,27 +58,6 @@ class TemplatePackageRegistry {
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
-
-    /**
-     * Builds a template package hierarchy, resolving inheritance.
-     */
-    public void buildHierarchy() {
-        for (JahiaTemplatesPackage pkg : registry.values()) {
-            resolveInheritance(pkg);
-        }
-    }
-
-    /**
-     * Rebuilds a template package hierarchy, resolving inheritance.
-     */
-    private void rebuildHierarchy() {
-        for (JahiaTemplatesPackage pkg : registry.values()) {
-            pkg.clearHierarchy();
-        }
-        for (JahiaTemplatesPackage pkg : registry.values()) {
-            resolveInheritance(pkg);
-        }
-    }
 
     /**
      * Checks if the specified template set is present in the repository.
@@ -163,6 +141,17 @@ class TemplatePackageRegistry {
         registry.put(templatePackage.getName(), templatePackage);
         fileNameRegistry.put(templatePackage.getFileName(), templatePackage);
         File rootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), templatePackage.getRootFolder());
+
+        try {
+            File classesFolder = new File(rootFolder, "WEB-INF/classes");
+            if (classesFolder.exists()) {
+                FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
+            }
+            FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF"));
+        } catch (IOException e) {
+            logger.error("Cannot deploy classes for templates "+templatePackage.getName(),e);
+        }
+
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
                 for (String name : templatePackage.getDefinitionsFiles()) {
@@ -193,9 +182,12 @@ class TemplatePackageRegistry {
                 if (!packagesPerModule.containsKey(key)) {
                     packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
                 }
-                packagesPerModule.get(key).add(templatePackage);
+                if (packagesPerModule.get(key).contains(templatePackage)) {
+                    packagesPerModule.get(key).add(templatePackage);
+                }
             }
         }
+        logger.info("Registered "+templatePackage.getName());
     }
 
     public void unregister(JahiaTemplatesPackage templatePackage) {
@@ -203,7 +195,6 @@ class TemplatePackageRegistry {
         fileNameRegistry.remove(templatePackage.getFileName());
         templatePackages = null;
         NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
-        rebuildHierarchy();
     }
 
     public void reset() {
@@ -211,102 +202,6 @@ class TemplatePackageRegistry {
             unregister(pkg);
         }
         templatePackages = null;
-    }
-
-    public void resolveInheritance(JahiaTemplatesPackage pkg) {
-        // check if the inheritance was not yet resolved for the package
-        if (pkg.getHierarchy().isEmpty()) {
-            // add itself as a first item in the hierarchy
-            pkg.getHierarchy().add(pkg.getName());
-            pkg.getLookupPath().add(pkg.getRootFolderPath());
-            if (pkg.getResourceBundleName() != null) {
-                pkg.getResourceBundleHierarchy().add(pkg.getResourceBundleName());
-            }
-
-            if (StringUtils.isNotEmpty(pkg.getExtends())) {
-                // TODO implement a check for cyclic dependencies
-                JahiaTemplatesPackage parentPkg = lookup(pkg.getExtends());
-                if (parentPkg != null) {
-                    resolveInheritance(parentPkg);
-                    pkg.getHierarchy().addAll(parentPkg.getHierarchy());
-                    pkg.getLookupPath().addAll(parentPkg.getLookupPath());
-                    pkg.getResourceBundleHierarchy().addAll(parentPkg.getResourceBundleHierarchy());
-
-                    // properties
-                    Map<String, String> ownProperties = new HashMap<String, String>(
-                            pkg.getProperties());
-                    pkg.getProperties().clear();
-                    pkg.getProperties().putAll(parentPkg.getProperties());
-                    pkg.getProperties().putAll(ownProperties);
-                    
-                    List<JahiaTemplateDef> ownTemplates = pkg.getTemplates();
-                    // clear the list
-                    pkg.removeTemplates();
-                    // add all inherited templates
-                    pkg.addTemplateDefAll(parentPkg.getTemplates(), true);
-                    // and override them with own templates
-                    pkg.addTemplateDefAll(ownTemplates, false);
-
-                    // check common pages
-                    pkg
-                            .setMySettingsPageName(pkg.getMySettingsPageName() != null ? pkg
-                                    .getMySettingsPageName()
-                                    : parentPkg.getMySettingsPageName());
-                    pkg.setMySettingsSuccessPageName(pkg
-                            .getMySettingsSuccessPageName() != null ? pkg
-                            .getMySettingsSuccessPageName() : parentPkg
-                            .getMySettingsSuccessPageName());
-                    pkg
-                            .setSearchResultsPageName(pkg
-                                    .getSearchResultsPageName() != null ? pkg
-                                    .getSearchResultsPageName() : parentPkg
-                                    .getSearchResultsPageName());
-                    pkg.setNewUserRegistrationPageName(pkg
-                        .getNewUserRegistrationPageName() != null ? pkg
-                        .getNewUserRegistrationPageName() : parentPkg
-                        .getNewUserRegistrationPageName());                    
-                    pkg.setNewUserRegistrationSuccessPageName(pkg
-                        .getNewUserRegistrationSuccessPageName() != null ? pkg
-                        .getNewUserRegistrationSuccessPageName() : parentPkg
-                        .getNewUserRegistrationSuccessPageName());
-                    pkg.setSitemapPageName(pkg
-                        .getSitemapPageName() != null ? pkg
-                        .getSitemapPageName() : parentPkg
-                        .getSitemapPageName());                    
-
-                    // check homepage and default page
-                    pkg.setHomePageName(pkg.getHomePageName() != null ? pkg
-                            .getHomePageName() : parentPkg.getHomePageName());
-                    pkg
-                            .setDefaultPageName(pkg.getDefaultPageName() != null ? pkg
-                                    .getDefaultPageName()
-                                    : parentPkg.getDefaultPageName());
-                } else {
-                    logger
-                            .error("Unable to find parent template package with the name '"
-                                    + pkg.getExtends()
-                                    + "' for the package '"
-                                    + pkg.getName()
-                                    + "'. Skipping inheritance resolution.");
-                    pkg.getLookupPath().add("/templates/default");
-                    pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
-            		pkg.getResourceBundleHierarchy().add("JahiaTypesResources");
-                }
-            } else {
-                // check homepage and default page
-                if (pkg.getHomePageName() == null && pkg.getTemplates().size() > 0) {
-                    pkg.setHomePageName(((JahiaTemplateDef) pkg.getTemplates()
-                            .get(0)).getName());
-                }
-                if (pkg.getDefaultPageName() == null && pkg.getTemplates().size() > 0) {
-                    pkg.setDefaultPageName(((JahiaTemplateDef) pkg
-                            .getTemplates().get(0)).getName());
-                }
-                pkg.getLookupPath().add("/templates/default");
-                pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
-            	pkg.getResourceBundleHierarchy().add("JahiaTypesResources");
-            }
-        }
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {

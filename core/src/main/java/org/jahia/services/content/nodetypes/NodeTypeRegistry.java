@@ -33,13 +33,12 @@ package org.jahia.services.content.nodetypes;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -104,7 +103,18 @@ public class NodeTypeRegistry implements NodeTypeManager {
             r.parse();            
         }
         if (redeploy) {
-            JCRStoreService.getInstance().deployDefinitions(systemId);
+            Properties p = new Properties();
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+            if (f.exists()) {
+                FileInputStream stream = new FileInputStream(f);
+                p.load(stream);
+                stream.close();
+            }
+            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
+                JCRStoreService.getInstance().deployDefinitions(systemId);
+                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
+            }
+            p.store(new FileOutputStream(f), "");
         }
     }
 

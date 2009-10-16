@@ -39,21 +39,17 @@
 
 package org.jahia.services.templates;
 
-import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.compass.core.util.reader.StringReader;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaArchiveFileException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
-import org.jahia.utils.zip.JahiaArchiveFileHandler;
+import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
+
+import java.io.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 /**
  * This class is responsible for loading data from a Template Jar File
@@ -80,29 +76,9 @@ public class JahiaTemplatesPackageHandler {
     private File file;
 
     /**
-     * The Jar File Handler of the Template Jar File
-     */
-    private JahiaArchiveFileHandler archive;
-    
-    /**
      * The JahiaTemplatesPackage Object created with data from the templates.xml file
      */
     private JahiaTemplatesPackage templatePackage;
-
-    /**
-     * Checks, if the specified directory contains a templates deployment
-     * descriptor file.
-     * 
-     * @param dirPath
-     *            the directory path to be checked
-     * @return <code>true</code> if the specified directory contains a
-     *         readable templates deployment descriptor file
-     */
-    public static boolean isValidTemplatesDirectory(String dirPath) {
-        File templteDescriptor = new File(dirPath, TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
-        return templteDescriptor.exists() && templteDescriptor.isFile()
-                && templteDescriptor.canRead();
-    }
 
     /**
      * Constructor is initialized with the template File
@@ -112,26 +88,12 @@ public class JahiaTemplatesPackageHandler {
 
         this.file = file;
         
-    	if (file.isFile() && file.canWrite()) {
-            try {
-                archive = new JahiaArchiveFileHandler(file.getPath());
-            } catch (IOException e) {
-                throw new JahiaTemplateServiceException(
-                        "Failed creating an Archive File Handler for file: "
-                                + file, e);
-            }
-        }
-
         try {
             buildTemplatesPackage();
         } catch (JahiaException je) {
             throw new JahiaTemplateServiceException(
                     "Error building the TemplatesPackageHandler for file: "
                             + file, je);
-        } finally {
-            if (archive != null) {
-                archive.closeArchiveFile();
-            }
         }
 
     }
@@ -144,13 +106,41 @@ public class JahiaTemplatesPackageHandler {
 
     	// extract data from the templates.xml file
         try {
-			Reader contentReader = file.isFile() ? new StringReader(archive
-			        .entryExists(TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME) ? archive
-			        .extractContent(TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME) : archive.extractContent("WEB-INF/"
-			        + TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME)) : new FileReader(new File(file.getPath(),
-			        TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME));
-        	// extract data from the templates.xml file
-            templatePackage = TemplateDeploymentDescriptorHelper.parse(contentReader);
+            File xml = new File(file,TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
+            if (!xml.exists()) {
+                xml = new File(file,"WEB-INF/"+TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
+            }
+            if (xml.exists()) {
+            Reader contentReader = new FileReader(xml);
+            // extract data from the templates.xml file
+                templatePackage = TemplateDeploymentDescriptorHelper.parse(contentReader);
+            } else {
+                templatePackage = new JahiaTemplatesPackage();
+            }
+            File manifestFile = new File(file, "META-INF/MANIFEST.MF");
+            if (manifestFile.exists()) {
+                Manifest manifest = new Manifest(new FileInputStream(manifestFile));
+                String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
+                String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
+                if (packageName == null) {
+                    packageName = file.getName();
+                }
+                if (rootFolder == null) {
+                    rootFolder = file.getName();
+                }
+
+                String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
+                if (depends != null) {
+                    String[] dependencies = depends.split(",");
+                    for (int i = 0; i < dependencies.length; i++) {
+                        String dependency = dependencies[i].trim();
+                        templatePackage.setDepends(dependency);
+                    }
+                }
+
+                templatePackage.setName(packageName);
+                templatePackage.setRootFolder(rootFolder);
+            }
         } catch (IOException ioe) {
             throw new JahiaTemplateServiceException("Failed extracting templates.xml file data", ioe);
         } catch (JahiaArchiveFileException ex) {
@@ -169,40 +159,38 @@ public class JahiaTemplatesPackageHandler {
         templatePackage.setFilePath(file.getPath());
         
         if (StringUtils.isEmpty(templatePackage.getName())) {
-        	templatePackage.setName(FilenameUtils.getBaseName(file.isFile() ? archive.getPath() : file.getPath()));
+        	templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
         }
         if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
-        	templatePackage.setRootFolder((FilenameUtils.getBaseName(file.isFile() ? archive.getPath() : file.getPath()).replace('-', '_')).toLowerCase());
+        	templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath()).replace('-', '_')).toLowerCase());
         }
-        if (file.isFile()) {
-	        if (templatePackage.getDefinitionsFiles().isEmpty()) {
-	        	// check if there is a definitions file
-	        	if (archive.entryExists("definitions.cnd")) {
-	        		templatePackage.setDefinitionsFile("definitions.cnd");
-	        	}
-	        	// check if there is a definitions grouping file
-	        	if (archive.entryExists("definitions.grp")) {
-	        		templatePackage.setDefinitionsFile("definitions.grp");
-	        	}
-	        }
-	        if (templatePackage.getRulesFiles().isEmpty()) {
-	        	// check if there is a rules file
-	        	if (archive.entryExists("rules.dsl")) {
-	        		templatePackage.setRulesFile("rules.dsl");
-	        	}
-	        }
-	        if (templatePackage.getResourceBundleName() == null) {
-	        	// check if there is a resource bundle file in the resources folder
-	        	String rbName = templatePackage.getName().replace(' ', '_');
-	        	if (archive.entryExists("resources/" + rbName + ".properties")) {
-	        		templatePackage.setResourceBundleName("resources." + rbName);
-	        	} else {
-	        		rbName = templatePackage.getName().replace(" ", "");
-	            	if (archive.entryExists("resources/" + rbName + ".properties")) {
-	            		templatePackage.setResourceBundleName("resources." + rbName);
-	            	}        		
-	        	}
-	        }
+        if (templatePackage.getDefinitionsFiles().isEmpty()) {
+            // check if there is a definitions file
+            if (new File(file,"definitions.cnd").exists()) {
+                templatePackage.setDefinitionsFile("definitions.cnd");
+            }
+            // check if there is a definitions grouping file
+            if (new File(file,"definitions.grp").exists()) {
+                templatePackage.setDefinitionsFile("definitions.grp");
+            }
+        }
+        if (templatePackage.getRulesFiles().isEmpty()) {
+            // check if there is a rules file
+            if (new File(file,"rules.dsl").exists()) {
+                templatePackage.setRulesFile("rules.dsl");
+            }
+        }
+        if (templatePackage.getResourceBundleName() == null) {
+            // check if there is a resource bundle file in the resources folder
+            String rbName = templatePackage.getName().replace(' ', '_');
+            if (new File(file,"resources/" + rbName + ".properties").exists()) {
+                templatePackage.setResourceBundleName("resources." + rbName);
+            } else {
+                rbName = templatePackage.getName().replace(" ", "");
+                if (new File(file, "resources/" + rbName + ".properties").exists()) {
+                    templatePackage.setResourceBundleName("resources." + rbName);
+                }
+            }
         }
     }
 
@@ -213,18 +201,6 @@ public class JahiaTemplatesPackageHandler {
      */
     public JahiaTemplatesPackage getPackage() {
         return templatePackage;
-    }
-
-    /**
-     * Unzip the contents of the jar file in a given folder
-     *
-     * @param (String) path , the path where to extract file
-     */
-    public void unzip(String path)
-            throws JahiaException {
-
-        // Unzip the file
-        archive.unzip(path);
     }
 
 	/**

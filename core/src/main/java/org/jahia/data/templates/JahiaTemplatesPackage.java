@@ -82,7 +82,7 @@ public class JahiaTemplatesPackage {
     /**
      * Name of the parent package *
      */
-    private String parent;
+    private List<String> depends = new ArrayList<String>();
     /**
      * The Folder Name where to extract package contents *
      */
@@ -488,17 +488,17 @@ public class JahiaTemplatesPackage {
      *
      * @return the name of the parent template package
      */
-    public String getExtends() {
-        return parent;
+    public List<String> getDepends() {
+        return depends;
     }
 
     /**
      * Sets the name of the parent template package.
      *
-     * @param ext name of the parent template package
+     * @param dep name of the parent template package
      */
-    public void setExtends(String ext) {
-        parent = ext;
+    public void setDepends(String dep) {
+        depends.add(dep);
     }
 
     public String toString() {

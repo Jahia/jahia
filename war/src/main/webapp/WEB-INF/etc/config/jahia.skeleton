@@ -589,7 +589,7 @@ showTimeBasedPublishingIcons                            = true
 ######################################################################
 # This setting can be used to deactivate development mode which flush
 # the html cache each time you change the operation mode (live/edit)
-developmentMode                                         = false
+developmentMode                                         = true
 
 ######################################################################
 ### Read-only Mode #################################################

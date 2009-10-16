@@ -62,6 +62,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * file.
  * 
  * @author Sergiy Shyrkov
+ * @deprecated use MANIFEST.MF deployer file
  */
 final class TemplateDeploymentDescriptorHelper {
 
@@ -107,7 +108,7 @@ final class TemplateDeploymentDescriptorHelper {
 
         digester.addObjectCreate("template-set", JahiaTemplatesPackage.class);
         digester.addBeanPropertySetter("template-set/package-name", "name");
-        digester.addBeanPropertySetter("template-set/extends", "extends");
+        digester.addBeanPropertySetter("template-set/extends", "depends");
         digester
                 .addBeanPropertySetter("template-set/root-folder", "rootFolder");
         digester.addBeanPropertySetter("template-set/initial-import",
@@ -225,8 +226,10 @@ final class TemplateDeploymentDescriptorHelper {
 
             ch.dataElement("package-name", pkg.getName());
 
-            if (pkg.getExtends() != null) {
-                ch.dataElement("extends", pkg.getExtends());
+            if (!pkg.getDepends().isEmpty()) {
+                for (String name : pkg.getDepends()) {
+                    ch.dataElement("extends", name);
+                }
             }
 
             ch.dataElement("root-folder", pkg.getRootFolder());

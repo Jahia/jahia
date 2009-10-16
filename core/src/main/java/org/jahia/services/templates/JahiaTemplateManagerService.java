@@ -51,7 +51,6 @@ import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.TemplatePackageDeployer.WatchdogCallback;
 
 /**
  * Template and template set deployment and management service.
@@ -363,7 +362,6 @@ public class JahiaTemplateManagerService extends JahiaService {
      * @return the overridden resource path (related to the Web context),
      *         resolved using template package inheritance or <code>null</code>,
      *         in case the specified resource can not found
-     * @see org.jahia.taglibs.include.ExecuteSuperTag
      */
     public String resolveOverriddenResourcePathByServletPath(String jspServletPath,
                                                              String templatePackageName) {
@@ -392,8 +390,8 @@ public class JahiaTemplateManagerService extends JahiaService {
                     break;
                 }
             }
-            if (foundPackage != null && foundPackage.getExtends() != null) {
-                path = resolveResourcePath(resource, foundPackage.getExtends());
+            if (foundPackage != null && foundPackage.getDepends() != null) {
+//                path = resolveResourcePath(resource, foundPackage.getDepends());
             }
         }
 
@@ -417,9 +415,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         // scan the directory for templates
         templatePackageDeployer.registerTemplatePackages();
 
-        // build the hierarchy, resolving inheritance
-        templatePackageRegistry.buildHierarchy();
-
         // TODO validate template sets: count, package dependencies etc.
         templatePackageRegistry.validate();
 
@@ -433,18 +428,7 @@ public class JahiaTemplateManagerService extends JahiaService {
         }
 
         // start template package watcher
-		templatePackageDeployer.startWatchdog(new WatchdogCallback() {
-			public void onChange(File file) {
-				logger.info("Changes detected in the template packages folder. Restarting JahiaTemplateManagerService");
-				try {
-					stop();
-					start();
-				} catch (Exception ex) {
-					logger.error("Unable to restart JahiaTemplateManagerService."
-					        + " Skipping template deployment descriptor change", ex);
-				}
-			}
-		});
+		templatePackageDeployer.startWatchdog(this);
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found template packages: "

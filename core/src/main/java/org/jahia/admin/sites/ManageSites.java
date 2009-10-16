@@ -909,7 +909,7 @@ public class ManageSites extends AbstractAdministrationModule {
         TreeMap<String, JahiaTemplatesPackage> orderedTemplateSets = new TreeMap<String, JahiaTemplatesPackage>();
         for (JahiaTemplatesPackage tmp : templateSets) {
             final String key = tmp.getInvertedHierarchy().toString();
-            orderedTemplateSets.put(key.substring(1, key.length() - 1), tmp);
+            orderedTemplateSets.put(tmp.getName(), tmp);
         }
 
         // try to select the default set if not selected

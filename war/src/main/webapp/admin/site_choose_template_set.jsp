@@ -133,15 +133,9 @@
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
-                                                                <c:forEach items="${tmplPack.invertedHierarchy}"
-                                                                           var="parent">
-                                                                    <c:set var="displayName"
-                                                                           value="${functions:stringConcatenation(displayName, ' / ', parent)}"
-                                                                           scope="request"/>
-                                                                </c:forEach>
                                                                 <option value="<c:out value='${tmplPack.name}'/>"
                                                                         <c:if test="${tmplPack.name == selectedTmplSet}">selected="selected"</c:if>>
-                                                                    <c:out value="${fn:substring(displayName, 3, -1)}"/></option>
+                                                                    <c:out value="${tmplPack.name}"/></option>
                                                             </c:forEach>
                                                         </select>
                                                     </td>

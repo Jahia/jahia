@@ -119,6 +119,7 @@
                         <manifestEntries>
                             <package-name>${project.name}</package-name>
                             <root-folder>article</root-folder>
+                            <depends>Default Jahia Templates</depends>
                         </manifestEntries>
                     </archive>
                 </configuration>

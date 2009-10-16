@@ -82,4 +82,9 @@ file image (file[mime='image/*'])
  integer IframeMarginwidth = '0' indexed=no
  integer IframeMarginheight = '0' indexed=no
  sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
- smallText IframeAlt indexed=no 
+ smallText IframeAlt indexed=no
+
+[jnt:mainContent] > jnt:container, jmix:structuredContent
+  bigText body
+  file image
+  sharedSmallText align (choicelist[resourceBundle]) = left indexed=no < left,right,default

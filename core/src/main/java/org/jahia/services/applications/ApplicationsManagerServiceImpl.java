@@ -171,13 +171,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     public void start() throws JahiaInitializationException {
         applicationCache = cacheService.createCacheInstance("ApplicationCache");
         entryPointCache = cacheService.createCacheInstance("ApplicationEntryPointCache");
-        try {
-
-            loadAllApplications();
-        } catch (Exception e) {
-            throw new JahiaInitializationException(
-                    "JahiaApplicationsManagerBaseService.init, exception occured : " + e.getMessage(), e);
-        }
 
         supportedPortletModes.add(PortletMode.VIEW);
         supportedPortletModes.add(PortletMode.EDIT);
@@ -196,6 +189,14 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         */
 
         this.isLoaded = true;
+
+        try {
+            loadAllApplications();
+        } catch (Exception e) {
+            throw new JahiaInitializationException(
+                    "JahiaApplicationsManagerBaseService.init, exception occured : " + e.getMessage(), e);
+        }
+
     }
 
     public void stop() {

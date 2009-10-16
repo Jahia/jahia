@@ -147,7 +147,7 @@ class TemplatePackageRegistry {
             if (classesFolder.exists()) {
                 FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
             }
-            FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF"));
+            FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF/classes"));
         } catch (IOException e) {
             logger.error("Cannot deploy classes for templates "+templatePackage.getName(),e);
         }

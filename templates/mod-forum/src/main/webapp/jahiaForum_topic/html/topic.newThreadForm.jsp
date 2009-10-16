@@ -45,7 +45,7 @@
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h3 class="forum-h3-first">Create new Thread</h3>
+                <h3 class="forum-h3-first"><fmt:message key="create.new.thread"/></h3>
 
                 <fieldset>
                     <p class="field">

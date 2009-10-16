@@ -25,7 +25,7 @@
 <div class="forum-postbody">
     <ul class="forum-profile-icons">
         <c:if test="${renderContext.user.name != 'guest'}">
-            <li class="forum-report-icon"><a title="Report this post" href="#"><span>Report this post</span></a></li>
+            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
             <li class="forum-quote-icon">
                 <a title="Reply with quote" href="#threadPost"
                    onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
@@ -33,17 +33,17 @@
             <li><template:module node="${currentNode}" template="plusone_minorone"/></li>
         </c:if>
         <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-            <li class="delete-post-icon"><a title="Delete this post" href="#"
-                                            onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span>Delete this post</span></a>
+            <li class="delete-post-icon"><a title="<fmt:message key="delete.post"/> href="#"
+                                            onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.post"/></span></a>
             </li>
-            <li class="edit-post-icon"><a title="edit with post" href="#"><span>Edit this post</span></a></li>
+            <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="#"><span><fmt:message key="edit.post"/></span></a></li>
         </c:if>
 
     </ul>
 
     <h3 class="forum-h3-first"><a href="#">${title.string}</a></h3>
 
-    <p class="forum-author">by <strong><a
+    <p class="forum-author"><fmt:message key="by"/><strong> <a
             href="${url.base}/content/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate
             value="${created.time}" type="both" dateStyle="full"/></p>
 
@@ -58,8 +58,8 @@
         <template:module node="${userNode}" template="mini"/>
     </dt>
     <br/>
-    <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
-    <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
+    <dd><strong><fmt:message key="number.of.posts"/></strong> ${numberOfPosts}</dd>
+    <dd><strong><fmt:message key="registration.date"/></strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
                                                    var="userCreated"/><fmt:formatDate value="${userCreated.time}"
                                                                                       type="date" dateStyle="medium"/>
     </dd>

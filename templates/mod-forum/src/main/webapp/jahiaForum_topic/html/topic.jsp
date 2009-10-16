@@ -18,10 +18,10 @@
         <div class="forum-actions">
 
             <div class="forum-buttons">
-                <div class="forum-post-icon"><a title="Post a new topic" href="#"><span/>Post a new thread</a></div>
+                <div class="forum-post-icon"><a title="<fmt:message key="create.new.thread"/>" href="#"><span/><fmt:message key="create.new.thread"/></a></div>
             </div>
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} threads
+                ${fn:length(currentNode.children)} <fmt:message key="threads"/>
             </div>
 
         </div>
@@ -55,10 +55,10 @@
         <template:module node="${currentNode}" template="newThreadForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} threads
+                ${fn:length(currentNode.children)} <fmt:message key="threads"/>
             </div>
         </div>
-        <span>Total Threads : ${numberOfThreads}</span>
-        <span>Total Posts : ${numberOfPosts}</span>
+        <span><fmt:message key="total.threads"/>: ${numberOfThreads}</span>
+        <span><fmt:message key="total.posts"/>: ${numberOfPosts}</span>
     </div>
 </div>

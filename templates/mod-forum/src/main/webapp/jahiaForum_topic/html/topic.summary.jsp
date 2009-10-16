@@ -40,7 +40,7 @@
     <dd class="lastpost">
         <c:if test="${numberOfPosts > 0}">
         <span>
-					<dfn>Last post</dfn> by <a href="${url.base}${lastModifiedNode.parent.path}.html"><img height="9"
+					<dfn><fmt:message key="last.post"/></dfn> <fmt:message key="by"/> <a href="${url.base}${lastModifiedNode.parent.path}.html"><img height="9"
                                                                                                            width="11"
                                                                                                            title="View the latest post"
                                                                                                            alt="View the latest post"

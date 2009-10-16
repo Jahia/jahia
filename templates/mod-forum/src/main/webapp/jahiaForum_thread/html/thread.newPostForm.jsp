@@ -56,7 +56,7 @@
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h3 class="forum-h3-first">Post a reply</h3>
+                <h3 class="forum-h3-first"><fmt:message key="reply"/></h3>
 
                 <fieldset>
                     <p class="field">

@@ -46,6 +46,7 @@ import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.jaas.JahiaLoginModule;
+import org.jahia.settings.SettingsBean;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -64,6 +65,7 @@ import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -324,6 +326,14 @@ public class JCRStoreProvider {
             Session session = getSystemSession();
             try {
                 Workspace workspace = session.getWorkspace();
+
+                try {
+                    workspace.getNodeTypeManager().getNodeType("jmix:content");
+                } catch (RepositoryException e) {
+                    File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+                    f.delete();
+                }
+
                 registerCustomNodeTypes(workspace);
                 session.save();
             } catch (RepositoryException e) {

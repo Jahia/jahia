@@ -125,6 +125,7 @@
                     <manifestEntries>
                         <package-name>${project.name}</package-name>
                         <root-folder>forum</root-folder>
+                        <depends>Jahia Rating</depends>
                     </manifestEntries>
                 </archive>
             </configuration>

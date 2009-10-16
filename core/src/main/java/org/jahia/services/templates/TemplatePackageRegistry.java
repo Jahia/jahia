@@ -31,17 +31,16 @@
  */
 package org.jahia.services.templates;
 
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.rules.RulesListener;
-
-import java.io.File;
-import java.util.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.rules.RulesListener;
 import org.jahia.settings.SettingsBean;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Template packages registry service.
@@ -178,8 +177,9 @@ class TemplatePackageRegistry {
         if (!templatePackage.getRulesFiles().isEmpty()) {
             try {
                 for (String name : templatePackage.getRulesFiles()) {
-                    RulesListener listener = RulesListener.getInstance("jahia");
-                    listener.addRules(new File(rootFolder, name));
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        listener.addRules(new File(rootFolder, name));
+                    }
                 }
             } catch (Exception e) {
                 logger.warn("Cannot parse rules for "+templatePackage.getName(),e);

@@ -859,8 +859,14 @@ public class Service {
             KnowledgeHelper drools) {
         final Node jcrNode = node.getNode();
         try {
-            final Property property = jcrNode.getProperty(propertyName);
-            jcrNode.setProperty(propertyName,property.getLong()+Long.valueOf((String) value.get(0)));
+            long aLong = 0;
+            try {
+                final Property property = jcrNode.getProperty(propertyName);
+                aLong = property.getLong();
+            } catch (PathNotFoundException e) {
+                logger.debug("The property to increment "+propertyName+" does not exist yet",e);
+            }
+            jcrNode.setProperty(propertyName,aLong+Long.valueOf((String) value.get(0)));
         } catch (RepositoryException e) {
             logger.error("Error while adding "+value+" to property "+propertyName+" for node "+node,e);
         }

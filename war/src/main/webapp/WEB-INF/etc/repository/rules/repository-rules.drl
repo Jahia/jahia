@@ -247,22 +247,3 @@ rule "Profile Image update"
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60
 end
-
-rule "Create Vote on post"
-   when
-       A property lastVote has been set on a node
-            - the node has the type jahiaForum:post
-       The property nbOfVotes is not defined for the node
-   then
-       Set the property nbOfVotes of the node with the value "0"
-       Set the property sumOfVotes of the node with the value "0"
-end
-
-rule "Vote on post"
-   when
-       A property lastVote has been set on a node
-            - the node has the type jahiaForum:post
-   then
-       Increment the property nbOfVotes of the node
-       Add the property value to the property sumOfVotes of the node 
-end

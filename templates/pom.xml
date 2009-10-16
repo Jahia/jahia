@@ -74,6 +74,7 @@
         <module>mod-6.0</module>
         <module>mod-location</module>
         <module>mod-faq</module>
+        <module>mod-rating</module>
     </modules>
 
 

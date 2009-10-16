@@ -454,5 +454,8 @@ public class RulesListener extends DefaultEventListener {
             }
         }
     }
-       
+
+    public static List<RulesListener> getInstances() {
+        return instances;
+    }
 }

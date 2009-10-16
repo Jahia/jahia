@@ -9,7 +9,7 @@
 <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
-<jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">
@@ -19,18 +19,7 @@
         <input type="hidden" name="methodToCall" value="delete">
     </form>
 </c:if>
-<c:if test="${renderContext.user.name != 'guest'}">
-    <jcr:nodeProperty node="${currentNode}" name="nbOfVotes" var="nbVotes"/>
-    <jcr:nodeProperty node="${currentNode}" name="sumOfVotes" var="sumVotes"/>
-    <form action="${url.base}${currentNode.path}" method="post"
-          id="jahia-forum-post-vote-${currentNode.UUID}">
-        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html">
-        <input type="hidden" name="methodToCall" value="put">
-        <input type="hidden" name="lastVote" value="5">
-    </form>
-</c:if>
+<template:module node="${currentNode}" template="plusone_minorone_form"/>
 <span class="forum-corners-top"><span></span></span>
 
 <div class="forum-postbody">
@@ -41,8 +30,7 @@
                 <a title="Reply with quote" href="#threadPost"
                    onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
             </li>
-            <li><a title="Vote for this post" href="#"
-                                            onclick="document.getElementById('jahia-forum-post-vote-${currentNode.UUID}').submit();"><span>Vote for this post(already ${nbVotes.long} votes Avg=${sumVotes.long/nbVotes.long})</span></a></li>
+            <li><template:module node="${currentNode}" template="plusone_minorone"/></li>
         </c:if>
         <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
             <li class="delete-post-icon"><a title="Delete this post" href="#"
@@ -57,7 +45,7 @@
 
     <p class="forum-author">by <strong><a
             href="${url.base}/content/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate
-            value="${lastModified.time}" type="both" dateStyle="full"/></p>
+            value="${created.time}" type="both" dateStyle="full"/></p>
 
     <div class="content">${content.string}</div>
 </div>
@@ -73,7 +61,7 @@
     <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
     <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
                                                    var="userCreated"/><fmt:formatDate value="${userCreated.time}"
-                                                                                      type="both" dateStyle="full"/>
+                                                                                      type="date" dateStyle="medium"/>
     </dd>
 </dl>
 <div class="back2top"><a title="Top" class="top" href="#wrap">Top</a></div>

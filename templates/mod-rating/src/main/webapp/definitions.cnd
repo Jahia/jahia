@@ -1,0 +1,6 @@
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:rating] mixin
+- j:nbOfVotes (long) = 0  autocreated
+- j:sumOfVotes (long) = 0 autocreated
+- j:lastVote (long)

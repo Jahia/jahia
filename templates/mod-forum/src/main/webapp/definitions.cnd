@@ -1,11 +1,9 @@
 <jahiaForum = 'jahia.org/jahia/jahiaForum/nt/1.0'>
 
-[jahiaForum:post] > jnt:container
+[jahiaForum:post] > jnt:container, jmix:rating
 smallText title
 bigText content
-integer nbOfVotes
-integer sumOfVotes
-integer lastVote
+
 
 [jahiaForum:thread] > jnt:container, jmix:interactiveContent
 smallText threadSubject

@@ -1,0 +1,29 @@
+###############################################################################
+#created on: 18 feb. 2009
+package org.jahia.modules.rating.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+###############################################################################
+
+rule "Rate node"
+   when
+       A property j:lastVote has been set on a node
+        - the node has the type jmix:rating
+   then
+       Increment the property j:nbOfVotes of the node
+       Add the property value to the property j:sumOfVotes of the node
+end

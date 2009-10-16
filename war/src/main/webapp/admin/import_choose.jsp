@@ -216,14 +216,6 @@ function sendForm(){
                                     <% if (tpls != null){
                                         for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
                                             JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
-                                            String displayName="";
-                                            List invertedHierarchyList =pack.getInvertedHierarchy();
-                                            for (int i =0; i<invertedHierarchyList.size();i++ ) {
-                                                String parent= (String)invertedHierarchyList.get(i);
-
-                                                displayName= displayName+" / "+parent;
-                                            }
-                                            displayName= displayName.substring(3);
                                             if (pack.getName().equals(infos.get("templates"))) {
 
                                     %>

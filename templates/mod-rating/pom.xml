@@ -45,7 +45,6 @@
     <name>Jahia Rating</name>
     <version>6.5-SNAPSHOT</version>
     <packaging>war</packaging>
-    <url>jahia.org</url>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>
         <repository>
@@ -117,4 +116,19 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>project-team</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

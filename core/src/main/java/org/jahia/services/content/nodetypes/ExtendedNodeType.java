@@ -551,17 +551,6 @@ public class ExtendedNodeType implements NodeType {
                                 + getSystemId() + "'", e);
             }
         }
-        if (pkg == null) {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            if (ctx != null && ctx.getSite() != null) {
-                String pckName = ctx.getSite().getTemplatePackageName();
-                if (pckName != null) {
-                    pkg = ServicesRegistry.getInstance()
-                            .getJahiaTemplateManagerService()
-                            .getTemplatePackage(pckName);
-                }
-            }
-        }
 
         return pkg != null ? pkg.getResourceBundleName()
                 : "JahiaTypesResources";

@@ -182,7 +182,7 @@ class TemplatePackageRegistry {
                 if (!packagesPerModule.containsKey(key)) {
                     packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
                 }
-                if (packagesPerModule.get(key).contains(templatePackage)) {
+                if (!packagesPerModule.get(key).contains(templatePackage)) {
                     packagesPerModule.get(key).add(templatePackage);
                 }
             }

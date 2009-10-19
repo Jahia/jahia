@@ -176,8 +176,8 @@ public class JahiaTemplatesPackageHandler {
         }
         if (templatePackage.getRulesFiles().isEmpty()) {
             // check if there is a rules file
-            if (new File(file,"rules.dsl").exists()) {
-                templatePackage.setRulesFile("rules.dsl");
+            if (new File(file,"rules.drl").exists()) {
+                templatePackage.setRulesFile("rules.drl");
             }
         }
         if (templatePackage.getResourceBundleName() == null) {

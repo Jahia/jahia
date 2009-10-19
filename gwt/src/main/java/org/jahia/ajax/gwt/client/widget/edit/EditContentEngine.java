@@ -310,6 +310,9 @@ public class EditContentEngine extends Window {
         name.setName("name");
         if (existingNode) {
             name.setValue(node.getName());
+            contentTab.setData("NodeName",node.getName());
+        } else {
+            name.setValue("Automatically Created (you can type your name here if you want)");
         }
         formPanel.add(name);
         return formPanel;
@@ -478,8 +481,9 @@ public class EditContentEngine extends Window {
 
         public void componentSelected(ButtonEvent event) {
             List elements = new ArrayList<GWTJahiaNode>();
+            node.setName(((TextField)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue());
             elements.add(node);
-            List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();;
+            List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
             if (propertiesEditor != null) {
                 list.addAll(propertiesEditor.getProperties());
             }
@@ -521,8 +525,12 @@ public class EditContentEngine extends Window {
 
     private class CreateSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
+            String nodeName = ((TextField)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue();
+            if(nodeName.equals("Automatically Created (you can type your name here if you want)")) {
+                nodeName = targetName;
+            }
             if (createInParentAndMoveBefore) {
-                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), targetName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);
@@ -535,7 +543,7 @@ public class EditContentEngine extends Window {
                     }
                 });
             } else {
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), targetName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);

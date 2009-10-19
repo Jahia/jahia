@@ -68,6 +68,7 @@ public class PropertiesHelper {
 
     private JCRSessionFactory sessionFactory;
     private ContentDefinitionHelper contentDefinition;
+    private ContentManagerHelper contentManager;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -75,6 +76,10 @@ public class PropertiesHelper {
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
         this.contentDefinition = contentDefinition;
+    }
+
+    public void setContentManager(ContentManagerHelper contentManager) {
+        this.contentManager = contentManager;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
@@ -160,7 +165,10 @@ public class PropertiesHelper {
             }
             try {
                 setProperties(objectNode, newProps);
-                objectNode.save();
+                objectNode.saveSession();
+                if(!aNode.getName().equals(objectNode.getName())) {
+                    contentManager.rename(objectNode.getPath(),aNode.getName(),context.getUser());
+                }
             } catch (RepositoryException e) {
                 logger.error("error", e);
                 throw new GWTJahiaServiceException("Could not save file " + objectNode.getName());

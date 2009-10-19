@@ -73,8 +73,6 @@ import javax.jcr.version.VersionIterator;
 import java.io.IOException;
 import java.util.*;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -431,7 +429,12 @@ public class NavigationHelper {
                 root.setDisplayName("categories");
                 userNodes.add(root);
             }
-
+        } else if (key.equals(JCRClientUtils.TAG_REPOSITORY)) {
+            GWTJahiaNode root = getNode("/content/tags", workspace, jParams);
+            if (root != null) {
+                root.setDisplayName("tags");
+                userNodes.add(root);
+            }
         } else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/portletdefinitions", workspace, jParams);
             if (root != null) {

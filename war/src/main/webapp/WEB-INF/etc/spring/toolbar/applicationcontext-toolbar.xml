@@ -89,6 +89,14 @@
         </property>
     </bean>
 
+    <bean id="tag-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.tags.menu"/>
+                <ref bean="org.jahia.toolbar.manager.tags.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
     <!-- switching mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
@@ -313,7 +321,38 @@
     </bean>
     <!-- end of the Site Manager -->
 
-
+    <!-- Tags Manager -->
+    <bean id="org.jahia.toolbar.manager.tags.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.TagManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="tags.menu"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.tags.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.TagManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="tags.shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- end of the Tags Manager -->
     <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
     <bean id="org.jahia.toolbar.itemsgroup.Fill" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="items">
@@ -439,6 +478,7 @@
                 <ref bean="org.jahia.toolbar.item.MashupManager"/>
                 <ref bean="org.jahia.toolbar.item.ContentManager"/>
                 <ref bean="org.jahia.toolbar.item.CategoryManager"/>
+                <ref bean="org.jahia.toolbar.item.TagManager"/>
                 <ref bean="org.jahia.toolbar.item.SiteManager"/>
                 <ref bean="org.jahia.toolbar.item.Pdisplay"/>
             </list>
@@ -818,6 +858,19 @@
         </property>
     </bean>
 
+    <bean id="org.jahia.toolbar.itemsgroup.TagManager.menu.file"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newTag"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+            </list>
+        </property>
+    </bean>
     <!-- shortcut buttons -->
     <bean id="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"
           class="org.jahia.services.toolbar.bean.ItemsGroup">
@@ -930,6 +983,18 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createPage"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.TagManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newTag"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
             </list>
         </property>
     </bean>
@@ -1393,7 +1458,31 @@
         </property>
     </bean>
 
-    <!-- Category Manager -->
+    <!-- Tag Manager -->
+    <bean id="org.jahia.toolbar.item.TagManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.tagmanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-categorymanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-categorymanager-normal"/>
+        <property name="descriptionKey" value="button.tagmanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.categorymanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="url"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwttagmanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Stie Manager -->
     <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
         <property name="titleKey" value="button.sitemanager"/>
@@ -2142,6 +2231,15 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewCategoryActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.createCategory"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.newTag" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
+        </property>
+        <property name="titleKey" value="toolbar.edit.button.createTag"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>

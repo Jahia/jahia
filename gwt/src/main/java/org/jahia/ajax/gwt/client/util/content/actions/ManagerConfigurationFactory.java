@@ -45,6 +45,7 @@ public class ManagerConfigurationFactory {
     public static final String FILEMANAGER = "filemanager";
     public static final String MASHUPMANAGER = "mashupmanager";
     public static final String CATEGORYMANAGER = "categorymanager";
+    public static final String TAGMANAGER = "tagmanager";
     public static final String PORTLETDEFINITIONMANAGER = "portletdefinitionmanager";
     public static final String FILEPICKER = "filepicker";
     public static final String MASHUPPICKER = "mashuppicker";
@@ -80,6 +81,9 @@ public class ManagerConfigurationFactory {
             }
             if (config.contains(SITEMANAGER)) {
                 return getSiteManagerConfiguration(linker);
+            }
+            if (config.contains(TAGMANAGER)) {
+                return getTagManagerConfiguration(linker);
             }
         }
         return getCompleteManagerConfiguration(linker);
@@ -239,6 +243,29 @@ public class ManagerConfigurationFactory {
 
         categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         categoryManagerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+
+        return categoryManagerConfig;
+    }
+
+    public static ManagerConfiguration getTagManagerConfiguration(final ManagerLinker linker) {
+        ManagerConfiguration categoryManagerConfig = new ManagerConfiguration();
+        categoryManagerConfig.setEnableTextMenu(true);
+        categoryManagerConfig.setDisplayExt(false);
+        categoryManagerConfig.setDisplaySize(false);
+        categoryManagerConfig.setDisplayDate(false);
+
+        categoryManagerConfig.setToolbarGroup("tag-manager");
+
+        categoryManagerConfig.addColumn("ext");
+        categoryManagerConfig.addColumn("name");
+        categoryManagerConfig.addColumn("locked");
+        categoryManagerConfig.addColumn("path");
+
+        categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
+        categoryManagerConfig.addAccordion(JCRClientUtils.TAG_REPOSITORY);
+
+        categoryManagerConfig.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
+        categoryManagerConfig.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
 
         return categoryManagerConfig;
     }

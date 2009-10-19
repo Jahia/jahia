@@ -43,7 +43,7 @@ public final class JCRClientUtils {
     public static final String CATEGORY_NODETYPES = "jnt:category";
     public static final String PORTLET_DEFINITIONS_NODETYPES = "jnt:portletDefinitions";    
     public static final String SITE_NODETYPES = "jnt:virtualsite,jnt:page";
-
+    public static final String TAG_NODETYPES = "jnt:tag";
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";
@@ -58,6 +58,7 @@ public final class JCRClientUtils {
     public final static String WEBSITE_MASHUP_REPOSITORY = "websiteMashupRepository";
 
     public final static String CATEGORY_REPOSITORY = "categoryRepository";
+    public final static String TAG_REPOSITORY = "tagRepository";
 
     public final static String PORTLET_DEFINITIONS_REPOSITORY = "portletDefinitionRepository";
 

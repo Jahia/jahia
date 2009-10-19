@@ -30,6 +30,9 @@
 [jmix:originWS] > jmix:metadata mixin
   - j:originWS (string) protected hidden
 
+[jmix:tagged] > jmix:metadata mixin
+ - j:tags (reference, category[autoSelectParent=false]) multiple  
+
 [jmix:basemetadata] > mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable mixin
 
 //---------------------------------------------------------
@@ -156,6 +159,13 @@
 [jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:hierarchyNode, jmix:collection, jmix:publication
 + * (jnt:category) version
 - * (reference) multiple < jnt:category
+
+//---------------------------------------------------------
+// Tags
+//---------------------------------------------------------
+
+[jnt:tag] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:publication
+- tags (reference) multiple hidden < jnt:tag
 
 //---------------------------------------------------------
 // Preferences
@@ -395,7 +405,7 @@
 // Compatibility nodes
 //---------------------------------------------------------
 
-[jnt:container] > nt:base, jmix:structuredContent, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords
+[jnt:container] > nt:base, jmix:structuredContent, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords, jmix:tagged
 
 [jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:renderableList
  orderable

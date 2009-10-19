@@ -43,7 +43,6 @@
     <groupId>org.jahia.templates</groupId>
     <artifactId>mod-rating</artifactId>
     <name>Jahia Rating</name>
-    <version>6.5-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>
@@ -95,18 +94,30 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
+			<plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-site-plugin</artifactId>
+                <executions>
+					<execution>
+                    	<phase>generate-resources</phase>
+                        <goals>
+                        	<goal>site</goal>
+						</goals>
+                    </execution>
+                </executions>
+		    </plugin>
             <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
  need to force the version of the plugin to version 2.1-beta-1 -->
             <plugin>
@@ -114,12 +125,20 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1-beta-1</version>
                 <configuration>
-                <archive>
-                    <manifestEntries>
-                        <package-name>${project.name}</package-name>
-                        <root-folder>rating</root-folder>
-                    </manifestEntries>
-                </archive>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>site/**</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+	                <archive>
+	                    <manifestEntries>
+	                        <package-name>${project.name}</package-name>
+	                        <root-folder>rating</root-folder>
+	                    </manifestEntries>
+	                </archive>
                 </configuration>
             </plugin>
         </plugins>

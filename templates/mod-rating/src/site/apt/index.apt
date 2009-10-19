@@ -10,7 +10,7 @@ Jahia Rating Module
 
 	* How-to develop similar modules
 
-	   The Jahia Rating Module is made of three different part :
+	   The Jahia Rating Module is made of three different parts:
 
 	   * A definition file named definition.cnd containing only a mixin type.
 
@@ -19,12 +19,12 @@ Jahia Rating Module
 
 	   * Some templates mostly split in two parts :
 
-	     * A template defining the interactivity (for example forms needed for this behavior ( example jmix_rating/html/rating_plusone_minorone_form.jsp)).
+	     * A template defining the interactivity (for example forms needed for this behavior (example jmix_rating/html/rating_plusone_minorone_form.jsp)).
 
-	     * A template defining the rendering ( example jmix_rating/html/rating_plusone_minorone.jsp).
+	     * A template defining the rendering (example jmix_rating/html/rating_plusone_minorone.jsp).
 	     
-	     <To use this (+1,-1) behavior you have to first call \<template:module node="${currentNode}" template="rating_plusone_minorone_form"/\>
-	     in a place it has no impact on your design and then call \<template:module node="${currentNode}" template="rating_plusone_minorone_form"/\>
+	     <To use this (+1,-1) behavior you have to first call \<template:module node="$\{currentNode\}" template="rating_plusone_minorone_form"/\>
+	     in a place it has no impact on your design and then call \<template:module node="$\{currentNode\}" template="rating_plusone_minorone_form"/\>
 	     where you want to display the rating.>
 
 -------------------------------------------------------------------------------------------------

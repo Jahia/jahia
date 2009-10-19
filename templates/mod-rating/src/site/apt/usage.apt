@@ -9,7 +9,7 @@ Usage of Jahia Rating Module
 - j:lastVote (long) hidden  
 --------------------------------------------
 
-  You can hardcoded it inside your definition, like in the forum module post definition :
+  You can hardcode it inside your definition, like in the forum module post definition:
 
 -----------------------------------------------
 [jahiaForum:post] > jnt:container, jmix:rating
@@ -17,8 +17,8 @@ Usage of Jahia Rating Module
  bigText content
 -----------------------------------------------
 
-  This Module define only one simple rule using the jahia DSL language for more information on rule see {{{http://www.jboss.org/drools/documentation.html} Drools Documentation}}.\
-  Here the rule created for rating :
+  This Module define only one simple rule using the Jahia DSL language. For more information on rules see {{{http://www.jboss.org/drools/documentation.html} Drools Documentation}}.\
+  Here is the rule created for rating:
 
 -----------------------------------------------
 rule "Rate node"

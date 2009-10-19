@@ -9,6 +9,6 @@
 <jcr:nodeProperty node="${currentNode}" name="j:sumOfVotes" var="sumVotes"/>
 <a title="Vote +1" href="#"
    onclick="document.getElementById('jahia-forum-post-vote-${currentNode.UUID}').submit();"><span>+1</span></a>
-<a title="Vote +1" href="#"
-   onclick="document.getElementById('jahia-forum-post-voteless-${currentNode.UUID}').submit();"><span>-1</span></a><span><c:if
+<a title="Vote -1" href="#"
+   onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.UUID}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1</span></a><span><c:if
         test="${nbVotes.long > 0}">(already ${nbVotes.long} votes Note=${sumVotes.long})</c:if></span>

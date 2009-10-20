@@ -67,6 +67,14 @@ import java.util.*;
 public class RequestDispatcherScript implements Script {
 
     private static final Logger logger = Logger.getLogger(RequestDispatcherScript.class);
+    
+    private static final Comparator<JahiaTemplatesPackage> PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+            if (o1.getRootFolder().endsWith("default")) return 99;
+            if (o2.getRootFolder().endsWith("default")) return -99;
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     private RequestDispatcher rd;
     private HttpServletRequest request;
@@ -113,7 +121,7 @@ public class RequestDispatcherScript implements Script {
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
                 List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getAlias().replace(":", "_"));
-                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(new PackageComparator());
+                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(PACKAGE_COMPARATOR);
                 sortedPackages.addAll(packages);
 
                 for (JahiaTemplatesPackage aPackage : sortedPackages) {
@@ -195,13 +203,5 @@ public class RequestDispatcherScript implements Script {
      */
     public String getInfo() {
         return "JSP dispatch : " + templatePath;
-    }
-
-    class PackageComparator implements Comparator<JahiaTemplatesPackage> {
-        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o1.getRootFolder().endsWith("default")) return 99;
-            if (o2.getRootFolder().endsWith("default")) return -99;
-            return o1.getName().compareTo(o2.getName());
-        }
     }
 }

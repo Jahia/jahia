@@ -43,7 +43,6 @@
     <groupId>org.jahia.templates</groupId>
     <artifactId>mod-press</artifactId>
     <name>Jahia Press Releases</name>
-    <version>6.5-SNAPSHOT</version>
     <packaging>war</packaging>
     <url>jahia.org</url>
     <description>This is a custom module for running on a Jahia server.</description>
@@ -96,13 +95,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -117,6 +116,14 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
+		                	<Implementation-Title>${project.name}</Implementation-Title>
+		                    <Implementation-Version>${project.version}</Implementation-Version>
+		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+		                    <Specification-Title>${project.name}</Specification-Title>
+		                    <Specification-Version>${project.version}</Specification-Version>
+		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <root-folder>press</root-folder>
                         </manifestEntries>

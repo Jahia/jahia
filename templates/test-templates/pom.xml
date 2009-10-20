@@ -21,6 +21,14 @@
             <configuration>
                 <archive>
                     <manifestEntries>
+	                	<Implementation-Title>${project.name}</Implementation-Title>
+	                    <Implementation-Version>${project.version}</Implementation-Version>
+	                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+	                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+	                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+	                    <Specification-Title>${project.name}</Specification-Title>
+	                    <Specification-Version>${project.version}</Specification-Version>
+	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <package-name>${project.name}</package-name>
                         <root-folder>test_templates</root-folder>
                         <depends>Core Templates, Default Jahia Templates</depends>

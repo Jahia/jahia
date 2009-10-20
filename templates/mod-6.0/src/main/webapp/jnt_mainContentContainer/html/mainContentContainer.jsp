@@ -6,9 +6,14 @@
     <jcr:nodeProperty node="${currentNode}" name="mainContentBody" var="mainContentBody"/>
     <jcr:nodeProperty node="${currentNode}" name="mainContentImage" var="mainContentImage"/>
     <h3>${mainContentTitle.string}</h3>
-        <c:if test="${!empty mainContentImage}">
-            <img src="${mainContentImage.node.url}" alt="${mainContentImage.node.url}"/>
-        </c:if>
-        ${mainContentBody.string}
+    <c:if test="${!empty mainContentImage}">
+    	<img src="${mainContentImage.node.url}" alt="${mainContentImage.node.url}"/>
+    </c:if>
+    ${mainContentBody.string}
+    <hr/>
+		<template:module node="${currentNode}" template="tags"/>
+    <hr/>
+    	<template:module node="${currentNode}" template="tagForm"/>
+    <hr/>
 </div>
 <br class="clear"/>

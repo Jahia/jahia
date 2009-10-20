@@ -70,8 +70,8 @@ public class RequestDispatcherScript implements Script {
     
     private static final Comparator<JahiaTemplatesPackage> PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o1.getRootFolder().endsWith("default")) return 99;
-            if (o2.getRootFolder().endsWith("default")) return -99;
+            if (o1.isDefault()) return 99;
+            if (o2.isDefault()) return -99;
             return o1.getName().compareTo(o2.getName());
         }
     };

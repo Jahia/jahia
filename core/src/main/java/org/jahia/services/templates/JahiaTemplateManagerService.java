@@ -321,7 +321,15 @@ public class JahiaTemplateManagerService extends JahiaService {
                             + "'", e);
                 }
             }
-        }
+        } else {
+            try {
+                if (Jahia.getStaticServletConfig().getServletContext().getResource(resource) != null) {
+                    path = resource;
+                }
+            } catch (MalformedURLException e) {
+				logger.warn("Unable to resolve resource path for '" + resource + "'", e);
+            }
+        } 
 
         return path;
     }

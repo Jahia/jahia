@@ -95,7 +95,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             Field cacheList = ResourceBundle.class
                     .getDeclaredField("cacheList");
             cacheList.setAccessible(true);
-            ((Map) cacheList.get(ResourceBundle.class)).clear();
+            ((Map<?, ?>) cacheList.get(ResourceBundle.class)).clear();
         } catch (Exception e) {
             logger.warn("Unable to flush resource bundle cache", e);
         }
@@ -133,7 +133,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
 
     public InputStream getResourceAsStream(String name) {
         if (loader != null) {
-            final InputStream stream = loader.getResourceAsStream(name);
+            InputStream stream = loader.getResourceAsStream(name);
             if (stream != null) {
                 return stream;
             } else {
@@ -141,7 +141,13 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                 if (aPackage != null) {
                     String path = templateManagerService.resolveResourcePath(fileName, aPackage.getName());
                     if (path != null) {
-                        return Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
+                        stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
+                    }
+                    if (stream == null) {
+                    	stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(NAME_PATTERN.matcher(name).replaceAll("/"));
+                    }
+                    if (stream != null) {
+                    	return stream;
                     }
                 }
                 try {

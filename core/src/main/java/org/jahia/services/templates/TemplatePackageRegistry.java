@@ -154,6 +154,7 @@ class TemplatePackageRegistry {
             logger.error("Cannot deploy classes for templates "+templatePackage.getName(),e);
         }
 
+        // register content definitions
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
                 for (String name : templatePackage.getDefinitionsFiles()) {
@@ -165,6 +166,8 @@ class TemplatePackageRegistry {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
             }
         }
+
+        // add rules
         if (!templatePackage.getRulesFiles().isEmpty()) {
             try {
                 for (String name : templatePackage.getRulesFiles()) {
@@ -177,6 +180,20 @@ class TemplatePackageRegistry {
             }
         }
 
+        // handle resource bundles
+        // TODO adjust resource bundle handling after module selection will be implemented for a virtual site
+        for (JahiaTemplatesPackage sourcePack : registry.values()) {
+        	sourcePack.getResourceBundleHierarchy().clear();
+            for (JahiaTemplatesPackage otherPack : registry.values()) {
+            	if (otherPack.getResourceBundleName() != null && !otherPack.isDefault()) {
+            		sourcePack.getResourceBundleHierarchy().add("templates." + otherPack.getRootFolder() + "." + otherPack.getResourceBundleName());
+            	}
+            }
+            if (!sourcePack.isDefault()) {
+            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.common");
+            }
+        }
+        
         File[] files = rootFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
@@ -192,7 +209,7 @@ class TemplatePackageRegistry {
         logger.info("Registered "+templatePackage.getName());
     }
 
-    public void unregister(JahiaTemplatesPackage templatePackage) {
+	public void unregister(JahiaTemplatesPackage templatePackage) {
         registry.remove(templatePackage.getName());
         fileNameRegistry.remove(templatePackage.getFileName());
         templatePackages = null;

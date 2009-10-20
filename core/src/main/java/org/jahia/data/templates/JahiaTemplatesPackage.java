@@ -463,6 +463,15 @@ public class JahiaTemplatesPackage {
     }
 
 
+	/**
+	 * Returns <code>true</code> if this package is the default template set.
+	 * 
+	 * @return <code>true</code> if this package is the default template set
+	 */
+	public boolean isDefault() {
+		return getRootFolder() != null && "default".equals(getRootFolder());
+	}
+
     /**
      * if the source is a directory
      */

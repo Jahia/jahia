@@ -153,12 +153,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         Node node = session.getNode(path);
-        Set<Map.Entry> set = req.getParameterMap().entrySet();
-        for (Map.Entry entry : set) {
-            String key = (String) entry.getKey();
+        Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
+        for (Map.Entry<String, String[]> entry : set) {
+            String key = entry.getKey();
             if (!reservedParameters.contains(key)) {
-                String[] values = (String[]) entry.getValue();
-                node.setProperty(key, values[0]);
+                String[] values = entry.getValue();
+                if (((JCRNodeWrapper)node).getApplicablePropertyDefinition(key).isMultiple()) {
+                    node.setProperty(key, values);
+                } else {
+	                node.setProperty(key, values[0]);
+                }
             }
         }
         session.save();
@@ -207,12 +211,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             } catch (PathNotFoundException e) {
                 newNode = node.addNode(nodeName, nodeType);
             }
-            Set<Map.Entry> set = req.getParameterMap().entrySet();
-            for (Map.Entry entry : set) {
-                String key = (String) entry.getKey();
+            Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
+            for (Map.Entry<String, String[]> entry : set) {
+                String key = entry.getKey();
                 if (!reservedParameters.contains(key)) {
-                    String[] values = (String[]) entry.getValue();
-                    newNode.setProperty(key, values[0]);
+                    String[] values = entry.getValue();
+                    if (((JCRNodeWrapper)node).getApplicablePropertyDefinition(key).isMultiple()) {
+                    	newNode.setProperty(key, values);
+                    } else {
+                        newNode.setProperty(key, values[0]);
+                    }
                 }
             }
             url = ((JCRNodeWrapper) newNode).getPath();

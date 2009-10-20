@@ -23,8 +23,8 @@ Jahia Rating Module
 
 	     * A template defining the rendering (example jmix_rating/html/rating_plusone_minorone.jsp).
 	     
-	     <To use this (+1,-1) behavior you have to first call \<template:module node="$\{currentNode\}" template="rating_plusone_minorone_form"/\>
-	     in a place it has no impact on your design and then call \<template:module node="$\{currentNode\}" template="rating_plusone_minorone_form"/\>
+	     <To use this (+1,-1) behavior you have to first call \<template:module node="$\{currentNode\}" template="plusone_minorone_form"/\>
+	     in a place it has no impact on your design and then call \<template:module node="$\{currentNode\}" template="plusone_minorone"/\>
 	     where you want to display the rating.>
 
 -------------------------------------------------------------------------------------------------

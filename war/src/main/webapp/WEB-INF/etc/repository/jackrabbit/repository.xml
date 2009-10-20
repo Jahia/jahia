@@ -61,7 +61,7 @@
             <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
         </PersistenceManager>
 
-        <SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
+        <SearchIndex class="org.jahia.services.query.impl.jackrabbit.JahiaSearchIndex">
             <param name="path" value="${wsp.home}/index"/>
             <param name="textFilterClasses" value=""/>
             <param name="supportHighlighting" value="true"/>
@@ -120,7 +120,7 @@
         Search index for content that is shared repository wide
         (/jcr:system tree, contains mainly versions)
     -->
-    <SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
+    <SearchIndex class="org.jahia.services.query.impl.jackrabbit.JahiaSearchIndex">
         <param name="path" value="${rep.home}/repository/index"/>
         <param name="supportHighlighting" value="true"/>
     </SearchIndex>

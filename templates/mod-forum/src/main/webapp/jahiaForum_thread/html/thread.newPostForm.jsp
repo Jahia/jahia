@@ -47,7 +47,7 @@
     <input type="hidden" name="nodeType" value="jahiaForum:post"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
     <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-    <input type="hidden" name="newNodeOutputFormat" value="html">
+    <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
     <div class="post-reply"><!--start post-reply-->
         <h2><a href="#">${currentNode.propertiesAsString['threadSubject']}</a></h2>

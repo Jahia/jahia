@@ -15,8 +15,8 @@
           id="jahia-forum-post-delete-${currentNode.UUID}">
         <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
             <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html">
-        <input type="hidden" name="methodToCall" value="delete">
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="methodToCall" value="delete"/>
     </form>
 </c:if>
 <template:module node="${currentNode}" template="plusone_minorone_form"/>

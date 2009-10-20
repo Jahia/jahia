@@ -28,6 +28,10 @@
     <drivers.libs.scope>compile</drivers.libs.scope> <!-- include DB driver JARs into jahia.war/WEB-INF/lib -->
     <jboss.libs.scope>compile</jboss.libs.scope> <!-- include jboss-*.jar files into jahia.war/WEB-INF/lib -->
     <jahia.war.classifier></jahia.war.classifier>
+    <!-- MANIFEST.MF information -->
+    <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
+    <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
+    <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
   </properties>
 
   <scm>

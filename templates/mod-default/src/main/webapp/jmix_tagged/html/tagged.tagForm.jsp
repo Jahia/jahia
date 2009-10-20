@@ -17,7 +17,7 @@
 		</c:forEach>
         <select name="j:tags" multiple="multiple">
         	<c:forEach items="${tags}" var="tag">
-        		<option value="${tag.identifier}" ${fn:contains(asssignedTagsAsString, tag.identifier) ? 'selected="selected"' : ''}>${tag.name}</option>
+        		<option value="${tag.identifier}" ${fn:contains(asssignedTagsAsString, tag.identifier) ? 'selected="selected"' : ''}>${tag.name}&nbsp;(${tag.references.size})</option>
         	</c:forEach>
         </select>
         <input type="submit" title="Tag it!" value="Tag it!" class="button"/>

@@ -288,7 +288,7 @@ class TemplatePackageDeployer {
             List<JahiaTemplatesPackageHandler> newRemaining = new ArrayList<JahiaTemplatesPackageHandler>();
             for (JahiaTemplatesPackageHandler handler : remaining) {
                 JahiaTemplatesPackage pack = handler.getPackage();
-                if (pack.getDepends().isEmpty() || toDeploy.keySet().containsAll(pack.getDepends())) {
+                if (pack.getDepends().isEmpty() || toDeploy.keySet().containsAll(pack.getDepends()) || templatePackageRegistry.containsAll(pack.getDepends())) {
                     toDeploy.put(pack.getName(), handler);
                 } else {
                     newRemaining.add(handler);

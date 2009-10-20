@@ -70,6 +70,17 @@ class TemplatePackageRegistry {
         return registry.containsKey(packageName);
     }
 
+    /**
+     * Checks if specified template sets are all present in the repository.
+     *
+     * @param packageNames the list of template package names to check for
+     * @return <code>true</code>, if specified template packages are all present
+     * 		   in the repository
+     */
+    public boolean containsAll(List<String> packageNames) {
+    	return registry.keySet().containsAll(packageNames);
+    }
+
     public boolean containsFileName(String fileName) {
         return fileNameRegistry.containsKey(fileName);
     }

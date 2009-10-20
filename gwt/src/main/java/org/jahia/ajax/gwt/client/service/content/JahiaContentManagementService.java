@@ -229,4 +229,12 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
 
+    /**
+     * Get a node by its path if existing.
+     * @param path path o fthe node you want
+     * @return the founded node if existing
+     * @throws GWTJahiaServiceException if node does not exist
+     */
+    public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
+
 }

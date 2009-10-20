@@ -32,32 +32,43 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeListLoadResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.definition.ClassificationEditor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Content editing widget.
@@ -85,6 +96,7 @@ public class EditContentEngine extends Window {
     private AsyncTabItem contentTab;
     private AsyncTabItem layoutTab;
     private AsyncTabItem metadataTab;
+    private AsyncTabItem classificationTab;
     private AsyncTabItem publicationTab;
 //    private AsyncTabItem workflowTab;
 //    private AsyncTabItem rightsTab;
@@ -106,6 +118,7 @@ public class EditContentEngine extends Window {
     private Button ok;
     private Button restore;
     private Button cancel;
+    private ClassificationEditor classificationEditor;
 
     /**
      * Initializes an instance of this class.
@@ -228,6 +241,9 @@ public class EditContentEngine extends Window {
         metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
         tabs.add(metadataTab);
 
+        classificationTab = new AsyncTabItem(Messages.get("ece_classification", "Classification"));
+        tabs.add(classificationTab);
+
 //        publicationTab = new AsyncTabItem(Messages.get("ece_publication", "Publication"));
 //        publicationTab.setScrollMode(Style.Scroll.AUTO);
 //        tabs.add(publicationTab);
@@ -264,9 +280,22 @@ public class EditContentEngine extends Window {
 //        } else if (currentTab == rightsTab) {
 //        } else if (currentTab == workflowTab) {
 //        } else if (currentTab == versionsTab) {
+        } else if (currentTab == classificationTab) {
+            createClassificationTab();
         }
     }
 
+    private void createClassificationTab() {
+        if (!classificationTab.isProcessed()) {
+            if (!existingNode || (node != null)) {
+                classificationTab.setProcessed(true);
+                classificationEditor = new ClassificationEditor(node);
+                classificationTab.add(classificationEditor);
+
+            }
+            layout();
+        }
+    }
 
     private void createContentTab() {
         if (!contentTab.isProcessed()) {
@@ -369,7 +398,7 @@ public class EditContentEngine extends Window {
             if (!existingNode || (node != null)) {
                 metadataTab.setProcessed(true);
                 metadataTab.setStyleName("x-panel-mc");
-                metadataEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.METADATA, null, null, !existingNode || node.isWriteable(), true);
+                metadataEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.METADATA, null, Arrays.asList("jmix:categorized","jmix:tagged"), !existingNode || node.isWriteable(), true);
                 metadataEditor.setHeight(504);
                 metadataTab.add(metadataEditor);
                 layout();
@@ -508,6 +537,9 @@ public class EditContentEngine extends Window {
             if (metadataEditor != null) {
                 list.addAll(metadataEditor.getProperties());
             }
+            if (classificationEditor!=null) {
+                updatePropertiesListWithClassificationEditorData(list);
+            }
             JahiaContentManagementService.App.getInstance().saveProperties(elements, list, new AsyncCallback<Object>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
@@ -520,6 +552,29 @@ public class EditContentEngine extends Window {
                     linker.refreshMainComponent();
                 }
             });
+        }
+
+        private void updatePropertiesListWithClassificationEditorData(List<GWTJahiaNodeProperty> list) {
+            List<GWTJahiaNode> gwtJahiaNodes = classificationEditor.getCatStore().getAllItems();
+            List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
+            for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
+                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode));
+            }
+            GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+            gwtJahiaNodeProperty.setMultiple(true);
+            gwtJahiaNodeProperty.setValues(values);
+            gwtJahiaNodeProperty.setName("j:defaultCategory");
+            list.add(gwtJahiaNodeProperty);
+            gwtJahiaNodes = classificationEditor.getTagStore().getAllItems();
+            values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
+            for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
+                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode));
+            }
+            gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+            gwtJahiaNodeProperty.setMultiple(true);
+            gwtJahiaNodeProperty.setValues(values);
+            gwtJahiaNodeProperty.setName("j:tags");
+            list.add(gwtJahiaNodeProperty);
         }
     }
 

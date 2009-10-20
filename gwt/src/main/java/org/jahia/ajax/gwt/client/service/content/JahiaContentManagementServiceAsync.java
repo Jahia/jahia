@@ -213,4 +213,11 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
 
+    /**
+     * Get a node by its path if existing.
+     * @param path of hte node we want
+     * @param async callback to execute
+     */
+    void getNode(String path,AsyncCallback<GWTJahiaNode> async);
+
 }

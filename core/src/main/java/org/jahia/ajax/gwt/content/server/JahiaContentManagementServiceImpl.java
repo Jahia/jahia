@@ -664,4 +664,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return map;
     }
 
+    /**
+     * Get a node by its path if existing.
+     *
+     * @param path path o fthe node you want
+     * @return the founded node if existing
+     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     *          if node does not exist
+     */
+    public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
+        return navigation.getNode(path,"default",retrieveParamBean());
+    }
 }

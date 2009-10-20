@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data.definition;
 
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 /**
  * This is a bean to wrap a JCR node property, made from JCR 2.0 specs.
  */
-public class GWTJahiaNodeProperty implements Serializable {
+public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable {
 
     private boolean multiple ;
     private String name;

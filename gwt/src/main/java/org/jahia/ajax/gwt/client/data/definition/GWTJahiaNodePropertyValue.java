@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.data.definition;
 
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
@@ -40,7 +41,7 @@ import java.util.Date;
  * Serializable bean to wrap a JCR node property value.
  * @see GWTJahiaNodePropertyType
  */
-public class GWTJahiaNodePropertyValue implements Serializable {
+public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializable {
 
     private String value ;
     private int type ;

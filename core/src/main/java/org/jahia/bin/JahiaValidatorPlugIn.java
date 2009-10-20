@@ -73,6 +73,14 @@ public class JahiaValidatorPlugIn extends ValidatorPlugIn {
                 } catch (MalformedURLException e) {
                     // ignore it
                 }
+                configPath = templatePackage.getRootFolderPath() + "/validator-rules.xml";
+		        try {
+		            if (servlet.getServletContext().getResource(configPath) != null) {
+		                paths.append(",").append(configPath);
+		            }
+		        } catch (MalformedURLException e) {
+		            // ignore it
+		        }
             }
             if (paths.length() > 0) {
                 if (getPathnames() != null) {

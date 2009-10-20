@@ -15,7 +15,7 @@
                 <div class="forum-post-icon"><a title="Post a new post" href="#threadPost"><span/><fmt:message key="new.post"/></a></div>
             </div>
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} <fmt:message key="posts"/>
+                ${fn:length(currentNode.children)}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>
@@ -30,7 +30,7 @@
         <template:module node="${currentNode}" template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} <fmt:message key="posts"/>
+                ${fn:length(currentNode.children)}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>

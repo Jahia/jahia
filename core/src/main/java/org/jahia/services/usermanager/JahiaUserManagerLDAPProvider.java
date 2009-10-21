@@ -566,6 +566,11 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
             logger.warn("Reconnection required", tlee);
         } catch (javax.naming.CommunicationException ce) {
             logger.warn("Reconnection required", ce);
+        } catch (SizeLimitExceededException e) {
+            logger.warn(
+                    "User search generated more than configured maximum search limit, limiting to " +
+                    this.ldapProperties.getProperty(SEARCH_COUNT_LIMIT_PROP) +
+                    " first results...");
         }
         return answerList;
     }

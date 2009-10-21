@@ -447,7 +447,7 @@ public class NavigationHelper {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.TAG_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/content/tags", workspace, jParams);
+                GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/tags", workspace, jParams);
                 if (root != null) {
                     root.setDisplayName("tags");
                     userNodes.add(root);
@@ -497,11 +497,18 @@ public class NavigationHelper {
         return result;
     }
 
+    /**
+     * Return a node if existing exception otherwise
+     * @param path the path to test an dget the node if existing
+     * @param workspace the workspace
+     * @param jParams the jparams
+     * @return the existing node
+     * @throws GWTJahiaServiceException it node does not exist
+     */
     public GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
             return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path), true);
         } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
     }

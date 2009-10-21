@@ -202,6 +202,10 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("folder_open.png")
     public AbstractImagePrototype folderOpen();
 
+    @Resource("minus.png")
+    public AbstractImagePrototype minusRound();
 
+    @Resource("plus.png")
+    public AbstractImagePrototype plusRound();
 }
 

@@ -32,11 +32,10 @@
 package org.jahia.ajax.gwt.client.util.icons;
 
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -125,13 +124,14 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String JNT_FAQ = "jnt:faq";
     public static final String JNT_BOOKMARK = "jnt_bookmark";
     public static final String JNT_SITE = "jnt:site";
-    public static final String JNT_INTERVIEW = "jnt:interview                                        ";
+    public static final String JNT_INTERVIEW = "jnt:interview";
     public static final String JNT_COMMENT = "jnt:comment";
     public static final String JNT_BLOGPOST = "jnt:blogpost";
     public static final String JNT_EVENT = "jnt:event";
     public static final String JNT_PEOPLE = "jnt:people";
     public static final String PERCENT = "percent";
-
+    public static final String PLUSROUND = "plusround";
+    public static final String MINUSROUND = "minusround";
 
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
@@ -302,5 +302,13 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     public AbstractImagePrototype getLockIcon() {
         return CONTENT_ICONS.lock();
+    }
+
+    public AbstractImagePrototype getMinusRound() {
+        return CONTENT_ICONS.minusRound();
+    }
+
+    public AbstractImagePrototype getPlusRound() {
+        return CONTENT_ICONS.plusRound();
     }
 }

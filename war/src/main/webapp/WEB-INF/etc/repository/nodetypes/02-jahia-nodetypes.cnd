@@ -164,7 +164,7 @@
 // Tags
 //---------------------------------------------------------
 
-[jnt:tag] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:publication
+[jnt:tag] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:collection
 - tags (reference) multiple hidden < jnt:tag
 
 //---------------------------------------------------------

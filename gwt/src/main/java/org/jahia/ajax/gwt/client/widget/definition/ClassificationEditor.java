@@ -42,16 +42,12 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
@@ -66,6 +62,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.ArrayList;
@@ -82,18 +79,28 @@ import java.util.List;
 public class ClassificationEditor extends VerticalPanel {
     private TreeStore<GWTJahiaNode> catStore;
     private TreeStore<GWTJahiaNode> tagStore;
+    private TreeStore<GWTJahiaNode> treeStore;
 
     public ClassificationEditor(final GWTJahiaNode node) {
         TreeStore<GWTJahiaNode> treeStore = createStoreAndLoader(node);
-        createTreeGrid(treeStore);
+
+        this.setBorders(false);
+        TableData tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.TOP);
+        tableData.setWidth("100%");
+        tableData.setHeight("50%");
+        this.add(createTreeGrid(treeStore), tableData);
         // Now manage the tab for categories and tags
         TabPanel tabPanel = new TabPanel();
+        tabPanel.setHeight(250);
         createCategoriesPanel(tabPanel);
         createTagsPanel(tabPanel);
+        this.setWidth(795);
+        this.setHeight(500);
+        this.add(tabPanel, tableData);
     }
 
-    private void createTreeGrid(TreeStore<GWTJahiaNode> treeStore) {
-        ColumnConfig name = new ColumnConfig("name", "Name", 500);
+    private TreeGrid<GWTJahiaNode> createTreeGrid(TreeStore<GWTJahiaNode> treeStore) {
+        ColumnConfig name = new ColumnConfig("name", "Name", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
@@ -101,53 +108,71 @@ public class ClassificationEditor extends VerticalPanel {
                 Label label = new Label((String) modelData.get(s));
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
                 HorizontalPanel panel = new HorizontalPanel();
-                panel.setWidth(400);
+                panel.setWidth(695);
                 panel.setTableWidth("100%");
                 TableData tableData;
-                tableData = new TableData();
-                tableData.setWidth("80%");
-                panel.add(label);
-                if (gwtJahiaNode.getNodeTypes().contains("jnt:category")) {
-                    Button button = new Button("Add", new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent buttonEvent) {
-                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
-                            if(catStore.findModel(node1)==null)
-                            catStore.add(node1, false);
-                        }
-                    });
-                    button.setData("associatedNode", modelData);
+                if (gwtJahiaNode.getNodeTypes().contains("jnt:category") || gwtJahiaNode.getNodeTypes().contains(
+                        "jnt:tag")) {
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
-                    panel.add(button, tableData);
-                } else if (gwtJahiaNode.getNodeTypes().contains("jnt:tag")) {
-                    Button button = new Button("Add", new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent buttonEvent) {
-                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
-                            if(tagStore.findModel(node1)==null)
-                            tagStore.add(node1, false);
-                        }
-                    });
-                    button.setData("associatedNode", modelData);
-                    tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
-                    panel.add(button, tableData);
+                    tableData.setWidth("10%");
+                    panel.add(ContentModelIconProvider.getInstance().getIcon((GWTJahiaNode) modelData).createImage());
+                    tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                    tableData.setWidth("90%");
+                    panel.add(label, tableData);
+                } else {
+                    tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                    tableData.setWidth("100%");
+                    panel.add(label, tableData);
                 }
                 return panel;
             }
         });
-        TreeGrid<GWTJahiaNode> treeGrid = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(name)));
+        name.setFixed(true);
+        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        action.setAlignment(Style.HorizontalAlignment.RIGHT);
+        action.setRenderer(new GridCellRenderer() {
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore listStore, Grid grid) {
+                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
+                Button button = null;
+                if (gwtJahiaNode.getNodeTypes().contains("jnt:category")) {
+                    button = new Button("Add", new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent buttonEvent) {
+                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
+                            if (catStore.findModel(node1) == null) {
+                                catStore.add(node1, false);
+                            }
+                        }
+                    });
+                    button.setData("associatedNode", modelData);
+                    button.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+                } else if (gwtJahiaNode.getNodeTypes().contains("jnt:tag")) {
+                    button = new Button("Add", new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent buttonEvent) {
+                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
+                            if (tagStore.findModel(node1) == null) {
+                                tagStore.add(node1, false);
+                            }
+                        }
+                    });
+                    button.setData("associatedNode", modelData);
+                    button.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+                }
+                return button != null ? button : new Label("");
+            }
+        });
+        action.setFixed(true);
+        TreeGrid<GWTJahiaNode> treeGrid = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(name,
+                                                                                                              action)));
         treeGrid.setBorders(true);
-        treeGrid.setWidth(500);
+        treeGrid.setWidth(780);
         treeGrid.setHeight(250);
         treeGrid.setAutoExpandColumn("name");
         treeGrid.getTreeView().setRowHeight(25);
-        this.setBorders(false);
-        this.setWidth(500);
-        this.setHeight(500);
-        TableData tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.TOP);
-        tableData.setWidth("100%");
-        tableData.setHeight("50%");
-        this.add(treeGrid, tableData);
+        treeGrid.getTreeView().setForceFit(true);
+        return treeGrid;
     }
 
     private TreeStore<GWTJahiaNode> createStoreAndLoader(final GWTJahiaNode node) {
@@ -201,7 +226,7 @@ public class ClassificationEditor extends VerticalPanel {
                 });
             }
         });
-        TreeStore<GWTJahiaNode> treeStore = new TreeStore<GWTJahiaNode>(loader);
+        treeStore = new TreeStore<GWTJahiaNode>(loader);
         catStore = new TreeStore<GWTJahiaNode>(catLoader);
         TreeLoader<GWTJahiaNode> tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -233,12 +258,32 @@ public class ClassificationEditor extends VerticalPanel {
 
     private void createCategoriesPanel(TabPanel tabPanel) {
         AsyncTabItem categoriesTab = new AsyncTabItem(Messages.get("ece_categories", "Categories"));
-        ColumnConfig columnConfig = new ColumnConfig("name", "Name", 500);
+        ColumnConfig columnConfig = new ColumnConfig("name", "Name", 680);
+        columnConfig.setFixed(true);
         columnConfig.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                     ListStore listStore, Grid grid) {
                 Label label = new Label((String) modelData.get(s));
+
+                HorizontalPanel panel = new HorizontalPanel();
+                panel.setWidth(680);
+                panel.setTableWidth("100%");
+                TableData tableData;
+                tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
+                tableData.setWidth("10%");
+                panel.add(ContentModelIconProvider.getInstance().getIcon((GWTJahiaNode) modelData).createImage());
+                tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                tableData.setWidth("90%");
+                panel.add(label, tableData);
+                return panel;
+            }
+        });
+        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        action.setAlignment(Style.HorizontalAlignment.RIGHT);
+        action.setRenderer(new GridCellRenderer() {
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore listStore, Grid grid) {
                 Button button = new Button("Remove", new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
@@ -247,39 +292,52 @@ public class ClassificationEditor extends VerticalPanel {
                     }
                 });
                 button.setData("associatedNode", modelData);
-                HorizontalPanel panel = new HorizontalPanel();
-                panel.setWidth(400);
-                panel.setTableWidth("100%");
-                TableData tableData;
-                tableData = new TableData();
-                tableData.setWidth("80%");
-                panel.add(label);
-                tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
-                panel.add(button, tableData);
-                return panel;
+                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                return button;
             }
         });
+        action.setFixed(true);
         TreeGrid<GWTJahiaNode> catGrid = new TreeGrid<GWTJahiaNode>(catStore, new ColumnModel(Arrays.asList(
-                columnConfig)));
+                columnConfig, action)));
         catGrid.setHeight(250);
-        catGrid.setWidth(500);
+        catGrid.setWidth(780);
         catGrid.setAutoExpandColumn("name");
         catGrid.getTreeView().setRowHeight(25);
+        catGrid.getTreeView().setForceFit(true);
         categoriesTab.add(catGrid);
         tabPanel.add(categoriesTab);
-        tabPanel.setWidth(500);
+        tabPanel.setWidth(780);
         tabPanel.setHeight(250);
     }
 
     private void createTagsPanel(TabPanel tabPanel) {
         ColumnConfig columnConfig;
         TableData tableData;
-        columnConfig = new ColumnConfig("name", "Name", 500);
+        columnConfig = new ColumnConfig("name", "Name", 680);
+        columnConfig.setFixed(true);
         columnConfig.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                     ListStore listStore, Grid grid) {
                 Label label = new Label((String) modelData.get(s));
+                HorizontalPanel panel = new HorizontalPanel();
+                panel.setWidth(680);
+                panel.setTableWidth("100%");
+                TableData tableData;
+                tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
+                tableData.setWidth("10%");
+                panel.add(ContentModelIconProvider.getInstance().getIcon((GWTJahiaNode) modelData).createImage());
+                tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                tableData.setWidth("90%");
+                panel.add(label, tableData);
+                return panel;
+            }
+        });
+        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        action.setAlignment(Style.HorizontalAlignment.RIGHT);
+        action.setRenderer(new GridCellRenderer() {
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore listStore, Grid grid) {
                 Button button = new Button("Remove", new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
@@ -288,79 +346,79 @@ public class ClassificationEditor extends VerticalPanel {
                     }
                 });
                 button.setData("associatedNode", modelData);
-                HorizontalPanel panel = new HorizontalPanel();
-                panel.setWidth(400);
-                panel.setTableWidth("100%");
-                TableData tableData;
-                tableData = new TableData();
-                tableData.setWidth("80%");
-                panel.add(label);
-                tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
-                panel.add(button, tableData);
-                return panel;
+                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                return button;
             }
         });
         AsyncTabItem tagTab = new AsyncTabItem(Messages.get("ece_tags", "Tags"));
         HorizontalPanel panel = new HorizontalPanel();
-        panel.setWidth(500);
+        panel.setWidth(780);
         panel.setTableWidth("100%");
         // Add a new tag
         final TextField<String> name = new TextField<String>();
-        name.setMaxLength(60);
-        TableData data = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
-        data.setWidth("20%");
-        panel.add(new Label("Add Tag"), data);
+        name.setMaxLength(120);
+        name.setWidth(300);
+        TableData data = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
+        data.setWidth("50%");
+        panel.add(new Label("Add Tag : "), data);
         name.setName("tagName");
         data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
-        data.setWidth("60%");
-        panel.add(name,data);
+        data.setWidth("40%");
+        panel.add(name, data);
         Button addTag = new Button("Add", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getNode("/content/tags/" + name.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
+                final String s = treeStore.getRootItems().get(1).getPath();
+                async.getNode(s + "/" + name.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {
-                        async.createNode("/content/tags", name.getRawValue(), "jnt:tag",
-                                         new ArrayList<GWTJahiaNodeProperty>(), null,
+
+                        async.createNode(s, name.getRawValue(), "jnt:tag", new ArrayList<GWTJahiaNodeProperty>(), null,
                                          new AsyncCallback<GWTJahiaNode>() {
                                              public void onFailure(Throwable caught) {
                                                  com.google.gwt.user.client.Window.alert(
-                                                         "New Tag creation failed\n\n" + caught.getLocalizedMessage());
+                                                         "New tag creation failed\n\n" + caught.getLocalizedMessage());
                                                  Log.error("failed", caught);
                                              }
 
                                              public void onSuccess(GWTJahiaNode result) {
-                                                 if(tagStore.findModel(result)==null)
-                                                 tagStore.add(result, false);
+                                                 if (tagStore.findModel(result) == null) {
+                                                     tagStore.add(result, false);
+                                                 }
+                                                 treeStore.add(treeStore.getRootItems().get(1), result, true);
                                              }
                                          });
                     }
 
                     public void onSuccess(GWTJahiaNode result) {
-                        if(tagStore.findModel(result)==null)
-                        tagStore.add(result,false);
+                        if (tagStore.findModel(result) == null) {
+                            tagStore.add(result, false);
+                        }
                     }
                 });
 
             }
         });
-        data = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
-        data.setWidth("20%");
-        panel.add(addTag,data);
-        tagTab.add(panel);
+        data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+        data.setWidth("10%");
+        panel.add(addTag, data);
         // Sub grid
         TreeGrid<GWTJahiaNode> tagGrid = new TreeGrid<GWTJahiaNode>(tagStore, new ColumnModel(Arrays.asList(
-                columnConfig)));
-        tagGrid.setHeight(250);
-        tagGrid.setWidth(500);
+                columnConfig, action)));
+        tagGrid.setHeight(200);
+        tagGrid.setWidth(780);
         tagGrid.setAutoExpandColumn("name");
         tagGrid.getTreeView().setRowHeight(25);
-        tagTab.add(tagGrid);
+        tagGrid.getTreeView().setForceFit(true);
+        tagTab.setWidth(780);
+        tagTab.setHeight(250);
+        VerticalPanel verticalPanel = new VerticalPanel();
+        verticalPanel.setWidth(780);
+        verticalPanel.setTableWidth("100%");
+        verticalPanel.add(panel);
+        verticalPanel.add(tagGrid);
+        tagTab.add(verticalPanel);
         tabPanel.add(tagTab);
-        tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.TOP);
-        tableData.setWidth("100%");
-        tableData.setHeight("50%");
-        this.add(tabPanel, tableData);
     }
 
     public TreeStore<GWTJahiaNode> getCatStore() {

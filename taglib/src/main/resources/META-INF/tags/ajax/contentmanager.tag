@@ -448,6 +448,8 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_column_published_by"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.publicationInfo.label"
                             aliasResourceName="fm_column_publication_info"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.count.label"
+                            aliasResourceName="fm_column_count"/>
 
 <internal:gwtResourceBundle
         resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"

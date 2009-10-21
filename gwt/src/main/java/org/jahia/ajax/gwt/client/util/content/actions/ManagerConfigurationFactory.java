@@ -258,6 +258,7 @@ public class ManagerConfigurationFactory {
 
         categoryManagerConfig.addColumn("ext");
         categoryManagerConfig.addColumn("name");
+        categoryManagerConfig.addColumn("count");
         categoryManagerConfig.addColumn("locked");
         categoryManagerConfig.addColumn("path");
 

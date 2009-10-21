@@ -185,6 +185,7 @@ public class NavigationHelper {
         String[] filtersToApply = getFiltersToApply(filters);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         boolean displayAllVirtualSites = nodeTypes != null && nodeTypes.contains(Constants.JAHIANT_VIRTUALSITE);
+        boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
         for (JCRNodeWrapper f : list) {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
@@ -202,12 +203,18 @@ public class NavigationHelper {
                 }
                 if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
-                    logger.error("******************** "+theNode.getPath());
                     if (displayAllVirtualSites) {
                         try {
                             theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
                         } catch (GWTJahiaServiceException e) {
                             logger.error(e.getMessage(), e);
+                        }
+                    }
+                    if (displayTags) {
+                    	try {
+	                        theNode.set("count", f.getReferences().getSize());
+                        } catch (RepositoryException e) {
+                        	logger.warn("Unable to count node references for node: " + f.getPath(), e);
                         }
                     }
 
@@ -247,7 +254,9 @@ public class NavigationHelper {
         }
 
         // ToDo : find a better way to implement this. Avoid multiple ajax request
-        logger.debug(" Selected path: "+selectedPath);
+        if (logger.isDebugEnabled()) {
+        	logger.debug(" Selected path: "+selectedPath);
+        }
         for (GWTJahiaNode gwtJahiaNode : result) {
             if (openPaths != null) {
                 gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode, openPaths));

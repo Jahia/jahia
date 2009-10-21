@@ -235,7 +235,7 @@
                                               toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
                                         <sleep seconds="90"/>
                                         <echo message="Get the sitemape"/>
-                                        <get src="http://localhost:8080/cms/render/default/en/content/sites/ACME/home.sitemap.txt" dest="${project.build.directory}/rawpageurls.txt"/>
+                                        <get src="${jahia.test.jmeter.sitemap.url}/cms/render/default/en/content/sites/ACME/home.sitemap.txt" dest="${project.build.directory}/rawpageurls.txt"/>
                                         <exec executable="sort" dir="${project.build.directory}"
                                               output="${project.build.directory}/sortpageurls.txt"
                                               input="${project.build.directory}/rawpageurls.txt"/>

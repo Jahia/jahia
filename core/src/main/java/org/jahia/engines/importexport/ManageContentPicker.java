@@ -633,6 +633,20 @@ public class ManageContentPicker {
         } else if ( !"".equals(searchString.trim()) ){
             searchString += contentPickingFilterBuffer.toString();
         }
+        
+        // destination object definition
+        JahiaContainerDefinition thisJcd = searchString.length() > 0 ? (JahiaContainerDefinition)ContentObject.getInstance((ContainerDefinitionKey) (object).getDefinitionKey(null)) : null;
+        if (thisJcd != null) {
+        	StringBuilder srcQuery = new StringBuilder(64);
+        	srcQuery.append("(").append(searchString).append(") AND (" + JahiaSearchConstant.DEFINITION_NAME + ":").append(thisJcd.getName());
+        	String[] aliases = thisJcd.getAliasNames();
+        	for (String alias : aliases) {
+				srcQuery.append(" OR " + JahiaSearchConstant.CONTAINER_ALIAS + ":").append(alias);
+			}
+        	srcQuery.append(")");
+        	searchString = srcQuery.toString();
+        }
+        
         //summary
         if (logger.isDebugEnabled()) {
             logger.debug("[init parameters from request: "
@@ -749,10 +763,6 @@ public class ManageContentPicker {
             JahiaSearchResult myResults = new JahiaSearchResult(resultBuilder);
             Map results = new HashMap();
 
-            // destination object cdk & cdfn
-            ContainerDefinitionKey cdk = (ContainerDefinitionKey) (object).getDefinitionKey(null);
-            JahiaContainerDefinition thisJcd = (JahiaContainerDefinition) ContentObject.getInstance(cdk);
-            logger.debug("destination cdk:" + cdk + " cdfn:" + thisJcd.getName());
             logger.debug("LUCENE "+searchResults.getHitCount()+" results returned in "+(System.currentTimeMillis()-start)+"ms,... processing compatible");
             start=System.currentTimeMillis();
             // big loop to test the compatibility of container type

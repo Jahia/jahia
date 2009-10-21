@@ -261,6 +261,19 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>
+        		If set to true, pagination links will use JavaScript to update the current scrolling value
+        		and submit the enclosing form element (in this case the parent &lt;template:jahiaPageForm/&gt; is required).
+        		This is the case, when there sorting or filtering parameters in the HTML form, which should be
+        		considered for pagination.
+        		The default value is false, i.e. the pagination links use URLs with pagination parameters.
+        	</description>
+        	<name>useFormForPagination</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        	<type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Displays the actual box. This tag dispatches the request to the JSP file of the box</description>
@@ -669,6 +682,19 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>
+        		If set to true, pagination links will use JavaScript to update the current scrolling value
+        		and submit the enclosing form element (in this case the parent &lt;template:jahiaPageForm/&gt; is required).
+        		This is the case, when there sorting or filtering parameters in the HTML form, which should be
+        		considered for pagination.
+        		The default value is false, i.e. the pagination links use URLs with pagination parameters.
+        	</description>
+        	<name>useFormForPagination</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        	<type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Displays an absolute container list (declares it if needed)</description>
@@ -807,6 +833,19 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>
+        		If set to true, pagination links will use JavaScript to update the current scrolling value
+        		and submit the enclosing form element (in this case the parent &lt;template:jahiaPageForm/&gt; is required).
+        		This is the case, when there sorting or filtering parameters in the HTML form, which should be
+        		considered for pagination.
+        		The default value is false, i.e. the pagination links use URLs with pagination parameters.
+        	</description>
+        	<name>useFormForPagination</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        	<type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Displays a relative container list (declares it if needed)</description>
@@ -931,6 +970,19 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+        	<description>
+        		If set to true, pagination links will use JavaScript to update the current scrolling value
+        		and submit the enclosing form element (in this case the parent &lt;template:jahiaPageForm/&gt; is required).
+        		This is the case, when there sorting or filtering parameters in the HTML form, which should be
+        		considered for pagination.
+        		The default value is false, i.e. the pagination links use URLs with pagination parameters.
+        	</description>
+        	<name>useFormForPagination</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        	<type>boolean</type>
         </attribute>
     </tag>
     <tag>

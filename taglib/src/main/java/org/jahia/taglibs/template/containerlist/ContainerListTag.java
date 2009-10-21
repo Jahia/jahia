@@ -80,6 +80,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.container.ContainerCache;
 import org.jahia.taglibs.template.container.ContainerSupport;
 import org.jahia.taglibs.template.container.ContainerTag;
+import org.jahia.taglibs.template.form.JahiaPageFormTag;
 import org.jahia.taglibs.uicomponents.actionmenu.ActionMenuOutputter;
 import org.jahia.taglibs.utility.Utils;
 
@@ -157,6 +158,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     private String listName = "";
     private String parentListName = "";
     private JahiaContainerList containerList = null;
+    private boolean useFormForPagination;
+    private boolean currentScrollingValueInputIncluded;
 
     /**
      * @jsp:attribute name="id" required="false" rtexprvalue="true"
@@ -392,9 +395,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                     }
                 }
             }
-            if (displayPagination.contains(PaginationBean.PAGINATION_ON_TOP)) {
-                buff.append(displayPagination());
-            }
             final JspWriter out = pageContext.getOut();
             out.println(buff.toString());
         } catch (Exception e) {
@@ -566,6 +566,9 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         final ProcessingContext jParams = Jahia.getThreadParamBean();
         final boolean shouldWeDisplayActionMenus = displayActionMenu && ProcessingContext.EDIT.equals(jData.getProcessingContext().getOpMode());
         StringBuilder buf = new StringBuilder().append(getBodyContent().getString());
+        if (displayPagination.contains(PaginationBean.PAGINATION_ON_TOP)) {
+            buf.insert(0, displayPagination());
+        }
         if (containerList.getID() > 0 && (displaySkins || displayExtensions)) {
             buf = skinnify((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), buf);
         }
@@ -679,11 +682,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             final String url = jData.gui().drawContainerListNextWindowPageURL(
                     getContainerList(),
                     (startPageIndex > 1 ? stopPageIndex : nbStepPerPage) + 1
-                            - currentPageIndex, windowSize, false, getId());
+                            - currentPageIndex, windowSize, useFormForPagination, getId());
 
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"nextRangeOfPages\" href=\"");
-                buf.append(url);
+                buf.append(getPaginationUrl(url));
                 buf.append("\">");
                 buf.append("...");
                 buf.append("</a>");
@@ -701,10 +704,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (startPageIndex > 1) {
             final StringBuffer buf = new StringBuffer();
             final String url = jData.gui().drawContainerListPreviousWindowPageURL(getContainerList(),
-                    currentPageIndex - startPageIndex + 1, windowSize, false, getId());
+                    currentPageIndex - startPageIndex + 1, windowSize, useFormForPagination, getId());
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousRangeOfPages\" href=\"");
-                buf.append(url);
+                buf.append(getPaginationUrl(url));
                 buf.append("\">");
                 buf.append("...");
                 buf.append("</a>");
@@ -719,11 +722,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (getContainerList() == null) return "";
         final Iterator<JahiaContainer> containers = getContainerList().getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListPreviousWindowPageURL(getContainerList(), 1, windowSize, false, getId());
+            final String url = jData.gui().drawContainerListPreviousWindowPageURL(getContainerList(), 1, windowSize, useFormForPagination, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousLink\" href=\"");
-                buf.append(url);
+                buf.append(getPaginationUrl(url));
                 buf.append("\">");
                 final String title = getMessage("pagination.previousButton", "Previous"
                 );
@@ -740,11 +743,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (getContainerList() == null) return "";
         final Iterator<JahiaContainer> containers = getContainerList().getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListNextWindowPageURL(getContainerList(), 1, windowSize, false, getId());
+            final String url = jData.gui().drawContainerListNextWindowPageURL(getContainerList(), 1, windowSize, useFormForPagination, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"nextLink\" href=\"");
-                buf.append(url);
+                buf.append(getPaginationUrl(url));
                 buf.append("\">");
                 final String title = getMessage("pagination.nextButton", "Next"
                 );
@@ -761,11 +764,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (pageNumber == currentPageIndex) {
             return String.valueOf(pageNumber);
         }
-        final String url = jData.gui().drawContainerListWindowPageURL(getContainerList(), pageNumber, false, getId());
+        final String url = jData.gui().drawContainerListWindowPageURL(getContainerList(), pageNumber, useFormForPagination, getId());
         final StringBuffer buff = new StringBuffer();
         if (url != null && url.length() > 0) {
             buff.append("<a class=\"paginationPageUrl\" href=\"");
-            buff.append(url);
+            buff.append(getPaginationUrl(url));
             buff.append("\">");
             buff.append(pageNumber);
             buff.append("</a>");
@@ -811,8 +814,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
                 final String previousLink = getPreviousButtonLink(pagination.getWindowSize());
                 final String nextLink = getNextButtonLink(pagination.getWindowSize());
-                //    final String currentScrollingValue = pagination.getScrollingValue(pagination.getCurrentPageIndex());
-                //    final String currentScrollingValueInput = getScrollingValueInput(containerList, currentScrollingValue);
+                final String currentScrollingValueInput = getScrollingValueInput(containerList, pagination.getScrollingValue(0));
                 final String previousRangeOfPages = getPreviousRangeOfPages(pageNumber, startPageIndex,
                         pagination.getCurrentPageIndex(), pagination.getWindowSize());
                 final String nextRangeOfPages = getNextRangeOfPages(pageNumber, startPageIndex, stopPageIndex,
@@ -829,7 +831,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 buff.append("</div><!-- end pagination position -->\n");
 
                 buff.append("<div class=\"paginationNavigation\">\n");
-                //     buff.append(currentScrollingValueInput);
+                if (useFormForPagination && !currentScrollingValueInputIncluded) {
+                    buff.append(currentScrollingValueInput);
+                    currentScrollingValueInputIncluded = true;
+                }
                 buff.append("\n");
                 buff.append(previousLink);
                 buff.append("\n");
@@ -894,6 +899,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         sortByMetaData = null;
         sortOrder = null;
         sortFieldDef = null;
+        useFormForPagination = false;
+        currentScrollingValueInputIncluded = false;
         super.resetState();
     }
 
@@ -997,5 +1004,32 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     public String getSortOrder() {
         return sortOrder;
+    }
+
+    public void setUseFormForPagination(boolean useFormForPagination) {
+        this.useFormForPagination = useFormForPagination;
+    }
+    
+    protected String getEnclosingFormName() {
+        JahiaPageFormTag parentFormTag = (JahiaPageFormTag) findAncestorWithClass(this, JahiaPageFormTag.class);
+        if (parentFormTag == null) {
+            throw new IllegalArgumentException(
+                    "Parent <template:jahiaPageForm/> tag not found. Cannnot use pagination using form.");
+        }
+        return parentFormTag.getName();
+    }
+    
+    protected String getPaginationUrl(String url) throws JahiaException {
+        String paginationUrl = url;
+        if (useFormForPagination) {
+            String formName = getEnclosingFormName();
+            StringBuilder buf = new StringBuilder(64);
+            buf.append("javascript:{document.").append(formName).append(
+                    "." + ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER).append(
+                    getId() != null ? getId() + "_" : "").append(containerList.getDefinition().getName()).append(
+                    ".value='").append(url).append("'; document.").append(formName).append(".submit();}");
+            paginationUrl = buf.toString();
+        }
+        return paginationUrl;
     }
 }

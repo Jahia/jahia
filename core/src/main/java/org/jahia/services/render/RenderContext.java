@@ -33,6 +33,7 @@ package org.jahia.services.render;
 
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +60,7 @@ public class RenderContext {
     private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
     
     private Map<String, Object> parameters = new HashMap<String, Object>();
+    private JCRNodeWrapper siteNode;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -143,4 +145,11 @@ public class RenderContext {
     	return parameters;
     }
 
+    public void setSiteNode(JCRNodeWrapper siteNode) {
+        this.siteNode = siteNode;
+    }
+
+    public JCRNodeWrapper getSiteNode() {
+        return siteNode;
+    }
 }

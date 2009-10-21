@@ -9,7 +9,7 @@
         <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="put"/>
-        <jcr:node path="/content/tags" var="tagsNode"/>
+        <jcr:node path="${renderContext.siteNode.path}/tags" var="tagsNode"/>
         <c:set var="tags" value="${jcr:getNodes(tagsNode,'jnt:tag')}"/>
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="asssignedTags"/>
 		<c:forEach items="${asssignedTags}" var="tag">

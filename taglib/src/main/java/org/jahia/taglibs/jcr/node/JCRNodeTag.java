@@ -39,7 +39,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.PathNotFoundException;
@@ -85,10 +84,8 @@ public class JCRNodeTag extends AbstractJahiaTag {
             locale = currentResource.getLocale();
         }
         if (ctx != null) {
-            JahiaUser user = ctx.getUser();
             try {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-                JCRNodeWrapper n = service.getSessionFactory().getCurrentUserSession().getNode(path);
                 JCRNodeWrapper node = service.getSessionFactory().getCurrentUserSession(workspace, locale).getNode(path);
                 pageContext.setAttribute(var, node, scope);
             } catch (PathNotFoundException e) {

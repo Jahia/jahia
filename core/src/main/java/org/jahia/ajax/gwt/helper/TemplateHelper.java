@@ -58,6 +58,7 @@ public class TemplateHelper {
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
             renderContext.setSite(ctx.getSite());
+            renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/content/sites/" + ctx.getSite().getSiteKey()));
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
             if (contextParams != null) {

@@ -232,6 +232,7 @@ public class NavigationHelper {
                 Resource r = new Resource(node, "html", null, null);
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
                 renderContext.setSite(context.getSite());
+                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/content/sites/" + context.getSite().getSiteKey()));
                 renderContext.setIncludeSubModules(false);
                 renderService.render(r, renderContext);
                 List<String> l = r.getMissingResources();

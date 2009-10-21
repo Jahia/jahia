@@ -400,7 +400,7 @@ public class TableView extends TopRightComponent {
 				col.setSortable(true);
 				col.setResizable(true);
             } else if ("count".equals(columnName)) {
-	            col = new ColumnConfig("count", Messages.get("fm_column_count", "Count"), 80);
+	            col = new ColumnConfig("count", Messages.get("fm_column_count", "Count"), 60);
 	            col.setSortable(true);
 	            col.setResizable(true);
             }

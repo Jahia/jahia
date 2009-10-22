@@ -1,0 +1,9 @@
+Jahia Default Module
+
+* Goals Overview
+
+  The Jahia Default Module container common resources (definitions, rendering templates, rules etc.) to handle base set of content objects in Jahia.
+
+	* Usage
+
+	  General instructions on how to use features and components in the Jahia Default Module can be found on the {{{usage.html}usage page}}.

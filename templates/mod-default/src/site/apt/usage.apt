@@ -1,0 +1,28 @@
+Usage of Jahia Default Module
+
+  This module contains common content definitions, rendering templates, resource bundles and other resource and is deployed by default.
+
+  The module includes a set of features and components, providing base Jahia templates functionality.
+
+* Tagging
+
+  {{{http://en.wikipedia.org/wiki/Tag_%28metadata%29}Tagging}} the content is one of the important features in {{{http://en.wikipedia.org/wiki/Social_network_service}social networking}}. 
+
+  Jahia leverages tagging by enabling its support on all content containers and pages using following definitions:
+
+--------------------------------------------
+[jmix:tagged] > jmix:metadata mixin
+ - j:tags (reference, category[autoSelectParent=false]) multiple
+ - j:newTag (string) hidden indexed=no
+
+[jnt:tag] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:collection
+ - tags (reference) multiple hidden < jnt:tag
+
+[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
+ + * (nt:base) version
+
+[jnt:container] > nt:base, jmix:structuredContent, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords, jmix:tagged
+--------------------------------------------
+
+  You can hardcode it inside your definition, like in the forum module post definition:
+

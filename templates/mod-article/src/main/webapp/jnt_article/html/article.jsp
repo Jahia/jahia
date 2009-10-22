@@ -8,13 +8,13 @@
 <jcr:nodeProperty node="${currentNode}" name="intro" var="intro"/>
 
 <h2>${title.string}</h2>
-
-<div class="intro">
-    ${intro.string}
-</div>
 <div>
 	<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" template="tags"/>
 	<template:module node="${currentNode}" template="addTag"/>
+</div>
+
+<div class="intro">
+    ${intro.string}
 </div>
 <c:forEach items="${currentNode.editableChildren}" var="paragraph">
     <template:module node="${paragraph}" template="default"/>

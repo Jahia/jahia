@@ -216,7 +216,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 String key = entry.getKey();
                 if (!reservedParameters.contains(key)) {
                     String[] values = entry.getValue();
-                    if (((JCRNodeWrapper)node).getApplicablePropertyDefinition(key).isMultiple()) {
+                    if (((JCRNodeWrapper)newNode).getApplicablePropertyDefinition(key).isMultiple()) {
                     	newNode.setProperty(key, values);
                     } else {
                         newNode.setProperty(key, values[0]);

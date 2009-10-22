@@ -10,6 +10,6 @@
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="put"/>
 		<input type="text" name="j:newTag" value=""/>
-        <input type="submit" title="Add" value="Add" class="button"/>
+        <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"/>
     </form>
 </c:if>

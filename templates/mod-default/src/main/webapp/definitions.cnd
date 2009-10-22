@@ -88,3 +88,5 @@ file image (file[mime='image/*'])
   bigText body
   file image
   sharedSmallText align (choicelist[resourceBundle]) = left indexed=no < left,right,default
+
+[jnt:pageTagging] > nt:base, mix:title, jmix:interactiveContent 

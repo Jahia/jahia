@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
- * Created by IntelliJ IDEA.
+ * Icon provider for for different types of content objects.
  * User: ktlili
  * Date: Jul 15, 2009
  * Time: 10:50:04 AM
@@ -118,6 +118,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String JNT_MAIL = "jnt:mail";
     public static final String JNT_PUBLICATION = "jnt:publication";
     public static final String JNT_TAG = "jnt:tag";
+    public static final String JNT_PAGE_TAGGING = "jnt:pageTagging";
     public static final String JNT_CATEGORY = "jnt:category";
     public static final String JNT_NEWS = "jnt:news";
     public static final String JNT_PIECHART = "jnt:piechart";
@@ -136,6 +137,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
     private ContentModelIconProvider() {
+    	super();
     }
 
 
@@ -210,7 +212,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntMail();
             } else if (type.equalsIgnoreCase(JNT_PUBLICATION)) {
                 return CONTENT_ICONS.jntPublication();
-            } else if (type.equalsIgnoreCase(JNT_TAG)) {
+            } else if (type.equalsIgnoreCase(JNT_TAG) || type.equalsIgnoreCase(JNT_PAGE_TAGGING) ) {
                 return CONTENT_ICONS.jntTag();
             } else if (type.equalsIgnoreCase(JNT_CATEGORY)) {
                 return CONTENT_ICONS.jntCategory();

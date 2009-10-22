@@ -262,4 +262,16 @@
             ${jcr:getNodes(currentNode,'jnt:page')}
         </example>
     </function>
+    <function>
+        <description>
+        	Returns the first parent of the current node that has the specified node type.
+        	If no matching node is found, null is returned.
+		</description>
+        <name>getParentOfType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getParentOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:getParentOfType(currentNode,'jnt:page')}
+        </example>
+    </function>
 </taglib>

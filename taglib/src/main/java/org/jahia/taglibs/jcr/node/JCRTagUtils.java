@@ -40,6 +40,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -150,4 +151,34 @@ public class JCRTagUtils {
         }
         return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
     }
+
+	/**
+	 * Returns the first parent of the current node that has the specified node
+	 * type. If no matching node is found, <code>null</code> is returned.
+	 * 
+	 * @param node
+	 *            the current node to start the lookup from
+	 * @param type
+	 *            the required type of the parent node
+	 * @return the first parent of the current node that has the specified node
+	 *         type. If no matching node is found, <code>null</code> is returned
+	 */
+	public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node, String type) {
+		JCRNodeWrapper matchingParent = null;
+		try {
+			JCRNodeWrapper parent = node.getParent();
+			while (parent != null) {
+				if (parent.isNodeType(type)) {
+					matchingParent = parent;
+					break;
+				}
+				parent = parent.getParent();
+			}
+		} catch (ItemNotFoundException e) {
+			// we reached the hierarchy top
+		} catch (RepositoryException e) {
+			logger.error("Error while retrieving nodes parent node. Cause: " + e.getMessage(), e);
+		}
+		return matchingParent;
+	}
 }

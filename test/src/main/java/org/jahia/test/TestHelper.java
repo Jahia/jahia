@@ -40,6 +40,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.exceptions.JahiaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.codec.binary.Base64;
@@ -51,6 +52,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Iterator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -70,8 +72,9 @@ public class TestHelper {
     public static JahiaSite createSite(String name) throws Exception {
         return createSite(name, "localhost", TCK_TEMPLATES, null);
     }
-    
-    public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile) throws Exception {
+
+    public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile)
+            throws Exception {
 
         ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -82,18 +85,28 @@ public class TestHelper {
         if (site != null) {
             service.removeSite(site);
         }
-    
+        removeAllSites(service);
+        assert !service.getSites().hasNext();
         site = service.addSite(admin, name, serverName, name, name, null, ctx.getLocale(), templateSet,
-                importFile == null ? "noImport" : "fileImport", importFile, null, false, false, ctx);
-    
+                               importFile == null ? "noImport" : "fileImport", importFile, null, false, false, ctx);
+
         ctx.setSite(site);
 
         return site;
     }
 
+    private static void removeAllSites(JahiaSitesService service) throws JahiaException {
+        final Iterator<JahiaSite> sites = service.getSites();
+        while (sites.hasNext()) {
+            JahiaSite jahiaSite = sites.next();
+            service.removeSite(jahiaSite);
+        }
+    }
+
     public static void deleteSite(String name) throws Exception {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         service.removeSite(service.getSiteByKey(name));
+        removeAllSites(service);
     }
 
     public static void cleanDatabase() throws Exception {

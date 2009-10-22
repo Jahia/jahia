@@ -534,7 +534,9 @@ public class Service {
         if (authorizedForServerPermissions) {
             doImportServerPermissions = true;
         }
-
+        ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null,
+                                                      user, null, ProcessingContext.EDIT);
+        
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("importFileName").equals("users.xml")) {
@@ -542,8 +544,7 @@ public class Service {
                 break;
             }
         }
-        ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null,
-                                                      user, null, ProcessingContext.EDIT);
+        
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {

@@ -317,10 +317,10 @@
                                 </goals>
                                 <configuration>
                                     <properties>
-                                        <db-ip>127.0.0.1</db-ip>
-                                        <db-login>jahia</db-login>
-                                        <db-pwd>jahia</db-pwd>
-                                        <db-name>jmeterdata</db-name>
+                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
+                                        <db-login>${jahia.configure.databaseUsername}</db-login>
+                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
+                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
                                         <jasperreport>allTestPlanReport</jasperreport>
                                     </properties>
                                     <source>${pom.basedir}/src/main/scripts/groovy/generateJasperReports.groovy</source>
@@ -334,10 +334,10 @@
                                 </goals>
                                 <configuration>
                                     <properties>
-                                        <db-ip>127.0.0.1</db-ip>
-                                        <db-login>jahia</db-login>
-                                        <db-pwd>jahia</db-pwd>
-                                        <db-name>jmeterdata</db-name>
+                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
+                                        <db-login>${jahia.configure.databaseUsername}</db-login>
+                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
+                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
                                         <db-clean>true</db-clean>
                                         <results-path>${jahia.test.jmeter.path}/bin/results</results-path>
                                     </properties>

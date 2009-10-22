@@ -599,7 +599,7 @@ public class Service {
     public void notify(NodeWrapper node, String eventType,
             Principal subscriber, KnowledgeHelper drools) {
         if (subscriber != null) {
-            Set<Principal> subscribers = new HashSet(1);
+            Set<Principal> subscribers = new HashSet<Principal>(1);
             subscribers.add(subscriber);
             notify(node, eventType, subscribers, drools);
         }
@@ -896,8 +896,12 @@ public class Service {
 				try {
 					tagNode = session.getNode(tagsPath + "/" + value);
 				} catch (PathNotFoundException e) {
+					Node tagTreeNode = session.getNode(tagsPath);
+					if (!tagTreeNode.isCheckedOut()) {
+						tagTreeNode.checkout();
+					}
 					// TODO escape the tag node name
-					tagNode = session.getNode(tagsPath).addNode(value, "jnt:tag");
+					tagNode = tagTreeNode.addNode(value, "jnt:tag");
 				}
 				if (tagNode != null) {
 					Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
@@ -914,6 +918,9 @@ public class Service {
 					}
 					if (!exists) {
 						newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
+						if (!jcrNode.isCheckedOut()) {
+							jcrNode.checkout();
+						}
 						jcrNode.setProperty("j:tags", newValues);
 						session.save();
 					}

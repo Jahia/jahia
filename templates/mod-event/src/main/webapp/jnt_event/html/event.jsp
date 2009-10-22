@@ -37,7 +37,7 @@
                 <p class="eventsResume">
                     ${body.string}</p>
                     <div class="eventsMeta">
-        	    <span class="categoryLabel"><fmt:message key='category'/>  :</span>
+        	    <span class="categoryLabel"><fmt:message key='category'/>:</span>
                         <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>
                         <c:if test="${cat != null}">
                                     <c:forEach items="${cat}" var="category">
@@ -45,6 +45,10 @@
                                     </c:forEach>
 
                         </c:if>
+	                    <div>
+	        	    		<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" template="tags"/>
+	                        <template:module node="${currentNode}" template="addTag"/>
+	                    </div>
                     </div>
             </div>
             <!--start eventsBody -->

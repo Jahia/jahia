@@ -12,6 +12,10 @@
 <div class="intro">
     ${intro.string}
 </div>
+<div>
+	<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" template="tags"/>
+	<template:module node="${currentNode}" template="addTag"/>
+</div>
 <c:forEach items="${currentNode.editableChildren}" var="paragraph">
     <template:module node="${paragraph}" template="default"/>
 </c:forEach>

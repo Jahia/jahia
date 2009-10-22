@@ -5,9 +5,9 @@
 <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
 <c:if test="${not empty assignedTags}">
 <c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
-<div>
+<span>
 	<c:forEach items="${assignedTags}" var="tag" varStatus="status">
 		<span>${tag.node.name}${!status.last ? separator : ''}</span>
 	</c:forEach>
-</div>
+</span>
 </c:if>

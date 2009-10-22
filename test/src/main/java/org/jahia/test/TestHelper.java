@@ -66,7 +66,7 @@ import java.security.NoSuchAlgorithmException;
 public class TestHelper {
 
     static Logger logger = LoggerFactory.getLogger(TestHelper.class);
-    public static final String TCK_TEMPLATES = "Jahia TCK templates (Jahia Test Compatibility Kit)";
+    public static final String TCK_TEMPLATES = "Test Templates";
     public static final String ACME_TEMPLATES = "Web templates";
 
     public static JahiaSite createSite(String name) throws Exception {

@@ -201,7 +201,7 @@ class TemplatePackageRegistry {
             	}
             }
             if (!sourcePack.isDefault()) {
-            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.common");
+            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.default");
             }
         }
         

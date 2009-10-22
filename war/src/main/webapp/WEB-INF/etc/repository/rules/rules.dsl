@@ -5,7 +5,7 @@
 [condition][]A node has been rollbacked to author=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "staging", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]A node is deleted=node : DeletedNodeWrapper ( )
 [condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValues , node : node )
-[condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , node : node )
+[condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
 [condition][]A workflow state has changed for a node=property : PropertyWrapper ( language : name, state : stringValue, workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
@@ -81,3 +81,4 @@
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
+[consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);

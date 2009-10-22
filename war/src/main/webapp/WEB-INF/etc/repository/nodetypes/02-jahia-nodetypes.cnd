@@ -31,7 +31,8 @@
   - j:originWS (string) protected hidden
 
 [jmix:tagged] > jmix:metadata mixin
- - j:tags (reference, category[autoSelectParent=false]) multiple  
+ - j:tags (reference, category[autoSelectParent=false]) multiple
+ - j:newTag (string) hidden indexed=no
 
 [jmix:basemetadata] > mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable mixin
 

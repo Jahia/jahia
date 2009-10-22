@@ -1,12 +1,13 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<jcr:nodeProperty node="${currentNode}" name="j:tags" var="asssignedTags"/>
-Tags:
-<c:forEach items="${asssignedTags}" var="tag" varStatus="status">
-${tag.node.name}${!status.last ? ', ' : ''}
-</c:forEach>
+<jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
+<c:if test="${not empty assignedTags}">
+<c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
+<div>
+	<c:forEach items="${assignedTags}" var="tag" varStatus="status">
+		<span>${tag.node.name}${!status.last ? separator : ''}</span>
+	</c:forEach>
+</div>
+</c:if>

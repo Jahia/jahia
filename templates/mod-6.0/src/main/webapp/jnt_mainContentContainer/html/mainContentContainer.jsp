@@ -11,9 +11,8 @@
     </c:if>
     ${mainContentBody.string}
     <hr/>
-		<template:module node="${currentNode}" template="tags"/>
-    <hr/>
-    	<template:module node="${currentNode}" template="tagForm"/>
+		<template:module node="${currentNode}" template="tags"/><br/>
+    	<template:module node="${currentNode}" template="addTag"/>
     <hr/>
 </div>
 <br class="clear"/>

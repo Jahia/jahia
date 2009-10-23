@@ -6,7 +6,10 @@
     <body>
         <menu name="Overview">
             <item name="Introduction" href="/index.html"/>
-            <item name="Usage" href="/usage.html"/>
+            <item name="Usage" href="/usage.html">
+            	<item name="Hide templates" href="/usage.html#Hide"/>
+            	<item name="Tagging" href="/usage.html#Tagging"/>
+            </item>
         </menu>
         <menu ref="reports"/>
     </body>

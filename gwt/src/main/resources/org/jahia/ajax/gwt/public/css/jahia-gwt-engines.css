@@ -403,6 +403,10 @@ fm-globalMashupRepository {
     background-image: url( ../images/icons/tick.png) !important;
 }
 
+.gwt-icons-cancel {
+    background-image: url( ../images/icons/cancel.png) !important;
+}
+
 /*filemanagement*/
 .gwt-toolbar-icon-infoPane {
     padding: 10px;

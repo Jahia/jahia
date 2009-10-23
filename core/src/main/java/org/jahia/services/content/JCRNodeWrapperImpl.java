@@ -896,7 +896,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        return new PropertyIteratorImpl(res.iterator(), res.size());
+        return new PropertyIteratorImpl(res, res.size());
     }
 
     /**

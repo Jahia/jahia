@@ -24,5 +24,18 @@ Usage of Jahia Default Module
 [jnt:container] > nt:base, jmix:structuredContent, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords, jmix:tagged
 --------------------------------------------
 
-  You can hardcode it inside your definition, like in the forum module post definition:
+* Hide templates from drop down list of available templates
+
+  To hide your templates from the drop down list of available templates inside edit mode (in the PreviewPanel or in the Properties Editor).\
+  You just have to name your template : definition_name.hidden.template_name.jsp for example.
+
+------------------------------------------------
+Example:
+jmix_tagged
+  |
+  + html
+     |
+     - tagged.hidden.addTag.jsp
+     - tagged.hidden.tags.jsp
+------------------------------------------------     
 

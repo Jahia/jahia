@@ -19,7 +19,7 @@
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
 </c:if>
-<template:module node="${currentNode}" template="plusone_minorone_form"/>
+<template:module node="${currentNode}" forcedTemplate="hidden.plusone_minorone_form"/>
 <span class="forum-corners-top"><span></span></span>
 
 <div class="forum-postbody">
@@ -30,10 +30,10 @@
                 <a title="Reply with quote" href="#threadPost"
                    onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
             </li>
-            <li><template:module node="${currentNode}" template="plusone_minorone"/></li>
+            <li><template:module node="${currentNode}" forcedTemplate="hidden.plusone_minorone"/></li>
         </c:if>
         <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-            <li class="delete-post-icon"><a title="<fmt:message key="delete.post"/> href="#"
+            <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="#"
                                             onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.post"/></span></a>
             </li>
             <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="#"><span><fmt:message key="edit.post"/></span></a></li>

@@ -128,7 +128,9 @@ public class TemplateHelper {
             set = renderService.getTemplatesSet(nt);
 //        }
         for (Template template : set) {
-            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skins.") && !template.getKey().startsWith("debug.")) {
+            final String key = template.getKey();
+            if (!key.startsWith("wrapper.") && !key.startsWith("skins.") &&
+                !key.startsWith("debug.") && !key.matches("^.*\\\\.hidden\\\\..*")) {
                 result.add(template);
             }
         }

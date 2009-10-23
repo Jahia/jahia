@@ -9,8 +9,8 @@
 
 <h2>${title.string}</h2>
 <div>
-	<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" template="tags"/>
-	<template:module node="${currentNode}" template="addTag"/>
+	<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" forcedTemplate="hidden.tags"/>
+	<template:module node="${currentNode}" forcedTemplate="hidden.addTag"/>
 </div>
 
 <div class="intro">

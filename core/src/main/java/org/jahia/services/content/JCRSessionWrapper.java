@@ -51,6 +51,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.retention.RetentionManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionManager;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -81,7 +82,6 @@ public class JCRSessionWrapper implements Session {
 
     private JCRSessionFactory sessionFactory;
     private JahiaUser user;
-    private boolean isSystem = true;
     private Credentials credentials;
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
@@ -95,7 +95,6 @@ public class JCRSessionWrapper implements Session {
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRSessionFactory sessionFactory) {
         this.user = user;
-        this.isSystem = isSystem;
         this.credentials = credentials;
         this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
         this.locale = locale;
@@ -144,7 +143,7 @@ public class JCRSessionWrapper implements Session {
             }
             try {
                 Session session = getProviderSession(provider);
-                Node n = session.getNodeByUUID(uuid);
+                Node n = session.getNodeByIdentifier(uuid);
                 return provider.getNodeWrapper(n, this);
             } catch (ItemNotFoundException ee) {
                 // All good
@@ -163,7 +162,7 @@ public class JCRSessionWrapper implements Session {
             throw new ItemNotFoundException(uuid);
         }
         Session session = getProviderSession(provider);
-        Node n = session.getNodeByUUID(uuid);
+        Node n = session.getNodeByIdentifier(uuid);
         return provider.getNodeWrapper(n, this);
     }
 
@@ -647,6 +646,23 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    /**
+     * Performs check out of the specified node.
+     * @param node the node to perform the check out
+     * @see VersionManager#checkout(String) for details
+     */
+    public void checkout(Node node) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+    	checkout(node.getPath());
+    }
+
+    /**
+     * Performs check out of the specified node.
+     * @param absPath the path of the node to perform the check out
+     * @see VersionManager#checkout(String) for details
+     */
+    public void checkout(String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+    	getWorkspace().getVersionManager().checkout(absPath);
+    }
 
     private class RemoveRootContentHandler implements ContentHandler {
         private Map<String,String> mapping = new HashMap<String,String>();

@@ -92,16 +92,15 @@
                 <query:selector nodeTypeName="core_templates:commentableNews" selectorName="newsList"/>
                 <query:descendantNode selectorName="newsList" path="${currentSite.JCRPath}"/>
                 <c:if test="${!empty listCategories}">
-                    <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${listCategories}"
-                                   metadata="true" multiValue="true"/>
+                    <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${listCategories}"/>
                 </c:if>
                 <c:if test="${!empty dateFilter}">
                     <utility:dateUtil currentDate="${dateFilter}" var="today" hours="0" minutes="0"
                                         seconds="0"/>
                     <utility:dateUtil currentDate="${dateFilter}" var="tomorrow" days="1" hours="0" minutes="0"
                                         seconds="0"/>
-                    <query:greaterThan numberValue="true" propertyName="newsDate" value="${today.time}"/>
-                    <query:lessThanOrEqualTo numberValue="true" propertyName="newsDate" value="${tomorrow.time}"/>
+                    <query:greaterThan propertyName="newsDate" value="${today.time}"/>
+                    <query:lessThanOrEqualTo propertyName="newsDate" value="${tomorrow.time}"/>
                 </c:if>
                 <c:if test="${!empty param.searchString}">
                     <query:fullTextSearch searchExpression="${param.searchString}"/>

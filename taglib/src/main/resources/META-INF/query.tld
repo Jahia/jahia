@@ -26,7 +26,69 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
-
+    <tag>
+        <description>Used to build ContainerQueryBean</description>
+        <name>containerQuery</name>
+        <tag-class>org.jahia.taglibs.query.ContainerQueryTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description><![CDATA[
+                <p>Name of an existing QueryObjectModel stored in the Request scope of the PageContext
+                to use for building the concrete <code>ContainerQueryBean</code></p>]]>
+            </description>
+            <name>queryObjectModelBeanName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>The name of the target containerList in the Jahia Page for which the concrete  containerQueryBean
+                will be created.</p>
+                <p>The target containerList is the one that will hold the filtering containers. This attribute is
+                optional if this tag is enclosed inside a containerListTag. In this case, the target containerList
+                will be the one referred by the parent <code>containerListTag</code>.</p>]]>
+            </description>
+            <name>targetContainerListName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[<p>
+                The target containerList can be defined using its ID instead by its name. It is the one that will
+                hold the filtered containers. </p>
+                <p>This attribute is optional if this tag is enclosed inside a
+                containerListTag. In this case, the target containerList will be the one referred by the parent <code>containerListTag</code></p>.]]>
+            </description>
+            <name>targetContainerListID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Unique id used to identify this query object model.</p>
+                <p>The object representing the current query object model is added to the pageContext under this
+                name in the Request scope.</p>]]>
+            </description>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Unique id used to identify this ContainerQueryBean.</p>
+                <p>The object representing the current ContainerQueryBean is added to the pageContext under this
+                name in the Request scope. It is only in the doEndTag that this bean is exposed.</p>]]>
+            </description>
+            <name>queryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
     <tag>
         <description>Used to define a comparison Constraint</description>
         <name>comparison</name>
@@ -763,4 +825,187 @@
             <type>boolean</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Creates facet filters to be held in cache</description>
+        <name>createFacetFilter</name>
+        <tag-class>org.jahia.taglibs.query.CreateFacetFilterTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The facet name to identify the facet group</description>
+            <name>facetName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name for checking the facets.</description>
+            <name>propertyName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The value title which is required if propertyName is not set and the facet value is the result of a query.</description>
+            <name>valueTitle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean will be set</description>
+            <name>facetBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBeanValue will be set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>queryObjectModelBeanName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>targetContainerListName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>targetContainerListID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>queryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Returns the number of hits for a search/query per facet</description>
+        <name>getHitsPerFacetValue</name>
+        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetValueTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean is set</description>
+            <name>facetBeanId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of FacetValueBeans to process is set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The ID of a query bean to compare its results with the results of the facet.</description>
+            <name>mainQueryBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set true if the tag should create HTML directly</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the returned list of HitsPerFacetValueBean objects will be set</description>
+            <name>hitsPerFacetBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Returns the applied facet filters</description>
+        <name>getAppliedFacetFilters</name>
+        <tag-class>org.jahia.taglibs.query.GetAppliedFacetFiltersTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The query parameter name for the filter created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of AppliedFacetFilters beans will be set</description>
+            <name>appliedFacetsId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Should the tag create HTML or just return the result in a list of beans.</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The resource (text/image) which will be backed for the link if display is true</description>
+            <name>removeDisplayResource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <function>
+        <description>Check whether a facet is currently applied to the query</description>
+        <name>isFacetApplied</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>boolean isFacetApplied(org.jahia.services.search.facets.FacetBean, java.util.List)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/"&gt;
+            &lt;c:if test="${query:isFacetApplied(eventDateFacet, appliedFacets}"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>Create the drill down URL for a facet value</description>
+        <name>getFacetDrillDownUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getFacetDrillDownUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter" hitsPerFacetBeanId="hitsPerEventFacetValues" display="false"/"&gt;
+            &lt;c:forEach var="hitsPerEventFacetValue" items="${hitsPerEventFacetValues}"&gt;
+              &lt;a href="${query:getDeleteFacetUrl(eventDateFacet, hitsPerEventFacetValue.facetValue, 'filter')}"&gt;hitsPerEventFacetValue.facetValue.title&lt;/a&gt; (hitsPerEventFacetValue.numberOfHits)
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>Create the URL to remove the facet from value the filter</description>
+        <name>getDeleteFacetUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getDeleteFacetUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets" display="false"/"&gt;
+            &lt;c:forEach var="appliedFacetFilter" items="${appliedFacets}"&gt;
+              &lt;c:forEach var="facetValue" items="${appliedFacetsFilter.facetValueBeans}"&gt;
+                &lt;a href="${query:getDeleteFacetUrl(appliedFacetFilter.facetBean, facetValue, 'filter')}"&gt;remove&lt;/a&gt;
+              &lt;/c:forEach"&gt;
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>    
 </taglib>

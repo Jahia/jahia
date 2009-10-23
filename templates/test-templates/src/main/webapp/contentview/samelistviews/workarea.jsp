@@ -84,8 +84,8 @@
   <template:containerList name="someFields" id="testContainerList7" maxSize="3" 
       displayActionMenu="false">
       <query:containerQuery> 
-        <query:selector selectorName="testContainerList6" nodeTypeName="test_templates:someFields"/>
-        <query:sortBy propertyName="created" order="${queryConstants.ORDER_DESCENDING}" numberValue="false"  metadata="true"/>
+        <query:selector selectorName="testContainerList7" nodeTypeName="test_templates:someFields"/>
+        <query:sortBy selectorName="testContainerList7" propertyName="created" order="${queryConstants.ORDER_DESCENDING}" numberValue="false"  metadata="true"/>
       </query:containerQuery>
     <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
   </template:containerList>
@@ -94,8 +94,8 @@
   <template:containerList name="someFields" id="testContainerList8" windowSize="4" displayPagination="top" 
       displayActionMenu="false">
       <query:containerQuery> 
-        <query:selector selectorName="testContainerList6" nodeTypeName="test_templates:someFields"/>
-        <query:sortBy propertyName="smallText" order="${queryConstants.ORDER_ASCENDING}" numberValue="false"/>
+        <query:selector selectorName="testContainerList8" nodeTypeName="test_templates:someFields"/>
+        <query:sortBy selectorName="testContainerList8" propertyName="smallText" order="${queryConstants.ORDER_ASCENDING}" numberValue="false"/>
       </query:containerQuery>
     <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
   </template:containerList>

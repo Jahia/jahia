@@ -370,63 +370,62 @@ public boolean isNumeric (String propertyName, Map<String, ExtendedPropertyDefin
         </query:setProperty>
         
         <c:if test="${!empty listCategories}">
-          <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${listCategories}"
-              metadata="true" multiValue="true"/>
+          <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${listCategories}"/>
         </c:if>              
 
         <c:if test="${!empty param.equalToProperty && !empty param.equalToValue}">
-          <query:equalTo propertyName="${param.equalToProperty}" value="${param.equalToValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("equalToProperty"), propertyDefinitions))%>'/>
+          <query:equalTo propertyName="${param.equalToProperty}" value="${param.equalToValue}"/>
         </c:if>
         <c:if test="${!empty param.notEqualToProperty && !empty param.notEqualToValue}">
-          <query:notEqualTo propertyName="${param.notEqualToProperty}" value="${param.notEqualToValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("notEqualToProperty"), propertyDefinitions))%>'/>
+          <query:notEqualTo propertyName="${param.notEqualToProperty}" value="${param.notEqualToValue}"/>
         </c:if>        
         <c:if test="${!empty param.greaterThanProperty && !empty param.greaterThanValue}">        
-          <query:greaterThan propertyName="${param.greaterThanProperty}" value="${param.greaterThanValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("greaterThanProperty"), propertyDefinitions))%>'/>
+          <query:greaterThan propertyName="${param.greaterThanProperty}" value="${param.greaterThanValue}"/>
         </c:if>
         <c:if test="${!empty param.greaterThanOrEqualToProperty && !empty param.greaterThanOrEqualToValue}">          
-          <query:greaterThanOrEqualTo propertyName="${param.greaterThanOrEqualToProperty}" value="${param.greaterThanOrEqualToValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("greaterThanOrEqualToProperty"), propertyDefinitions))%>'/>
+          <query:greaterThanOrEqualTo propertyName="${param.greaterThanOrEqualToProperty}" value="${param.greaterThanOrEqualToValue}"/>
         </c:if>
         <c:if test="${!empty param.lessThanProperty && !empty param.lessThanValue}">          
-          <query:lessThan propertyName="${param.lessThanProperty}" value="${param.lessThanValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("lessThanProperty"), propertyDefinitions))%>'/>
+          <query:lessThan propertyName="${param.lessThanProperty}" value="${param.lessThanValue}"/>
         </c:if>
         <c:if test="${!empty param.lessThanOrEqualToProperty && !empty param.lessThanOrEqualToValue}">          
-          <query:lessThanOrEqualTo propertyName="${param.lessThanOrEqualToProperty}" value="${param.lessThanOrEqualToValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("lessThanOrEqualToProperty"), propertyDefinitions))%>'/>
+          <query:lessThanOrEqualTo propertyName="${param.lessThanOrEqualToProperty}" value="${param.lessThanOrEqualToValue}"/>
         </c:if>
         <c:if test="${!empty param.likeProperty && !empty param.likeValue}">          
-          <query:like propertyName="${param.likeProperty}" value="${param.likeValue}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("likeProperty"), propertyDefinitions))%>'/>
+          <query:like propertyName="${param.likeProperty}" value="${param.likeValue}"/>
         </c:if>
 
         <c:if test="${!empty param.dynamic1Property && !empty param.dynamic1Operator && !empty param.dynamic1Value}">
-          <query:comparison propertyName="${param.dynamic1Property}" operator="${param.dynamic1Operator}" value="${param.dynamic1Value}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("dynamic1Property"), propertyDefinitions))%>'/>
+          <query:comparison propertyName="${param.dynamic1Property}" operator="${param.dynamic1Operator}" value="${param.dynamic1Value}"/>
         </c:if>
         <c:if test="${!empty param.dynamic2Property && !empty param.dynamic2Operator && !empty param.dynamic2Value}">
-          <query:comparison propertyName="${param.dynamic2Property}" operator="${param.dynamic2Operator}" value="${param.dynamic2Value}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("dynamic2Property"), propertyDefinitions))%>'/>
+          <query:comparison propertyName="${param.dynamic2Property}" operator="${param.dynamic2Operator}" value="${param.dynamic2Value}"/>
         </c:if>
         <c:if test="${!empty param.dynamic3Property && !empty param.dynamic3Operator && !empty param.dynamic3Value}">
-          <query:comparison propertyName="${param.dynamic3Property}" operator="${param.dynamic3Operator}" value="${param.dynamic3Value}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("dynamic3Property"), propertyDefinitions))%>'/>
+          <query:comparison propertyName="${param.dynamic3Property}" operator="${param.dynamic3Operator}" value="${param.dynamic3Value}"/>
         </c:if>
         
         <c:if test="${!empty param.src_createdBy}">          
-          <query:like propertyName="createdBy" value="${param.src_createdBy}" metadata="true"/>
+          <query:like propertyName="createdBy" value="${param.src_createdBy}"/>
         </c:if>                
         <c:if test="${!empty param.src_lastEditor}">          
-          <query:like propertyName="lastModifiedBy" value="${param.src_lastEditor}" metadata="true"/>
+          <query:like propertyName="lastModifiedBy" value="${param.src_lastEditor}"/>
         </c:if>        
         <c:if test="${!empty createdDateFilter}">
           <utility:dateUtil currentDate="${createdDateFilter}" var="createdDateFrom" hours="0" minutes="0"
               seconds="0"/>
           <utility:dateUtil currentDate="${createdDateFilter}" var="createdDateUntil" days="1" hours="0" minutes="0"
               seconds="0"/>
-          <query:greaterThan propertyName="created" value="${createdDateFrom.time}" numberValue="true" />
-          <query:lessThanOrEqualTo propertyName="created" value="${createdDateUntil.time}" numberValue="true" />
+          <query:greaterThan propertyName="created" value="${createdDateFrom.time}"/>
+          <query:lessThanOrEqualTo propertyName="created" value="${createdDateUntil.time}"/>
         </c:if>        
         <c:if test="${!empty modifiedDateFilter}">
           <utility:dateUtil currentDate="${modifiedDateFilter}" var="modifiedDateFrom" hours="0" minutes="0"
               seconds="0"/>
           <utility:dateUtil currentDate="${modifiedDateFilter}" var="modifiedDateTo" days="1" hours="0" minutes="0"
               seconds="0"/>
-          <query:greaterThan propertyName="lastModified" value="${modifiedDateFrom.time}" numberValue="true" />
-          <query:lessThanOrEqualTo propertyName="lastModified" value="${modifiedDateTo.time}" numberValue="true" />
+          <query:greaterThan propertyName="lastModified" value="${modifiedDateFrom.time}"/>
+          <query:lessThanOrEqualTo propertyName="lastModified" value="${modifiedDateTo.time}"/>
         </c:if>
         
         <c:if test="${!empty param.fullTextSearchTerm}">        
@@ -439,7 +438,7 @@ public boolean isNumeric (String propertyName, Map<String, ExtendedPropertyDefin
 --%>
 
         <c:if test="${!empty param.sortProperty}">
-          <query:sortBy propertyName="${param.sortProperty}" order="${param.sortOrder}" localeSensitive="${param.localeSensitiveSorting}" numberValue='<%=String.valueOf(isNumeric(request.getParameter("sortProperty"), propertyDefinitions))%>'  metadata="${propertyDefinitions[param.sortProperty] == null}"/>
+          <query:sortBy selectorName="allFields" propertyName="${param.sortProperty}" order="${param.sortOrder}"/>
         </c:if>          
       </query:containerQuery>
       

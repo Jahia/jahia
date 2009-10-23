@@ -143,6 +143,9 @@ public class Constants {
     public static final String JAHIAMIX_EXTENSION = "jmix:extension";
 
     public static final String JAHIAMIX_HIERARCHY = "jmix:hierarchyNode";
+    
+    public static final String JAHIAMIX_TAGGED = "jmix:tagged";
+    
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
@@ -170,6 +173,7 @@ public class Constants {
     public static final String JAHIANT_LAYOUTITEM = "jnt:layoutItem";
     public static final String JAHIANT_MOUNTPOINT = "jnt:mountPoint";
     public static final String JAHIANT_VFSMOUNTPOINT = "jnt:vfsMountPoint";
+    public static final String JAHIANT_TAG = "jnt:tag";
     
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";    
@@ -185,6 +189,7 @@ public class Constants {
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";
     public static final String FULLPATH = "j:fullpath";
+    public static final String TAGS = "j:tags";
 
     public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";
     public static final String JAHIANT_GROUP = "jnt:group";

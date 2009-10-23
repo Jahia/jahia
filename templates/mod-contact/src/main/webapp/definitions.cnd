@@ -1,0 +1,19 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:contactForm] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:interactiveContent
+boolean firstname
+boolean lastname
+boolean title
+boolean age
+boolean birthdate
+boolean gender
+boolean profession
+boolean maritalStatus
+boolean hobbies
+boolean contact
+boolean address
+boolean city
+boolean state
+boolean zip
+boolean country
+boolean remarks

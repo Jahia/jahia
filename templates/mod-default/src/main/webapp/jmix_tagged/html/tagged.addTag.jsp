@@ -17,6 +17,7 @@
         		jQuery.post(tagForm.action, jQuery(tagForm).serialize(),
                 	function (data) {
                 		var tagContainer = jQuery('#jahia-tags-' + uuid);
+                		<%-- TODO: need to check if the tag already assigned to prevent dublicates --%>
                 		if (separator.length > 0 && jQuery('#jahia-tags-' + uuid + ' > span').length > 0) {
                 			tagContainer.append(separator);
                     	}

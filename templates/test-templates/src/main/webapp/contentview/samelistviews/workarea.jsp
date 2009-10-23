@@ -85,7 +85,7 @@
       displayActionMenu="false">
       <query:containerQuery> 
         <query:selector selectorName="testContainerList7" nodeTypeName="test_templates:someFields"/>
-        <query:sortBy selectorName="testContainerList7" propertyName="created" order="${queryConstants.ORDER_DESCENDING}" numberValue="false"  metadata="true"/>
+        <query:sortBy selectorName="testContainerList7" propertyName="created" order="${queryConstants.ORDER_DESCENDING}"/>
       </query:containerQuery>
     <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
   </template:containerList>
@@ -95,12 +95,13 @@
       displayActionMenu="false">
       <query:containerQuery> 
         <query:selector selectorName="testContainerList8" nodeTypeName="test_templates:someFields"/>
-        <query:sortBy selectorName="testContainerList8" propertyName="smallText" order="${queryConstants.ORDER_ASCENDING}" numberValue="false"/>
+        <query:sortBy selectorName="testContainerList8" propertyName="smallText" order="${queryConstants.ORDER_ASCENDING}"/>
       </query:containerQuery>
     <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
   </template:containerList>
 <br/>
 <h3><fmt:message key="label.absoluteListWithWindowSizeAndNbStepsPerPage"><fmt:param value="1"/><fmt:param value="2"/></fmt:message>:</h3><br/>
+</div>
 <template:absoluteContainerList pageId="${currentPage.ID}" name="someFields" id="testContainerList9" windowSize="1" nbStepPerPage="2" displayActionMenu="false">
   <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
 </template:absoluteContainerList>

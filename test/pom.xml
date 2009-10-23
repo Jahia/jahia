@@ -257,7 +257,7 @@
                                         <echo message="Starting jmeter tests"/>
                                         <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
                                               dir="${jahia.test.jmeter.path}/bin">
-                                            <arg line="-n -t testPlan/allPlanTest.jmx"/>
+                                            <arg line="-n -t testPlan/allPlanTest.jmx -Jloginpath=${jahia.test.jmeter.loginpath} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
                                         </exec>
                                     </tasks>
                                 </configuration>

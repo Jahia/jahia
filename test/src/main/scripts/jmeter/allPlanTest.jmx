@@ -7,11 +7,6 @@
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables définies pour l&apos;utilisateur" enabled="true">
         <collectionProp name="Arguments.arguments">
-          <elementProp name="port" elementType="Argument">
-            <stringProp name="Argument.name">port</stringProp>
-            <stringProp name="Argument.value">8080</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="maxWaitTime" elementType="Argument">
             <stringProp name="Argument.name">maxWaitTime</stringProp>
             <stringProp name="Argument.value">15000</stringProp>
@@ -22,9 +17,9 @@
             <stringProp name="Argument.value">5000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="jahiaPath" elementType="Argument">
-            <stringProp name="Argument.name">jahiaPath</stringProp>
-            <stringProp name="Argument.value">/jahia/Jahia</stringProp>
+          <elementProp name="LOGINPATH" elementType="Argument">
+            <stringProp name="Argument.name">LOGINPATH</stringProp>
+            <stringProp name="Argument.value">${__P(loginpath,/jahia/Jahia)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="lang" elementType="Argument">
@@ -32,9 +27,19 @@
             <stringProp name="Argument.value">en</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="cjPath" elementType="Argument">
-            <stringProp name="Argument.name">cjPath</stringProp>
-            <stringProp name="Argument.value">/jahia/cms/render/default</stringProp>
+          <elementProp name="CONTEXT" elementType="Argument">
+            <stringProp name="Argument.name">CONTEXT</stringProp>
+            <stringProp name="Argument.value">${__P(context,/jahia/)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="THREADS" elementType="Argument">
+            <stringProp name="Argument.name">THREADS</stringProp>
+            <stringProp name="Argument.value">${__P(threads,1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LOOPS" elementType="Argument">
+            <stringProp name="Argument.name">LOOPS</stringProp>
+            <stringProp name="Argument.value">${__P(loops,2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -45,9 +50,9 @@
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Groupe de thread" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">10</stringProp>
+          <stringProp name="LoopController.loops">${LOOPS}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">20</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
@@ -78,15 +83,13 @@
             <stringProp name="3556308">temp</stringProp>
             <stringProp name="1589752427">jobsSearchKeyword</stringProp>
             <stringProp name="-1546153922">globalSearchKeyword</stringProp>
-            <stringProp name="3367">ip</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-1080459449">
+            <collectionProp name="-1776277953">
               <stringProp name="190086157">${_StringFromFile(testPlan/usersacme.txt)}</stringProp>
               <stringProp name="-1870105697">${__split(${username},username,@)}</stringProp>
               <stringProp name="-277355658">${_StringFromFile(testPlan/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-1404766775">${_StringFromFile(testPlan/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="-1204607085">localhost</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -96,8 +99,10 @@
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables définies pour l&apos;utilisateur" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${ip}</stringProp>
-          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__P(ip,localhost)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path"></stringProp>
@@ -147,9 +152,11 @@
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">${jahiaPath}</stringProp>
+            <stringProp name="HTTPSampler.path">${LOGINPATH}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -158,7 +165,7 @@
             <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
             <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
             <stringProp name="HTTPSampler.mimetype"></stringProp>
-            <stringProp name="HTTPSampler.monitor">false</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
           <hashTree>
@@ -174,6 +181,8 @@
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">${_StringFromFile(testPlan/pageurls.txt)}</stringProp>
@@ -185,7 +194,7 @@
             <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
             <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
             <stringProp name="HTTPSampler.mimetype"></stringProp>
-            <stringProp name="HTTPSampler.monitor">false</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
           <hashTree>
@@ -201,9 +210,11 @@
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+            <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -212,7 +223,7 @@
             <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
             <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
             <stringProp name="HTTPSampler.mimetype"></stringProp>
-            <stringProp name="HTTPSampler.monitor">false</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
           <hashTree>
@@ -226,14 +237,14 @@
                 <stringProp name="49586">200</stringProp>
               </collectionProp>
               <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-              <stringProp name="Assertion.assume_success">false</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
               <intProp name="Assertion.test_type">8</intProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Thread Page does not exist" enabled="true">
             <stringProp name="IfController.condition">${JMeterThread.last_sample_ok} == false</stringProp>
-            <stringProp name="IfController.evaluateAll">false</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
           </IfController>
           <hashTree>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Forum Page" enabled="true">
@@ -271,9 +282,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/*</stringProp>
+              <stringProp name="HTTPSampler.path">${context}cms/render/default/en/content/sites/ACME/home/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -282,7 +295,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
@@ -307,9 +320,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -318,7 +333,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
@@ -328,9 +343,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/edit/default/en/content/sites/ACME/home/forum.html</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}cms/edit/default/en/content/sites/ACME/home/forum.html</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -339,7 +356,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree>
@@ -348,7 +365,7 @@
                   <stringProp name="49586">200</stringProp>
                 </collectionProp>
                 <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                <stringProp name="Assertion.assume_success">false</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
                 <intProp name="Assertion.test_type">8</intProp>
               </ResponseAssertion>
               <hashTree/>
@@ -395,9 +412,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -406,7 +425,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
@@ -445,9 +464,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -456,7 +477,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
@@ -495,9 +516,11 @@
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -506,7 +529,7 @@
               <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
               <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
               <stringProp name="HTTPSampler.mimetype"></stringProp>
-              <stringProp name="HTTPSampler.monitor">false</stringProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
@@ -515,7 +538,7 @@
           <hashTree>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Thread Page Exist" enabled="true">
               <stringProp name="IfController.condition">${JMeterThread.last_sample_ok} == true</stringProp>
-              <stringProp name="IfController.evaluateAll">false</stringProp>
+              <boolProp name="IfController.evaluateAll">false</boolProp>
             </IfController>
             <hashTree>
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Post" enabled="true">
@@ -553,9 +576,11 @@
                 </elementProp>
                 <stringProp name="HTTPSampler.domain"></stringProp>
                 <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -564,7 +589,7 @@
                 <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
                 <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
                 <stringProp name="HTTPSampler.mimetype"></stringProp>
-                <stringProp name="HTTPSampler.monitor">false</stringProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
               <hashTree>
@@ -580,9 +605,11 @@
                 </elementProp>
                 <stringProp name="HTTPSampler.domain"></stringProp>
                 <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">/jahia/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -591,7 +618,7 @@
                 <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
                 <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
                 <stringProp name="HTTPSampler.mimetype"></stringProp>
-                <stringProp name="HTTPSampler.monitor">false</stringProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
               <hashTree>
@@ -600,7 +627,7 @@
                     <stringProp name="49586">200</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                  <stringProp name="Assertion.assume_success">false</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
                   <intProp name="Assertion.test_type">8</intProp>
                 </ResponseAssertion>
                 <hashTree/>
@@ -671,6 +698,39 @@
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Enregistreur de données" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <url>true</url>
+            </value>
+          </objProp>
+          <stringProp name="filename">results/allTestPlanData_${__time(yyyyMMdd_HHmmss)}.jtl</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>

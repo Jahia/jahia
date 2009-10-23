@@ -54,18 +54,6 @@ import java.util.*;
  * @author Benjamin Papez
  *
  */
-/**
- * TODO Comment me
- *
- * @author Benjamin
- *
- */
-/**
- * TODO Comment me
- *
- * @author Benjamin
- *
- */
 public class JCRCategoryProvider {
     private transient static Logger logger = Logger
             .getLogger(JCRCategoryProvider.class);

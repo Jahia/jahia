@@ -38,15 +38,11 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
-import org.jahia.engines.search.FileSearchViewHandler;
 import org.jahia.engines.search.Hit;
 import org.jahia.engines.search.SearchCriteria;
 import org.jahia.engines.search.SearchCriteriaFactory;
-import org.jahia.engines.search.Search_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.search.savedsearch.JahiaSavedSearch;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
@@ -71,8 +67,6 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private List<Hit> hits;
 
-    private JahiaSavedSearch savedSearch;
-
     private String storedQuery;
 
     private String var = DEF_VAR;
@@ -92,8 +86,8 @@ public class ResultsTag extends AbstractJahiaTag {
         SearchCriteria criteria = null;
         ProcessingContext ctx = Utils.getProcessingContext(pageContext);
         try {
-            criteria = storedQuery != null ? getStoredQueryCriteria()
-                    : getSearchCriteria(ctx);
+            criteria = // TODO implement new: storedQuery != null ? getStoredQueryCriteria() : 
+                getSearchCriteria(ctx);
         } catch (JahiaException e) {
             throw new JspTagException(e);
         }
@@ -101,7 +95,7 @@ public class ResultsTag extends AbstractJahiaTag {
         if (null == criteria) {
             return SKIP_BODY;
         }
-        hits = Search_Engine.search(criteria, ctx);
+        //TODO implement new: hits = Search_Engine.search(criteria, ctx);
         count = hits.size();
 
         pageContext.setAttribute(var, hits);
@@ -128,38 +122,6 @@ public class ResultsTag extends AbstractJahiaTag {
         return SearchCriteriaFactory.getInstance(ctx);
     }
 
-    protected JahiaSavedSearch getStoredQuery() {
-        return savedSearch;
-    }
-
-    private SearchCriteria getStoredQueryCriteria() throws JahiaException {
-
-        SearchCriteria criteria = null;
-
-        JahiaSavedSearch query = ServicesRegistry.getInstance()
-                .getJahiaSearchService().getSavedSearch(storedQuery);
-
-        // TODO support all other search view handlers
-        if (query != null) {
-            if (FileSearchViewHandler.class.getName().equals(
-                    query.getSearchViewHandlerClass())) {
-
-                savedSearch = query;
-
-                criteria = (SearchCriteria) query.getQueryObject();
-            } else {
-                throw new IllegalArgumentException("Store query '"
-                        + storedQuery + "' can be handled by '"
-                        + query.getSearchViewHandlerClass()
-                        + " view handler, which is not supported yet");
-            }
-        } else {
-            logger.warn("Stored query '" + storedQuery + "' cannot be found."
-                    + " No results will be displayed.");
-        }
-
-        return criteria;
-    }
 
     public String getVar() {
         return var;
@@ -172,7 +134,6 @@ public class ResultsTag extends AbstractJahiaTag {
         count = 0;
         hits = null;
         storedQuery = null;
-        savedSearch = null;
         super.resetState();
     }
 

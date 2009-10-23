@@ -47,7 +47,6 @@ import org.jahia.engines.search.SearchCriteriaFactory;
 import org.jahia.engines.search.SearchCriteria.SearchMode;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.search.JahiaSearchService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -188,17 +187,15 @@ public class RssFeedViewTag extends AbstractJahiaTag {
 
         List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
-        JahiaSearchService searchService = ServicesRegistry.getInstance()
-                .getJahiaSearchService();
         ParamBean ctx = (ParamBean) getProcessingContext();
         String serverUrl = getTargetUrl();
         for (Hit hit : results) {
             try {
-                SyndEntry entry = searchService.getSyndEntry(hit, ctx,
-                        serverUrl);
-                if (entry != null) {
-                    entries.add(entry);
-                }
+//  TODO: implement new              SyndEntry entry = searchService.getSyndEntry(hit, ctx,
+//                        serverUrl);
+//                if (entry != null) {
+//                    entries.add(entry);
+//                }
             } catch (Exception e) {
                 logger.warn("Exception occured creating SyndEntry from hit "
                         + hit.getLink() + ". Cause: " + e.getMessage(), e);

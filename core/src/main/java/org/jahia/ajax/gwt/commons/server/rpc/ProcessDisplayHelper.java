@@ -52,7 +52,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
-import org.jahia.services.search.JahiaSiteIndexingJob;
 import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -216,10 +215,6 @@ public class ProcessDisplayHelper {
         }
         gwtProcessJob.setActions(batchContent);
         gwtProcessJob.setTitleForObjectKey(displayTitles);
-
-        //job: interrupt status
-        String currentJobInterruptStatus = currentJobDataMap.getString(JahiaSiteIndexingJob.INTERRUPT_STATUS);
-        gwtProcessJob.setJobInterruptStatus(currentJobInterruptStatus);
 
         //job: log
         TreeOperationResult currentJobLogTOR = treeOperationResult;

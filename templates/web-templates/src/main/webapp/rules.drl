@@ -12,25 +12,6 @@ import org.apache.log4j.Logger
 expander rules.dsl
 
 #declare any global variables here
-global URLService urlService
 global ProcessingContext processingContext
 
 ###############################################################################
-
-rule "News search result hit"
-  when
-        A search result hit is present
-            - the container is of type web_templates:newsContainer
-  then
-        Append URL query-parameter "template" with "tpl.newsDetail"
-        Append URL query-parameter "queryPath" with ((ContentObject)searchHit.getObject()).getJCRPath(processingContext)   
-end
-
-rule "Press-release search result hit"
-  when
-        A search result hit is present
-            - the container is of type web_templates:pressContainer
-  then
-        Append URL query-parameter "template" with "tpl.pressReleasesDetail"
-        Append URL query-parameter "queryPath" with ((ContentObject)searchHit.getObject()).getJCRPath(processingContext)   
-end

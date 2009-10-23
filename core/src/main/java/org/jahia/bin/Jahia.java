@@ -69,7 +69,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
@@ -94,7 +93,6 @@ import org.jahia.security.license.LicenseManager;
 import org.jahia.security.license.Limit;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.deamons.filewatcher.FileListSync;
-import org.jahia.services.search.JahiaSearchBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -812,7 +810,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         } catch (Exception e) {
             ErrorHandler.getInstance().handle(e, request, response);
         } finally {
-            JahiaSearchBaseService.closeAllOpenLuceneQueryRequestOrSearcher();
             paramBeanThreadLocal.set(null);
             servletThreadLocal.set(null);
         }

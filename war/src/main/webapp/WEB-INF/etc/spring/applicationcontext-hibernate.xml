@@ -68,11 +68,7 @@
                 <value>org/jahia/workflow/nstep/model/WorkflowStep.hbm.xml</value>
                 <value>org/jahia/workflow/nstep/model/WorkflowInstance.hbm.xml</value>
                 <value>org/jahia/workflow/nstep/model/WorkflowHistoryEntry.hbm.xml</value>
-                <value>org/jahia/hibernate/model/indexingjob/JahiaIndexingJob.hbm.xml</value>
-                <value>org/jahia/hibernate/model/indexingjob/JahiaIndexJobServer.hbm.xml</value>
                 <value>org/jahia/hibernate/model/jahiaserver/JahiaServerProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/jahiasavedsearch/JahiaSavedSearch.hbm.xml</value>
-                <value>org/jahia/hibernate/model/jahiasavedsearch/JahiaSavedSearchView.hbm.xml</value>                
                 <value>org/jahia/hibernate/model/JahiaPagesUsersProp.hbm.xml</value>
             </list>
         </property>

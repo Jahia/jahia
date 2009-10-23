@@ -197,17 +197,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="searchAdministrationModule" class="org.jahia.admin.search.ManageSearch" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="search" />
-        <property name="permissionName" value="admin.search.ManageSearch" />
-        <property name="name" value="search" />
-        <property name="icon" value="find" />
-        <property name="label" value="org.jahia.admin.manageSearchEngine.label" />
-        <property name="urlAction" value="search" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="siteLanguagesAdministrationModule" class="org.jahia.admin.languages.ManageSiteLanguages" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="siteLanguages" />
@@ -313,7 +302,6 @@
                 <ref bean="usersAdministrationModule" />
                 <ref bean="groupsAdministrationModule" />
                 <ref bean="templatesAdministrationModule" />
-                <ref bean="searchAdministrationModule" />
                 <ref bean="siteLanguagesAdministrationModule" />
                 <ref bean="productionManagerAdministrationModule" />
                 <ref bean="sitePermissionsAdministrationModule" />

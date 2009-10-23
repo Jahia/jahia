@@ -42,16 +42,10 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobStat;
-import org.jahia.bin.Jahia;
-import org.jahia.content.NodeOperationResult;
-import org.jahia.content.TreeOperationResult;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.search.JahiaSiteIndexingJob;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.content.textextraction.TextExtractorJob;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.params.ParamBean;
@@ -67,7 +61,6 @@ import java.util.*;
  * Time: 11:39:22
  */
 public class ProcessDisplayServiceImpl extends JahiaRemoteService implements ProcessDisplayService {
-    private static transient final JahiaSitesService JAHIA_SITES_SERVICE = ServicesRegistry.getInstance().getJahiaSitesService();
     private static transient final SchedulerService SCHEDULER_SERVICE = ServicesRegistry.getInstance().getSchedulerService();
 
     private static transient final Logger logger = Logger.getLogger(ProcessDisplayServiceImpl.class);
@@ -101,7 +94,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
                 gwtProcessJobStat.setJobExecuting(false);
             }
             // get all job list
-            List jobList = getAllJobsDetails();
+            List<JobDetail> jobList = getAllJobsDetails();
             int waitingJobNumber = 0;
             int nextJobCurrentUserIndex = -1;
             String nextJobCurrentUserType = "-";
@@ -434,99 +427,6 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
 
         getThreadLocalRequest().getSession().setAttribute(SESSION_LAST_JOB_COMPLETE_TIME, Long.valueOf(SCHEDULER_SERVICE.getLastJobCompletedTime()));
         return processJobList;
-    }
-
-    private static List<JobDetail> getSiteIndexingJobs(boolean activeOnly) throws JahiaException {
-        List<JobDetail> jobDetails = new ArrayList<JobDetail>();
-
-        // get all site
-        Iterator jahiaSitesEnum = JAHIA_SITES_SERVICE.getSites();
-
-        while (jahiaSitesEnum.hasNext()) {
-            // current jahia site and settings
-            JahiaSite currentJahiaSite = (JahiaSite) jahiaSitesEnum.next();
-            Properties currentJahiaSiteSettings = currentJahiaSite.getSettings();
-            Iterator currentJahiaSiteSettingsIterator = currentJahiaSiteSettings.keySet().iterator();
-            while (currentJahiaSiteSettingsIterator.hasNext()) {
-                String key = (String) currentJahiaSiteSettingsIterator.next();
-                // get indexing jobs
-                int siteIndexingJobNamePosition = key.indexOf(JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
-                if (siteIndexingJobNamePosition != -1) {
-                    String currentServerId = key.substring(0, siteIndexingJobNamePosition);
-                    JobDetail currentJobDetail = new JobDetail(currentJahiaSiteSettings.getProperty(key, ""), JahiaSiteIndexingJob.JOB_GROUP_NAME, JahiaSiteIndexingJob.class);
-                    JobDataMap currentJobDataMap = currentJobDetail.getJobDataMap();
-//                    currentJobDataMap.setMutable(true); commented for compatibility with quartz 1.6
-                    String currentJobStatus = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_STATUS, "");
-                    if (activeOnly && !(BackgroundJob.STATUS_POOLED.equals(currentJobStatus)
-                            || BackgroundJob.STATUS_RUNNING.equals(currentJobStatus)
-                            || BackgroundJob.STATUS_WAITING.equals(currentJobStatus)
-                            || BackgroundJob.STATUS_INTERRUPTED.equals(currentJobStatus))) {
-                        continue;
-                    }
-                    TreeOperationResult result = new TreeOperationResult();
-                    if (BackgroundJob.STATUS_FAILED.equals(currentJobStatus)
-                            || BackgroundJob.STATUS_ABORTED.equals(currentJobStatus)
-                            || BackgroundJob.STATUS_INTERRUPTED.equals(currentJobStatus)) {
-                        String jobResult = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.RESULT, "");
-                        String localeCode = Locale.getDefault().toString();
-                        if (Jahia.getThreadParamBean() != null) {
-                            localeCode = Jahia.getThreadParamBean().getLocale().getDisplayName();
-                        }
-                        NodeOperationResult nodeOperationResult = new NodeOperationResult(null, localeCode, jobResult);
-                        result.appendError(nodeOperationResult);
-                        currentJobDataMap.put(BackgroundJob.RESULT, result);
-                    } else if (BackgroundJob.STATUS_SUCCESSFUL.equals(currentJobStatus)) {
-                        currentJobDataMap.put(BackgroundJob.RESULT, result);
-                    }
-                    // job: server
-                    String currentJobServer = currentServerId.substring(0, currentServerId.length() - 1);
-                    currentJobDataMap.put(BackgroundJob.JOB_SERVER, currentJobServer);
-
-                    // job: status
-                    currentJobDataMap.put(BackgroundJob.JOB_STATUS, currentJobStatus);
-
-                    // job: begin
-                    String currentJobBegin = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_BEGIN, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_BEGIN, currentJobBegin);
-
-                    // job: created
-                    String currentJobCreated = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_CREATED, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_CREATED, currentJobCreated);
-
-                    // job: duration
-                    String currentJobDuration = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_DURATION, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_DURATION, currentJobDuration);
-
-                    //job: end
-                    String currentJobEnd = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_END, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_END, currentJobEnd);
-
-                    //job: site key
-                    String currentJobSiteKey = currentJahiaSite.getSiteKey();
-                    currentJobDataMap.put(BackgroundJob.JOB_SITEKEY, currentJobSiteKey);
-
-                    // job: scheduled
-                    String currentJobScheduled = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_SCHEDULED, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_SCHEDULED, currentJobScheduled);
-
-                    // job: userkey
-                    String currentJobUserKey = currentJahiaSiteSettings.getProperty(currentServerId + BackgroundJob.JOB_USERKEY, "");
-                    currentJobDataMap.put(BackgroundJob.JOB_USERKEY, currentJobUserKey);
-
-                    //job: type
-                    String currentJobType = JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE;
-                    currentJobDataMap.put(BackgroundJob.JOB_TYPE, currentJobType);
-
-                    //jon interrupt status
-                    String currentJobInterruptStatus = currentJahiaSite.getSettings().getProperty(currentServerId + JahiaSiteIndexingJob.INTERRUPT_STATUS, "");
-                    currentJobDataMap.put(JahiaSiteIndexingJob.INTERRUPT_STATUS, currentJobInterruptStatus);
-
-                    // add to jobs detail list
-                    jobDetails.add(currentJobDetail);
-                }
-            }
-        }
-        return jobDetails;
     }
 
     private static boolean schedulerIsShutdown(){

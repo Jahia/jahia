@@ -52,8 +52,6 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
@@ -104,7 +102,6 @@ public abstract class ContentField extends ContentObject
     private ContentObject parent;
 
     private static transient JahiaVersionService jahiaVersionService;
-    private static transient JahiaSearchService jahiaSearchService;
     private static transient JahiaEventGeneratorService jahiaEventService;
     private static transient JahiaFieldService jahiaFieldService;
     private static transient JahiaContainersService jahiaContainersService;
@@ -394,24 +391,12 @@ public abstract class ContentField extends ContentObject
                 stateModificationContext.popAllLanguages ();
             }
 
-            // update the search index
-            /*
-            getJahiaSearchService ()
-                    .removeFieldFromSearchEngine (this.getSiteID (), this.getID (),
-                            ContentObjectEntryState.WORKFLOW_STATE_START_STAGING, languageCode);
-            */
-
             notifyFieldUpdate();
 
             if (!isMetadata()) {
                 WorkflowEvent theEvent = new WorkflowEvent (this, this, user, languageCode, true);
                 getJahiaEventService ().fireObjectChanged(theEvent);
-            } else {
-                RuleEvaluationContext ctx = new RuleEvaluationContext(this.getObjectKey(),this,
-                        Jahia.getThreadParamBean(),user);
-                getJahiaSearchService ()
-                        .indexContentObject(this, user, ctx);
-            }
+            } 
 
             return;
         }
@@ -455,12 +440,7 @@ public abstract class ContentField extends ContentObject
             if (!isMetadata()) {
                 WorkflowEvent theEvent = new WorkflowEvent (this, this, user, curLanguageCode, true);
                 getJahiaEventService ().fireObjectChanged(theEvent);
-            } else {
-                RuleEvaluationContext ctx = new RuleEvaluationContext(this.getObjectKey(),this,
-                        Jahia.getThreadParamBean(),user);
-                getJahiaSearchService ()
-                        .indexContentObject(this, user, ctx);
-            }
+            } 
         }
 
         if (stateModified) {
@@ -468,10 +448,6 @@ public abstract class ContentField extends ContentObject
         }
 
         notifyFieldUpdate();
-
-        // handled by previous objectChanged event
-        // getJahiaSearchService ().indexContentObject(this, user);
-
     }
 
 
@@ -575,8 +551,6 @@ public abstract class ContentField extends ContentObject
                 }
             }
         }
-
-        /** @todo Remove all active entries that will be replaced in the search engine */
 
         // FIXME NK :
         // We first backup the active ( create an archive entry , then delete the active) before switching the staging to active,
@@ -704,14 +678,6 @@ public abstract class ContentField extends ContentObject
         }
 
 
-        /** Remove field from search engine */
-        /*
-        getJahiaSearchService ().removeFieldFromSearchEngine (this);
-
-        if (!this.willBeCompletelyDeleted (null, null)) {
-            getJahiaSearchService().indexContainer(this.getContainerID(), false, jParams);
-        }*/
-
         if (stateModified) {
             stateModifContext.popAllLanguages ();
         }
@@ -726,14 +692,7 @@ public abstract class ContentField extends ContentObject
                     jParams,
                     stateModifContext,
                     activationResults);
-        } else {
-            RuleEvaluationContext ctx = new RuleEvaluationContext(this.getObjectKey(),this,
-                    jParams,jParams.getUser());
-            getJahiaSearchService().indexContentObject(this, jParams.getUser(), ctx);
-        }
-
-        // handled by contentActivationEvent
-        //        getJahiaSearchService().indexContentObject(this, jParams.getUser());
+        } 
 
         syncClusterOnValidation();
         return activationResults;
@@ -938,22 +897,9 @@ public abstract class ContentField extends ContentObject
 
         notifyFieldUpdate();
 
-        if ( this.hasStagingEntries() || this.hasActiveEntries() ){
-
-            /** Remove field from search engine */
-            /*
-               getJahiaSearchService().removeContentObject(this);*/
-
-        }
-
         ContentUndoStagingEvent jahiaEvent = new ContentUndoStagingEvent(this, this.getSiteID(), jParams);
         getJahiaEventService()
                 .fireContentObjectUndoStaging(jahiaEvent);
-        // handled by previous event
-        // update the search index
-        //getJahiaSearchService()
-        //        .indexContentObject(this, jParams.getUser());
-
     }
 
     /**
@@ -991,18 +937,6 @@ public abstract class ContentField extends ContentObject
      */
     public abstract String getValue (ProcessingContext jParams,
                                         ContentObjectEntryState entryState)
-            throws JahiaException;
-
-    /**
-     * This is the getValue method that should be implemented by the different
-     * ContentFields. It is called by the public getValue() method defined in this
-     * class, which handles entry resolving
-     * This method should call getDBValue to get the DBValue
-     *
-     * @param jParams the jParam containing the loadVersion and locales
-     */
-    public abstract String getValueForSearch (ProcessingContext jParams,
-                                              ContentObjectEntryState entryState)
             throws JahiaException;
 
     /**
@@ -1371,10 +1305,6 @@ public abstract class ContentField extends ContentObject
                 }
 
             }
-//            stopWatch.start("index postSet");
-//            getJahiaSearchService()
-//                    .indexContentObject(this,saveRequest.getUser());
-//            stopWatch.stop();
         }
 
     }
@@ -1874,18 +1804,7 @@ public abstract class ContentField extends ContentObject
         // so that other nodes in the cluster can update their values.
 
         // handled by previous super.restoreVersion()
-        /*
-        if (result.getStatus() !=
-            RestoreVersionTestResults.FAILED_OPERATION_STATUS ){
-            try {
-                //getJahiaSearchService()
-                //    .removeFieldFromSearchEngine(this);
-                getJahiaSearchService().indexContentObject(this, user);
-            } catch ( Exception t ){
-                logger.debug("Error re-indexing the field " + this.getID()
-                + " after restore version operation.",t);
-            }
-        }*/
+
         return result;
     }
 
@@ -2085,13 +2004,6 @@ public abstract class ContentField extends ContentObject
             jahiaVersionService = ServicesRegistry.getInstance().getJahiaVersionService();
         }
         return jahiaVersionService;
-    }
-
-    public static JahiaSearchService getJahiaSearchService() {
-        if (jahiaSearchService == null) {
-            jahiaSearchService = ServicesRegistry.getInstance().getJahiaSearchService();
-        }
-        return jahiaSearchService;
     }
 
     public static JahiaEventGeneratorService getJahiaEventService() {

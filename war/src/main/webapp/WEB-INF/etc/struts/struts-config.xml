@@ -244,12 +244,6 @@
                 validate="false">
         </action>
 
-        <action path="/SearchAutoFullFill"
-                type="org.jahia.ajax.search.SearchAutoFullFillAction"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/IndexSite"
             type="org.jahia.ajax.admin.IndexSiteAction"
                 validate="false">

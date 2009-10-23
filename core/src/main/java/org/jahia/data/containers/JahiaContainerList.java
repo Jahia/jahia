@@ -49,7 +49,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContainerListFactoryProxy;
-import org.jahia.services.containers.ContainerQueryBean;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -84,8 +83,6 @@ public class JahiaContainerList implements Cloneable, Serializable {
     private Properties  ctnListProperties = null;
 
     private JahiaContainerListPagination ctnListPagination;
-
-    private ContainerQueryBean queryBean;
 
     /**
      * @associates JahiaContainer
@@ -293,15 +290,6 @@ public class JahiaContainerList implements Cloneable, Serializable {
                                         msg, JahiaException.DATABASE_ERROR, JahiaException.CRITICAL_SEVERITY );
         }
     } // end getDefinition
-
-    public ContainerQueryBean getQueryBean() {
-        return queryBean;
-    }
-
-    public void setQueryBean(ContainerQueryBean queryBean) {
-        this.queryBean = queryBean;
-        this.isContainersLoaded = false;
-    }
 
     /***
         * adds a container to the containerList

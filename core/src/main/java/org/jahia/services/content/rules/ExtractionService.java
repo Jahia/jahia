@@ -34,20 +34,14 @@ package org.jahia.services.content.rules;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.WorkingMemory;
 import org.jahia.api.Constants;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.textextraction.TextExtractionListener;
 import org.jahia.services.content.textextraction.TextExtractorJob;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -64,7 +58,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -223,7 +216,6 @@ public class ExtractionService {
                     } finally {
                         reader.close();
                     }
-                    triggerJahiaFileReferenceReindexation(file.getStorageName(), provider, context);
                 } catch (Exception e) {
                     logger.debug("Cannot extract content", e);
                 } finally {
@@ -400,26 +392,4 @@ public class ExtractionService {
         }
         return node;
     }
-
-    private void triggerJahiaFileReferenceReindexation(String storageName, JCRStoreProvider provider,
-            ProcessingContext processingContext) throws Exception {
-        JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
-        JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance()
-                .getContext().getBean(JahiaFieldXRefManager.class.getName());
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE
-                + storageName);
-        for (JahiaFieldXRef xref : c) {
-            try {
-                ContentField contentObject = ContentField.getField(xref.getComp_id().getFieldId());
-                RuleEvaluationContext ctx = new RuleEvaluationContext(contentObject.getObjectKey(), contentObject,
-                        processingContext, processingContext.getUser());
-                searchService.indexContentObject(contentObject, processingContext.getUser(), ctx);
-            } catch (Exception e) {
-                logger.warn("Error when starting re-indexation. Field " + xref.getComp_id().getFieldId()
-                        + " was not re-indexed.", e);
-            }
-        }
-    }
-    
-    
 }

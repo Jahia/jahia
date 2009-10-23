@@ -143,9 +143,6 @@ public class SettingsBean {
     // Activation / deactivation of site/page-ID match check
     private boolean performSiteAndPageIDMatchCheck;
 
-    // Activation / deactivation of site ID in Search Hit page URLs
-    private boolean siteIDInSearchHitPageURL;
-
     // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private boolean useRelativeSiteURLs;
 
@@ -382,9 +379,6 @@ public class SettingsBean {
 
             // activation / deactivation of site/page ID match check
             performSiteAndPageIDMatchCheck = getBoolean ("performSiteAndPageIDMatchCheck", false);
-
-            // activation / deactivation of site ID in Search Hit Page URL
-            siteIDInSearchHitPageURL = getBoolean ("siteIDInSearchHitPageURL", false);
 
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
@@ -833,20 +827,7 @@ public class SettingsBean {
         return performSiteAndPageIDMatchCheck;
     }
 
-    /**
-     * Returns status of site ID in Search Hit page URLs
-     *
-     * @return true if search Hit Page URLs should be generated with siteKey when they come from another site than
-     * the current site on which the search is launched
-     */
-    public boolean isSiteIDInSearchHitPageURL() {
-        return siteIDInSearchHitPageURL;
-    }
-
-    public void setSiteIDInSearchHitPageURL(boolean siteIDInSearchHitPageURL) {
-        this.siteIDInSearchHitPageURL = siteIDInSearchHitPageURL;
-    }
-    /**
+   /**
      * Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     */
     public boolean isUseRelativeSiteURLs() {

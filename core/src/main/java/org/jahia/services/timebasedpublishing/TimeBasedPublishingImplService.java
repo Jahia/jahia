@@ -174,7 +174,7 @@ public class TimeBasedPublishingImplService extends TimeBasedPublishingService {
             try {
                 schedulerService.scheduleRamJob(jobDetail, trigger);
             } catch (Exception t) {
-                logger.debug("Exception scheduling IndexingJobConsummerJob", t);
+                logger.debug("Exception scheduling " + RetentionRuleIntegrityCheckJob.JOB_NAME, t);
             }
         } else {
             long l = jobDetail.getJobDataMap().getLong(RetentionRuleIntegrityCheckJob.MAX_ELAPSED_INTERVAL);

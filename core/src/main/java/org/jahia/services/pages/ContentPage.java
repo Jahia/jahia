@@ -59,7 +59,6 @@ import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
@@ -2882,10 +2881,6 @@ public class ContentPage extends ContentObject implements
                 stateModifContext,
                 activationResults);
 
-        // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService()
-        //        .indexContentObject(this, user);
-
         syncClusterOnValidation();
 
         return activationResults;
@@ -3572,10 +3567,6 @@ public class ContentPage extends ContentObject implements
             stateModifContext.popAllLanguages();
         }
 
-        // handled by objectChanged Event
-        //ServicesRegistry.getInstance().getJahiaSearchService()
-        //        .indexContentObject(this.getObjectKey(), user);
-
         for (String currentLanguage : languageCodes) {
             WorkflowEvent theEvent = new WorkflowEvent(this, this, user, currentLanguage, true);
             ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
@@ -3716,17 +3707,6 @@ public class ContentPage extends ContentObject implements
         ContentUndoStagingEvent jahiaEvent = new ContentUndoStagingEvent(this, getSiteID(), jParams);
         ServicesRegistry.getInstance().getJahiaEventService()
                 .fireContentObjectUndoStaging(jahiaEvent);
-
-        // handled by previous event
-        /*
-        if ( this.hasStagingEntries() || this.hasActiveEntries() ){
-            ServicesRegistry.getInstance().getJahiaSearchService().removeContentObject(this);
-            ServicesRegistry.getInstance ().getJahiaSearchService()
-                    .indexContentObject(this, jParams.getUser());
-        } else {
-            ServicesRegistry.getInstance().getJahiaSearchService().removeContentObject(this);
-        }*/
-
     }
 
     private boolean hasEntry(EntryStateable entryState) {
@@ -4825,10 +4805,6 @@ public class ContentPage extends ContentObject implements
 
         this.commitChanges(true, true, user);
 
-        // handled in commitChanges() call
-        //ServicesRegistry.getInstance().getJahiaSearchService()
-        //        .indexContentObject(this, user);
-
         // Invalidate sitemap
         ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
 
@@ -5018,11 +4994,6 @@ public class ContentPage extends ContentObject implements
     * @param startNode the starting node
     */
     public void updateContentPagePath(ProcessingContext context) throws JahiaException {
-
-        RuleEvaluationContext ctx = new RuleEvaluationContext(this.getObjectKey(),
-                this, context, context.getUser());
-        ServicesRegistry.getInstance().getJahiaSearchService()
-                .indexPage(this.getID(), context.getUser(), ctx);
 
         // update content childs
         for (ContentObject child : getChilds(JahiaAdminUser.getAdminUser(this.getJahiaID()), EntryLoadRequest.STAGED)) {

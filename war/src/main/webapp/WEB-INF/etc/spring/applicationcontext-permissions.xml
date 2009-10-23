@@ -28,7 +28,6 @@
                                 <value>org.jahia.actions.sites.*.admin.users.ManageUsers</value>
                                 <value>org.jahia.actions.sites.*.admin.users.ManageGroups</value>
                                 <value>org.jahia.actions.sites.*.admin.templates.ManageTemplates</value>
-                                <value>org.jahia.actions.sites.*.admin.search.ManageSearch</value>
                                 <value>org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages</value>
                                 <value>org.jahia.actions.sites.*.admin.production.ManageSiteProduction</value>
                                 <value>org.jahia.actions.sites.*.admin.permissions.ManageSitePermissions</value>

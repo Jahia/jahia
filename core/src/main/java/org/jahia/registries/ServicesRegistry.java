@@ -65,9 +65,6 @@ import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.services.search.facets.JahiaFacetingService;
-import org.jahia.services.search.indexingscheduler.JahiaSearchIndexationService;
 import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
@@ -144,15 +141,6 @@ public class ServicesRegistry {
 
     // Jahia ACL Manager Service
     private static final String JAHIA_ACL_MANAGER_SERVICE = "JahiaACLManagerService";
-
-    // Jahia SearchManager
-    private static final String JAHIA_SEARCH_SERVICE = "JahiaSearchService";
-    
-    // Jahia SearchManager
-    private static final String JAHIA_FACETING_SERVICE = "JahiaFacetingService";    
-
-    // Jahia SearchIndexation Service
-    private static final String JAHIA_SEARCH_INDEXATION_SERVICE = "JahiaSearchIndexationService";
 
     // Jahia Fetcher Service
     private static final String JAHIA_FETCHER_SERVICE = "JahiaFetcherService";
@@ -351,27 +339,6 @@ public class ServicesRegistry {
      */
     public JahiaContainersService getJahiaContainersService() {
         return (JahiaContainersService) getService(JAHIA_CONTAINERS_SERVICE);
-    }
-
-    /**
-     * DJ 03.01.2001
-     */
-    public JahiaSearchService getJahiaSearchService() {
-        return (JahiaSearchService) getService(JAHIA_SEARCH_SERVICE);
-    }
-    
-    /**
-     * DJ 03.01.2001
-     */
-    public JahiaFacetingService getJahiaFacetingService() {
-        return (JahiaFacetingService) getService(JAHIA_FACETING_SERVICE);
-    }    
-
-    /**
-     * DJ 03.01.2001
-     */
-    public JahiaSearchIndexationService getJahiaSearchIndexationService() {
-        return (JahiaSearchIndexationService) getService(JAHIA_SEARCH_INDEXATION_SERVICE);
     }
 
     /**

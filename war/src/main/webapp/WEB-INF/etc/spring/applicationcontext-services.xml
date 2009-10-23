@@ -126,56 +126,12 @@
         </property>
     </bean>
 
-    <bean id="compassResourceConverter" class="org.jahia.services.search.compass.CompassResourceConverterImpl">
-			<property name="compass" ref="compass" />
-    </bean>
-
-    <bean id="JahiaSearchService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.search.JahiaSearchBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="sitesService" ref="JahiaSitesService" />
-                <property name="schedulerService" ref="SchedulerService" />
-                <property name="clusterService" ref="clusterService" />
-                <property name="containersService" ref="JahiaContainersService" />
-                <property name="groupManagerService" ref="JahiaGroupManagerService" />
-                <property name="fieldService" ref="JahiaFieldService" />
-                <property name="savedSearchManager" ref="org.jahia.hibernate.manager.JahiaSavedSearchManager" />
-                <property name="savedSearchViewManager" ref="org.jahia.hibernate.manager.JahiaSavedSearchViewManager" />
-                <property name="config" ref="searchConfig" />
-                <property name="indexationConfig" ref="indexationConfig" />
-                <property name="filterCacheConfig" ref="filterCacheConfig" />
-                <property name="indJobMgr" ref="org.jahia.hibernate.manager.JahiaIndexingJobManager" />
-                <property name="serverPropMgr" ref="org.jahia.hibernate.manager.JahiaServerPropertiesManager" />
-                <property name="compass" ref="compass" />
-                <property name="compassResourceConverter" ref="compassResourceConverter" />
-                <property name="searchIndexProcessPipeline" ref="searchIndexProcessPipeline" />
-                <property name="savedSearchViewSettings" ref="savedSearchViewSettings" />
-                <property name="fieldsToCopyToSearchHit" ref="fieldsToCopyToSearchHit" />
-                <property name="fieldsToExcludeFromHighlighting" ref="fieldsToExcludeFromHighlighting" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="JahiaSearchIndexationService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.search.indexingscheduler.JahiaSearchIndexationService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="contentIndexationRules" ref="contentIndexationRulesList" />
-                <property name="fileFieldIndexationRules" ref="fileFieldIndexationRulesList" />
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaOpenSearchService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.opensearch.JahiaOpenSearchBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
             </bean>
         </property>
     </bean>
-    <bean id="JahiaFacetingService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.search.facets.JahiaFacetingBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="cacheService" ref="JahiaCacheService" />            
-            </bean>
-        </property>
-    </bean>                
     <bean id="JahiaFetcherService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -377,7 +333,6 @@
             <bean id="PageDefinitionHelper" class="org.jahia.services.templates.PageDefinitionHelper" depends-on="JahiaContainerDefinitionsRegistry">
 		      	<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
 		      	<property name="containerDefRegistry" ref="JahiaContainerDefinitionsRegistry" />
-		      	<property name="searchService" ref="JahiaSearchService" />      
             </bean>
         </property>
     </bean>

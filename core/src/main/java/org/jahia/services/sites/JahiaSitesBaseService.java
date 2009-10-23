@@ -70,7 +70,6 @@ import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -358,8 +357,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException
     {
-        JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
-        
         JahiaBaseACL acl = null;
         acl = new JahiaBaseACL();
         acl.create(0);
@@ -383,7 +380,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             addToCache(site);
 
-            searchService.createSearchHandler(site.getID());
             ServicesRegistry.getInstance().getJahiaEventService().fireSiteAdded(new JahiaEvent(this, Jahia.getThreadParamBean() , site));
         } else {
             return null;
@@ -638,9 +634,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //                        ServicesRegistry.getInstance().getJahiaTemplatesDeployerService(),
 //                        ServicesRegistry.getInstance().getJahiaFileWatcherService());
 
-            // create the search index
-            searchService.createSearchHandler(site.getID());
-            searchService.indexSite(site.getID(), jParams.getUser());
         } else {
             removeSite(site);      // remove site because the process generate error(s)...
             return null;

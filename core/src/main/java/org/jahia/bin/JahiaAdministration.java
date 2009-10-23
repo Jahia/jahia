@@ -58,6 +58,10 @@
 
 package org.jahia.bin;
 
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
@@ -103,6 +107,7 @@ import java.io.StringWriter;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -594,7 +599,20 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         // set request attributes...
         request.setAttribute("jahiaLoginUsername", jahiaLoginUsername);
         request.setAttribute("redirectTo", request.getRequestURI() + "?" + request.getQueryString());
-
+        if (!response.isCommitted()) {
+            boolean isNutchCrawler = false;
+            for (Enumeration<?> agentEnum = request.getHeaders("user-agent"); agentEnum.hasMoreElements();) {
+                String reqUserAgent = (String)agentEnum.nextElement();
+                if (reqUserAgent.contains("nutch")) {
+                    isNutchCrawler = true;
+                    break;
+                }
+            }
+            if (isNutchCrawler) {    
+                response.setHeader("WWW-Authenticate", "BASIC realm=\"Secured Jahia tools\"");
+                response.sendError(SC_UNAUTHORIZED);
+            }    
+        }
         doRedirect(request, response, session, JSP_PATH + "login.jsp");
     } // end displayLogin
 

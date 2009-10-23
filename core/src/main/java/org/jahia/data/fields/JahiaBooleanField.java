@@ -148,7 +148,6 @@ public class JahiaBooleanField extends JahiaField implements JahiaSimpleField, J
         final EntrySaveRequest saveRequest = new EntrySaveRequest(jParams.getUser(), getLanguageCode(), isNew);
         try {
             contentField.setValue((Boolean.valueOf(getValue())).booleanValue(), saveRequest);
-            //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
 
             if (getID() == 0) {
                 setID(contentField.getID());

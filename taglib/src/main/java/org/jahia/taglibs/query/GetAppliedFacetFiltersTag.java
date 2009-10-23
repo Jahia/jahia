@@ -31,6 +31,7 @@
  */
 package org.jahia.taglibs.query;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -82,10 +83,8 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
         final JspWriter out = pageContext.getOut();
         StringBuffer buff = new StringBuffer();
         try {
-            List<AppliedFacetFilters> allAppliedFacetFilters = ServicesRegistry
-                .getInstance().getJahiaFacetingService()
-                .getAppliedFacetFilters(
-                    jParams.getParameter(getFilterQueryParamName()));
+            List<AppliedFacetFilters> allAppliedFacetFilters = Collections.emptyList();
+            //TODO implement new: ServicesRegistry.getInstance().getJahiaFacetingService().getAppliedFacetFilters(jParams.getParameter(getFilterQueryParamName()));
             for (AppliedFacetFilters appliedFacetFilters : allAppliedFacetFilters) {
                 for (FacetValueBean facetValueBean : appliedFacetFilters
                     .getFacetValueBeans()) {

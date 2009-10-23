@@ -42,12 +42,6 @@
     <bean id="nstepWorkflowStepDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowStepDAOHibernate" parent="abstractGeneratorDAO"/>
     <bean id="nstepWorkflowInstanceDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowInstanceDAOHibernate" parent="abstractGeneratorDAO"/>
     <bean id="nstepWorkflowHistoryDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowHistoryDAOHibernate" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaIndexingJobDAO" class="org.jahia.hibernate.dao.JahiaIndexingJobDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaIndexJobServerDAO" class="org.jahia.hibernate.dao.JahiaIndexJobServerDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaSavedSearchDAO" class="org.jahia.hibernate.dao.JahiaSavedSearchDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaSavedSearchViewDAO" class="org.jahia.hibernate.dao.JahiaSavedSearchViewDAO">
-        <property name="sessionFactory" ref="sessionFactory" />
-    </bean>
     
     <bean id="jahiaServerPropertiesDAO" class="org.jahia.hibernate.dao.JahiaServerPropertiesDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
@@ -103,8 +97,6 @@
     			  <entry key="org.jahia.hibernate.model.JahiaSiteLangMap" value="jahia_site_lang_maps.id"/>
     			  <entry key="org.jahia.hibernate.model.JahiaSite" value="jahia_sites.id_jahia_sites"/>
     			  <entry key="org.jahia.hibernate.model.JahiaUser" value="jahia_users.id_jahia_users"/>
-    			  <entry key="org.jahia.hibernate.model.jahiasavedsearch.JahiaSavedSearch"
-                         value="jahia_savedsearch.id_jahia_savedsearch"/>
                     <entry key="org.jahia.hibernate.model.JahiaVersion" value="jahia_version.install_number"/>
                     <entry key="org.jahia.hibernate.model.JahiaInstalledPatch"
                            value="jahia_installedpatch.install_number"/>

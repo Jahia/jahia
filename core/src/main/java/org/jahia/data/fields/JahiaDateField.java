@@ -38,7 +38,6 @@ import org.jahia.data.ConnectionTypes;
 import org.jahia.data.containers.ContainerFacadeInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentDateField;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
@@ -48,7 +47,6 @@ import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
 import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.validation.ValidationError;
-import org.apache.lucene.document.DateTools;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -192,8 +190,6 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
             if (getID() == 0) {
                 setID(contentField.getID());
             }
-            //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(
-            //    this.getctnid(), jParams.getUser());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             // restore all value
@@ -241,41 +237,6 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
         aField.setValue(this.getValue());
         aField.setRawValue(this.getRawValue());
         aField.setObject(this.getObject());
-    }
-
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context) throws JahiaException {
-
-        String val = (String) this.getObject();
-        if (val == null) {
-            val = "";
-        } else {
-            try {
-                long longVal = Long.parseLong(val);
-                int dateRounding = ServicesRegistry.getInstance().getJahiaSearchService().getDateRounding();
-                if (dateRounding > 0 && longVal > 0) {
-                    if (dateRounding >= 1440) {
-                        longVal = DateTools.round(longVal, DateTools.Resolution.DAY);
-                    } else if (dateRounding >= 60) {
-                        longVal = DateTools.round(longVal, DateTools.Resolution.HOUR);
-                    } else {
-                        longVal = DateTools.round(longVal, DateTools.Resolution.MINUTE);
-                    }
-                }
-                val = String.valueOf(longVal);
-            } catch (Exception t) {
-                logger.debug("Exception rounding date field");
-            }
-        }
-
-        return new String[]{val};
     }
 
     @Override

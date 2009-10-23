@@ -48,12 +48,9 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.TextHtml;
 import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.LinkedList;
 
@@ -537,54 +534,6 @@ public abstract class JahiaField implements Cloneable, Serializable,
         }
     }
 
-    /**
-     * Returns an Hashmap of language_code/values used by search index engine
-     *
-     */
-    public Map<String, String[]> getValuesForSearch() throws JahiaException {
-
-        String lang = this.getLanguageCode();
-        if (this.isShared()) {
-            lang = ContentField.SHARED_LANGUAGE;
-        }
-
-        Map<String, String[]> map = new HashMap<String, String[]>();
-        map.put(lang, getValuesForSearch(lang, null, true));
-        return map;
-    }
-
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context) throws JahiaException {
-        return getValuesForSearch(languageCode, context, true);
-    }
-    
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-
-        String[] values = this.getValues();
-        if (values == null || values.length == 0) {
-            values = EMPTY_STRING_ARRAY;
-        }
-        for (int i = 0; i < values.length; i++) {
-            values[i] = TextHtml.html2text(values[i]);
-        }
-        return values;
-    }    
-    
     public void setVersionID(int versionID) {
         this.versionID = versionID;
     }

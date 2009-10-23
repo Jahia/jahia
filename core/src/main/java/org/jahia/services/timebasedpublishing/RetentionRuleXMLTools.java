@@ -37,7 +37,6 @@ import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
-import org.jahia.services.search.savedsearch.JahiaSavedSearch;
 import org.jahia.exceptions.JahiaException;
 
 import java.io.StringWriter;
@@ -84,7 +83,7 @@ public class RetentionRuleXMLTools {
         String result = "";
         try {
             Document doc = DocumentHelper.createDocument();
-            Element root = doc.addElement(JahiaSavedSearch.SEARCH_ELEMENT);
+            Element root = doc.addElement("search");
 
             root.addElement(INHERIT_FROM_PARENT).addText(String.valueOf(rule.getInherited()));
 

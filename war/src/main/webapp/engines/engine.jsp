@@ -145,8 +145,6 @@ static {
 
   // metadata engine
   includes.setProperty("metadata_engine",                     "/engines/addcontainer/addcontainer.jsp");
-
-  includes.setProperty("CustomizeSaveSearchView",             "/engines/search/customizesavesearchview.jsp");
 }
 %>
 <%

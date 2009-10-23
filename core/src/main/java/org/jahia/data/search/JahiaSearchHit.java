@@ -45,7 +45,6 @@ import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.content.ObjectKey;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.search.ParsedObject;
 
 /**
  * This class defines what does a search "hit" looks like.
@@ -82,8 +81,6 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
     */
     private String      teaser;
 
-    private ParsedObject parsedObject;
-
     public JahiaPage getPage() {
         return page;
     }
@@ -100,15 +97,7 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
         this.pageId = aPageId;
     }
 
-    /**
-     *
-     * @param aParsedObject ParsedObject
-     */
-    public JahiaSearchHit(ParsedObject aParsedObject){
-        this.parsedObject = aParsedObject;
-    }
-    
-    /**
+   /**
     *
     * @param aNode Node
     */
@@ -221,21 +210,6 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
      */
     public void setTeaser(String aTeaser){
         this.teaser = aTeaser;
-    }
-
-    /**
-     * Returns a ParsedObject instance of this hit
-     * @return ParsedObject
-     */
-    public ParsedObject getParsedObject(){
-        return this.parsedObject;
-    }
-
-    /**
-     * Returns a ParsedObject instance of this hit
-     */
-    public void setParsedObject(ParsedObject aParsedObject){
-        this.parsedObject = aParsedObject;
     }
 
     //-------------------------------------------------------------------------

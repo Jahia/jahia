@@ -154,7 +154,6 @@ public class JahiaFloatField extends JahiaField implements JahiaSimpleField, Jah
             } else {
                 contentField.unsetValue(saveRequest);
             }
-            //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
 
             if (getID() == 0) {
                 setID(contentField.getID());

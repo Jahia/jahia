@@ -27,8 +27,6 @@ alter table jahia_pwd_policy_rule_params drop foreign key FKBE451EF45A0DB19B;
 alter table jahia_pwd_policy_rules drop foreign key FK2BC650026DA1D1E6;
 alter table jahia_retrule drop foreign key FK578E2BC72D76FCE6;
 alter table jahia_retrule_range drop foreign key FK688A96C57D611258;
-alter table jahia_savedsearch drop foreign key FK78234299ACC6817;
-alter table jahia_savedsearch drop foreign key FK782342991382CE9E;
 alter table jahia_site_lang_list drop foreign key FK1DDBC16D7EED26D3;
 alter table jahia_site_lang_maps drop foreign key FK1DDC17667EED26D3;
 alter table jahia_sites_grps drop foreign key FK7B245597F46755FE;
@@ -60,8 +58,6 @@ drop table if exists jahia_fields_prop;
 drop table if exists jahia_grp_access;
 drop table if exists jahia_grp_prop;
 drop table if exists jahia_grps;
-drop table if exists jahia_indexingjobs;
-drop table if exists jahia_indexingjobsserver;
 drop table if exists jahia_installedpatch;
 drop table if exists jahia_languages_states;
 drop table if exists jahia_link;
@@ -85,7 +81,6 @@ drop table if exists jahia_resources;
 drop table if exists jahia_retrule;
 drop table if exists jahia_retrule_range;
 drop table if exists jahia_retruledef;
-drop table if exists jahia_savedsearch;
 drop table if exists jahia_serverprops;
 drop table if exists jahia_site_lang_list;
 drop table if exists jahia_site_lang_maps;
@@ -361,38 +356,6 @@ CREATE TABLE jahia_grps (
 );
 ALTER TABLE jahia_grps TYPE=InnoDB;
 
-CREATE TABLE jahia_indexingjobs (
-    id_indexingjob VARCHAR(50) NOT NULL,
-    classname_indexingjob VARCHAR(255) NOT NULL,
-    date_indexingjob BIGINT,
-    indeximmdty_indexingjob BIT,
-    ruleId_indexingjob INTEGER,
-    fromtime1_indexingjob INTEGER,
-    totime1_indexingjob INTEGER,
-    fromtime2_indexingjob INTEGER,
-    totime2_indexingjob INTEGER,
-    fromtime3_indexingjob INTEGER,
-    totime3_indexingjob INTEGER,
-    enableserver_indexingjob VARCHAR(100),    
-    ctnlistid_indexingjob INTEGER,
-    ctnid_indexingjob INTEGER,
-    siteid_indexingjob INTEGER,
-    keyname_indexingjob VARCHAR(255),
-    keyvalue_indexingjob VARCHAR(255),
-    pageid_indexingjob INTEGER,
-    fieldid_indexingjob INTEGER,
-    PRIMARY KEY(id_indexingjob)
-);
-ALTER TABLE jahia_indexingjobs TYPE=InnoDB;  
-
-CREATE TABLE jahia_indexingjobsserver (
-    serverid VARCHAR(200) NOT NULL,
-    indexingjobid VARCHAR(50) NOT NULL,
-    indexing_date BIGINT,
-    PRIMARY KEY(serverid, indexingjobid)
-);  
-ALTER TABLE jahia_indexingjobsserver TYPE=InnoDB;  
-
 CREATE TABLE jahia_installedpatch (
     install_number INTEGER NOT NULL,
     name VARCHAR(100),
@@ -636,20 +599,6 @@ CREATE TABLE jahia_retruledef (
     PRIMARY KEY (id_jahia_retruledef)
 );
 ALTER TABLE jahia_retruledef TYPE=InnoDB;
-
-CREATE TABLE jahia_savedsearch (
-    id_jahia_savedsearch INTEGER NOT NULL,
-    title_jahia_savedsearch VARCHAR(255),
-    descr_jahia_savedsearch VARCHAR(250),
-    search_jahia_savedsearch LONGTEXT NOT NULL,
-    creationdate_jahia_savedsearch BIGINT,
-    owner_jahia_savedsearch VARCHAR(255),
-    class_jahia_savedsearch VARCHAR(255),
-    jahiaid_jahia_savedsearch INTEGER,
-    rights_jahia_search INTEGER,
-    PRIMARY KEY (id_jahia_savedsearch)
-);
-ALTER TABLE jahia_savedsearch TYPE=InnoDB;
 
 CREATE TABLE jahia_serverprops (
     id_serverprops VARCHAR(50) NOT NULL,
@@ -950,16 +899,6 @@ alter table jahia_retrule_range
     add constraint FK688A96C57D611258 
     foreign key (id_retrule_range) 
     references jahia_retrule (id_jahia_retrule);
-alter table jahia_savedsearch 
-    add index FK78234299ACC6817 (rights_jahia_search), 
-    add constraint FK78234299ACC6817 
-    foreign key (rights_jahia_search) 
-    references jahia_acl (id_jahia_acl);
-alter table jahia_savedsearch 
-    add index FK782342991382CE9E (jahiaid_jahia_savedsearch), 
-    add constraint FK782342991382CE9E 
-    foreign key (jahiaid_jahia_savedsearch) 
-    references jahia_sites (id_jahia_sites);
 alter table jahia_site_lang_list 
     add index FK1DDBC16D7EED26D3 (site_id), 
     add constraint FK1DDBC16D7EED26D3 

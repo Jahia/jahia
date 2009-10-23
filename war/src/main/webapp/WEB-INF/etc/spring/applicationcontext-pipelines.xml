@@ -4,18 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 	
-    <bean id="searchIndexProcessPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
-		<property name="name"><value>searchIndexProcessPipeline</value></property>
-        <property name="valves">
-            <list>
-                <bean class="org.jahia.services.search.valves.ContainerSearchIndexProcessValveImpl" />
-                <bean class="org.jahia.services.search.valves.PageSearchIndexProcessValveImpl" />
-                <bean class="org.jahia.services.search.valves.FieldSearchIndexProcessValveImpl" />
-                <bean class="org.jahia.services.search.valves.FieldReferenceSearchIndexProcessValveImpl" />                
-            </list>
-        </property>
-    </bean>
-
     <bean id="org.jahia.operations.valves.SkeletonAggregatorValve" class="org.jahia.operations.valves.SkeletonAggregatorValve">
         <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
         <property name="eventService" ref="JahiaEventService"/>

@@ -37,20 +37,14 @@ import org.jahia.data.ConnectionTypes;
 import org.jahia.data.FormDataManager;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentSmallTextSharedLangField;
 import org.jahia.services.fields.ContentFieldTools;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
-import org.jahia.utils.JahiaTools;
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.TextHtml;
 
 import java.util.*;
 
@@ -216,92 +210,6 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         aField.setValue(this.getValue());
         aField.setRawValue(this.getRawValue());
         aField.setObject(this.getObject());
-    }
-
-    /**
-     * Returns an Hashmap of language_code/value used by search index engine
-     * the value is an array of String
-     */
-    public Map<String, String[]> getValuesForSearch() throws JahiaException {
-
-        String lang = this.getLanguageCode();
-        if (this.isShared()) {
-            lang = ContentField.SHARED_LANGUAGE;
-        }
-
-        Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
-
-        for (String val : this.getValues()) {
-            ResourceBundleMarker resMarker =
-                    ResourceBundleMarker.parseMarkerValue(val);
-            if (resMarker == null) {
-                List<String> vals = tempValues.get(lang);
-                if (vals == null) {
-                    vals = new ArrayList<String>();
-                }
-                if (val == null) {
-                    val = "";
-                }
-                vals.add(val);
-                tempValues.put(lang, vals);
-            } else {
-                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(this.getJahiaID());
-                List<SiteLanguageSettings> siteLanguageSettings = site.getLanguageSettings();
-                if (siteLanguageSettings != null) {
-                    for (SiteLanguageSettings curSetting : siteLanguageSettings) {
-                        if (curSetting.isActivated()) {
-                            Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
-                            String value = resMarker.getValue(tempLocale);
-                            if (value == null) {
-                                value = "";
-                            }
-                            List<String> vals = tempValues.get(tempLocale.toString());
-                            if (vals == null) {
-                                vals = new ArrayList<String>();
-                            }
-                            vals.add(value);
-                            tempValues.put(tempLocale.toString(), vals);
-                        }
-                    }
-                }
-            }
-        }
-        Map<String, String[]> values = new HashMap<String, String[]>();
-        
-        for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
-            values.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]) );
-        }
-        return values;
-    }
-
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-        EntryLoadRequest loadRequest = (EntryLoadRequest) context.getEntryLoadRequest().clone();
-        loadRequest.getLocales().clear();
-        loadRequest.getLocales().add(LanguageCodeConverters.languageCodeToLocale(languageCode));
-        List<String> values = new ArrayList<String>();
-        EntryLoadRequest savedEntryLoadRequest =
-            context.getSubstituteEntryLoadRequest();
-        try {
-            context.setSubstituteEntryLoadRequest(loadRequest);
-            Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-            for (String val : this.getValues()) {
-                values.add(expand ? JahiaTools.getExpandedValue(val, null,
-                        context, tempLocale) : val == null ? "" : val);
-            }
-        } catch (Exception t) {
-            logger.debug("Error getting value for search", t);
-        } finally {
-            context.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
-        }
-
-        String[] strArray = new String[values.size()];
-        int i = 0;
-        for (String value : values) {
-            strArray[i] = TextHtml.html2text(value);
-            i++;
-        }
-
-        return strArray;
     }
 
 }

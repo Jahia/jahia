@@ -48,8 +48,6 @@ import org.jahia.params.ParamBean;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.engines.calendar.CalendarHandler;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.registries.ServicesRegistry;
 
 /**
  * RSS feed producer for the Jahia search provider.
@@ -94,13 +92,13 @@ public class FeedWriter {
             feed.setDescription("Jahia CMS Search Result Feed");
             List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
-            JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
             for ( JahiaSearchHit hit : searchResult.results() ){
                 try {
-                    SyndEntry entry = searchService.getSyndEntry(hit,jParams,serverURL);
-                    if (entry != null){
-                        entries.add(entry);
-                    }
+// TODO: Implement new OpenSearch result fetching
+//                     SyndEntry entry = searchService.getSyndEntry(hit,jParams,serverURL);
+//                    if (entry != null){
+//                        entries.add(entry);
+//                    }
                 } catch ( Exception e ){
                     logger.warn(
                             "Exception occured creating SyndEntry from hit "

@@ -385,7 +385,7 @@ public class JahiaFieldBaseService extends JahiaFieldService {
 
 
     /**
-     * Get all the fields ID for a gived site (for the search engine)
+     * Get all the fields ID for a given site 
      *
      * @param siteID the site id
      *
@@ -400,7 +400,7 @@ public class JahiaFieldBaseService extends JahiaFieldService {
 
 
     /**
-     * Get all the fields ID (for the search engine)
+     * Get all the fields ID
      *
      * @return a List of field ids
      */
@@ -584,18 +584,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
                 return null;
             }
         }
-
-        /* Doesn't work with engine like "searchengine"
-        if ( theField != null
-        && !"core".equalsIgnoreCase(jParams.getEngine()) ){
-        // we found an active but we need to check that it is not marked for delete
-        if (contentField == null) {
-        contentField = ContentField.getField(fieldID);
-        }
-        if ( contentField.isMarkedForDelete(theField.getLanguageCode()) ){
-        return null;
-        }
-        }*/
 
         // check fields ACL
         if (jParams == null) {
@@ -943,7 +931,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
             }    
         }
 
-        //--------- start add to search engine + fire event --------------
         if (savemode == 0)
         // CREATE
         {
@@ -970,20 +957,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
                 cacheFields.put (getCacheFieldEntryKey(theField.getID (), theField.getWorkflowState()), theField);
              */
             invalidateCacheField(theField.getID());
-
-            // Search Engine
-            /*
-            if ( (theField.getConnectType() == ConnectionTypes.LOCAL) ||
-                 (theField.getConnectType() == ConnectionTypes.HTMLEDITOR) ||
-                 (theField.getConnectType() == ConnectionTypes.HTMLEDITORAX) )
-            {
-                int workflowState = theField.getWorkflowState();
-                if ( workflowState == EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
-                    workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
-                }
-                ServicesRegistry.getInstance().getJahiaSearchService().addFieldToSearchEngine( theField , workflowState);
-            }*/
-
         } else
         // UPDATE
         {
@@ -1021,23 +994,7 @@ public class JahiaFieldBaseService extends JahiaFieldService {
 
             invalidateCacheField(theField.getID());
 
-            /*
-            int workflowState = theField.getWorkflowState();
-            if ( workflowState == EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
-                workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
-            }
-            if (theField.getConnectType() == ConnectionTypes.LOCAL) {
-                ServicesRegistry.getInstance().getJahiaSearchService().addFieldToSearchEngine( theField, workflowState );
-            }
-            // JB 02.08.2001 - Add HTMLEditor Types
-            if (theField.getConnectType() == ConnectionTypes.HTMLEDITOR) {
-                ServicesRegistry.getInstance().getJahiaSearchService().addFieldToSearchEngine( theField, workflowState);
-            }
-            if (theField.getConnectType() == ConnectionTypes.HTMLEDITORAX) {
-                ServicesRegistry.getInstance().getJahiaSearchService().addFieldToSearchEngine( theField, workflowState );
-            }*/
-
-            logger.debug ("UPDATE - step4 ");
+             logger.debug ("UPDATE - step4 ");
 
             // fire event if we're not in a PortletList container
             if (logMe (theField)) {
@@ -1047,7 +1004,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
             }
             theField.save (jParams);
         }
-        //--------- end add to search engine + fire event --------------
 
         //JahiaSaveVersion saveVersion = ServicesRegistry.getInstance ().getJahiaVersionService ().getSiteSaveVersion (theField.getJahiaID ());
         // saves field additionnal info, if needed

@@ -68,10 +68,6 @@ DROP INDEX jahia_fields_data_index14 ;
 
 DROP INDEX jahia_fields_def_index ;
 
-DROP INDEX jahia_indexingjobs_index ;
-
-DROP INDEX jahia_indexingjobsserver_index ;
-
 DROP INDEX jahia_languages_states_index ;
 
 DROP INDEX jahia_languagestates_index ;
@@ -177,8 +173,6 @@ CREATE INDEX jahia_fields_data_index10 ON jahia_fields_data (id_jahia_obj, type_
 CREATE INDEX jahia_fields_data_index11 ON jahia_fields_data (id_jahia_fields_data, workflow_state, version_id, pageid_jahia_fields_data);
 
 CREATE INDEX jahia_fields_def_index ON jahia_fields_def (name_jahia_fields_def);
-
-CREATE INDEX jahia_indexingjobsserver_index ON jahia_indexingjobsserver (indexingjobid, serverid);
 
 CREATE INDEX jahia_languages_states_index ON jahia_languages_states (workflow_state, siteid);
 

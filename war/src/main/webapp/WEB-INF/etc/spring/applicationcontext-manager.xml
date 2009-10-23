@@ -261,23 +261,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaSavedSearchManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSavedSearchManager">
-                <property name="aclDao" ref="jahiaAclDAO" />
-                <property name="searchDao" ref="jahiaSavedSearchDAO" />
-                <property name="siteDao" ref="jahiaSiteDAO" />
-                <property name="userDao" ref="jahiaUserDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaSavedSearchViewManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSavedSearchViewManager">
-                <property name="searchViewDao" ref="jahiaSavedSearchViewDAO" />
-            </bean>
-        </property>
-    </bean>    
     <bean id="org.jahia.hibernate.manager.JahiaSiteLanguageListManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageListManager">
@@ -314,14 +297,6 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaBigTextDataManager">
                 <property name="jahiaBigTextDataDAO" ref="jahiaBigTextDataDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaIndexingJobManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaIndexingJobManager">
-                <property name="jahiaIndexingJobDAO" ref="jahiaIndexingJobDAO" />
-                <property name="jahiaIndexJobServerDAO" ref="jahiaIndexJobServerDAO" />
             </bean>
         </property>
     </bean>

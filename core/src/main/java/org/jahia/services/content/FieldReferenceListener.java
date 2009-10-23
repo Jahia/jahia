@@ -53,8 +53,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentBigTextField;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 
@@ -116,7 +114,6 @@ public class FieldReferenceListener extends DefaultEventListener {
             return;
         }
         try {
-            JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
             ProcessingContext processingContext = Jahia.getThreadParamBean();
             JahiaUser user = processingContext != null ? processingContext.getUser() : null;
             
@@ -164,11 +161,6 @@ public class FieldReferenceListener extends DefaultEventListener {
                                 }
                             }
                         }
-                        RuleEvaluationContext ctx = new RuleEvaluationContext(
-                                field.getObjectKey(), field,
-                                processingContext, user);
-                        searchService.indexContentObject(field,
-                                user, ctx);
                     } else {
                         logger.warn("No content field with the ID " + fieldId + " can be found.");
                     }

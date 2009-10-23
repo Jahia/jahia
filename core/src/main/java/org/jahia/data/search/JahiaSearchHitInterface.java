@@ -35,7 +35,6 @@ import java.util.List;
 
 import org.jahia.content.ObjectKey;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.search.ParsedObject;
 
 /**
  * Define the search hit interface
@@ -117,14 +116,6 @@ public interface JahiaSearchHitInterface extends Comparable<JahiaSearchHitInterf
     public abstract String getTeaser();
 
     public abstract void setTeaser(String teaser);
-
-    /**
-     * Returns a ParsedObject instance of this hit
-     * @return ParsedObject
-     */
-    public abstract ParsedObject getParsedObject();
-
-    public abstract void setParsedObject(ParsedObject parsed);
 
     public abstract int hashCode();
 

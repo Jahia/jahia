@@ -161,8 +161,6 @@ public class JahiaIntegerField extends JahiaField implements JahiaSimpleField, J
             if (getID() == 0) {
                 setID(contentField.getID());
             }
-
-            //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
         } catch (Exception t) {
             logger.warn("Integer value could not be set", t);
             return false;

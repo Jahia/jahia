@@ -230,7 +230,6 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
         }
         EntrySaveRequest saveRequest = new EntrySaveRequest(jParams.getUser(), this.getLanguageCode(), isNew);
         contentFileField.setFile(fField, saveRequest);
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
         if (getID() == 0) {
             setID(contentFileField.getID());
         }
@@ -263,7 +262,6 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
 //            EntrySaveRequest saveRequest =
 //                    new EntrySaveRequest(jParams.getUser(), this.getLanguageCode());
 //            contentFileField.setFile(fField, saveRequest);
-//            ServicesRegistry.getInstance().getJahiaSearchService().indexField(getID(),jParams);
 //        }
 //        return true;
 //    }
@@ -337,17 +335,5 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
         JahiaFileField fField =
                 (JahiaFileField) this.getObject();
         aField.setObject(fField);
-    }
-    
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-        return EMPTY_STRING_ARRAY;
     }
 }

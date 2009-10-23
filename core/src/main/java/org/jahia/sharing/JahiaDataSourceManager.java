@@ -56,7 +56,7 @@ public class JahiaDataSourceManager {
         */
 	private JahiaDataSourceManager()
 	{
-	    JahiaConsole.println( "JahiaDataSourceManager", "***** Starting the Jahia SearchIndexer Manager *****" );
+	    JahiaConsole.println( "JahiaDataSourceManager", "***** Starting the Jahia FieldSharingManager *****" );
 	    fields = FieldSharingManager.getInstance();
 	} // end constructor
 	

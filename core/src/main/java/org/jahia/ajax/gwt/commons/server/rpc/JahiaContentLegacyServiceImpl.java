@@ -37,11 +37,8 @@ import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
-import org.jahia.data.search.JahiaSearchResult;
-import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.containers.JahiaContainer;
@@ -65,10 +62,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.search.PageSearcher;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.content.ObjectKey;
-import org.jahia.content.ContentPageKey;
 
 import java.util.*;
 
@@ -144,7 +138,7 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
         gwtContainerlist.setAddContainerLauncher(addContainerLauncher);
 
         // add gwtContainerlist
-        Iterator mainContentContainerEnum = containerList.getContainers();
+        Iterator<JahiaContainer> mainContentContainerEnum = containerList.getContainers();
         containerList.getFullSize();
         while (mainContentContainerEnum.hasNext()) {
             Object o = mainContentContainerEnum.next();
@@ -741,23 +735,7 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
         List<String> languageCodes = new ArrayList<String>(1);
         languageCodes.add(ctx.getLocale().toString());
 
-        PageSearcher searcher = new PageSearcher(new String[] { ServicesRegistry.getInstance().getJahiaSearchService().getSearchHandler(ctx.getSiteID()).getName() }, languageCodes);
-        try {
-            JahiaSearchResult results = searcher.search(new StringBuilder("jahia.title:").append(queryString).toString(), ctx);
-            for (JahiaSearchHit hit: results.results()) {
-                ObjectKey key = hit.getSearchHitObjectKey();
-                if (key != null && key.getType().equals(ContentPageKey.PAGE_TYPE)) {
-                    ContentPage page = (ContentPage) JahiaObjectCreator.getContentObjectFromKey(hit.getSearchHitObjectKey());
-                    if (page != null && page.getPageType(ctx.getEntryLoadRequest()) == PageInfoInterface.TYPE_DIRECT) {
-                        result.add(getJahiaPageWrapper(ctx, page.getPage(ctx))) ;
-                    }
-                }
-            }
-        } catch (JahiaException e) {
-            logger.error(e.toString(), e);
-        } catch (ClassNotFoundException e) {
-            logger.error(e.toString(), e);
-        }
+// TODO: Implement new page search 
         return result ;
     }
 }

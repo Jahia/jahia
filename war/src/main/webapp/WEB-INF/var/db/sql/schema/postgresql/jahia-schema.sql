@@ -68,12 +68,6 @@
     alter table jahia_retrule_range 
         drop constraint FK688A96C57D611258;
 
-    alter table jahia_savedsearch 
-        drop constraint FK782342991382CE9E;
-
-    alter table jahia_savedsearch 
-        drop constraint FK78234299ACC6817;
-
     alter table jahia_site_lang_list 
         drop constraint FK1DDBC16D7EED26D3;
 
@@ -133,10 +127,6 @@
 
     drop table jahia_grps;
 
-    drop table jahia_indexingjobs;
-
-    drop table jahia_indexingjobsserver;
-
     drop table jahia_installedpatch;
 
     drop table jahia_languages_states;
@@ -184,10 +174,6 @@
     drop table jahia_retrule_range;
 
     drop table jahia_retruledef;
-
-    drop table jahia_savedsearch;
-
-    drop table jahia_savedsearchview;
 
     drop table jahia_serverprops;
 
@@ -409,36 +395,6 @@
         siteid_jahia_grps int4,
         hidden_jahia_grps bool,
         primary key (id_jahia_grps)
-    );
-
-    create table jahia_indexingjobs (
-        id_indexingjob varchar(50) not null,
-        classname_indexingjob varchar(255) not null,
-        date_indexingjob int8,
-        indeximmdty_indexingjob bool,
-        ruleId_indexingjob int4,
-        fromtime1_indexingjob int4,
-        totime1_indexingjob int4,
-        fromtime2_indexingjob int4,
-        totime2_indexingjob int4,
-        fromtime3_indexingjob int4,
-        totime3_indexingjob int4,
-        enableserver_indexingjob varchar(100),
-        ctnlistid_indexingjob int4,
-        ctnid_indexingjob int4,
-        siteid_indexingjob int4,
-        keyname_indexingjob varchar(255),
-        keyvalue_indexingjob varchar(255),
-        pageid_indexingjob int4,
-        fieldid_indexingjob int4,
-        primary key (id_indexingjob)
-    );
-
-    create table jahia_indexingjobsserver (
-        serverid varchar(200) not null,
-        indexingjobid varchar(50) not null,
-        indexing_date int8,
-        primary key (serverid, indexingjobid)
     );
 
     create table jahia_installedpatch (
@@ -673,29 +629,6 @@
         primary key (id_jahia_retruledef)
     );
 
-    create table jahia_savedsearch (
-        id_jahia_savedsearch int4 not null,
-        title_jahia_savedsearch varchar(255),
-        descr_jahia_savedsearch varchar(250),
-        search_jahia_savedsearch text not null,
-        creationdate_jahia_savedsearch int8,
-        owner_jahia_savedsearch varchar(255),
-        class_jahia_savedsearch varchar(255),
-        jahiaid_jahia_savedsearch int4,
-        rights_jahia_search int4,
-        primary key (id_jahia_savedsearch)
-    );
-
-    create table jahia_savedsearchview (
-        smode_savedsearchview int4 not null,
-        ctnid_savedsearchview varchar(100) not null,
-        searchid_savedsearchview int4 not null,
-        userkey_savedsearchview varchar(200) not null,
-        setting_savedsearchview text not null,
-        name_savedsearchview varchar(100) not null,
-        primary key (smode_savedsearchview, ctnid_savedsearchview, searchid_savedsearchview, userkey_savedsearchview)
-    );
-
     create table jahia_serverprops (
         id_serverprops varchar(50) not null,
         propname_serverprops varchar(200) not null,
@@ -924,16 +857,6 @@
         add constraint FK688A96C57D611258 
         foreign key (id_retrule_range) 
         references jahia_retrule;
-
-    alter table jahia_savedsearch 
-        add constraint FK782342991382CE9E 
-        foreign key (jahiaid_jahia_savedsearch) 
-        references jahia_sites;
-
-    alter table jahia_savedsearch 
-        add constraint FK78234299ACC6817 
-        foreign key (rights_jahia_search) 
-        references jahia_acl;
 
     alter table jahia_site_lang_list 
         add constraint FK1DDBC16D7EED26D3 

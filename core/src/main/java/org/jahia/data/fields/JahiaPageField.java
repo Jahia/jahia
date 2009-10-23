@@ -35,9 +35,7 @@
 package org.jahia.data.fields;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.struts.util.MessageResources;
@@ -65,13 +63,9 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
-import org.jahia.services.pages.PageProperty;
-import org.jahia.services.search.indexingscheduler.IndexationRuleInterface;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.TextHtml;
 
 public class JahiaPageField extends JahiaField {
 
@@ -350,15 +344,6 @@ public class JahiaPageField extends JahiaField {
         if (getID() == 0) {
             setID(contentField.getID());
         }
-        /* handled by contentPageField.setPageID() call
-        // index page
-        if ( pageUpdated ){
-            ServicesRegistry.getInstance().getJahiaSearchService()
-                .indexPage(pageIDToSet, jParams.getUser());
-        }*/
-
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
-
         return true;
     }
 
@@ -407,68 +392,6 @@ public class JahiaPageField extends JahiaField {
         aField.setValue(this.getValue());
         aField.setRawValue(this.getRawValue());
         aField.setObject(this.getObject());
-    }
-
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-
-        String[] values = this.getValues();
-        if (values == null || values.length == 0) {
-            values = EMPTY_STRING_ARRAY;
-        }
-        for (int i = 0; i < values.length; i++) {
-            values[i] = TextHtml.html2text(values[i]);
-        }
-        JahiaPage page = (JahiaPage)this.getObject();
-        if ( page != null ){
-            ContentPage contentPage = page.getContentPage();
-            RuleEvaluationContext ctx = new RuleEvaluationContext(contentPage.getObjectKey(),contentPage,
-                    context,context.getUser());
-            IndexationRuleInterface rule = null;
-            try {
-                rule = ServicesRegistry.getInstance()
-                    .getJahiaSearchIndexationService()
-                    .evaluateContentIndexationRules(ctx);
-            } catch ( Exception t ){
-                logger.debug("Exception evaluation page field indexation rule",t);
-            }
-            if ( rule != null && rule.getIndexationMode() == IndexationRuleInterface.DONT_INDEX ){
-                return EMPTY_STRING_ARRAY;
-            }
-            String title = page.getTitle();
-            if ( title != null && !"".equals(title.trim()) ){
-                List<String> valuesList = new ArrayList<String>();
-                valuesList.addAll(Arrays.asList(values));
-                valuesList.add(title);
-                values = valuesList.toArray(values);
-            }
-
-            String[] urlKeys = new String[1];
-            try {
-                String urlKey = page.getContentPage().getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-                if ( urlKey != null ){
-                    urlKey = urlKey.trim();
-                } else {
-                    urlKey = "";
-                }
-                urlKeys[0] = urlKey;
-            } catch ( Exception t ){
-                logger.debug(t);
-            }
-
-            List<String> valuesList = new ArrayList<String>();
-            valuesList.addAll(Arrays.asList(values));
-            valuesList.addAll(Arrays.asList(urlKeys));
-            values = valuesList.toArray(values);
-        }
-        return values;
     }
 
     @Override

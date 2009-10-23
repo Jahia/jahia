@@ -43,14 +43,8 @@ import javax.servlet.jsp.PageContext;
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.data.beans.ContainerBean;
-import org.jahia.engines.search.FileSearchViewHandler;
-import org.jahia.engines.search.SearchViewHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.search.savedsearch.JahiaSavedSearch;
-import org.jahia.services.search.savedsearch.JahiaSavedSearchView;
-import org.jahia.services.search.savedsearch.JahiaSavedSearchViewSettings;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.container.ContainerTag;
 
@@ -95,8 +89,6 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
 
     private String var = DEF_VAR;
 
-    private JahiaSavedSearchView view;
-
     @Override
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
@@ -107,21 +99,6 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
 
     @Override
     public int doStartTag() throws JspException {
-
-        JahiaSavedSearch query = getStoredQuery();
-        try {
-            view = ServicesRegistry.getInstance().getJahiaSearchService()
-                    .getSavedSearchView(
-                            SearchViewHandler.SEARCH_MODE_JCR,
-                            query != null ? query.getId() : 0,
-                            getContextId(),
-                            query != null ? query.getSearchViewHandlerClass()
-                                    : FileSearchViewHandler.class.getName(),
-                            getProcessingContext());
-        } catch (JahiaException e) {
-            logger.error("Unable to retrieve the saved search view object", e);
-            throw new JspTagException(e);
-        }
 
         if (allowChanges && ((ResultsTag) findAncestorWithClass(this,
                 ResultsTag.class)).getCount() > 0) {
@@ -157,16 +134,6 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
                 + (path.startsWith("/") ? path : "/" + path);
     }
 
-    private JahiaSavedSearch getStoredQuery() throws JspTagException {
-        ResultsTag resultsTag = (ResultsTag) findAncestorWithClass(this,
-                ResultsTag.class);
-        if (resultsTag == null) {
-            throw new JspTagException("Parent tag not found. "
-                    + "This tag must be enclosed into the 'results' tag");
-        }
-        return resultsTag.getStoredQuery();
-    }
-
     private String getTitle() {
         return title.equals(DEF_TITLE) ? getMessage(DEF_TITLE) : title;
     }
@@ -175,16 +142,8 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
         return var;
     }
 
-    public JahiaSavedSearchViewSettings getViewSettings() {
-        return view.getSettings();
-    }
-
     private void renderCustomizeViewButton() throws JspTagException {
         Map<String, Object> params = new HashMap<String, Object>(4);
-        params.put("searchMode", view.getSearchMode());
-        params.put("saveSearchId", view.getSavedSearchId());
-        params.put("contextId", view.getContextId());
-        params.put("viewConfigName", view.getName());
         String customizeViewURL = null;
         try {
             customizeViewURL = EnginesRegistry.getInstance().getEngineByBeanName("customizeSaveSearchViewEngine")
@@ -219,7 +178,6 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
         title = DEF_TITLE;
         contextId = null;
         allowChanges = true;
-        view = null;
         super.resetState();
     }
 

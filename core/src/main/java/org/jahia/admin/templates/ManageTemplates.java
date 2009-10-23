@@ -1116,12 +1116,6 @@ public class ManageTemplates extends AbstractAdministrationModule {
                     ServicesRegistry.getInstance ().getJahiaEventService ()
                         .fireContentObjectUpdated(objectCreatedEvent);
 
-                    // index page
-                    /* handled by previous event
-                    ServicesRegistry.getInstance().getJahiaSearchService()
-                            .indexPage(page.getID(), jParams.getUser());
-                    */
-
                     // FIXME - mik : CHECK IF THE PAGE HAS CHANGED TEMPLATES, AND THE TEMPLATE IS VALID...
                     out = true;
                 }

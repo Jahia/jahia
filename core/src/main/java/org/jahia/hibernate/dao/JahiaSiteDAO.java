@@ -257,7 +257,6 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         JahiaUserDAO userDAO = (JahiaUserDAO) context.getBean("jahiaUserDAO");
         JahiaGroupDAO groupDAO = (JahiaGroupDAO) context.getBean("jahiaGroupDAO");
         JahiaGroupAccessDAO groupAccessDAO = (JahiaGroupAccessDAO) context.getBean("jahiaGroupAccessDAO");
-        JahiaSavedSearchDAO savedSearchDAO = (JahiaSavedSearchDAO) context.getBean("jahiaSavedSearchDAO");
         JahiaWorkflowDAO jahiaWorkflowDAO = (JahiaWorkflowDAO) context.getBean("jahiaWorkflowDAO");
         JahiaLanguagesStatesDAO jahiaLanguagesStatesDAO = (JahiaLanguagesStatesDAO) context.getBean("jahiaLanguagesStatesDAO");
         JahiaFieldXRefDAO jahiaFieldXRefDAO = (JahiaFieldXRefDAO) context.getBean("jahiaFieldXRefDAO");
@@ -328,8 +327,6 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         languageMappingDAO.deleteAllFromSite(siteID);
         // We delete all site properties
         sitePropertyDAO.deleteAllFromSite(siteID);
-        // We delete all saved search
-        map = savedSearchDAO.deleteAllFromSite(siteID);
         acls.putAll(map);
 
         // We delete all Aclnames

@@ -20,7 +20,6 @@
          <exclude name="webapps/jahia/WEB-INF/etc/config/jahia.properties" />
          <exclude name="webapps/jahia/WEB-INF/etc/jetspeed/logs/**" />
          <exclude name="webapps/jahia/WEB-INF/etc/jetspeed/deploy/**" />
-         <exclude name="webapps/jahia/WEB-INF/var/search_indexes/**" />
          <exclude name="webapps/jahia/WEB-INF/var/new_webapps/**" />
          <exclude name="webapps/jahia/WEB-INF/var/new_templates/**" />
        </fileset>

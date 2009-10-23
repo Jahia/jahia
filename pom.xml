@@ -140,7 +140,6 @@
                                 <exclude>src/main/java/compressionFilters/**</exclude>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/**</exclude>
-                                <exclude>src/main/java/org/compass/**</exclude>
                                 <exclude>src/main/java/EDU/oswego/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>

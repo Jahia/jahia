@@ -45,7 +45,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
-import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 
@@ -60,8 +59,6 @@ public class PageDefinitionHelper {
 
     private TemplatePackageRegistry templatePackageRegistry;
    
-    private JahiaSearchService searchService;
-    
     private JahiaContainerDefinitionsRegistry containerDefRegistry;
 
     public void setDefaultTemplate(JahiaSite site,
@@ -81,10 +78,6 @@ public class PageDefinitionHelper {
         templatePackageRegistry = tmplPackageRegistry;
     }
 
-    public void setSearchService(JahiaSearchService searchService) {
-        this.searchService = searchService;
-    }    
-    
     public void updateAllPageDefinitions(JahiaPageService pageService, JahiaSitesService siteService, JahiaPageTemplateService pageTemplateService) throws JahiaException {
         logger.info("Checking for updated page definitions...");
 
@@ -149,8 +142,6 @@ public class PageDefinitionHelper {
             
             containerDefRegistry.buildContainerDefinitionsForTemplate(pageDef.getPageType(), site.getID(), pageDef.getID(), null);
         }
-        
-        searchService.initSearchFieldConfiguration(site.getID());
         
         // check for removed definitions
         Iterator<JahiaPageDefinition> pageDefs = pageTemplateService

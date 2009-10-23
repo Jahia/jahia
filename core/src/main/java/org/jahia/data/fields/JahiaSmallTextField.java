@@ -140,7 +140,6 @@ public class JahiaSmallTextField extends JahiaField implements JahiaSimpleField,
         if (getID() == 0) {
             setID(contentField.getID());
         }
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
         return true;
     }
 

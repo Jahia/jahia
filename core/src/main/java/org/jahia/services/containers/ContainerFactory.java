@@ -190,17 +190,13 @@ public class ContainerFactory {
                             JahiaException.USER_ERROR, JahiaException.ERROR_SEVERITY);
                 }
 
-                ContainerListLoader listLoader = ContainerListLoader.getInstance(jParams,cList);
                 ContainerListLoaderContext listLoaderContext = new ContainerListLoaderContext(jParams,loadRequest,cList,
                         LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
                 listLoaderContext.setListViewId(listViewId);
-                List<Integer> ctnids = listLoader.doContainerFilterSearchSort(listLoaderContext);
 
-                if (ctnids == null) {
-                    ctnids = jahiaContainersService.
-                            getctnidsInList(cList.getID(), loadRequest);
-                    listLoaderContext.setLoadingUseSingleSearchQuery(Boolean.FALSE);
-                }
+                List<Integer> ctnids = jahiaContainersService.getctnidsInList(cList.getID(), loadRequest);
+                listLoaderContext.setLoadingUseSingleSearchQuery(Boolean.FALSE);
+
                 if (ctnids == null) {
                     ctnids = new ArrayList<Integer>();
                 }
@@ -242,15 +238,8 @@ public class ContainerFactory {
                 cList.getDefinition().getName(), cList,
                 cachedContainersFromContainerLists);
         */
-        ContainerListLoader listLoader = ContainerListLoader.getInstance(jParams,cList);
-        ContainerListLoaderContext listLoaderContext = new ContainerListLoaderContext(jParams,loadRequest,cList,
-                LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
-        List<Integer> ctnids = listLoader.doContainerFilterSearchSort(listLoaderContext);
-
-        if (ctnids == null) {
-            ctnids = jahiaContainersService.
+        List<Integer>  ctnids = jahiaContainersService.
                     getctnidsInList(cList.getID(), loadRequest);
-        }
         if (ctnids == null) {
             ctnids = new ArrayList<Integer>();
         }

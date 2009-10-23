@@ -74,7 +74,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
@@ -1850,9 +1849,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 changeDefaultSite(null);
             }
         }
-
-        // remove the search index
-        ServicesRegistry.getInstance().getJahiaSearchService().deleteIndexForSite(site.getID(), jParams.getUser(), true);
 
         ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
 

@@ -536,9 +536,6 @@ public class ContentContainerList extends ContentObject
             logger.debug("Exception firing ContentObjectRestoreVersionEvent",t);
         }
 
-        // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainerList(this.getID(), user);
-
        ServicesRegistry.getInstance ().getJahiaContainersService ()
            .invalidateContainerListFromCache(this.getID());
 
@@ -585,8 +582,6 @@ public class ContentContainerList extends ContentObject
         ContentUndoStagingEvent jahiaEvent = new ContentUndoStagingEvent(this, this.getSiteID(), jParams);
         ServicesRegistry.getInstance().getJahiaEventService()
                 .fireContentObjectUndoStaging(jahiaEvent);
-        // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainerList(this.getID(), jParams.getUser());
 
         ServicesRegistry.getInstance ().getJahiaContainersService ()
             .invalidateContainerListFromCache(this.getID());

@@ -98,21 +98,6 @@ public class ContentFileField extends ContentField {
 
     //--------------------------------------------------------------------------
     /**
-     * get the Value that will be added to the search engine for this field.
-     * for a bigtext it will be the content of the bigtext, for an application
-     * the string will be empty!
-     * Do not return null, return an empty string instead.
-     *
-     * @param jParams the jParam containing the loadVersion and locales
-     */
-    public String getValueForSearch(ProcessingContext jParams,
-                                    ContentObjectEntryState entryState)
-            throws JahiaException {
-        return getDBValue(entryState);
-    }
-
-    //--------------------------------------------------------------------------
-    /**
      * This method is called when there is a workflow state change
      * Such as  staged mode -> active mode (validation), active -> inactive (for versioning)
      * and also staged mode -> other staged mode (workflow)

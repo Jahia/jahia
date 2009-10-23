@@ -36,7 +36,6 @@ package org.jahia.data.fields;
 
 import net.htmlparser.jericho.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.extractor.HTMLTextExtractor;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
@@ -60,13 +59,10 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
-import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.TextHtml;
 
 import javax.jcr.RepositoryException;
-import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -236,7 +232,7 @@ public class JahiaBigTextField extends JahiaField implements
             if (file != null) {
                 String target;
                 try {
-                    target = JahiaFieldXRefManager.FILE + file.getProvider().getKey() + ":" + file.getUUID();
+                    target = JahiaFieldXRefManager.FILE + file.getProvider().getKey() + ":" + file.getIdentifier();
                 } catch (RepositoryException e) {
                     target = JahiaFieldXRefManager.FILE + path;
                 }
@@ -834,30 +830,5 @@ public class JahiaBigTextField extends JahiaField implements
         } else {
             return newSiteURL.toString();
         }
-    }
-    
-    /**
-     * Returns an array of values for the given language Code.
-     * By Default, return the field values in the field current language code.
-     *
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-
-        String[] values = this.getValues();
-        if (values == null || values.length == 0) {
-            values = EMPTY_STRING_ARRAY;
-        }
-        for (int i = 0; i < values.length; i++) {
-            try {
-                values[i] = FileUtils.readerToString((new HTMLTextExtractor()).extractText(
-                        new ByteArrayInputStream(values[i].getBytes("UTF-8")), "text/html", "UTF-8"));
-            } catch (Exception e) {
-                values[i] = TextHtml.html2text(values[i]);
-            } 
-        }
-        return values;
     } 
 }

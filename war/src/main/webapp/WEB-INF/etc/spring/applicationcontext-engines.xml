@@ -6,7 +6,6 @@
 
     <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
     <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
-    <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
     <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine">
     	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
     </bean>
@@ -26,9 +25,6 @@
     </bean>
     <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
-    <!--  bean id="customizeSaveSearchViewEngine" class="org.jahia.engines.search.CustomizeSaveSearchView_Engine" >
-        <property name="searchService" ref="JahiaSearchService" />
-    </bean-->
     <bean id="manageLogsEngine" class="org.jahia.engines.audit.ManageLogs_Engine" />
     <bean id="appDispatcherEngine" class="org.jahia.engines.applications.FullScreenDispatcherEngine" />
 
@@ -37,7 +33,6 @@
             <list>
                 <ref bean="coreEngine" />
                 <ref bean="restoreContainerEngine" />
-                <ref bean="searchEngine" />
                 <ref bean="loginEngine" />
                 <ref bean="logoutEngine" />
                 <ref bean="siteMapEngine" />
@@ -51,7 +46,6 @@
                 <ref bean="clipBoardEngine" />
                 <ref bean="exportEngine" />
                 <ref bean="applicationEngine" />
-                <!-- ref bean="customizeSaveSearchViewEngine" /-->
                 <ref bean="appDispatcherEngine" />
             </list>
         </property>

@@ -89,8 +89,6 @@
         </property>
     </bean>
 
-    <bean id="JahiaSearchListener" class="org.jahia.services.search.JahiaSearchListener"/>
-
     <bean id="listenersRegistry" class="org.jahia.registries.JahiaListenersRegistry">
         <property name="listeners">
             <list>
@@ -106,7 +104,6 @@
                 <ref bean="JCRListener"/>
                 <ref bean="JSPEventListener"/>
                 <ref bean="GroovyEventListener"/>
-                <ref bean="JahiaSearchListener"/>
                 <bean class="org.jahia.services.notification.NotificationService$NotificationEventListener"/>
             </list>
         </property>

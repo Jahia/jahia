@@ -46,9 +46,6 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
  */
 public abstract class QueryManagerImpl implements javax.jcr.query.QueryManager {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(QueryManagerImpl.class);
-
     public abstract QueryObjectModelFactory getQOMFactory(String path);
 
     /**

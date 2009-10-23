@@ -468,17 +468,6 @@ public class ContentPageField extends ContentField {
         return thePage;
     }
 
-    public String getValueForSearch(ProcessingContext jParams,
-                                    ContentObjectEntryState entryState)
-            throws JahiaException {
-        ContentPage contentPage = getContentPage(entryState);
-        if (contentPage == null) {
-            // this could happen if the database had a jahia_link_only value
-            return getDBValue(entryState);
-        }
-        return contentPage.getTitle(jParams);
-    }
-
     /**
      * This method is called when an entry should be deleted for real.
      * It is called when a field is deleted, and versioning is disabled, or

@@ -35,19 +35,14 @@ import org.jahia.data.ConnectionTypes;
 import org.jahia.data.FormDataManager;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.services.categories.Category;
 import org.jahia.services.fields.ContentCategoryField;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
-import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
 
@@ -61,9 +56,6 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
 
     private static final long serialVersionUID = 3669579811889812977L;
     
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaCategoryField.class);
-
     public JahiaCategoryField(
             Integer ID,
             Integer jahiaID,
@@ -171,7 +163,6 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         final EntrySaveRequest saveRequest = new EntrySaveRequest(jParams.getUser(), getLanguageCode(), isNew);
         contentField.setCategories(getValue(), saveRequest);
 
-        //ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getctnid(), jParams.getUser());
         if (getID() == 0) {
             setID(contentField.getID());
         }
@@ -229,105 +220,6 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         aField.setValue(this.getValue());
         aField.setRawValue(this.getRawValue());
         aField.setObject(this.getObject());
-    }
-
-    /**
-     * Returns an Hashmap of language_code/value used by search index engine
-     * the value is an array of String
-     *
-     * @return a Map of language_code/value pairs used by search index engine
-     */
-    public Map<String, String[]> getValuesForSearch() throws JahiaException {
-
-        Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
-        List<String> fieldRawValues = new ArrayList<String>();
-        String[] strVals = getValue() != null
-                && ContentCategoryField.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY
-                : this.getValues();
-        if (strVals != null) {
-            fieldRawValues.addAll(Arrays.asList(strVals));
-        }
-
-        for (String curFieldRawValue : fieldRawValues) {
-            if (curFieldRawValue.trim().length() > 0) {
-                JahiaSite site = ServicesRegistry.getInstance()
-                    .getJahiaSitesService().getSite(this.getJahiaID());
-                List<SiteLanguageSettings> siteLanguageSettings = site
-                    .getLanguageSettings();
-                if (siteLanguageSettings != null) {
-                    for (SiteLanguageSettings curSetting : siteLanguageSettings) {
-                        if (curSetting.isActivated()) {
-                            Locale tempLocale = LanguageCodeConverters
-                                .languageCodeToLocale(curSetting.getCode());
-                            Category curCategory = Category.getCategoryByUUID(
-                                curFieldRawValue, null);
-                            if (curCategory == null) {
-                                logger
-                                    .warn("Couldn't find category "
-                                            + curFieldRawValue
-                                            + " when indexing field, ignoring entry...");
-                                continue;
-                            }
-                            String value = curCategory.getTitle(tempLocale);
-                            if (value == null || value.length() == 0) {
-                                value = curCategory.getKey();
-                            }
-                            List<String> vals = tempValues.get(tempLocale
-                                .toString());
-                            if (vals == null) {
-                                vals = new ArrayList<String>();
-                            }
-                            vals.add(value);
-                            tempValues.put(tempLocale.toString(), vals);
-                        }
-                    }
-                }
-            }
-        }
-        Map<String, String[]> values = new HashMap<String, String[]>();
-        for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
-            values.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]) );
-        }        
-        return values;
-    }
-
-    /**
-     * @param languageCode
-     * @return
-     * @throws JahiaException
-     */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-
-        if (getValue() != null && ContentCategoryField.NOSELECTION_MARKER.equals(getValue())) {
-            return EMPTY_STRING_ARRAY;
-        }
-        
-        List<String> fieldRawValues = new ArrayList<String>();
-        String[] strVals = this.getValues();
-        if (strVals != null) {
-            fieldRawValues.addAll(Arrays.asList(strVals));
-        }
-
-        Locale tempLocale = LanguageCodeConverters
-            .languageCodeToLocale(languageCode);
-        List<String> vals = new ArrayList<String>();
-        for (String val : fieldRawValues) {
-            if (val.trim().length() > 0) {
-                Category curCategory = Category.getCategoryByUUID(val, null);
-                if (curCategory == null) {
-                    logger.warn("Couldn't find category " + val
-                            + " when indexing field, ignoring entry...");
-                    continue;
-                }
-                val = curCategory.getTitle(tempLocale);
-                if (val == null || val.length() == 0) {
-                    val = curCategory.getKey();
-                }
-                vals.add(val);
-            }
-        }
-      
-        return vals.toArray(new String[vals.size()]);
     }
 
 }

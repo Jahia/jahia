@@ -37,13 +37,10 @@ package org.jahia.data.search;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.services.search.JahiaSearchResultBuilder;
-import org.jahia.services.search.ParsedObject;
 import org.jahia.utils.OrderedBitSet;
 
 /**
@@ -67,7 +64,6 @@ public class JahiaSearchResult
     private boolean pageHitsMapIsValid = true;
     private boolean fileHitsMapIsValid = true;
     private boolean parsedObjectIsValid = true;
-    private JahiaSearchResultBuilder searchResultBuilder;
 
     /**
      * List of JahiaSearchHit
@@ -78,7 +74,6 @@ public class JahiaSearchResult
      * The collection of raw parsedObject instance
      *
      */
-    private Collection<ParsedObject> parsedObjects = new ArrayList<ParsedObject>();
     private Map<Integer, List<JahiaSearchHit>> pageHitsMap = new HashMap<Integer, List<JahiaSearchHit>>();
     private Map<String, List<JahiaSearchHit>> fileHitsMap = new HashMap<String, List<JahiaSearchHit>>();
 
@@ -86,24 +81,6 @@ public class JahiaSearchResult
      * number of hits     
      */
     private int hitcount ;
-
-    public JahiaSearchResult(JahiaSearchResultBuilder searchResultBuilder){
-        this.searchResultBuilder = searchResultBuilder;
-    }
-
-    public JahiaSearchResult(JahiaSearchResultBuilder searchResultBuilder, boolean useBitSet){
-        this(searchResultBuilder);
-        this.useBitSet = useBitSet;
-    }
-
-    public JahiaSearchResult(JahiaSearchResultBuilder searchResultBuilder,
-                             Collection<ParsedObject> parsedObjects){
-        this.searchResultBuilder = searchResultBuilder;
-        if ( parsedObjects != null ){
-            this.parsedObjectIsValid = true;
-            this.parsedObjects = parsedObjects;
-        }
-    }
 
     /**
      * This check is required prior to using the search result in case of softreferenced internal hits
@@ -189,24 +166,6 @@ public class JahiaSearchResult
     }
 
     //--------------------------------------------------------------------------
-    /**
-     * Returns the collection of raw ParsedObject.
-     *
-     * @return List results, the results.
-     */
-    public Collection<ParsedObject> parsedObjects(){
-        return parsedObjects;
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     *
-     * @param parsedObjects Collection
-     */
-    public void setParsedObjects(Collection<ParsedObject> parsedObjects){
-        this.parsedObjectIsValid = true;
-        this.parsedObjects = parsedObjects;
-    }
 
     //--------------------------------------------------------------------------
     /**
@@ -216,20 +175,6 @@ public class JahiaSearchResult
      */
     public int getHitCount(){
         return hitcount;
-    }
-
-    public JahiaSearchResultBuilder getSearchResultBuilder() {
-        return searchResultBuilder;
-    }
-
-    public void setSearchResultBuilder(JahiaSearchResultBuilder searchResultBuilder) {
-        this.searchResultBuilder = searchResultBuilder;
-    }
-
-    public void sort(JahiaSearchResultSorter[] sorters){
-        for (JahiaSearchResultSorter sorter : sorters){
-            sorter.sort(this);
-        }
     }
 
     public boolean isUseBitSet() {

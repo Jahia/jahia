@@ -34,6 +34,7 @@
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.scheduler.SchedulerService;
+import org.quartz.JobDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class PDisplayAction extends AbstractPDisplayAction {
     private static final transient Logger logger = Logger.getLogger(PDisplayAction.class);
     private static final SchedulerService service = servicesRegistry.getSchedulerService();
 
-    public static List jobTypesToIgnore = new ArrayList();
+    public static List<String> jobTypesToIgnore = new ArrayList<String>();
 
     static {
         jobTypesToIgnore.add("timebased");
@@ -82,15 +83,11 @@ public class PDisplayAction extends AbstractPDisplayAction {
 
     }
 
-    public List getActiveJobsDetails() throws JahiaException {
-        List jobs = service.getAllActiveJobsDetails();
-        if ( jobs != null ){
-            jobs.addAll(SiteIndexingJobDisplayAction.getJobsDetails(true));
-        }
-        return jobs;
+    public List<JobDetail> getActiveJobsDetails() throws JahiaException {
+        return service.getAllActiveJobsDetails();
     }
 
-    public List getJobTypesToIgnore() {
+    public List<String> getJobTypesToIgnore() {
         return jobTypesToIgnore;
     }
 

@@ -31,7 +31,6 @@
  */
 package org.jahia.services.containers;
 
-import org.jahia.bin.Jahia;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.data.JahiaDOMObject;
@@ -55,7 +54,6 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
@@ -920,10 +918,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         ObjectKey key = new ContentContainerKey(ctnid);
         ContentObjectDeleteEvent jahiaEvent = new ContentObjectDeleteEvent(key, theContainer.getJahiaID(), jParams);
         ServicesRegistry.getInstance().getJahiaEventService().fireContentObjectDelete(jahiaEvent);
-
-        // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService().removeContentObject(key);
-
     } // end deleteContainer
 
     public ActivationTestResults isContainerValidForActivation(Set<String> languageCodes,
@@ -970,10 +964,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
 
         containerManager.validateStagedContainer(id, saveVersion);
         logger.debug("Container " + id + " has just been validated.");
-
-        RuleEvaluationContext ctx = new RuleEvaluationContext(contentContainer.getObjectKey(),
-                contentContainer, jParams, user);
-        ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(id, user, false, true, ctx);
 
         // invalidate corresponding cache entry
         ContentContainer.invalidateContainerCache(id);
@@ -1327,10 +1317,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
 //        ObjectKey key = ContentContainerListKey.getChildInstance(String.valueOf(listID));
         containerListManager.deleteContainerList(listID, saveVersion);
 
-        // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService().removeContentObject(key);
-
-
         this.invalidateContainerListFromCache(listID);
     } // end deleteContainerListInfo
 
@@ -1430,8 +1416,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
                 // yes user has access, we can validate this containerlist
                 containerListManager.validateStagedContainerList(id, saveVersion);
 
-                ServicesRegistry.getInstance().getJahiaSearchService().indexContainerList(id, user);
-
                 // update cache
 //                containerListInfoCache.remove(getCacheContainerOrContainerListStagingEntryKey(id));
 //                JahiaContainerUtilsDB.getInstance().invalidateSubCtnListIDsByCtnCache(theContainerList.getParentEntryID());
@@ -1471,8 +1455,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
             return activationResults;
         }
         containerListManager.validateStagedContainerList(containerListID, saveVersion);
-
-        ServicesRegistry.getInstance().getJahiaSearchService().indexContainerList(containerListID, user);
 
         logger.debug("VALIDATION CONTAINER LIST #" + containerListID);
         return activationResults;
@@ -1850,8 +1832,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
 
         this.invalidateContainerListFromCache(listID);
 
-        ServicesRegistry.getInstance().getJahiaSearchService().indexContainerList(listID, user);
-
         WorkflowEvent theEvent = new WorkflowEvent(this, contentContainerList, user, languageCode, true);
         ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
 
@@ -1933,20 +1913,11 @@ public class JahiaContainersBaseService extends JahiaContainersService {
             ServicesRegistry.getInstance().getJahiaEventService().fireBeforeStagingContentIsDeleted(theEvent);
 
             // in case it is really deleted
-            RuleEvaluationContext ctx = new RuleEvaluationContext(contentContainer.getObjectKey(),
-                    contentContainer, Jahia.getThreadParamBean(), user);
-            if (!contentContainer.hasActiveEntries()){
-                ServicesRegistry.getInstance().getJahiaSearchService().removeContentObject(contentContainer, user, ctx);
-            }
             JahiaSaveVersion saveVersion = new JahiaSaveVersion(true, true);
             logger.debug("delete container " + id);
             containerManager.deleteContainer(contentContainer.getID(), saveVersion);
             ContentContainer.invalidateContainerCache(contentContainer.getID());
             contentContainer = ContentContainer.getContainer(contentContainer.getID());
-            if (contentContainer != null){
-                ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(contentContainer.getID(),
-                        user, ctx);
-            }
         } else {
             // we have to create a staged entry to be able to active mark for deleted on this container's fields
             if (contentContainer.getStagingLanguages(false, true).isEmpty()) {

@@ -38,8 +38,6 @@
 [condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]- the value is {value}=stringValue == {value}
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
-[consequence][]Append URL path "{urlPath}"=urlService.addURLPath(searchHit, "{urlPath}");
-[consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Assign permissions "{perms}" on the {node} to a group matching that property=service.setPermissions({node},"g:" + propertyValue + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the current user=service.setPermissions({node},"u:" + user.getName() + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the group {group}=service.setPermissions({node},"g:" + {group} + ":{perms}", drools);

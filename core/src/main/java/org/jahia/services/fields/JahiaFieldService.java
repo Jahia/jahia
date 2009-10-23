@@ -180,7 +180,7 @@ public abstract class JahiaFieldService extends JahiaService {
             throws JahiaException;
 
     /**
-     * Get all the fields ID (for the search engine)
+     * Get all the fields ID
      *
      * @return a List of field ids
      */
@@ -188,7 +188,7 @@ public abstract class JahiaFieldService extends JahiaService {
             throws JahiaException;
 
     /**
-     * Get all the fields ID for a gived site (for the search engine)
+     * Get all the fields ID for a gived site
      *
      * @return a List of field ids
      *

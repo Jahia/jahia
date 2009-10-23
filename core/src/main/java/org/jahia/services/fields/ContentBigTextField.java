@@ -191,19 +191,6 @@ public class ContentBigTextField extends ContentField {
     //--------------------------------------------------------------------------
 
     /**
-     * get the Value that will be added to the search engine for this field.
-     * for a bigtext it will be the content of the bigtext, for an application
-     * the string will be empty!
-     * Do not return null, return an empty string instead.
-     */
-    public String getValueForSearch(final ProcessingContext jParams,
-                                    final ContentObjectEntryState entryState) {
-        return ""; /* todo fixme */
-    }
-
-    //--------------------------------------------------------------------------
-
-    /**
      * This method is called when there is a workflow state change
      * Such as  staged mode -> active mode (validation), active -> inactive (for versioning)
      * and also staged mode -> other staged mode (workflow)

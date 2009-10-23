@@ -57,7 +57,6 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.*;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.context.ApplicationContext;
@@ -705,8 +704,6 @@ public class ContentContainer extends ContentObject
             logger.debug("Exception firing ContentObjectRestoreVersionEvent",t);
         }
         // handled by previous event
-        //ServicesRegistry.getInstance().getJahiaSearchService()
-        //        .indexContainer(getID(), user);
 
         // check to avoid link container without page
         if (stateModificationContext.getContainerPageChildId() == -1){
@@ -835,16 +832,6 @@ public class ContentContainer extends ContentObject
         ContentUndoStagingEvent jahiaEvent = new ContentUndoStagingEvent(this, this.getSiteID(), jParams);
         ServicesRegistry.getInstance().getJahiaEventService()
                 .fireContentObjectUndoStaging(jahiaEvent);
-
-        // handled by previous event
-        /*
-        if ( this.activeAndStagedEntryStates.size() == 0 ){
-            ServicesRegistry.getInstance().getJahiaSearchService()
-                    .removeContentObject(this.getObjectKey());
-        } else {
-            ServicesRegistry.getInstance().getJahiaSearchService()
-                .indexContainer(getID(), jParams.getUser());
-        }*/
     }
 
     /**
@@ -1323,12 +1310,6 @@ public class ContentContainer extends ContentObject
     * @param startNode the starting node
     */
     public void updateContentPagePath(ProcessingContext context) throws JahiaException {
-
-        RuleEvaluationContext ctx = new RuleEvaluationContext(this.getObjectKey(),this,context,
-                context.getUser());
-        ServicesRegistry.getInstance().getJahiaSearchService().indexContainer(this.getID(),
-                JahiaAdminUser.getAdminUser(this.getSiteID()), false, true,
-                ctx);
 
         // update content childs
         List<? extends ContentObject> contentChilds = this.getChilds(JahiaAdminUser.getAdminUser(this.getSiteID()),

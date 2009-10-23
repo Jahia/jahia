@@ -31,7 +31,6 @@
  */
 package org.jahia.query.qom;
 
-import org.jahia.data.containers.ContainerSorterByTimebasedPublishingDateBean;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.services.metadata.CoreMetadataConstant;
 
@@ -105,18 +104,6 @@ public class JahiaQueryObjectModelConstants extends CoreMetadataConstant impleme
      * This is used to set the session time cache
      */
     public static final String SESSION_CACHE_EXPIRATION = "SESSION_CACHE_EXPIRATION";
-
-    /**
-     * Jahia Time based publishing expiration date property.
-     * Used for creating <code>ContainerSorterByTimebasedPublishingDateBean</code>
-     */
-    public static final String EXPIRATION_DATE = ContainerSorterByTimebasedPublishingDateBean.EXPIRATIONDATE;
-
-    /**
-     * Jahia Time based publishing publication date property.
-     * Used for creating <code>ContainerSorterByTimebasedPublishingDateBean</code>
-     */
-    public static final String PUBLICATION_DATE = ContainerSorterByTimebasedPublishingDateBean.PUBLICATION_DATE;
 
     /**
      * separator that should be used to separate a multi value concatened as a string

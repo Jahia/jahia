@@ -77,8 +77,6 @@
                             aliasResourceName="pd_type_propagate"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.op.copypaste.label"
                             aliasResourceName="pd_type_copypaste"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.type.indexing"
-                            aliasResourceName="pd_type_indexing"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.type.timebasepublishing"
                             aliasResourceName="pd_type_timebasepublishing"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.type.textextraction"

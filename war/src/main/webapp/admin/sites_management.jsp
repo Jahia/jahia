@@ -84,16 +84,6 @@
         document.main.submit();
     }
 
-    function sendIndexForm(selectedSite) {
-        if (confirm("<fmt:message key='org.jahia.admin.search.ManageSearch.indexOptimizSiteIndexingIsRunning.label'/> <fmt:message key='org.jahia.admin.continue.confirm'/>")) {
-            jahia.request('${pageContext.request.contextPath}/ajaxaction/IndexSite?id=' + selectedSite, {onSuccess: sendIndexFormCallback});
-        }
-    }
-    function sendIndexFormCallback(text, statusCode, statusText) {
-        if (200 != statusCode) {
-            alert("Error triggerring site indexing job. Error '" + statusCode + " " + statusText + "'");
-        }
-    }
     function sendForm(){
         document.jahiaAdmin.submit();
     }
@@ -241,12 +231,7 @@
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
                         alt="<fmt:message key='org.jahia.admin.delete.label'/>"
                         title="<fmt:message key='org.jahia.admin.delete.label'/>" width="16"
-                        height="16" border="0"/></a>&nbsp;<a href="#index"
-                                                             onclick="sendIndexForm('<%=site.getID()%>'); return false;"
-                                                             title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
-                        src="<%=URL%>images/icons/admin/adromeda/scroll_view.png" alt="index"
-                        title="<fmt:message key='org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label'/>"
-                        width="16" height="16" border="0"/></a><% if (homeContentPage != null) { %>
+                        height="16" border="0"/></a>&nbsp;<% if (homeContentPage != null) { %>
                     &nbsp;<a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
                              title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/export1.png"

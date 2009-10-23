@@ -276,12 +276,6 @@ public class ManagePages extends AbstractAdministrationModule {
                             ServicesRegistry.getInstance().getJahiaEventService()
                                     .fireContentObjectUpdated(objectCreatedEvent);
 
-                            /* handled by previous event
-                            // index page
-                            ServicesRegistry.getInstance().getJahiaSearchService()
-                                    .indexPage(page.getID(), jParams.getUser());
-                            */
-
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.changeUpdated.label",
                                     jParams.getLocale());
                             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);

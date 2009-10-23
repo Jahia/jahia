@@ -52,8 +52,6 @@ drop sequence seq_sites;
 create sequence seq_sites start with 1 increment by 20;
 drop sequence seq_users;
 create sequence seq_users start with 1 increment by 20;
-drop sequence seq_savedsearch;
-create sequence seq_savedsearch start with 1 increment by 20;
 drop sequence seq_version;
 create sequence seq_version start with 1 increment by 20;
 drop sequence seq_installedpatch;

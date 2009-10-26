@@ -4,52 +4,91 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<div class="contactForm">
+    <form method="post" action="">
+        <fieldset><legend>1. CONTACT DETAILS</legend>
 
 <c:if test="${currentNode.properties.firstname.boolean}">
-    firstname </br>
+<p>
+  <label class="left" for="firstname">first name</label>  <input id="firstname" type="text" name="firstname">
+</p>
 </c:if>
+
 <c:if test="${currentNode.properties.lastname.boolean}">
-    lastname  </br>
+<p>
+    <label class="left" for="lastname">last name</label><input id="lastname" type="text" name="lastname">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.title.boolean}">
-    title    </br>
+<p>
+    <label class="left" for="title">title</label><input type="text" name="title" id="title">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.age.boolean}">
-    title    </br>
+<p>
+<label class="left" for="age">age</label><input type="text" id="age" name="age">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.birthdate.boolean}">
-    birthdate  </br>
+<p>
+<label class="left" for="birthdate">birthdate</label><input type="text" id="birthdate" name="birthdate">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.gender.boolean}">
-    gender  </br>
+<p>
+<label class="left" for="gender">gender</label><input type="text" id="gender" name="gender">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.profession.boolean}">
-    profession  </br>
+<p>
+<label class="left" for="profession">profession</label><input type="text" id="profession" name="profession">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.maritalStatus.boolean}">
-    maritalStatus  </br>
+<p>
+<label class="left" for="maritalStatus">maritalStatus</label><input type="text" id="maritalStatus" name="maritalStatus">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.hobbies.boolean}">
-    hobbies   </br>
+<p>
+<label class="left" for="hobbies">hobbies</label><input type="hobbies" id="hobbies" name="hobbies">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.contact.boolean}">
-    contact  </br>
+<p>
+<label class="left" for="contact">contact</label><input type="text" id="contact" name="contact">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.address.boolean}">
-    address  </br>
+<p>
+<label class="left" for="address">address</label><input type="text" id="address" name="address">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.city.boolean}">
-    city   </br>
+<p>
+<label class="left" for="city">city</label><input type="text" id="city" name="city">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.state.boolean}">
-    state  </br>
+<p>
+<label class="left" for="state">state</label><input type="text" id="state" name="state">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.zip.boolean}">
-    zip   </br>
+<p>
+<label class="left" for="zip">zip</label><input type="text" id="zip" name="zip">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.country.boolean}">
-    country   </br>
+<p>
+<label class="left" for="country">country</label><input type="text" id="country" name="country">
+</p>
 </c:if>
 <c:if test="${currentNode.properties.remarks.boolean}">
-    remarks   </br>
+<p>
+<label class="left" for="remarks">remarks</label><input type="text" id="remarks" name="remarks">
+</p>
 </c:if>
+            </fieldset>
+</form>        
+</div>

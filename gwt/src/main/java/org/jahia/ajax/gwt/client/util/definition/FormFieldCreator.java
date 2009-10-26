@@ -222,6 +222,7 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.BINARY:
                         break;
                     case GWTJahiaNodePropertyType.BOOLEAN:
+                        field.setValue(values.get(0).getBoolean());                        
                         break;
                     case GWTJahiaNodePropertyType.LONG:
                         field.setValue(values.get(0).getLong());

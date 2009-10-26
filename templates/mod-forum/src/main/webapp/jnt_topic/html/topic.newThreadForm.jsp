@@ -5,10 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <%--<form action="${url.base}${currentNode.path}/*" method="post">
-    <input type="hidden" name="nodeType" value="jahiaForum:topic"/>
+    <input type="hidden" name="nodeType" value="jnt:thread"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
     --%><%-- Define the output format for the newly created node by default html or by stayOnNode--%><%--
-    <input type="hidden" name="newNodeOutputFormat" value="detail.html">
+    <input type="hidden" name="newNodeOutputFormat" value="html">
 
     <div id="commentsForm"><!--start commentsForm-->
         <p></p>
@@ -16,8 +16,8 @@
 
 
             <p class="field">
-                <input type="text" size="35" name="topicSubject"
-                       value="New Topic Subject" tabindex="1"/>
+                <input type="text" size="35" name="threadSubject"
+                       value="New Thread Subject" tabindex="1"/>
             </p>
 
             --%><%--<p class="field">
@@ -33,23 +33,23 @@
     </div>
 </form>--%>
 <form action="${url.base}${currentNode.path}/*" method="post">
-    <input type="hidden" name="nodeType" value="jahiaForum:topic"/>
+    <input type="hidden" name="nodeType" value="jnt:thread"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
     <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-    <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
+    <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
     <div class="post-reply"><!--start post-reply-->
-        <h2><a href="#">${currentNode.propertiesAsString['boardSubject']}</a></h2>
+        <h2><a href="#">${currentNode.propertiesAsString['topicSubject']}</a></h2>
 
         <div class="forum-box forum-box-style2">
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h3 class="forum-h3-first">Create new Topic</h3>
+                <h3 class="forum-h3-first"><fmt:message key="create.new.thread"/></h3>
 
                 <fieldset>
                     <p class="field">
-                        <input value="New Topic Subject" type="text" size="35" id="forum_site" name="topicSubject"
+                        <input value="New Thread Subject" type="text" size="35" id="forum_site" name="threadSubject"
                                tabindex="1"/>
                     </p>
 

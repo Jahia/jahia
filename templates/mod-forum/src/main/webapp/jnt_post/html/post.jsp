@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <%-- Get all contents --%>
-<jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
@@ -50,7 +50,7 @@
     <div class="content">${content.string}</div>
 </div>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select [jcr:uuid] from [jahiaForum:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>
+         sql="select [jcr:uuid] from [jnt:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <dl class="forum-postprofile">
     <dt>

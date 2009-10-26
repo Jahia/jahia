@@ -45,7 +45,6 @@
   <artifactId>mod-forum</artifactId>
   <name>Jahia Forum</name>
   <packaging>war</packaging>
-  <url>jahia.org</url>
 
   <description>These are the custom templates (jahiaForum) for running on a Jahia server.</description>
 

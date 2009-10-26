@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:jqom var="topics">
-    <query:selector nodeTypeName="jahiaForum:topic" selectorName="topicList"/>
+    <query:selector nodeTypeName="jnt:topic" selectorName="topicList"/>
     <query:descendantNode selectorName="topicList" path="/"/>
 </jcr:jqom>
 <c:if test="${topics.nodes.size == 0}">

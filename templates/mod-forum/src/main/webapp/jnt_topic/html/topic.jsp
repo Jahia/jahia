@@ -5,10 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select [jcr:uuid] from [jahiaForum:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
+         sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <jcr:sql var="numberOfThreadsQuery"
-         sql="select [jcr:uuid] from [jahiaForum:thread] as t  where isdescendantnode(t,['${currentNode.path}'])"/>
+         sql="select [jcr:uuid] from [jnt:thread] as t  where isdescendantnode(t,['${currentNode.path}'])"/>
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
 <div id="forum-body">
     <div class="topics">

@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select * from [jahiaForum:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
+         sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.nodes.size}"/>
 <c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="2">
     <c:if test="${status.first}">
@@ -16,24 +16,24 @@
 </c:forEach>
 <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
     <form action="${url.base}${currentNode.path}" method="post"
-          id="jahia-forum-thread-delete-${currentNode.UUID}">
+          id="jahia-forum-topic-delete-${currentNode.UUID}">
         <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
             <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
 </c:if>
 <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-        <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="#"
-                                        onclick="document.getElementById('jahia-forum-thread-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.thread"/></span></a>
+        <li class="delete-post-icon"><a title="Delete this topic" href="#"
+                                        onclick="document.getElementById('jahia-forum-topic-delete-${currentNode.UUID}').submit();"><span>Delete this topic</span></a>
         </li>
     </c:if>
 
 </ul>
 <dl>
     <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
-            node="${currentNode}" name="threadSubject"/></a>
+            node="${currentNode}" name="topicSubject"/></a>
         <br/></dt>
     <%--<dd class="topics">30</dd>--%>
     <dd class="posts">${numberOfPosts}</dd>

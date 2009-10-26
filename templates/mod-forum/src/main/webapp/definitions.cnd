@@ -1,21 +1,24 @@
-<jahiaForum = 'jahia.org/jahia/jahiaForum/nt/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jahiaForum:post] > jnt:container, jmix:rating
-smallText title
+[jnt:post] > jnt:container, jmix:rating, mix:title
 bigText content
 
 
-[jahiaForum:thread] > jnt:container, jmix:interactiveContent
-smallText threadSubject
-+ * (jahiaForum:post)
+[jnt:thread] > jnt:container, jmix:interactiveContent
+- threadSubject (string)
++ * (jnt:post)
 
-[jahiaForum:topic] > jnt:container, jmix:interactiveContent
-smallText topicSubject
-+ * (jahiaForum:thread)
+[jnt:topic] > jnt:container, jmix:interactiveContent
+- topicSubject (string)
++ * (jnt:thread)
 
-[jahiaForum:dynamicTopicList] > jnt:container, jmix:interactiveContent
+[jnt:dynamicTopicList] > jnt:container, jmix:interactiveContent
 
-[jahiaForum:boardIndex] > jnt:container, jmix:interactiveContent
-smallText boardSubject
-smallText boardDescription
-+ * (jahiaForum:topic)
+[jnt:boardIndex] > jnt:container, jmix:interactiveContent
+ - boardSubject (string)
+ - boardDescription (string)
++ * (jnt:topic)
+
+[jmix:comments] mixin
++ comments (jnt:thread) = jnt:thread autocreated hidden

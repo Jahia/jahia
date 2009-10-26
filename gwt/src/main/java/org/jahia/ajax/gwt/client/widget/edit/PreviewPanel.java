@@ -66,7 +66,7 @@ public class PreviewPanel extends ContentPanel {
                     JahiaContentManagementService.App.getInstance().saveNodeTemplate(node.getPath() , template,new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
                             Log.error("", throwable);
-                            com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
+                            com.google.gwt.user.client.Window.alert("Cannot save preview");
                         }
                         public void onSuccess(Object o) {
                             editLinker.getMainModule().refresh();
@@ -169,7 +169,7 @@ public class PreviewPanel extends ContentPanel {
 
                 public void onFailure(Throwable caught) {
                     Log.error("", caught);
-                    com.google.gwt.user.client.Window.alert("-->" + caught.getMessage());
+//                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
                 }
             });
         } else {
@@ -191,7 +191,7 @@ public class PreviewPanel extends ContentPanel {
             JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
+//                    com.google.gwt.user.client.Window.alert("-upda tpl box->" + throwable.getMessage());
                 }
                 public void onSuccess(List<String[]> strings) {
                     for(String[] currentTpl:strings) {

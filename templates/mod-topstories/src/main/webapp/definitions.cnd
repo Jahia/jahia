@@ -6,6 +6,6 @@
  - secondLimit (long)
  - thirdLimit (long)
 
-[jmix:topStory] > jmix:contentMixin mixin
+[jmix:topStory] > jmix:metadata, jmix:contentMixin mixin
  - j:level (string,choicelist) < 'first','second','third'
  

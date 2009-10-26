@@ -75,6 +75,7 @@
         <module>mod-location</module>
         <module>mod-faq</module>
         <module>mod-rating</module>
+        <module>mod-topstories</module>
     </modules>
 
 

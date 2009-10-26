@@ -164,7 +164,7 @@
                                             <arg value="-force"/>
                                         </exec>
                                         <echo message="Undeploying jahia"/>
-                                        <!--<delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>-->
+                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
                                         <mkdir dir="${project.build.directory}/tomcatLogs"/>
                                         <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out"
                                               toDir="${project.build.directory}/tomcatLogs"/>

@@ -110,7 +110,9 @@ public class UsersImportHandler  extends DefaultHandler {
                     }
                     if (name != null && pass != null) {
                         if (site == null) {
-                            u.createUser(name, pass, p);
+                            if (u.lookupUser(name) == null) {
+                                u.createUser(name, pass, p);
+                            }
                         } else {
                             if (su.getMember(site.getID(), name) == null) {
                                 JahiaUser user = u.lookupUser(name);
@@ -159,7 +161,7 @@ public class UsersImportHandler  extends DefaultHandler {
                 } else if (localName.equals("group")) {
                     p = g.lookupGroup(site.getID(), name);
                 }
-                if (p != null) {
+                if (p != null && !currentGroup.getMembers().contains(p)) {
                     currentGroup.addMember(p);
                 }
             }

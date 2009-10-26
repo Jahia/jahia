@@ -51,7 +51,7 @@ public class EditActions {
             JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
+                    com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
@@ -156,7 +156,7 @@ public class EditActions {
             JahiaContentManagementService.App.getInstance().setLock(paths, isLock, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
+                    com.google.gwt.user.client.Window.alert("-switch lock->" + throwable.getMessage());
                 }
 
                 public void onSuccess(Object o) {
@@ -182,7 +182,7 @@ public class EditActions {
             JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
+                    com.google.gwt.user.client.Window.alert("-delete->" + throwable.getMessage());
                 }
 
                 public void onSuccess(Object o) {

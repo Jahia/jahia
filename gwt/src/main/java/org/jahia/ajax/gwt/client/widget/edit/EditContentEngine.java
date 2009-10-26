@@ -52,6 +52,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -67,6 +69,7 @@ import java.util.*;
 public class EditContentEngine extends Window {
 
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+    private static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
 
     private boolean existingNode = true;
 
@@ -74,10 +77,12 @@ public class EditContentEngine extends Window {
 
     private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
+    private List<GWTJahiaNodeType> mixin;
     private Map<String,GWTJahiaNodeProperty> props;
 
     private GWTJahiaNode referencedNode;
     private List<GWTJahiaNodeType> referencedNodeTypes;
+    private List<GWTJahiaNodeType> availableMixin;
     private Map<String,GWTJahiaNodeProperty> referencedProps;
 
     private TabPanel tabs;
@@ -123,7 +128,6 @@ public class EditContentEngine extends Window {
         }
 
         loadNode();
-
         initWindowProperties();
         initTabs();
         initButtons();
@@ -164,6 +168,8 @@ public class EditContentEngine extends Window {
         nodeTypes = new ArrayList<GWTJahiaNodeType>(1);
         nodeTypes.add(type);
         props = new HashMap<String, GWTJahiaNodeProperty>();
+
+        loadMixin();
 
         initWindowProperties();
         initTabs();
@@ -288,15 +294,15 @@ public class EditContentEngine extends Window {
 
     private void createContentTab() {
         if (!contentTab.isProcessed()) {
-            if (!existingNode || (!isReference && node != null)) {
+            if (mixin != null && !isReference) {
                 contentTab.setProcessed(true);
                 contentTab.setStyleName("x-panel-mc");
 
-                propertiesEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
-                propertiesEditor.setHeight(504);
-
                 FormPanel formPanel = getNamePanel();
                 contentTab.add(formPanel);
+
+                propertiesEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
+                propertiesEditor.setHeight(504);
 
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
@@ -338,10 +344,10 @@ public class EditContentEngine extends Window {
 
     private void createLayoutTab() {
         if (!layoutTab.isProcessed()) {
-            if (!existingNode || (node != null)) {
+            if (mixin != null) {
                 layoutTab.setProcessed(true);
                 layoutTab.setStyleName("x-panel-mc");
-                layoutEditor = new PropertiesEditor(this.nodeTypes, this.props, false, true, GWTJahiaItemDefinition.LAYOUT, null, null, !existingNode || node.isWriteable(), true);
+                layoutEditor = new PropertiesEditor(this.nodeTypes, mixin, this.props, false, true, GWTJahiaItemDefinition.LAYOUT, null, null, !existingNode || node.isWriteable(), true);
                 layoutEditor.setHeight(254);
                 layoutTab.add(layoutEditor);
 
@@ -384,10 +390,10 @@ public class EditContentEngine extends Window {
 
     private void createMetadataTab() {
         if (!metadataTab.isProcessed()) {
-            if (!existingNode || (node != null)) {
+            if (mixin != null) {
                 metadataTab.setProcessed(true);
                 metadataTab.setStyleName("x-panel-mc");
-                metadataEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.METADATA, null, Arrays.asList("jmix:categorized","jmix:tagged"), !existingNode || node.isWriteable(), true);
+                metadataEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.METADATA, null, Arrays.asList("jmix:categorized","jmix:tagged"), !existingNode || node.isWriteable(), true);
                 metadataEditor.setHeight(504);
                 metadataTab.add(metadataEditor);
                 layout();
@@ -397,9 +403,9 @@ public class EditContentEngine extends Window {
 
     private void createPublicationTab() {
         if (!publicationTab.isProcessed()) {
-            if (!existingNode || (node != null)) {
+            if (mixin != null) {
                 publicationTab.setProcessed(true);
-                publicationEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.PUBLICATION, null, null, !existingNode || node.isWriteable(), true);
+                publicationEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.PUBLICATION, null, null, !existingNode || node.isWriteable(), true);
                 publicationTab.add(publicationEditor);
 //            metadataTab.layout();
                 publicationTab.setHeight("400px");
@@ -420,6 +426,8 @@ public class EditContentEngine extends Window {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 props = result.getProperties();
+
+                loadMixin();
 
                 if (referencedNode != null || !isReference) {
                     fillCurrentTab();
@@ -449,6 +457,19 @@ public class EditContentEngine extends Window {
         } 
     }
 
+    private void loadMixin() {
+        definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                mixin = result;
+                fillCurrentTab();
+            }
+
+            public void onFailure(Throwable caught) {
+
+            }
+        });
+    }
+
     private void updatePreview(String template, Map<String,String> contextParams) {
         if (node != null) {
             JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, new AsyncCallback<String>() {
@@ -460,7 +481,7 @@ public class EditContentEngine extends Window {
 
                 public void onFailure(Throwable caught) {
                     Log.error("", caught);
-                    com.google.gwt.user.client.Window.alert("-->" + caught.getMessage());
+                    com.google.gwt.user.client.Window.alert("-update preview->" + caught.getMessage());
                 }
             });
         } else {
@@ -504,6 +525,8 @@ public class EditContentEngine extends Window {
             List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
             if (propertiesEditor != null) {
                 list.addAll(propertiesEditor.getProperties());
+                node.getNodeTypes().removeAll(propertiesEditor.getRemovedTypes());
+                node.getNodeTypes().addAll(propertiesEditor.getAddedTypes());
             }
 
             if (isReference) {
@@ -522,9 +545,13 @@ public class EditContentEngine extends Window {
             }
             if (layoutEditor != null) {
                 list.addAll(layoutEditor.getProperties());
+                node.getNodeTypes().removeAll(layoutEditor.getRemovedTypes());
+                node.getNodeTypes().addAll(layoutEditor.getAddedTypes());
             }
             if (metadataEditor != null) {
                 list.addAll(metadataEditor.getProperties());
+                node.getNodeTypes().removeAll(metadataEditor.getRemovedTypes());
+                node.getNodeTypes().addAll(metadataEditor.getAddedTypes());
             }
             if (classificationEditor!=null) {
                 updatePropertiesListWithClassificationEditorData(list);
@@ -553,7 +580,19 @@ public class EditContentEngine extends Window {
             gwtJahiaNodeProperty.setMultiple(true);
             gwtJahiaNodeProperty.setValues(values);
             gwtJahiaNodeProperty.setName("j:defaultCategory");
-            list.add(gwtJahiaNodeProperty);
+            if (node.getProperties().containsKey("j:defaultCategory")) {
+                if (values.isEmpty()) {
+                    node.getNodeTypes().remove("jmix:categorized");
+                } else {
+                    list.add(gwtJahiaNodeProperty);
+                }
+            } else {
+                if (!values.isEmpty()) {
+                    node.getNodeTypes().add("jmix:categorized");
+                    list.add(gwtJahiaNodeProperty);
+                }
+            }
+
             gwtJahiaNodes = classificationEditor.getTagStore().getAllItems();
             values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
             for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
@@ -563,7 +602,18 @@ public class EditContentEngine extends Window {
             gwtJahiaNodeProperty.setMultiple(true);
             gwtJahiaNodeProperty.setValues(values);
             gwtJahiaNodeProperty.setName("j:tags");
-            list.add(gwtJahiaNodeProperty);
+            if (node.getProperties().containsKey("j:tags")) {
+                if (values.isEmpty()) {
+                    node.getNodeTypes().remove("jmix:tagged");
+                } else {
+                    list.add(gwtJahiaNodeProperty);
+                }
+            } else {
+                if (!values.isEmpty()) {
+                    node.getNodeTypes().add("jmix:tagged");
+                    list.add(gwtJahiaNodeProperty);
+                }
+            }
         }
     }
 

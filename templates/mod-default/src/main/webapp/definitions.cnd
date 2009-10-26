@@ -10,17 +10,17 @@
 [jmix:filteredList] > jmix:contentListMixin mixin
  sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
-[jnt:fileList] > jnt:container, jmix:structuredContent
+[jnt:fileList] > jnt:content, jmix:structuredContent
  file folder (file[folder])
 
-[jnt:navLink] > jnt:container
+[jnt:navLink] > jnt:content, mix:title
  page navLink primary
  smallText separator
 
-[jnt:image] > jnt:container, jmix:structuredContent
+[jnt:image] > jnt:content, jmix:structuredContent
 file image (file[mime='image/*'])
 
-[jnt:frame] > jnt:container, jmix:structuredContent
+[jnt:frame] > jnt:content, mix:title, jmix:structuredContent
  sharedSmallText source indexed=no
  sharedSmallText name indexed=no
  integer width indexed=no
@@ -31,7 +31,7 @@ file image (file[mime='image/*'])
  sharedSmallText scrolling (choicelist) indexed=no < 'yes','no','auto'
  smallText alt indexed=no
 
-[jnt:video] > jnt:container, jmix:interactiveContent
+[jnt:video] > jnt:content, mix:title, jmix:interactiveContent
  sharedSmallText name
  file source
  integer width = '0'
@@ -47,7 +47,7 @@ file image (file[mime='image/*'])
  integer displaysize = '0' analyzer='keyword' nofulltext
  sharedSmallText loop (choicelist) analyzer='keyword' nofulltext < 'true','false'
 
-[jnt:flash] > jnt:container, jmix:interactiveContent
+[jnt:flash] > jnt:content, mix:title, jmix:interactiveContent
  file flashSource
  sharedSmallText width analyzer='keyword' nofulltext
  sharedSmallText height analyzer='keyword' nofulltext
@@ -67,13 +67,13 @@ file image (file[mime='image/*'])
  sharedSmallText base indexed=no
  sharedSmallText flashvars indexed=no
 
-[jnt:text] > jnt:container, jmix:structuredContent
- smallText text
+[jnt:text] > jnt:content, jmix:structuredContent
+ smallText text                 
 
-[jnt:bigText] > jnt:container, jmix:structuredContent
+[jnt:bigText] > jnt:content, jmix:structuredContent
  bigText text
 
- [jnt:Iframe] > jnt:container, jmix:structuredContent
+ [jnt:Iframe] > jnt:content, mix:title, jmix:structuredContent
  sharedSmallText IframeSource indexed=no
  sharedSmallText IframeName indexed=no
  integer IframeWidth indexed=no
@@ -84,11 +84,11 @@ file image (file[mime='image/*'])
  sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
  smallText IframeAlt indexed=no
 
-[jnt:mainContent] > jnt:container, jmix:structuredContent
+[jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent
   bigText body
   file image
   sharedSmallText align (choicelist[resourceBundle]) = left indexed=no < left,right,default
 
-[jnt:pageTagging] > nt:base, mix:title, jmix:interactiveContent 
+[jnt:pageTagging] > jnt:content, mix:title, jmix:interactiveContent
 
-[jnt:navBar] > nt:base, jmix:basemetadata, mix:title, jmix:interactiveContent
+[jnt:navBar] > jnt:content, mix:title, jmix:interactiveContent

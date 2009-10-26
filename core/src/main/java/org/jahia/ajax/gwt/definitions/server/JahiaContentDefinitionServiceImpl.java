@@ -77,4 +77,8 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
         return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
     }
+
+    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {
+        return contentDefinition.getAvailableMixin(type, retrieveParamBean());
+    }
 }

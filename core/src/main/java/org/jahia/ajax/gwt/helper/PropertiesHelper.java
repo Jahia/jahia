@@ -47,9 +47,7 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.content.nodetypes.*;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
@@ -164,6 +162,30 @@ public class PropertiesHelper {
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());
             }
             try {
+                List<String> types = aNode.getNodeTypes();
+                for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
+                    if (!types.contains(mixin.getName())) {
+                        List<ExtendedItemDefinition> items = mixin.getItems();
+                        for (ExtendedItemDefinition item : items) {
+                            if (item.isNode()) {
+                                if (objectNode.hasNode(item.getName())) {
+                                    objectNode.getNode(item.getName()).remove();
+                                }
+                            } else {
+                                if (objectNode.hasProperty(item.getName())) {
+                                    objectNode.getProperty(item.getName()).remove();
+                                }
+                            }
+                        }
+                        objectNode.removeMixin(mixin.getName());
+
+                    }
+                }
+                for (String type : types) {
+                    if (!objectNode.isNodeType(type)) {
+                        objectNode.addMixin(type);
+                    }
+                }
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
                 if(!aNode.getName().equals(objectNode.getName())) {

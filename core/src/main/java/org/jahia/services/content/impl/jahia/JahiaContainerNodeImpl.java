@@ -70,6 +70,8 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
             JahiaContainerDefinition def = (JahiaContainerDefinition) ContentDefinition.getContentDefinitionInstance(object.getDefinitionKey(EntryLoadRequest.STAGED));
             setDefinition(def.getNodeDefinition());
             setNodetype(NodeTypeRegistry.getInstance().getNodeType(def.getContainerType()));
+            initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:categorized"));
+            initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:keywords"));
             this.contentContainer = contentContainer;
         } catch (Exception e) {
             throw new RepositoryException(e);

@@ -131,4 +131,14 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
     public void setSuperTypes(List<String> superTypes) {
         this.superTypes = superTypes;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaNodeType that = (GWTJahiaNodeType) o;
+
+        return getName().equals(that.getName());
+    }
 }

@@ -29,7 +29,12 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         this.path = path;
         this.mainModule = mainModule;
         this.nodetypes = nodetypes;
-        setBorders(false);
+        if (path.endsWith("*")) {
+            setBorders(false);
+        } else {
+            setBorders(true);
+        }
+
         setHeight(20);
         
         HTML html = new HTML("");

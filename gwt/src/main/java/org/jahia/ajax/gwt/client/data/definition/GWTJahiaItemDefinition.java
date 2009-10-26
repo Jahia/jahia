@@ -51,6 +51,7 @@ public class GWTJahiaItemDefinition implements Serializable {
     private boolean mandatory = false;
     private boolean hidden = false;
     private String declaringNodeType;
+    private String declaringNodeTypeLabel;
     private String dataType;
 
     private int selector = 0;
@@ -114,6 +115,14 @@ public class GWTJahiaItemDefinition implements Serializable {
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    public String getDeclaringNodeTypeLabel() {
+        return declaringNodeTypeLabel;
+    }
+
+    public void setDeclaringNodeTypeLabel(String declaringNodeType) {
+        this.declaringNodeTypeLabel = declaringNodeType;
     }
 
     public String getDeclaringNodeType() {

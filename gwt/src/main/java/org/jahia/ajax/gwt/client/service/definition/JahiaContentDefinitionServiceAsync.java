@@ -48,12 +48,14 @@ import java.util.Map;
 public interface JahiaContentDefinitionServiceAsync {
 
 
-    public void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+    void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
 
-    public void getNodeTypes(AsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>> async);
+    void getNodeTypes(AsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>> async);
 
-    public void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+    void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    void getAvailableMixin(GWTJahiaNodeType type, AsyncCallback<List<GWTJahiaNodeType>> async);
 
 }

@@ -83,4 +83,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
      *         sub-types of the specified base type
      */
     List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode);
+
+    List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
+
 }

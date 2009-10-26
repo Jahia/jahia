@@ -13,13 +13,13 @@
 
 [jmix:metadata] mixin
 
-[jmix:categorized] > jmix:metadata mixin
+[jmix:categorized] > jmix:metadata, jmix:contentMixin mixin
  - j:defaultCategory (reference, category[autoSelectParent=false]) multiple
 
-[jmix:keywords] > jmix:metadata mixin
+[jmix:keywords] > jmix:metadata, jmix:contentMixin mixin
  - j:keywords (string) multiple
 
-[jmix:thumbnail] > jmix:metadata mixin
+[jmix:thumbnail] > jmix:metadata, jmix:contentMixin mixin
  + thumbnail (jnt:extraResource)
 
 [jmix:lastPublished] > jmix:metadata mixin
@@ -30,7 +30,7 @@
 [jmix:originWS] > jmix:metadata mixin
   - j:originWS (string) protected hidden
 
-[jmix:tagged] > jmix:metadata mixin
+[jmix:tagged] > jmix:metadata, jmix:contentMixin mixin
  - j:tags (reference, category[autoSelectParent=false]) multiple
  - j:newTag (string) hidden indexed=no
 
@@ -300,16 +300,16 @@
 
 [jmix:layout] mixin
 
-[jmix:renderable] > jmix:layout mixin
+[jmix:renderable] > jmix:layout, jmix:contentMixin mixin
  - j:template (string, choicelist[resourceBundle,image]) < templates()
 
-[jmix:renderableList] > jmix:layout, jmix:renderable, jmix:skinnable, jmix:contentListMixin mixin
+[jmix:renderableList] > jmix:layout, jmix:contentListMixin mixin
  - j:subNodesTemplate (string, choicelist[resourceBundle,image]) < templates()
 
 [jmix:renderableReference] > jmix:layout mixin
  - j:referenceTemplate (string, choicelist[resourceBundle,image]) < templates()
 
-[jmix:skinnable] > jmix:layout mixin
+[jmix:skinnable] > jmix:layout, jmix:contentMixin mixin
  - j:skin (string, choicelist[resourceBundle,image]) indexed=no < skins()
 
 [jmix:positionable] > jmix:layout mixin
@@ -346,6 +346,8 @@
 
 [jmix:queryContent] > jmix:content mixin
 
+[jmix:contentMixin] mixin
+
 [jmix:contentListMixin] mixin
 
 //---------------------------------------------------------
@@ -355,11 +357,13 @@
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  + * (nt:base) version
 
-[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:renderableList
+[jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+
+[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
  orderable
  + * (nt:base) version
 
-[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:renderableList
+[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
  - j:nbColumns (long)
  + * (jmix:positionable) version
 
@@ -406,9 +410,9 @@
 // Compatibility nodes
 //---------------------------------------------------------
 
-[jnt:container] > nt:base, jmix:structuredContent, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords, jmix:tagged
+[jnt:container] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
 
-[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:renderableList
+[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
  orderable
  + * (jnt:container) version
 

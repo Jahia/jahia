@@ -532,7 +532,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
-                logger.error(e, e);
+                logger.debug(e, e);
             }
         }
         return list;

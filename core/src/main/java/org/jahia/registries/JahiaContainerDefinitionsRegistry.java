@@ -412,6 +412,9 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
         for (String containerType : cts) {
             ExtendedNodeType nt = null;
             try {
+                types.add(NodeTypeRegistry.getInstance().getNodeType("mix:title"));
+                types.add(NodeTypeRegistry.getInstance().getNodeType("jmix:categorized"));
+                types.add(NodeTypeRegistry.getInstance().getNodeType("jmix:keywords"));
                 nt = NodeTypeRegistry.getInstance().getNodeType(containerType);
                 if (!availableTypesFound) {
                     if (nt.isAbstract()) {

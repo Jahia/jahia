@@ -44,6 +44,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -213,20 +214,27 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            }
 	                        }
 	                    } else if (path.startsWith("/")) {
-	                        try {
-	                            node = (JCRNodeWrapper) currentResource.getNode().getSession().getItem(path);
-	                        } catch (PathNotFoundException e) {
-	                            String currentPath = currentResource.getNode().getPath();
-	                            if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
-	                                currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
-	                            }
+                            JCRSessionWrapper session = currentResource.getNode().getSession();
+                            try {
+	                            node = (JCRNodeWrapper) session.getItem(path);
+                            } catch (PathNotFoundException e) {
+                                if (renderContext.isEditMode() && autoCreateType != null) {
+                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
+                                    node = parent.addNode(StringUtils.substringAfterLast(path,"/"), autoCreateType);
+                                    session.save();
+                                } else {
+                                    String currentPath = currentResource.getNode().getPath();
+                                    if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
+                                        currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
+                                    }
 
-	                            if (renderContext.isEditMode()) {
-	                                printModuleStart("placeholder", path, null, null);
-	                                printModuleEnd();
-	                            }
-	                        }
-	                    }
+                                    if (renderContext.isEditMode()) {
+                                        printModuleStart("placeholder", path, null, null);
+                                        printModuleEnd();
+                                    }
+                                }
+                            }
+                        }
 	                } catch (RepositoryException e) {
 	                    logger.error(e.getMessage(), e);
 	                }

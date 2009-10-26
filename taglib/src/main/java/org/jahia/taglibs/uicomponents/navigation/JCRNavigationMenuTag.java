@@ -212,23 +212,27 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                     final String currentPath = this.node.getPath().replaceAll(sitePath + "/", "");
                     final String[] pathElement = path.split("/");
                     final String[] currentPathElement = currentPath.split("/");
-                    isInPath = pathElement[startLevel - 1].equals(currentPathElement[startLevel - 1]);
+                    try {
+                        isInPath = pathElement[startLevel - 1].equals(currentPathElement[startLevel - 1]);
 
-                    if (isInPath) {
-                        if (currentPath.equals(path)) {
-                            navMenuItemBean.setSelected(true);
-                        } else {
-                            for (int i = 0; i < pathElement.length; i++) {
-                                String s = pathElement[i];
-                                if(i < currentPathElement.length && s.equals(currentPathElement[i])) {
-                                    navMenuItemBean.setInPath(true);
-                                } else {
-                                    navMenuItemBean.setInPath(false);
-                                    break;
+                        if (isInPath) {
+                            if (currentPath.equals(path)) {
+                                navMenuItemBean.setSelected(true);
+                            } else {
+                                for (int i = 0; i < pathElement.length; i++) {
+                                    String s = pathElement[i];
+                                    if(i < currentPathElement.length && s.equals(currentPathElement[i])) {
+                                        navMenuItemBean.setInPath(true);
+                                    } else {
+                                        navMenuItemBean.setInPath(false);
+                                        break;
+                                    }
                                 }
                             }
+                            navMenuItemsBean.add(navMenuItemBean);
                         }
-                        navMenuItemsBean.add(navMenuItemBean);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        
                     }
                 }
 

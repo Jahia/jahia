@@ -92,7 +92,7 @@
                 <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
 
 
-                <template:module node="${rootPage}" forcedTemplate="nav.navBar" editable="false"/>
+                <template:module path="${rootPage.path}/topMenu" template="topMenu" autoCreateType="jnt:navBar"/>
             </div>
 
             ${wrappedContent}

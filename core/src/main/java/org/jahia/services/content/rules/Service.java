@@ -39,18 +39,15 @@ import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
@@ -63,6 +60,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.ExternalWorkflow;
@@ -70,17 +68,14 @@ import org.jahia.services.workflow.ExternalWorkflowHistoryEntry;
 import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.ArrayUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.Node;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Property;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.Value;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.security.Principal;
@@ -882,52 +877,11 @@ public class Service {
     }
     
 	public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
-		final Node jcrNode = node.getNode();
-		User user = (User) drools.getWorkingMemory().getGlobal("user");
 		String siteKey = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteKey() : null;
 		if (siteKey == null) {
 			logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
 			return;
 		}
-		final String tagsPath = "/content/sites/" + siteKey + "/tags";
-		JCRTemplate jcrService = JCRTemplate.getInstance();
-		jcrService.doExecuteWithSystemSession(new JCRCallback<Object>() {
-			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				Node tagNode = null;
-				try {
-					tagNode = session.getNode(tagsPath + "/" + value);
-				} catch (PathNotFoundException e) {
-					Node tagTreeNode = session.getNode(tagsPath);
-					if (!tagTreeNode.isCheckedOut()) {
-						tagTreeNode.checkout();
-					}
-					// TODO escape the tag node name
-					tagNode = tagTreeNode.addNode(value, "jnt:tag");
-				}
-				if (tagNode != null) {
-					Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
-					Value[] values = null;
-					boolean exists = false;
-					if (jcrNode.hasProperty("j:tags")) {
-						values = jcrNode.getProperty("j:tags").getValues();
-						for (Value existingValue : values) {
-							if (tagNode.getIdentifier().equals(existingValue.getString())) {
-								exists = true;
-								break;
-							}
-						}
-					}
-					if (!exists) {
-						newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
-						if (!jcrNode.isCheckedOut()) {
-							jcrNode.checkout();
-						}
-						jcrNode.setProperty("j:tags", newValues);
-						session.save();
-					}
-				}
-				return null;
-			}
-		}, user.getName());
+		((TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService")).tag(node.getNode(), value, siteKey, true);
 	}
 }

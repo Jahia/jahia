@@ -235,7 +235,12 @@
                 <property name="sessionFactory" ref="jcrSessionFactory"/>
             </bean>
         </property>
-    </bean>    
+    </bean>
+    <bean id="org.jahia.services.tags.TaggingService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.tags.TaggingService"/>
+        </property>
+    </bean>
     <bean id="HtmlParserService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.htmlparser.HtmlParserBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

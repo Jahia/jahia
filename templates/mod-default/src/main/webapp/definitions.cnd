@@ -10,7 +10,7 @@
 [jmix:filteredList] > jmix:contentListMixin mixin
  sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
-[jnt:fileList] > jnt:container, jmix:contentListMixin mixin
+[jnt:fileList] > jnt:container, jmix:structuredContent
  file folder (file[folder])
 
 [jnt:navLink] > jnt:container
@@ -90,3 +90,5 @@ file image (file[mime='image/*'])
   sharedSmallText align (choicelist[resourceBundle]) = left indexed=no < left,right,default
 
 [jnt:pageTagging] > nt:base, mix:title, jmix:interactiveContent 
+
+[jnt:navBar] > nt:base, jmix:basemetadata, mix:title, jmix:interactiveContent

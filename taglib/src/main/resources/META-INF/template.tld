@@ -1891,7 +1891,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Name of the tempalte used for the rendering</description>
+            <description>Name of the template used for the rendering</description>
             <name>template</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

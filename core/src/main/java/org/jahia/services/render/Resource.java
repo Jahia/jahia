@@ -254,7 +254,7 @@ public class Resource {
          *                            from being compared to this object.
          */
         public int compareTo(Object o) {
-            return nodeType.getName().compareTo(((ExtendedNodeType)o).getName());
+            return nodeType.getName().compareTo(((Option)o).getNodeType().getName());
         }
 
         @Override

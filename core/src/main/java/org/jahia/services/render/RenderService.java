@@ -141,7 +141,7 @@ public class RenderService extends JahiaService {
         try {
             setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
             String render = script.execute();
-            String options = renderOptions(resource, context, node, "");
+            String options = renderOptions(resource, context, node, "", request, old);
             if(!context.getModuleParams().containsKey("renderOptionsBefore")) {
                 output = render+options;
             } else {
@@ -175,8 +175,8 @@ public class RenderService extends JahiaService {
         return output;
     }
 
-    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node,
-                                 String output) throws RepositoryException {
+    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node, String output,
+                                 HttpServletRequest request, Map<String, Object> old) throws RepositoryException {
         Script script;
         if (resource.hasOptions()) {
             List<Resource.Option> options = resource.getOptions();
@@ -186,6 +186,7 @@ public class RenderService extends JahiaService {
                 try {
                     Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
                     wrappedResource.setWrappedMixinType(option.getNodeType());
+                    pushAttribute(request,"optionsAutoRendering",true,old);
                     script = resolveScript(wrappedResource, context);
                     output += script.execute();
                 } catch (IOException e) {

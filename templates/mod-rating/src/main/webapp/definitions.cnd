@@ -4,3 +4,4 @@
 - j:nbOfVotes (long) = 0  autocreated hidden
 - j:sumOfVotes (long) = 0 autocreated hidden
 - j:lastVote (long) hidden
+- j:type (string,choicelist[resourceBundle]) < 'average','plusminus'

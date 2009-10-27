@@ -56,7 +56,7 @@ public class OptionTag extends BodyTagSupport {
     private String nodetype;
     private JCRNodeWrapper node;
     private String template;
-
+    private Boolean inDefaultRendering = false;
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -74,7 +74,9 @@ public class OptionTag extends BodyTagSupport {
                                                                            PageContext.REQUEST_SCOPE);
             if (node.isNodeType(nodetype)) {
                 final ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
-                currentResource.removeOption(mixinNodeType);
+                if(pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE)==null) {
+                    currentResource.removeOption(mixinNodeType);
+                }
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
                 wrappedResource.setWrappedMixinType(mixinNodeType);
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
@@ -90,6 +92,10 @@ public class OptionTag extends BodyTagSupport {
             logger.error(e.getMessage(), e);
             throw new JspException(e);
         }
+        inDefaultRendering = false;
+        nodetype = null;
+        node=null;
+        template = null;
         return super.doEndTag();
     }
 
@@ -103,5 +109,9 @@ public class OptionTag extends BodyTagSupport {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public void setInDefaultRendering(Boolean inDefaultRendering) {
+        this.inDefaultRendering = inDefaultRendering;
     }
 }

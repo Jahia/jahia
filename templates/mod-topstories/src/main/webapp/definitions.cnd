@@ -1,0 +1,11 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+
+[jnt:topStories] > jmix:interactiveContent
+ - firstLimit (long)
+ - secondLimit (long)
+ - thirdLimit (long)
+
+[jmix:topStory] > jmix:metadata, jmix:contentMixin mixin
+ - j:level (string,choicelist) < 'first','second','third'
+ 

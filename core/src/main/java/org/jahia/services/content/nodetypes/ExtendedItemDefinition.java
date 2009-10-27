@@ -189,6 +189,10 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:layout");
     }
 
+    public boolean isOptionItem() {
+        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:option");
+    }
+
     public boolean isContentItem() {
         return declaringNodeType.isNodeType("jmix:content") || name.toString().equals("jcr:title");
     }

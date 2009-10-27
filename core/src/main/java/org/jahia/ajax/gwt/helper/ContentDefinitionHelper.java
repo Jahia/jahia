@@ -194,6 +194,8 @@ public class ContentDefinitionHelper {
                     item.setDataType(GWTJahiaItemDefinition.LAYOUT);
                 } else if (def.isMetadataItem()) {
                     item.setDataType(GWTJahiaItemDefinition.METADATA);
+                } else if (def.isOptionItem()) {
+                    item.setDataType(GWTJahiaItemDefinition.OPTIONS);
                 } else if (def.isPublicationItem()) {
                     item.setDataType(GWTJahiaItemDefinition.PUBLICATION);
                 } else if (def.isSystemItem()) {

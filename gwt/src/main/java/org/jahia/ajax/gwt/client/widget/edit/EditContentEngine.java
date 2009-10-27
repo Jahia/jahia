@@ -91,6 +91,7 @@ public class EditContentEngine extends Window {
     private AsyncTabItem layoutTab;
     private AsyncTabItem metadataTab;
     private AsyncTabItem classificationTab;
+    private AsyncTabItem optionsTab;
     private AsyncTabItem publicationTab;
 //    private AsyncTabItem workflowTab;
 //    private AsyncTabItem rightsTab;
@@ -106,6 +107,7 @@ public class EditContentEngine extends Window {
     private PropertiesEditor propertiesEditor;
     private PropertiesEditor layoutEditor;
     private PropertiesEditor metadataEditor;
+    private PropertiesEditor optionsEditor;
     private PropertiesEditor publicationEditor;
     private LayoutContainer htmlPreview;
 
@@ -239,6 +241,9 @@ public class EditContentEngine extends Window {
         classificationTab = new AsyncTabItem(Messages.get("ece_classification", "Classification"));
         tabs.add(classificationTab);
 
+        optionsTab = new AsyncTabItem(Messages.get("ece_options", "Options"));
+        tabs.add(optionsTab);
+
 //        publicationTab = new AsyncTabItem(Messages.get("ece_publication", "Publication"));
 //        publicationTab.setScrollMode(Style.Scroll.AUTO);
 //        tabs.add(publicationTab);
@@ -277,6 +282,8 @@ public class EditContentEngine extends Window {
 //        } else if (currentTab == versionsTab) {
         } else if (currentTab == classificationTab) {
             createClassificationTab();
+        } else if (currentTab == optionsTab) {
+            createOptionsTab();
         }
     }
 
@@ -399,6 +406,22 @@ public class EditContentEngine extends Window {
                 layout();
             }
         }
+    }
+
+    private void createOptionsTab() {
+        if (!optionsTab.isProcessed()) {
+            if (mixin != null) {
+                optionsTab.setProcessed(true);
+                metadataTab.setStyleName("x-panel-mc");
+                optionsEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.OPTIONS, null, null, !existingNode || node.isWriteable(), true);
+                optionsTab.add(optionsEditor);
+//            metadataTab.layout();
+                optionsTab.setHeight(504);
+                layout();
+            }
+        }
+
+
     }
 
     private void createPublicationTab() {

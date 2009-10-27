@@ -412,7 +412,7 @@ public class EditContentEngine extends Window {
         if (!optionsTab.isProcessed()) {
             if (mixin != null) {
                 optionsTab.setProcessed(true);
-                metadataTab.setStyleName("x-panel-mc");
+                optionsTab.setStyleName("x-panel-mc");
                 optionsEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.OPTIONS, null, null, !existingNode || node.isWriteable(), true);
                 optionsTab.add(optionsEditor);
 //            metadataTab.layout();

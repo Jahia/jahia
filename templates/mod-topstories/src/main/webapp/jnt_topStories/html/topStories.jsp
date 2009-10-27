@@ -9,8 +9,8 @@
     <jcr:sql var="topStories"
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='first' order by story.[jcr:lastModified] desc"/>
-    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long}">
-        <template:module node="${topic}" forcedTemplate="large">
+    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long - 1}">
+        <template:module node="${topic}" forcedTemplate="large" editable="false">
             <template:param name="withoutOptions"/>
             <template:param name="withoutSkins"/>
         </template:module>
@@ -21,8 +21,8 @@
     <jcr:sql var="topStories"
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='second' order by story.[jcr:lastModified] desc"/>
-    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:secondLimit'].long}">
-        <template:module node="${topic}" forcedTemplate="medium">
+    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:secondLimit'].long - 1}">
+        <template:module node="${topic}" forcedTemplate="default" editable="false">
             <template:param name="withoutOptions"/>
             <template:param name="withoutSkins"/>
         </template:module>
@@ -33,8 +33,8 @@
     <jcr:sql var="topStories"
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='third' order by story.[jcr:lastModified] desc"/>
-    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:thirdLimit'].long}">
-        <template:module node="${topic}" forcedTemplate="small">
+    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:thirdLimit'].long - 1}">
+        <template:module node="${topic}" forcedTemplate="small" editable="false">
             <template:param name="withoutOptions"/>
             <template:param name="withoutSkins"/>
         </template:module>

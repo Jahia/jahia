@@ -171,6 +171,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public void addNodeType(Name name, ExtendedNodeType nodeType) {
+        if (nodetypes.containsKey(name)) {
+            nodeTypesList.remove(nodetypes.get(name));
+        }
         nodeTypesList.add(nodeType);
         nodetypes.put(name, nodeType);
     }

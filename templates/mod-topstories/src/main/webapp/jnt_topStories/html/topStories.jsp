@@ -10,7 +10,10 @@
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='first' order by story.[jcr:lastModified] desc"/>
     <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long}">
-        <template:module node="${topic}" forcedTemplate="large"/>
+        <template:module node="${topic}" forcedTemplate="large">
+            <template:param name="withoutOptions"/>
+            <template:param name="withoutSkins"/>
+        </template:module>
     </c:forEach>
 </c:if>
 
@@ -19,7 +22,10 @@
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='second' order by story.[jcr:lastModified] desc"/>
     <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:secondLimit'].long}">
-        <template:module node="${topic}" forcedTemplate="medium"/>
+        <template:module node="${topic}" forcedTemplate="medium">
+            <template:param name="withoutOptions"/>
+            <template:param name="withoutSkins"/>
+        </template:module>
     </c:forEach>
 </c:if>
 
@@ -27,7 +33,10 @@
     <jcr:sql var="topStories"
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
          and story.[j:level]='third' order by story.[jcr:lastModified] desc"/>
-    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:thirdLimit']}">
-        <template:module node="${topic}" forcedTemplate="small"/>
+    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:thirdLimit'].long}">
+        <template:module node="${topic}" forcedTemplate="small">
+            <template:param name="withoutOptions"/>
+            <template:param name="withoutSkins"/>
+        </template:module>
     </c:forEach>
 </c:if>

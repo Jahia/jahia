@@ -70,8 +70,9 @@ public class RenderService extends JahiaService {
      * @param resource Resource to display
      * @param context The render context
      * @return The rendered result
-     * @throws RepositoryException
-     * @throws IOException
+     * @throws RepositoryException when jcr issue
+     * @throws IOException when input/output issue
+     * @throws TemplateNotFoundException when template issue
      */
     public String render(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException, IOException {
         final HttpServletRequest request = context.getRequest();
@@ -110,20 +111,42 @@ public class RenderService extends JahiaService {
         }
 
         pushAttribute(request, "url",new URLGenerator(context, resource, storeService), old);
+        if (!context.getModuleParams().containsKey("withoutSkins")) {
+            if (context.getModuleParams().containsKey("forcedSkin")) {
+                resource.pushWrapper((String) context.getModuleParams().get("forcedSkin"));
+            } else if (node.hasProperty("j:skin")) {
+                resource.pushWrapper(node.getPropertyAsString("j:skin"));
+            } else if (context.getModuleParams().containsKey("skin")) {
+                resource.pushWrapper((String) context.getModuleParams().get("skin"));
+            }
+        }
+        ExtendedNodeType[] mixinNodeTypes = null;
 
-        if (context.getModuleParams().containsKey("forcedSkin")) {
-            resource.pushWrapper((String) context.getModuleParams().get("forcedSkin"));
-        } else if (node.hasProperty("j:skin")) {
-            resource.pushWrapper(node.getPropertyAsString("j:skin"));
-        } else if (context.getModuleParams().containsKey("skin")) {
-            resource.pushWrapper((String) context.getModuleParams().get("skin"));
+        if (!context.getModuleParams().containsKey("withoutOptions")) {
+            mixinNodeTypes = node.getMixinNodeTypes();
+            if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
+                for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
+                    final String[] supertypeNames = mixinNodeType.getDeclaredSupertypeNames();
+                    for (String supertypeName : supertypeNames) {
+                        if(supertypeName.equals("jmix:option") && hasTemplate(mixinNodeType, "hidden.options.wrapper"))  {
+                            resource.addOption("hidden.options.wrapper",mixinNodeType);
+                        }
+                    }
+                }
+            }
         }
 
-        String output;
+
+        String output="";
         try {
             setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
-            output = script.execute();
-
+            if(context.getModuleParams().containsKey("renderOptionsBefore")) {
+                output = renderOptions(resource, context, node, mixinNodeTypes, output);
+            }
+            output += script.execute();
+            if(!context.getModuleParams().containsKey("renderOptionsBefore")) {
+                output = renderOptions(resource, context, node, mixinNodeTypes, output);
+            }
             while (resource.hasWrapper()) {
                 String wrapper = resource.popWrapper();
                 try {
@@ -149,6 +172,31 @@ public class RenderService extends JahiaService {
             ((Resource)request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
         }
 
+        return output;
+    }
+
+    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node, ExtendedNodeType[] mixinNodeTypes,
+                                 String output) throws RepositoryException {
+        Script script;
+        if (resource.hasOptions()) {
+            List<Resource.Option> options = resource.getOptions();
+            Collections.sort(options);
+            for (Resource.Option option : options) {
+                String wrapper = option.getWrapper();
+                try {
+                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
+                    if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
+                        wrappedResource.setWrappedMixinType(option.getNodeType());
+                        script = resolveScript(wrappedResource, context);
+                        output += script.execute();
+                    }
+                } catch (IOException e) {
+                    logger.error("Cannot execute wrapper " + wrapper, e);
+                } catch (TemplateNotFoundException e) {
+                    logger.debug("Cannot find wrapper " + wrapper, e);
+                }
+            }
+        }
         return output;
     }
 

@@ -114,26 +114,51 @@ public class RequestDispatcherScript implements Script {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
 
         String templatePath;
+        if (resource.getWrappedMixinType() == null) {
+            for (String template : resource.getTemplates()) {
+                List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
+                        nt.getSupertypes()));
+                nodeTypeList.add(nt);
+                Collections.reverse(nodeTypeList);
+                for (ExtendedNodeType st : nodeTypeList) {
+                    List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                            st.getAlias().replace(":", "_"));
+                    SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
+                            PACKAGE_COMPARATOR);
+                    sortedPackages.addAll(packages);
 
-        for (String template : resource.getTemplates()) {
-            List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
-            nodeTypeList.add(nt);
-            Collections.reverse(nodeTypeList);
-            for (ExtendedNodeType st : nodeTypeList) {
-                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getAlias().replace(":", "_"));
-                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(PACKAGE_COMPARATOR);
+                    for (JahiaTemplatesPackage aPackage : sortedPackages) {
+                        String currentTemplatePath = aPackage.getRootFolderPath();
+                        templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
+                        if (templatePath != null) {
+                            return templatePath;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (String template : resource.getTemplates()) {
+                List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
+                        nt.getSupertypes()));
+                nodeTypeList.add(nt);
+                Collections.reverse(nodeTypeList);
+                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                        resource.getWrappedMixinType().getAlias().replace(":", "_"));
+                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
+                        PACKAGE_COMPARATOR);
                 sortedPackages.addAll(packages);
 
                 for (JahiaTemplatesPackage aPackage : sortedPackages) {
                     String currentTemplatePath = aPackage.getRootFolderPath();
-                    templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
+                    templatePath = getTemplatePath(resource.getTemplateType(), template, resource.getWrappedMixinType(),
+                                                   currentTemplatePath);
                     if (templatePath != null) {
                         return templatePath;
                     }
                 }
+
             }
         }
-
         return null;
     }
 

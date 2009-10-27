@@ -31,13 +31,15 @@
  */
 package org.jahia.services.render;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.apache.log4j.Logger;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Stack;
 
 /**
  * A resource is the aggregation of a node and a specific template
@@ -56,6 +58,8 @@ public class Resource {
 
     private List<Resource> includedResources;
     private List<String> missingResources;
+    private List<Option> options;
+    private ExtendedNodeType wrappedMixinType;
 
     /**
      * Creates a resource from the specified parameter
@@ -75,6 +79,7 @@ public class Resource {
         includedResources = new ArrayList<Resource>();
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
+        options = new ArrayList<Option>();
     }
 
     public JCRNodeWrapper getNode() {
@@ -89,16 +94,16 @@ public class Resource {
         try {
             return node.getSession().getWorkspace().getName();
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
 
     public Locale getLocale() {
         try {
-            return ((JCRSessionWrapper) node.getSession()).getLocale();
+            return node.getSession().getLocale();
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -168,5 +173,85 @@ public class Resource {
                 ", template='" + template + '\'' +
                 ", forcedTemplate='" + forcedTemplate + '\'' +
                 '}';
+    }
+
+    public void addOption(String wrapper, ExtendedNodeType nodeType) {
+        options.add(new Option(wrapper,nodeType));
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public boolean hasOptions() {
+        return !options.isEmpty();
+    }
+
+    public ExtendedNodeType getWrappedMixinType() {
+        return wrappedMixinType;
+    }
+
+    public void setWrappedMixinType(ExtendedNodeType wrappedMixinType) {
+        this.wrappedMixinType = wrappedMixinType;
+    }
+
+    public class Option implements Comparable {
+        private final String wrapper;
+        private final ExtendedNodeType nodeType;
+
+        public Option(String wrapper, ExtendedNodeType nodeType) {
+            this.wrapper = wrapper;
+            this.nodeType = nodeType;
+        }
+
+        public ExtendedNodeType getNodeType() {
+            return nodeType;
+        }
+
+        public String getWrapper() {
+            return wrapper;
+        }
+
+        /**
+         * Compares this object with the specified object for order.  Returns a
+         * negative integer, zero, or a positive integer as this object is less
+         * than, equal to, or greater than the specified object.
+         * <p/>
+         * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
+         * -sgn(y.compareTo(x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
+         * implies that <tt>x.compareTo(y)</tt> must throw an exception iff
+         * <tt>y.compareTo(x)</tt> throws an exception.)
+         * <p/>
+         * <p>The implementor must also ensure that the relation is transitive:
+         * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
+         * <tt>x.compareTo(z)&gt;0</tt>.
+         * <p/>
+         * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
+         * implies that <tt>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</tt>, for
+         * all <tt>z</tt>.
+         * <p/>
+         * <p>It is strongly recommended, but <i>not</i> strictly required that
+         * <tt>(x.compareTo(y)==0) == (x.equals(y))</tt>.  Generally speaking, any
+         * class that implements the <tt>Comparable</tt> interface and violates
+         * this condition should clearly indicate this fact.  The recommended
+         * language is "Note: this class has a natural ordering that is
+         * inconsistent with equals."
+         * <p/>
+         * <p>In the foregoing description, the notation
+         * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
+         * <i>signum</i> function, which is defined to return one of <tt>-1</tt>,
+         * <tt>0</tt>, or <tt>1</tt> according to whether the value of
+         * <i>expression</i> is negative, zero or positive.
+         *
+         * @param o the object to be compared.
+         * @return a negative integer, zero, or a positive integer as this object
+         *         is less than, equal to, or greater than the specified object.
+         * @throws ClassCastException if the specified object's type prevents it
+         *                            from being compared to this object.
+         */
+        public int compareTo(Object o) {
+            return nodeType.getName().compareTo(((ExtendedNodeType)o).getName());
+        }
+
     }
 }

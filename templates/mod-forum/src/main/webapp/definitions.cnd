@@ -1,24 +1,25 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:post] > jnt:container, jmix:rating, mix:title
+[jnt:post] > jnt:content, jmix:rating, mix:title
 bigText content
 
 
-[jnt:thread] > jnt:container, jmix:interactiveContent
+[jnt:thread] > jnt:content, jmix:interactiveContent
 - threadSubject (string)
 + * (jnt:post)
 
-[jnt:topic] > jnt:container, jmix:interactiveContent
+[jnt:topic] > jnt:content, jmix:interactiveContent
 - topicSubject (string)
 + * (jnt:thread)
 
-[jnt:dynamicTopicList] > jnt:container, jmix:interactiveContent
+[jnt:dynamicTopicList] > jnt:content, jmix:interactiveContent
 
-[jnt:boardIndex] > jnt:container, jmix:interactiveContent
+[jnt:boardIndex] > jnt:content, jmix:interactiveContent
  - boardSubject (string)
  - boardDescription (string)
 + * (jnt:topic)
 
-[jmix:comments] mixin
+[jmix:comments] > jmix:option, jmix:contentMixin mixin
+- shortView (boolean) = false autocreated
 + comments (jnt:thread) = jnt:thread autocreated hidden

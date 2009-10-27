@@ -382,7 +382,7 @@
                   </elementProp>
                   <elementProp name="nodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">jahiaForum:boardIndex</stringProp>
+                    <stringProp name="Argument.value">jnt:boardIndex</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
@@ -441,7 +441,7 @@
                   </elementProp>
                   <elementProp name="nodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">jahiaForum:topic</stringProp>
+                    <stringProp name="Argument.value">jnt:topic</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
@@ -493,7 +493,7 @@
                   </elementProp>
                   <elementProp name="nodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">jahiaForum:thread</stringProp>
+                    <stringProp name="Argument.value">jnt:thread</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
@@ -546,24 +546,17 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="nodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">jahiaForum:post</stringProp>
+                      <stringProp name="Argument.value">jnt:post</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       <stringProp name="Argument.name">nodeType</stringProp>
                     </elementProp>
                     <elementProp name="jcr:title" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">Post</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">jcr:title</stringProp>
-                    </elementProp>
-                    <elementProp name="title" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
                       <stringProp name="Argument.value">JMeter Performance Tests Post</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">title</stringProp>
+                      <stringProp name="Argument.name">jcr:title</stringProp>
                     </elementProp>
                     <elementProp name="content" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">true</boolProp>

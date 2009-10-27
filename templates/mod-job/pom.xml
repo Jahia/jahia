@@ -44,7 +44,6 @@
     <artifactId>mod-job</artifactId>
     <name>Jahia Job Offer</name>
     <packaging>war</packaging>
-    <url>jahia.org</url>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>
         <repository>

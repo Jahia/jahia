@@ -818,7 +818,7 @@
                         </manifest>
                     </archive>
                     <classifier>${jahia.war.classifier}</classifier>
-                </configuration>
+                </configuration>                   
             </plugin>
 
             <plugin>

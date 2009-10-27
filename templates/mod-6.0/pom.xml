@@ -45,7 +45,6 @@
   <artifactId>mod-6.0</artifactId>
   <name>6.0 Compatiblity Module</name>
   <packaging>war</packaging>
-  <url>jahia.org</url>
 
   <description>Jahia 6.0 Compatiblity Module.</description>
 

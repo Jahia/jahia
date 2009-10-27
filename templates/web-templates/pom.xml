@@ -10,7 +10,6 @@
   <artifactId>web-templates</artifactId>
   <name>Web templates</name>
   <packaging>war</packaging>
-  <url>www.jahia.org</url>
 
   <description>These are the custom templates (web-templates) for running on a Jahia server.</description>
 

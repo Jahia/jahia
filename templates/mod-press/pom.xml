@@ -44,7 +44,6 @@
     <artifactId>mod-press</artifactId>
     <name>Jahia Press Releases</name>
     <packaging>war</packaging>
-    <url>jahia.org</url>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>
         <repository>

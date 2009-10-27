@@ -45,7 +45,6 @@
   <artifactId>mod-event</artifactId>
   <name>Event Module</name>
   <packaging>war</packaging>
-  <url>jahia.org</url>
 
   <description>This is a module for running on a Jahia server.</description>
 

@@ -45,7 +45,6 @@
   <artifactId>mod-default</artifactId>
   <name>Default Jahia Templates</name>
   <packaging>war</packaging>
-  <url>jahia.org</url>
 
   <description>These are the custom templates (jahiaForum) for running on a Jahia server.</description>
 

@@ -195,6 +195,10 @@ public class Resource {
         this.wrappedMixinType = wrappedMixinType;
     }
 
+    public void removeOption(ExtendedNodeType mixinNodeType) {
+        options.remove(new Option("",mixinNodeType));
+    }
+
     public class Option implements Comparable {
         private final String wrapper;
         private final ExtendedNodeType nodeType;
@@ -253,5 +257,24 @@ public class Resource {
             return nodeType.getName().compareTo(((ExtendedNodeType)o).getName());
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Option option = (Option) o;
+
+            return nodeType.getName().equals(option.nodeType.getName());
+
+        }
+
+        @Override
+        public int hashCode() {
+            return nodeType.getName().hashCode();
+        }
     }
 }

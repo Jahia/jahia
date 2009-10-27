@@ -137,15 +137,15 @@ public class RenderService extends JahiaService {
         }
 
 
-        String output="";
+        String output;
         try {
             setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
-            if(context.getModuleParams().containsKey("renderOptionsBefore")) {
-                output = renderOptions(resource, context, node, mixinNodeTypes, output);
-            }
-            output += script.execute();
+            String render = script.execute();
+            String options = renderOptions(resource, context, node, "");
             if(!context.getModuleParams().containsKey("renderOptionsBefore")) {
-                output = renderOptions(resource, context, node, mixinNodeTypes, output);
+                output = render+options;
+            } else {
+                output = options+render;
             }
             while (resource.hasWrapper()) {
                 String wrapper = resource.popWrapper();
@@ -175,7 +175,7 @@ public class RenderService extends JahiaService {
         return output;
     }
 
-    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node, ExtendedNodeType[] mixinNodeTypes,
+    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node,
                                  String output) throws RepositoryException {
         Script script;
         if (resource.hasOptions()) {
@@ -185,11 +185,9 @@ public class RenderService extends JahiaService {
                 String wrapper = option.getWrapper();
                 try {
                     Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
-                    if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
-                        wrappedResource.setWrappedMixinType(option.getNodeType());
-                        script = resolveScript(wrappedResource, context);
-                        output += script.execute();
-                    }
+                    wrappedResource.setWrappedMixinType(option.getNodeType());
+                    script = resolveScript(wrappedResource, context);
+                    output += script.execute();
                 } catch (IOException e) {
                     logger.error("Cannot execute wrapper " + wrapper, e);
                 } catch (TemplateNotFoundException e) {

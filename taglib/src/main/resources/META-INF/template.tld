@@ -1871,5 +1871,30 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
+    <tag>
+        <description>Includes an option as a module into the page. The nodetype of the option to render is defined by nodetype attribute.
+            The node to display is determined by node attribute. template attribute determine the way the node is rendered.
+        </description>
+        <name>option</name>
+        <tag-class>org.jahia.taglibs.template.include.OptionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Node to include in the page</description>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Nodetype of the option to include in the page</description>
+            <name>nodetype</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of the tempalte used for the rendering</description>
+            <name>template</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

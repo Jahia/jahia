@@ -576,6 +576,11 @@ public class EditContentEngine extends Window {
                 node.getNodeTypes().removeAll(metadataEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(metadataEditor.getAddedTypes());
             }
+            if (optionsEditor != null) {
+                list.addAll(optionsEditor.getProperties());
+                node.getNodeTypes().removeAll(optionsEditor.getRemovedTypes());
+                node.getNodeTypes().addAll(optionsEditor.getAddedTypes());
+            }
             if (classificationEditor!=null) {
                 updatePropertiesListWithClassificationEditorData(list);
             }

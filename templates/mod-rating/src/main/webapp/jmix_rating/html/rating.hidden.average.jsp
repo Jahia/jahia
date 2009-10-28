@@ -34,14 +34,6 @@
 					$("#messages").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
 					// Send request to the server using POST method
-					/* NOTE:
-						The same PHP script is used for the FORM submission when Javascript is not available.
-						The only difference in script execution is the returned value.
-						For AJAX call we expect an JSON object to be returned.
-						The JSON object contains additional data we can use to update other elements on the page.
-						To distinguish the AJAX request in PHP script, check if the $_SERVER['HTTP_X_REQUESTED_WITH'] header variable is set.
-						(see: demo5.php)
-					*/
 					$.post("${url.base}${currentNode.path}", {'j:lastVote': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
 					{
 							// Select stars from "Average rating" control to match the returned average rating value

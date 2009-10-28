@@ -123,9 +123,15 @@ public class JahiaNodeIndexer extends NodeIndexer {
         ExtendedPropertyDefinition propDef = null;
         if (nodeType != null) {
             try {
-                propDef = nodeType.getPropertyDefinition(namespaceRegistry
-                        .getPrefix(propertyName.getNamespaceURI())
-                        + ":" + propertyName.getLocalName());
+                StringBuilder propertyNameBuilder = new StringBuilder();
+                propertyNameBuilder.append(namespaceRegistry
+                        .getPrefix(propertyName.getNamespaceURI()));
+                if (propertyNameBuilder.length() > 0) {
+                    propertyNameBuilder.append(":");
+                }
+                propertyNameBuilder.append(propertyName.getLocalName());
+                propDef = nodeType.getPropertyDefinition(propertyNameBuilder
+                        .toString());
             } catch (RepositoryException e) {
                 logger.debug(e.getMessage(), e);
             }

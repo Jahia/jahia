@@ -4,8 +4,8 @@
 smallText firstname
 smallText lastname
 smallText title(choicelist) analyzer='keyword' < 'doctor', 'professor'
-integer age
-date birthdate
+smallText age
+smallText birthdate
 smallText gender(choicelist) analyzer='keyword' < 'female','male'
 smallText profession
 smallText maritalStatus(choicelist) analyzer='keyword' < 'single', 'married', 'divorced', 'widowed'

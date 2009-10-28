@@ -212,39 +212,91 @@ public class TaggingService {
 
 		return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
 			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				boolean applied = false;
-				boolean doSessionCommit = false;
-				JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
-				if (tagNode == null && createTagIfNotExists) {
-					tagNode = createTag(tag, siteKey, session);
-					doSessionCommit = true;
-				}
-				if (tagNode != null) {
-					Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
-					Value[] values = null;
-					boolean exists = false;
-					if (node.hasProperty(TAGS)) {
-						values = node.getProperty(TAGS).getValues();
-						for (Value existingValue : values) {
-							if (tagNode.getIdentifier().equals(existingValue.getString())) {
-								exists = true;
-								break;
-							}
-						}
-					}
-					if (!exists) {
-						newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
-						session.checkout(node);
-						node.setProperty(TAGS, newValues);
-						applied = true;
-					}
-					if (doSessionCommit) {
-						session.save();
-					}
-				}
-				return applied;
+				return tag(node, tag, siteKey, createTagIfNotExists, session);
 			}
 		});
 	}
 
+	/**
+	 * Tag the current node with the specified tag. The tag value is assigned to
+	 * the node, if it is not tagged already with the same tag.
+	 * 
+	 * @param node
+	 *            the node to be tagged
+	 * @param tag
+	 *            the tag to be used
+	 * @param siteKey
+	 *            the key of the current site
+	 * @param createTagIfNotExists
+	 *            do we need to create a new tag if the specified does not exist
+	 *            yet?
+	 * @param session
+	 *            the current session
+	 * @return <code>true</code> if the tag was applied to the node
+	 * @throws RepositoryException
+	 *             in case of errors
+	 */
+	private boolean tag(final Node node, final String tag, final String siteKey, final boolean createTagIfNotExists,
+	        JCRSessionWrapper session) throws RepositoryException {
+
+		boolean applied = false;
+		boolean doSessionCommit = false;
+		JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
+		if (tagNode == null && createTagIfNotExists) {
+			tagNode = createTag(tag, siteKey, session);
+			doSessionCommit = true;
+		}
+		if (tagNode != null) {
+			Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
+			Value[] values = null;
+			boolean exists = false;
+			if (node.hasProperty(TAGS)) {
+				values = node.getProperty(TAGS).getValues();
+				for (Value existingValue : values) {
+					if (tagNode.getIdentifier().equals(existingValue.getString())) {
+						exists = true;
+						break;
+					}
+				}
+			}
+			if (!exists) {
+				newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
+				session.checkout(node);
+				node.setProperty(TAGS, newValues);
+				applied = true;
+				doSessionCommit = true;
+			}
+			if (doSessionCommit) {
+				session.save();
+			}
+		}
+		return applied;
+	}
+
+	/**
+	 * Tag the current node with the specified tag. The tag value is assigned to
+	 * the node, if it is not tagged already with the same tag.
+	 * 
+	 * @param nodePath
+	 *            the path of the node to be tagged
+	 * @param tag
+	 *            the tag to be used
+	 * @param siteKey
+	 *            the key of the current site
+	 * @param createTagIfNotExists
+	 *            do we need to create a new tag if the specified does not exist
+	 *            yet?
+	 * @return <code>true</code> if the tag was applied to the node
+	 * @throws RepositoryException
+	 *             in case of errors
+	 */
+	public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists)
+	        throws RepositoryException {
+
+		return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+				return tag(session.getNode(nodePath), tag, siteKey, createTagIfNotExists, session);
+			}
+		});
+	}
 }

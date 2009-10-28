@@ -76,6 +76,7 @@
         <module>mod-faq</module>
         <module>mod-rating</module>
         <module>mod-topstories</module>
+        <module>mod-contact</module>
     </modules>
 
 

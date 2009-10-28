@@ -194,20 +194,22 @@ public class JCRGroup extends JahiaGroup {
                         jcrUser = (JCRUser) principal;
                     } else if (principal instanceof JahiaUser) {
                         jcrTemplate.getProvider("/").deployExternalUser(principal.getName(),
-                                                                           ((JahiaUser) principal).getProviderName());
+                                ((JahiaUser) principal).getProviderName());
                         jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
                     }
                     if (jcrUser != null) {
                         Node node = getNode(session);
                         Node members = node.getNode("j:members");
-                        Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
-                        member.setProperty("j:member", jcrUser.getNodeUuid());
-                        session.save();
+                        if (!members.hasNode(principal.getName())) {
+                            Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
+                            member.setProperty("j:member", jcrUser.getNodeUuid());
+                            session.save();
+                        }
                         return true;
                     }
                     return false;
                 }
-            }).booleanValue();
+            });
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
         }

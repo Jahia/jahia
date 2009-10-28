@@ -6,10 +6,9 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <div class="mainContent">
     <div class="peopleBody">
-    <c:forEach items="${currentNode.properties}" var="property">
-        <c:if test="${!(property.multiple || fn:contains(property.name,':'))}">
-            <p><span class="peopleLabel">${fn:escapeXml(jcr:label(property))}:</span>&nbsp;${fn:escapeXml(property.string)}</p>
-        </c:if>
-    </c:forEach>
+    <c:set var="props" value="${currentNode.properties}"/>
+    <c:forTokens items="firstname,lastname,title,age,birthdate,gender,profession,maritalStatus,hobbies,contact,address,city,state,zip,country,remarks" delims="," var="propName">
+    	<p><span class="peopleLabel">${fn:escapeXml(jcr:label(props[propName].definition))}:</span>&nbsp;${fn:escapeXml(props[propName].string)}</p>
+    </c:forTokens>
     </div>
 </div>    

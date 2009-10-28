@@ -1,0 +1,13 @@
+<assembly>
+  <id>jahia</id>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <formats>
+    <format>war</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/websphere-${jahia.websphere.version}</directory>
+      <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.websphere.version}</outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

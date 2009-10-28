@@ -1,6 +1,24 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:contactForm] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:interactiveContent
+[jnt:contact] > jnt:content
+smallText firstname
+smallText lastname
+smallText title
+smallText age
+smallText birthdate
+smallText gender
+smallText profession
+smallText maritalStatus
+smallText hobbies
+smallText contact
+smallText address
+smallText city
+smallText state
+smallText zip
+smallText country
+smallText remarks
+
+[jnt:contactForm] > jnt:content, jmix:interactiveContent
 boolean firstname
 boolean lastname
 boolean title
@@ -17,3 +35,4 @@ boolean state
 boolean zip
 boolean country
 boolean remarks
++ * (jnt:contact) 

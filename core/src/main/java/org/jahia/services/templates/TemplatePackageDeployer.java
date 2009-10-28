@@ -94,7 +94,7 @@ class TemplatePackageDeployer {
 
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
             for (File file : existingFiles) {
-                if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) < file.lastModified()) {
+                if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                     timestamps.put(file.getPath(), file.lastModified());
                     deployPackage(file);
                 }
@@ -107,13 +107,13 @@ class TemplatePackageDeployer {
                 if (deployedFolder.isDirectory()) {
                     File[] files = deployedFolder.listFiles();
                     for (File file : files) {
-                        if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) < file.lastModified()) {
+                        if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                             timestamps.put(file.getPath(), file.lastModified());
                             timestamps.remove(deployedFolder.getPath());
                         }
                     }
 
-                    if (!timestamps.containsKey(deployedFolder.getPath()) || timestamps.get(deployedFolder.getPath()) < deployedFolder.lastModified()) {
+                    if (!timestamps.containsKey(deployedFolder.getPath()) || timestamps.get(deployedFolder.getPath()) != deployedFolder.lastModified()) {
                         timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
 
                         JahiaTemplatesPackageHandler packageHandler = getPackage(deployedFolder);

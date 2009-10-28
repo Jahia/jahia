@@ -153,6 +153,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         Node node = session.getNode(path);
+        session.checkout(node);
         Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
         for (Map.Entry<String, String[]> entry : set) {
             String key = entry.getKey();

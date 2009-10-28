@@ -104,11 +104,10 @@
         </fieldset>
     </form>
 </div>
-<c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status" end="20">
-    <c:if test="${not status.last and not renderContext.editMode}">
+<c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status">
         <div class="forum-box forum-box-style${(status.index mod 2)+1}">
             <template:module node="${subchild}" template="small"/>
         </div>
-    </c:if>
 </c:forEach>
+<a href="${url.base}${currentNode.path}.csv" target="_new">csv export</a>
 

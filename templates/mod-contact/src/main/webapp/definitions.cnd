@@ -3,19 +3,19 @@
 [jnt:contact] > jnt:content
 smallText firstname
 smallText lastname
-smallText title
-smallText age
-smallText birthdate
-smallText gender
+smallText title(choicelist) analyzer='keyword' < 'doctor', 'professor'
+integer age
+date birthdate
+smallText gender(choicelist) analyzer='keyword' < 'female','male'
 smallText profession
-smallText maritalStatus
+smallText maritalStatus(choicelist) analyzer='keyword' < 'single', 'married', 'divorced', 'widowed'
 smallText hobbies
-smallText contact
+smallText contact(choicelist) analyzer='keyword' < 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
 smallText address
 smallText city
 smallText state
 smallText zip
-smallText country
+smallText country(choicelist) facetable < country()
 smallText remarks
 
 [jnt:contactForm] > jnt:content, jmix:interactiveContent

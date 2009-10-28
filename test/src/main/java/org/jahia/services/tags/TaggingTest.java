@@ -31,10 +31,14 @@
  */
 package org.jahia.services.tags;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 
 import junit.framework.TestCase;
@@ -52,6 +56,8 @@ import org.jahia.services.content.JCRTemplate;
  * @author Sergiy Shyrkov
  */
 public class TaggingTest extends TestCase {
+
+	private static final int TAGS_TO_CREATE = 1000;
 
 	private int counter = 0;
 
@@ -88,8 +94,15 @@ public class TaggingTest extends TestCase {
 						session.checkout(node);
 						node.remove();
 					} catch (PathNotFoundException e) {
-						// ignore -> it is a bug in Jackrabbit that produces duplicate results
+						// ignore -> it is a bug in Jackrabbit that produces
+						// duplicate results
 					}
+				}
+				session.checkout("/content/sites/" + siteKey);
+				try {
+					session.getNode("/content/sites/" + siteKey + "/tags-content").remove();
+				} catch (PathNotFoundException e) {
+					// ignore it
 				}
 				session.save();
 				return null;
@@ -99,6 +112,14 @@ public class TaggingTest extends TestCase {
 		siteKey = null;
 		counter = 0;
 		service = null;
+	}
+
+	public void testCreateMultipleTags() throws RepositoryException {
+		String tag = null;
+		for (int i = 0; i < TAGS_TO_CREATE; i++) {
+			tag = generateTagName();
+			service.createTag(tag, siteKey);
+		}
 	}
 
 	public void testCreateTag() throws RepositoryException {
@@ -114,4 +135,89 @@ public class TaggingTest extends TestCase {
 
 		assertFalse(service.deleteTag(tagPrefix + "-1", siteKey));
 	}
+
+	public void testTagContentObject() throws RepositoryException {
+		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+				Node siteNode = session.getNode("/content/sites/" + siteKey);
+				session.checkout(siteNode);
+				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
+				Node contentNode = contentFolder.addNode("content-1", "jnt:content");
+				contentNode.addMixin("jmix:tagged");
+				session.save();
+				return null;
+			}
+		});
+
+		String tag = null;
+		List<String> tags = new LinkedList<String>();
+		for (int i = 0; i < 10; i++) {
+			tag = generateTagName();
+			tags.add(tag);
+			service.tag("/content/sites/" + siteKey + "/tags-content/content-1", tag, siteKey, true);
+		}
+
+		List<String> assignedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(
+		        new JCRCallback<List<String>>() {
+			        public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+				        Node node = session.getNode("/content/sites/" + siteKey + "/tags-content/content-1");
+				        Value[] values = node.getProperty("j:tags").getValues();
+				        List<String> nodeTags = new LinkedList<String>();
+				        for (Value val : values) {
+					        nodeTags.add(session.getNodeByIdentifier(val.getString()).getName());
+				        }
+				        return nodeTags;
+			        }
+		        });
+		assertTrue("Tags were not correctly applied to the node", tags.size() == assignedTags.size()
+		        && assignedTags.containsAll(tags));
+	}
+
+	public void testTagCount() throws RepositoryException {
+		// create 10 content nodes
+		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+				Node siteNode = session.getNode("/content/sites/" + siteKey);
+				session.checkout(siteNode);
+				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
+				for (int i = 1; i <= 10; i++) {
+					Node contentNode = contentFolder.addNode("content-" + i, "jnt:content");
+					contentNode.addMixin("jmix:tagged");
+				}
+
+				session.save();
+				return null;
+			}
+		});
+
+		// create 10 tags
+		final List<String> tags = new LinkedList<String>();
+		for (int i = 0; i < 10; i++) {
+			String tag = generateTagName();
+			tags.add(tag);
+			service.createTag(tag, siteKey);
+		}
+
+		// tag content using those tags
+		for (int i = 1; i <= 10; i++) {
+			for (int j = i; j <= 10; j++) {
+				service
+				        .tag("/content/sites/" + siteKey + "/tags-content/content-" + i, tags.get(j - 1), siteKey,
+				                false);
+			}
+		}
+
+		// assert the tag count
+		JCRTemplate.getInstance().doExecuteWithSystemSession(
+		        new JCRCallback<Object>() {
+			        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+				        for (int i = 1; i <= 10; i++) {
+				        	Node tagNode = session.getNode("/content/sites/" + siteKey + "/tags/" + tags.get(i-1));
+				        	assertEquals("Wrong count for the tag '" + tagNode.getName() + "'", tagNode.getReferences().getSize(), i);
+                        }
+				        return null;
+			        }
+		        });
+	}
+
 }

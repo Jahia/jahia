@@ -7,7 +7,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:forEach items="${currentNode.children}" var="subchild" varStatus="status" end="20">
 <c:if test="${status.first}">
-<template:module node="${subchild}" template="headers"/>    
+<template:module node="${subchild}" template="headers"/><% out.println(); %>
 </c:if>
-<template:module node="${subchild}"/>
+<template:module node="${subchild}"/><% out.println(); %>
 </c:forEach>

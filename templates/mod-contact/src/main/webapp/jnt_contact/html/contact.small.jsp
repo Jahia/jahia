@@ -5,4 +5,4 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<li><a href="${url.current}">${currentNode.properties.firstname.string} ${currentNode.properties.lastname.string}</a></li>
+<li><a href="${url.current}">${fn:escapeXml(currentNode.properties.firstname.string)}&nbsp;${fn:escapeXml(currentNode.properties.lastname.string)}</a></li>

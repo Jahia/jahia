@@ -8,7 +8,7 @@
     <div class="peopleBody">
     <c:forEach items="${currentNode.properties}" var="property">
         <c:if test="${!(property.multiple || fn:contains(property.name,':'))}">
-            <p><span class="peopleLabel">${property.name}:</span>&nbsp;${fn:escapeXml(property.string)}</p>
+            <p><span class="peopleLabel">${fn:escapeXml(jcr:label(property))}:</span>&nbsp;${fn:escapeXml(property.string)}</p>
         </c:if>
     </c:forEach>
     </div>

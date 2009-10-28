@@ -34,13 +34,28 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
+
 <template:template>
-	<template:templateHead title="${fn:escapeXml(currentNode.name)}">
-		<link rel="stylesheet" type="text/css" href="<c:url value='/css/render.css'/>"/>
+    <template:templateHead title="${fn:escapeXml(currentNode.properties['jcr:title'])}">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <template:themeDisplay defaultTheme="default"/>
+
+        <%-- TODO : move these calls to external resources call when needed --%>
+        <script type="text/javascript" src='<utility:resolvePath value='javascript/swfobject.js'/>'></script>
+        <script type="text/javascript" src='<utility:resolvePath value='javascript/textsizer.js'/>'></script>
+        <script type="text/javascript" src='<utility:resolvePath value='javascript/collapse.js'/>'></script>
+
+        <utility:applicationResources/>
+
+        <%--CSS--%>
+        <c:forEach var="css" items="${renderContext.externalLinks.css}">
+            <link rel="stylesheet" href="${renderContext.request.contextPath}${css}" media="screen" type="text/css"/>
+        </c:forEach>
 	</template:templateHead>
+
     <template:templateBody>
-    	<div id="render">
         ${wrappedContent}
-        </div>
     </template:templateBody>
 </template:template>

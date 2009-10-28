@@ -119,7 +119,7 @@ public class RenderContext {
     public void addExternalLink(String externalLinkType,String externalLink) {
         Set<String> externalLinkList = getExternalLinks(externalLinkType);
         if (externalLinkList == null) {
-            externalLinkList = new HashSet<String>();
+            externalLinkList = new LinkedHashSet<String>();
         }
         externalLinkList.add(externalLink);
         externalLinks.put(externalLinkType,externalLinkList);

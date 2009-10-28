@@ -34,8 +34,8 @@ package org.jahia.bin;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
@@ -45,6 +45,8 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.json.JSONObject;
+import org.json.JSONException;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -152,7 +154,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-        Node node = session.getNode(path);
+        JCRNodeWrapper node = session.getNode(path);
         session.checkout(node);
         Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
         for (Map.Entry<String, String[]> entry : set) {
@@ -167,7 +169,27 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         session.save();
-        performRedirect(null, null, req, resp);
+        final String requestWith = req.getHeader("x-requested-with");
+        if(req.getHeader("accept").contains("application/json") && requestWith !=null && requestWith.equals("XMLHttpRequest")) {
+            try {
+                serializeNodeToJSON(resp, node);
+            } catch (JSONException e) {
+                logger.error(e.getMessage(),e);
+            }
+        } else {
+            performRedirect(null, null, req, resp);
+        }
+    }
+
+    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
+        JSONObject nodeJSON = new JSONObject();
+        final Map<String, String> stringMap = node.getPropertiesAsString();
+        Map<String,String > map = new HashMap<String, String>(stringMap.size());
+        for (Map.Entry<String, String> stringStringEntry : stringMap.entrySet()) {
+            map.put(stringStringEntry.getKey().replace(":","_"),stringStringEntry.getValue());
+        }
+        nodeJSON.put(node.getName(), map);
+        nodeJSON.write(resp.getWriter());
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {

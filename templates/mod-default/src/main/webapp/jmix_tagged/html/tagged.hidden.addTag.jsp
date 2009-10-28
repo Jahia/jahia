@@ -7,7 +7,7 @@
 <c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
 <c:if test="${empty requestScope['org.jahia.javascript.includes.jQuery']}">
 	<c:set var="org.jahia.javascript.includes.jQuery" value="true" scope="request"/>
-    <script type="text/javascript" src="${request.contextPath}/templates/default/javascript/jQuery.js"></script>
+    <template:addResources type="javascript" resources="jQuery.js" nodetype="jmix:tagged"/>
     <script type="text/javascript">
         jQuery.noConflict();
         function addNewTag(tagForm, uuid, separator) {

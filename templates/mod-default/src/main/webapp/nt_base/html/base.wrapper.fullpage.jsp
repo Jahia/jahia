@@ -53,6 +53,9 @@
         <c:forEach var="css" items="${renderContext.externalLinks.css}">
             <link rel="stylesheet" href="${renderContext.request.contextPath}${css}" media="screen" type="text/css"/>
         </c:forEach>
+        <c:forEach var="file" items="${renderContext.externalLinks.javascript}">
+            <script type="text/javascript" src="${renderContext.request.contextPath}${file}"></script>
+        </c:forEach>
 	</template:templateHead>
 
     <template:templateBody>

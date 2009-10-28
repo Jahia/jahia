@@ -33,16 +33,19 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.io.IOException;
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,12 +54,12 @@ import java.io.IOException;
  * @since : JAHIA 6.1
  *        Created : 27 oct. 2009
  */
-public class OptionTag extends BodyTagSupport {
-    private transient static Logger logger = Logger.getLogger(OptionTag.class);
+public class AddResourcesTag extends BodyTagSupport {
+    private transient static Logger logger = Logger.getLogger(AddResourcesTag.class);
     private String nodetype;
     private JCRNodeWrapper node;
-    private String template;
-
+    private String type;
+    private String resources;
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -70,32 +73,42 @@ public class OptionTag extends BodyTagSupport {
             // Todo test if module is active
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
                                                                                    PageContext.REQUEST_SCOPE);
-            Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
-                                                                           PageContext.REQUEST_SCOPE);
-            if (node.isNodeType(nodetype)) {
-                final ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
-                if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
-                    currentResource.removeOption(mixinNodeType);
+            ExtendedNodeType extendedNodeType = null;
+            if (nodetype != null) {
+                extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
+            } else if (node != null) {
+                extendedNodeType = node.getPrimaryNodeType();
+            }
+            if (extendedNodeType != null) {
+                final List<JahiaTemplatesPackage> aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                        extendedNodeType.getAlias().replace(":", "_"));
+                if (aPackage != null && aPackage.size()>0) {
+                    for (JahiaTemplatesPackage templatesPackage : aPackage) {
+                        String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());
+                        addResources(renderContext, templatesPackage, path, type, resources);
+                    }
                 }
-                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
-                wrappedResource.setWrappedMixinType(mixinNodeType);
-                final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
-                pageContext.getOut().write(script.execute());
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
-        } catch (TemplateNotFoundException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
-        } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new JspException(e);
         }
         nodetype = null;
         node = null;
-        template = null;
         return super.doEndTag();
+    }
+
+    private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String path, String type,
+                              String resources) {
+
+        String[] strings = resources.split(",");
+        for (String resource : strings) {
+            File f = new File(path + "/" + type+"/"+resource);
+            if(f.exists()) {
+                renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+            }
+        }
+
     }
 
     public void setNodetype(String nodetype) {
@@ -106,7 +119,11 @@ public class OptionTag extends BodyTagSupport {
         this.node = node;
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setResources(String resources) {
+        this.resources = resources;
     }
 }

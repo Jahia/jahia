@@ -1904,4 +1904,35 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Add some resources to the head tag of the html.
+        </description>
+        <name>addResources</name>
+        <tag-class>org.jahia.taglibs.template.include.AddResourcesTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Node to include in the page</description>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Nodetype of the option to include in the page</description>
+            <name>nodetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript)</description>
+            <name>type</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The list of resources they will be included in the define order</description>
+            <name>resources</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

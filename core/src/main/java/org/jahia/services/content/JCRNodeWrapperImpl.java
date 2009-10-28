@@ -2101,7 +2101,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return epd;
             }
         }
-        throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " ( " + getPrimaryNodeTypeName() + ")");
+        throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
     }
 
 

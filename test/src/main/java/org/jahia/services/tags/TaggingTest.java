@@ -33,6 +33,7 @@ package org.jahia.services.tags;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
@@ -83,8 +84,12 @@ public class TaggingTest extends TestCase {
 				                + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
 				while (nodeIterator.hasNext()) {
 					Node node = nodeIterator.nextNode();
-					session.checkout(node);
-					node.remove();
+					try {
+						session.checkout(node);
+						node.remove();
+					} catch (PathNotFoundException e) {
+						// ignore -> it is a bug in Jackrabbit that produces duplicate results
+					}
 				}
 				session.save();
 				return null;

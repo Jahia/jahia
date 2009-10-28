@@ -45,6 +45,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.util.ReaderInputStream;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -57,9 +58,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.File;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 import java.math.BigDecimal;
@@ -103,6 +102,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     private StringBuffer buffer = new StringBuffer();
 
     private Map<String, String> parameters = new HashMap<String, String>();
+
+    private String importString;
 
     public void setPath(String path) {
         this.path = path;
@@ -150,6 +151,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public void setImportString(String importString) {
+        this.importString = importString;
     }
 
     @Override
@@ -205,6 +210,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                        } else if (!path.equals("*") && renderContext.isEditMode() && autoCreateType != null) {
 	                            node = nodeWrapper.addNode(path, autoCreateType);
 	                            nodeWrapper.save();
+	                        } else if (!path.equals("*") && renderContext.isEditMode() && importString != null) {
+                                Session session = nodeWrapper.getSession();
+                                session.importXML(nodeWrapper.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                session.save();
+                                node = (JCRNodeWrapper) nodeWrapper.getNode(path);
 	                        } else {
 	                            currentResource.getMissingResources().add(path);
 
@@ -222,6 +232,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                     JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
                                     node = parent.addNode(StringUtils.substringAfterLast(path,"/"), autoCreateType);
                                     session.save();
+                                } else if (renderContext.isEditMode() && importString != null) {
+                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
+                                    session.importXML(parent.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                    session.save();
+                                    node = (JCRNodeWrapper) session.getItem(path);
                                 } else {
                                     String currentPath = currentResource.getNode().getPath();
                                     if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
@@ -357,6 +372,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             autoCreateType = null;
             var = null;
             buffer = null;
+            importString = null;
             parameters.clear();
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);

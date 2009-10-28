@@ -35,12 +35,12 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <div id="bodywrapper">
-    <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home" />
+    <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
     <div id="contentArea">
         <div id="toplinks">
 
             <div id="languages">
-                    <%--<ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>--%>
+                <%--<ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>--%>
             </div>
 
             <div id="topshortcuts">
@@ -61,7 +61,8 @@
                             <a href="${url.edit}"><fmt:message key="edit"/></a>
                         </li>
                     </c:if>
-                    <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#" onclick="javascript:window.print()">
+                    <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
+                                                      onclick="javascript:window.print()">
                         <fmt:message key="web_templates.print"/></a>
                     </li>
                     <li class="topshortcuts-typoincrease">
@@ -86,13 +87,18 @@
         <div id="page">
             <div id="pageHeader">
                 <div id="logotop">
-                        <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
+                    <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
                     <template:module path="${rootPage.path}/logo"/>
                 </div>
                 <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
 
 
-                <template:module path="${rootPage.path}/topMenu" template="topMenu" autoCreateType="jnt:navBar"/>
+                <template:module path="${rootPage.path}/topMenu" >
+                    <template:import>
+                        <topMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
+                                    jcr:primaryType='jnt:navBar' j:maxDepth='1' j:nodename='jnt_navBar' j:startLevel='0'/>
+                    </template:import>
+                </template:module>
             </div>
 
             ${wrappedContent}
@@ -101,9 +107,9 @@
                 <c:if test="${ !empty param.footerNav}">
                     <div id="footerPart1"><!--start footerPart1-->
                         <div class="columns5">
-                        <jcr:node var="bottomLinks" path="${rootPage.path}/bottomLinks"/>
-                        <template:module node="${bottomLinks}"/>
-                        <div class="clear"> </div>
+                            <jcr:node var="bottomLinks" path="${rootPage.path}/bottomLinks"/>
+                            <template:module node="${bottomLinks}"/>
+                            <div class="clear"></div>
                         </div>
                     </div>
                 </c:if>
@@ -111,7 +117,7 @@
                 <!--start footerPart2-->
                 <div id="footerPart2"><!--start footerPart2content-->
                     <div id="footerPart2content"></div>
-                    <div class="clear"> </div>
+                    <div class="clear"></div>
                 </div>
                 <!--stop footerPart2-->
                 <!--start footerPart3-->
@@ -124,33 +130,38 @@
                                 <jcr:node var="logoFooter" path="${rootPage.path}/logoFooter"/>
                                 <template:module node="${logoFooter}"/>
                             </div>
-                            <div class="clear"> </div>
+                            <div class="clear"></div>
                         </div>
                         <!--stop column-item -->
                         <!--start column-item -->
                         <div class="column-item2">
                             <div class="spacer"><!--start bottomshortcuts-->
                                 <div id="bottomshortcuts">
-                                </div><!--stop bottomshortcuts-->
-                <div class="clear"> </div>
+                                </div>
+                                <!--stop bottomshortcuts-->
+                                <div class="clear"></div>
                                 <!--start copyright-->
                                 <div id="copyright">
                                     <p>
                                         <jcr:node var="footer" path="${rootPage.path}/footerContainerList"/>
                                         <template:module node="${footer}"/>
                                     </p>
-                                </div><!--stop copyright-->
+                                </div>
+                                <!--stop copyright-->
                             </div>
-                            <div class="clear"> </div>
-                        </div><!--stop column-item -->
+                            <div class="clear"></div>
+                        </div>
+                        <!--stop column-item -->
 
-                        <div class="clear"> </div>
-                    </div><!--stop 2 columns -->
+                        <div class="clear"></div>
+                    </div>
+                    <!--stop 2 columns -->
 
-                    <div class="clear"> </div>
-                </div><!--stop footerPart3-->
+                    <div class="clear"></div>
+                </div>
+                <!--stop footerPart3-->
 
-                <div class="clear"> </div>
+                <div class="clear"></div>
             </div>
 
             <div class="clear"></div>

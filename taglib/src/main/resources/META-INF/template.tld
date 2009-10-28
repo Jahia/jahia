@@ -502,6 +502,13 @@
         </attribute>
     </tag>
     <tag>
+        <description>Import XML into parent module if no node exists
+        </description>
+        <name>import</name>
+        <tag-class>org.jahia.taglibs.template.include.ImportTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    <tag>
         <description>
             Used to call the overriden JSP from the parent set. Does nothing, if it is not found.
         </description>

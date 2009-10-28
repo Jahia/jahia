@@ -11,7 +11,7 @@
     <c:set var="page" value="${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}" />
 </c:if>
 
-<jcr:navigationMenu node="${page}" var="menu" kind="sideMenu" />
+<jcr:navigationMenu node="${page}" var="menu" startLevel="${currentNode.properties['j:startLevel'].long}" maxDepth="${currentNode.properties['j:maxDepth'].long}" />
 <c:if test="${not empty menu}">
     <div id="navigationN2">
 

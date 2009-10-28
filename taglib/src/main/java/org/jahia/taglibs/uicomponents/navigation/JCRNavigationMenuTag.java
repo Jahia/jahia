@@ -182,12 +182,17 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         }
 
         boolean begin = true;
-        final NodeIterator iterator = JCRTagUtils.getNodes(startNode, "jnt:page");
+//        final NodeIterator iterator = JCRTagUtils.getNodes(startNode, "jnt:page");
+        final NodeIterator iterator = startNode.getNodes();
+
         // if the list empty, add a navMenuItem for the action menu
         if (maxDepth == -1 || level <= startLevel + maxDepth) {
             int itemCount = 0;
             while (iterator.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
+                if (!nodeWrapper.isNodeType("jnt:page")) {
+                    continue;
+                }
                 NavMenuItemBean navMenuItemBean = new NavMenuItemBean();
                 navMenuItemBean.setNode(nodeWrapper);
                 navMenuItemBean.setParentItem(parentItem);
@@ -213,7 +218,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                     final String[] pathElement = path.split("/");
                     final String[] currentPathElement = currentPath.split("/");
                     try {
-                        isInPath = pathElement[startLevel - 1].equals(currentPathElement[startLevel - 1]);
+                        isInPath = startLevel == 0 || pathElement[startLevel - 1].equals(currentPathElement[startLevel - 1]);
 
                         if (isInPath) {
                             if (currentPath.equals(path)) {
@@ -354,22 +359,6 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
             NavMenuItemBean that = (NavMenuItemBean) o;
 
-            if (firstInLevel != that.firstInLevel) {
-                return false;
-            }
-            if (inPath != that.inPath) {
-                return false;
-            }
-            if (lastInLevel != that.lastInLevel) {
-                return false;
-            }
-            if (level != that.level) {
-                return false;
-            }
-            if (selected != that.selected) {
-                return false;
-            }
-
             try {
                 return getNode().getIdentifier().equals(that.getNode().getIdentifier());
             } catch (RepositoryException e) {
@@ -379,18 +368,11 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
         @Override
         public int hashCode() {
-            int result = 0;
             try {
-                result = getNode().getProperty("jcr:title").getString() != null ? getNode().getProperty("jcr:title").getString().hashCode() : 0;
+                return node.getIdentifier().hashCode();
             } catch (RepositoryException e) {
-                logger.error(e);
+                return 0;
             }
-            result = 31 * result + level;
-            result = 31 * result + (firstInLevel ? 1 : 0);
-            result = 31 * result + (lastInLevel ? 1 : 0);
-            result = 31 * result + (inPath ? 1 : 0);
-            result = 31 * result + (selected ? 1 : 0);
-            return result;
         }
 
         public int compareTo(NavMenuItemBean navMenuB) throws ClassCastException {

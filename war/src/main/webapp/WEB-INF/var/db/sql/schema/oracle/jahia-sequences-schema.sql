@@ -15,7 +15,7 @@ create sequence seq_fields_data start with 1 increment by 20;
 drop sequence seq_fields_def;
 create sequence seq_fields_def start with 1 increment by 20;
 drop sequence seq_grps;
-create sequence seq_grps start with 1 increment by 20;
+create sequence seq_grps start with 2 increment by 20;
 drop sequence seq_link;
 create sequence seq_link start with 1 increment by 20;
 drop sequence seq_nstep_workflow;

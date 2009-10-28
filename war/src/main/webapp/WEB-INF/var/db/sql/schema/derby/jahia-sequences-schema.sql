@@ -24,7 +24,7 @@ create table seq_fields_def ( next_val bigint );
 insert into seq_fields_def values ( 1 );
 drop table seq_grps;
 create table seq_grps ( next_val bigint );
-insert into seq_grps values ( 1 );
+insert into seq_grps values ( 2 );
 drop table seq_link;
 create table seq_link ( next_val bigint );
 insert into seq_link values ( 1 );

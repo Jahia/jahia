@@ -7,9 +7,8 @@
 <c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
 <c:if test="${empty requestScope['org.jahia.javascript.includes.jQuery']}">
 	<c:set var="org.jahia.javascript.includes.jQuery" value="true" scope="request"/>
-    <template:addResources type="javascript" resources="jQuery.js" nodetype="jmix:tagged"/>
-    <script type="text/javascript">
-        jQuery.noConflict();
+    <template:addResources type="javascript" resources="jquery.min.js" nodetype="jmix:tagged"/>
+    <script type="text/javascript">        
         function addNewTag(tagForm, uuid, separator) {
         	//jahia-tags-${currentNode.identifier}
         	var newTag = tagForm.elements['j:newTag'];

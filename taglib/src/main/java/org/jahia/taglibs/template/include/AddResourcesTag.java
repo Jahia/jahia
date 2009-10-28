@@ -46,6 +46,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +61,7 @@ public class AddResourcesTag extends BodyTagSupport {
     private JCRNodeWrapper node;
     private String type;
     private String resources;
+
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -82,7 +84,7 @@ public class AddResourcesTag extends BodyTagSupport {
             if (extendedNodeType != null) {
                 final List<JahiaTemplatesPackage> aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
                         extendedNodeType.getAlias().replace(":", "_"));
-                if (aPackage != null && aPackage.size()>0) {
+                if (aPackage != null && aPackage.size() > 0) {
                     for (JahiaTemplatesPackage templatesPackage : aPackage) {
                         String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());
                         addResources(renderContext, templatesPackage, path, type, resources);
@@ -100,12 +102,22 @@ public class AddResourcesTag extends BodyTagSupport {
 
     private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String path, String type,
                               String resources) {
-
+        final Set<String> links = renderContext.getExternalLinks(type);
         String[] strings = resources.split(",");
         for (String resource : strings) {
-            File f = new File(path + "/" + type+"/"+resource);
-            if(f.exists()) {
-                renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+            File f = new File(path + "/" + type + "/" + resource);
+            if (f.exists()) {
+                boolean found = false;
+                if (links != null) {
+                    for (String link : links) {
+                        if (link.endsWith(f.getName())) {
+                            found = true;
+                        }
+                    }
+                }
+                if (!found) {
+                    renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+                }
             }
         }
 

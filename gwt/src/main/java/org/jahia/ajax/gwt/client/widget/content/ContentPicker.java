@@ -71,21 +71,21 @@ public class ContentPicker extends TriPanelBrowserLayout {
         }
 
         // construction of the UI components
-        TopBar toolbar = new ContentToolbar(config, linker) ;
-        TopRightComponent filepicker = new ContentPickerContainer(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
+        TopBar contentToolbar = new ContentToolbar(config, linker) ;
+        TopRightComponent contentPicker = new ContentPickerContainer(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
 
-        
+
 
         // setup widgets in layout
         initWidgets(null,
-                    filepicker.getComponent(),
+                    contentPicker.getComponent(),
                     null,
-                    toolbar.getComponent(),
+                    null,
                     null);
 
         // linker initializations
-        linker.registerComponents(null, filepicker, null, toolbar, null) ;
-        filepicker.initContextMenu();
+        linker.registerComponents(null, contentPicker, null, contentToolbar, null) ;
+        contentPicker.initContextMenu();
         linker.handleNewSelection();
     }
 

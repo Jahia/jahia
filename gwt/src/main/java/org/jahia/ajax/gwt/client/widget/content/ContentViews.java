@@ -94,7 +94,7 @@ public class ContentViews extends TopRightComponent {
         m_component.setBodyBorder(false);
         searchField = new SearchField(Messages.getResource("fm_search") + ": ", true) {
             public void onFieldValidation(String value) {
-                ((FolderTree) getLinker().getLeftObject()).deselectOnFreeSearch();
+                ((ContentRepositoryTabs) getLinker().getLeftObject()).deselectOnFreeSearch();
                 setSearchContent(value);
             }
 
@@ -208,7 +208,7 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void saveSearch(GWTJahiaNode query) {
-        ((FolderTree) getLinker().getLeftObject()).addSavedSearch(query, true);
+        ((ContentRepositoryTabs) getLinker().getLeftObject()).addSavedSearch(query, true);
         searchField.clear();
         searchResults = null;
     }

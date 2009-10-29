@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
@@ -52,7 +51,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
@@ -69,7 +67,7 @@ public class RepositoryTab extends ContentPanel {
     private String repositoryType;
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
-    private FolderTree folderTreeContainer;
+    private ContentRepositoryTabs folderTreeContainer;
     private CustomTreePanel m_tree;
     private JahiaContentManagementServiceAsync contentManagementService;
 
@@ -82,7 +80,7 @@ public class RepositoryTab extends ContentPanel {
      * @param label     the repository label
      * @param config    the configuration to use
      */
-    public RepositoryTab(FolderTree container, final JahiaContentManagementServiceAsync service, String type, String label, final ManagerConfiguration config) {
+    public RepositoryTab(ContentRepositoryTabs container, final JahiaContentManagementServiceAsync service, String type, String label, final ManagerConfiguration config) {
         super(new FitLayout());
         setBorders(false);
         setBodyBorder(false);
@@ -391,10 +389,6 @@ public class RepositoryTab extends ContentPanel {
                 if (child.isExpandOnLoad()) {
                     setExpanded(child, true);
                     addToOpenPaths(child);
-                    // ToDo : restore select state
-                   /* if (child.isSelectedOnLoad()) {
-                        getSelectionModel().select(child, true);
-                    }*/
                 }
             }
         }

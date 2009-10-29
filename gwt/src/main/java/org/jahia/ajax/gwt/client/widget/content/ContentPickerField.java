@@ -40,7 +40,9 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     private String types;
     private String filters;
     private String mimeTypes;
-    private String configuration ;
+    private String configuration;
     private boolean multiple;
     private boolean allowThumbs;
 
@@ -85,7 +87,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         this.types = types;
         this.filters = filters;
         this.mimeTypes = mimeTypes;
-        this.configuration = config ;
+        this.configuration = config;
         this.multiple = multiple;
         this.allowThumbs = allowThumbs;
         setValue(new ArrayList<GWTJahiaNode>());
@@ -105,24 +107,30 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         w.setSize(800, 600);
         w.setResizable(true);
         w.setMaximizable(true);
-        ButtonBar bar = new ButtonBar();
-        Button ok = new Button("OK", new SelectionListener<ButtonEvent>() {
+        w.setBodyBorder(false);
+
+        final ButtonBar bar = new ButtonBar();
+        bar.setAlignment(Style.HorizontalAlignment.RIGHT);
+
+        final Button ok = new Button(Messages.getResource("fm_save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
                 setValue(selection);
-//                if (selection != null && selection.size() > 0) {
-//                    StringBuilder conCat = new StringBuilder(selection.get(0).getUUID());
-////                    for (int i = 1; i < selection.size(); i++) {
-////                        conCat.append(", ").append(selection.get(i).getPath());
-////                    }
-//                    setRawValue(conCat.toString());
-//                }
                 w.hide();
             }
         });
         bar.add(ok);
-        w.setTopComponent(bar);
+
+        final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                w.hide();
+            }
+        });
+        cancel.setIconStyle("gwt-icons-cancel");
+
+        bar.add(cancel);
         w.add(contentPicker);
+        w.setBottomComponent(bar);
         w.show();
     }
 

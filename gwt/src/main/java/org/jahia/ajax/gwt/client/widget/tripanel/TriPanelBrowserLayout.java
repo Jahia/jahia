@@ -55,13 +55,13 @@ public class TriPanelBrowserLayout extends ContentPanel {
     protected BorderLayoutData northData = new BorderLayoutData(Style.LayoutRegion.CENTER);
     protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 200);
 
-    protected TriPanelBrowserLayout() {
+    public TriPanelBrowserLayout() {
         super(new FitLayout());
         setHeaderVisible(false);
         linker = new ManagerLinker() ;
     }
 
-    protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
+    public void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
         if (topToolbar != null) {
             setTopComponent(topToolbar);
         }

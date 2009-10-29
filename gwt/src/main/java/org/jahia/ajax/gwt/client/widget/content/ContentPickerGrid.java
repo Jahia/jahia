@@ -34,26 +34,24 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,14 +63,17 @@ import java.util.List;
  * Time: 9:58:29 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ContentPickerGrid extends TabPanel {
-    private TabItem m_component = new TabItem("Selected");
-    private ListStore<GWTJahiaNode> store;
-    private Grid<GWTJahiaNode> grid;
+public class ContentPickerGrid extends LayoutContainer {
+    private TabPanel m_component;
+    private GroupingStore<GWTJahiaNode> store;
+    private Grid<GWTJahiaNode> m_grid;
+    private ThumbsListView m_thumbsListView;
     private ManagerConfiguration config;
-    private boolean readOnly= false;
+    private boolean readOnly = false;
     private boolean multiple;
     private List<GWTJahiaNode> selectedNodes;
+    private String emtypSelectionMessage = "No selected image";
+    private String selectionHeaderMessage = "Image selected: ";
 
     public ContentPickerGrid(List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
         this.config = config;
@@ -80,6 +81,149 @@ public class ContentPickerGrid extends TabPanel {
         this.multiple = multiple;
         createUI();
     }
+
+
+    /**
+     * Create UI
+     */
+    private void createUI() {
+        setLayout(new FillLayout());
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig column = new ColumnConfig();
+        column.setId("preview");
+        column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+                return "<img heigth='16px' width='16px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+            }
+        });
+        column.setHeader(Messages.getResource("displayName"));
+        configs.add(column);
+
+        //name
+        column = new ColumnConfig();
+        column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+
+                String html = "<div class=\"details\"> \n" +
+                        "      <b> Name:</b> \n" +
+                        "      <span>" + gwtJahiaNode.getName() + "</span>\n" +
+                        "      <b>Alt:</b> \n" +
+                        "      <span>" + gwtJahiaNode.getName() + "</span>\n" +
+                        "      <br/> <b>Path:</b> \n" +
+                        "      <span>" + gwtJahiaNode.getPath() + "</span></div> \n" +
+                        "      </div>";
+                return html;
+            }
+        });
+        column.setId("name");
+        column.setHeader(Messages.getResource("name"));
+        configs.add(column);
+
+        // displaName
+        column = new ColumnConfig();
+        column.setId("displayName");
+        column.setHidden(true);
+        column.setHeader(Messages.getResource("displayName"));
+        configs.add(column);
+
+        // path
+        column = new ColumnConfig();
+        column.setId("path");
+        column.setHeader(Messages.getResource("path"));
+        configs.add(column);
+
+        // remvove
+        column = new ColumnConfig();
+        column.setAlignment(Style.HorizontalAlignment.RIGHT);
+        column.setId("remove");
+        column.setHeader("");
+        column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+                final Button pickContentButton = new Button(Messages.getResource("fm_remove"));
+                pickContentButton.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                pickContentButton.setIconStyle("gwt-icons-delete");
+                pickContentButton.setBorders(false);
+                pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent buttonEvent) {
+                        store.remove(gwtJahiaNode);
+                    }
+                });
+                return pickContentButton;
+            }
+        });
+        configs.add(column);
+
+        // list loader
+        store = new GroupingStore<GWTJahiaNode>();
+        store.add(selectedNodes);
+        store.setModelComparer(new ModelComparer<GWTJahiaNode>() {
+            public boolean equals(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
+                String path = gwtJahiaNode.getPath();
+                String path2 = gwtJahiaNode1.getPath();
+                if (path == null && path2 == null) {
+                    return true;
+                } else if (path == null) {
+                    return false;
+                }
+                return path.equalsIgnoreCase(path2);
+            }
+        });
+        final ColumnModel columnModel = new ColumnModel(configs);
+        store.sort("name", Style.SortDir.ASC);
+        store.groupBy("path");
+
+        // grid
+        m_grid = new Grid<GWTJahiaNode>(store, columnModel);
+
+        m_grid.setHideHeaders(true);
+        m_grid.setBorders(true);
+
+
+        // Grouping view
+        GroupingView view = new GroupingView();
+        view.setShowGroupedColumn(false);
+        view.setForceFit(true);
+
+        view.setEmptyText(emtypSelectionMessage);
+        view.setGroupRenderer(new GridGroupRenderer() {
+            public String render(GroupColumnData data) {
+                return selectionHeaderMessage + ((GWTJahiaNode) data.models.get(0)).getPath();
+            }
+        });
+        m_grid.setView(view);
+
+        m_thumbsListView = new ThumbsListView();
+        m_thumbsListView.setStore(store);
+        m_thumbsListView.setTemplate(getThumbsListTemplate());
+        m_thumbsListView.setItemSelector("div.thumb-wrap");
+        m_thumbsListView.setOverStyle("x-view-over");
+
+        m_component = new TabPanel();
+        final TabItem item = new TabItem("Selection");
+        item.setLayout(new FillLayout());
+        item.add(m_grid);
+
+        final TabItem itemPreview = new TabItem("Preview");
+        itemPreview.setLayout(new FitLayout());
+
+        //itemPreview.add(m_thumbsListView);
+
+        m_component.add(item);
+        ContentPanel previewPanel = new ContentPanel(new FitLayout());
+        previewPanel.setHeaderVisible(false);
+        previewPanel.setScrollMode(Style.Scroll.AUTO);
+        previewPanel.setId("images-view");
+        previewPanel.setBorders(true);
+        previewPanel.setBodyBorder(false);
+        previewPanel.add(m_thumbsListView);
+        itemPreview.add(previewPanel);
+        m_component.add(itemPreview);
+
+        add(m_component);
+
+    }
+
 
     /**
      * Set content
@@ -114,6 +258,11 @@ public class ContentPickerGrid extends TabPanel {
         return store.getModels();
     }
 
+    /**
+     * Set selected contains
+     *
+     * @param selection
+     */
     public void setSelection(final List<GWTJahiaNode> selection) {
         String[] nt = config.getNodeTypes().split(",");
         if (selection != null && selection.size() > 0) {
@@ -125,19 +274,17 @@ public class ContentPickerGrid extends TabPanel {
                 }
             }
             if (found) {
-            if (multiple) {
-                for (GWTJahiaNode n : selection) {
-                    if (!store.contains(n)) {
-                        store.add(n);
+                if (multiple) {
+                    for (GWTJahiaNode n : selection) {
+                        if (!store.contains(n)) {
+                            store.add(n);
+                        }
                     }
+                } else {
+                    store.removeAll();
+                    store.add(selection.get(0));
                 }
-            } else {
-                store.removeAll();
-                store.add(selection.get(0));
             }
-            }
-        } else {
-            Log.error("********************* false"+config.getNodeTypes());
         }
     }
 
@@ -154,93 +301,9 @@ public class ContentPickerGrid extends TabPanel {
      * @return
      */
     public Component getComponent() {
-        return m_component;
+        return m_grid;
     }
 
-    /**
-     * Create UI
-     */
-    private void createUI() {
-
-        setPlain(true);
-        setHeight(300);
-
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        //name
-        ColumnConfig column = new ColumnConfig();
-        column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                return "<input type=\"hidden\" name=\"content_id\" value=\"" + gwtJahiaNode.getUUID() + "\"/> " + gwtJahiaNode.getDisplayName();
-            }
-        });
-        column.setId("name");
-        column.setHeader(Messages.getResource("name"));
-        configs.add(column);
-
-        // displaName
-        column = new ColumnConfig();
-        column.setId("displayName");
-        column.setHidden(true);
-        column.setHeader(Messages.getResource("displayName"));
-        configs.add(column);
-
-        // path
-        column = new ColumnConfig();
-        column.setId("path");
-        column.setHeader(Messages.getResource("path"));
-        configs.add(column);
-
-        // path
-        column = new ColumnConfig();
-        column.setId("remove");
-        column.setHeader("");
-        column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                final Button pickContentButton = new Button();
-                pickContentButton.setIconStyle("gwt-icons-delete");
-                pickContentButton.setBorders(false);
-                pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        store.remove(gwtJahiaNode);
-                    }
-                });
-                return pickContentButton;
-            }
-        });
-        configs.add(column);
-
-
-        // list loader
-        store = new ListStore<GWTJahiaNode>();
-        store.add(selectedNodes);
-        store.setModelComparer(new ModelComparer<GWTJahiaNode>() {
-            public boolean equals(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
-                String path = gwtJahiaNode.getPath();
-                String path2 = gwtJahiaNode1.getPath();
-                if (path == null && path2 == null) {
-                    return true;
-                } else if (path == null) {
-                    return false;
-                }
-                return path.equalsIgnoreCase(path2);
-            }
-        });
-        ColumnModel columnModel = new ColumnModel(configs);
-        store.sort("name", Style.SortDir.ASC);
-
-        // main component
-        m_component.setLayout(new FitLayout());
-        m_component.setBorders(false);
-
-        // grid
-        grid = new Grid<GWTJahiaNode>(store, columnModel);
-        grid.setBorders(true);
-        grid.getView().setForceFit(true);
-
-        m_component.add(grid);
-        add(m_component);
-    }
 
     /**
      * Add categories to the UI
@@ -251,6 +314,11 @@ public class ContentPickerGrid extends TabPanel {
         if (readOnly) {
             return;
         }
+
+        if (!multiple) {
+            store.removeAll();
+        }
+
         if (gwtJahiaNodeList.size() > 0) {
             store.removeAll();
             store.add(gwtJahiaNodeList.get(0));
@@ -283,7 +351,7 @@ public class ContentPickerGrid extends TabPanel {
         m.add(menuItem);
         menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
-                GWTJahiaNode node = grid.getSelectionModel().getSelectedItem();
+                GWTJahiaNode node = m_grid.getSelectionModel().getSelectedItem();
                 if (node != null) {
                     MessageBox box = new MessageBox();
                     box.setButtons(MessageBox.OK);
@@ -300,8 +368,27 @@ public class ContentPickerGrid extends TabPanel {
                 }
             }
         });
-        grid.setContextMenu(m);
+        m_grid.setContextMenu(m);
     }
+
+    private class ThumbsListView extends ListView<GWTJahiaNode> {
+        @Override
+        protected GWTJahiaNode prepareData(GWTJahiaNode model) {
+            String s = model.getName();
+            model.set("shortName", Format.ellipse(s, 14));
+            return model;
+        }
+    }
+
+
+    public native String getThumbsListTemplate() /*-{
+          return ['<tpl for=".">',
+                '<div class="thumb-wrap" id="{name}">',
+                '<div class="thumb"><img src="{preview}" title="{name}"></div>',
+                '<span class="x-editable">{shortName}</span></div>',
+                '</tpl>',
+                '<div class="x-clear"></div>'].join("");
+    }-*/;
 
 }
 

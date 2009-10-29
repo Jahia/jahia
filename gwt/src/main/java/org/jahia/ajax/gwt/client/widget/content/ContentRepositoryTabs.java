@@ -65,7 +65,7 @@ import java.util.HashMap;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:08
  */
-public class FolderTree extends LeftComponent {
+public class ContentRepositoryTabs extends LeftComponent {
 
     // common declarations
     private ContentPanel m_component;
@@ -83,7 +83,7 @@ public class FolderTree extends LeftComponent {
      *
      * @param config the configuration to use (generated in ManagerConfigurationFactory)
      */
-    public FolderTree(ManagerConfiguration config) {
+    public ContentRepositoryTabs(ManagerConfiguration config) {
 
         for (String repoId : config.getAccordionPanels()) {
             repositories.add(new RepositoryTab(this, service, repoId, Messages.getResource("fm_repository_" + repoId), config));
@@ -97,7 +97,7 @@ public class FolderTree extends LeftComponent {
         searchPanel.setBorders(false);
         searchPanel.setScrollMode(Style.Scroll.NONE);
         searchPanel.setHeading(Messages.getResource("fm_repository_savedSearch"));
-        searchPanel.getHeader().setIconStyle("fm-savedSearch");
+        searchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
         searchPanel.getHeader().setBorders(false);
         queryList = new DataList();
         queryList.setBorders(false);

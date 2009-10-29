@@ -36,13 +36,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -58,169 +53,170 @@ import java.util.ArrayList;
  */
 public class ContentPickerContainer extends TopRightComponent {
 
-    private ContentPanel m_component ;
-    private ContentTreeTable m_treeTable ;
-    private ThumbView m_thumbs ;
-    private SearchTable m_search ;
-    private ContentPathBar pathBar ;
-    private ContentPickerGrid pickerGrid;
-    private TabPanel tabs ;
-    private TabItem treeTable ;
-    private TabItem search ;
-    private TabItem thumbs;
+    private ContentPanel m_component;
+    private ContentTreeTable m_treeTable;
+    private ThumbView m_thumbs;
+    private SearchTable m_search;
+    private ContentPickerGrid selectedContents;
+    private TabPanel tabs;
+    private TabItem treeTable;
+    private TabItem search;
 
     public ContentPickerContainer(String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
         m_treeTable = new ContentTreeTable(rootPath, selectedNodes, multiple, config);
-        m_search = new SearchTable(config) ;
-        m_thumbs = new ThumbView(config) ;
-        m_component = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL)) ;
+        m_search = new SearchTable(config);
+        m_thumbs = new ThumbView(config);
+        m_component = new ContentPanel(new BorderLayout());
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
 
-        pathBar = new ContentPathBar(selectedNodes, config, callback, allowThumbs) ;
 
+        // picker
+        selectedContents = new ContentPickerGrid(selectedNodes, multiple, config);
+        selectedContents.setHeight(300);
 
-        pickerGrid = new ContentPickerGrid(selectedNodes, multiple, config);
-
-        tabs = new TabPanel() ;
+        tabs = new TabPanel();
         tabs.setHeight(400);
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
-        treeTable = new TabItem(Messages.getResource("fm_browse")) ;
+        treeTable = new TabItem(Messages.getResource("fm_browse"));
         treeTable.setBorders(false);
-        search = new TabItem(Messages.getResource("fm_search")) ;
+        search = new TabItem(Messages.getResource("fm_search"));
         search.setBorders(false);
-        thumbs = new TabItem(Messages.getResource("fm_thumbs")) ;
-        thumbs.setBorders(false);
 
         treeTable.setLayout(new FitLayout());
-        treeTable.add(m_treeTable.getComponent()) ;
-        tabs.add(treeTable) ;
+        treeTable.add(m_treeTable.getComponent());
+        tabs.add(treeTable);
 
         search.setLayout(new FitLayout());
-        search.add(m_search.getComponent()) ;
-        tabs.add(search) ;
+        search.add(m_search.getComponent());
+        tabs.add(search);
 
-        thumbs.setLayout(new FitLayout());
-        thumbs.add(m_thumbs.getComponent()) ;
-        tabs.add(thumbs) ;
-
-        thumbs.addListener(Events.Select, new SelectionListener<TabPanelEvent>() {
-            public void componentSelected(TabPanelEvent componentEvent) {
-                if (m_treeTable.getSelection() != null) {
-                    List<GWTJahiaNode> selection = (List<GWTJahiaNode>) m_treeTable.getSelection() ;
-                    if (selection.size() > 0) {
-                        GWTJahiaNode selectedItem = selection.get(0) ;
-                        GWTJahiaNode parent = (GWTJahiaNode) selectedItem.getParent() ;
-                        if (selection.size() == 1) {
-                            if (selectedItem.isFile()) {
-                                if (parent != null) {
-                                    m_thumbs.setContent(parent);
-                                } else {
-                                    m_thumbs.clearTable();
-                                }
-                            } else {
-                                m_thumbs.setContent(selectedItem);
-                            }
-                        } else if (parent != null){
-                            m_thumbs.setContent(parent);
-                        } else {
-                            m_thumbs.clearTable();
-                        }
-                    } else {
-                        m_thumbs.clearTable();
-                    }
-                }
-            }
-        });
-
-        m_component.add(tabs,new RowData(1, -1, new Margins(0))) ;
-        if (multiple) {
-            m_component.add(pickerGrid,new RowData(1, 1, new Margins(0))) ;
-        } else {
-            m_component.setTopComponent(pathBar.getComponent());
-        }
+        m_component.add(tabs, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        m_component.add(selectedContents, new BorderLayoutData(Style.LayoutRegion.SOUTH, 200));
         m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
 
-    public boolean isAllowThumbs() {
-        return pathBar.isAllowThumbs() ;
-    }
 
+    /**
+     * Handle new Selection
+     */
     public void handleNewSelection() {
-        pathBar.handleNewSelection(null, getSelection());
-
-        // TO Do: getSelection should alwas return a list of GWTJahiaNode
-        pickerGrid.setSelection((List<GWTJahiaNode>)getSelection());
+        // TODo: getSelection should alwas return a list of GWTJahiaNode
+        selectedContents.setSelection((List<GWTJahiaNode>) getSelection());
     }
 
+
+    /**
+     * Handle new selction
+     *
+     * @param selection
+     */
     public void handleNewSelection(GWTJahiaNode selection) {
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
         l.add(selection);
-        pathBar.handleNewSelection(null, l);
 
-        // TO Do: getSelection should alwas return a list of GWTJahiaNode
-        pickerGrid.setSelection(l);
+        // TODo: getSelection should alwas return a list of GWTJahiaNode
+        selectedContents.setSelection(l);
     }
 
+    /**
+     * Get selected node
+     *
+     * @return
+     */
     public List<GWTJahiaNode> getSelectedNodes() {
-        return pickerGrid.getSelection();
+        return selectedContents.getSelection();
     }
 
+    /**
+     * init with linker
+     *
+     * @param linker the linker
+     */
     public void initWithLinker(ManagerLinker linker) {
         m_treeTable.initWithLinker(linker);
         m_search.initWithLinker(linker);
         m_thumbs.initWithLinker(linker);
-        pathBar.initWithLinker(linker);
     }
 
+    /**
+     * init contextMenu
+     */
     public void initContextMenu() {
         m_treeTable.initContextMenu();
     }
 
+    /**
+     * Set selected content
+     *
+     * @param root
+     */
     public void setContent(Object root) {
-        pickerGrid.setContent(root);
+        selectedContents.setContent(root);
     }
 
+    /**
+     * Clear
+     */
     public void clearTable() {
         m_treeTable.clearTable();
         m_search.clearTable();
-        m_thumbs.clearTable();
+       // m_thumbs.clearTable();
     }
 
+    /**
+     * Get selection
+     *
+     * @return
+     */
     public Object getSelection() {
         if (tabs.getSelectedItem() == treeTable) {
             return m_treeTable.getSelection();
-        } else if (tabs.getSelectedItem() == search){
+        } else if (tabs.getSelectedItem() == search) {
             return m_search.getSelection();
-        } else if (tabs.getSelectedItem() == thumbs) {
-            return m_thumbs.getSelection() ;
         }
-        return null ;
+        return null;
     }
 
+    /**
+     * Refresh
+     */
     public void refresh() {
         m_treeTable.refresh();
         m_search.refresh();
-        m_thumbs.refresh();
+        //m_thumbs.refresh();
     }
 
+    /**
+     * Get main component
+     *
+     * @return
+     */
     public Component getComponent() {
-        return m_component ;
+        return m_component;
     }
 
+    /**
+     * Set selcetd path after data update
+     *
+     * @param path
+     */
     public void setSelectPathAfterDataUpdate(String path) {
         m_treeTable.setSelectPathAfterDataUpdate(path);
     }
 
+    /**
+     * Clear selection
+     */
     public void clearSelection() {
         if (tabs.getSelectedItem() == treeTable) {
             m_treeTable.clearSelection();
-        } else if (tabs.getSelectedItem() == search){
+        } else if (tabs.getSelectedItem() == search) {
             m_search.clearSelection();
-        } else if (tabs.getSelectedItem() == thumbs) {
-            m_thumbs.clearSelection();
         }
     }
+
+
 }

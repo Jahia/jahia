@@ -63,9 +63,9 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,11 +79,10 @@ public class ContentTreeTable extends TopRightComponent {
     private ManagerConfiguration configuration;
 
     protected ContentPanel m_component;
+    protected ActionToolbarLayoutContainer toolbars;
     protected TreeLoader<GWTJahiaNode> loader;
-    protected TreeGrid<GWTJahiaNode> m_treeTable;
+    protected TreeGrid<GWTJahiaNode> m_treeGrid;
     protected TreeTableStore<GWTJahiaNode> store;
-    //    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
-    //    private Listener<TreeEvent> tempListener = null ;
     protected TreeGridSelectionModel<GWTJahiaNode> selectionModel;
     private String rootPath;
 
@@ -91,7 +90,49 @@ public class ContentTreeTable extends TopRightComponent {
 
     protected String selectPathAfterUpload = null;
 
-    protected TreeLoader<GWTJahiaNode> getTreeLoader(final List<GWTJahiaNode> selectedNodes) {
+
+    /**
+     * Content tree table
+     *
+     * @param rootPath
+     * @param selectedNodes
+     * @param multiple
+     * @param configuration
+     */
+    public ContentTreeTable(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
+        this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
+        this.configuration = configuration;
+
+        m_component = new ContentPanel(new FitLayout());
+        m_component.setHeaderVisible(false);
+        m_component.setBorders(false);
+        m_component.setBodyBorder(false);
+
+        // add toolbar
+        toolbars = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
+        toolbars.init();
+        m_component.setTopComponent(toolbars);
+
+        // create loader
+        loader = createTreeLoader();
+
+        // tree store
+        store = new TreeTableStore<GWTJahiaNode>(loader);
+
+        m_treeGrid = new TreeGrid<GWTJahiaNode>(store, getHeaders());
+        m_treeGrid.getTreeView().setRowHeight(25);
+        //m_treeGrid.getTreeView().setForceFit(true);
+        m_treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
+        m_treeGrid.setBorders(false);
+        m_component.add(m_treeGrid);
+    }
+
+    /**
+     * Create tree loader
+     *
+     * @return
+     */
+    private TreeLoader<GWTJahiaNode> createTreeLoader() {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
@@ -106,67 +147,30 @@ public class ContentTreeTable extends TopRightComponent {
                     }
                     init = false;
                 } else {
-                    service.ls(JCRClientUtils.GLOBAL_REPOSITORY,(GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
+                    service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
                 }
             }
         };
 
-        // tree loader
-        return new CustomTreeLoader<GWTJahiaNode>(proxy) {
+
+        TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
                 return parent.hasChildren();
             }
 
-            protected void expandPreviousPaths() {
-                expandAllPreviousPaths(selectedNodes);
+            public void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
+                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
+                if (init) {
+                    Log.debug("setting init to false");
+                    init = false;
+                }
             }
-
-
         };
+
+        return loader;
     }
 
-    public ContentTreeTable(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration config) {
-        this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
-        m_component = new ContentPanel(new FitLayout());
-        m_component.setHeaderVisible(false);
-        m_component.setBorders(false);
-        m_component.setBodyBorder(false);
-        loader = getTreeLoader(selectedNodes);
-
-        // tree store
-        store = new TreeTableStore<GWTJahiaNode>(loader);
-
-        configuration = config;
-
-        String columns = null;
-        if (config.getTableColumns().size() > 0) {
-            StringBuilder cols = new StringBuilder(config.getTableColumns().get(0));
-            for (int i = 1; i < config.getTableColumns().size(); i++) {
-                cols.append(",").append(config.getTableColumns().get(i));
-            }
-            if (multiple) {
-                cols.append(",picker");
-            }
-            columns = cols.toString();
-        }
-
-        m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
-        m_treeTable.setIconProvider(ContentModelIconProvider.getInstance());
-        m_treeTable.setBorders(false);
-        if (!multiple) {
-            m_treeTable.setSelectionModel(new SM());
-        }
-        m_component.add(m_treeTable);
-    }
-
-    protected void expandAllPreviousPaths(List<GWTJahiaNode> selectedNodes) {
-//        if (previousPathsOpener == null) {
-//            previousPathsOpener = new PreviousPathsOpener<GWTJahiaNode>(m_treeTable, store, binder) ;
-//        }
-//        previousPathsOpener.expandPreviousPaths();
-//        selectPath(path);
-    }
 
     public void setSelectPathAfterDataUpdate(String path) {
         if (path != null) {
@@ -177,45 +181,14 @@ public class ContentTreeTable extends TopRightComponent {
         selectPathAfterUpload = path;
     }
 
-    private void selectPath(String path) {
-//        if (path != null && path.length() > 0) {
-//            Log.debug("selecting path : " + path) ;
-//            String[] pathToSelection = path.split("/") ;
-//            GWTJahiaNode item = store.getRootItems().get(0) ;
-//            boolean selected = false ;
-//            StringBuilder itemNameBuf = new StringBuilder() ;
-//            for (int j=0; j<pathToSelection.length && !selected; j++) {
-//                itemNameBuf.append(pathToSelection[j]) ;
-//                if (j < pathToSelection.length-1) {
-//                    itemNameBuf.append("/") ;
-//                }
-//                Log.debug("searching for path component : " + itemNameBuf.toString()) ;
-//                List<TreeItem> subItems = item.getItems() ;
-//                for (int i=0; i<subItems.size(); i++) {
-//                    TreeItem subItem = subItems.get(i) ;
-//                    String soughtPath = (String) subItem.getModel().get("path") ;
-//                    Log.debug(i + ") checking " + soughtPath + " against " + itemNameBuf.toString()) ;
-//                    if (itemNameBuf.toString().contains(soughtPath)) {
-//                        if (j == pathToSelection.length-1) {
-//                            Log.debug("setting selection : " + subItem.getText()) ;
-//                            m_treeTable.setSelectedItem(subItem);
-//                            selected = true ;
-//                        }
-//                        item = subItem ;
-//                        break ;
-//                    }
-//                }
-//            }
-//        }
-    }
-
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
+        toolbars.initWithLinker(linker);
 //        loader.load();
     }
 
     public void initContextMenu() {
-        m_treeTable.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
+        m_treeGrid.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
     }
 
     public void setContent(Object root) {
@@ -226,7 +199,7 @@ public class ContentTreeTable extends TopRightComponent {
     }
 
     public Object getSelection() {
-        List<GWTJahiaNode> elts = m_treeTable.getSelectionModel().getSelection();
+        List<GWTJahiaNode> elts = m_treeGrid.getSelectionModel().getSelection();
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {
@@ -235,67 +208,8 @@ public class ContentTreeTable extends TopRightComponent {
     }
 
     public void refresh() {
-//        List<GWTJahiaNode> selection = (List<GWTJahiaNode>) getSelection() ;
-//        if (selection != null) {
-//            GWTJahiaNode select = selection.get(0) ;
-//            if (!select.isFile()) {
-//                Log.debug("direct selection not null, refreshing from " + select.getName()) ;
-//                TreeItem item = (TreeItem) binder.findItem(select) ;
-//                if (item.isExpanded()) {
-//                    Log.debug("loading children of " + select.getName() + " with " + item.getText()) ;
-//                    loader.loadChildren(select) ;
-//                } else { // todo messy part, item not expanded won't be expanded after loadChildren (bug ?)
-//                    if (selectPathAfterUpload != null) {
-//                        final String tempPath = selectPathAfterUpload ;
-//                        setSelectPathAfterDataUpdate(null);
-//                        if (item.isLeaf()) {
-//                            item.setLeaf(false);
-//                            item.setExpanded(true);
-//                            setSelectPathAfterDataUpdate(tempPath);
-//                            loader.loadChildren(select) ;
-//                        } else {
-//                            if (tempListener == null) {
-//                                tempListener = new Listener<TreeEvent>() {
-//                                    public void handleEvent(TreeEvent event) {
-//                                        if (tempListener != null) {
-//                                            m_treeTable.removeListener(Events.Expand, tempListener);
-//                                        }
-//                                        setSelectPathAfterDataUpdate(tempPath);
-//                                    }
-//                                };
-//                            }
-//                            m_treeTable.addListener(Events.Expand, tempListener) ;
-//                            item.setExpanded(true);
-//                        }
-//                    } else {
-//                        TreeItem parentItem = item.getParentItem() ;
-//                        if (parentItem != null) {
-//                            GWTJahiaNode parent = (GWTJahiaNode) parentItem.getModel() ;
-//                            if (parent == null) {
-//                                init = true ;
-//                                loader.loadChildren(null) ;
-//                            } else {
-//                                loader.loadChildren(parent) ;
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//
-//                TreeItem item = (TreeItem) store.findItem(select) ;
-//                if (item != null) {
-//                    item = item.getParentItem() ;
-//                    if (item != null) {
-//                        item.setExpanded(true);
-//                        Log.debug("direct selection not null, refreshing from parent " + item.getModel().get("name")) ;
-//                        loader.loadChildren((GWTJahiaNode) item.getModel()) ;
-//                    }
-//                }
-//            }
-//        } else {
         Log.debug("reloading entire tree");
         loader.load(null);
-//        }
     }
 
     public Component getComponent() {
@@ -303,17 +217,25 @@ public class ContentTreeTable extends TopRightComponent {
     }
 
     public void clearSelection() {
-        m_treeTable.getSelectionModel().deselectAll();
+        m_treeGrid.getSelectionModel().deselectAll();
     }
 
-    private ColumnModel getHeaders(String config) {
+    /**
+     * Get header from configuration
+     *
+     * @return
+     */
+    private ColumnModel getHeaders() {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        if (config == null || config.length() == 0) {
-            config = "name,size,date,version";
+        List<String> columnIds = configuration.getTableColumns();
+        if (columnIds == null || columnIds.size() == 0) {
+            columnIds.add("name");
+            columnIds.add("size");
+            columnIds.add("date");
+            columnIds.add("version");
+            columnIds.add("picker");
         }
-
-        String[] s = config.split(",");
-        for (String s1 : s) {
+        for (String s1 : columnIds) {
             if (s1.equals("name")) {
                 ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300);
                 col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
@@ -347,7 +269,7 @@ public class ContentTreeTable extends TopRightComponent {
                 });
                 headerList.add(col);
             } else if (s1.equals("version")) {
-                ColumnConfig col = new ColumnConfig("version", Messages.getResource("fm_column_version"), 150);
+                ColumnConfig col = new ColumnConfig("version", Messages.getResource("versioning_versionLabel"), 250);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
@@ -387,14 +309,14 @@ public class ContentTreeTable extends TopRightComponent {
                 });
                 headerList.add(col);
             } else if (s1.equals("picker")) {
-                ColumnConfig col = new ColumnConfig("picker", 150);
-                col.setAlignment(Style.HorizontalAlignment.CENTER);
+                ColumnConfig col = new ColumnConfig("action", "action", 100);
+
+                col.setAlignment(Style.HorizontalAlignment.RIGHT);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (gwtJahiaNode.getNodeTypes().contains(configuration.getNodeTypes()) ||
-                                gwtJahiaNode.getInheritedNodeTypes().contains(configuration.getNodeTypes())) {
-                            final Button pickContentButton = new Button();
-                            pickContentButton.setIconStyle("gwt-icons-add");
+                        if (isSelectable(gwtJahiaNode)) {
+                            final Button pickContentButton = new Button("Add");
+                            pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent buttonEvent) {
@@ -406,12 +328,28 @@ public class ContentTreeTable extends TopRightComponent {
                             return new Text("");
                         }
                     }
+
+                    /**
+                     * Return true id the node is selectable
+                     * @param gwtJahiaNode
+                     * @return
+                     */
+                    private boolean isSelectable(GWTJahiaNode gwtJahiaNode) {
+                        if(gwtJahiaNode.isFile()){
+                            // Do nothing here: file are filtered at server part
+                            return true;
+                        }
+                        // check if node type is selectable or not.
+                        return gwtJahiaNode.getNodeTypes().contains(configuration.getNodeTypes()) || gwtJahiaNode.getInheritedNodeTypes().contains(configuration.getNodeTypes());
+                    }
                 });
+                col.setFixed(true);
                 headerList.add(col);
             }
         }
         return new ColumnModel(headerList);
     }
+
 
     /**
      * This class extends the standard load listener to allow automated child selection once the children are retrieved.
@@ -451,7 +389,4 @@ public class ContentTreeTable extends TopRightComponent {
         }
     }
 
-    public void onSelectButtonClicked(Button pickContentButton) {
-
-    }
 }

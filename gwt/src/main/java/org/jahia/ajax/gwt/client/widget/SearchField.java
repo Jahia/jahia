@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -41,23 +42,20 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
- *
- *
  * User: rfelden
  * Date: 22 sept. 2008 - 16:10:56
  */
 public abstract class SearchField extends ToolBar {
 
-    private TextField field ;
+    private TextField<String> field;
 
     public SearchField(String name, boolean saveSearchbutton) {
-        super() ;
+        super();
 
-        LabelToolItem label = new LabelToolItem(name) ;
-
-        field = new TextField() ;
-        field.setWidth(500) ;
-        field.setFieldLabel(name) ;
+        LabelToolItem label = new LabelToolItem(name);
+        field = new TextField<String>();
+        field.setWidth(300);
+        field.setFieldLabel(name);
         field.addKeyListener(new KeyListener() {
             public void componentKeyPress(ComponentEvent event) {
                 if (event.getKeyCode() == 13) { // this is the 'enter' code
@@ -66,42 +64,44 @@ public abstract class SearchField extends ToolBar {
             }
         });
 
-        add(label) ;
-        add(field) ;
-        Button ok = new Button() ;
-        ok.setIconStyle("fm-savedSearch");
+        add(label);
+        add(field);
+
+        Button ok = new Button();
+        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-                onFieldValidation(field.getRawValue());
+               onFieldValidation(field.getRawValue());
             }
         });
-        add(ok) ;
-        add(new FillToolItem()) ;
+        add(ok);
+        add(new FillToolItem());
         if (saveSearchbutton) {
-            Button save = new Button(Messages.getResource("fm_saveSearch")) ;
+            Button save = new Button(Messages.getResource("fm_saveSearch"));
             save.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
-                    onSaveButtonClicked(field.getRawValue());
+                   onSaveButtonClicked(field.getRawValue());
                 }
             });
-            add(save) ;
+            add(save);
         }
+
     }
 
     public String getText() {
-        return field.getRawValue() ;
+        return field.getRawValue();
     }
 
     public void clear() {
         field.setRawValue("");
     }
 
-    public void setWidth(int width) {
-        field.setWidth(width);
-    }
+    /*public void setWidth(int width) {
+        //field.setWidth(width);
+    } */
 
-    public abstract void onFieldValidation(String value) ;
+    public abstract void onFieldValidation(String value);
 
-    public abstract void onSaveButtonClicked(String value) ;
+    public abstract void onSaveButtonClicked(String value);
 
 }

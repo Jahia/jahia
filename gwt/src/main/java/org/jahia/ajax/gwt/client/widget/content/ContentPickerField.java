@@ -110,7 +110,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         w.setBodyBorder(false);
 
         final ButtonBar bar = new ButtonBar();
-        bar.setAlignment(Style.HorizontalAlignment.RIGHT);
+        bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         final Button ok = new Button(Messages.getResource("fm_save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -119,6 +119,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
                 w.hide();
             }
         });
+        ok.setIconStyle("gwt-icons-save");
         bar.add(ok);
 
         final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {

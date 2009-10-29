@@ -6,7 +6,7 @@ sharedSmallText insertType (choicelist[resourceBundle]) = quote indexed=no < quo
 sharedSmallText insertPosition (choicelist[resourceBundle]) = left indexed=no < left, right
 integer         insertWidth = "150" indexed=no
 
-[jnt:article] > jnt:container, jmix:structuredContent
+[jnt:article] > jnt:content, jmix:structuredContent
 smallText       title
 bigText         intro
 + * (jnt:paragraph)

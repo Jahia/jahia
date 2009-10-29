@@ -168,8 +168,8 @@ public class ThumbView extends TopRightComponent {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
                 TopRightComponent topRight = getLinker().getTopRightObject() ;
-                if (topRight instanceof ContentPickerContainer) {
-                    ((ContentPickerContainer) topRight).handleNewSelection();
+                if (topRight instanceof ContentPickerBrowser) {
+                    ((ContentPickerBrowser) topRight).handleNewSelection();
                 }
             }
         });

@@ -149,16 +149,7 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getFilePickerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
-
         filePickerConfig.setToolbarGroup("file-picker");
-
-        // no columns to add (default)
-
-        // no repository tabs
-
-        // show the current site (first) tab by default
-
-        // hide the left panel
         filePickerConfig.setHideLeftPanel(true);
         filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
         filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);

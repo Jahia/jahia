@@ -65,15 +65,21 @@ import java.util.Date;
  * User: rfelden
  * Date: 21 oct. 2008 - 16:53:43
  */
-public class SearchTable extends TopRightComponent {
+public class SearchGrid extends TopRightComponent {
 
     private ContentPanel m_component;
     private Grid<GWTJahiaNode> grid;
     private ListStore<GWTJahiaNode> store;
 
     private ManagerConfiguration config;
+    private boolean multiple = false;
 
-    public SearchTable(ManagerConfiguration config) {
+    public SearchGrid(ManagerConfiguration config, boolean multiple) {
+        this(config);
+        this.multiple = multiple;
+    }
+
+    public SearchGrid(ManagerConfiguration config) {
         this.config = config;
 
         m_component = new ContentPanel(new FitLayout());
@@ -94,7 +100,7 @@ public class SearchTable extends TopRightComponent {
         grid = new Grid<GWTJahiaNode>(store, getHeaders());
         grid.getView().setForceFit(true);
         grid.setBorders(false);
-        grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);  
+        grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         m_component.add(grid);
     }
 
@@ -165,6 +171,7 @@ public class SearchTable extends TopRightComponent {
 
     /**
      * Get heder from config
+     *
      * @return
      */
     private ColumnModel getHeaders() {
@@ -176,7 +183,7 @@ public class SearchTable extends TopRightComponent {
             columnIds.add("date");
             columnIds.add("version");
             columnIds.add("picker");
-        }                   
+        }
         for (String s1 : columnIds) {
             if (s1.equals("name")) {
                 ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300);
@@ -259,11 +266,14 @@ public class SearchTable extends TopRightComponent {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (isSelectable(gwtJahiaNode)) {
                             final Button pickContentButton = new Button("Add");
+                            if (!multiple) {
+                                pickContentButton.setText("Select");
+                            }
                             pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent buttonEvent) {
-                                    ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection(gwtJahiaNode);
+                                    onContentPicked(gwtJahiaNode);
                                 }
                             });
                             return pickContentButton;
@@ -291,5 +301,14 @@ public class SearchTable extends TopRightComponent {
             }
         }
         return new ColumnModel(headerList);
+    }
+
+    /**
+     * Override this method to customize "add" button behavirou
+     *
+     * @param gwtJahiaNode
+     */
+    public void onContentPicked(final GWTJahiaNode gwtJahiaNode) {
+
     }
 }

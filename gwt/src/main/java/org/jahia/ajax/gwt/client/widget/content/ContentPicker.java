@@ -33,9 +33,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
+import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
@@ -71,26 +69,25 @@ public class ContentPicker extends TriPanelBrowserLayout {
         }
 
         // construction of the UI components
-        TopBar contentToolbar = new ContentToolbar(config, linker) ;
-        TopRightComponent contentPicker = new ContentPickerContainer(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
-
-
+        TopRightComponent contentPicker = new ContentPickerBrowser(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
+        BottomRightComponent bottomComponents = new PickedContentView(selectedNodes, multiple, config);
+        MyStatusBar statusBar = new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes());
 
         // setup widgets in layout
         initWidgets(null,
                     contentPicker.getComponent(),
+                    bottomComponents.getComponent(),
                     null,
-                    null,
-                    null);
+                    statusBar);
 
         // linker initializations
-        linker.registerComponents(null, contentPicker, null, contentToolbar, null) ;
+        linker.registerComponents(null, contentPicker, bottomComponents, null, null) ;
         contentPicker.initContextMenu();
         linker.handleNewSelection();
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
-        return ((ContentPickerContainer)linker.getTopRightObject()).getSelectedNodes();
+        return ((ContentPickerBrowser)linker.getTopRightObject()).getSelectedNodes();
     }
 
 

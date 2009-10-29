@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ import java.util.List;
  * Time: 9:58:29 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ContentPickerGrid extends LayoutContainer {
+public class PickedContentView extends BottomRightComponent {
     private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
@@ -75,7 +76,7 @@ public class ContentPickerGrid extends LayoutContainer {
     private String emtypSelectionMessage = "No selected image";
     private String selectionHeaderMessage = "Image selected: ";
 
-    public ContentPickerGrid(List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+    public PickedContentView(List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
         this.config = config;
         this.selectedNodes = selectedNodes;
         this.multiple = multiple;
@@ -87,14 +88,17 @@ public class ContentPickerGrid extends LayoutContainer {
      * Create UI
      */
     private void createUI() {
-        setLayout(new FillLayout());
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
         column.setId("preview");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                return "<img heigth='16px' width='16px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                if (multiple) {
+                    return "<img heigth='16px' width='16px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                }else{
+                   return "<img heigth='40px' width='30px' src=\"" + gwtJahiaNode.getPreview() + "\">"; 
+                }
             }
         });
         column.setHeader(Messages.getResource("displayName"));
@@ -220,17 +224,23 @@ public class ContentPickerGrid extends LayoutContainer {
         itemPreview.add(previewPanel);
         m_component.add(itemPreview);
 
-        add(m_component);
+        //add(m_component);
 
     }
 
+    public void clear() {
+        store.removeAll();
+    }
 
     /**
      * Set content
      *
      * @param root
      */
-    public void setContent(Object root) {
+    public void fillData(Object root) {
+        if (readOnly) {
+            return;
+        }
         if (root instanceof List) {
             setSelection((List<GWTJahiaNode>) root);
         } else {
@@ -242,12 +252,6 @@ public class ContentPickerGrid extends LayoutContainer {
         }
     }
 
-    /**
-     * Remove all categories
-     */
-    public void clearTable() {
-        store.removeAll();
-    }
 
     /**
      * Get selected categories
@@ -264,6 +268,9 @@ public class ContentPickerGrid extends LayoutContainer {
      * @param selection
      */
     public void setSelection(final List<GWTJahiaNode> selection) {
+        if (readOnly) {
+            return;
+        }
         String[] nt = config.getNodeTypes().split(",");
         if (selection != null && selection.size() > 0) {
             boolean found = false;
@@ -273,6 +280,8 @@ public class ContentPickerGrid extends LayoutContainer {
                     break;
                 }
             }
+
+            // handle multiple
             if (found) {
                 if (multiple) {
                     for (GWTJahiaNode n : selection) {
@@ -301,74 +310,7 @@ public class ContentPickerGrid extends LayoutContainer {
      * @return
      */
     public Component getComponent() {
-        return m_grid;
-    }
-
-
-    /**
-     * Add categories to the UI
-     *
-     * @param gwtJahiaNodeList
-     */
-    public void addContentNode(List<GWTJahiaNode> gwtJahiaNodeList) {
-        if (readOnly) {
-            return;
-        }
-
-        if (!multiple) {
-            store.removeAll();
-        }
-
-        if (gwtJahiaNodeList.size() > 0) {
-            store.removeAll();
-            store.add(gwtJahiaNodeList.get(0));
-        } else {
-            List<GWTJahiaNode> toAdd = new ArrayList<GWTJahiaNode>();
-            for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodeList) {
-                boolean add = true;
-                for (GWTJahiaNode n : store.getModels()) {
-                    if (gwtJahiaNode.getPath().equals(n.getPath())) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    toAdd.add(gwtJahiaNode);
-                }
-            }
-            store.add(toAdd);
-            store.sort("displayName", Style.SortDir.ASC);
-        }
-    }
-
-
-    /**
-     * Init context menu
-     */
-    public void initContextMenu() {
-        Menu m = new Menu();
-        MenuItem menuItem = new MenuItem(Messages.getResource("information"));
-        m.add(menuItem);
-        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent event) {
-                GWTJahiaNode node = m_grid.getSelectionModel().getSelectedItem();
-                if (node != null) {
-                    MessageBox box = new MessageBox();
-                    box.setButtons(MessageBox.OK);
-                    box.setIcon(MessageBox.INFO);
-                    box.setTitle(Messages.getResource("information") + ": " + node.getDisplayName());
-                    box.setMessage(node.getPath().replace("/root", ""));
-                    box.show();
-                } else {
-                    MessageBox box = new MessageBox();
-                    box.setButtons(MessageBox.OK);
-                    box.setIcon(MessageBox.WARNING);
-                    box.setMessage("Please select a category");
-                    box.show();
-                }
-            }
-        });
-        m_grid.setContextMenu(m);
+        return m_component;
     }
 
     private class ThumbsListView extends ListView<GWTJahiaNode> {

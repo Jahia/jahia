@@ -74,17 +74,15 @@ import java.util.List;
 /**
  * TreeTable file picker for use within classic engines.
  */
-public class ContentTreeTable extends TopRightComponent {
-
+public class ContentTreeGrid extends ContentPanel {
     private ManagerConfiguration configuration;
-
-    protected ContentPanel m_component;
+    private  ManagerLinker linker;
     protected ActionToolbarLayoutContainer toolbars;
     protected TreeLoader<GWTJahiaNode> loader;
     protected TreeGrid<GWTJahiaNode> m_treeGrid;
     protected TreeTableStore<GWTJahiaNode> store;
-    protected TreeGridSelectionModel<GWTJahiaNode> selectionModel;
     private String rootPath;
+    private boolean multiple;
 
     protected boolean init = true;
 
@@ -99,19 +97,20 @@ public class ContentTreeTable extends TopRightComponent {
      * @param multiple
      * @param configuration
      */
-    public ContentTreeTable(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
+    public ContentTreeGrid(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
         this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
+        this.multiple = multiple;
         this.configuration = configuration;
 
-        m_component = new ContentPanel(new FitLayout());
-        m_component.setHeaderVisible(false);
-        m_component.setBorders(false);
-        m_component.setBodyBorder(false);
+        setLayout(new FitLayout());
+        setHeaderVisible(false);
+        setBorders(false);
+        setBodyBorder(false);
 
         // add toolbar
         toolbars = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
         toolbars.init();
-        m_component.setTopComponent(toolbars);
+        setTopComponent(toolbars);
 
         // create loader
         loader = createTreeLoader();
@@ -124,7 +123,7 @@ public class ContentTreeTable extends TopRightComponent {
         //m_treeGrid.getTreeView().setForceFit(true);
         m_treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
         m_treeGrid.setBorders(false);
-        m_component.add(m_treeGrid);
+        add(m_treeGrid);
     }
 
     /**
@@ -182,13 +181,18 @@ public class ContentTreeTable extends TopRightComponent {
     }
 
     public void initWithLinker(ManagerLinker linker) {
-        super.initWithLinker(linker);
+        this.linker = linker;
         toolbars.initWithLinker(linker);
-//        loader.load();
     }
 
-    public void initContextMenu() {
-        m_treeGrid.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
+    public void initContextMenu(ManagerLinker linker) {
+        m_treeGrid.setContextMenu(new ContentListContextMenu(linker, configuration));
+    }
+
+    public void handleNewLinkerSelection() {
+        // TODo: getSelection should alwas return a list of GWTJahiaNode
+        toolbars.handleNewLinkerSelection();
+
     }
 
     public void setContent(Object root) {
@@ -212,9 +216,6 @@ public class ContentTreeTable extends TopRightComponent {
         loader.load(null);
     }
 
-    public Component getComponent() {
-        return m_component;
-    }
 
     public void clearSelection() {
         m_treeGrid.getSelectionModel().deselectAll();
@@ -316,11 +317,14 @@ public class ContentTreeTable extends TopRightComponent {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (isSelectable(gwtJahiaNode)) {
                             final Button pickContentButton = new Button("Add");
+                            if(!multiple){
+                                pickContentButton.setText("Select");
+                            }
                             pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent buttonEvent) {
-                                    ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection(gwtJahiaNode);
+                                    onContentPicked(gwtJahiaNode);
                                 }
                             });
                             return pickContentButton;
@@ -350,6 +354,14 @@ public class ContentTreeTable extends TopRightComponent {
         return new ColumnModel(headerList);
     }
 
+    /**
+     * Override thi method to customize "add" button behaviour
+     * @param gwtJahiaNode
+     */
+    public void onContentPicked(final GWTJahiaNode gwtJahiaNode){
+
+    }
+
 
     /**
      * This class extends the standard load listener to allow automated child selection once the children are retrieved.
@@ -361,19 +373,13 @@ public class ContentTreeTable extends TopRightComponent {
 
         protected void onBeforeLoad(LoadEvent e) {
             super.onBeforeLoad(e);
-            if (getLinker() != null) {
-                getLinker().loading("loading...");
-            }
         }
 
         /**
          * This allows selection after tree items have been loaded (asynchronous call is 'blocking' here)
          */
         protected void onLoad(TreeLoadEvent e) {
-            super.onLoad(e);
-            if (getLinker() != null) {
-                getLinker().loaded();
-            }
+            super.onLoad(e);           
         }
     }
 
@@ -381,12 +387,5 @@ public class ContentTreeTable extends TopRightComponent {
         return rootPath;
     }
 
-    class SM extends TreeGridSelectionModel {
-        @Override
-        protected void onSelectChange(ModelData modelData, boolean b) {
-            super.onSelectChange(modelData, b);
-            ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
-        }
-    }
 
 }

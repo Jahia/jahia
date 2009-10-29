@@ -10,7 +10,6 @@
     <template:addResources type="javascript" resources="jquery.min.js" nodetype="jmix:tagged"/>
     <script type="text/javascript">        
         function addNewTag(tagForm, uuid, separator) {
-        	//jahia-tags-${currentNode.identifier}
         	var newTag = tagForm.elements['j:newTag'];
         	if (newTag.value.length > 0) {
         		jQuery.post(tagForm.action, jQuery(tagForm).serialize(),

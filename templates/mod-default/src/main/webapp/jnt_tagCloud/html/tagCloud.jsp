@@ -1,9 +1,9 @@
-<%@ page import="org.jahia.utils.FileUtils" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="tags.css"/>
 <jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
 <div class="tags">
 <h3><fmt:message key="tags"/></h3>

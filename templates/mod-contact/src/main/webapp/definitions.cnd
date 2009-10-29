@@ -3,14 +3,14 @@
 [jnt:contact] > jnt:content
 smallText firstname
 smallText lastname
-smallText title(choicelist) analyzer='keyword' < 'doctor', 'professor'
+smallText title(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'
 smallText age
 smallText birthdate
-smallText gender(choicelist) analyzer='keyword' < 'female','male'
+smallText gender(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'female','male'
 smallText profession
-smallText maritalStatus(choicelist) analyzer='keyword' < 'single', 'married', 'divorced', 'widowed'
+smallText maritalStatus(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'single', 'married', 'divorced', 'widowed'
 smallText hobbies
-smallText contact(choicelist) analyzer='keyword' < 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
+smallText contact(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
 smallText address
 smallText city
 smallText state

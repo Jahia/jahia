@@ -61,6 +61,8 @@ public class RenderContext {
     
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private JCRNodeWrapper siteNode;
+    
+    private String contentType;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -151,5 +153,13 @@ public class RenderContext {
 
     public JCRNodeWrapper getSiteNode() {
         return siteNode;
+    }
+
+	public String getContentType() {
+    	return contentType;
+    }
+
+	public void setContentType(String contentType) {
+    	this.contentType = contentType;
     }
 }

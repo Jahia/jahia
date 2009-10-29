@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -65,6 +66,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PickedContentView extends BottomRightComponent {
+    private String pickerType;
     private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
@@ -75,9 +77,11 @@ public class PickedContentView extends BottomRightComponent {
     private List<GWTJahiaNode> selectedNodes;
     private String emtypSelectionMessage = "No selected image";
     private String selectionHeaderMessage = "Image selected: ";
+    private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+    public PickedContentView(String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
         this.config = config;
+        this.pickerType = pickerType;
         this.selectedNodes = selectedNodes;
         this.multiple = multiple;
         createUI();
@@ -88,6 +92,8 @@ public class PickedContentView extends BottomRightComponent {
      * Create UI
      */
     private void createUI() {
+        m_component = new TabPanel();
+
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
@@ -96,8 +102,8 @@ public class PickedContentView extends BottomRightComponent {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 if (multiple) {
                     return "<img heigth='16px' width='16px' src=\"" + gwtJahiaNode.getPreview() + "\">";
-                }else{
-                   return "<img heigth='40px' width='30px' src=\"" + gwtJahiaNode.getPreview() + "\">"; 
+                } else {
+                    return "<img heigth='40px' width='30px' src=\"" + gwtJahiaNode.getPreview() + "\">";
                 }
             }
         });
@@ -197,32 +203,39 @@ public class PickedContentView extends BottomRightComponent {
         });
         m_grid.setView(view);
 
-        m_thumbsListView = new ThumbsListView();
-        m_thumbsListView.setStore(store);
-        m_thumbsListView.setTemplate(getThumbsListTemplate());
-        m_thumbsListView.setItemSelector("div.thumb-wrap");
-        m_thumbsListView.setOverStyle("x-view-over");
 
-        m_component = new TabPanel();
         final TabItem item = new TabItem("Selection");
         item.setLayout(new FillLayout());
         item.add(m_grid);
-
-        final TabItem itemPreview = new TabItem("Preview");
-        itemPreview.setLayout(new FitLayout());
-
-        //itemPreview.add(m_thumbsListView);
-
         m_component.add(item);
-        ContentPanel previewPanel = new ContentPanel(new FitLayout());
-        previewPanel.setHeaderVisible(false);
-        previewPanel.setScrollMode(Style.Scroll.AUTO);
-        previewPanel.setId("images-view");
-        previewPanel.setBorders(true);
-        previewPanel.setBodyBorder(false);
-        previewPanel.add(m_thumbsListView);
-        itemPreview.add(previewPanel);
-        m_component.add(itemPreview);
+
+        // display preview only for file
+        if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
+            if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+                m_thumbsListView = new ThumbsListView();
+                m_thumbsListView.setStore(store);
+                m_thumbsListView.setTemplate(getThumbsListTemplate());
+                m_thumbsListView.setItemSelector("div.thumb-wrap");
+                m_thumbsListView.setOverStyle("x-view-over");
+
+                itemPreview.setLayout(new FitLayout());
+                ContentPanel previewPanel = new ContentPanel(new FitLayout());
+                previewPanel.setHeaderVisible(false);
+                previewPanel.setScrollMode(Style.Scroll.AUTO);
+                previewPanel.setId("images-view");
+                previewPanel.setBorders(true);
+                previewPanel.setBodyBorder(false);
+                previewPanel.add(m_thumbsListView);
+                itemPreview.add(previewPanel);
+            }
+            m_component.add(itemPreview);
+        }
+
+        // case of a page
+        if (multiple && pickerType != null && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)){
+            m_component.add(itemPreview);
+
+        }
 
         //add(m_component);
 
@@ -248,6 +261,10 @@ public class PickedContentView extends BottomRightComponent {
                 List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
                 list.add((GWTJahiaNode) root);
                 setSelection(list);
+            }
+
+            if (!multiple && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+                itemPreview.setUrl(((GWTJahiaNode) root).getPath());
             }
         }
     }

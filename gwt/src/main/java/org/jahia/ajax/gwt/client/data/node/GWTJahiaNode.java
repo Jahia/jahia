@@ -41,7 +41,6 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.Style;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 
 /**
@@ -68,6 +67,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean selectedOnLoad = false;
     private GWTJahiaNode referencedNode;
     private GWTJahiaPublicationInfo publicationInfo;
+
+    // in case of a folder, it allows to know if the node is selectable or not
+    private boolean matchFilters = false;
 
     public GWTJahiaNode() {
         super();
@@ -367,6 +369,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setVersioned(boolean versioned) {
         this.versioned = versioned;
+    }
+
+    public boolean isMatchFilters() {
+        return matchFilters;
+    }
+
+    public void setMatchFilters(boolean matchFilters) {
+        this.matchFilters = matchFilters;
     }
 
     public String toString() {

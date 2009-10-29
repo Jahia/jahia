@@ -76,7 +76,7 @@ import java.util.List;
  */
 public class ContentTreeGrid extends ContentPanel {
     private ManagerConfiguration configuration;
-    private  ManagerLinker linker;
+    private ManagerLinker linker;
     protected ActionToolbarLayoutContainer toolbars;
     protected TreeLoader<GWTJahiaNode> loader;
     protected TreeGrid<GWTJahiaNode> m_treeGrid;
@@ -315,9 +315,9 @@ public class ContentTreeGrid extends ContentPanel {
                 col.setAlignment(Style.HorizontalAlignment.RIGHT);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (isSelectable(gwtJahiaNode)) {
+                        if (gwtJahiaNode.isMatchFilters()) {
                             final Button pickContentButton = new Button("Add");
-                            if(!multiple){
+                            if (!multiple) {
                                 pickContentButton.setText("Select");
                             }
                             pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
@@ -333,19 +333,6 @@ public class ContentTreeGrid extends ContentPanel {
                         }
                     }
 
-                    /**
-                     * Return true id the node is selectable
-                     * @param gwtJahiaNode
-                     * @return
-                     */
-                    private boolean isSelectable(GWTJahiaNode gwtJahiaNode) {
-                        if(gwtJahiaNode.isFile()){
-                            // Do nothing here: file are filtered at server part
-                            return true;
-                        }
-                        // check if node type is selectable or not.
-                        return gwtJahiaNode.getNodeTypes().contains(configuration.getNodeTypes()) || gwtJahiaNode.getInheritedNodeTypes().contains(configuration.getNodeTypes());
-                    }
                 });
                 col.setFixed(true);
                 headerList.add(col);
@@ -356,11 +343,13 @@ public class ContentTreeGrid extends ContentPanel {
 
     /**
      * Override thi method to customize "add" button behaviour
+     *
      * @param gwtJahiaNode
      */
-    public void onContentPicked(final GWTJahiaNode gwtJahiaNode){
+    public void onContentPicked(final GWTJahiaNode gwtJahiaNode) {
 
     }
+
 
 
     /**
@@ -379,7 +368,7 @@ public class ContentTreeGrid extends ContentPanel {
          * This allows selection after tree items have been loaded (asynchronous call is 'blocking' here)
          */
         protected void onLoad(TreeLoadEvent e) {
-            super.onLoad(e);           
+            super.onLoad(e);
         }
     }
 

@@ -32,10 +32,15 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -48,6 +53,8 @@ import java.util.ArrayList;
  */
 public class ContentPickerBrowser extends TopRightComponent {
 
+    private ManagerConfiguration config;
+    private String pickerType;
     private ContentPanel m_component;
     private ContentTreeGrid m_treeGrid;
     private ThumbView m_thumbs;
@@ -57,7 +64,10 @@ public class ContentPickerBrowser extends TopRightComponent {
     private TabItem search;
     private GWTJahiaNode lastSelection;
 
-    public ContentPickerBrowser(String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
+    public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
+        this.pickerType = pickerType;
+        this.config = config;
+
         m_treeGrid = new ContentTreeGrid(rootPath, selectedNodes, multiple, config) {
             @Override
             public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
@@ -66,7 +76,7 @@ public class ContentPickerBrowser extends TopRightComponent {
             }
         };
 
-        m_search = new SearchGrid(config,multiple) {
+        m_search = new SearchGrid(config, multiple) {
             @Override
             public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
                 super.onContentPicked(gwtJahiaNode);
@@ -222,6 +232,4 @@ public class ContentPickerBrowser extends TopRightComponent {
     public void clearSelection() {
         //lastSelection = null;
     }
-
-
 }

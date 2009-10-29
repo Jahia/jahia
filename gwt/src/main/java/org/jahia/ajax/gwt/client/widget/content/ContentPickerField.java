@@ -65,7 +65,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     private boolean multiple;
     private boolean allowThumbs;
 
-    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String config, boolean multiple, boolean allowThumbs) {
+    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String configuration, boolean multiple, boolean allowThumbs) {
         super();
         setPropertyEditor(new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
@@ -87,7 +87,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         this.types = types;
         this.filters = filters;
         this.mimeTypes = mimeTypes;
-        this.configuration = config;
+        this.configuration = configuration;
         this.multiple = multiple;
         this.allowThumbs = allowThumbs;
         setValue(new ArrayList<GWTJahiaNode>());

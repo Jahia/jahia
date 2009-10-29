@@ -43,6 +43,7 @@ public final class JCRClientUtils {
     public static final String CATEGORY_NODETYPES = "jnt:category";
     public static final String PORTLET_DEFINITIONS_NODETYPES = "jnt:portletDefinitions";    
     public static final String SITE_NODETYPES = "jnt:virtualsite,jnt:page";
+    public static final String PAGE_NODETYPES = "jnt:page";
     public static final String TAG_NODETYPES = "jnt:tag";
 
     public final static String MY_REPOSITORY = "myRepository";

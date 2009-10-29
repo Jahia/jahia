@@ -38,24 +38,28 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.Style;
+
 /**
  * File and folder picker control.
+ *
  * @author rfelden
- * Date: 27 ao�t 2008
- * Time: 17:55:07
+ *         Date: 27 ao�t 2008
+ *         Time: 17:55:07
  */
 public class ContentPicker extends TriPanelBrowserLayout {
 
     public ContentPicker(final String rootPath, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
-        super() ;
+        super();
         //setWidth("714px");
         setHeight("700px");
 
-        ManagerConfiguration config  ;
+        ManagerConfiguration config;
         if (conf == null || conf.length() == 0) {
-            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker) ;
+            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker);
         } else {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker) ;
+            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
         }
 
         if (types != null && types.length() > 0) {
@@ -69,25 +73,33 @@ public class ContentPicker extends TriPanelBrowserLayout {
         }
 
         // construction of the UI components
-        TopRightComponent contentPicker = new ContentPickerBrowser(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
-        BottomRightComponent bottomComponents = new PickedContentView(selectedNodes, multiple, config);
+        BottomRightComponent bottomComponents;
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+            bottomComponents = new PickedPageView(conf, selectedNodes, multiple, config);
+        } else {
+            bottomComponents = new PickedContentView(conf, selectedNodes, multiple, config);
+        }
+        TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
+
         MyStatusBar statusBar = new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes());
 
         // setup widgets in layout
-        initWidgets(null,
-                    contentPicker.getComponent(),
-                    bottomComponents.getComponent(),
-                    null,
-                    statusBar);
+
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 375));
+            initWidgets(null,bottomComponents.getComponent(),contentPicker.getComponent(),null,statusBar);
+        } else {
+            initWidgets(null,contentPicker.getComponent(),bottomComponents.getComponent(),null,statusBar);
+        }
 
         // linker initializations
-        linker.registerComponents(null, contentPicker, bottomComponents, null, null) ;
+        linker.registerComponents(null, contentPicker, bottomComponents, null, null);
         contentPicker.initContextMenu();
         linker.handleNewSelection();
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
-        return ((ContentPickerBrowser)linker.getTopRightObject()).getSelectedNodes();
+        return ((ContentPickerBrowser) linker.getTopRightObject()).getSelectedNodes();
     }
 
 

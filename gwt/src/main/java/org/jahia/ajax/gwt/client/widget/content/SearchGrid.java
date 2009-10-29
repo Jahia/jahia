@@ -264,7 +264,7 @@ public class SearchGrid extends TopRightComponent {
                 col.setAlignment(Style.HorizontalAlignment.RIGHT);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (isSelectable(gwtJahiaNode)) {
+                        if (gwtJahiaNode.isMatchFilters()) {
                             final Button pickContentButton = new Button("Add");
                             if (!multiple) {
                                 pickContentButton.setText("Select");
@@ -287,14 +287,7 @@ public class SearchGrid extends TopRightComponent {
                      * @param gwtJahiaNode
                      * @return
                      */
-                    private boolean isSelectable(GWTJahiaNode gwtJahiaNode) {
-                        if (gwtJahiaNode.isFile()) {
-                            // Do nothing here: file are filtered at server part
-                            return true;
-                        }
-                        // check if node type is selectable or not.
-                        return gwtJahiaNode.getNodeTypes().contains(config.getNodeTypes()) || gwtJahiaNode.getInheritedNodeTypes().contains(config.getNodeTypes());
-                    }
+
                 });
                 col.setFixed(true);
                 headerList.add(col);

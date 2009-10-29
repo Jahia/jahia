@@ -190,7 +190,9 @@ public class NavigationHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
             }
-            if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (!noFolders && f.isCollection()))) {
+            // in case of a folder, it allows to know if the node is selectable
+            boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
+            if (f.isVisible() && (matchNodeType || (!noFolders && f.isCollection()))) {
                 try {
                     // if we are not in the site manager and the current site does not match the virtual site node --> hide it
                     if (!displayAllVirtualSites && f.isNodeType(Constants.JAHIANT_VIRTUALSITE) && !f.getName().equals(context.getSiteKey())) {
@@ -201,8 +203,12 @@ public class NavigationHelper {
                         logger.debug("cannot get site name " + f.getPath());
                     }
                 }
-                if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
+
+                // in case of a folder, it allows to know if the node is selectable
+                boolean matchFilters = matchesMimeTypeFilters(f.isFile(),f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
+                if (f.isCollection() || matchFilters) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
+                    theNode.setMatchFilters(matchNodeType && matchFilters);
                     if (displayAllVirtualSites) {
                         try {
                             theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
@@ -211,10 +217,10 @@ public class NavigationHelper {
                         }
                     }
                     if (displayTags) {
-                    	try {
-	                        theNode.set("count", f.getReferences().getSize());
+                        try {
+                            theNode.set("count", f.getReferences().getSize());
                         } catch (RepositoryException e) {
-                        	logger.warn("Unable to count node references for node: " + f.getPath(), e);
+                            logger.warn("Unable to count node references for node: " + f.getPath(), e);
                         }
                     }
 
@@ -232,7 +238,7 @@ public class NavigationHelper {
                 Resource r = new Resource(node, "html", null, null);
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
                 renderContext.setSite(context.getSite());
-                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/content/sites/" + context.getSite().getSiteKey()));
+                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/content/sites/" + context.getSite().getSiteKey()));
                 renderContext.setIncludeSubModules(false);
                 renderService.render(r, renderContext);
                 List<String> l = r.getMissingResources();
@@ -256,7 +262,7 @@ public class NavigationHelper {
 
         // ToDo : find a better way to implement this. Avoid multiple ajax request
         if (logger.isDebugEnabled()) {
-        	logger.debug(" Selected path: "+selectedPath);
+            logger.debug(" Selected path: " + selectedPath);
         }
         for (GWTJahiaNode gwtJahiaNode : result) {
             if (openPaths != null) {
@@ -296,6 +302,21 @@ public class NavigationHelper {
             }
         }
         return matches;
+    }
+
+    public boolean matchesMimeTypeFilters(boolean isFile, String mimeType, String[] filters) {
+        // no filters
+        if(filters == null || filters.length ==0 ){
+            return true;
+        }
+
+        // there are filters, but not a file
+        if (!isFile) {
+            return false;
+        }
+
+        // do filter
+        return matchesFilters(mimeType, filters);
     }
 
     public boolean matchesNodeType(Node node, String[] nodeTypes) {
@@ -369,7 +390,7 @@ public class NavigationHelper {
                 }
             } else if (key.equals(JCRClientUtils.WEBSITE_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/files", workspace,
-                                            jParams);
+                        jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getSite().getSiteKey());
                     userNodes.add(root);
@@ -391,7 +412,7 @@ public class NavigationHelper {
                 }
             } else if (key.equals(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/mashups", workspace,
-                                            jParams);
+                        jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getSite().getSiteKey());
                     userNodes.add(root);
@@ -500,9 +521,10 @@ public class NavigationHelper {
 
     /**
      * Return a node if existing exception otherwise
-     * @param path the path to test an dget the node if existing
+     *
+     * @param path      the path to test an dget the node if existing
      * @param workspace the workspace
-     * @param jParams the jparams
+     * @param jParams   the jparams
      * @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
      */
@@ -578,12 +600,14 @@ public class NavigationHelper {
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
-                if ((filtersToApply.length == 0 && mimeTypesToMatch.length == 0)
-                        || n.isCollection()
-                        || (matchesFilters(n.getName(), filtersToApply) && matchesFilters(n.getFileContent().getContentType(), mimeTypesToMatch))) {
+                // use for pickers 
+                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n.isFile(),n.getFileContent().getContentType(), mimeTypesToMatch);
+                if (n.isCollection() || matchFilter) {
                     String path = n.getPath();
                     if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
                         foundPaths.add(path);
+                        GWTJahiaNode node = getGWTJahiaNode(n, true);
+                        node.setMatchFilters(matchFilter);
                         result.add(getGWTJahiaNode(n, true));
                     }
                 }

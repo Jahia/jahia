@@ -37,8 +37,9 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.form.FileUploadField ;
+import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.content.portlet.PortletDefinitionField;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -124,9 +125,9 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "jnt:portlet","","",ManagerConfigurationFactory.MASHUPPICKER,propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "jnt:portlet", "", "", ManagerConfigurationFactory.MASHUPPICKER, propDefinition.isMultiple(), false);
                     break;
-                /*case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
+               /* case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
                     field = new PortletDefinitionField();
                     break;*/
                 case GWTJahiaNodeSelectorType.CHECKBOX:
@@ -135,11 +136,12 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
-                    field = new ContentPickerField(definition.getSelectorOptions().get("root") != null ? definition.getSelectorOptions().get("root") : "/content/categories", "", "","", ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(definition.getSelectorOptions().get("root") != null ? definition.getSelectorOptions().get("root") : "/content/categories", "", "", "", ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple(), false);
                     break;
                 case GWTJahiaNodeSelectorType.FILE:
                     field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), ManagerConfigurationFactory.FILEPICKER, propDefinition.isMultiple(), false);
                     break;
+              
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                     store.add(propDefinition.getValueConstraints());
@@ -162,11 +164,18 @@ public class FormFieldCreator {
                     }
                     break;
                 default:
+                    field = new TextField();
+                    break;
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
             if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:extraResource")) {
                 field = new FileUploadField(definition.getName());
+            }
+
+            // case of page piker
+            if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
+                field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), "", ManagerConfigurationFactory.PAGEPICKER, false, false);
             }
         }
         if (field == null) {
@@ -222,7 +231,7 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.BINARY:
                         break;
                     case GWTJahiaNodePropertyType.BOOLEAN:
-                        field.setValue(values.get(0).getBoolean());                        
+                        field.setValue(values.get(0).getBoolean());
                         break;
                     case GWTJahiaNodePropertyType.LONG:
                         field.setValue(values.get(0).getLong());
@@ -270,16 +279,16 @@ public class FormFieldCreator {
             str.append(", ");
             str.append(values.get(i).getString());
         }
-        
+
         return str.toString();
     }
 
 
-  private static native String getComboTemplate()  /*-{
+    private static native String getComboTemplate()  /*-{
     return  [
     '<tpl for=".">',
     '<div class="x-combo-list-item"><img src="{image}"/> {display}</div>',
     '</tpl>'
     ].join("");
-  }-*/; 
+  }-*/;
 }

@@ -1,1 +1,9 @@
 Jahia Crazy Jane - Templates Module
+
+* Goals Overview
+
+  Here You will find all general documentation about template.
+
+	* Dynamic Modules
+
+	  General instructions on how to create a new {{{dynamic_module.html} dynamic module}}.

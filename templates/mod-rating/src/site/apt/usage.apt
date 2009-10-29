@@ -12,12 +12,13 @@ Usage of Jahia Rating Module
   You can hardcode it inside your definition, like in the forum module post definition:
 
 -----------------------------------------------
-[jahiaForum:post] > jnt:container, jmix:rating
+[jnt:post] > jnt:content, jmix:rating, mix:title
  smallText title
  bigText content
 -----------------------------------------------
 
-  This Module define only one simple rule using the Jahia DSL language. For more information on rules see {{{http://www.jboss.org/drools/documentation.html} Drools Documentation}}.\
+  This Module define only one simple rule using the Jahia DSL language.
+  For more information on rules see {{{http://www.jboss.org/drools/documentation.html} Drools Documentation}}.\
   Here is the rule created for rating:
 
 -----------------------------------------------

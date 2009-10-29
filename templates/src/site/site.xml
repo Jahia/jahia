@@ -25,13 +25,15 @@ under the License.
     <body>
         <breadcrumbs>
             <item name="CJ - Home" href="../../../target/site/index.html"/>
-            <item name="Template Module" href="index.html"/>
+            <item name="Template Module" href="./index.html"/>
         </breadcrumbs>
         <menu name="Overview">
-            <item name="Introduction" href="index.html"/>
+            <item name="Introduction" href="./index.html"/>
+            <item name="Dynamic Module" href="./dynamic_module.html"/>
             <item name="Default Templates" href="../../mod-default/target/site/index.html"/>
             <item name="Forum Module" href="../../mod-forum/target/site/index.html"/>
             <item name="Rating Module" href="../../mod-rating/target/site/index.html"/>
+            <item name="Top Stories Module" href="../../mod-topstories/target/site/index.html"/>
         </menu>
         <menu ref="reports"/>
     </body>

@@ -44,7 +44,6 @@
     <artifactId>mod-topstories</artifactId>
     <name>Jahia Topstories</name>
     <packaging>war</packaging>
-    <url>jahia.org</url>
     <description>These are the custom module (jahiaTopstories) for running on a Jahia server.</description>
     <repositories>
         <repository>

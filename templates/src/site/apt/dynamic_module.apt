@@ -1,0 +1,132 @@
+Creation of Dynamic Module
+
+  Dynamic module refer to all the options you can activate on a content inside Jahia, that are not part of this content definition.
+  For example you might want to define a rating module that user can choose to activate on any piece of content,
+  or you can activate it by definitions or rules to automate it.  
+
+* How to define a dynamic module
+
+  The first thing to do for a new dynamic module is to write its definition. In your module definitions.cnd files,
+  create a definition extending < jmix:option, jmix:contentMixin mixin >.\
+  As an example we will look at the definition of the ration dynamic module :
+
+---------------------------------------
+[jmix:rating] > jmix:option, jmix:contentMixin mixin
+- j:nbOfVotes (long) = 0  autocreated hidden
+- j:sumOfVotes (long) = 0 autocreated hidden
+- j:lastVote (long) hidden
+- j:type (string,choicelist[resourceBundle]) = 'average' < 'average','plusminus'  
+---------------------------------------
+
+  We will now explain what all this extension means.
+
+    * jmix:contentMixin will tell jahia that this mixin is a content extension so that this
+    definition will be added to the current defintion.
+      By default this new properties will be displayed in the first panel of the content in the editor.
+
+    * jmix:option will tell jahia that this mixin is part of the options and must be available for end users
+    in the option panel of the editor instead of the default one.
+
+* Default template for automatic rendering of dynamic module
+
+  When a user will activate you dynamic module on a content, Jahia will by default append the options after the content  
+  by calling a template called : <hidden.options.wrapper>
+
+  In those templates you can do whatever you want but you must use the tags <<<\<template:option/\>>>> if you need to
+  call another template of your mixin type.
+
+  An example from the rating module :
+
+---------------------------------------
+<c:if test="${currentNode.propertiesAsString['j:type']=='plusminus'}">
+    <template:option nodetype="jmix:rating" node="${currentNode}" template="hidden.plusone_minorone_form"/>
+    <template:option nodetype="jmix:rating" node="${currentNode}" template="hidden.plusone_minorone"/>
+</c:if>
+<c:if test="${currentNode.propertiesAsString['j:type']=='average'}">
+    <template:option nodetype="jmix:rating" node="${currentNode}" template="hidden.average"/>
+</c:if>  
+---------------------------------------
+
+  If you want to call a template for another type of node then just use the <<<\<template:module/\>>>> tag.
+
+  An example from the comments dynamic module from the forum :
+
+---------------------------------------
+<c:if test="${currentNode.properties.shortView.boolean == true}">
+   <template:module node="${comments}" forcedTemplate="summary"/>
+</c:if>
+<c:if test="${currentNode.properties.shortView.boolean == false}">
+   <template:module node="${comments}" forcedTemplate="default"/>
+</c:if>
+---------------------------------------
+
+  Here the node comments is of type jnt:thread and so we will call the template "default" or "summary" for this specific node.
+
+  Your dynamic module do not need to define a rendering template if none is needed, you can look at the topstories module to see an example.
+
+* How to avoid automatic display of options if needed ?
+
+  Let say that your dynamic module define only some properties to flag a content,
+  and that those flags will be used elsewhere to get this flagged content and display it here.
+
+  There is an example of such behavior in the topstories module. In this  module the dynamic part define at
+  which level in the top stories your content must appear and until which date. There is no rendering of the jmix:topStory type.
+  Once your content is flagged as a topStory it will appear in your Top Stories place holder dynamically.
+  For this you need to have at list put one "Top Stories" from "Interactive Content" inside one of your pages.
+  When rendering the topStories element, we only want to display the flagged content without any options or skins.
+  Let see how we do that :
+
+---------------------------------------
+<c:if test="${currentNode.properties['j:firstLimit'].long gt 0}">
+    <jcr:sql var="topStories"
+             sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
+         and story.[j:level]='first' order by story.[jcr:lastModified] desc"/>
+    <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long - 1}">
+        <template:module node="${topic}" forcedTemplate="large" editable="false">
+            <template:param name="withoutOptions"/>
+            <template:param name="withoutSkins"/>
+        </template:module>
+    </c:forEach>
+</c:if>
+---------------------------------------
+
+  Here we pass some parameters to the <<<\<template:module/\>>>> tag to say that we do not want to display options or skins.
+
+    * <<<\<template:param name="withoutOptions"/\>>>> specify that we not want to display options for this module rendering.
+
+    * <<<\<template:param name="withoutSkins"/\>>>> specify that we not want to display skins for this module rendering.
+    
+    * <<<\<template:param name="renderOptionsBefore"/\>>>> specify that we want to display options before this module content.
+
+* How do I force an option on my content and specify where and how to display it ?
+
+  Let say I define a module and want to force the usage of rating dynamic module on this content. How do I do that ?
+
+  It is in fact very simple, we will look at the forum module where we want that all posts are rateable by end users,
+  using a plus one / minus one type of vote.
+
+  First of all I have to hardcode in my definition the fact tha my post content is flagged by jmix:rating, here how ot do that :
+
+---------------------------------------
+[jnt:post] > jnt:content, jmix:rating, mix:title
+bigText content
+---------------------------------------
+
+  Here I define that my post will contains a title and a content, and that they are rateable by using jmix:rating in the inherited mixin types.
+  Now I know that all my posts will have the jmix:rating dynamic module associated with them, How do I decide where to display this module
+   and how it behave, it is once again very simple, in my jnt_post template all I have to do is calling the <<<\<template:option/\>>>> tag :
+
+---------------------------------------
+<template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
+<span class="forum-corners-top"><span></span></span>
+
+<div class="forum-postbody">
+    <ul class="forum-profile-icons">
+        <c:if test="${renderContext.user.name != 'guest'}">
+            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>            
+            <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>
+        </c:if>
+---------------------------------------
+
+   Here you see that we use twice the <<<\<template:option/\>>>> tag, to call two specific templates of the rating module.
+   Jahia will take care then of removing this options from the phase of automatic rendering of options.

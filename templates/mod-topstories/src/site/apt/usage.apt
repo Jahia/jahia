@@ -1,0 +1,60 @@
+Usage of Jahia Top Stories Module
+
+  This module allows you to put a top stories interactive content on your site that will display content
+  that are flagged as top story following some rules.
+
+      * {{{Top} Top Stories Rendering}}
+
+      * {{{Flag} Flag content}}
+
+      * {{{How} How to automatically remove or add a mixin using rules}}
+
+* {Top} Stories Rendering
+
+  When you drag and drop a Top Stories element from Interactiv Content to your page, you will have to configure it
+  in the popup window.
+  The Top Stories module define three level of top story that matches three type of rendering :
+
+  * Level 1 - the top story associated with this level wil be displayed using a large template
+
+  * Level 2 - the top story associated with this level wil be displayed using the default template
+
+  * Level 3 - the top story associated with this level wil be displayed using the small template
+
+  That is it for configuring your Top Stories place holder.
+
+* {Flag} content to be displayed in Top Stories place holder
+
+  When you want to display a content in Top Stories place holder all you have to do, is to double clik on this content.\
+  Go to the Options tabs, activate the Top Story option and fill the properties associated.
+
+  * Define the level at which you want your content to appear.
+
+  * Define if wanted the expiration of your Top Story. When the date is reached Jahia will automatically
+  remove this content from\ Top Stories by removing its Top Story Option (if you reopen the editor, you will
+  see that the Top Story option is deactivated)
+
+* {How} to automatically remove or add a mixin using rules ?
+
+  The Jahia rules allows you add or remove a mixin from a node.\ They also allows you to schedule execution of another rule.
+
+  An example from this module that will remove the jmix:topStory mixin from a content when a date is reached,
+  based on the j:endDate property of this mixin.
+
+---------------------------------------
+rule "Put Content in Top Stories"
+   when
+       A property j:endDate has been set on a node
+        - the node has the type jmix:topStory
+   then
+       Execute the rule "Remove From Top Stories" at j:endDate for the node
+end
+
+rule "Remove From Top Stories"
+   when
+       The rule "Remove From Top Stories" is executing
+        - the node has the type jmix:topStory
+   then
+       Remove the type jmix:topStory
+end
+---------------------------------------

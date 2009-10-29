@@ -1,0 +1,83 @@
+How to code a template using JSON and JQUERY
+
+  The average tempalte of the Jahia Rating Module use a {{{http://orkans-tmp.22web.net/star_rating/index.html}star rating}} plugin for jquery.\
+  We will see how to achieve that.
+
+* First step define the resources
+
+  Our templates will need some resources mostly CSS and Javascript. The css files must be put under the css directory,
+  javascript files must be under the javascript directory
+
+------------------------------------
+rating
+|-css
+|-javascript
+|-jmix_rating
+|---html
+|-resources
+|-WEB-INF
+------------------------------------
+
+* Import the resources in the rendered HTML
+
+  When you use resources you want them to be loaded in the HTML HEAD tag instead of where you define them, for html performance reason mostly.
+
+  Jahia provide you a simple way of doing that, the tag <<<\<template:addResources\>>>>.
+
+  Here an example of how to use it :
+
+------------------------------------
+<template:addResources type="css" resources="uni-form.css,ui.stars.css" nodetype="jmix:rating"/>
+<template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js" nodetype="jmix:rating"/>
+------------------------------------
+
+  This tag allows you define the order of your resources which can be very important for css or javascript.
+
+* Submit your form with JQuery and get the updated node as JSON
+
+  Here the goal is to submit the vote made by the user in AJAX, and update the results displayed on page based on its vote.
+
+  We will first show you the javascript code (if you are not familiar with JQuery then look at their {{{http://docs.jquery.com}documentation}} first).
+
+  For the full code look into the file rating.hidden.average.jsp
+
+------------------------------------
+// Send request to the server using POST method
+$.post("${url.base}${currentNode.path}",
+{'j:lastVote': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"},
+ function(result) {
+    // Select stars from "Average rating" control to match the returned average rating value
+    $("#avg").stars("select", Math.round(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes));
+
+	// Update other text controls...
+	$("#all_votes").text(result.${currentNode.name}.j_nbOfVotes);
+	$("#all_avg").text(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes);
+
+	// Display confirmation message to the user
+	$("#messages").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
+
+	// Hide confirmation message and enable stars for "Rate this" control, after 2 sec...
+	setTimeout(function(){
+	$("#messages").fadeOut(1000, function(){ui.enable();});
+	}, 2000);
+}, "json");
+------------------------------------
+
+  * The first argument for the method post is the destination url of the request, here we update our current node.
+
+  * The second argument is the list of params to send in the request, (here they are hardcoded, but you can also serialize your form directly).
+
+  * The third argument is the callback function that will receive for parameter the result of the post.
+  
+  * The fourth argument is the type of the return.
+
+  We will now focus on the callback function.
+
+  When you do a put (update of an existing node), and ask for json return, Jahia will serialize back to you the updated node.
+  The serialization will follow those rules :
+
+  * The JSON object will have the name of the node.
+  
+  * All the properties will be available and in the properties name we will replace ":" by "_".
+
+  So to access to a property of my updated node all I have to do is result.node_name.j_nbOfVotes.  

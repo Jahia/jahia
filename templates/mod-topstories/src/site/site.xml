@@ -29,8 +29,11 @@ under the License.
         </breadcrumbs>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
-            <item name="Usage" href="./usage.html"/>
-            <item name="JSON JQuery Template" href="./json_jquery.html"/>
+            <item name="Usage" href="./usage.html" collapse="false">
+                <item name="Top Stories Rendering" href="./usage.html#Top"/>
+                <item name="Flag Content" href="./usage.html#Flag"/>
+                <item name="Add/Remove Mixin with rules" href="./usage.html#How"/>
+            </item>
         </menu>
         <menu ref="reports"/>
     </body>

@@ -8,6 +8,10 @@ Jahia Rating Module
 
 	  General instructions on how to use the Jahia Rating Module can be found on the {{{usage.html}usage page}}.
 
+	* How to develop tempaltes using JSON and JQuery ?
+
+	  General instructions on how to code the star rating system using {{{json_jquery.html}JSON JQuery}}.
+
 	* How-to develop similar modules
 
 	   The Jahia Rating Module is made of three different parts:
@@ -23,23 +27,18 @@ Jahia Rating Module
 
 	     * A template defining the rendering (example jmix_rating/html/rating_plusone_minorone.jsp).
 	     
-	     <To use this (+1,-1) behavior you have to first call \<template:module node="$\{currentNode\}" template="plusone_minorone_form"/\>
-	     in a place it has no impact on your design and then call \<template:module node="$\{currentNode\}" template="plusone_minorone"/\>
+	     <To use this (+1,-1) behavior you have to first call <<<\<template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/\>>>>
+	     in a place it has no impact on your design and then call <<<\<template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/\>>>>
 	     where you want to display the rating.>
 
 -------------------------------------------------------------------------------------------------
-<template:module node="${currentNode}" template="plusone_minorone_form"/>
-         <span class="forum-corners-top"><span></span></span>
+<template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
+<span class="forum-corners-top"><span></span></span>
 
-         <div class="forum-postbody">
-           <ul class="forum-profile-icons">
-             <c:if test="${renderContext.user.name != 'guest'}">
-               <li class="forum-report-icon"><a title="Report this post" href="#"><span>Report this post</span></a></li>
-               <li class="forum-quote-icon">
-                <a title="Reply with quote" href="#threadPost"
-                   onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}',
-                   '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
-               </li>
-               <li><template:module node="${currentNode}" template="plusone_minorone"/></li>
-             </c:if>
+<div class="forum-postbody">
+    <ul class="forum-profile-icons">
+        <c:if test="${renderContext.user.name != 'guest'}">
+            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
+            <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>
+        </c:if>
 --------------------------------------------------------------------------------------------------

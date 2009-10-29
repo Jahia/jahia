@@ -6,7 +6,7 @@
 <template:addResources type="css" resources="tags.css"/>
 <jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
 <div class="tags">
-<h3><fmt:message key="tags"/></h3>
+<h3><c:if test="${not empty currentNode.properties['jcr:title'] && not empty not empty currentNode.properties['jcr:title'].string}" var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>
 <ul>
 <jcr:sql var="tags" sql="select * from [jnt:tag] as sel where ischildnode(sel,['${tagsRoot.path}']) order by sel.[j:nodename]"/>
 <c:forEach items="${tags.nodes}" var="tag">
@@ -14,4 +14,5 @@
 <c:if test="${tag.references.size > 9}"> <c:set var="tagCount" value="9"/></c:if>
 <li><a class="tag${tagCount}0">${tag.name}</a></li>
 </c:forEach>
+</ul>
 </div>

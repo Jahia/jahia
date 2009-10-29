@@ -7,6 +7,6 @@
  - j:thirdLimit (long)
 
 [jmix:topStory] > jmix:option, jmix:contentMixin mixin
- - j:level (string,choicelist[resourceBundle]) < 'first','second','third'
+ - j:level (string,choicelist[resourceBundle]) = 'first' < 'first','second','third'
  - j:endDate (date)
  

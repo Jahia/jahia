@@ -4,6 +4,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jcr:nodeProperty node="${currentNode}" name="j:nbOfVotes" var="nbVotes"/>
 <jcr:nodeProperty node="${currentNode}" name="j:sumOfVotes" var="sumVotes"/>
+<c:set var="id" value="${currentNode.identifier}"/>
 <c:if test="${nbVotes.long > 0}">
     <c:set var="avg" value="${sumVotes.long / nbVotes.long}"/>
 </c:if>
@@ -14,61 +15,61 @@
 <template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js" nodetype="jmix:rating"/>
 <script type="text/javascript">
     $(function() {
-        $("#avg${currentNode.name}").children().not(":input").hide();
-        $("#rat${currentNode.name}").children().not("select").hide();
+        $("#avg${id}").children().not(":input").hide();
+        $("#rat${id}").children().not("select").hide();
 
         // Create stars for: Average rating
-        $("#avg${currentNode.name}").stars();
+        $("#avg${id}").stars();
 
         // Create stars for: Rate this
-        $("#rat${currentNode.name}").stars({
+        $("#rat${id}").stars({
 			inputType: "select",
             cancelShow: false,
-            captionEl: $("#caption"),
+            captionEl: $("#caption${id}"),
 			callback: function(ui, type, value)
 				{
 					// Disable Stars while AJAX connection is active
 					ui.disable();
 
 					// Display message to the user at the begining of request
-					$("#messages").text("Saving...").stop().css("opacity", 1).fadeIn(30);
+					$("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
 					// Send request to the server using POST method
 					$.post("${url.base}${currentNode.path}", {'j:lastVote': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
 					{
 							// Select stars from "Average rating" control to match the returned average rating value
-							$("#avg").stars("select", Math.round(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes));
+							$("#avg${id}").stars("select", Math.round(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes));
 
 							// Update other text controls...
-							$("#all_votes").text(result.${currentNode.name}.j_nbOfVotes);
-							$("#all_avg").text(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes);
+							$("#all_votes${id}").text(result.${currentNode.name}.j_nbOfVotes);
+							$("#all_avg${id}").text(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes);
 
 							// Display confirmation message to the user
-							$("#messages").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
+							$("#messages${id}").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
 
 							// Hide confirmation message and enable stars for "Rate this" control, after 2 sec...
 							setTimeout(function(){
-								$("#messages").fadeOut(1000, function(){ui.enable();});
+								$("#messages${id}").fadeOut(1000, function(){ui.enable();});
 							}, 2000);
 					}, "json");
 				}
         });
 
         // Since the <option value="3"> was selected by default, we must remove selection from Stars.
-        $("#rat${currentNode.name}").stars("selectID", -1);
+        $("#rat${id}").stars("selectID", -1);
 
         // Create element to use for confirmation messages
-        $('<div id="messages"/>').appendTo("#rat${currentNode.name}");
+        $('<div id="messages${id}"/>').appendTo("#rat${id}");
     });
 </script>
 
 <div class="ratings">
 
     <div class="rating-L"><strong>Average rating</strong>
-        <span>(<span id="all_votes">${nbVotes.long}</span> votes; <span
-                id="all_avg">${avg}</span>)</span>
+        <span>(<span id="all_votes${id}">${nbVotes.long}</span> votes; <span
+                id="all_avg${id}">${avg}</span>)</span>
 
-        <form id="avg${currentNode.name}" style="width: 200px" action="">
+        <form id="avg${id}" style="width: 200px" action="">
 
 
             <input type="radio" name="rate_avg" value="1" title="Poor"
@@ -91,9 +92,9 @@
     </div>
 
 
-    <div class="rating-R"><strong>Rate this:</strong> <span id="caption"></span>
+    <div class="rating-R"><strong>Rate this:</strong> <span id="caption${id}"></span>
 
-        <form id="rat${currentNode.name}" action="${url.base}${currentNode.path}" method="post">
+        <form id="rat${id}" action="${url.base}${currentNode.path}" method="post">
             <select name="j:lastVote">
                 <option value="1">Poor</option>
                 <option value="2">Fair</option>

@@ -118,6 +118,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String JNT_MAIL = "jnt:mail";
     public static final String JNT_PUBLICATION = "jnt:publication";
     public static final String JNT_TAG = "jnt:tag";
+    public static final String JNT_TAG_CLOUD = "jnt:tagCloud";
     public static final String JNT_PAGE_TAGGING = "jnt:pageTagging";
     public static final String JNT_CATEGORY = "jnt:category";
     public static final String JNT_NEWS = "jnt:news";
@@ -212,7 +213,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntMail();
             } else if (type.equalsIgnoreCase(JNT_PUBLICATION)) {
                 return CONTENT_ICONS.jntPublication();
-            } else if (type.equalsIgnoreCase(JNT_TAG) || type.equalsIgnoreCase(JNT_PAGE_TAGGING) ) {
+            } else if (type.equalsIgnoreCase(JNT_TAG) || type.equalsIgnoreCase(JNT_PAGE_TAGGING) || type.equalsIgnoreCase(JNT_TAG_CLOUD)) {
                 return CONTENT_ICONS.jntTag();
             } else if (type.equalsIgnoreCase(JNT_CATEGORY)) {
                 return CONTENT_ICONS.jntCategory();

@@ -19,11 +19,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.LineNumberReader;
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * Service to render node
@@ -176,7 +172,7 @@ public class RenderService extends JahiaService {
             ((Resource)request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
         }
 
-        return removeBlankLines(output);
+        return output;
     }
 
     private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node, String output,
@@ -289,22 +285,5 @@ public class RenderService extends JahiaService {
             set.addAll(scriptResolver.getTemplatesSet(nt));
         }
         return set;
-    }
-
-    private String removeBlankLines(String inputStr) {
-        LineNumberReader lnr=new LineNumberReader(new StringReader(inputStr));
-        StringBuffer outputStr = new StringBuffer();
-        String line = "";
-        try {
-            while ((line = lnr.readLine()) != null) {
-                    if (!"".equals(line.trim())) {
-                        outputStr.append(line);
-                        outputStr.append("\n");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); 
-        }
-        return outputStr.toString();
     }
 }

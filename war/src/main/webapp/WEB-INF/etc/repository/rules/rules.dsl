@@ -18,6 +18,7 @@
 [condition][]The type {name} has been assigned to a node=m : PropertyWrapper ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
 [condition][]The {node} has a child=child : NodeWrapper ( ) from node.childNodes
 [condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
+[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : NodeWrapper() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=node.types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
@@ -38,6 +39,7 @@
 [condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]- the value is {value}=stringValue == {value}
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
+[consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
 [consequence][]Assign permissions "{perms}" on the {node} to a group matching that property=service.setPermissions({node},"g:" + propertyValue + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the current user=service.setPermissions({node},"u:" + user.getName() + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the group {group}=service.setPermissions({node},"g:" + {group} + ":{perms}", drools);
@@ -80,3 +82,4 @@
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
+[consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeLater(node, "{property}",{ruleName}, drools);

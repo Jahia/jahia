@@ -1,0 +1,35 @@
+###############################################################################
+package org.jahia.modules.topstories.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+###############################################################################
+
+rule "Put Content in Top Stories"
+   when
+       A property j:endDate has been set on a node
+        - the node has the type jmix:topStory
+   then
+       Execute the rule "Remove From Top Stories" at j:endDate for the node
+end
+
+rule "Remove From Top Stories"
+   when
+       The rule "Remove From Top Stories" is executing
+        - the node has the type jmix:topStory
+   then
+       Remove the type jmix:topStory
+end

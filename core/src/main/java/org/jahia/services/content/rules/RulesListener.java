@@ -356,15 +356,7 @@ public class RulesListener extends DefaultEventListener {
                     final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
 
-                    Map<String, Object> globals = new HashMap<String, Object>();
-
-                    globals.put("service", Service.getInstance());
-                    globals.put("imageService", ImageService.getInstance());
-                    globals.put("extractionService", ExtractionService.getInstance());
-                    globals.put("logger", logger);
-                    globals.put("user", new User(username));
-                    globals.put("provider", provider);
-                    globals.put("delayedUpdates", delayedUpdates);
+                    Map<String, Object> globals = getGlobals(username, delayedUpdates);
 
                     executeRules(list, globals);
 
@@ -411,6 +403,19 @@ public class RulesListener extends DefaultEventListener {
         } catch (Exception e) {
             logger.error("Error when executing event", e);
         }
+    }
+
+    public Map<String, Object> getGlobals(String username, List<Updateable> delayedUpdates) {
+        Map<String, Object> globals = new HashMap<String, Object>();
+
+        globals.put("service", Service.getInstance());
+        globals.put("imageService", ImageService.getInstance());
+        globals.put("extractionService", ExtractionService.getInstance());
+        globals.put("logger", logger);
+        globals.put("user", new User(username));
+        globals.put("provider", provider);
+        globals.put("delayedUpdates", delayedUpdates);
+        return globals;
     }
 
     class DelayedUpdatesTimerTask extends TimerTask {

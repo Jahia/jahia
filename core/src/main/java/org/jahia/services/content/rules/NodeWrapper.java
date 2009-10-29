@@ -31,23 +31,15 @@
  */
 package org.jahia.services.content.rules;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
-
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -182,6 +174,12 @@ public class NodeWrapper implements Updateable {
 
     public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
         node.addMixin(type);
+        drools.insert(new PropertyWrapper(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        //        drools.update(this);
+    }
+
+    public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
+        node.removeMixin(type);
         drools.insert(new PropertyWrapper(this, node.getProperty(Constants.JCR_MIXINTYPES)));
         //        drools.update(this);
     }

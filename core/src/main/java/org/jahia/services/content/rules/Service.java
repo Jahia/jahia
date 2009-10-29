@@ -47,6 +47,7 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -69,13 +70,12 @@ import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
+import org.quartz.*;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Property;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.security.Principal;
@@ -884,4 +884,20 @@ public class Service {
 		}
 		((TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService")).tag(node.getNode(), value, siteKey, true);
 	}
+
+    public void executeLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
+            throws JahiaException, RepositoryException {
+        final String uuid = node.getNode().getIdentifier();
+        final SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
+        final String jobName = "RULES_JOB_" + uuid + ruleToExecute;
+        final JobDetail jobDetail = new JobDetail(jobName, "RULES_JOBS", RuleJob.class,false,true,false);
+        final JobDataMap map = jobDetail.getJobDataMap();
+        map.put("ruleToExecute",ruleToExecute);
+        map.put("node", uuid);
+        map.put("user",((User)drools.getWorkingMemory().getGlobal("user")).getName());
+        map.put("provider",((JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider")).getKey());
+        service.deleteJob(jobName, "RULES_JOBS");
+        service.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
+    }
+
 }

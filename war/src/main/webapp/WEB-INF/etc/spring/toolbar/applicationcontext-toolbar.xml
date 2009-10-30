@@ -55,6 +55,14 @@
         </property>
     </bean>
 
+     <bean id="page-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.sites.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="mashup-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>

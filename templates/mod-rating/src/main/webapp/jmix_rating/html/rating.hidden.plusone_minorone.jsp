@@ -7,8 +7,23 @@
 
 <jcr:nodeProperty node="${currentNode}" name="j:nbOfVotes" var="nbVotes"/>
 <jcr:nodeProperty node="${currentNode}" name="j:sumOfVotes" var="sumVotes"/>
+<c:set var="positiveVote" value="0"/>
+<c:set var="negativeVote" value="0"/>
+<c:if test="${nbVotes.long > 0}">
+    <c:if test="${sumVotes.long > 0}">
+        <c:set var="positiveVote" value="${((sumVotes.long)+(nbVotes.long - sumVotes.long)/2)}"/>
+        <c:set var="negativeVote" value="${(nbVotes.long - sumVotes.long)/2}"/>
+    </c:if>
+    <c:if test="${sumVotes.long == 0}">
+        <c:set var="positiveVote" value="${nbVotes.long/2}"/>
+        <c:set var="negativeVote" value="${nbVotes.long/2}"/>
+    </c:if>
+    <c:if test="${sumVotes.long < 0}">
+        <c:set var="positiveVote" value="${(nbVotes.long + sumVotes.long)/2}"/>
+        <c:set var="negativeVote" value="${((-sumVotes.long)+(nbVotes.long + sumVotes.long)/2)}"/>
+    </c:if>
+</c:if>
 <a title="Vote +1" href="#"
-   onclick="document.getElementById('jahia-forum-post-vote-${currentNode.UUID}').submit();"><span>+1</span></a>
+   onclick="document.getElementById('jahia-forum-post-vote-${currentNode.UUID}').submit();"><span>+1 (<fmt:formatNumber value="${positiveVote}" pattern="##"/> Good)</span></a>
 <a title="Vote -1" href="#"
-   onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.UUID}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1</span></a><span><c:if
-        test="${nbVotes.long > 0}">(already ${nbVotes.long} votes Note=${sumVotes.long})</c:if></span>
+   onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.UUID}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1 (<fmt:formatNumber value="${negativeVote}" pattern="##"/>  Bad)</span></a>

@@ -49,7 +49,7 @@
       </snapshots>
       <id>jahiaRepository</id>
       <name>Jahia's Maven Repository</name>
-      <url>http://www.jahia.org/</url>
+      <url>http://maven.jahia.org/maven2</url>
     </repository>
   </repositories>
 

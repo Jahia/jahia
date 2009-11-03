@@ -285,7 +285,7 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.services.templates.TemplatePackageRegistry" class="org.jahia.services.templates.TemplatePackageRegistry" depends-on="JahiaStoreProvider">
+    <bean id="org.jahia.services.templates.TemplatePackageRegistry" class="org.jahia.services.templates.TemplatePackageRegistry">
         <property name="settingsBean" ref="settingsBean" />
     </bean>
 

@@ -492,11 +492,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
                 JahiaPageService pageService = ServicesRegistry.getInstance().getJahiaPageService();
 
-                int homePageDefId = ServicesRegistry.getInstance()
-                        .getJahiaPageTemplateService()
-                        .lookupPageTemplateByName(
-                                templPackage.getHomePageTemplate()
-                                        .getName(), site.getID()).getID();
+//                int homePageDefId = ServicesRegistry.getInstance()
+//                        .getJahiaPageTemplateService()
+//                        .lookupPageTemplateByName(
+//                                templPackage.getHomePageTemplate()
+//                                        .getName(), site.getID()).getID();
 
 
                 JahiaBaseACL jAcl = new JahiaBaseACL ();
@@ -506,7 +506,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         0,
                         PageInfoInterface.TYPE_DIRECT,
                         "Welcome to " + site.getServerName(),
-                        homePageDefId,
+                        0,
                         "http://",
                         -1,
                         jParams.getUser().getUserKey(),

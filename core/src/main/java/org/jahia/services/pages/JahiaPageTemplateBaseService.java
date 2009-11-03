@@ -312,16 +312,6 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
             throws JahiaException {
 
         TreeMap<String, JahiaPageDefinition> tm = new TreeMap<String, JahiaPageDefinition> ();
-        List<Integer> templateIDs = templateManager.getPageTemplateIDs(siteID, availableOnly);
-        for (Integer entryKey : templateIDs) {
-            JahiaPageDefinition template = templateCache.get (
-                    entryKey);
-            if(template == null) {
-                template = lookupPageTemplate(entryKey.intValue());
-            }
-            tm.put (template.getName (), template);
-        }
-
         List<JahiaPageDefinition> theList = new ArrayList<JahiaPageDefinition>(tm.values());
         
         return theList.iterator();
@@ -396,44 +386,14 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
 
     public JahiaPageDefinition lookupPageTemplate (int templateID)
             throws JahiaException, JahiaTemplateNotFoundException {
-
-        // Try to read the page template out of the cache
-        JahiaPageDefinition template =
-                templateCache.get (new Integer (templateID));
-
-        // if the template is not present in the cache, read it
-        // from the database.
-        if (template == null) {
-            template = templateManager.loadPageTemplate (templateID);
-
-            // if the page template is not in the database, raise an
-            // exception
-            if (template != null) {
-                populatePageTemplateData(template);
-                templateCache.put(new Integer(template.getID()), template);
-
-            } else {
-                throw new JahiaTemplateNotFoundException (templateID);
-            }
-        }
-        return template;
+        return null;
     }
 
 
     public JahiaPageDefinition lookupPageTemplateByName (String name, int siteID)
             throws JahiaException,
             JahiaTemplateNotFoundException {
-
-        JahiaPageDefinition template = templateManager.loadPageTemplate(name,
-                siteID);
-
-        if (template != null) {
-            populatePageTemplateData(template);
-            templateCache.put(new Integer(template.getID()), template);
-        } else {
-            throw new JahiaTemplateNotFoundException(name);
-        }
-        return template;
+        return null;
     }
 
 

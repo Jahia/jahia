@@ -343,10 +343,6 @@ public class JahiaPageBaseService extends JahiaPageService {
                     saveField (parentField, -1, jParam);
         }
 
-        if (pageType == JahiaPage.TYPE_DIRECT) {
-            ServicesRegistry.getInstance().getJahiaContainersService().buildContainerStructureForPage(jParam,page);
-        }
-
         return page;
     }
 

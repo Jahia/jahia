@@ -125,22 +125,7 @@ public class Core_Engine implements JahiaEngine {
     private void processCore(JahiaData jData)
             throws JahiaException {
         ParamBean processingContext = (ParamBean) jData.getProcessingContext();
-        if (processingContext.getPage() == null
-                || processingContext.getPage().getPageTemplate() == null) {
-            // this can happen in the page doesn't exist in this operation mode
-            // in a certain language.
-            throw new JahiaPageNotFoundException(processingContext.getPageID(),
-                    processingContext.getLocale().toString(),
-                    processingContext.getOperationMode());
 
-        }
-
-        if (processingContext.getPage() == null) {
-            if (!processingContext.getContentPage().checkReadAccess(processingContext.
-                    getUser())) {
-                throw new JahiaForbiddenAccessException();
-            }
-        }
         try {
             String base;
             if (ParamBean.NORMAL.equals(processingContext.getOpMode())) {
@@ -150,10 +135,7 @@ public class Core_Engine implements JahiaEngine {
             } else {
                 base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
             }
-            String jcrPath = processingContext.getContentPage().getJCRPath(processingContext);
-            if (jcrPath.startsWith("/content/jahia")) {
-                jcrPath = "/content/sites" + jcrPath.substring("/content/jahia".length());
-            }
+            String jcrPath = "/content/sites/" + processingContext.getSiteKey() + "/home";
             processingContext.getRealResponse().sendRedirect(base + jcrPath + ".html");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

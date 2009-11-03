@@ -98,12 +98,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         // store package name in the site's properties
         site.setTemplatePackageName(templatePackage.getName());
 
-        // first create or update page definitions for the site
-        pageDefinitionHelper.updatePageDefinitions(site, siteService, pageService, templatePackage, tplService);
-
-        // set default template
-        pageDefinitionHelper.setDefaultTemplate(site, templatePackage);
-
         return templatePackage;
     }
 
@@ -428,13 +422,6 @@ public class JahiaTemplateManagerService extends JahiaService {
 
         ((JahiaPageTemplateBaseService)tplService).setTemplateManagerService(this);
         
-        // update all page definitions
-        try {
-            pageDefinitionHelper.updateAllPageDefinitions(pageService, siteService, tplService);
-        } catch (JahiaException ex) {
-            logger.error("Error updating all page definitions", ex);
-        }
-
         // start template package watcher
 		templatePackageDeployer.startWatchdog(this);
 

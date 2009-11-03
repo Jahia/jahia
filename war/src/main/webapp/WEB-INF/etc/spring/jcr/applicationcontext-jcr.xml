@@ -43,34 +43,34 @@
         </property>
     </bean>
 
-    <bean id="JahiaStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
-        <property name="key" value="jahia"/>
-        <property name="rmibind" value="jahia"/>
-        <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
-        <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
-        <property name="listeners">
-            <map>
-                <entry key="default">
-                    <list>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
-                            <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
-                            <property name="serverId" value="${cluster.node.serverId}" />
-                        </bean>
-                    </list>
-                </entry>
-                <entry key="live">
-                    <list>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
-                            <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
-                            <property name="serverId" value="${cluster.node.serverId}" />
-                        </bean>
-                    </list>
-                </entry>
-            </map>
-        </property>
-        <property name="mountPoint" value="/content/jahia"/>
-    </bean>
+    <!--<bean id="JahiaStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
+        <!--<property name="key" value="jahia"/>-->
+        <!--<property name="rmibind" value="jahia"/>-->
+        <!--<property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>-->
+        <!--<property name="sessionFactory" ref="jcrSessionFactory"/>-->
+        <!--<property name="publicationService" ref="jcrPublicationService"/>-->
+        <!--<property name="listeners">-->
+            <!--<map>-->
+                <!--<entry key="default">-->
+                    <!--<list>-->
+                        <!--<bean class="org.jahia.services.content.rules.RulesListener" init-method="start">-->
+                            <!--<property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />-->
+                            <!--<property name="serverId" value="${cluster.node.serverId}" />-->
+                        <!--</bean>-->
+                    <!--</list>-->
+                <!--</entry>-->
+                <!--<entry key="live">-->
+                    <!--<list>-->
+                        <!--<bean class="org.jahia.services.content.rules.RulesListener" init-method="start">-->
+                            <!--<property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />-->
+                            <!--<property name="serverId" value="${cluster.node.serverId}" />-->
+                        <!--</bean>-->
+                    <!--</list>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+        <!--<property name="mountPoint" value="/content/jahia"/>-->
+    <!--</bean>-->
 
     <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance" lazy-init="true" init-method="start">
         <property name="userService" ref="JahiaUserManagerService"/>

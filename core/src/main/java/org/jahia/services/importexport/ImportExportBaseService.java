@@ -801,7 +801,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-                        handleImport(zis, new LegacyImportHandler(siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode)));
+                        LegacyImportHandler importHandler = new LegacyImportHandler(siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
+                        importHandler.setUuidMapping(uuidMapping);
+                        handleImport(zis, importHandler);
+
                     }
                     zis.closeEntry();
                 }

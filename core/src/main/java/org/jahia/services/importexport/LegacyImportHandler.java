@@ -46,6 +46,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private int ctnId = 1;
 
     private Map<String,String> uuidMapping = new HashMap<String,String>();
+    private Map<String,String> pathMapping = new HashMap<String,String>();
 
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
@@ -71,6 +72,10 @@ public class LegacyImportHandler extends DefaultHandler {
 
     public void setUuidMapping(Map uuidMapping) {
         this.uuidMapping = uuidMapping;
+    }
+
+    public void setPathMapping(Map pathMapping) {
+        this.pathMapping = pathMapping;
     }
 
     /**
@@ -363,6 +368,14 @@ public class LegacyImportHandler extends DefaultHandler {
                         if (value != null) {
                             if (value.startsWith("/")) {
                                 try {
+                                    if (pathMapping != null) {
+                                        for (String map : pathMapping.keySet()) {
+                                            if (value.startsWith(map)) {
+                                                value = pathMapping.get(map) + value.substring(map.length());
+                                                break;
+                                            }
+                                        }
+                                    }
                                     JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(value);
                                     n.setProperty(propertyName, file.getIdentifier());
                                 } catch (PathNotFoundException e) {

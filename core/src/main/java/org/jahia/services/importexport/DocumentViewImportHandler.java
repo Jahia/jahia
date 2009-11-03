@@ -31,15 +31,14 @@
  */
 package org.jahia.services.importexport;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.zip.ZipEntry;
@@ -47,7 +46,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.*;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,9 +76,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
     private Stack<String> pathes = new Stack<String>();
 
-    private Map<String,String> uuidMapping = new HashMap<String,String>();
-    private Map<String,String> pathMapping = new HashMap<String,String>();
-    private Map<String,List<String>> references = new HashMap<String,List<String>>();
+    private Map<String, String> uuidMapping = new HashMap<String, String>();
+    private Map<String, String> pathMapping = new HashMap<String, String>();
+    private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private String currentFilePath = null;
 
@@ -103,9 +106,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-        System.out.println("----------------- "+localName);
         if (error > 0) {
-            error ++;
+            error++;
             return;
         }
 
@@ -122,7 +124,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
             String path;
             if (nodes.peek().getPath().equals("/")) {
-                path ="/" + decodedQName;
+                path = "/" + decodedQName;
             } else {
                 path = nodes.peek().getPath() + "/" + decodedQName;
             }
@@ -133,7 +135,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 String newpath;
                 JCRNodeWrapper siteFolder = JCRStoreService.getInstance().getSiteFolders(jParams.getSiteKey(), jParams.getUser()).get(0);
                 newpath = siteFolder.getPath();
-                pathMapping.put(path + "/",newpath +"/");
+                pathMapping.put(path + "/", newpath + "/");
                 path = newpath;
             }
             if ("jnt:importDropBox".equals(pt)) {
@@ -163,7 +165,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         if (child.isFile()) {
                             String mime = atts.getValue(Constants.JCR_MIMETYPE);
                             child.getFileContent().uploadFile(zis, mime);
-                            zis.close() ;
+                            zis.close();
                         } else {
                             child.setProperty(Constants.JCR_DATA, zis);
                             child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
@@ -186,13 +188,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
             }
             if (child == null) {
-                error ++;
+                error++;
             } else {
                 nodes.push(child);
             }
 
         } catch (RepositoryException re) {
-            logger.error("Cannot import "+ pathes.pop(),re);
+            logger.error("Cannot import " + pathes.pop(), re);
             error++;
         } catch (Exception re) {
             throw new SAXException(re);
@@ -202,7 +204,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
         if (m != null) {
-            StringTokenizer st = new StringTokenizer(m," ,");
+            StringTokenizer st = new StringTokenizer(m, " ,");
             while (st.hasMoreTokens()) {
                 child.addMixin(st.nextToken());
             }
@@ -222,53 +224,53 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String attrName = ISO9075.decode(atts.getQName(i));
             String attrValue = atts.getValue(i);
 
-            ExtendedPropertyDefinition propDef;
-            if (lang != null && attrName.endsWith("_"+lang)) {
-                propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_"+lang));
-            } else {
-                propDef = child.getApplicablePropertyDefinition(attrName);
-            }
-
-            if (propDef == null) {
-                continue;
-            }
 
             if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
                 // nodeType = attrValue; // ?
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
-
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
-
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
-
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
-
-            } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
-                if (!references.containsKey(attrValue)) {
-                    references.put(attrValue, new ArrayList<String>());
-                }
-                references.get(attrValue).add(child.getIdentifier()+"/"+attrName);
-            } else if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                if (!references.containsKey(attrValue)) {
-                    references.put(attrValue, new ArrayList<String>());
-                }
-                references.get(attrValue).add(child.getIdentifier()+"/"+attrName);
             } else {
-                if (propDef.isProtected()) {
+                ExtendedPropertyDefinition propDef;
+                try {
+                    if (lang != null && attrName.endsWith("_" + lang)) {
+                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
+                    } else {
+                        propDef = child.getApplicablePropertyDefinition(attrName);
+                    }
+                } catch (ConstraintViolationException e) {
+                    logger.error(e.getMessage());
                     continue;
                 }
 
-                if (propDef.isMultiple()) {
-                    String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
-                    Value[] v = new Value[s.length];
-                    for (int j = 0; j < s.length; j++) {
-                        v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
+                if (propDef.getRequiredType() == PropertyType.REFERENCE) {
+                    if (!references.containsKey(attrValue)) {
+                        references.put(attrValue, new ArrayList<String>());
                     }
-                    child.setProperty(attrName, v);
+                    references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
+                } else if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                    if (!references.containsKey(attrValue)) {
+                        references.put(attrValue, new ArrayList<String>());
+                    }
+                    references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                 } else {
-                    child.setProperty(attrName, attrValue);
+                    if (propDef.isProtected()) {
+                        continue;
+                    }
+
+                    if (propDef.isMultiple()) {
+                        String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
+                        Value[] v = new Value[s.length];
+                        for (int j = 0; j < s.length; j++) {
+                            v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
+                        }
+                        child.setProperty(attrName, v);
+                    } else {
+                        child.setProperty(attrName, attrValue);
+                    }
                 }
             }
         }
@@ -282,19 +284,19 @@ public class DocumentViewImportHandler extends DefaultHandler {
         String path = pathes.peek();
         if (path.endsWith("/jcr:content")) {
             String[] p = path.split("/");
-            path = path.replace("/jcr:content", "/"+p[p.length-2]);
+            path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
-            path = path.replace(":","_");
+            path = path.replace(":", "_");
         }
 
         if (fileList.contains(path)) {
-            if (fileList.indexOf("/"+nextEntry) > fileList.indexOf(pathes.peek())) {
+            if (fileList.indexOf("/" + nextEntry) > fileList.indexOf(pathes.peek())) {
                 zis.reallyClose();
                 zis = new NoCloseZipInputStream(new FileInputStream(archive));
             }
             do {
                 nextEntry = zis.getNextEntry();
-            } while (!("/"+nextEntry.getName()).equals(path));
+            } while (!("/" + nextEntry.getName()).equals(path));
 
             return true;
         }
@@ -303,7 +305,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (error > 0) {
-            error --;
+            error--;
             return;
         }
 

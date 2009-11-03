@@ -20,9 +20,6 @@
     <bean id="editUserPreferencesEngine" class="org.jahia.engines.users.EditUserPreferences_Engine" />
     <bean id="newUserRegistrationEngine" class="org.jahia.engines.users.NewUserRegistration_Engine" />
     <bean id="mySettingsEngine" class="org.jahia.engines.mysettings.MySettingsEngine" />
-    <bean id="clipBoardEngine" class="org.jahia.engines.importexport.ClipboardEngine" >
-        <property name="siteservice" ref="JahiaSitesService" />
-    </bean>
     <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
     <bean id="manageLogsEngine" class="org.jahia.engines.audit.ManageLogs_Engine" />
@@ -43,7 +40,6 @@
                 <ref bean="editUserPreferencesEngine" />
                 <ref bean="newUserRegistrationEngine" />
                 <ref bean="mySettingsEngine" />
-                <ref bean="clipBoardEngine" />
                 <ref bean="exportEngine" />
                 <ref bean="applicationEngine" />
                 <ref bean="appDispatcherEngine" />

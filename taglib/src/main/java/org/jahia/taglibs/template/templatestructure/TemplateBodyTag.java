@@ -644,7 +644,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     if (trackedUrls.equals("virtual")) {
                         org.jahia.services.importexport.ImportExportService ies = ServicesRegistry.getInstance().getImportExportService();
                         try {
-                            String uuid = ies.getUuid(ContentPage.getPage(jData.getProcessingContext().getPageID()));
+                            String uuid = ContentPage.getPage(jData.getProcessingContext().getPageID()).getUUID();
                             String lang = jData.getProcessingContext().getLocale().toString();
                             url = "'/Unique_Universal_id/" + uuid + "/" + lang + "/'";
                         } catch (JahiaException e) {

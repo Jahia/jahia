@@ -464,11 +464,6 @@ public class FieldBean extends ContentBean {
     }
 
     public boolean isPicker() {
-        try {
-            return importExportService.isPicker(jahiaField.getContentField());
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
         return false;
     }
 

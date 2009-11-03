@@ -763,6 +763,9 @@
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.zip"/>
                 <ref bean="org.jahia.toolbar.item.unzip"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
             </list>
         </property>
     </bean>

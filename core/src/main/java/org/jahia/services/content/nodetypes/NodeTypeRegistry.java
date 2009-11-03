@@ -63,19 +63,19 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     public synchronized static NodeTypeRegistry getInstance() {
         if (instance == null) {
-            instance = new NodeTypeRegistry();
+            instance = new NodeTypeRegistry(true);
         }
         return instance;
     }
 
-    private NodeTypeRegistry() {
+    public NodeTypeRegistry(boolean deploy) {
         try {
             String cnddir = org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
             try {
                 File f = new File(cnddir);
                 SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], true);
+                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], deploy);
                 }
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);
@@ -91,13 +91,6 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             JahiaCndReader r = new JahiaCndReader(new FileReader(file),file.getPath(), systemId, this);
             r.parse();
-            for (ExtendedNodeType type : r.getNodeTypesList()) {
-                try {
-                    type.validateSupertypes();
-                } catch (NoSuchNodeTypeException e) {
-                    throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,file.getPath());
-                }
-            }
         } else if (ext.equalsIgnoreCase(".grp")) {
             JahiaGroupingFileReader r = new JahiaGroupingFileReader(new FileReader(file), file.getName(),systemId, this);
             r.parse();            

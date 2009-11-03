@@ -33,6 +33,7 @@ package org.jahia.services.importexport;
 
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -40,15 +41,12 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +75,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private Map<String,String> uuidMapping = new HashMap<String,String>();
     private Map<String,String> pathMapping = new HashMap<String,String>();
-    private Map<String,String> references = new HashMap<String,String>();
+    private Map<String,List<String>> references = new HashMap<String,List<String>>();
 
     private String currentFilePath = null;
 
@@ -87,11 +85,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private JCRSessionWrapper session;
 
-    public DocumentViewImportHandler(ProcessingContext jParams, File archive, List<String> fileList) throws IOException {
+    public DocumentViewImportHandler(JCRSessionWrapper session, File archive, List<String> fileList, ProcessingContext jParams) throws IOException {
         this.jParams = jParams;
         JCRNodeWrapper node = null;
         try {
-            session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
+            this.session = session;
             node = (JCRNodeWrapper) session.getRootNode();
         } catch (RepositoryException e) {
             e.printStackTrace();
@@ -105,6 +103,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+        System.out.println("----------------- "+localName);
         if (error > 0) {
             error ++;
             return;
@@ -176,7 +175,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     setAttributes(child, atts);
 
                     if (child.isCollection()) {
-//                        nodes.peek().saveSession();
                     } else if (currentFilePath == null) {
                         currentFilePath = child.getPath();
                     }
@@ -212,16 +210,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     private void setAttributes(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
-        Map<String, ExtendedPropertyDefinition> defs = new HashMap<String, ExtendedPropertyDefinition>();
-        NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
-        ExtendedNodeType nt = null;
-        nt = reg.getNodeType(child.getPrimaryNodeType().getName());
-        defs.putAll(nt.getPropertyDefinitionsAsMap());
-        NodeType[] p = child.getMixinNodeTypes();
-        for (int i = 0; i < p.length; i++) {
-            defs.putAll(reg.getNodeType(p[i].getName()).getPropertyDefinitionsAsMap());
+        String lang = null;
+        if (child.getPrimaryNodeTypeName().equals("jnt:translation")) {
+            lang = atts.getValue("jcr:language");
         }
-
         for (int i = 0; i < atts.getLength(); i++) {
             if (atts.getURI(i).equals("http://www.w3.org/2000/xmlns/")) {
                 continue;
@@ -230,12 +222,15 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String attrName = ISO9075.decode(atts.getQName(i));
             String attrValue = atts.getValue(i);
 
-            ExtendedPropertyDefinition propDef = defs.get(attrName);
+            ExtendedPropertyDefinition propDef;
+            if (lang != null && attrName.endsWith("_"+lang)) {
+                propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_"+lang));
+            } else {
+                propDef = child.getApplicablePropertyDefinition(attrName);
+            }
+
             if (propDef == null) {
-                propDef = defs.get("*");
-                if (propDef == null) {
-                    continue;
-                }
+                continue;
             }
 
             if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
@@ -243,7 +238,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
 
             } else if (attrName.equals(Constants.JCR_UUID)) {
-                uuidMapping.put(attrValue, child.getUUID());
+                uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
 
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
@@ -251,11 +246,20 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
 
             } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
-                references.put(attrValue, child.getUUID()+"/"+attrName);
-            } else {
-                if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                    references.put(attrValue, child.getUUID()+"/"+attrName);
+                if (!references.containsKey(attrValue)) {
+                    references.put(attrValue, new ArrayList<String>());
                 }
+                references.get(attrValue).add(child.getIdentifier()+"/"+attrName);
+            } else if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                if (!references.containsKey(attrValue)) {
+                    references.put(attrValue, new ArrayList<String>());
+                }
+                references.get(attrValue).add(child.getIdentifier()+"/"+attrName);
+            } else {
+                if (propDef.isProtected()) {
+                    continue;
+                }
+
                 if (propDef.isMultiple()) {
                     String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
                     Value[] v = new Value[s.length];
@@ -311,21 +315,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
         if (w != null && currentFilePath != null && w.getPath().equals(currentFilePath)) {
             currentFilePath = null;
-//            try {
-//                nodes.peek().saveSession();
-//            } catch (RepositoryException e) {
-//                throw new SAXException(e);
-//            }
         }
     }
 
     public void endDocument() throws SAXException {
-        try {
-            nodes.peek().saveSession();
-        } catch (RepositoryException e) {
-            throw new SAXException(e);
-        }
-
         if (zis != null) {
             try {
                 zis.reallyClose();
@@ -345,7 +338,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         return pathMapping;
     }
 
-    public Map<String, String> getReferences() {
+    public Map<String, List<String>> getReferences() {
         return references;
     }
 
@@ -357,7 +350,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.pathMapping = pathMapping;
     }
 
-    public void setReferences(Map<String, String> references) {
+    public void setReferences(Map<String, List<String>> references) {
         this.references = references;
     }
 }

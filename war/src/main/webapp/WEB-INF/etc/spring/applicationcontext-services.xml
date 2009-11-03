@@ -279,42 +279,8 @@
                 <property name="sitesService" ref="JahiaSitesService" />
                 <property name="userManagerService" ref="JahiaUserManagerService" />
                 <property name="groupManagerService" ref="JahiaGroupManagerService" />
-                <property name="categoryService" ref="CategoryService" />
-                <property name="schedulerService" ref="SchedulerService" />
+                <property name="jcrStoreService" ref="JCRStoreService" />
                 <property name="fileWatcherService" ref="JahiaFileWatcherService" />
-                <property name="overwriteResourcesByImport" value="true"/>
-                <property name="exporters">
-                    <map>
-                        <entry>
-                            <key><value>legacy</value></key>
-                            <bean class="org.jahia.services.importexport.JahiaLegacyExporter" />
-                        </entry>
-                        <entry>
-                            <key><value>doc</value></key>
-                            <bean class="org.jahia.services.importexport.DocumentViewExporter" />
-                        </entry>
-                    </map>
-                </property>
-                <property name="excludedResources">
-                    <list>
-                        <value>com/gargoylesoftware/htmlunit/*</value>
-                        <value>components/guestbook/*</value>
-                        <value>org/apache/*</value>
-                        <value>org/hibernate/*</value>
-                        <value>org/jahia/*</value>
-                        <value>ApplicationResources*</value>
-                        <value>ehcache-hibernate.xml</value>
-                        <value>ehcache-jahia.xml</value>
-                        <value>jahia-cache-service.xml</value>
-                        <value>JahiaInternalResources*</value>
-                        <value>JahiaMessageResources*</value>
-                        <value>jahiapublickeystore</value>
-                        <value>jahia-tx-cache-service.xml</value>
-                        <value>mbeans-descriptors.xml</value>
-                        <value>nstep-workflowResources*</value>
-                        <value>treecache.xml</value>
-                    </list>
-                </property>
             </bean>
         </property>
     </bean>

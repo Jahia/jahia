@@ -58,7 +58,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.importexport.ProductionJob;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -568,57 +567,6 @@ public class NStepWorkflow implements ExternalWorkflow {
         } catch (MissingResourceException e) {
             productionPresence = Boolean.FALSE.toString();
         }
-        if (Boolean.valueOf(productionPresence).booleanValue()) {
-            Workflow workflowByName = workflowManager.getWorkflowByName(processName);
-            final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-            if ((jParams.getUser().isAdminMember(jParams.getSiteID()) || aclService.getSiteActionPermission(LockPrerequisites.IMMEDIATE_CRON, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) && workflowByName.isLastStep(actionName)) {
-                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                try {
-                    String[] jobNames = schedulerServ.getJobNames(BackgroundJob.getGroupName(ProductionJob.class));
-                    // ensure we only show the site job
-                    String jobNamePrefix = ProductionJob.JOB_NAME_PREFIX + jParams.getSiteID();
-                    StringBuffer options = new StringBuffer();
-                    options.append("<option value=\"none\" selected>").append(localize("workflow.last.step.production.no", jParams.getLocale())).append("</option>");
-                    int nbOptions = 0;
-                    for (int i = 0; i < jobNames.length; i++) {
-                        String jobName = jobNames[i];
-                        if (jobName.startsWith(jobNamePrefix)) {
-                            nbOptions++;
-                            JobDetail jobDetail = schedulerServ.getJobDetail(jobName, BackgroundJob.getGroupName(ProductionJob.class));
-                            JobDataMap jobDataMap = jobDetail.getJobDataMap();
-                            String targetName = jobDataMap.getString(ProductionJob.TARGET);
-                            String username = jobDataMap.getString(ProductionJob.USERNAME);
-                            String password = jobDataMap.getString(ProductionJob.PASSWORD);
-                            String sitename = jobDataMap.getString(ProductionJob.SITE_NAME);
-                            JahiaUser member = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(jParams.getSiteID(), jobDataMap.getString(ProductionJob.PROFILE));
-
-                            boolean disabled = false;
-
-                            try {
-                                URL exportUrl = new URL(targetName + "/engineName/export/site/" + sitename + "/export.xml?exportformat=versions&checklock=test");
-                                password = new String(Base64.decode(password));
-                                JahiaTools.makeJahiaRequest(exportUrl, member, username, password, 1);
-                            } catch (IOException e) {
-                                disabled = true;
-                            }
-                            if (disabled) {
-                                options.append("<option disabled=\"disabled\" value=\"").append(jobName).append("\">").append(localize("workflow.last.step.production.job", jParams.getLocale()).replaceAll("\\$\\{jobName\\}", (String) jobDataMap.get(ProductionJob.ALIAS))).append("</option>");
-                            } else {
-                                options.append("<option value=\"").append(jobName).append("\">").append(localize("workflow.last.step.production.job", jParams.getLocale()).replaceAll("\\$\\{jobName\\}", (String) jobDataMap.get(ProductionJob.ALIAS))).append("</option>");
-                            }
-                        }
-                    }
-                    if (nbOptions > 0) {
-                        s.append("<p>").append(localize("workflow.last.step.production.label", jParams.getLocale())).append("</p>");
-                        s.append("<select name=\"nstepJobNamesToActivate\" multiple size=\"").append(nbOptions < 5 ? nbOptions + 1 : 6).append("\">");
-                        s.append(options.toString());
-                        s.append("</select>");
-                    }
-                } catch (JahiaException e) {
-                    log.error("Error in getParameterForm !", e);
-                }
-            }
-        }
         s.append("</td></tr></table>");
         return s.toString();
     }
@@ -710,19 +658,6 @@ public class NStepWorkflow implements ExternalWorkflow {
                         // Publish object
                         ActivationTestResults testResults = finishProcess(languageCode, jParams, objectKey, processName);
                         activationTestResults.merge(testResults);
-                        if (testResults.getStatus() != ActivationTestResults.FAILED_OPERATION_STATUS && (selectedJobNames != null && selectedJobNames.length > 0)) {
-                            SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                            for (int i = 0; i < selectedJobNames.length; i++) {
-                                String selectedJobName = selectedJobNames[i];
-                                if (!"none".equals(selectedJobName)) {
-                                    try {
-                                        schedulerServ.triggerJobWithVolatileTrigger(selectedJobName, BackgroundJob.getGroupName(ProductionJob.class));
-                                    } catch (JahiaException e) {
-                                        log.error("Error during execution of job " + selectedJobName, e);
-                                    }
-                                }
-                            }
-                        }
                     } else {
                         changeStatus(languageCode, jParams, objectKey, processName, EntryLoadRequest.WAITING_WORKFLOW_STATE);
                         instance = instanceManager.getWorkflowInstanceByObjectKey(objectKey, languageCode);

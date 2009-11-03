@@ -49,10 +49,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Calendar;
+import java.util.*;
 import java.math.BigDecimal;
 
 /**
@@ -746,5 +743,24 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
-    String getPath();         
+    String getPath();
+
+    /**
+     * Get the translation node
+     * Use only in un-localized session
+     * @param locale
+     * @return
+     * @throws RepositoryException
+     */
+    Node getI18N(Locale locale) throws RepositoryException;
+
+    /**
+     * Get or create the translation node
+     * Use only in un-localized session
+     * @param locale
+     * @return
+     * @throws RepositoryException
+     */
+    Node getOrCreateI18N(Locale locale) throws RepositoryException;
+
 }

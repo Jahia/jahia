@@ -200,6 +200,14 @@ public class JahiaCndReader {
                 }
             }
         }
+        for (ExtendedNodeType type : nodeTypesList) {
+            try {
+                type.validateSupertypes();
+            } catch (NoSuchNodeTypeException e) {
+                throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
+            }
+        }
+
     }
 
     /**

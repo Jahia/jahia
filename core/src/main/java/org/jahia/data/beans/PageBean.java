@@ -509,14 +509,6 @@ public class PageBean extends ContentBean {
     }
 
     public boolean isPicker() {
-        if (jahiaPage == null) {
-            return false;
-        }
-        try {
-            return importExportService.isPicker(jahiaPage.getContentPage());
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
         return false;
     }
 

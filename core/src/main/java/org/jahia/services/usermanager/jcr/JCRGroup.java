@@ -96,7 +96,9 @@ public class JCRGroup extends JahiaGroup {
                      PropertyIterator iterator = getNode(session).getProperties();
                      for (; iterator.hasNext();) {
                          Property property = iterator.nextProperty();
-                         properties.put(property.getName(), property.getString());
+                         if (!property.isMultiple()) {
+                             properties.put(property.getName(), property.getString());
+                         }
                      }
                      return properties;
                  }

@@ -28,9 +28,6 @@
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
-    <bean id="ActivationContentPickerListener" class="org.jahia.services.importexport.ActivationContentPickerListener">
-        <property name="siteservice" ref="JahiaSitesService"/>
-    </bean>
     <bean id="TimeBasedPublishingEventListener"
           class="org.jahia.services.timebasedpublishing.TimeBasedPublishingEventListener">
         <property name="tbpServ" ref="TimeBasedPublishingService"/>
@@ -97,7 +94,6 @@
                 <ref bean="SiteMapEventListener"/>
                 <ref bean="WorkflowEventListener"/>
                 <!--ref bean="ChangeContentPickerListener" /-->
-                <ref bean="ActivationContentPickerListener"/>
                 <ref bean="TimeBasedPublishingEventListener"/>
                 <ref bean="CacheEventListener"/>
                 <ref bean="JCRSiteListener"/>

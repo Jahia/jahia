@@ -258,24 +258,7 @@ public class SessionImpl implements Session {
     }
 
     public void exportDocumentView(String s, ContentHandler contentHandler, boolean b, boolean b1) throws PathNotFoundException, SAXException, RepositoryException {
-        Map params = new HashMap();
-        params.put(ImportExportService.EXPORT_FORMAT, ImportExportService.DOCUMENT_EXPORTER);
-
-        ContentObject object = null;
-        Item i = getItem(s);
-        if (i instanceof JahiaPageNodeImpl) {
-            object = ((JahiaPageNodeImpl) i).getContentObject();
-        } else if (i instanceof JahiaContainerNodeImpl) {
-            object = ((JahiaContainerNodeImpl) i).getContentObject();
-        }
-        if (object != null) {
-            try {
-                ProcessingContext processingContext = getProcessingContext(((ItemImpl) i).getSite());
-                ServicesRegistry.getInstance().getImportExportService().export(object, processingContext.getLocale().toString(), contentHandler, new HashSet(), processingContext, params);
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public void exportDocumentView(String s, OutputStream outputStream, boolean b, boolean b1) throws IOException, PathNotFoundException, RepositoryException {

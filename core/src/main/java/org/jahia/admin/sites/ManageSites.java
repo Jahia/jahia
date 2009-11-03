@@ -2032,6 +2032,7 @@ public class ManageSites extends AbstractAdministrationModule {
             ZipEntry z;
             ZipInputStream zis2 = new ZipInputStream(new FileInputStream(i));
             boolean isSite = false;
+            boolean isLegacySite = false;
             while ((z = zis2.getNextEntry()) != null) {
                 if ("site.properties".equals(z.getName())) {
                     Properties p = new Properties();
@@ -2042,13 +2043,14 @@ public class ManageSites extends AbstractAdministrationModule {
                             .containsKey("templatePackageName") ? importInfos
                             .get("templatePackageName") : "");
                     importInfos.put("oldsitekey", importInfos.get("sitekey"));
-                } else if (z.getName().startsWith("export_")) {
                     isSite = true;
+                } else if (z.getName().startsWith("export_")) {
+                    isLegacySite = true;
                 }
             }
             importInfos.put("isSite", Boolean.valueOf(isSite));
             // todo import ga parameters
-            if (isSite) {
+            if (isSite || isLegacySite) {
                 importInfos.put("type", "site");
                 if (!importInfos.containsKey("sitekey")) {
                     importInfos.put("sitekey", "");
@@ -2159,7 +2161,11 @@ public class ManageSites extends AbstractAdministrationModule {
                 File file = (File) infos.get("importFile");
                 if (request.getParameter(file.getName() + "selected") != null) {
                     if (infos.get("type").equals("files")) {
-                        ImportExportBaseService.getInstance().importFile(null, jParams, file, false, new ArrayList<ImportAction>(), null);
+                        try {
+                            ImportExportBaseService.getInstance().importZip(file, new ArrayList<ImportAction>(), null, jParams);
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
                     } else if (infos.get("type").equals("xml") &&
                             (infos.get("importFileName").equals("serverPermissions.xml") || infos.get("importFileName").equals("users.xml"))) {
 

@@ -208,17 +208,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="productionManagerAdministrationModule" class="org.jahia.admin.production.ManageSiteProduction" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="productionManager" />
-        <property name="permissionName" value="admin.production.ManageSiteProduction" />
-        <property name="name" value="export" />
-        <property name="icon" value="transform" />
-        <property name="label" value="org.jahia.admin.productionManager.label" />
-        <property name="urlAction" value="productionManager" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageSitePermissions" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="sitePermissions" />

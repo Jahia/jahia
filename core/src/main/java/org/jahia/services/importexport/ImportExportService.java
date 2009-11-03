@@ -31,10 +31,7 @@
  */
  package org.jahia.services.importexport;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -51,9 +48,13 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.categories.Category;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,18 +72,6 @@ public interface ImportExportService {
     String JAHIAGED_URI="GED:";
     String NS_URI = "http://www.w3.org/2000/xmlns/";
     String DAV_URI = "DAV:";
-    String PRODUCTION_TARGET_LIST_PROPERTY = "prod_target_list";
-    String PRODUCTION_CRON_PROPERTY = "prod_cron_";
-    String PRODUCTION_USERNAME_PROPERTY = "prod_username_";
-    String PRODUCTION_PASSWORD_PROPERTY = "prod_password_";
-    String PRODUCTION_PROFILE_PROPERTY = "prod_profile_";
-    String PRODUCTION_SITE_NAME_PROPERTY = "prod_sitename_";
-    String PRODUCTION_ALIAS_PROPERTY = "prod_alias_";
-    String PRODUCTION_METADATA_PROPERTY = "prod_metadata_";
-    String PRODUCTION_WORKFLOW_PROPERTY = "prod_workflow_";
-    String PRODUCTION_ACL_PROPERTY = "prod_acl_";
-    String PRODUCTION_AUTO_PUBLISH_PROPERTY = "prod_autopublish_";
-    String PRODUCTION_TARGET = "prod_target_site_";
 
     String REMOVED_STATUS = "removed";
     String UNCHANGED_STATUS = "unchanged";
@@ -94,7 +83,7 @@ public interface ImportExportService {
     String LOCK_KEY = "lock";
     String INCLUDE_TEMPLATES = "templates";
     String INCLUDE_SITE_INFOS = "siteinfos";
-    String INCLUDE_FILES = "files";
+    String INCLUDE_REFERENCED_NODES = "files";
     String INCLUDE_ALL_FILES = "allfiles";
     String INCLUDE_DEFINITIONS = "definitions";
     String LINK = "link";
@@ -118,52 +107,26 @@ public interface ImportExportService {
 
     // Export
 
-    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
+    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, RepositoryException, SAXException, IOException;
 
-    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, IOException, SAXException;
+    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, RepositoryException, IOException, SAXException;
 
-    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, SAXException, IOException;
+    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException;
 
-    Document exportDocument(ContentObject object, String languageCode, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
+    void exportZip(JCRNodeWrapper node, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException;
 
-    void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
+    // Import
 
-    void exportZip(ContentObject object, Set<String> languageCodes, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
+    void importZip(JCRNodeWrapper file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
 
-    void export(ContentObject object, String languageCodes, ContentHandler h, Set<JCRNodeWrapper> files, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
+    void importZip(File file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
 
-    void exportVersions(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
+    void importCategories(ProcessingContext jParams, Category rootCategory, InputStream is);
 
-    // Imports
+    void importServerPermissions(ProcessingContext jParams, InputStream is);
 
-    ContentObject importFile(ContentObject parent, ProcessingContext jParams, InputStream inputStream, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result) throws IOException;
+    List<String[]> importUsers(File file) throws IOException ;
 
-    ContentObject importFile(ContentObject parent, ProcessingContext jParams, File file, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result) throws IOException;
-
-    ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> uuidMapping, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping);
-
-    void importCategories(ProcessingContext jParams, InputStream is);
-
-    // Copy
-
-    ContentObject copy(ContentObject source, ContentObject parentDest, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
-
-    ContentObject copy(ContentObject source, ContentObject parentDest, Set<String> languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
-
-    boolean isCompatible(JahiaContainerDefinition dest, JahiaContainerDefinition source);
-
-    boolean isCompatible(JahiaContainerDefinition dest, ContentContainer source, ProcessingContext context);
-
-    boolean isPicker(ContentObject object) throws JahiaException;
-
-    void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set<JCRNodeWrapper> files) throws JahiaException;
-
-    void ensureFile(String path, InputStream inputStream, String type, ProcessingContext jParams, JahiaSite destSite, Map<String,String> pathMapping);
-
-    WebdavResource exportToSite(JahiaSite site, String targetName, Date exportTime, String username, String password, JahiaUser member, String sitename, boolean withMetadata, boolean withWorkflow, boolean withAcl, boolean publishAtEnd) throws IOException, JahiaException, SAXException;
-
-    public void startProductionJob(JahiaSite site, ProcessingContext jParams) throws ParseException;
-
-    public String getUuid(ContentObject object) throws JahiaException;
+    List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException ;
 
 }

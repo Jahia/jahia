@@ -29,23 +29,18 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.importexport;
+package org.jahia.services.importexport;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
-import org.apache.commons.io.IOUtils;
-import org.jahia.api.Constants;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.lock.LockKey;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -60,9 +55,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,103 +89,93 @@ public class ImportJob extends BackgroundJob {
         if (key != null) {
             target = ContentObject.getContentObjectInstance(ObjectKey.getInstance(key));
         }
-        InputStream inputStream = null;
 
         String uri = (String) jobDataMap.get(URI);
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
         JCRNodeWrapper f = session.getNode(uri);
-        inputStream = f.getFileContent().downloadFile();
 
         List<ImportAction> actions = new ArrayList<ImportAction>();
 
         ExtendedImportResult result = new ExtendedImportResult();
-        ContentObject imported = null;
-        if (inputStream != null) {
-            try {
-                if (contentType.indexOf("zip")>0) {
-                    imported = ServicesRegistry.getInstance().getImportExportService().importFile(target, context, inputStream, true, actions, result);
-                } else if ("text/xml".equals(contentType) || "application/xml".equals(contentType)) {
-                    imported = ServicesRegistry.getInstance().getImportExportService().importDocument(target, context.getLocale().toString(), context, inputStream, false, true, actions, result, null, null, null, null, null);
-                }
 
-                if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END)) ) {
-                    if (result.getErrors().isEmpty()) {
-                        Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
-                        JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
-                        JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
-                        publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
-                        publishjobDataMap.put(BackgroundJob.JOB_TYPE, AbstractActivationJob.WORKFLOW_TYPE);
-                        publishjobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, "Auto publish "+uri);
-                        final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                        schedulerServ.scheduleJobAtEndOfRequest(publishjobDetail);
-                    } else {
-                        MailService mailService = ServicesRegistry.getInstance().getMailService();
-                        GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
-                        GroovyMimeMessagePreparator messageMimePreparator = new GroovyMimeMessagePreparator();
-                        messageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
-                        String senderEmail = mailService.defaultSender();
+        if (f != null) {
+            ServicesRegistry.getInstance().getImportExportService().importZip(f, actions, result, context);
 
-                        JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                                .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                        Set<Principal> members = adminGroup.getRecursiveUserMembers();
+            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
+                if (result.getErrors().isEmpty()) {
+                    Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
+                    JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
+                    JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
+                    publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
+                    publishjobDataMap.put(BackgroundJob.JOB_TYPE, AbstractActivationJob.WORKFLOW_TYPE);
+                    publishjobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, "Auto publish " + uri);
+                    final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
+                    schedulerServ.scheduleJobAtEndOfRequest(publishjobDetail);
+                } else {
+                    MailService mailService = ServicesRegistry.getInstance().getMailService();
+                    GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
+                    GroovyMimeMessagePreparator messageMimePreparator = new GroovyMimeMessagePreparator();
+                    messageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
+                    String senderEmail = mailService.defaultSender();
 
-                        String recipientEmail = mailService.defaultRecipient();
-                        if ( members.iterator().hasNext() ){
-                            JahiaUser user = (JahiaUser)members.iterator().next();
-                            UserProperty userProperty = user.getUserProperty("email");
-                            if (userProperty != null) {
+                    JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
+                            .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                    Set<Principal> members = adminGroup.getRecursiveUserMembers();
+
+                    String recipientEmail = mailService.defaultRecipient();
+                    if (members.iterator().hasNext()) {
+                        JahiaUser user = (JahiaUser) members.iterator().next();
+                        UserProperty userProperty = user.getUserProperty("email");
+                        if (userProperty != null) {
                             String s = userProperty.getValue();
-                                if (s != null && s.trim().length()> 0) {
-                                    recipientEmail += ";" + s;
-                                }
+                            if (s != null && s.trim().length() > 0) {
+                                recipientEmail += ";" + s;
                             }
                         }
-                        Binding binding = new Binding();
-                        // Bind all necessary variables for groovy script
-                        binding.setVariable("processingContext", context);
-                        binding.setVariable("from", senderEmail);
-                        binding.setVariable("to", recipientEmail);
-                        binding.setVariable("locale", context.getLocale());
-                        binding.setVariable("results", result);
-
-                        messageMimePreparator.setBinding(binding);
-                        messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
-                        mailService.sendTemplateMessage(messageMimePreparator);
                     }
-                }
+                    Binding binding = new Binding();
+                    // Bind all necessary variables for groovy script
+                    binding.setVariable("processingContext", context);
+                    binding.setVariable("from", senderEmail);
+                    binding.setVariable("to", recipientEmail);
+                    binding.setVariable("locale", context.getLocale());
+                    binding.setVariable("results", result);
 
-                if (Boolean.TRUE.equals(jobDataMap.get(COPY_TO_JCR)) ) {
-                    ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
-                    try {
-                        JCRNodeWrapper source = imported.getJCRNode(context);
-                        Node parent = source.getParent();
-                        if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                            Node dest = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/content/sites/"+parent.getName());
-                            source.copyFile(dest.getPath());
-                            if (source.hasNode("j:acl")) {
-                                dest.addMixin("jmix:accessControlled");
-                                ((JCRNodeWrapper)source.getNode("j:acl")).copyFile(dest.getPath());
-                            }
-                            dest.save();
-                        }
-                    } catch (JahiaException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
+                    messageMimePreparator.setBinding(binding);
+                    messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
+                    mailService.sendTemplateMessage(messageMimePreparator);
                 }
-            } finally {
-                IOUtils.closeQuietly(inputStream);
             }
+
+//                if (Boolean.TRUE.equals(jobDataMap.get(COPY_TO_JCR)) ) {
+//                    ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+//                    try {
+//                        JCRNodeWrapper source = imported.getJCRNode(context);
+//                        Node parent = source.getParent();
+//                        if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+//                            Node dest = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/content/sites/"+parent.getName());
+//                            source.copyFile(dest.getPath());
+//                            if (source.hasNode("j:acl")) {
+//                                dest.addMixin("jmix:accessControlled");
+//                                ((JCRNodeWrapper)source.getNode("j:acl")).copyFile(dest.getPath());
+//                            }
+//                            dest.save();
+//                        }
+//                    } catch (JahiaException e) {
+//                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                    } catch (RepositoryException e) {
+//                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                    }
+//                }
         }
 
-        try {
-            if (imported != null) {
-                LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + imported.getObjectKey().getType(), imported.getID());
-                ((Set<LockKey>)jobDataMap.get(JOB_LOCKS)).add(lock);
-            }
-        } catch (Exception e) {
-        }
+//        try {
+//            if (imported != null) {
+//                LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + imported.getObjectKey().getType(), imported.getID());
+//                ((Set<LockKey>)jobDataMap.get(JOB_LOCKS)).add(lock);
+//            }
+//        } catch (Exception e) {
+//        }
         if (jobDataMap.get(DELETE_FILE) != null) {
             if (result.getStatus() == TreeOperationResult.COMPLETED_OPERATION_STATUS) {
                 f.remove();

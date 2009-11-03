@@ -54,6 +54,8 @@ import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.version.EntryLoadRequest;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.ItemNotFoundException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
@@ -127,56 +129,6 @@ public class ExportEngine implements JahiaEngine {
         boolean enforceLanguage = "true".equals(processingContext.getParameter("enforceLanguage"));
 
 
-        String key = processingContext.getParameter("key");
-        ContentObject object;
-        if (key != null) {
-            object = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(key));
-        } else {
-            object = processingContext.getSite().getHomeContentPage();
-        }
-
-        if (object == null) {
-            resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-            return;
-        }
-
-        if (!object.checkReadAccess(processingContext.getUser())) {
-            resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-            return;
-        }
-
-
-        String locker = processingContext.getParameter("lock");
-        if (locker != null && object.checkWriteAccess(processingContext.getUser())) {
-            LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + object.getObjectKey().getType(), object.getID(), object.getID());
-            if (!LockRegistry.getInstance().acquire(lock, processingContext.getUser(), locker, processingContext.getSessionState().getMaxInactiveInterval())) {
-                resp.setStatus(HttpURLConnection.HTTP_FORBIDDEN);
-                logger.warn("Cannot acquire lock");
-                return;
-            } else {
-                logger.warn("Lock acquired");
-            }
-        } else {
-            String checklocker = processingContext.getParameter("checklock");
-            if (checklocker != null) {
-                LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + object.getObjectKey().getType(), object.getID(), object.getID());
-                if (LockPrerequisites.getInstance().isLockAcquirable(lock, processingContext.getUser(), checklocker, false)) {
-                    resp.setStatus(HttpURLConnection.HTTP_OK);
-                } else {
-                    resp.setStatus(HttpURLConnection.HTTP_FORBIDDEN);
-                }
-                return;
-            }
-        }
-        String unlock = processingContext.getParameter("unlock");
-        if (unlock != null && object.checkWriteAccess(processingContext.getUser())) {
-            LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + object.getObjectKey().getType(), object.getID(), object.getID());
-            if (LockRegistry.getInstance().isAlreadyAcquired(lock)) {
-                LockRegistry.getInstance().release(lock, processingContext.getUser(), unlock);
-            }
-            return;
-        }
-
         try {
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
@@ -237,60 +189,6 @@ public class ExportEngine implements JahiaEngine {
                 outputStream.close();
                 return;
             }
-
-            List siteLanguageSettings = processingContext.getSite().getLanguageSettings();
-            Set languageCodes = new HashSet();
-            if (siteLanguageSettings != null) {
-                for (int i = 0; i < siteLanguageSettings.size(); i++) {
-                    SiteLanguageSettings curSetting = (SiteLanguageSettings)
-                            siteLanguageSettings.get(i);
-                    if (curSetting.isActivated()) {
-                        languageCodes.add(curSetting.getCode());
-                    }
-                }
-            }
-
-            if (enforceLanguage && processingContext.getParameter("lang") != null) {
-                if (!processingContext.getParameter("lang").equals(processingContext.getLocale().toString())) {
-                    resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                    return;
-                }
-            }
-
-            if ("versions".equals(processingContext.getParameter("exportformat"))) {
-                resp.setContentType("text/xml");
-
-                ie.exportVersions(outputStream, processingContext);
-                outputStream.close();
-                return;
-            }
-
-            if ("diff".equals(processingContext.getParameter("exporttype"))) {
-                params.put(ImportExportService.FROM, EntryLoadRequest.CURRENT);
-                params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
-            } else if ("staging".equals(processingContext.getParameter("exporttype"))) {
-                params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
-            }
-            if ("zipfiles".equals(processingContext.getParameter("exportformat"))) {
-                resp.setContentType("application/zip");
-                params.put(ImportExportService.INCLUDE_FILES, Boolean.TRUE);
-                ie.exportZip(object, languageCodes, outputStream, processingContext, params);
-            } else if ("zipallfiles".equals(processingContext.getParameter("exportformat"))) {
-                resp.setContentType("application/zip");
-                params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-                ie.exportZip(object, languageCodes, outputStream, processingContext, params);
-            } else if ("zipnofiles".equals(processingContext.getParameter("exportformat"))) {
-                resp.setContentType("application/zip");
-                ie.exportZip(object, languageCodes, outputStream, processingContext, params);
-            } else if ("doc".equals(processingContext.getParameter("exportformat"))) {
-                resp.setContentType("text/xml");
-                params.put(ImportExportService.EXPORT_FORMAT, ImportExportService.DOCUMENT_EXPORTER);
-                ie.exportFile(object, processingContext.getLocale().toString(), outputStream, processingContext, params);
-            } else {
-                resp.setContentType("text/xml");
-                ie.exportFile(object, processingContext.getLocale().toString(), outputStream, processingContext, params);
-            }
-            outputStream.close();
         } catch (Exception e) {
             logger.error("Exception during export", e);
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -794,11 +794,6 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
 
 
     public boolean isPicker() {
-        try {
-            return importExportService.isPicker(jahiaContainer.getContentContainer());
-        } catch (JahiaException e) {
-            logger.error("Error while trying to resolve picker status", e);
-        }
         return false;
     }
 

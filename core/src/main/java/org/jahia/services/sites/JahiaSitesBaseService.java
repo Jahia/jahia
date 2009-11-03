@@ -37,7 +37,6 @@
 package org.jahia.services.sites;
 
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaDOMObject;
@@ -81,7 +80,6 @@ import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -476,7 +474,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 initialZip = fileImport;
                 initialZipName = fileImportName;
             }
-            if (!"importRepositoryFile".equals(firstImport) && (initialZip == null || !initialZip.exists() || "noImport".equals(firstImport))) {
+            {
                 // create site language
                 SiteLanguageSettings newLanguage =
                         new SiteLanguageSettings(site.getID(), selectedLocale.toString(), true, 1, false);
@@ -545,22 +543,22 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
 
 
-                try {
-                    JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
-                    Node parent = source.getParent();
-                    if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                        Node dest = sessionFactory.getCurrentUserSession().getNode("/content/sites/"+parent.getName());
-                        source.copyFile(dest.getPath());
-                        dest.save();
-                    }
-                } catch (JahiaException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+//                try {
+//                    JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
+//                    Node parent = source.getParent();
+//                    if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+//                        Node dest = sessionFactory.getCurrentUserSession().getNode("/content/sites/"+parent.getName());
+//                        source.copyFile(dest.getPath());
+//                        dest.save();
+//                    }
+//                } catch (JahiaException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                } catch (RepositoryException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+            }
 
-
-            } else {
+            if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page
                 adminAclEntry = new JahiaAclEntry(7, 0);
                 site.getACL().setGroupEntry(adminGroup, adminAclEntry);
@@ -574,7 +572,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         // import users and groups
                         try {
                             ImportExportBaseService.getInstance()
-                                    .importUsers(initialZip, jParams.getSite());
+                                    .importUsersFromZip(initialZip, jParams.getSite());
                         } catch (Exception e) {
                             logger.error(
                                     "Unable to import users for the site '"
@@ -622,7 +620,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } else {
-                    ServicesRegistry.getInstance().getImportExportService().importFile(null, jParams, initialZip, true, new ArrayList<ImportAction>(), new ExtendedImportResult());
+                    try {
+                        ServicesRegistry.getInstance().getImportExportService().importZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams);
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

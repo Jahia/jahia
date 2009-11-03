@@ -954,23 +954,14 @@ public class GuiBean {
             if (anObject instanceof ContentObject) {
                 final ContentObject contentObject = (ContentObject) anObject;
                 final ContentObject parent = contentObject.getParent(null);
-                if (parent != null && ServicesRegistry.getInstance().getImportExportService().isPicker(parent)) {
-                    return "";
-                }
                 if (contentObject.checkWriteAccess(getUser(), checkChilds, forceChilds)) {
                     return theEngine.renderLink(processingContext, anObject);
                 }
             } else if (anObject instanceof ACLResourceInterface) {
                 if (anObject instanceof JahiaField) {
-                    if (ServicesRegistry.getInstance().getImportExportService().isPicker(((JahiaField) anObject).getContentField())) {
-                        return "";
-                    }
                 }
                 if (ACLResource.checkWriteAccess(null, (ACLResourceInterface) anObject, getUser())) {
                     if (anObject instanceof JahiaPage) {
-                        if (ServicesRegistry.getInstance().getImportExportService().isPicker(((JahiaPage) anObject).getContentPage())) {
-                            return "";
-                        }
                     }
                     return theEngine.renderLink(processingContext, anObject);
                 }
@@ -980,13 +971,7 @@ public class GuiBean {
                 // as the first container).
                 final JahiaContainerList containerList = (JahiaContainerList) anObject;
                 if (containerList.getID() == 0) {
-                    if (ServicesRegistry.getInstance().getImportExportService().isPicker(processingContext.getPage().getContentPage())) {
-                        return "";
-                    }
                 } else {
-                    if (ServicesRegistry.getInstance().getImportExportService().isPicker(containerList.getContentContainerList())) {
-                        return "";
-                    }
                 }
 
                     // Add Container

@@ -1,0 +1,2 @@
+web_templates:bannerContainer.title = jcr:title
+web_templates:lastNewsContainer = jnt:lastNews

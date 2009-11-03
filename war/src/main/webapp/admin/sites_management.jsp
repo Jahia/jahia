@@ -43,6 +43,7 @@
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
+<%@ page import="java.io.File" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
@@ -266,8 +267,13 @@
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
+                        <%
+                            File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
+                            pageContext.setAttribute("files", files);
+                        %>
+                        <c:forEach var="file" items="${files}">
+                            <option value='${file.path}'>${file.name}</option>
+                        </c:forEach>
                     </select>
                     </td>
                     <td>
@@ -407,8 +413,13 @@ else { %>
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>Test and training demo</option>
+                        <%
+                            File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
+                            pageContext.setAttribute("files", files);
+                        %>
+                        <c:forEach var="file" items="${files}">
+                            <option value='${file.path}'>${file.name}</option>
+                        </c:forEach>
                     </select>
                     </td>
                     <td>

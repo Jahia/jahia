@@ -170,14 +170,14 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public boolean isSystemItem() {
-        return !isMetadataItem() && !isLayoutItem() && !name.toString().equals("jcr:title") &&
+        return !isMetadataItem() && !isLayoutItem() && !name.toString().equals("jcr:title") && !name.toString().equals("jcr:language") &&
                 (declaringNodeType.getName().startsWith("mix:") ||
                         declaringNodeType.getName().startsWith("nt:") ||
                         declaringNodeType.getName().equals("jmix:i18n"));
     }
 
     public boolean isMetadataItem() {
-        return !name.toString().equals("jcr:title") &&
+        return !name.toString().equals("jcr:title")  &&
                 (declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:metadata") ||
                         declaringNodeType.getName().equals("jmix:hierarchyNode") ||
                         declaringNodeType.getName().equals("mix:created") ||
@@ -195,7 +195,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public boolean isContentItem() {
         return declaringNodeType.isNodeType("jmix:content") || declaringNodeType.isNodeType("jnt:container")
-                 || declaringNodeType.isNodeType("jnt:content")|| name.toString().equals("jcr:title");
+                 || declaringNodeType.isNodeType("jnt:content")|| name.toString().equals("jcr:title") || name.toString().equals("jcr:language");
     }
 
     public boolean isPublicationItem() {

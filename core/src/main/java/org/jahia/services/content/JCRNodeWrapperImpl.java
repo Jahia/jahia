@@ -827,7 +827,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @param locale
      * @return
      */
-    private Node getI18N(Locale locale) throws RepositoryException {
+    public Node getI18N(Locale locale) throws RepositoryException {
         //getSession().getLocale()
         NodeIterator ni = objectNode.getNodes("j:translation");
         while (ni.hasNext()) {
@@ -839,7 +839,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         throw new ItemNotFoundException(locale.toString());
     }
 
-    private Node getOrCreateI18N(Locale locale) throws RepositoryException {
+    public Node getOrCreateI18N(Locale locale) throws RepositoryException {
         try {
             return getI18N(locale);
         } catch (RepositoryException e) {

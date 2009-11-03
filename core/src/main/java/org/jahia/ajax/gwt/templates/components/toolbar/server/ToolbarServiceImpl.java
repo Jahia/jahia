@@ -56,8 +56,6 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.toolbar.bean.*;
 import org.jahia.services.workflow.AbstractActivationJob;
-import org.jahia.services.importexport.ActivationContentPickerJob;
-import org.jahia.services.importexport.CopyJob;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
@@ -560,16 +558,11 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
                 if (lastExecutedJobType != null) {
                     // is system job
-                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)
-                            && !lastExecutedJobType.equalsIgnoreCase(CopyJob.COPYPASTE_TYPE);
+                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE);
 
                     // workflow
                     if (lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)) {
                         lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.workflow.label");
-                    } else if (lastExecutedJobType.equalsIgnoreCase(ActivationContentPickerJob.PICKED_TYPE)) {
-                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.pickercopy.label");
-                    } else if (lastExecutedJobType.equalsIgnoreCase(CopyJob.COPYPASTE_TYPE)) {
-                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.copypaste.label");
                     }
 
                     // check if current page validated
@@ -760,7 +753,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         //logger.info("retreive ga parameters");
         try {
             org.jahia.services.importexport.ImportExportService ies = SERVICES_REGISTRY.getImportExportService();
-            String uuid = ies.getUuid(ContentPage.getPage(pid));
+            String uuid = ContentPage.getPage(pid).getUUID();
             ParamBean paramBean = retrieveParamBean();
             JahiaSite currentSite = paramBean.getSite();
 

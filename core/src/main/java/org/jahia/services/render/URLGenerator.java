@@ -64,11 +64,6 @@ public class URLGenerator {
         live += resourcePath + ".html";
         edit += resourcePath + ".html";
         preview += resourcePath + ".html";
-        if (!context.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-            List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
-            String userHomePath = userFolders.iterator().next().getPath();
-            userProfile = base + userHomePath + ".html";
-        }
     }
 
     public String getBase() {
@@ -88,6 +83,13 @@ public class URLGenerator {
     }
 
     public String getUserProfile() {
+        if (userProfile == null) {
+            if (!context.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
+                String userHomePath = userFolders.iterator().next().getPath();
+                userProfile = base + userHomePath + ".html";
+            }
+        }
         return userProfile;
     }
 

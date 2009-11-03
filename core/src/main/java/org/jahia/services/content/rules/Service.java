@@ -52,7 +52,6 @@ import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.importexport.ProductionJob;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.notification.NotificationEvent;
@@ -150,79 +149,6 @@ public class Service {
         StringTokenizer st = new StringTokenizer(name, "_");
 
         String type = st.nextToken();
-        if (type.equals("importFromSite")) {
-            try {
-                logger.info("Export received from site " + uri);
-                ServicesRegistry registry = ServicesRegistry.getInstance();
-                String exportedSite = st.nextToken();
-                JahiaSite s;
-                if (st.nextToken().equals("toSite")) {
-                    String siteKey = st.nextToken();
-                    s = registry.getJahiaSitesService().getSiteByKey(siteKey);
-                    if (s == null) {
-                        logger.error(
-                                "Could not find site " + siteKey + " for importing content of site " + exportedSite + " aborting process");
-                        return;
-                    }
-                } else {
-                    s = registry.getJahiaSitesService().getDefaultSite();
-                }
-
-                JahiaUser member = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(s.getID(),
-                                                                                                             user.getName());
-                ContentPage homeContentPage = s.getHomeContentPage();
-
-                ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
-                                                                  System.currentTimeMillis(), s, member,
-                                                                  homeContentPage);
-                jParams.setCurrentLocale(Locale.getDefault());
-                jParams.setOperationMode(ProcessingContext.EDIT);
-//                jParams.setServerName(m.getRequest().getServerName());
-//                jParams.setScheme(m.getRequest().getScheme());
-//                jParams.setServerPort(m.getRequest().getServerPort());
-                Class<ImportJob> jobClass = ImportJob.class;
-                String dkey = homeContentPage.getObjectKey().toString();
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Production job", jobClass, jParams);
-
-                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-
-                Set<LockKey> locks = new HashSet<LockKey>();
-                synchronized (lockRegistry) {
-                    // Export lock might have been set during differential export with filename as lockkey
-                    LockKey lock = LockKey.composeLockKey(
-                            LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(),
-                            homeContentPage.getID());
-                    lockRegistry.release(lock, jParams.getUser(), name);
-                    // Upgrade to import lock
-                    lock = LockKey.composeLockKey(
-                            LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(),
-                            homeContentPage.getID());
-                    locks.add(lock);
-                    if (!lockRegistry.acquire(lock, jParams.getUser(), jobDetail.getName(),
-                                              BackgroundJob.getMaxExecutionTime(), false)) {
-                        logger.info("Cannot acquire lock, do not import");
-                        return;
-                    }
-                }
-
-                JobDataMap jobDataMap;
-                jobDataMap = jobDetail.getJobDataMap();
-                jobDataMap.put(BackgroundJob.JOB_LOCKS, locks);
-                jobDataMap.put(ImportJob.TARGET, dkey);
-                jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, registry.getJahiaSitesService().getSite(
-                        homeContentPage.getSiteID()).getSiteKey());
-                jobDataMap.put(ImportJob.URI, uri);
-                jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
-                jobDataMap.put(BackgroundJob.JOB_TYPE, ProductionJob.PRODUCTION_TYPE);
-//                jobDataMap.put(ProductionJob.JOB_TITLE, fr);
-
-                jobDataMap.put(ImportJob.PUBLISH_ALL_AT_END, Boolean.valueOf(uri.indexOf("AndPublish") > -1));
-                schedulerServ.scheduleJobNow(jobDetail);
-            } catch (Exception e) {
-                logger.error("Error during import of file " + uri, e);
-                ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-            }
-        }
         if (type.equals("importInto")) {
             try {
                 logger.info("Import file " + uri);
@@ -543,8 +469,11 @@ public class Service {
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
-                ImportExportBaseService.getInstance().importFile(null, ctx, file, false, new ArrayList<ImportAction>(),
-                                                                 null);
+                try {
+                    ImportExportBaseService.getInstance().importZip(file,new ArrayList<ImportAction>(), null, ctx);
+                } catch (RepositoryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             } else if (infos.get("type").equals("xml") && (infos.get("importFileName").equals(
                     "serverPermissions.xml") || infos.get("importFileName").equals("users.xml"))) {
 

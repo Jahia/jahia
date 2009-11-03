@@ -1,11 +1,10 @@
 <nt = 'http://www.jcp.org/jcr/nt/1.0'>
 
-[jnt:news] > jnt:container, jmix:structuredContent
- smallText newsTitle primary
- bigText newsDesc
- file newsImage (file[mime='image/*'])
- page newslink (page[type="external,internal"])
- date newsDate = now()
+[jnt:news] > jnt:content, mix:title, jmix:structuredContent
+ bigText desc
+ file image (file[mime='image/*'])
+ page link (page[type="external,internal"])
+ date date = now()
 
-[jnt:lastNews] > jnt:container, jmix:queryContent
+[jnt:lastNews] > jnt:content, mix:title, jmix:queryContent
   integer maxNews = 10 indexed=no

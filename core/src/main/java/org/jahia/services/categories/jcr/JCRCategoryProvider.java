@@ -403,6 +403,9 @@ public class JCRCategoryProvider {
             Session session = sessionFactory.getCurrentUserSession(null, locale);
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
+            if (!categoryNode.isCheckedOut()) {
+                categoryNode.checkout();
+            }
             categoryNode.setProperty(Constants.JCR_TITLE, title);
             session.save();
         } catch (RepositoryException e) {

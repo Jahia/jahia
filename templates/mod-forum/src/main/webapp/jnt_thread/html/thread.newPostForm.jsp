@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="forum.css" nodetype="jnt:thread"/>
 <script type="text/javascript">
     function jahiaForumQuote(targetId, quotedText) {
         var targetArea = document.getElementById(targetId);

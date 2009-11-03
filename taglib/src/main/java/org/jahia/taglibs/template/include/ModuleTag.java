@@ -294,26 +294,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                     Resource resource = new Resource(node, templateType, template, forcedTemplate);
 
-                    //Todo: extend to other things than css
-
-                    try {
-                        ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
-                        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
-                                nt.getSystemId());
-                        if (aPackage != null) {
-                            String path = pageContext.getServletContext().getRealPath(aPackage.getRootFolderPath());
-                            File f = new File(path + "/css");
-                            if (f.exists()) {
-                                File[] files = f.listFiles();
-                                for (File file : files) {
-                                    renderContext.addExternalLink("css",
-                                                                  aPackage.getRootFolderPath() + "/css/" + file.getName());
-                                }
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
 	                if (renderContext.isEditMode() && editable) {
 	                    try {
 	                        if (node.isNodeType("jmix:link")) {

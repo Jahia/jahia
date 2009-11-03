@@ -10,6 +10,7 @@
 <jcr:sql var="numberOfThreadsQuery"
          sql="select [jcr:uuid] from [jnt:thread] as t  where isdescendantnode(t,['${currentNode.path}'])"/>
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
+<template:addResources type="css" resources="forum.css" nodetype="jnt:topic"/>
 <div id="forum-body">
     <div class="topics">
         <h2><a href="${url.base}${currentNode.parent.path}.detail.html"><jcr:nodeProperty node="${currentNode}"

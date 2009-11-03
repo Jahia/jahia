@@ -5,6 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="forum.css" nodetype="jnt:dynamicTopicList"/>
 <jcr:jqom var="topics">
     <query:selector nodeTypeName="jnt:topic" selectorName="topicList"/>
     <query:descendantNode selectorName="topicList" path="/"/>

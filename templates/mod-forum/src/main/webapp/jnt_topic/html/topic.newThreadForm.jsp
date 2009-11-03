@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="forum.css" nodetype="jnt:topic"/>
 
 <%--<form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:thread"/>

@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="forum.css" nodetype="jnt:dynamicTopicList"/>
 <jcr:sql var="topics" sql="select * from [jnt:topic]"/>
 <c:if test="${topics.nodes.size == 0}">
     No Topics Found

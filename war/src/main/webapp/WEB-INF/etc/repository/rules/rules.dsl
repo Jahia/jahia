@@ -62,7 +62,7 @@
 [consequence][]Fire {eventType} notification event to user {targetUser}=service.notifyUser(node, "{eventType}", {targetUser}, drools);
 [consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);
-[consequence][]Log {message}= logger.error({message});
+[consequence][]Log {message}= logger.info({message});
 [consequence][]Remove this property=insert (new DeletedPropertyWrapper(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
 [consequence][]Revoke all permissions on the {node}=service.revokeAllPermissions({node});

@@ -1,2 +1,8 @@
 web_templates:bannerContainer.title = jcr:title
 web_templates:lastNewsContainer = jnt:lastNews
+web_templates:newsContainer = jnt:news
+web_templates:newsContainer.newsTitle = jcr:title
+web_templates:newsContainer.newsDesc = desc
+web_templates:newsContainer.newsImage = image
+web_templates:newsContainer.newslink = link
+web_templates:newsContainer.newsDate = date

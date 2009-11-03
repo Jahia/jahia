@@ -9,7 +9,7 @@
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
 
 <jcr:sql var="newsList"
-         sql="select * from [jnt:news] as news  order by news.[newsDate] desc"
+         sql="select * from [jnt:news] as news  order by news.[date] desc"
          limit="${maxNews.long}"/>
 
 <c:if test="${newsList.nodes.size == 0}">

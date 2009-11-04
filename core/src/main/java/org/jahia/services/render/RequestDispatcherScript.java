@@ -73,6 +73,7 @@ public class RequestDispatcherScript implements Script {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String templatePath;
+    private JahiaTemplatesPackage module;
 
     /**
      * Builds the script, tries to resolve the jsp template
@@ -83,7 +84,7 @@ public class RequestDispatcherScript implements Script {
      */
     public RequestDispatcherScript(Resource resource, RenderContext context) throws IOException {
         try {
-            String templatePath = getTemplatePath(resource, context);
+            resolveTemplatePath(resource, context);
             if (templatePath == null) {
                 throw new IOException("Template not found for : " + resource);
             } else {
@@ -94,7 +95,6 @@ public class RequestDispatcherScript implements Script {
 
             this.request = context.getRequest();
             this.response = context.getResponse();
-            this.templatePath = templatePath;
             rd = request.getRequestDispatcher(templatePath);
 
         } catch (RepositoryException e) {
@@ -103,10 +103,9 @@ public class RequestDispatcherScript implements Script {
         }
     }
 
-    private String getTemplatePath(Resource resource, final RenderContext context) throws RepositoryException {
+    private void resolveTemplatePath(Resource resource, final RenderContext context) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
 
-        String templatePath;
         if (resource.getWrappedMixinType() == null) {
             for (String template : resource.getTemplates()) {
                 List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
@@ -120,7 +119,8 @@ public class RequestDispatcherScript implements Script {
                         String currentTemplatePath = aPackage.getRootFolderPath();
                         templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
                         if (templatePath != null) {
-                            return templatePath;
+                            module = aPackage;
+                            return;
                         }
                     }
                 }
@@ -138,13 +138,13 @@ public class RequestDispatcherScript implements Script {
                     templatePath = getTemplatePath(resource.getTemplateType(), template, resource.getWrappedMixinType(),
                                                    currentTemplatePath);
                     if (templatePath != null) {
-                        return templatePath;
+                        module = aPackage;
+                        return;
                     }
                 }
 
             }
         }
-        return null;
     }
 
     private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
@@ -213,5 +213,14 @@ public class RequestDispatcherScript implements Script {
      */
     public String getInfo() {
         return "JSP dispatch : " + templatePath;
+    }
+
+    /**
+     * Return the module where the script comes from
+     *
+     * @return the module name
+     */
+    public JahiaTemplatesPackage getModule() {
+        return module;
     }
 }

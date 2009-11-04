@@ -71,30 +71,10 @@ public class AddResourcesTag extends BodyTagSupport {
      */
     @Override
     public int doEndTag() throws JspException {
-        try {
-            // Todo test if module is active
-            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
-                                                                                   PageContext.REQUEST_SCOPE);
-            ExtendedNodeType extendedNodeType = null;
-            if (nodetype != null) {
-                extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
-            } else if (node != null) {
-                extendedNodeType = node.getPrimaryNodeType();
-            }
-            if (extendedNodeType != null) {
-                final SortedSet<JahiaTemplatesPackage> aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                        extendedNodeType.getAlias().replace(":", "_"), renderContext);
-                if (aPackage != null && aPackage.size() > 0) {
-                    for (JahiaTemplatesPackage templatesPackage : aPackage) {
-                        String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());
-                        addResources(renderContext, templatesPackage, path, type, resources);
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
-        }
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+        JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
+        String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());
+        addResources(renderContext, templatesPackage, path, type, resources);
         nodetype = null;
         node = null;
         return super.doEndTag();

@@ -91,6 +91,7 @@ public class RenderService extends JahiaService {
 
         pushAttribute(request, "currentResource", resource, old);
         pushAttribute(request, "scriptInfo", script.getInfo(), old);
+        pushAttribute(request, "currentModule", script.getModule(), old);
 
         if (node.isNodeType("jnt:contentList")) {
             if (context.getModuleParams().containsKey("forcedSubNodesTemplate")) {

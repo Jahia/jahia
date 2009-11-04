@@ -31,6 +31,8 @@
  */
 package org.jahia.services.render;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+
 import java.io.IOException;
 
 /**
@@ -52,5 +54,11 @@ public interface Script {
      * @return
      */
     public String getInfo();
+
+    /**
+     * Return the module where the script comes from
+     * @return the module name
+     */
+    public JahiaTemplatesPackage getModule();
 
 }

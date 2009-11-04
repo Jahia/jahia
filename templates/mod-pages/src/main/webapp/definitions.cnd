@@ -1,1 +1,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:gridPage] > jmix:contentMixin, jmix:layout mixin
+- column (string,choicelist[resourceBundle,image])  < "col1","col2","col3" 

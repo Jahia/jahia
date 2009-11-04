@@ -20,13 +20,22 @@ public class DefinitionsMapping {
 
     public DefinitionsMapping() {
         this.properties = new Properties();
+
+        properties.put("metadata.jahia:defaultCategory", "jmix:categorized.j:defaultCategory");
+        properties.put("metadata.jahia:keywords", "jmix:keywords.j:keywords");
+        properties.put("metadata.jahia:createdBy", "mix:created.jcr:createdBy");
+        properties.put("metadata.jahia:lastModifiedBy", "mix:lastModified.jcr:lastModifiedBy");
+        properties.put("metadata.jahia:lastPublishingDate", "jmix:lastPublished.j:lastPublished");
+        properties.put("metadata.jahia:lastPublisher", "jmix:lastPublished.j:lastPublishedBy");
     }
 
     public void load(InputStream is) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         for (String line; (line=br.readLine())!= null;) {
-            String[] s = line.split("=");
-            properties.put(s[0].trim(), s[1].trim());
+            if (!line.startsWith("#") && line.indexOf('=')>0) {
+                String[] s = line.split("=");
+                properties.put(s[0].trim(), s[1].trim());
+            }
         }
     }
 
@@ -55,13 +64,30 @@ public class DefinitionsMapping {
         return propertyName;
     }
 
-    public String getMappedField(ExtendedNodeType parentType, String propertyName) {
-        String key = parentType.getName() + "." + propertyName;
+    public String getMappedPropertyValue(String baseName, String propertyName, String value) {
+        String key = baseName + "." + propertyName + "." + value;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key);
+        }
+        key = "*." + propertyName + "." + value;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key);
+        }
+
+        return value;
+    }
+
+    public String getMappedField(String baseName, String propertyName) {
+        String key = baseName + "." + propertyName;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key);
+        }
+        key = "*." + propertyName;
         if (properties.containsKey(key)) {
             return properties.getProperty(key);
         }
         if (propertyName.endsWith("Title") || propertyName.equals(("title"))) {
-            return "jcr:title";
+            return "mix:title.jcr:title";
         }
 
         return propertyName;

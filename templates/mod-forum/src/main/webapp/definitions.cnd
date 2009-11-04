@@ -2,24 +2,23 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jnt:post] > jnt:content, jmix:rating, mix:title
-bigText content
-
+ - content (string,richtext) i18n
 
 [jnt:thread] > jnt:content, jmix:interactiveContent
-- threadSubject (string)
-+ * (jnt:post)
+ - threadSubject (string)
+ + * (jnt:post)
 
 [jnt:topic] > jnt:content, jmix:interactiveContent
-- topicSubject (string)
-+ * (jnt:thread)
+ - topicSubject (string)
+ + * (jnt:thread)
 
 [jnt:dynamicTopicList] > jnt:content, jmix:interactiveContent
 
 [jnt:boardIndex] > jnt:content, jmix:interactiveContent
  - boardSubject (string)
  - boardDescription (string)
-+ * (jnt:topic)
+ + * (jnt:topic)
 
 [jmix:comments] > jmix:option, jmix:contentMixin mixin
-- shortView (boolean) = false autocreated
-+ comments (jnt:thread) = jnt:thread autocreated hidden
+ - shortView (boolean) = false autocreated
+ + comments (jnt:thread) = jnt:thread autocreated hidden

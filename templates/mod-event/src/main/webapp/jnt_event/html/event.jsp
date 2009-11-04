@@ -45,10 +45,6 @@
                                     </c:forEach>
 
                         </c:if>
-	                    <div>
-	        	    		<fmt:message key="tags"/>:&nbsp;<template:module node="${currentNode}" template="tags"/>
-	                        <template:module node="${currentNode}" template="addTag"/>
-	                    </div>
                     </div>
             </div>
             <!--start eventsBody -->

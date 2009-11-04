@@ -1,8 +1,41 @@
-web_templates:bannerContainer.title = jcr:title
-web_templates:lastNewsContainer = jnt:lastNews
+## Box
+
+*.boxTitle = mix:title.jcr:title
+*.skin = jmix:skinnable.j:skin
+
+## Main content
+
+jnt:mainContentContainer = jnt:mainContent
+jnt:mainContentContainer.mainContentBody = body
+jnt:mainContentContainer.mainContentAlign = align
+jnt:mainContentContainer.mainContentTitle = mix:title.jcr:title
+jnt:mainContentContainer.mainContentImage = image
+
+## News module
+
 web_templates:newsContainer = jnt:news
-web_templates:newsContainer.newsTitle = jcr:title
+web_templates:newsContainer.newsTitle = mix:title.jcr:title
 web_templates:newsContainer.newsDesc = desc
 web_templates:newsContainer.newsImage = image
 web_templates:newsContainer.newslink = link
 web_templates:newsContainer.newsDate = date
+web_templates:lastNewsContainer = jnt:lastNews
+web_templates:lastNewsContainer.display = jmix:renderableList.j:subNodesTemplate
+web_templates:lastNewsContainer.display.medium = default
+
+## Events module
+
+web_templates:eventContainer = jnt:event
+web_templates:eventContainer.eventsType.events.type.meeting = meeting
+web_templates:eventContainer.eventsType.events.type.consumer.show = consumer.show
+web_templates:eventContainer.eventsType.events.type.road.show = road.show
+web_templates:eventContainer.eventsType.events.type.conference = conference
+
+## Job module
+
+web_templates:jobContainer = jnt:job
+
+## Introduction
+
+web_templates:introductionContainer = jnt:bigText
+web_templates:introductionContainer.introduction = jnt:bigText.text

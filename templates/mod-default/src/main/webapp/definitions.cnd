@@ -8,86 +8,75 @@
 [jmix:sendAsNewsletter] mixin
 
 [jmix:filteredList] > jmix:contentListMixin mixin
- sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
+ - filter (string, choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
 [jnt:fileList] > jnt:content, jmix:structuredContent
- file folder (file[folder])
+ - folder (weakreference, file[folder])
 
 [jnt:navLink] > jnt:content, mix:title
  page navLink primary
- smallText separator
+ - separator (string) i18n
 
 [jnt:image] > jnt:content, jmix:structuredContent
-file image (file[mime='image/*'])
+ - image (weakreference, file[mime='image/*']) i18n
 
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent
- sharedSmallText source indexed=no
- sharedSmallText name indexed=no
- integer width indexed=no
- integer height indexed=no
- integer frameborder = '0' indexed=no
- integer marginwidth = '0' indexed=no
- integer marginheight = '0' indexed=no
- sharedSmallText scrolling (choicelist) indexed=no < 'yes','no','auto'
- smallText alt indexed=no
+ - source (string) indexed=no
+ - name (string) indexed=no
+ - width (long) indexed=no
+ - height (long) indexed=no
+ - frameborder (long) = '0' indexed=no
+ - marginwidth (long) = '0' indexed=no
+ - marginheight (long) = '0' indexed=no
+ - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
+ - alt (string) i18n indexed=no
 
 [jnt:video] > jnt:content, mix:title, jmix:interactiveContent
- sharedSmallText name
- file source
- integer width = '0'
- integer height = '0'
- integer hspace = '0'
- integer vspace = '0'
- sharedSmallText autostart (choicelist) analyzer='keyword' nofulltext < 'true','false'
- sharedSmallText invokeURLs (choicelist) analyzer='keyword' nofulltext < 'true','false'
- sharedSmallText enablecontextmenu (choicelist) analyzer='keyword' nofulltext < '0','1'
- sharedSmallText showstatusbar (choicelist) analyzer='keyword' nofulltext < '0','1'
- sharedSmallText showcontrols (choicelist) analyzer='keyword' nofulltext < '0','1'
- sharedSmallText autosize (choicelist) analyzer='keyword' nofulltext < 'true','false'
- integer displaysize = '0' analyzer='keyword' nofulltext
- sharedSmallText loop (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ - name (string)
+ - source (weakreference, file)
+ - width (long) = '0'
+ - height (long) = '0'
+ - hspace (long) = '0'
+ - vspace (long) = '0'
+ - autostart (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
+ - invokeURLs (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
+ - enablecontextmenu (string, choicelist) analyzer='keyword' nofulltext < '0','1'
+ - showstatusbar (string, choicelist) analyzer='keyword' nofulltext < '0','1'
+ - showcontrols (string, choicelist) analyzer='keyword' nofulltext < '0','1'
+ - autosize (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
+ - displaysize (long) = '0' analyzer='keyword' nofulltext
+ - loop (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
 
 [jnt:flash] > jnt:content, mix:title, jmix:interactiveContent
- file flashSource
- sharedSmallText width analyzer='keyword' nofulltext
- sharedSmallText height analyzer='keyword' nofulltext
- sharedSmallText flashPlayer = '9' analyzer='keyword' nofulltext
- sharedSmallText id analyzer='keyword' nofulltext
- sharedSmallText name
- sharedSmallText swliveconnect (choicelist) analyzer='keyword' nofulltext < 'true', 'false'
- sharedSmallText play (choicelist) indexed=no < 'true','false'
- sharedSmallText loop (choicelist) indexed=no < 'true','false'
- sharedSmallText menu (choicelist) indexed=no < 'true','false'
- sharedSmallText quality (choicelist) analyzer='keyword' nofulltext < 'low','high','autolow','autohigh','best'
- sharedSmallText scale (choicelist) analyzer='keyword' nofulltext < 'default','noborder','exactfit'
- sharedSmallText align (choicelist) indexed=no < 'l','r','t','b'
- sharedSmallText salign (choicelist) indexed=no < 'l','r','t','b','tl','tr','bl','br'
- sharedSmallText wmode (choicelist) indexed=no < 'window','opaque','transparent'
- color bgcolor
- sharedSmallText base indexed=no
- sharedSmallText flashvars indexed=no
+ - flashSource (weakreference, file)
+ - width (string) analyzer='keyword' nofulltext
+ - height (string) analyzer='keyword' nofulltext
+ - flashPlayer (string) = '9' analyzer='keyword' nofulltext
+ - id (string) analyzer='keyword' nofulltext
+ - name (string)
+ - swliveconnect (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true', 'false'
+ - play (string, choicelist[resourceBundle]) indexed=no < 'true','false'
+ - loop (string, choicelist[resourceBundle]) indexed=no < 'true','false'
+ - menu (string, choicelist[resourceBundle]) indexed=no < 'true','false'
+ - quality (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'low','high','autolow','autohigh','best'
+ - scale (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'default','noborder','exactfit'
+ - align (string, choicelist[resourceBundle]) indexed=no < 'l','r','t','b'
+ - salign (string, choicelist[resourceBundle]) indexed=no < 'l','r','t','b','tl','tr','bl','br'
+ - wmode (string, choicelist[resourceBundle]) indexed=no < 'window','opaque','transparent'
+ - bgcolor (string, color)
+ - base (string) indexed=no
+ - flashvars (string) indexed=no
 
 [jnt:text] > jnt:content, jmix:structuredContent
- smallText text                 
+ - text (string) i18n
 
 [jnt:bigText] > jnt:content, jmix:structuredContent
- bigText text
-
- [jnt:Iframe] > jnt:content, mix:title, jmix:structuredContent
- sharedSmallText IframeSource indexed=no
- sharedSmallText IframeName indexed=no
- integer IframeWidth indexed=no
- integer IframeHeight indexed=no
- integer IframeFrameborder = '0' indexed=no
- integer IframeMarginwidth = '0' indexed=no
- integer IframeMarginheight = '0' indexed=no
- sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
- smallText IframeAlt indexed=no
+ - text (string, richtext) i18n
 
 [jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent
-  bigText body
-  file image
-  sharedSmallText align (choicelist[resourceBundle]) = left indexed=no < left,right,default
+ - body (string, richtext) i18n
+ - image (weakreference, file[mime='image/*']) i18n
+ - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
 
 [jnt:pageTagging] > jnt:content, mix:title, jmix:interactiveContent
 

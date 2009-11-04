@@ -1,22 +1,22 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:jobApplication] > jmix:basemetadata
-	sharedSmallText firstname
-	sharedSmallText lastname primary 
-	sharedSmallText email
-	bigText         text
+ - firstname (string)
+ - lastname (string) primary
+ - email (string)
+ - text (string, richtext) i18n
 
 [jnt:job] > jmix:basemetadata, mix:title, jmix:structuredContent
-	smallText       reference
-	smallText       businessUnit facetable
-	sharedSmallText contract (choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
-	date       		date 
-	smallText       town
-	smallText       country (choicelist) facetable  < country()
-	smallText       educationLevel analyzer='keyword' 
-	bigText         description
-	bigText         skills
-	+ * (jnt:jobApplication)
+ - reference (string)
+ - businessUnit (string) i18n facetable
+ - contract (string, choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
+ - date (string)
+ - town (string)
+ - country (string, choicelist[resourceBundle]) facetable  < country()
+ - educationLevel (string) i18n analyzer='keyword'
+ - description (string, richtext) i18n
+ - skills (string, richtext) i18n
+ + * (jnt:jobApplication)
 
 [jnt:jobOffers] > jmix:basemetadata, jmix:structuredContent, mix:title
  orderable

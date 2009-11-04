@@ -219,6 +219,7 @@ public class ManagerConfigurationFactory {
 
         // only one column here : name
         mashupPickerConfig.addColumn("name");
+        mashupPickerConfig.addColumn("picker");
 
         mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
@@ -289,6 +290,7 @@ public class ManagerConfigurationFactory {
 
         // only one column here : name
         categoryPickerConfig.addColumn("name");
+        categoryPickerConfig.addColumn("picker");
 
         categoryPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 

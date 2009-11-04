@@ -55,8 +55,6 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import java.io.File;
 import java.util.*;
 
-import com.sun.tools.javac.util.Log;
-
 /**
  * Helper class for accessing node types and definitions.
  *

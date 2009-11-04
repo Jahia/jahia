@@ -43,10 +43,12 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,6 +59,8 @@ import java.util.Iterator;
  */
 public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     private List<GWTJahiaNode> value;
+    private String selectionLabel;
+    private String header;
     private String rootPath;
     private String types;
     private String filters;
@@ -64,19 +68,29 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     private String configuration;
     private boolean multiple;
     private boolean allowThumbs;
+    private boolean pagePicker;
+    private Map<String,String> selectorOptions;
 
-    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String configuration, boolean multiple, boolean allowThumbs) {
+    public ContentPickerField(String header,String selectionLabel,Map<String,String> selectorOptions,String rootPath, String types, String filters, String mimeTypes, String configuration, boolean multiple, boolean allowThumbs) {
         super();
+        this.header = header;
+        this.selectionLabel = selectionLabel;
         setPropertyEditor(new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
                 String s = "";
                 for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext();) {
-                    s += it.next().getName();
+                    GWTJahiaNode currentNode = it.next();
+                    if(currentNode.get("j:url") != null){
+                       s += currentNode.get("j:url");
+                    }else{
+                       s += currentNode.getName();
+                    }
                     if (it.hasNext()) {
                         s += ", ";
                     }
                 }
-                return value.toString();
+                return s;
+                //return value.toString();
             }
 
             public List<GWTJahiaNode> convertStringValue(String value) {
@@ -90,6 +104,8 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         this.configuration = configuration;
         this.multiple = multiple;
         this.allowThumbs = allowThumbs;
+        this.selectorOptions = selectorOptions;
+        this.pagePicker = configuration.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
         setValue(new ArrayList<GWTJahiaNode>());
     }
 
@@ -101,8 +117,9 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         }
         final Window w = new Window();
         w.setLayout(new FitLayout());
-        final ContentPicker contentPicker = new ContentPicker(rootPath, getValue(), types, filters, mimeTypes, configuration, multiple, allowThumbs, "");
+        final ContentPicker contentPicker = new ContentPicker(selectionLabel,rootPath,selectorOptions, getValue(), types, filters, mimeTypes, configuration, multiple, allowThumbs, "");
 
+        w.setHeading(header);
         w.setModal(true);
         w.setSize(800, 600);
         w.setResizable(true);
@@ -144,6 +161,12 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     public void setValue(List<GWTJahiaNode> value) {
         super.setValue(value);
         this.value = value;
+    }
+
+
+
+    public boolean isPagePicker() {
+        return pagePicker;
     }
 }
 

@@ -39,33 +39,49 @@ import java.util.Date;
 
 /**
  * Serializable bean to wrap a JCR node property value.
+ *
  * @see GWTJahiaNodePropertyType
  */
 public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializable {
 
-    private String value ;
-    private int type ;
+    private String value;
+    private int type;
     private GWTJahiaNode reference;
 
-     public GWTJahiaNodePropertyValue() {}
+    // case of a link
+    private GWTJahiaNode linkNode;
+
+    public GWTJahiaNodePropertyValue() {
+    }
 
     public GWTJahiaNodePropertyValue(String value, int type) {
-        this.type = type ;
-        this.value = value ;
+        this.type = type;
+        this.value = value;
     }
 
     public GWTJahiaNodePropertyValue(GWTJahiaNode reference) {
-        this.type = GWTJahiaNodePropertyType.REFERENCE ;
+        this.type = GWTJahiaNodePropertyType.REFERENCE;
         this.reference = reference;
         this.value = reference.getUUID();
     }
 
+    public GWTJahiaNodePropertyValue(GWTJahiaNode node, int type) {
+        this.type = type;
+        if (type == GWTJahiaNodePropertyType.REFERENCE) {
+            this.reference = node;
+            this.value = reference.getUUID();
+        } else if (type == GWTJahiaNodePropertyType.PAGE_LINK) {
+            this.linkNode = node;
+            this.value = node.get("jnt:url"); 
+        }
+    }
+
     public boolean equals(Object obj) {
         if (obj instanceof GWTJahiaNodePropertyValue) {
-            GWTJahiaNodePropertyValue val = (GWTJahiaNodePropertyValue) obj ;
+            GWTJahiaNodePropertyValue val = (GWTJahiaNodePropertyValue) obj;
             return val.getType() == val.getType() && val.getString().equals(getString());
         } else {
-            return false ;
+            return false;
         }
     }
 
@@ -73,65 +89,71 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         return type;
     }
 
+
     public byte[] getBinary() {
-        return null ;
+        return null;
     }
 
     public byte[] getStream() {
-        return null ;
+        return null;
     }
 
     public Boolean getBoolean() {
         if (type == GWTJahiaNodePropertyType.BOOLEAN) {
-            return Boolean.valueOf(value) ;
+            return Boolean.valueOf(value);
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Date getDate() {
         if (type == GWTJahiaNodePropertyType.DATE) {
-            return new Date(Long.valueOf(value)) ;
+            return new Date(Long.valueOf(value));
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Float getDecimal() {
         if (type == GWTJahiaNodePropertyType.DECIMAL) {
-            return Float.valueOf(value) ;
+            return Float.valueOf(value);
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Double getDouble() {
         if (type == GWTJahiaNodePropertyType.DOUBLE) {
-            return Double.valueOf(value) ;
+            return Double.valueOf(value);
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Long getLong() {
         if (type == GWTJahiaNodePropertyType.LONG) {
-            return Double.valueOf(value).longValue() ;
+            return Double.valueOf(value).longValue();
         } else {
-            return null ;
+            return null;
         }
     }
 
     public String getString() {
-        return value ;
+        return value;
     }
 
     public GWTJahiaNode getNode() {
         return reference;
     }
 
+    public GWTJahiaNode getLinkNode() {
+        return linkNode;
+    }
+
+
     @Override
     public String toString() {
         return getString();
     }
-    
+
 }

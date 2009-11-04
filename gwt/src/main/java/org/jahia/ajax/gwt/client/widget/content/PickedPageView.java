@@ -12,9 +12,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
-import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -23,8 +21,10 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.allen_sauer.gwt.log.client.Log;
 
-import java.util.List; /**
+import java.util.List;
+import java.util.ArrayList; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -61,9 +61,10 @@ import java.util.List; /**
  * Date: Oct 29, 2009
  * Time: 7:11:56 PM
  */
-public class PickedPageView extends BottomRightComponent {
+public class PickedPageView extends BottomRightComponent implements PickedContent {
     private ContentPanel m_component;
     private RadioGroup pageTypeGroup = new RadioGroup("pageType");
+    private String defaultLinkType;
     private TextField<String> link = new TextField<String>();
     private TextField<String> alt = new TextField<String>();
     private TextField<String> url = new TextField<String>();
@@ -71,13 +72,23 @@ public class PickedPageView extends BottomRightComponent {
 
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
+    private GWTJahiaNode selectedContent = null;
 
+    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
 
-    public PickedPageView(String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
         m_component = new ContentPanel(new ColumnLayout());
         m_component.setBodyBorder(false);
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
+
+        if (externalAllowed) {
+            defaultLinkType = "external";
+        }
+
+        if (internalAllowed) {
+            defaultLinkType = "internal";
+        }
+
 
         // form panel
         FormPanel pageLinkForm = new FormPanel();
@@ -90,20 +101,23 @@ public class PickedPageView extends BottomRightComponent {
         pageLinkForm.setScrollMode(Style.Scroll.AUTO);
         pageLinkForm.setButtonAlign(Style.HorizontalAlignment.CENTER);
 
+        if (externalAllowed && internalAllowed) {
+            Radio external = new Radio();
+            external.setName("external");
+            external.setBoxLabel(Messages.get("cm_external_link", "external link"));
+            external.setValue(true);
 
-        Radio external = new Radio();
-        external.setName("external");
-        external.setBoxLabel("external link");
-        external.setValue(true);
+            Radio internal = new Radio();
 
-        Radio internal = new Radio();
+            internal.setName("internal");
+            internal.setBoxLabel(Messages.get("cm_internal_link", "internal link"));
 
-        internal.setName("internal");
-        internal.setBoxLabel("internal link");
+            pageTypeGroup.setFieldLabel(Messages.get("cm_page_type", "Page type"));
+            pageTypeGroup.add(external);
+            pageTypeGroup.add(internal);
 
-        pageTypeGroup.setFieldLabel("Page type");
-        pageTypeGroup.add(external);
-        pageTypeGroup.add(internal);
+            pageTypeGroup.setValue(internal);
+        }
 
 
         link = new TextField<String>();
@@ -127,57 +141,90 @@ public class PickedPageView extends BottomRightComponent {
 
         ListStore<TargetModelData> store = new ListStore<TargetModelData>();
         TargetModelData modelData = new TargetModelData();
-        modelData.setTarget("New window");
+        modelData.setTarget(Messages.get("cm_new_window", "New window"));
         store.add(modelData);
 
         modelData = new TargetModelData();
-        modelData.setTarget("Same window");
+        modelData.setTarget(Messages.get("cm_same_window", "Same window"));
         store.add(modelData);
 
         target = new ComboBox<TargetModelData>();
-        target.setFieldLabel("Target");
+        target.setFieldLabel(Messages.get("cm_target", "Target"));
         target.setDisplayField("target");
         target.setStore(store);
         target.select(0);
 
-        pageLinkForm.add(pageTypeGroup);
+        if (pageTypeGroup != null) {
+            pageLinkForm.add(pageTypeGroup);
+        }
         pageLinkForm.add(link);
         pageLinkForm.add(alt);
         pageLinkForm.add(url);
         pageLinkForm.add(target);
 
-
-        fillData(selectedNodes);
+        if (selectedNodes != null && selectedNodes.size() > 0) {
+            selectedContent = selectedNodes.get(0);
+            GWTJahiaNode node = (GWTJahiaNode) selectedContent.get("j:node");
+            if (node != null) {
+                link.setValue(node.getName());
+                alt.setValue(node.getName());
+                url.setValue(node.getUrl());
+            } else {
+                link.setValue((String) selectedContent.get("jcr:title"));
+                alt.setValue((String) selectedContent.get("j:alt"));
+                url.setValue((String) selectedContent.get("j:url"));
+            }
+        }
         m_component.add(pageLinkForm);
         LayoutContainer right = new LayoutContainer();
         FormLayout layout = new FormLayout();
         layout.setLabelAlign(FormPanel.LabelAlign.TOP);
         right.setLayout(layout);
         right.add(pickContentButton);
-       // m_component.add(right, new ColumnData(.5));
 
     }
 
+    /**
+     * Clear
+     */
     public void clear() {
         link.setValue("");
         alt.setValue("");
         url.setValue("");
     }
 
+    /**
+     * Fill data
+     *
+     * @param root
+     */
     public void fillData(Object root) {
         if (root == null) {
             clear();
         }
 
-        if (pageTypeGroup.getRawValue().equalsIgnoreCase("external")) {
-            return;
+        if (pageTypeGroup != null && pageTypeGroup.getValue().getName().equalsIgnoreCase("external")) {
+            selectedContent = new GWTJahiaNode();
+            selectedContent.set("linkType", "external");
+        } else {
+            List<GWTJahiaNode> list = (List<GWTJahiaNode>) root;
+            if (list != null && list.size() > 0) {
+                GWTJahiaNode node = list.get(0);
+                link.setValue(node.getName());
+                alt.setValue(node.getName());
+                url.setValue(node.getUrl());
+
+                selectedContent = new GWTJahiaNode();
+                selectedContent.set("j:node", node);
+                selectedContent.set("linkType", "internal");
+            }
         }
-        List<GWTJahiaNode> list = (List<GWTJahiaNode>) root;
-        if (list != null && list.size() > 0) {
-            GWTJahiaNode node = list.get(0);
-            link.setValue(node.getName());
-            alt.setValue(node.getName());
-            url.setValue(node.getUrl());
+
+        // add extra parameter
+        if (selectedContent != null) {
+            selectedContent.set("jcr:title", link.getValue());
+            selectedContent.set("j:url", url.getValue());
+            selectedContent.set("j:alt", alt.getValue());
         }
     }
 
@@ -186,9 +233,10 @@ public class PickedPageView extends BottomRightComponent {
         return m_component;
     }
 
+    /**
+     * Model for new target attribute of the link
+     */
     private class TargetModelData extends BaseModelData {
-        private String target;
-
         public String getTarget() {
             return get("target");
         }
@@ -196,5 +244,14 @@ public class PickedPageView extends BottomRightComponent {
         public void setTarget(String target) {
             set("target", target);
         }
+    }
+
+    public List<GWTJahiaNode> getSelectedContent() {
+        if (selectedContent == null) {
+            return null;
+        }
+        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+        l.add(selectedContent);
+        return l;
     }
 }

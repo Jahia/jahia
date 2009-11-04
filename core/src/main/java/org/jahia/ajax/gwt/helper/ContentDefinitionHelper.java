@@ -55,6 +55,8 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import java.io.File;
 import java.util.*;
 
+import com.sun.tools.javac.util.Log;
+
 /**
  * Helper class for accessing node types and definitions.
  *
@@ -343,7 +345,7 @@ public class ContentDefinitionHelper {
     public GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
         String theValue;
         int type;
-
+    
         switch (requiredType) {
             case PropertyType.BINARY:
                 type = GWTJahiaNodePropertyType.BINARY;
@@ -394,7 +396,6 @@ public class ContentDefinitionHelper {
 
     public Value convertValue(GWTJahiaNodePropertyValue val) throws RepositoryException {
         Value value;
-
         switch (val.getType()) {
             case GWTJahiaNodePropertyType.BINARY:
                 value = new BinaryValue(val.getBinary());

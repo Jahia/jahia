@@ -59,8 +59,9 @@ public class ContentPickerEntryPoint implements EntryPoint {
             final List<GWTJahiaNode> selectedContentNodes = ContentHelper.getSelectedContentNodesFromHTML();
 
             if (callback == null || callback.length() == 0) {
-                panel.add(new ContentPicker(
+                panel.add(new ContentPicker("",
                         DOM.getElementAttribute(panel.getElement(), "rootPath"),
+                        null,
                         selectedContentNodes,
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "filters"),

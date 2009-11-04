@@ -47,6 +47,7 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.*;
 
 import javax.jcr.*;
@@ -67,6 +68,8 @@ public class PropertiesHelper {
     private JCRSessionFactory sessionFactory;
     private ContentDefinitionHelper contentDefinition;
     private ContentManagerHelper contentManager;
+    private NavigationHelper navigation;
+
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -78,6 +81,10 @@ public class PropertiesHelper {
 
     public void setContentManager(ContentManagerHelper contentManager) {
         this.contentManager = contentManager;
+    }
+
+    public void setNavigation(NavigationHelper navigation) {
+        this.navigation = navigation;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
@@ -131,6 +138,57 @@ public class PropertiesHelper {
                     nodeProp.setName(propName);
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     gwtValues.add(new GWTJahiaNodePropertyValue(node.getProperty(Constants.JCR_MIMETYPE).getString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
+                    nodeProp.setValues(gwtValues);
+                    props.put(nodeProp.getName(), nodeProp);
+                } else if (node.isNodeType(Constants.JAHIANT_PAGE_LINK)) {
+
+                    // case of link
+                    NodeDefinition def = node.getDefinition();
+                    propName = def.getName();
+                    // create the corresponding GWT bean
+                    GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
+                    nodeProp.setName(propName);
+                    List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
+                    GWTJahiaNode linkNode = navigation.getGWTJahiaNode((JCRNodeWrapper) node, false);
+                    if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
+                        linkNode.set("linkType", "internal");
+                    } else if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
+                        linkNode.set("linkType", "external");
+                    } else if (node.isNodeType(Constants.JAHIANT_DIRECT_PAGE_LINK)) {
+                        linkNode.set("linkType", "direct");
+                    }
+
+                    // url
+                    if (node.hasProperty(Constants.URL)) {
+                        String linkUrl = node.getProperty(Constants.URL).getValue().toString();
+                        linkNode.set(Constants.URL, linkUrl);
+                    }
+
+                    // title
+                    if (node.hasProperty(Constants.JCR_TITLE)) {
+                        String linkTitle = node.getProperty(Constants.JCR_TITLE).getValue().toString();
+                        linkNode.set(Constants.JCR_TITLE, linkTitle);
+                    }
+
+                    // alt
+                    if (node.hasProperty(Constants.ALT)) {
+                        String alt = node.getProperty(Constants.ALT).getValue().toString();
+                        linkNode.set(Constants.ALT, alt);
+                    }
+
+                    if (node.hasProperty(Constants.NODE)) {
+                        JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty("j:node").getValue();
+                        Node pageNode = weekReference.getNode();
+                        linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode, false));
+                        linkNode.set(Constants.ALT, pageNode.getName());
+                        linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());
+                        linkNode.set(Constants.JCR_TITLE, ((JCRNodeWrapper) pageNode).getUrl());
+
+                    }
+
+
+                    GWTJahiaNodePropertyValue proper = new GWTJahiaNodePropertyValue(linkNode, GWTJahiaNodePropertyType.PAGE_LINK);
+                    gwtValues.add(proper);
                     nodeProp.setValues(gwtValues);
                     props.put(nodeProp.getName(), nodeProp);
                 }
@@ -188,8 +246,8 @@ public class PropertiesHelper {
                 }
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
-                if(!aNode.getName().equals(objectNode.getName())) {
-                    contentManager.rename(objectNode.getPath(),aNode.getName(),context.getUser());
+                if (!aNode.getName().equals(objectNode.getName())) {
+                    contentManager.rename(objectNode.getPath(), aNode.getName(), context.getUser());
                 }
             } catch (RepositoryException e) {
                 logger.error("error", e);
@@ -247,6 +305,36 @@ public class PropertiesHelper {
                                     } catch (Throwable e) {
                                         logger.error(e.getMessage(), e);
                                     }
+                                }
+                            } else if (propValue.getType() == GWTJahiaNodePropertyType.PAGE_LINK) {
+                                // case of link sub-node
+                                GWTJahiaNode gwtJahiaNode = propValue.getLinkNode();
+                                String linkUrl = gwtJahiaNode.get(Constants.URL);
+                                String linkTitle = gwtJahiaNode.get(Constants.JCR_TITLE);
+                                String alt = gwtJahiaNode.get(Constants.ALT);
+                                String linkType = gwtJahiaNode.get("linkType");
+                                GWTJahiaNode nodeReference = gwtJahiaNode.get("j:node");
+
+                                // case of external
+                                if (linkType.equalsIgnoreCase("external")) {
+                                    Node content;
+                                    if (objectNode.hasNode(prop.getName())) {
+                                        content = objectNode.getNodes(prop.getName()).nextNode();
+                                    } else {
+                                        content = objectNode.addNode(prop.getName(), Constants.JAHIANT_EXTERNAL_PAGE_LINK);
+                                    }
+                                    content.setProperty(Constants.JCR_TITLE, linkTitle);
+                                    content.setProperty(Constants.URL, linkUrl);
+                                    content.setProperty(Constants.ALT, alt);
+                                    content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                                } else if (linkType.equalsIgnoreCase("internal")) {
+                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_INTERNAL_PAGE_LINK);
+                                    content.setProperty(Constants.NODE, nodeReference.getUUID());
+                                    content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                                } else if (linkType.equalsIgnoreCase("direct")) {
+                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_DIRECT_PAGE_LINK);
+                                    content.setProperty(Constants.NODE, nodeReference.getUUID());
+                                    content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                 }
                             } else {
                                 if (propValue != null && propValue.getString() != null) {

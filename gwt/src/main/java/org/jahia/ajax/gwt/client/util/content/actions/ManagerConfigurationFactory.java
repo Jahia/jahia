@@ -48,7 +48,7 @@ public class ManagerConfigurationFactory {
     public static final String TAGMANAGER = "tagmanager";
     public static final String PORTLETDEFINITIONMANAGER = "portletdefinitionmanager";
     public static final String FILEPICKER = "filepicker";
-    public static final String PAGEPICKER = "pagepicker";    
+    public static final String LINKPICKER = "linkpicker";
     public static final String MASHUPPICKER = "mashuppicker";
     public static final String CATEGORYPICKER = "categorypicker";
     public static final String COMPLETE = "complete";
@@ -86,7 +86,7 @@ public class ManagerConfigurationFactory {
             if (config.contains(TAGMANAGER)) {
                 return getTagManagerConfiguration(linker);
             }
-            if (config.contains(PAGEPICKER)) {
+            if (config.contains(LINKPICKER)) {
                 return getPagePickerConfiguration(linker);
             }
         }
@@ -164,7 +164,8 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getPagePickerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
-        filePickerConfig.setToolbarGroup("page-picker");
+        // ToDO
+        filePickerConfig.setToolbarGroup("file-picker");
         filePickerConfig.setHideLeftPanel(true);
         filePickerConfig.setNodeTypes(JCRClientUtils.PAGE_NODETYPES);
         filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);

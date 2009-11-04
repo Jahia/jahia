@@ -173,6 +173,7 @@
         <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="navigation"  ref="NavigationHelper"/>
     </bean>
 
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >

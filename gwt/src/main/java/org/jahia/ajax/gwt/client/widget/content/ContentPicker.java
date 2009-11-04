@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
@@ -49,8 +50,9 @@ import com.extjs.gxt.ui.client.Style;
  *         Time: 17:55:07
  */
 public class ContentPicker extends TriPanelBrowserLayout {
+    private PickedContent pickedContent;
 
-    public ContentPicker(final String rootPath, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
+    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
         super();
         //setWidth("714px");
         setHeight("700px");
@@ -74,10 +76,19 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // construction of the UI components
         BottomRightComponent bottomComponents;
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
-            bottomComponents = new PickedPageView(conf, selectedNodes, multiple, config);
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+            String type = selectorOptions.get("type");
+            boolean externalAllowed = true;
+            boolean internalAllowed = true;
+            boolean directAllowed = true;
+            if (type != null) {
+                externalAllowed = true;
+                internalAllowed = true;
+                directAllowed = true;
+            }
+            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config);
         } else {
-            bottomComponents = new PickedContentView(conf, selectedNodes, multiple, config);
+            bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
         }
         TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
 
@@ -85,21 +96,23 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // setup widgets in layout
 
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 375));
-            initWidgets(null,bottomComponents.getComponent(),contentPicker.getComponent(),null,statusBar);
+            initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, statusBar);
         } else {
-            initWidgets(null,contentPicker.getComponent(),bottomComponents.getComponent(),null,statusBar);
+            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);
         }
 
         // linker initializations
         linker.registerComponents(null, contentPicker, bottomComponents, null, null);
         contentPicker.initContextMenu();
         linker.handleNewSelection();
+
+        pickedContent = (PickedContent) bottomComponents;
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
-        return ((ContentPickerBrowser) linker.getTopRightObject()).getSelectedNodes();
+        return pickedContent.getSelectedContent();
     }
 
 

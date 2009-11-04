@@ -37,7 +37,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -46,8 +45,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -65,7 +62,7 @@ import java.util.List;
  * Time: 9:58:29 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PickedContentView extends BottomRightComponent {
+public class PickedContentView extends BottomRightComponent  implements PickedContent{
     private String pickerType;
     private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
@@ -75,11 +72,12 @@ public class PickedContentView extends BottomRightComponent {
     private boolean readOnly = false;
     private boolean multiple;
     private List<GWTJahiaNode> selectedNodes;
-    private String emtypSelectionMessage = "No selected image";
+    private String emtypSelectionMessage = "No selection";
     private String selectionHeaderMessage = "Image selected: ";
     private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+    public PickedContentView(String selectionLabel,String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+        this.selectionHeaderMessage =  selectionLabel;
         this.config = config;
         this.pickerType = pickerType;
         this.selectedNodes = selectedNodes;
@@ -101,9 +99,9 @@ public class PickedContentView extends BottomRightComponent {
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 if (multiple) {
-                    return "<img heigth='16px' width='16px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                    return "<img heigth='16px' width='32px' src=\"" + gwtJahiaNode.getPreview() + "\">";
                 } else {
-                    return "<img heigth='40px' width='30px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                    return "<img heigth='40px' width='60px' src=\"" + gwtJahiaNode.getPreview() + "\">";
                 }
             }
         });
@@ -211,7 +209,7 @@ public class PickedContentView extends BottomRightComponent {
 
         // display preview only for file
         if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
-            if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+            if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
                 m_thumbsListView = new ThumbsListView();
                 m_thumbsListView.setStore(store);
                 m_thumbsListView.setTemplate(getThumbsListTemplate());
@@ -232,7 +230,7 @@ public class PickedContentView extends BottomRightComponent {
         }
 
         // case of a page
-        if (multiple && pickerType != null && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)){
+        if (multiple && pickerType != null && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)){
             m_component.add(itemPreview);
 
         }
@@ -263,7 +261,7 @@ public class PickedContentView extends BottomRightComponent {
                 setSelection(list);
             }
 
-            if (!multiple && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.PAGEPICKER)) {
+            if (!multiple && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
                 itemPreview.setUrl(((GWTJahiaNode) root).getPath());
             }
         }
@@ -328,6 +326,10 @@ public class PickedContentView extends BottomRightComponent {
      */
     public Component getComponent() {
         return m_component;
+    }
+
+    public List<GWTJahiaNode> getSelectedContent() {
+        return store.getModels();
     }
 
     private class ThumbsListView extends ListView<GWTJahiaNode> {

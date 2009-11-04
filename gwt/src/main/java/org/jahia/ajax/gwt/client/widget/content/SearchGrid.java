@@ -264,7 +264,7 @@ public class SearchGrid extends TopRightComponent {
                 col.setAlignment(Style.HorizontalAlignment.RIGHT);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (gwtJahiaNode.isMatchFilters()) {
+                        if (gwtJahiaNode.isFile() || gwtJahiaNode.isMatchFilters()) {
                             final Button pickContentButton = new Button("Add");
                             if (!multiple) {
                                 pickContentButton.setText("Select");

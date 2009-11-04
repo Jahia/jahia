@@ -42,11 +42,12 @@ import java.util.ArrayList;
  */
 public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable {
 
-    private boolean multiple ;
+    private boolean multiple;
     private String name;
-    private List<GWTJahiaNodePropertyValue> values ;
+    private List<GWTJahiaNodePropertyValue> values;
 
-    public GWTJahiaNodeProperty() {}
+    public GWTJahiaNodeProperty() {
+    }
 
     public GWTJahiaNodeProperty(String name, GWTJahiaNodePropertyValue v) {
         setName(name);
@@ -54,29 +55,31 @@ public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable 
     }
 
     public GWTJahiaNodeProperty cloneObject() {
-        GWTJahiaNodeProperty prop = new GWTJahiaNodeProperty() ;
+        GWTJahiaNodeProperty prop = new GWTJahiaNodeProperty();
         prop.setName(getName());
         prop.setMultiple(isMultiple());
-        List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(values.size()) ;
-        for (GWTJahiaNodePropertyValue aVal: values) {
+        List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(values.size());
+        for (GWTJahiaNodePropertyValue aVal : values) {
             if (aVal.getNode() != null) {
-                vals.add(new GWTJahiaNodePropertyValue(aVal.getNode())) ;                
+                vals.add(new GWTJahiaNodePropertyValue(aVal.getNode()));
+            } else if (aVal.getLinkNode() != null) {
+                 vals.add(new GWTJahiaNodePropertyValue(aVal.getLinkNode(),aVal.getType()));
             } else {
-                vals.add(new GWTJahiaNodePropertyValue(aVal.getString(), aVal.getType())) ;
+                vals.add(new GWTJahiaNodePropertyValue(aVal.getString(), aVal.getType()));
             }
         }
         prop.setValues(vals);
-        return prop ;
+        return prop;
     }
 
     public boolean equals(Object obj) {
         if (obj instanceof GWTJahiaNodeProperty) {
-            GWTJahiaNodeProperty prop = (GWTJahiaNodeProperty) obj ;
-            return prop.getName().equals(getName())&&
+            GWTJahiaNodeProperty prop = (GWTJahiaNodeProperty) obj;
+            return prop.getName().equals(getName()) &&
                     prop.getValues().containsAll(getValues()) &&
-                    getValues().containsAll(prop.getValues()) ;
+                    getValues().containsAll(prop.getValues());
         } else {
-            return false ;
+            return false;
         }
     }
 
@@ -105,20 +108,19 @@ public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable 
     }
 
     public void setValue(GWTJahiaNodePropertyValue value) {
-        List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(1) ;
-        vals.add(value) ;
+        List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(1);
+        vals.add(value);
         setValues(vals);
     }
 
     public String toString() {
         if (multiple) {
-            StringBuilder buf = new StringBuilder(values.get(0).toString()) ;
-            for (int i=1; i<values.size(); i++) {
-                buf.append(", ").append(values.get(i).toString()) ;
+            StringBuilder buf = new StringBuilder(values.get(0).toString());
+            for (int i = 1; i < values.size(); i++) {
+                buf.append(", ").append(values.get(i).toString());
             }
-            return buf.toString() ;
-        }
-        else {
+            return buf.toString();
+        } else {
             return values.toString();
         }
     }

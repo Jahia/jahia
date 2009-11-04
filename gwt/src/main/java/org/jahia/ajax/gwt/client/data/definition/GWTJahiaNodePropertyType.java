@@ -143,4 +143,6 @@ public class GWTJahiaNodePropertyType implements Serializable {
 
     public static final int ASYNC_UPLOAD = 20;
 
+    public static final int PAGE_LINK = 21;
+
 }

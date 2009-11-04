@@ -608,7 +608,7 @@ public class NavigationHelper {
                         foundPaths.add(path);
                         GWTJahiaNode node = getGWTJahiaNode(n, true);
                         node.setMatchFilters(matchFilter);
-                        result.add(getGWTJahiaNode(n, true));
+                        result.add(node);
                     }
                 }
             }

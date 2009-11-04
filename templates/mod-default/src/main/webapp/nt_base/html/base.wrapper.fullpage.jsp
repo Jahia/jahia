@@ -39,14 +39,6 @@
 <template:template>
     <template:templateHead title="${fn:escapeXml(currentNode.properties['jcr:title'].string)}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-        <template:themeDisplay defaultTheme="default"/>
-
-        <%-- TODO : move these calls to external resources call when needed --%>
-        <script type="text/javascript" src='<utility:resolvePath value='javascript/swfobject.js'/>'></script>
-        <script type="text/javascript" src='<utility:resolvePath value='javascript/textsizer.js'/>'></script>
-        <script type="text/javascript" src='<utility:resolvePath value='javascript/collapse.js'/>'></script>
-
         <utility:applicationResources/>
 
         <%--CSS--%>

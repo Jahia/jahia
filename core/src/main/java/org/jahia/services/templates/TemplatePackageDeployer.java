@@ -32,6 +32,9 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.collections.Closure;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ClosureUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -295,7 +298,11 @@ class TemplatePackageDeployer {
                 }
             }
             if (newRemaining.equals(remaining)) {
-                logger.error("Cannot deploy packages " + newRemaining + ", unresolved dependencies");
+                String str = "";
+                for (JahiaTemplatesPackageHandler item : newRemaining) {
+                    str += item.getPackage().getName() + ",";
+                }
+                logger.error("Cannot deploy packages " + str + ", unresolved dependencies");
                 break;
             } else {
                 remaining = newRemaining;

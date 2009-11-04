@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="css" resources="tags.css"/>
+<template:addResources type="css" resources="tags.css" nodetype="jmix:tagged"/>
 <jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
 <div class="tags">
 <h3><c:if test="${not empty currentNode.properties['jcr:title'] && not empty not empty currentNode.properties['jcr:title'].string}" var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>

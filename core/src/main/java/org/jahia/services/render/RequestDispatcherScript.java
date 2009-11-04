@@ -68,13 +68,6 @@ public class RequestDispatcherScript implements Script {
 
     private static final Logger logger = Logger.getLogger(RequestDispatcherScript.class);
     
-    private static final Comparator<JahiaTemplatesPackage> PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
-        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o1.isDefault()) return 99;
-            if (o2.isDefault()) return -99;
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
 
     private RequestDispatcher rd;
     private HttpServletRequest request;
@@ -90,7 +83,7 @@ public class RequestDispatcherScript implements Script {
      */
     public RequestDispatcherScript(Resource resource, RenderContext context) throws IOException {
         try {
-            String templatePath = getTemplatePath(resource);
+            String templatePath = getTemplatePath(resource, context);
             if (templatePath == null) {
                 throw new IOException("Template not found for : " + resource);
             } else {
@@ -110,7 +103,7 @@ public class RequestDispatcherScript implements Script {
         }
     }
 
-    private String getTemplatePath(Resource resource) throws RepositoryException {
+    private String getTemplatePath(Resource resource, final RenderContext context) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
 
         String templatePath;
@@ -121,12 +114,8 @@ public class RequestDispatcherScript implements Script {
                 nodeTypeList.add(nt);
                 Collections.reverse(nodeTypeList);
                 for (ExtendedNodeType st : nodeTypeList) {
-                    List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
-                            st.getAlias().replace(":", "_"));
-                    SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
-                            PACKAGE_COMPARATOR);
-                    sortedPackages.addAll(packages);
-
+                    SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                            st.getAlias().replace(":", "_"), context);
                     for (JahiaTemplatesPackage aPackage : sortedPackages) {
                         String currentTemplatePath = aPackage.getRootFolderPath();
                         templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
@@ -142,12 +131,8 @@ public class RequestDispatcherScript implements Script {
                         nt.getSupertypes()));
                 nodeTypeList.add(nt);
                 Collections.reverse(nodeTypeList);
-                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
-                        resource.getWrappedMixinType().getAlias().replace(":", "_"));
-                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
-                        PACKAGE_COMPARATOR);
-                sortedPackages.addAll(packages);
-
+                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                        resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
                 for (JahiaTemplatesPackage aPackage : sortedPackages) {
                     String currentTemplatePath = aPackage.getRootFolderPath();
                     templatePath = getTemplatePath(resource.getTemplateType(), template, resource.getWrappedMixinType(),

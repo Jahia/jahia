@@ -45,8 +45,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.File;
-import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,8 +82,8 @@ public class AddResourcesTag extends BodyTagSupport {
                 extendedNodeType = node.getPrimaryNodeType();
             }
             if (extendedNodeType != null) {
-                final List<JahiaTemplatesPackage> aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
-                        extendedNodeType.getAlias().replace(":", "_"));
+                final SortedSet<JahiaTemplatesPackage> aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                        extendedNodeType.getAlias().replace(":", "_"), renderContext);
                 if (aPackage != null && aPackage.size() > 0) {
                     for (JahiaTemplatesPackage templatesPackage : aPackage) {
                         String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());

@@ -31,10 +31,8 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
@@ -45,6 +43,7 @@ import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
@@ -108,6 +107,30 @@ public class JahiaTemplateManagerService extends JahiaService {
      */
     public List<JahiaTemplatesPackage> getAvailableTemplatePackages() {
         return templatePackageRegistry.getAvailablePackages();
+    }
+
+    /**
+     * Returns a sorted list of all available template packages having templates for a module.
+     *
+     * @return a sorted list of all available template packages
+     */
+    public SortedSet<JahiaTemplatesPackage> getSortedAvailableTemplatePackagesForModule(String moduleName,final RenderContext context) {
+        List<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
+        Comparator<JahiaTemplatesPackage> packageComparator = new Comparator<JahiaTemplatesPackage>() {
+            public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+                if (o1.isDefault()) return 99;
+                if (o2.isDefault()) return -99;
+                if (o1.getName().equals(context.getSite().getTemplatePackageName())) return -99;
+                if (o2.getName().equals(context.getSite().getTemplatePackageName())) return 99;
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
+        SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
+                            packageComparator);
+        if (r != null) {
+            sortedPackages.addAll(r);
+        }
+        return sortedPackages;
     }
 
     /**
@@ -454,5 +477,5 @@ public class JahiaTemplateManagerService extends JahiaService {
     public String getCurrentResourceBundleName(ProcessingContext ctx) {
         return getTemplatePackage(ctx.getSite().getTemplatePackageName())
                 .getResourceBundleName();
-    } 
+    }
 }

@@ -803,6 +803,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         LegacyImportHandler importHandler = new LegacyImportHandler(siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
                         importHandler.setUuidMapping(uuidMapping);
+                        importHandler.setReferences(references);
                         importHandler.setPathMapping(pathMapping);
                         handleImport(zis, importHandler);
 

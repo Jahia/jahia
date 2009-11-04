@@ -53,10 +53,12 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private Map<String, String> uuidMapping = new HashMap<String, String>();
     private Map<String, String> pathMapping = new HashMap<String, String>();
+    private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
     private static final String LINK = "link";
+    private static final String URL = "url";
 
 
     public LegacyImportHandler(JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry, DefinitionsMapping mapping, Locale locale) {
@@ -82,6 +84,14 @@ public class LegacyImportHandler extends DefaultHandler {
 
     public void setPathMapping(Map pathMapping) {
         this.pathMapping = pathMapping;
+    }
+
+    public Map<String, List<String>> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Map<String, List<String>> references) {
+        this.references = references;
     }
 
     /**
@@ -113,18 +123,18 @@ public class LegacyImportHandler extends DefaultHandler {
 
             String uuid = attributes.getValue("jcr:uuid");
 
-            if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
+            int ctx = -1;
+            if (!currentCtx.isEmpty()) {
+                ctx = currentCtx.peek().ctx.peek();
+            }
+
+            if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                 System.out.println("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Constants.JCR_NS, "primaryType"),
                         attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"),
                         attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
                 return;
-            }
-
-            int ctx = -1;
-            if (!currentCtx.isEmpty()) {
-                ctx = currentCtx.peek().ctx.peek();
             }
 
             switch (ctx) {
@@ -158,11 +168,10 @@ public class LegacyImportHandler extends DefaultHandler {
                         }
                         if (itemDef != null) {
                             if (itemDef.isNode()) {
-                                setNodeField(localName, "");
-                                currentCtx.peek().pushSkip();
+                                currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
                             } else {
                                 if (setPropertyField(getCurrentContentType().getName(), localName, attributes.getValue("jahia:value"))) {
-                                    currentCtx.peek().pushField();
+                                    currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
                                 } else {
                                     currentCtx.peek().pushSkip();
                                 }
@@ -179,7 +188,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         currentCtx.peek().pushBox(null);
                     } else {
                         System.out.println("create box-field " + localName);
-                        currentCtx.peek().pushField();
+                        currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
                     }
                     break;
                 case CTX_LIST:
@@ -193,14 +202,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     setMetadata(attributes);
                     break;
                 case CTX_FIELD:
-                    if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
-                        createPage(attributes.getValue(Constants.JCR_NS, "primaryType"),
-                                attributes.getValue("jahia:title"),
-                                attributes.getValue("jahia:template"),
-                                attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
-                    } else {
-                        throw new SAXException("Unexpected" + localName);
-                    }
+                    setNodeField(uri, localName, uuid, attributes);
                     break;
 //                case CTX_MERGED:
 //                    System.out.println("merge " + localName);
@@ -336,19 +338,55 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void setNodeField(String propertyName, String value) throws RepositoryException {
-        System.out.println("Field-node : " + propertyName);
+    private void setNodeField(String uri, String localName, String uuid, Attributes attributes) throws RepositoryException, SAXException {
 
-//        case SelectorType.PAGE: {
-//            if (value != null && value.length() != 0 && !value.equals("<empty>")) {
-////                        ContentPage p = ((ContentPageField) contentField).getContentPage(processingContext);
-////                        if (p != null) {
-////                            fields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), ((ContentPageField) contentField), p));
-////                        }
-//            }
-//            break;
-//        }
+        JCRNodeWrapper node = getCurrentContentNode();
+        String title = attributes.getValue("jahia:title");
+        String propertyName = currentCtx.peek().propertyNames.peek();
 
+        if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
+            createPage(attributes.getValue(Constants.JCR_NS, "primaryType"), title,
+                    attributes.getValue("jahia:template"),
+                    attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+
+            // todo : add a link here ??
+        } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
+            System.out.println("link Field-node : " + localName);
+            String reference = attributes.getValue("jahia:reference");
+            if (!node.hasNode(propertyName)) {
+                JCRNodeWrapper sub = node.addNode(propertyName, "jnt:nodeLink");
+
+                Node translation = sub.getOrCreateI18N(locale);
+                if (title != null && title.length() > 0) {
+                    translation.setProperty("jcr:title_" + locale.toString(), title);
+                }
+
+                sub.setProperty("jcr:title", title);
+
+                if (!references.containsKey(reference)) {
+                    references.put(reference, new ArrayList<String>());
+                }
+                references.get(reference).add(sub.getIdentifier() + "/j:node");
+            }
+            currentCtx.peek().pushSkip();
+        } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
+            System.out.println("external link Field-node : " + localName);
+
+            String value = attributes.getValue("jahia:value");
+            if (!node.hasNode(propertyName)) {
+                JCRNodeWrapper sub = node.addNode(propertyName, "jnt:externalLink");
+
+                Node translation = sub.getOrCreateI18N(locale);
+                if (title != null && title.length() > 0) {
+                    translation.setProperty("jcr:title_" + locale.toString(), title);
+                }
+
+                sub.setProperty("j:url", value);
+            }
+            currentCtx.peek().pushSkip();
+        } else {
+            throw new SAXException("Unexpected" + localName);
+        }
     }
 
     private boolean setPropertyField(String baseName, String localName, String value) throws RepositoryException {
@@ -551,34 +589,40 @@ public class LegacyImportHandler extends DefaultHandler {
         Stack<Integer> ctx = new Stack<Integer>();
         Stack<JCRNodeWrapper> contents = new Stack<JCRNodeWrapper>();
         Stack<ExtendedNodeType> contentsType = new Stack<ExtendedNodeType>();
+        Stack<String> propertyNames = new Stack<String>();
 
         PageContext(JCRNodeWrapper page, ExtendedNodeType pageType) {
             contents.push(page);
             contentsType.push(pageType);
+            propertyNames.push(null);
             ctx.push(CTX_PAGE);
         }
 
         void pushList(JCRNodeWrapper node, ExtendedNodeType type) {
             contents.push(node);
             contentsType.push(type);
+            propertyNames.push(null);
             ctx.push(CTX_LIST);
         }
 
         void pushContainer(JCRNodeWrapper node, ExtendedNodeType type) {
             contents.push(node);
             contentsType.push(type);
+            propertyNames.push(null);
             ctx.push(CTX_CTN);
         }
 
-        void pushField() {
+        void pushField(String propertyName) {
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
+            propertyNames.push(propertyName);
             ctx.push(CTX_FIELD);
         }
 
         void pushBox(ExtendedNodeType t) {
             contents.push(contents.peek());
             contentsType.push(t);
+            propertyNames.push(null);
             if (ctx.peek() == CTX_LIST) {
                 ctx.push(CTX_BOX);
             } else {
@@ -599,12 +643,14 @@ public class LegacyImportHandler extends DefaultHandler {
         void pushSkip() {
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
+            propertyNames.push(null);
             ctx.push(CTX_SKIP);
         }
 
         void pop() {
             contents.pop();
             contentsType.pop();
+            propertyNames.pop();
             ctx.pop();
         }
 

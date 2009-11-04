@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-package</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-izpack-package</artifactId>
+    <name>IZPack Packaging module</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>apache-tomcat</artifactId>
+            <version>${jahia.tomcat.version}</version>
+            <type>tar.gz</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>configwizard-ear</artifactId>
+            <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+          <groupId>org.codehaus.izpack</groupId>
+          <artifactId>izpack-standalone-compiler</artifactId>
+          <version>${izpack-standalone.version}</version>
+          <optional>true</optional>
+        </dependency>
+
+        <dependency>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+          <version>1.5.6</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.tomcat</groupId>
+                                    <artifactId>apache-tomcat</artifactId>
+                                    <version>${jahia.tomcat.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <excludes>
+                                        **/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**,*/LICENSE,*/NOTICE,*/RELEASE-NOTES,*/RUNNING.txt
+                                    </excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <configuration>
+                    <targetServerType>tomcat</targetServerType>
+                    <targetServerVersion>6</targetServerVersion>
+                    <targetServerDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetServerDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.38</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                            <echo message="${buildNumber}" file="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/webapps/config/configuration_wizard/jahia-buildnumber.txt"/>
+                                <copy file="./src/resources/catalina.bat"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/bin/catalina.bat"
+                                      overwrite="true"/>
+                                <copy file="./src/resources/catalina.sh"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/bin/catalina.sh"
+                                      overwrite="true"/>
+                                <copy todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/" overwrite="true">
+                                    <fileset dir="./src/resources/startJahia/"/>
+                                </copy>
+                                <copy todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/licenses" overwrite="true">
+                                    <fileset dir="./src/resources/licenses/"/>
+                                </copy>
+                                <copy file="./src/resources/README.txt"
+                                      todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}"/>
+                                <copy file="./src/resources/LICENSE"
+                                      todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}"/>
+                                <copy file="./src/resources/conf/server.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/conf/server.xml"
+                                      overwrite="true"/>
+                                <copy file="./src/resources/conf/web.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/conf/web.xml"
+                                      overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <buildNumber>${buildNumber}</buildNumber>
+                    <finalName>Jahia_CE_v${jahia.package.version}</finalName>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                    <tarLongFileMode>gnu</tarLongFileMode>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+            <!--  see install.xml to see how MyHelloPanel is used -->
+            <plugin>
+              <groupId>org.codehaus.izpack</groupId>
+              <artifactId>izpack-maven-plugin</artifactId>
+              <version>1.0-alpha-5</version>
+              <dependencies>
+                <dependency>
+                  <groupId>org.codehaus.izpack</groupId>
+                  <artifactId>izpack-standalone-compiler</artifactId>
+                  <version>${izpack-standalone.version}</version>
+                </dependency>
+              </dependencies>
+              <configuration>
+                  <!--
+                <izpackBasedir>${staging.dir}</izpackBasedir>
+                <customPanelDirectory>${staging.dir}</customPanelDirectory>
+                -->
+              </configuration>
+              <executions>
+                <execution>
+                  <id>standard-installer</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>izpack</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+  <properties>
+    <staging.dir>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</staging.dir>
+    <izpack-standalone.version>4.3.1</izpack-standalone.version>
+  </properties>
+    
+</project>

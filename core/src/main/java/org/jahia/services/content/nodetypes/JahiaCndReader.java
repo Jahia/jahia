@@ -295,7 +295,7 @@ public class JahiaCndReader {
         while (hasOption) {
             if (currentTokenEquals(Lexer.ORDERABLE)) {
                 nextToken();
-//                ntd.setOrderableChildNodes(true);
+                ntd.setHasOrderableChildNodes(true);
             } else if (currentTokenEquals(Lexer.MIXIN)) {
                 nextToken();
                 ntd.setMixin(true);

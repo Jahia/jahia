@@ -155,6 +155,7 @@ public class RenderService extends JahiaService {
                     if (hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                         script = resolveScript(wrappedResource, context);
                         request.setAttribute("wrappedContent", output);
+                        request.setAttribute("currentModule", script.getModule());
                         output = script.execute();
                     } else {
                         logger.warn("Cannot get wrapper "+wrapper);
@@ -189,6 +190,7 @@ public class RenderService extends JahiaService {
                     wrappedResource.setWrappedMixinType(option.getNodeType());
                     pushAttribute(request,"optionsAutoRendering",true,old);
                     script = resolveScript(wrappedResource, context);
+                    request.setAttribute("currentModule", script.getModule());
                     output += script.execute();
                 } catch (IOException e) {
                     logger.error("Cannot execute wrapper " + wrapper, e);

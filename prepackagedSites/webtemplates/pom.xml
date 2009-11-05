@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>webtemplates</artifactId>
-    <name>ACME demo</name>
+    <name>ACME demo 6.0 to 6.5</name>
     <packaging>pom</packaging>
 
     <build>

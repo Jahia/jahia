@@ -1,1 +1,99 @@
-Jahia Crazy Jane
+Jahia Migration - 6.0 to 6.5
+
+* Goals Overview
+
+  This import file shows how to import a site created and exported with Jahia 6.0 . The package is basically composed
+  of a standard 6.0 export file with additional mapping and definitions files. It demonstrates how a basic 6.0 Jahia
+  site can be converted to a 6.5 site using only the standard modules provided with the system.
+
+* Prerequisites
+
+  Jahia 6.5 contains a lot of reusable modules that can be used for any web site. It is strongly advised that all
+  definitions matching an existing definition from the standard modules are mapped to these modules. Definitions that
+  are really specific to site can be kept and should be put into a new module.
+
+  In this example, the webtemplates demo are completely mapped to 6.5 standard modules.
+
+  Additional modules need to be developped and deployed before starting the migration.
+
+* Migration
+
+  This part describes step by step how the webtemplates import demo coming from Jahia 6.0 is migrated to Jahia 6.5.
+
+** Export file format
+
+  An export file can be  :
+
+    * Either a site export - a zip containing a <site.properties> file, one or <export_[lang].xml> files containing the
+      site data, <users.xml>, <categories.xml> and <sitePermissions.xml> files
+
+    * Or a global export - a zip containing multiple site exports, with <export.properties> file and
+      <serverPermissions.xml> file
+
+    These files cannot be imported directly into Jahia 6.5 - original definitions and a mapping file must be added into
+    the site exports first.
+
+    < todo : definitions.cnd will be directly inserted into the exports file for latest versions of jahia 6.0 >
+
+** Definitions
+
+  The migration process needs to have a full knowledge of the definitions that were used in the Jahia site. A 6.0 site
+  can use standard definitions coming from the <05-standard-types.cnd> file, define its own definitions in a
+  <definitions.cnd> file packaged with the templates, or inherit definitions from another packages. All definitions
+  used in the site need to be aggregated into a single <definitions.cnd> file that will be added to the site export.
+
+  A simple definitions.cnd file for webtemplate can be found here : {{{definitions.cnd}definitions.cnd}}
+
+** Mapping
+
+  The mapping file is a simple file that associates 6.0 to 6.5 definitions. Each line is a mapping rule, which can
+  be viewed as two parts separated by the = (equals) sign. The left hand part is the original definition name - the
+  right hand side describes what to do with these definitions.
+
+  * Container definitions mapping
+
+  A container definition mapping starts with the original node type name ( for example, <jnt:mainContentContainer> ).
+       
+  The right hand side contains the new node type name to use.
+
+  * Fields definitions mapping
+
+  A field mapping rule starts with the original declaring node type name, followed by a . (dot) and the field name.
+  ( for example, <jnt:mainContentContainer.mainContentBody> ). For metadata, the rules starts with 'metadata.'
+  followed by the metadata name. ( for example, <metadata.jahia:keywords> )
+
+  If the field need to be mapped to a simple property, the right hand side just contains the name of the property :
+
+------------------------------------------------------
+jnt:mainContentContainer.mainContentBody = body
+------------------------------------------------------
+
+  A field can be associated to an optional mixin type - the right hand side is then the mixin node type name,
+  followed by . (dot) and the property name. When mapping the field, the mixin type will be automatically added to
+  the node. For example, the following rules will add jmix:categorized type to every node which has a
+  <jahia:defaultCategory> metadata, and associates the value to the <j:defaultCategory> property :
+
+------------------------------------------------------
+metadata.jahia:defaultCategory = jmix:categorized.j:defaultCategory
+------------------------------------------------------
+
+  * Box mapping - merging containers lists
+
+
+  []
+
+
+
+  All mappings provided in this example can be used for any export coming from a 6.0 site.
+
+  Here is a simple example of mapping for the <mainContent> container :
+
+------------------------------------------------------
+## Main content
+
+jnt:mainContentContainer = jnt:mainContent
+jnt:mainContentContainer.mainContentBody = body
+jnt:mainContentContainer.mainContentAlign = align
+jnt:mainContentContainer.mainContentTitle = jcr:title
+jnt:mainContentContainer.mainContentImage = image
+------------------------------------------------------

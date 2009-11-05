@@ -47,10 +47,7 @@
     alter table jahia_obj 
         drop constraint FKF6E0A6A143AACCE0;
 
-    alter table jahia_pages_data 
-        drop constraint FKB5B3A65BFC25DDC3;
-
-    alter table jahia_pages_def 
+    alter table jahia_pages_def
         drop constraint FK1EA2B334B5FF0C79;
 
     alter table jahia_pages_def_prop 
@@ -828,11 +825,6 @@
         add constraint FKF6E0A6A143AACCE0 
         foreign key (retrule_jahia_obj) 
         references jahia_retrule;
-
-    alter table jahia_pages_data 
-        add constraint FKB5B3A65BFC25DDC3 
-        foreign key (pagedefid_jahia_pages_data) 
-        references jahia_pages_def;
 
     alter table jahia_pages_def 
         add constraint FK1EA2B334B5FF0C79 

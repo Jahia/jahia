@@ -63,11 +63,7 @@
         drop 
         foreign key FKF6E0A6A143AACCE0;
 
-    alter table jahia_pages_data 
-        drop 
-        foreign key FKB5B3A65BFC25DDC3;
-
-    alter table jahia_pages_def 
+    alter table jahia_pages_def
         drop 
         foreign key FK1EA2B334B5FF0C79;
 
@@ -867,13 +863,7 @@
         foreign key (retrule_jahia_obj) 
         references jahia_retrule (id_jahia_retrule);
 
-    alter table jahia_pages_data 
-        add index FKB5B3A65BFC25DDC3 (pagedefid_jahia_pages_data), 
-        add constraint FKB5B3A65BFC25DDC3 
-        foreign key (pagedefid_jahia_pages_data) 
-        references jahia_pages_def (id_jahia_pages_def);
-
-    alter table jahia_pages_def 
+    alter table jahia_pages_def
         add index FK1EA2B334B5FF0C79 (jahiaid_jahia_pages_def), 
         add constraint FK1EA2B334B5FF0C79 
         foreign key (jahiaid_jahia_pages_def) 

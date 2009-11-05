@@ -80,11 +80,9 @@ public class ContentPicker extends TriPanelBrowserLayout {
             String type = selectorOptions.get("type");
             boolean externalAllowed = true;
             boolean internalAllowed = true;
-            boolean directAllowed = true;
             if (type != null) {
                 externalAllowed = true;
                 internalAllowed = true;
-                directAllowed = true;
             }
             bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config);
         } else {

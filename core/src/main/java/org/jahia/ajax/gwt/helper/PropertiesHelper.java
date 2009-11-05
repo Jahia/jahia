@@ -307,6 +307,11 @@ public class PropertiesHelper {
                                     }
                                 }
                             } else if (propValue.getType() == GWTJahiaNodePropertyType.PAGE_LINK) {
+                                if (objectNode.hasNode(prop.getName())) {
+                                    Node content = objectNode.getNodes(prop.getName()).nextNode();
+                                    content.remove();
+                                }
+
                                 // case of link sub-node
                                 GWTJahiaNode gwtJahiaNode = propValue.getLinkNode();
                                 String linkUrl = gwtJahiaNode.get(Constants.URL);
@@ -316,23 +321,17 @@ public class PropertiesHelper {
                                 GWTJahiaNode nodeReference = gwtJahiaNode.get("j:node");
 
                                 // case of external
-                                if (linkType.equalsIgnoreCase("external")) {
-                                    Node content;
-                                    if (objectNode.hasNode(prop.getName())) {
-                                        content = objectNode.getNodes(prop.getName()).nextNode();
-                                    } else {
-                                        content = objectNode.addNode(prop.getName(), Constants.JAHIANT_EXTERNAL_PAGE_LINK);
-                                    }
+                                if (linkType.equalsIgnoreCase("external") && linkUrl !=null) {
+                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_EXTERNAL_PAGE_LINK);
                                     content.setProperty(Constants.JCR_TITLE, linkTitle);
                                     content.setProperty(Constants.URL, linkUrl);
                                     content.setProperty(Constants.ALT, alt);
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
-                                } else if (linkType.equalsIgnoreCase("internal")) {
+                                }
+                                // case of internal link
+                                else if (linkType.equalsIgnoreCase("internal") && nodeReference != null) {
                                     Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_INTERNAL_PAGE_LINK);
-                                    content.setProperty(Constants.NODE, nodeReference.getUUID());
-                                    content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
-                                } else if (linkType.equalsIgnoreCase("direct")) {
-                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_DIRECT_PAGE_LINK);
+                                    content.setProperty(Constants.JCR_TITLE, linkTitle);
                                     content.setProperty(Constants.NODE, nodeReference.getUUID());
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                 }

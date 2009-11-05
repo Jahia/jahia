@@ -61,7 +61,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
 }
 .x-panel-mc {
-    background:#e1e9ee;
+    background:#F1F5FA;
 }
 .x-panel-mc .x-panel-body {
     background:transparent;
@@ -107,7 +107,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /* Layout classes */
 
 .x-border-layout-ct {
-    background:#e1e9ee;
+    background:#F1F5FA;
 }
 
 .x-accordion-hd {
@@ -317,7 +317,7 @@ ul.x-tab-strip-bottom{
 }
 .x-window-mc {
     border:1px solid #b7cbd8;
-    background:#e1e9ee;
+    background:#F1F5FA;
 }
 
 .x-window-ml {
@@ -334,7 +334,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-window-plain .x-window-mc {
-    background: #e1e9ee;
+    background: #F1F5FA;
     border-right:1px solid #eee;
     border-bottom:1px solid #eee;
     border-top:1px solid #b7cbd8;

@@ -205,7 +205,32 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("minus.png")
     public AbstractImagePrototype minusRound();
 
-    @Resource("plus.png")
+    @Resource("plus.png")    
     public AbstractImagePrototype plusRound();
+
+    @Resource("engine-button-cancel.png")
+    public AbstractImagePrototype engineButtonCancel();
+
+    @Resource("engine-button-ok.png")
+    public AbstractImagePrototype engineButtonOK();
+
+    @Resource("logo-jahia.gif")
+    public AbstractImagePrototype engineLogoJahia();
+
+    @Resource("engine-tab-content.png")
+    public AbstractImagePrototype engineTabContent();
+
+    @Resource("engine-tab-metadata.png")
+    public AbstractImagePrototype engineTabMetadata();
+
+    @Resource("engine-tab-layout.png")
+    public AbstractImagePrototype engineTabLayout();
+
+    @Resource("engine-tab-classification.png")
+    public AbstractImagePrototype engineTabClassification();
+
+    @Resource("engine-tab-options.png")
+    public AbstractImagePrototype engineTabOption();
+
 }
 

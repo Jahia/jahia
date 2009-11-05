@@ -111,6 +111,7 @@ public class PropertiesEditor extends FormPanel {
             setFieldWidth(550);
             setLabelWidth(180);
         }
+        setPadding(5);
         setCollapsible(false);
         setFrame(false);
         setAnimCollapse(false);

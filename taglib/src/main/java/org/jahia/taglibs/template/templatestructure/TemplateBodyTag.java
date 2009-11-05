@@ -46,6 +46,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.bin.Jahia;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -552,6 +553,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("publication_unpublished_title", getJahiaInternalResourceValue("org.jahia.jcr.publication.unpublished_title"));
         addGwtDictionaryMessage("publication_published_title", getJahiaInternalResourceValue("org.jahia.jcr.publication.published_title"));
 
+
     }
 
     /**
@@ -564,6 +566,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.alert", jData.getProcessingContext().getLocale()));
         addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.warning", jData.getProcessingContext().getLocale()));
         addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.all", jData.getProcessingContext().getLocale()));
+        String copyright = Jahia.COPYRIGHT_TXT + " "+ Jahia.VERSION+Jahia.getPatchNumber()+ " r"+Jahia.getBuildNumber();
+        addGwtDictionaryMessage("copyright", copyright);
+
     }
 
     public int doEndTag() {

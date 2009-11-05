@@ -191,6 +191,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         link.setValue("");
         alt.setValue("");
         url.setValue("");
+        selectedContent.set("clear", "clear");
     }
 
     /**
@@ -225,6 +226,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
             selectedContent.set("jcr:title", link.getValue());
             selectedContent.set("j:url", url.getValue());
             selectedContent.set("j:alt", alt.getValue());
+            selectedContent.remove("clear");            
         }
     }
 

@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.definition.ClassificationEditor;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.*;
 
@@ -176,6 +177,7 @@ public class EditContentEngine extends Window {
         initWindowProperties();
         initTabs();
         initButtons();
+        setBottomComponent(new Html(Messages.getResource("copyrigth")));
         ok.setEnabled(true);
     }
 
@@ -187,7 +189,7 @@ public class EditContentEngine extends Window {
 
         ok = new Button(Messages.getResource("fm_save"));
         ok.setEnabled(false);
-        ok.setIconStyle("gwt-icons-save");
+        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
         if (existingNode) {
             ok.addSelectionListener(new SaveSelectionListener());
         } else {
@@ -195,6 +197,8 @@ public class EditContentEngine extends Window {
         }
 
         addButton(this.ok);
+
+        /* ToDo: activate restore button in the engine
 
         restore = new Button(Messages.getResource("fm_restore"));
         restore.setIconStyle("gwt-icons-restore");
@@ -207,9 +211,9 @@ public class EditContentEngine extends Window {
                 }
             });
             addButton(this.restore);
-        }
+        }*/
         cancel = new Button(Messages.getResource("fm_cancel"));
-        cancel.setIconStyle("gwt-icons-cancel");
+        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -230,18 +234,24 @@ public class EditContentEngine extends Window {
         tabs.setAutoHeight(true);
 
         contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
+        contentTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
+
         tabs.add(contentTab);
 
         layoutTab = new AsyncTabItem(Messages.get("ece_layout", "Layout"));
+        layoutTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabLayout());
         tabs.add(layoutTab);
 
         metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
+        metadataTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabMetadata());
         tabs.add(metadataTab);
 
         classificationTab = new AsyncTabItem(Messages.get("ece_classification", "Classification"));
+        classificationTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
         tabs.add(classificationTab);
 
         optionsTab = new AsyncTabItem(Messages.get("ece_options", "Options"));
+        optionsTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
         tabs.add(optionsTab);
 
 //        publicationTab = new AsyncTabItem(Messages.get("ece_publication", "Publication"));
@@ -525,15 +535,17 @@ public class EditContentEngine extends Window {
      * Initializes basic window properties: size, state and title.
      */
     private void initWindowProperties() {
-        setSize(800, 600);
+        setSize(950, 750);
         setClosable(true);
         setResizable(true);
         setModal(true);
         setMaximizable(true);
         if (existingNode) {
-            setHeading("Edit " + contentPath);
+            setHeading("Edit");
+            //setHeading("Edit " + contentPath);
         } else {
-            setHeading("Create " + type.getName() + " in " + contentPath);
+            setHeading("Create " + type.getName());
+            //setHeading("Create " + type.getName() + " in " + contentPath);
         }
     }
 

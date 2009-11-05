@@ -1,5 +1,6 @@
 ## Box
 
+jnt:box = #box
 *.boxTitle = mix:title.jcr:title
 *.skin = jmix:skinnable.j:skin
 
@@ -10,6 +11,25 @@ jnt:mainContentContainer.mainContentBody = body
 jnt:mainContentContainer.mainContentAlign = align
 jnt:mainContentContainer.mainContentTitle = mix:title.jcr:title
 jnt:mainContentContainer.mainContentImage = image
+
+## Text container
+
+jnt:textContainer = jnt:bigText
+jnt:textContainer.bigText = jnt:bigText.text
+
+## File container
+
+jnt:fileContainer = jnt:nodeReference
+jnt:fileContainer.file = j:node
+jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+jnt:fileContainer.fileDisplayDetails.true = detail
+jnt:fileContainer.fileDisplayDetails.false = link
+
+web_templates:fileContainer = jnt:nodeReference
+web_templates:fileContainer.file = j:node
+web_templates:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+web_templates:fileContainer.fileDisplayDetails.true = detail
+web_templates:fileContainer.fileDisplayDetails.false = link
 
 ## News module
 
@@ -39,3 +59,17 @@ web_templates:jobContainer = jnt:job
 
 web_templates:introductionContainer = jnt:bigText
 web_templates:introductionContainer.introduction = jnt:bigText.text
+
+## Introduction
+
+web_templates:introductionContainer = jnt:bigText, setProperty jmix:renderable.j:template=introduction
+web_templates:introductionContainer.introduction = jnt:bigText.text
+
+## Promo
+
+web_templates:promoAdvancedContainer = jnt:teaser
+
+## Banner
+
+web_templates:bannerContainer = jnt:banner
+

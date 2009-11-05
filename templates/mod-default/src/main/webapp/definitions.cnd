@@ -85,3 +85,14 @@
 [jnt:navBar] > jnt:content, mix:title, jmix:interactiveContent
  - j:startLevel (long) = 1
  - j:maxDepth (long) = 3
+
+[jnt:teaser] > jnt:content, mix:title, jmix:structuredContent
+ - abstract (string, text[multiline])
+ - image (weakreference, file[mime='image/*'])
+ page link (page[type="external,internal"])
+
+[jnt:banner] > jnt:content, mix:title, jmix:structuredContent
+ - background (weakreference, file[mime='image/*'])
+ - cast (string)
+ - positionTop (long) indexed=no
+ - positionLeft (long) indexed=no

@@ -188,6 +188,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         currentCtx.peek().pushBox(null);
                     } else {
                         System.out.println("create box-field " + localName);
+                        currentCtx.peek().boxProperties.peek().put(localName, attributes.getValue("jahia:value"));
                         currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
                     }
                     break;
@@ -325,7 +326,28 @@ public class LegacyImportHandler extends DefaultHandler {
             } else {
                 JCRNodeWrapper node = getCurrentContentNode().addNode("ctn" + (ctnId++), nodeType);
                 uuidMapping.put(uuid, node.getIdentifier());
+
                 currentCtx.peek().pushContainer(node, t);
+
+                Map<String, String> autoSet = mapping.getAutosetPropertiesForType(t);
+
+                for (Map.Entry<String, String> entry : autoSet.entrySet()) {
+                    String propertyName = entry.getKey();
+                    if (propertyName.contains(".")) {
+                        String mixinType = StringUtils.substringBefore(propertyName, ".");
+                        propertyName = StringUtils.substringAfter(propertyName, ".");
+                        if (!node.isNodeType(mixinType)) {
+                            node.addMixin(mixinType);
+                        }
+                    }
+                    node.setProperty(propertyName, entry.getValue());
+                }
+            }
+
+            if (currentCtx.peek().boxProperties.peek() != null) {
+                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties.peek().entrySet()) {
+                    setPropertyField(getCurrentContentType().getName(),entry.getKey(), entry.getValue());
+                }
             }
         }
     }
@@ -415,11 +437,11 @@ public class LegacyImportHandler extends DefaultHandler {
             n = node.getOrCreateI18N(locale);
             propertyName = propertyName + "_" + locale.toString();
         }
-        System.out.println("setting "+propertyName);
-        switch (propertyDefinition.getSelector()) {
-            case SelectorType.DATEPICKER:
-            case SelectorType.DATETIMEPICKER: {
-                if (value != null && value.length() != 0 && !value.equals("<empty>")) {
+        System.out.println("setting " + propertyName);
+
+        if (value != null && value.length() != 0 && !value.equals("<empty>")) {
+            switch (propertyDefinition.getRequiredType()) {
+                case PropertyType.DATE: {
                     GregorianCalendar cal = new GregorianCalendar();
                     try {
                         DateFormat df = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
@@ -431,136 +453,127 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                 }
                 break;
-            }
-            case SelectorType.RICHTEXT: {
-                if (value == null || value.length() == 0 || value.equals("<empty>")) {
-                } else {
-                    n.setProperty(propertyName, value);
-                }
-                break;
-            }
-            case SelectorType.FILEPICKER: {
-                try {
-                    if (value != null) {
-                        if (value.startsWith("/")) {
-                            try {
-                                if (pathMapping != null) {
-                                    for (String map : pathMapping.keySet()) {
-                                        if (value.startsWith(map)) {
-                                            value = pathMapping.get(map) + value.substring(map.length());
-                                            break;
-                                        }
-                                    }
-                                }
-                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(value);
-                                n.setProperty(propertyName, file.getIdentifier());
-                            } catch (PathNotFoundException e) {
 
-                            }
-                        } else {
-                            try {
-                                String providerKey = StringUtils.substringBefore(value, ":");
-                                String uuid = StringUtils.substringAfter(value, ":");
-                                if (!uuid.equals("/")) {
-                                    JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid);
-                                    n.setProperty(propertyName, file.getIdentifier());
-                                }
-                            } catch (ItemNotFoundException e) {
-                            } catch (UnsupportedRepositoryOperationException e) {
-                            }
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
-            case SelectorType.CATEGORY: {
-                if (propertyDefinition.isMultiple()) {
-                    String[] strings = value.split("\\$\\$\\$");
-                    List<Value> values = new ArrayList<Value>();
-                    for (String s : strings) {
-                        Value v = createCategoryValue(s);
-                        if (v != null) {
-                            values.add(v);
-                        }
-                    }
-                    n.setProperty(propertyName, values.toArray(new Value[values.size()]));
-                } else {
-                    Value v = createCategoryValue(value);
-                    if (v != null) {
-                        n.setProperty(propertyName, v);
-                    }
-                }
-            }
-            case SelectorType.PORTLET: {
-//                    try {
-//                        JCRNodeWrapper portlet = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(value);
-//                        if (portlet != null) {
-//                            n.setProperty(propertyName, portlet.getIdentifier());
-//                        }
-//                    } catch (RepositoryException e) {
-//                    }
-                break;
-            }
-            default: {
-//                    if (def.getCtnType().equals(definition.getName() + " jcr_primaryType")) {
-//                        return;
-//                    }
-                if (value != null && value.length() != 0 && !value.equals("<empty>")) {
-                    String[] vcs = propertyDefinition.getValueConstraints();
-                    List<String> constraints = Arrays.asList(vcs);
-                    if (!propertyDefinition.isMultiple()) {
-                        if (value.startsWith("<jahia-resource")) {
-                            value = ResourceBundleMarker.parseMarkerValue(value).getResourceKey();
-                            if (value.startsWith(propertyDefinition.getResourceBundleKey())) {
-                                value = value.substring(propertyDefinition.getResourceBundleKey().length() + 1);
-                            }
-                            value = mapping.getMappedPropertyValue(baseName, localName, value);
-                        }
-                        if (constraints.isEmpty() || constraints.contains(value)) {
-                            n.setProperty(propertyName, value);
-                        }
-                    } else {
+                case PropertyType.REFERENCE:
+                case PropertyType.WEAKREFERENCE: {
+                    if (propertyDefinition.isMultiple()) {
                         String[] strings = value.split("\\$\\$\\$");
                         List<Value> values = new ArrayList<Value>();
-                        for (int i = 0; i < strings.length; i++) {
-                            String string = strings[i];
-
-                            if (string.startsWith("<jahia-resource")) {
-                                string = ResourceBundleMarker.parseMarkerValue(string).getResourceKey();
-                                if (string.startsWith(propertyDefinition.getResourceBundleKey())) {
-                                    string = string.substring(propertyDefinition.getResourceBundleKey().length() + 1);
-                                }
-                                value = mapping.getMappedPropertyValue(baseName, localName, value);
-                            }
-                            if (constraints.isEmpty() || constraints.contains(value)) {
-                                values.add(new ValueImpl(string, propertyDefinition.getRequiredType()));
+                        for (String s : strings) {
+                            Value v = createReferenceValue(s, propertyDefinition.getSelector());
+                            if (v != null) {
+                                values.add(v);
                             }
                         }
-                        ;
                         n.setProperty(propertyName, values.toArray(new Value[values.size()]));
+                    } else {
+                        Value v = createReferenceValue(value, propertyDefinition.getSelector());
+                        if (v != null) {
+                            n.setProperty(propertyName, v);
+                        }
+                    }
+                    break;
+                }
+
+                default: {
+                    switch (propertyDefinition.getSelector()) {
+                        case SelectorType.RICHTEXT: {
+                            n.setProperty(propertyName, value);
+                            break;
+                        }
+                        default: {
+                            String[] vcs = propertyDefinition.getValueConstraints();
+                            List<String> constraints = Arrays.asList(vcs);
+                            if (!propertyDefinition.isMultiple()) {
+                                if (value.startsWith("<jahia-resource")) {
+                                    value = ResourceBundleMarker.parseMarkerValue(value).getResourceKey();
+                                    if (value.startsWith(propertyDefinition.getResourceBundleKey())) {
+                                        value = value.substring(propertyDefinition.getResourceBundleKey().length() + 1);
+                                    }
+                                }
+                                value = mapping.getMappedPropertyValue(baseName, localName, value);
+                                if (constraints.isEmpty() || constraints.contains(value)) {
+                                    n.setProperty(propertyName, value);
+                                }
+                            } else {
+                                String[] strings = value.split("\\$\\$\\$");
+                                List<Value> values = new ArrayList<Value>();
+                                for (int i = 0; i < strings.length; i++) {
+                                    String string = strings[i];
+
+                                    if (string.startsWith("<jahia-resource")) {
+                                        string = ResourceBundleMarker.parseMarkerValue(string).getResourceKey();
+                                        if (string.startsWith(propertyDefinition.getResourceBundleKey())) {
+                                            string = string.substring(propertyDefinition.getResourceBundleKey().length() + 1);
+                                        }
+                                    }
+                                    value = mapping.getMappedPropertyValue(baseName, localName, value);
+                                    if (constraints.isEmpty() || constraints.contains(value)) {
+                                        values.add(new ValueImpl(string, propertyDefinition.getRequiredType()));
+                                    }
+                                }
+                                ;
+                                n.setProperty(propertyName, values.toArray(new Value[values.size()]));
+                            }
+                            break;
+                        }
                     }
                 }
-                break;
             }
-
-
+        } else {
+            return false;
         }
+
         return true;
     }
 
-    private Value createCategoryValue(String s) throws ValueFormatException {
+    private Value createReferenceValue(String value, int selector) throws RepositoryException {
         try {
-            List<Category> c = ServicesRegistry.getInstance().getCategoryService().getCategory(s);
-            if (c.isEmpty()) {
-                logger.warn("Cannot find category : " + s);
-            } else {
-                Value v = new ValueImpl(c.get(0).getID(), PropertyType.REFERENCE);
-                if (c.size() > 1) {
-                    logger.warn("Multiple category match : " + s);
+            switch (selector) {
+                case SelectorType.CATEGORY: {
+                    List<Category> c = ServicesRegistry.getInstance().getCategoryService().getCategory(value);
+                    if (c.isEmpty()) {
+                        logger.warn("Cannot find category : " + value);
+                    } else {
+                        Value v = new ValueImpl(c.get(0).getID(), PropertyType.REFERENCE);
+                        if (c.size() > 1) {
+                            logger.warn("Multiple category match : " + value);
+                        }
+                        return v;
+                    }
                 }
-                return v;
+                case SelectorType.PORTLET: {
+
+                }
+                default: {
+                    if (value.startsWith("/")) {
+                        try {
+                            if (pathMapping != null) {
+                                for (String map : pathMapping.keySet()) {
+                                    if (value.startsWith(map)) {
+                                        value = pathMapping.get(map) + value.substring(map.length());
+                                        break;
+                                    }
+                                }
+                            }
+                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(value);
+                            return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
+                        } catch (PathNotFoundException e) {
+
+                        }
+                    } else {
+                        try {
+                            String providerKey = StringUtils.substringBefore(value, ":");
+                            String uuid = StringUtils.substringAfter(value, ":");
+                            if (!uuid.equals("/")) {
+                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid);
+                                return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
+                            }
+                        } catch (ItemNotFoundException e) {
+                        } catch (UnsupportedRepositoryOperationException e) {
+                        }
+                    }
+                }
             }
         } catch (JahiaException e) {
             logger.error("Cannot get categories", e);
@@ -590,11 +603,13 @@ public class LegacyImportHandler extends DefaultHandler {
         Stack<JCRNodeWrapper> contents = new Stack<JCRNodeWrapper>();
         Stack<ExtendedNodeType> contentsType = new Stack<ExtendedNodeType>();
         Stack<String> propertyNames = new Stack<String>();
+        Stack<Map<String,String>> boxProperties = new Stack<Map<String,String>>();
 
         PageContext(JCRNodeWrapper page, ExtendedNodeType pageType) {
             contents.push(page);
             contentsType.push(pageType);
             propertyNames.push(null);
+            boxProperties.push(null);
             ctx.push(CTX_PAGE);
         }
 
@@ -602,6 +617,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
+            boxProperties.push(null);
             ctx.push(CTX_LIST);
         }
 
@@ -609,6 +625,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
+            boxProperties.push(boxProperties.peek());
             ctx.push(CTX_CTN);
         }
 
@@ -616,6 +633,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(propertyName);
+            boxProperties.push(null);
             ctx.push(CTX_FIELD);
         }
 
@@ -625,25 +643,18 @@ public class LegacyImportHandler extends DefaultHandler {
             propertyNames.push(null);
             if (ctx.peek() == CTX_LIST) {
                 ctx.push(CTX_BOX);
+                boxProperties.push(new HashMap<String, String>());
             } else {
                 ctx.push(CTX_LIST);
+                boxProperties.push(boxProperties.peek());
             }
         }
-
-//        void pushMerge(ExtendedNodeType type) {
-//            contents.push(contents.peek());
-//            contentsType.push(type);
-//            if (ctx.peek() == CTX_CTN) {
-//                ctx.push(CTX_MERGED);
-//            } else {
-//                ctx.push(CTX_CTN);
-//            }
-//        }
 
         void pushSkip() {
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
+            boxProperties.push(null);
             ctx.push(CTX_SKIP);
         }
 
@@ -651,6 +662,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contents.pop();
             contentsType.pop();
             propertyNames.pop();
+            boxProperties.pop();
             ctx.pop();
         }
 

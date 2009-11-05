@@ -1,8 +1,9 @@
 package org.jahia.services.importexport;
 
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.apache.commons.lang.StringUtils;
 
-import java.util.Properties;
+import java.util.*;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,8 +34,7 @@ public class DefinitionsMapping {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         for (String line; (line=br.readLine())!= null;) {
             if (!line.startsWith("#") && line.indexOf('=')>0) {
-                String[] s = line.split("=");
-                properties.put(s[0].trim(), s[1].trim());
+                properties.put(StringUtils.substringBefore(line, "=").trim() , StringUtils.substringAfter(line, "=").trim()) ;
             }
         }
     }
@@ -46,13 +46,47 @@ public class DefinitionsMapping {
     public String getMappedType(ExtendedNodeType type) {
         String key = type.getName();
         if (properties.containsKey(key)) {
-            return properties.getProperty(key);
+            return properties.getProperty(key).split(",")[0];
         }
         if (type.isNodeType("jnt:box")) {
             return "#box";
         }
 
         return key;
+    }
+
+    public List<String> getMappedMixinTypes(ExtendedNodeType type) {
+        List<String> l = new ArrayList<String>();
+
+        String key = type.getName();
+        if (properties.containsKey(key)) {
+            String[] s = properties.getProperty(key).split(",");
+            for (int i = 1; i < s.length; i++) {
+                String mix = s[i].trim();
+                if (mix.startsWith("addMixin")) {
+                    l.add(StringUtils.substringAfter(mix,"addMixin").trim());
+                }
+            }
+        }
+        return l;
+    }
+
+    public Map<String,String> getAutosetPropertiesForType(ExtendedNodeType type) {
+        Map<String,String> m  = new HashMap<String,String>();
+
+        String key = type.getName();
+        if (properties.containsKey(key)) {
+            String[] s = properties.getProperty(key).split(",");
+            for (int i = 1; i < s.length; i++) {
+                String mix = s[i].trim();
+                if (mix.startsWith("setProperty")) {
+                    String set = StringUtils.substringAfter(mix,"setProperty").trim();
+                    m.put(StringUtils.substringBefore(set,"=").trim(), StringUtils.substringAfter(set,"=").trim());
+                }
+            }
+        }
+
+        return m;
     }
 
     public String getMappedList(ExtendedNodeType parentType, String propertyName) {

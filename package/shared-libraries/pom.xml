@@ -49,14 +49,32 @@
   <build>
       <plugins>
           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <version>2.1</version>
+              <executions>
+                  <execution>
+                      <id>copy-shared-libraries</id>
+                      <phase>package</phase>
+                      <goals>
+                        <goal>copy-dependencies</goal>
+                      </goals>
+                      <configuration>
+                        <outputDirectory>${project.build.directory}/shared-libraries</outputDirectory>
+                        <overWriteReleases>false</overWriteReleases>
+                        <overWriteSnapshots>false</overWriteSnapshots>
+                        <overWriteIfNewer>true</overWriteIfNewer>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
               <artifactId>maven-assembly-plugin</artifactId>
               <configuration>
-                  <finalName>jahia-shared-libraries-v${jahia.package.version}-${buildNumber}</finalName>
-                  <!--
+                  <finalName>jahia-shared-libraries-v${jahia.package.version}</finalName>
                   <descriptors>
                       <descriptor>src/main/assembly/src.xml</descriptor>
                   </descriptors>
-                  -->
                   <appendAssemblyId>true</appendAssemblyId>
                   <!--tarLongFileMode>gnu</tarLongFileMode-->
               </configuration>

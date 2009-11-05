@@ -1,0 +1,14 @@
+<assembly>
+    <id>${buildNumber}</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/shared-libraries</directory>
+            <outputDirectory>${finalName}</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

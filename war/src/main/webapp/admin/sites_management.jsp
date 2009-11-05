@@ -510,8 +510,13 @@ else { %>
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
-                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
-                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>Test and training demo</option>
+                            <%
+                                File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
+                                pageContext.setAttribute("files", files);
+                            %>
+                            <c:forEach var="file" items="${files}">
+                                <option value='${file.path}'>${file.name}</option>
+                            </c:forEach>
                         </select>
                         </td>
                         <td>

@@ -20,31 +20,31 @@
 }
 </script>
 <div class="peopleListItem">
-    <jcr:nodeProperty var="picture" node="${currentNode}" name="peoplePicture"/>
+    <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div class="peoplePhoto">
-            <jcr:nodeProperty node="${currentNode}" name="peopleLastname" var="peopleLastname"/>
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${peopleLastname} picture"></div>
+            <jcr:nodeProperty node="${currentNode}" name="lastname" var="lastname"/>
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${lastname} picture"></div>
     </c:if>
     <div class="peopleBody">
         <h5><jcr:nodeProperty node="${currentNode}" name="peopleFirstname"/>&nbsp;<jcr:nodeProperty
-                node="${currentNode}" name="peopleLastname"/></h5>
+                node="${currentNode}" name="lastname"/></h5>
 
-        <p class="peopleFonction"><jcr:nodeProperty node="${currentNode}" name="peopleFunction"/></p>
+        <p class="peopleFonction"><jcr:nodeProperty node="${currentNode}" name="function"/></p>
 
-        <p class="peopleBusinessUnit"><jcr:nodeProperty node="${currentNode}" name="peopleBusinessUnit"/></p>
+        <p class="peopleBusinessUnit"><jcr:nodeProperty node="${currentNode}" name="businessUnit"/></p>
 
-        <jcr:nodeProperty node="${currentNode}" name="peopleEmail" var="email"/>
+        <jcr:nodeProperty node="${currentNode}" name="email" var="email"/>
         <p class="peopleEmail"><a href='mailto:${email.string}'>${email.string}</a></p>
 
         <div class="peopleAction">
             <a class="peopleDownload" href="${picture.node.url}" rel="facebox"><fmt:message
                     key='web_templates_peopleContainer.peopleViewFullSize'/></a>
             <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
-                    key='web_templates_peopleContainer.peopleBiography'/></a>
+                    key='web_templates_peopleContainer.biography'/></a>
         </div>
         <div id="collapseBox${currentNode.identifier}" class="collapsible">
-            <jcr:nodeProperty node="${currentNode}" name="peopleBiography"/>
+            <jcr:nodeProperty node="${currentNode}" name="biography"/>
         </div>
         <!--stop collapsible -->
         <div class="clear"></div>

@@ -1,38 +1,38 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:contact] > jnt:content
-smallText firstname
-smallText lastname
-smallText title(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'
-smallText age
-smallText birthdate
-smallText gender(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'female','male'
-smallText profession
-smallText maritalStatus(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'single', 'married', 'divorced', 'widowed'
-smallText hobbies
-smallText contact(choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
-smallText address
-smallText city
-smallText state
-smallText zip
-smallText country(choicelist) facetable < country()
-smallText remarks
+ - firstname (string) i18n
+ - lastname (string) i18n
+ - title (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'
+ - age (string) i18n
+ - birthdate (string) i18n
+ - gender (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'female','male'
+ - profession (string) i18n
+ - maritalStatus (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'single', 'married', 'divorced', 'widowed'
+ - hobbies (string) i18n
+ - contact (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
+ - address (string) i18n
+ - city (string) i18n
+ - state (string) i18n
+ - zip (string) i18n
+ - country (string,choicelist[resourceBundle]) facetable < country()
+ - remarks (string) i18n
 
 [jnt:contactForm] > jnt:content, jmix:interactiveContent
-boolean firstname
-boolean lastname
-boolean title
-boolean age
-boolean birthdate
-boolean gender
-boolean profession
-boolean maritalStatus
-boolean hobbies
-boolean contact
-boolean address
-boolean city
-boolean state
-boolean zip
-boolean country
-boolean remarks
-+ * (jnt:contact) 
+ - firstname (boolean)
+ - lastname (boolean)
+ - title (boolean)
+ - age (boolean)
+ - birthdate (boolean)
+ - gender (boolean)
+ - profession (boolean)
+ - maritalStatus (boolean)
+ - hobbies (boolean)
+ - contact (boolean)
+ - address (boolean)
+ - city (boolean)
+ - state (boolean)
+ - zip (boolean)
+ - country (boolean)
+ - remarks (boolean)
+ + * (jnt:contact)

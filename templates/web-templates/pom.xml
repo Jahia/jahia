@@ -89,7 +89,7 @@
 	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <package-name>${project.name}</package-name>
                         <root-folder>web_templates</root-folder>
-                        <depends>Default Jahia Templates,6.0 Compatiblity Module</depends>
+                        <depends>Default Jahia Templates</depends>
                     </manifestEntries>
                 </archive>
             </configuration>

@@ -1,12 +1,12 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:jobApplication] > jmix:basemetadata
+[jnt:jobApplication] > jnt:content
  - firstname (string)
  - lastname (string) primary
  - email (string)
  - text (string, richtext) i18n
 
-[jnt:job] > jmix:basemetadata, mix:title, jmix:structuredContent
+[jnt:job] > jnt:content, mix:title, jmix:structuredContent
  - reference (string)
  - businessUnit (string) i18n facetable
  - contract (string, choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
@@ -18,6 +18,6 @@
  - skills (string, richtext) i18n
  + * (jnt:jobApplication)
 
-[jnt:jobOffers] > jmix:basemetadata, jmix:structuredContent, mix:title
+[jnt:jobOffers] > jnt:content, jmix:structuredContent, mix:title
  orderable
  + * (jnt:job)

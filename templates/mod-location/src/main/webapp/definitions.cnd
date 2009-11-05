@@ -6,9 +6,9 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jnt:location] > jnt:container, jmix:structuredContent
- sharedSmallText street
- sharedSmallText zipCode analyzer='keyword'
- smallText town facetable
- smallText country facetable
- smallText lattitude facetable
- smallText longitude facetable
+ - street (string)
+ - zipCode (string) analyzer='keyword'
+ - town (string) i18n facetable
+ - country (string) i18n facetable
+ - latitude (string) i18n facetable
+ - longitude (string) i18n facetable

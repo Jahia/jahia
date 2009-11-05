@@ -1,7 +1,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:rating] > jmix:option, jmix:contentMixin mixin
-- j:nbOfVotes (long) = 0  autocreated hidden
-- j:sumOfVotes (long) = 0 autocreated hidden
-- j:lastVote (long) hidden
-- j:type (string,choicelist[resourceBundle]) = 'average' < 'average','plusminus'
+ - j:nbOfVotes (long) = 0  autocreated hidden
+ - j:sumOfVotes (long) = 0 autocreated hidden
+ - j:lastVote (long) hidden
+ - j:type (string,choicelist[resourceBundle]) = 'average' < 'average','plusminus'

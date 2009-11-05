@@ -25,24 +25,24 @@
 
 
 <div style="border:1px solid #CCCCCC; padding:5px">
-    <jcr:nodeProperty var="picture" node="${currentNode}" name="peoplePicture"/>
+    <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div>
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${peopleLastname} picture" align="left" width="58" height="58" style="border:1px solid #CCCCCC; margin-right:7px; ">
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${lastname} picture" align="left" width="58" height="58" style="border:1px solid #CCCCCC; margin-right:7px; ">
         </div>
     </c:if>
 
             <h5><jcr:nodeProperty node="${currentNode}" name="peopleFirstname"/> <jcr:nodeProperty
-                    node="${currentNode}" name="peopleLastname"/></h5>
+                    node="${currentNode}" name="lastname"/></h5>
 
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleFunction"/></p>
-             <p><jcr:nodeProperty node="${currentNode}" name="peopleBusinessUnit"/></p>
-            <p>M.:<jcr:nodeProperty node="${currentNode}" name="peopleCellular"/></p>
-            <p>T.:<jcr:nodeProperty node="${currentNode}" name="peopleTelephone"/></p>
-            <p>F.:<jcr:nodeProperty node="${currentNode}" name="peopleFax"/></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleEmail" var="email"/>
+            <p><jcr:nodeProperty node="${currentNode}" name="function"/></p>
+             <p><jcr:nodeProperty node="${currentNode}" name="businessUnit"/></p>
+            <p>M.:<jcr:nodeProperty node="${currentNode}" name="cellular"/></p>
+            <p>T.:<jcr:nodeProperty node="${currentNode}" name="telephone"/></p>
+            <p>F.:<jcr:nodeProperty node="${currentNode}" name="fax"/></p>
+            <p><jcr:nodeProperty node="${currentNode}" name="email" var="email"/>
             <a href='mailto:${email.string}'>${email.string}</a></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="peopleBiography"/>      </p>
+            <p><jcr:nodeProperty node="${currentNode}" name="biography"/>      </p>
         
         <!--stop collapsible -->
         

@@ -1,18 +1,13 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:people] > jnt:container, jmix:structuredContent
- sharedSmallText peopleFirstname
- sharedSmallText peopleLastname primary
- smallText peopleFunction
- sharedSmallText peopleBusinessUnit (choicelist[resourceBundle]) analyzer='keyword' facetable <
-    sales,
-    marketing,
-    GA,
-    production,
-    humanressources
- sharedSmallText peopleTelephone
- sharedSmallText peopleCellular
- sharedSmallText peopleFax
- sharedSmallText peopleEmail
- bigText peopleBiography
- file peoplePicture (file[mime='image/*'])
+[jnt:people] > jnt:content, jmix:structuredContent
+ - firstname (string)
+ - lastname (string) primary
+ - function (string) i18n
+ - businessUnit (string, choicelist[resourceBundle]) analyzer='keyword' facetable < sales,marketing, GA, production, humanressources
+ - telephone (string)
+ - cellular (string)
+ - fax (string)
+ - email (string)
+ - biography (string, richtext) i18n
+ - picture (weakreference, file[mime='image/*'])

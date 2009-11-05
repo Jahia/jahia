@@ -97,7 +97,7 @@ public class RenderService extends JahiaService {
             if (context.getModuleParams().containsKey("forcedSubNodesTemplate")) {
                 pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("forcedSubNodesTemplate"), old);
             } else if (node.hasProperty("j:subNodesTemplate")) {
-                pushAttribute(request, "subNodesTemplate", node.getProperty("subNodeTemplate"), old);
+                pushAttribute(request, "subNodesTemplate", node.getPropertyAsString("j:subNodeTemplate"), old);
             } else if (context.getModuleParams().containsKey("subNodesTemplate")) {
                 pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("subNodesTemplate"), old);
             }
@@ -105,7 +105,7 @@ public class RenderService extends JahiaService {
             if (context.getModuleParams().containsKey("forcedReferenceTemplate")) {
                 pushAttribute(request, "referenceTemplate", context.getModuleParams().get("forcedReferenceTemplate"), old);
             } else if (node.hasProperty("j:referenceTemplate")) {
-                pushAttribute(request, "referenceTemplate",  node.getProperty("referenceTemplate"), old);
+                pushAttribute(request, "referenceTemplate",  node.getPropertyAsString("j:referenceTemplate"), old);
             } else if (context.getModuleParams().containsKey("referenceTemplate")) {
                 pushAttribute(request, "referenceTemplate", context.getModuleParams().get("referenceTemplate"), old);
             }

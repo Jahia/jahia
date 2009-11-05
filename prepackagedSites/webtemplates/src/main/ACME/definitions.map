@@ -22,13 +22,13 @@ jnt:textContainer.bigText = jnt:bigText.text
 jnt:fileContainer = jnt:nodeReference
 jnt:fileContainer.file = j:node
 jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
-jnt:fileContainer.fileDisplayDetails.true = detail
+jnt:fileContainer.fileDisplayDetails.true = details
 jnt:fileContainer.fileDisplayDetails.false = link
 
 web_templates:fileContainer = jnt:nodeReference
 web_templates:fileContainer.file = j:node
 web_templates:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
-web_templates:fileContainer.fileDisplayDetails.true = detail
+web_templates:fileContainer.fileDisplayDetails.true = details
 web_templates:fileContainer.fileDisplayDetails.false = link
 
 ## News module
@@ -55,16 +55,6 @@ web_templates:eventContainer.eventsType.events.type.conference = conference
 
 web_templates:jobContainer = jnt:job
 
-## Introduction
-
-web_templates:introductionContainer = jnt:bigText
-web_templates:introductionContainer.introduction = jnt:bigText.text
-
-## Introduction
-
-web_templates:introductionContainer = jnt:bigText, setProperty jmix:renderable.j:template=introduction
-web_templates:introductionContainer.introduction = jnt:bigText.text
-
 ## Promo
 
 web_templates:promoAdvancedContainer = jnt:teaser
@@ -73,3 +63,38 @@ web_templates:promoAdvancedContainer = jnt:teaser
 
 web_templates:bannerContainer = jnt:banner
 
+## Publication
+
+web_templates:publicationContainer = jnt:publication
+
+## People
+
+web_templates:peopleContainer = jnt:people
+web_templates:peopleContainer.peopleFirstname = firstname
+web_templates:peopleContainer.peopleLastname = lastname
+web_templates:peopleContainer.peopleFunction = function
+web_templates:peopleContainer.peopleBusinessUnit = businessUnit
+web_templates:peopleContainer.peopleTelephone = telephone
+web_templates:peopleContainer.peopleCellular = cellular
+web_templates:peopleContainer.peopleFax = fax
+web_templates:peopleContainer.peopleEmail = email
+web_templates:peopleContainer.peopleBiography = biography
+web_templates:peopleContainer.peoplePicture = picture
+
+## Press
+
+web_templates:pressContainer = jnt:press
+web_templates:pressContainer.title = jcr:title
+
+## Text containers
+
+web_templates:introductionContainer = jnt:bigText, setProperty jmix:renderable.j:template=introduction
+web_templates:introductionContainer.introduction = jnt:bigText.text
+
+web_templates:logoContainer = jnt:image
+web_templates:logoContainer.logo = jnt:image.image
+
+web_templates:footerContentContainer = jnt:bigText
+web_templates:footerContentContainer.footer = jnt:bigText.text
+
+web_templates:bottomLinksContainer = #skip

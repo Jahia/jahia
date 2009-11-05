@@ -1,9 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:publication] > jmix:basemetadata, jmix:structuredContent, mix:title
-file           file
-file           preview
-smallText      author analyzer='simple'
-smallText      source
-smallText      date indexed=untokenized
-bigText        body
+[jnt:publication] > jnt:content, jmix:structuredContent, mix:title
+ - file (weakreference, file) i18n
+ - preview (weakreference, file) i18n
+ - author (string) i18n analyzer='simple'
+ - source (string) i18n
+ - date (string) i18n indexed=untokenized
+ - body (string, richtext) i18n

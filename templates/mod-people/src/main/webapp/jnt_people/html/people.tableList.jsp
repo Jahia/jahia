@@ -21,18 +21,18 @@
 </script>
 
 
-        <td rowspan="2"><jcr:nodeProperty var="picture" node="${currentNode}" name="peoplePicture"/>
+        <td rowspan="2"><jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div class="peoplePhoto">
-            <jcr:nodeProperty node="${currentNode}" name="peopleLastname" var="peopleLastname"/>
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${peopleLastname} picture" width="85" height="85"></div>
+            <jcr:nodeProperty node="${currentNode}" name="lastname" var="lastname"/>
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${lastname} picture" width="85" height="85"></div>
     </c:if></td>
         <td><jcr:nodeProperty node="${currentNode}" name="peopleFirstname"/></td>
-        <td><jcr:nodeProperty node="${currentNode}" name="peopleLastname"/></td>
-        <td><jcr:nodeProperty node="${currentNode}" name="peopleFunction"/> (<jcr:nodeProperty node="${currentNode}" name="peopleBusinessUnit"/>)</td>
-        <td><jcr:nodeProperty node="${currentNode}" name="peopleEmail" var="email"/><a href='mailto:${email.string}'>${email.string}</a></td>
+        <td><jcr:nodeProperty node="${currentNode}" name="lastname"/></td>
+        <td><jcr:nodeProperty node="${currentNode}" name="function"/> (<jcr:nodeProperty node="${currentNode}" name="businessUnit"/>)</td>
+        <td><jcr:nodeProperty node="${currentNode}" name="email" var="email"/><a href='mailto:${email.string}'>${email.string}</a></td>
     </tr>
-    <tr><td colspan="3"><jcr:nodeProperty node="${currentNode}" name="peopleBiography"/></td></tr>
+    <tr><td colspan="3"><jcr:nodeProperty node="${currentNode}" name="biography"/></td></tr>
 
 
         

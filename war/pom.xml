@@ -300,21 +300,7 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.templates</groupId>
-            <artifactId>core-templates</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.templates</groupId>
             <artifactId>web-templates</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.templates</groupId>
-            <artifactId>test-templates</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
@@ -378,13 +364,6 @@
         <dependency>
             <groupId>org.jahia.templates</groupId>
             <artifactId>mod-event</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.templates</groupId>
-            <artifactId>mod-6.0</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
@@ -860,77 +839,6 @@
                       </goals>
                     </execution>
                     -->
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-webtemplates</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.prepackagedsites</groupId>
-                                    <artifactId>webtemplates</artifactId>
-                                    <version>${jahia.package.version}</version>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites
-                            </outputDirectory>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>copy-webtemplates65</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.prepackagedsites</groupId>
-                                    <artifactId>webtemplates65</artifactId>
-                                    <version>${jahia.package.version}</version>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites
-                            </outputDirectory>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>copy-testSite</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.prepackagedsites</groupId>
-                                    <artifactId>testSite</artifactId>
-                                    <version>${jahia.package.version}</version>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites
-                            </outputDirectory>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
                 </executions>
             </plugin>
 

@@ -109,7 +109,7 @@ Creation of Dynamic Module
 
 ---------------------------------------
 [jnt:post] > jnt:content, jmix:rating, mix:title
-bigText content
+- content (string, richtext) i18n
 ---------------------------------------
 
   Here I define that my post will contains a title and a content, and that they are rateable by using jmix:rating in the inherited mixin types.

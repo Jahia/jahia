@@ -14,7 +14,7 @@ Usage of Jahia Rating Module
 -----------------------------------------------
 [jnt:post] > jnt:content, jmix:rating, mix:title
  smallText title
- bigText content
+ - content (string, richtext) i18n
 -----------------------------------------------
 
   This Module define only one simple rule using the Jahia DSL language.

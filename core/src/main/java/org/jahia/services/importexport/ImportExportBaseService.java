@@ -283,7 +283,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         processingContext.setSite(jahiaSite);
         processingContext.setSiteID(jahiaSite.getID());
         processingContext.setSiteKey(jahiaSite.getSiteKey());
-        exportZip(jcrStoreService.getSessionFactory().getCurrentUserSession().getNodeByUUID("jahia", jahiaSite.getUUID()), out, processingContext, params);
+        exportZip(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/content/sites/"+jahiaSite.getSiteKey()), out, processingContext, params);
     }
 
     public void exportZip(JCRNodeWrapper node, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException {

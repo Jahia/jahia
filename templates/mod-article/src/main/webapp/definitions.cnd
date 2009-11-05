@@ -1,11 +1,11 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:paragraph] > jnt:mainContent, jmix:structuredContent
-bigText         insertText
-sharedSmallText insertType (choicelist[resourceBundle]) = quote indexed=no < quote, exergue
-sharedSmallText insertPosition (choicelist[resourceBundle]) = left indexed=no < left, right
-integer         insertWidth = "150" indexed=no
+ - insertText (string, richtext) i18n
+ - insertType (string,choicelist[resourceBundle]) = quote indexed=no < quote, exergue
+ - insertPosition (string,choicelist[resourceBundle]) = left indexed=no < left, right
+ - insertWidth (long) = "150" indexed=no
 
 [jnt:article] > jnt:content, jmix:structuredContent,mix:title
-bigText         intro
-+ * (jnt:paragraph)
+ - intro (string, richtext) i18n
+ + * (jnt:paragraph)

@@ -16,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -317,13 +318,21 @@ public class LegacyImportHandler extends DefaultHandler {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
 
-        if (nodeType.equals("#box")) {
+        if (nodeType.equals("#skip")) {
+            currentCtx.peek().pushSkip();
+        } else if (nodeType.equals("#box")) {
             currentCtx.peek().pushBox(t);
         } else {
             if (uuidMapping.containsKey(uuid)) {
                 JCRNodeWrapper node = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else {
+                try {
+                    NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                } catch (NoSuchNodeTypeException e) {
+                    System.out.println("--- Cannot found type, skip : "+nodeType);
+                    currentCtx.peek().pushSkip();
+                }
                 JCRNodeWrapper node = getCurrentContentNode().addNode("ctn" + (ctnId++), nodeType);
                 uuidMapping.put(uuid, node.getIdentifier());
 

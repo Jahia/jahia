@@ -1,9 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:press] > jnt:container, jmix:structuredContent
- bigText         body
- date            date
- file            pdfVersion
+[jnt:press] > jnt:content, mix:title, jmix:structuredContent
+ - body (string, richtext) i18n
+ - date (date)
+ - pdfVersion (weakreference, file) i18n
 
-[jnt:pressReleases] > jnt:container, jmix:queryContent
-file searchPath (file[folder])
+[jnt:pressReleases] > jnt:content, jmix:queryContent
+ - searchPath (weakreference, file[folder])

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-package</artifactId>
+    <version>6.5-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>shared-libraries</artifactId>
+  <name>Jahia Shared Libraries Package</name>
+  <packaging>pom</packaging>
+
+  <dependencies>
+      <!-- Pluto 2.0 -->
+      <dependency>
+          <groupId>org.apache.portals</groupId>
+          <artifactId>portlet-api_2.0_spec</artifactId>
+          <version>1.0</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.portals.pluto</groupId>
+          <artifactId>pluto-container-api</artifactId>
+          <version>${pluto.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.portals.pluto</groupId>
+          <artifactId>pluto-container-driver-api</artifactId>
+          <version>${pluto.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.portals.pluto</groupId>
+          <artifactId>pluto-taglib</artifactId>
+          <version>${pluto.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>javax.ccpp</groupId>
+          <artifactId>ccpp</artifactId>
+          <version>1.0</version>
+      </dependency>
+
+      <!-- Portal Bridges Dependencies -->
+      <dependency>
+          <groupId>org.apache.portals.bridges</groupId>
+          <artifactId>portals-bridges-common</artifactId>
+          <version>1.0.4</version>
+      </dependency>
+
+  </dependencies>
+  <build>
+      <plugins>
+          <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <configuration>
+                  <finalName>jahia-shared-libraries-v${jahia.package.version}-${buildNumber}</finalName>
+                  <!--
+                  <descriptors>
+                      <descriptor>src/main/assembly/src.xml</descriptor>
+                  </descriptors>
+                  -->
+                  <appendAssemblyId>true</appendAssemblyId>
+                  <!--tarLongFileMode>gnu</tarLongFileMode-->
+              </configuration>
+
+              <executions>
+                  <execution>
+                      <id>make-assembly</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+
+      </plugins>
+  </build>
+
+</project>

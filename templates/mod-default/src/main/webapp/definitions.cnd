@@ -7,7 +7,7 @@
 
 [jmix:sendAsNewsletter] mixin
 
-[jmix:filteredList] > jmix:contentListMixin mixin
+[jmix:filteredList] > jmix:listMixin mixin
  - filter (string, choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
 [jnt:fileList] > jnt:content, jmix:structuredContent

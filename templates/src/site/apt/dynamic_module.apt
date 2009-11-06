@@ -83,8 +83,8 @@ Creation of Dynamic Module
          and story.[j:level]='first' order by story.[jcr:lastModified] desc"/>
     <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long - 1}">
         <template:module node="${topic}" forcedTemplate="large" editable="false">
-            <template:param name="withoutOptions"/>
-            <template:param name="withoutSkins"/>
+            <template:param name="renderOptions" value="none" />
+            <template:param name="forcedSkin" value="none" />
         </template:module>
     </c:forEach>
 </c:if>
@@ -92,11 +92,11 @@ Creation of Dynamic Module
 
   Here we pass some parameters to the <<<\<template:module/\>>>> tag to say that we do not want to display options or skins.
 
-    * <<<\<template:param name="withoutOptions"/\>>>> specify that we not want to display options for this module rendering.
+    * <<<\<template:param name="renderOptions" value="none" /\>>>> specify that we not want to display options for this module rendering.
 
-    * <<<\<template:param name="withoutSkins"/\>>>> specify that we not want to display skins for this module rendering.
+    * <<<\<template:param name="forcedSkins" value="none" /\>>>> specify that we not want to display skins for this module rendering.
     
-    * <<<\<template:param name="renderOptionsBefore"/\>>>> specify that we want to display options before this module content.
+    * <<<\<template:param name="renderOptions" value="before" /\>>>> specify that we want to display options before this module content.
 
 * How do I force an option on my content and specify where and how to display it ?
 

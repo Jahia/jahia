@@ -441,7 +441,7 @@ public class ContentDefinitionHelper {
         ArrayList<GWTJahiaNodeType> res = new ArrayList<GWTJahiaNodeType>();
         Set<String> foundTypes = new HashSet<String>();
         try {
-            if (type.getName().equals("jnt:contentList") || type.getSuperTypes().contains("jnt:contentList")) {
+            if (type.getSuperTypes().contains("jmix:list")) {
                 ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:contentListMixin");
                 NodeTypeIterator it = baseMixin.getSubtypes();
                 while (it.hasNext()) {

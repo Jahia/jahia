@@ -120,7 +120,7 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, jmix:hierarchyNode, jmix:basemetadata, jmix:publication
+[jnt:query] > nt:query, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:list
 
 //---------------------------------------------------------
 // Files
@@ -303,7 +303,7 @@
 [jmix:renderable] > jmix:layout, jmix:contentMixin mixin
  - j:template (string, choicelist[resourceBundle,image]) < templates()
 
-[jmix:renderableList] > jmix:layout, jmix:contentListMixin mixin
+[jmix:renderableList] > jmix:layout, jmix:listMixin mixin
  - j:subNodesTemplate (string, choicelist[resourceBundle,image]) < templates()
 
 [jmix:renderableReference] > jmix:layout mixin
@@ -348,9 +348,11 @@
 
 [jmix:contentMixin] mixin
 
-[jmix:contentListMixin] mixin
-
 [jmix:option] mixin
+
+[jmix:list] mixin
+
+[jmix:listMixin] mixin
 
 //---------------------------------------------------------
 // Pages, content lists
@@ -361,13 +363,9 @@
 
 [jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
 
-[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
+[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:list
  orderable
  + * (nt:base) version
-
-[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
- - j:nbColumns (long)
- + * (jmix:positionable) version
 
 //---------------------------------------------------------
 // Portlets

@@ -7,15 +7,7 @@
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
-
-<jcr:sql var="newsList"
+        
+<jcr:sql var="currentList"
          sql="select * from [jnt:news] as news  order by news.[date] desc"
-         limit="${maxNews.long}"/>
-
-<c:if test="${newsList.nodes.size == 0}">
-    No News Found
-</c:if>
-
-<c:forEach items="${newsList.nodes}" var="news">
-    <template:module node="${news}" editable="false" forcedTemplate=""/>
-</c:forEach>
+         limit="${maxNews.long}" />

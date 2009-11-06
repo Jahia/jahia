@@ -199,6 +199,38 @@ public class Resource {
         options.remove(new Option("",mixinNodeType));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Resource resource = (Resource) o;
+
+        if (forcedTemplate != null ? !forcedTemplate.equals(resource.forcedTemplate) : resource.forcedTemplate != null)
+            return false;
+        if (node != null ? !node.getPath().equals(resource.node.getPath()) : resource.node.getPath() != null) return false;
+        if (template != null ? !template.equals(resource.template) : resource.template != null) return false;
+        if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = node != null ? node.hashCode() : 0;
+        result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
+        result = 31 * result + (template != null ? template.hashCode() : 0);
+        result = 31 * result + (forcedTemplate != null ? forcedTemplate.hashCode() : 0);
+        result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
+        result = 31 * result + (dependencies != null ? dependencies.hashCode() : 0);
+        result = 31 * result + (includedResources != null ? includedResources.hashCode() : 0);
+        result = 31 * result + (missingResources != null ? missingResources.hashCode() : 0);
+        result = 31 * result + (options != null ? options.hashCode() : 0);
+        result = 31 * result + (wrappedMixinType != null ? wrappedMixinType.hashCode() : 0);
+        return result;
+    }
+
     public class Option implements Comparable {
         private final String wrapper;
         private final ExtendedNodeType nodeType;

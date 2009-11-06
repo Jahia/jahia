@@ -1,6 +1,7 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaData;
@@ -17,6 +18,8 @@ import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.PropertyIterator;
+import javax.jcr.Property;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
@@ -77,6 +80,10 @@ public class RenderService extends JahiaService {
     public String render(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException, IOException {
         final HttpServletRequest request = context.getRequest();
 
+        if (context.getResourcesStack().contains(resource)) {
+            return "loop";
+        }
+
         Script script = resolveScript(resource, context);
 
         request.setAttribute("renderContext", context);
@@ -93,37 +100,42 @@ public class RenderService extends JahiaService {
         pushAttribute(request, "scriptInfo", script.getInfo(), old);
         pushAttribute(request, "currentModule", script.getModule(), old);
 
-        if (node.isNodeType("jnt:contentList")) {
-            if (context.getModuleParams().containsKey("forcedSubNodesTemplate")) {
-                pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("forcedSubNodesTemplate"), old);
-            } else if (node.hasProperty("j:subNodesTemplate")) {
-                pushAttribute(request, "subNodesTemplate", node.getPropertyAsString("j:subNodeTemplate"), old);
-            } else if (context.getModuleParams().containsKey("subNodesTemplate")) {
-                pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("subNodesTemplate"), old);
+        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> moduleParams = context.getModuleParams();
+        for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith("forced")) {
+                key = StringUtils.uncapitalize(StringUtils.substringAfter(key,"forced"));
+                params.put(key, entry.getValue());
+            } else if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(key))) {
+                params.put(key, entry.getValue());
             }
-        } else if (node.isNodeType("jnt:nodeReference")) {
-            if (context.getModuleParams().containsKey("forcedReferenceTemplate")) {
-                pushAttribute(request, "referenceTemplate", context.getModuleParams().get("forcedReferenceTemplate"), old);
-            } else if (node.hasProperty("j:referenceTemplate")) {
-                pushAttribute(request, "referenceTemplate",  node.getPropertyAsString("j:referenceTemplate"), old);
-            } else if (context.getModuleParams().containsKey("referenceTemplate")) {
-                pushAttribute(request, "referenceTemplate", context.getModuleParams().get("referenceTemplate"), old);
+        }
+        PropertyIterator pi = node.getProperties();
+        while (pi.hasNext()) {
+            Property property = pi.nextProperty();
+            if (property.getDefinition().getDeclaringNodeType().isNodeType("jmix:layout")) {
+                String key = StringUtils.substringAfter(property.getName(), ":");
+                if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(key))) {
+                    params.put(key, property.getString());
+                }
             }
+        }
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            pushAttribute(request, entry.getKey(), entry.getValue(), old);
+        }
+
+        String skin = (String) params.get("skin");
+        if (!StringUtils.isEmpty(skin) && !skin.equals("none")) {
+            resource.pushWrapper(skin);
         }
 
         pushAttribute(request, "url",new URLGenerator(context, resource, storeService), old);
-        if (!context.getModuleParams().containsKey("withoutSkins")) {
-            if (context.getModuleParams().containsKey("forcedSkin")) {
-                resource.pushWrapper((String) context.getModuleParams().get("forcedSkin"));
-            } else if (node.hasProperty("j:skin")) {
-                resource.pushWrapper(node.getPropertyAsString("j:skin"));
-            } else if (context.getModuleParams().containsKey("skin")) {
-                resource.pushWrapper((String) context.getModuleParams().get("skin"));
-            }
-        }
+
         ExtendedNodeType[] mixinNodeTypes = null;
 
-        if (!context.getModuleParams().containsKey("withoutOptions")) {
+        if (!params.containsKey("renderOptions") || !params.get("renderOptions").equals("none")) {
             mixinNodeTypes = node.getMixinNodeTypes();
             if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
                 for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
@@ -141,9 +153,13 @@ public class RenderService extends JahiaService {
         String output;
         try {
             setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
+
+            context.getResourcesStack().push(resource);
             String render = script.execute();
+            context.getResourcesStack().pop();
+
             String options = renderOptions(resource, context, node, "", request, old);
-            if(!context.getModuleParams().containsKey("renderOptionsBefore")) {
+            if("before".equals(params.get("renderOptions"))) {
                 output = render+options;
             } else {
                 output = options+render;

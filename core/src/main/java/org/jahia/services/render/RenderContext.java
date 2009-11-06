@@ -50,6 +50,7 @@ public class RenderContext {
     private Resource mainResource;
     private JahiaUser user;
     private JahiaSite site;
+    private Stack<Resource> resourcesStack = new Stack<Resource>();
 
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
@@ -161,5 +162,9 @@ public class RenderContext {
 
 	public void setContentType(String contentType) {
     	this.contentType = contentType;
+    }
+
+    public Stack<Resource> getResourcesStack() {
+        return resourcesStack;
     }
 }

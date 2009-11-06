@@ -36,6 +36,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.RequestDispatcher;
@@ -44,10 +45,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -106,12 +104,15 @@ public class RequestDispatcherScript implements Script {
     private void resolveTemplatePath(Resource resource, final RenderContext context) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
 
+        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
+                nt.getSupertypes()));
+        nodeTypeList.add(nt);
+        Collections.reverse(nodeTypeList);
+        ExtendedNodeType base = NodeTypeRegistry.getInstance().getNodeType("nt:base");
+        nodeTypeList.remove(base);
+        nodeTypeList.add(base);
         if (resource.getWrappedMixinType() == null) {
             for (String template : resource.getTemplates()) {
-                List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
-                        nt.getSupertypes()));
-                nodeTypeList.add(nt);
-                Collections.reverse(nodeTypeList);
                 for (ExtendedNodeType st : nodeTypeList) {
                     SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                             st.getAlias().replace(":", "_"), context);
@@ -127,10 +128,6 @@ public class RequestDispatcherScript implements Script {
             }
         } else {
             for (String template : resource.getTemplates()) {
-                List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
-                        nt.getSupertypes()));
-                nodeTypeList.add(nt);
-                Collections.reverse(nodeTypeList);
                 SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                         resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
                 for (JahiaTemplatesPackage aPackage : sortedPackages) {

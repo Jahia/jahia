@@ -4,27 +4,16 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
+<c:remove var="currentList" scope="request"/>
+<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false"/>
+<c:if test="${empty editable}">
+    <c:set var="editable" value="false"/>
+</c:if>
+
 <div id="${currentNode.UUID}">
 
-<script type="text/javascript">
 
-
-function replace(id, url) {
-    var http = false;
-    if(navigator.appName == "Microsoft Internet Explorer") {
-        http = new ActiveXObject("Microsoft.XMLHTTP");
-    } else {
-        http = new XMLHttpRequest();
-    }
-    http.open("GET", url, true);
-    http.onreadystatechange=function() {
-        if(http.readyState == 4) {
-            document.getElementById('${currentNode.UUID}').innerHTML = http.responseText;
-        }
-    }
-    http.send(null);
-}
-</script>
+    <template:addResources type="javascript" resources="ajaxreplace.js" />
 
 
 
@@ -42,10 +31,17 @@ function replace(id, url) {
     </c:forEach>
     </select>
 </form>
-<c:forEach items="${currentNode.children}" var="subchild">
+<c:forEach items="${currentList}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" template="${subNodesTemplate}"/>
+            <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+                <c:if test="${not empty forcedSkin}">
+                    <template:param name="forcedSkin" value="${forcedSkin}"/>
+                </c:if>
+                <c:if test="${not empty renderOptions}">
+                    <template:param name="renderOptions" value="${renderOptions}"/>
+                </c:if>
+            </template:module>
         </c:if>
 
         <c:if test="${not empty param.categorykey}">
@@ -58,7 +54,14 @@ function replace(id, url) {
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" template="${subNodesTemplate}" />
+                <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+                    <c:if test="${not empty forcedSkin}">
+                        <template:param name="forcedSkin" value="${forcedSkin}"/>
+                    </c:if>
+                    <c:if test="${not empty renderOptions}">
+                        <template:param name="renderOptions" value="${renderOptions}"/>
+                    </c:if>
+                </template:module>
             </c:if>
         </c:if>
     </p>

@@ -1,10 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 
-[jnt:topStories] > jnt:content, jmix:interactiveContent
- - j:firstLimit (long)
- - j:secondLimit (long)
- - j:thirdLimit (long)
+[jnt:topStories] > jnt:content, jmix:list, jmix:interactiveContent
+ - j:level (string,choicelist[resourceBundle]) = 'first' < 'first','second','third'
+ - j:limit (long)
 
 [jmix:topStory] > jmix:option, jmix:contentMixin mixin
  - j:level (string,choicelist[resourceBundle]) = 'first' < 'first','second','third'

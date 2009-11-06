@@ -219,6 +219,23 @@
             <type>boolean</type>
         </attribute>        
     </tag>
+        <tag>
+        <description>display a navigation menu</description>
+        <name>JCRSimpleNavigation</name>
+        <tag-class>org.jahia.taglibs.uicomponents.navigation.JCRSimpleNavigationTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
     <function>
         <description>
             Get label value depending on the current local

@@ -34,12 +34,14 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../../common/declarations.jspf" %>
-<template:addResources type="css" resources="960.css,01web.css" nodetype="jnt:page"/>----
+<template:addResources type="css" resources="960.css,01web.css" nodetype="jnt:page"/>
+<jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
+
 <div id="bodywrapper"><!--start bodywrapper-->
     <div id="topheader"><!--start topheader-->
         <div class="container container_16">
             <div class="grid_16">
-                <div class="logotop"><a href="#"><img class="logotop" src="img/logo-top.png" alt="logo"/></a></div>
+                <div class="logotop"><a href="#"><template:module path="${rootPage.path}/logo" nodeTypes="jnt:image"/></a></div>
             </div>
         </div>
         <div class="clear"></div>
@@ -58,62 +60,29 @@
                 </div>
                 <!--stop search-bar-->
                 <div id="breadcrumbs"><!--start breadcrumbs-->
-                    <a class="first" href="#">Home</a> /
-                    <a href="#">Rubrique</a> /
-                    <a href="#">Sous-rubrique</a> /
-                    <span>Page courante</span>
+                    <c:set var="currentPath" value=""/>
+                    <c:forTokens items="${currentNode.path}" delims="/" var="itemPath" varStatus="status">
+                        <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
+                        <jcr:node var="node" path="${currentPath}"/>
+                        <c:if test="${jcr:isNodeType(node, 'jnt:page')}">
+                        <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}<c:if test="${not status.last}"></a> /</c:if>
+                        </c:if>
+                    </c:forTokens>
                 </div>
                 <!--stop breadcrumbs-->
-                <h1>Template 1 </h1>
+                <h1>${currentNode.propertiesAsString['jcr:title']}</h1>
                 <div class="clear"></div>
                 <div id="navigation"><!--start navigation-->
                     <div id="shortcuts">
                         <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
                     </div>
-                    <div id="navbar">
-                        <ul class="main-nav">
-                            <li class="home"><a href="/">Home</a></li>
-                            <li class="submenu"><a href="Template1.html">Templates</a>
-
-                                <div class="box-inner">
-                                    <ul class="box-inner-border">
-                                        <li><a href="Template1.html">Template1</a></li>
-                                        <li><a href="Template2.html">Template2</a></li>
-                                        <li><a href="Template3.html">Template3</a></li>
-                                        <li><a href="Template4.html">Template4</a></li>
-                                        <li><a href="Template5.html">Template5</a></li>
-                                        <li><a href="Template6.html">Template6</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="submenu"><a href="centre-page-fond.html">Exemples</a>
-
-                                <div class="box-inner">
-                                    <ul class="box-inner-border">
-                                        <li><a href="centre-page-fond.html">Centre page avec fond</a></li>
-                                        <li><a href="centre-page-simple.html">Centre page avec simple</a></li>
-                                        <li><a href="box-contenu-exemples.html">Box de contenus exemples</a></li>
-                                        <li><a href="box-listes-exemples.html">Box de listes exemples</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="submenu"><a href="#">Menu Niveau 1</a>
-
-                                <div class="box-inner">
-                                    <ul class="box-inner-border">
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                        <li><a href="#">Menu Niveau 2</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nosubmenu"><a href="#">Menu Niveau 1</a></li>
-                            <li class="nosubmenu"><a href="Menu Niveau 1">Menu Niveau 1</a></li>
-                        </ul>
-                    </div>
+                    <template:module path="${rootPage.path}/topMenu">
+                        <template:import>
+                            <topMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
+                                    jcr:primaryType='jnt:navBar' j:maxDepth='1' j:nodename='jnt_navBar' j:startLevel='1' jcr:mixinTypes='jmix:renderable'
+                                    j:template='dropDown' j:expandOnlyPageInPath="false"/>
+                        </template:import>
+                    </template:module>
                     <div class="clear"></div>
                 </div>
                 <!--stop navigation-->
@@ -132,60 +101,12 @@
     </div>
     <!--stop content-->
 
-    <div id="topfooter"><!--start topfooter-->
-        <div class="container container_16">
-
-            <div class="container container_16"> <!--start container_16-->
-                <div class='grid_10'><!--start grid_10-->
-                    <h3>1er Texte Riche Footer</h3>
-
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum convallis ante vel turpis
-                        accumsan dapibus.
-                        Integer iaculis lectus et nibh cursus bibendum. Mauris faucibus sapien eget magna ultricies
-                        gravida in vel enim. Mauris scelerisque erat sit amet nisi fermentum a dictum tortor
-                        ullamcorper. Phasellus blandit, urna sed congue malesuada, dui diam tincidunt ligula, id
-                        facilisis massa ligula vitae orci. Aenean dignissim mattis dui, in mattis magna iaculis id.
-                        Nulla in porttitor lectus. Nunc condimen</p>
-                </div>
-                <!--stop grid_10-->
-                <div class='grid_6'><!--start grid_6-->
-                    <h3>2eme Texte Riche Footer</h3>
-
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum convallis ante vel turpis
-                        accumsan dapibus.
-                        Integer iaculis lectus et nibh cursus bibendum. Mauris faucibus sapien eget magna ultricies
-                        gravida in vel enim. Mauris scelerisque erat sit amet nisi fermentum a dictum tortor
-                        ullamcorper. </p>
-                </div>
-                <!--stop grid_6-->
-                <div class='clear'></div>
-            </div>
-            <!--stop container_16-->
-
-            <div class='clear'></div>
-
-        </div>
-
-        <div class="clear"></div>
-    </div>
-    <!--stop topfooter-->
 
     <div id="bottomfooter"><!--start bottomfooter-->
         <div class="container container_16">
 
             <div class="grid_16">
-                <p class="copyright">
-                    <span>COPYRIGHT (C) 2009 <a href="#">Jahia intranet</a></span>|
-                    <span><a href="/legal/website">TERMS OF USAGE</a></span>|
-                    <span><a href="/support">SUPPORT/HELP</a></span>
-                </p>
-
-                <p class="footerText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum convallis ante
-                    vel turpis accumsan dapibus. Integer iaculis lectus et nibh cursus bibendum. Mauris faucibus sapien
-                    eget magna ultricies gravida in vel enim. Mauris scelerisque erat sit amet nisi fermentum a dictum
-                    tortor ullamcorper. Phasellus blandit, urna sed congue malesuada, dui diam tincidunt ligula, id
-                    facilisis massa ligula vitae orci. Aenean dignissim mattis dui, in mattis magna iaculis id. Nulla in
-                    porttitor lectus. </p>
+                <template:module path="${rootPage.path}/footer" autoCreateType="jnt:contentList"/>
             </div>
 
             <div class='clear'></div>

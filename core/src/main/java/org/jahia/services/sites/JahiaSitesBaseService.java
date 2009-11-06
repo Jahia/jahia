@@ -57,6 +57,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
@@ -625,6 +626,17 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }
+                }
+            } else {
+                try {
+                    JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
+                    JCRNodeWrapper nodeWrapper = session.getNode("/content/sites/" + site.getSiteKey());
+                    nodeWrapper.checkout();
+                    JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
+                    page.setProperty("jcr:title","Welcome to " + site.getServerName());
+                    session.save();
+                } catch (RepositoryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
 

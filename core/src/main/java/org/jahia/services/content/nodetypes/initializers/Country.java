@@ -49,26 +49,11 @@ import java.util.*;
  */
 public class Country implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
-        final Locale[] availableLocales = Locale.getAvailableLocales();
-        SortedSet<Value> values = new TreeSet<Value>(new Comparator<Value>() {
-            public int compare(Value o, Value o1) {
-                try {
-                    return o.getString().compareTo(o1.getString());
-                } catch (RepositoryException e) {
-                    return -1;
-                }
-            }
-        });
-        int i =0;
-        for (Locale locale : availableLocales) {
-            final String country;
-            if (jParams != null)
-                country = locale.getDisplayCountry(jParams.getCurrentLocale());
-            else country = locale.getDisplayCountry();
-            if (country.length() > 0) {
-                values.add(new ValueImpl(country, PropertyType.STRING,false));
-            }
+        String[] iso = Locale.getISOCountries();
+        Value [] result = new Value[iso.length];
+        for (int i = 0; i < iso.length; i++) {
+            result[i] = new ValueImpl(iso[i], PropertyType.STRING,false);            
         }
-        return values.toArray(new Value[values.size()]);
+        return result;
     }
 }

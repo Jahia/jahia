@@ -137,6 +137,9 @@ public class ContentDefinitionHelper {
                         List<GWTJahiaValueDisplayBean> l = new ArrayList<GWTJahiaValueDisplayBean>();
                         for (String s : constr) {
                             GWTJahiaValueDisplayBean bean = new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(epd.getName().replace(':', '_') + "." + s, s) : s);
+                            if (epd.getSelectorOptions().containsKey("countryName")) {
+                                bean = new GWTJahiaValueDisplayBean(s, new Locale("en", s).getDisplayCountry(context.getLocale()));
+                            }
                             l.add(bean);
 
                             if (epd.getSelectorOptions().containsKey("image")) {

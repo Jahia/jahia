@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.ejs.models.base.bindings.applicationbnd:ApplicationBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.bindings.applicationbnd="applicationbnd.xmi" xmi:id="ApplicationBinding_1254303754643">
+  <authorizationTable xmi:id="AuthorizationTable_1254303754643">
+    <authorizations xmi:id="RoleAssignment_1254303754643">
+      <role href="META-INF/application.xml#SecurityRole_manager"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_1254303754644">
+      <role href="META-INF/application.xml#SecurityRole_jahiaManager"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_1254303754645">
+      <role href="META-INF/application.xml#SecurityRole_role1"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_1254303754646">
+      <role href="META-INF/application.xml#SecurityRole_role2"/>
+    </authorizations>
+      <authorizations xmi:id="RoleAssignment_tomcat">
+        <role href="META-INF/application.xml#SecurityRole_tomcat"/>
+      </authorizations>
+  </authorizationTable>
+  <application href="META-INF/application.xml#Application_Jahia"/>
+</com.ibm.ejs.models.base.bindings.applicationbnd:ApplicationBinding>

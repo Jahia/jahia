@@ -1,0 +1,67 @@
+This document explains a little how to automate the deployment of Jahia under Websphere.
+
+Requirements :
+--------------
+- IBM Websphere Application Server version 6.1.0.25 or more recent
+- Oracle database server 9i or more recent
+
+Prerequisites :
+---------------
+It is assumed that the Websphere Application server was already setup according to the steps described in the Jahia
+configuration document. Basically the following steps must have been completed :
+- JDBC provider drivers deployed and the provider has been setup in the application server
+- The JDBC datasource has been setup and tested. It is important here that the authentification alias have the EXACT
+name it has in the documentation (including spaces !), because the binding file packaged inside Jahia will use it.
+- Make sure you didn't workget to configure the filters to behave according to the servlet API specification.
+- None of the deployment steps should have been performed (except for the database drivers of course) since this Maven
+project will take care of all of them.
+
+Quickstart :
+------------
+1. In your settings.xml file, insert the following section and adjust it to fit your disk locations and database setup
+      <profile>
+        <id>websphere</id>
+        <properties>
+          <jahia.deploy.websphere.server.host>127.0.0.1</jahia.deploy.websphere.server.host>
+          <jahia.deploy.websphere.server.username>root</jahia.deploy.websphere.server.username>
+          <jahia.deploy.websphere.server.password>password</jahia.deploy.websphere.server.password>
+          <jahia.deploy.websphere.server.stagingDir>/root/websphere/</jahia.deploy.websphere.server.stagingDir>
+          <jahia.deploy.websphere.server.installDir>/opt/IBM/WebSphere/AppServer/</jahia.deploy.websphere.server.installDir>
+          <jahia.deploy.websphere.server.profileDir>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/</jahia.deploy.websphere.server.profileDir>
+          <jahia.deploy.websphere.server.name>server1</jahia.deploy.websphere.server.name>
+
+          <jahia.configure.websphere.database.url>jdbc:oracle:thin:@127.0.0.1:1521:test</jahia.configure.websphere.database.url>
+          <jahia.configure.websphere.database.username>scott</jahia.configure.websphere.database.username>
+          <jahia.configure.websphere.database.password>tiger</jahia.configure.websphere.database.password>
+          <jahia.configure.websphere.database.type>oracle</jahia.configure.websphere.database.type>
+          <jahia.configure.websphere.database.overwrite>true</jahia.configure.websphere.database.overwrite>
+          <jahia.configure.websphere.database.storeFilesInDB>true</jahia.configure.websphere.database.storeFilesInDB>
+          <jahia.configure.websphere.localIp>127.0.0.1</jahia.configure.websphere.localIp>
+          <jahia.configure.websphere.localPort>9080</jahia.configure.websphere.localPort>
+        </properties>
+      </profile>
+
+2. Launch the deployment into a previously setup and running Websphere server with the following command line :
+ mvn -Pwebsphere,websphere-deploy-shared-libraries install
+ This command will deploy both the current Jahia build as well as the shared libraries to the server. It will also
+ precompile the JSPs and start the application after it has been deployed. After Jahia is started, the build process
+ also retrieves the server logs and stores a copy in the ear/target/deployment-logs directory.
+
+Additional information :
+-------------------------
+If you prefer to just deploy the updated build without the shared libraries, you can use the following command :
+  mvn -Pwebsphere install
+This can be very useful during development, and is also a lot faster because the deployment of shared libraries shuts
+down and restart the Websphere Application server instance.
+
+Bindings have been defined in deployment files, so you will need to re-use the binding names when configuring the server.
+Here are the files containing the bindings : WEB-INF/ibm-web*.xmi
+
+Reference:
+- Ways to install applications or modules :
+  http://publib.boulder.ibm.com/infocenter/wasinfo/v6r1/index.jsp?topic=/com.ibm.websphere.express.doc/info/exp/ae/crun_app_install.html
+
+- Automatically installing applications on WebSphere Application Server v6.x
+  http://publib.boulder.ibm.com/infocenter/wasinfo/v6r1/index.jsp?topic=/com.ibm.etools.wrd.freeform.doc/topics/tappinstall.html
+
+  

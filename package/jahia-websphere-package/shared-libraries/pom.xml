@@ -10,158 +10,164 @@
     <name>Jahia Websphere Shared Libraries Package</name>
     <packaging>pom</packaging>
 
-    <dependencies>
-        <!-- Pluto 2.0 -->
-        <dependency>
-            <groupId>org.apache.portals</groupId>
-            <artifactId>portlet-api_2.0_spec</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-container-api</artifactId>
-            <version>${pluto.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-container-driver-api</artifactId>
-            <version>${pluto.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-taglib</artifactId>
-            <version>${pluto.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ccpp</groupId>
-            <artifactId>ccpp</artifactId>
-            <version>1.0</version>
-        </dependency>
+    <profiles>
+        <profile>
+            <id>websphere-deploy-shared-libraries</id>
 
-        <!-- Portal Bridges Dependencies -->
-        <dependency>
-            <groupId>org.apache.portals.bridges</groupId>
-            <artifactId>portals-bridges-common</artifactId>
-            <version>1.0.4</version>
-        </dependency>
+            <dependencies>
+                <!-- Pluto 2.0 -->
+                <dependency>
+                    <groupId>org.apache.portals</groupId>
+                    <artifactId>portlet-api_2.0_spec</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.portals.pluto</groupId>
+                    <artifactId>pluto-container-api</artifactId>
+                    <version>${pluto.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.portals.pluto</groupId>
+                    <artifactId>pluto-container-driver-api</artifactId>
+                    <version>${pluto.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.portals.pluto</groupId>
+                    <artifactId>pluto-taglib</artifactId>
+                    <version>${pluto.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>javax.ccpp</groupId>
+                    <artifactId>ccpp</artifactId>
+                    <version>1.0</version>
+                </dependency>
 
-    </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-shared-libraries</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeArtifactIds>jahia-war,portlet-api_2.0_spec</excludeArtifactIds>
-                            <outputDirectory>${project.build.directory}/shared-libraries</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-jvm-shared-libraries</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>portlet-api_2.0_spec</includeArtifactIds>
-                            <outputDirectory>${project.build.directory}/jvm-shared-libraries</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
+                <!-- Portal Bridges Dependencies -->
+                <dependency>
+                    <groupId>org.apache.portals.bridges</groupId>
+                    <artifactId>portals-bridges-common</artifactId>
+                    <version>1.0.4</version>
+                </dependency>
 
-                </executions>
-            </plugin>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-shared-libraries</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <excludeArtifactIds>jahia-war,portlet-api_2.0_spec</excludeArtifactIds>
+                                    <outputDirectory>${project.build.directory}/shared-libraries</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>false</overWriteSnapshots>
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-jvm-shared-libraries</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeArtifactIds>portlet-api_2.0_spec</includeArtifactIds>
+                                    <outputDirectory>${project.build.directory}/jvm-shared-libraries</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>false</overWriteSnapshots>
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                </configuration>
+                            </execution>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>1.7.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>0.1.38</version>
-                    </dependency>
-                </dependencies>
+                        </executions>
+                    </plugin>
 
-                <executions>
-                    <execution>
-                        <id>deploying</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <tasks>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.38</version>
+                            </dependency>
+                        </dependencies>
 
-                                <!-- Here we copy the values just for cosmetics, to make them a bit shorter -->
+                        <executions>
+                            <execution>
+                                <id>deploying</id>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
 
-                                <property name="serverHost" value="${jahia.deploy.websphere.server.host}"/>
-                                <property name="serverUser" value="${jahia.deploy.websphere.server.username}"/>
-                                <property name="serverPassword" value="${jahia.deploy.websphere.server.password}"/>
-                                <property name="remoteStagingDir" value="${jahia.deploy.websphere.server.stagingDir}"/>
-                                <property name="websphereInstallDir"
-                                          value="${jahia.deploy.websphere.server.installDir}"/>
-                                <property name="websphereProfileDir"
-                                          value="${jahia.deploy.websphere.server.profileDir}"/>
-                                <property name="distant.hosts.websphere.serverName"
-                                          value="${jahia.deploy.websphere.server.name}"/>
+                                        <!-- Here we copy the values just for cosmetics, to make them a bit shorter -->
 
-                                <!-- First let's shutdown the server before deploying shared resources -->
+                                        <property name="serverHost" value="${jahia.deploy.websphere.server.host}"/>
+                                        <property name="serverUser" value="${jahia.deploy.websphere.server.username}"/>
+                                        <property name="serverPassword"
+                                                  value="${jahia.deploy.websphere.server.password}"/>
+                                        <property name="remoteStagingDir"
+                                                  value="${jahia.deploy.websphere.server.stagingDir}"/>
+                                        <property name="websphereInstallDir"
+                                                  value="${jahia.deploy.websphere.server.installDir}"/>
+                                        <property name="websphereProfileDir"
+                                                  value="${jahia.deploy.websphere.server.profileDir}"/>
+                                        <property name="distant.hosts.websphere.serverName"
+                                                  value="${jahia.deploy.websphere.server.name}"/>
 
-                                <sshexec host="${serverHost}" username="${serverUser}" password="${serverPassword}"
-                                         command="${websphereProfileDir}bin/stopServer.sh ${distant.hosts.websphere.serverName}"
-                                         trust="true" failonerror="false"/>
+                                        <!-- First let's shutdown the server before deploying shared resources -->
 
-                                <!-- Now let's deploy the shared resources if needed -->
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/stopServer.sh ${distant.hosts.websphere.serverName}"
+                                                 trust="true" failonerror="false"/>
 
-                                <scp trust="true"
-                                     todir="${serverUser}@${serverHost}:${websphereInstallDir}lib/ext/"
-                                     password="${serverPassword}">
-                                    <fileset dir="${project.build.directory}/shared-libraries"/>
-                                </scp>
+                                        <!-- Now let's deploy the shared resources if needed -->
 
-                                <scp trust="true"
-                                     todir="${serverUser}@${serverHost}:${websphereInstallDir}java/jre/lib/ext/"
-                                     password="${serverPassword}">
-                                    <fileset dir="${project.build.directory}/jvm-shared-libraries"/>
-                                </scp>
+                                        <scp trust="true"
+                                             todir="${serverUser}@${serverHost}:${websphereInstallDir}lib/ext/"
+                                             password="${serverPassword}">
+                                            <fileset dir="${project.build.directory}/shared-libraries"/>
+                                        </scp>
 
-                                <scp trust="true"
-                                     file="${project.build.directory}/Jahia_v${jahia.package.version}-${buildNumber}-websphere-${jahia.websphere.version}.war"
-                                     todir="${serverUser}@${serverHost}:${remoteStagingDir}"
-                                     password="${serverPassword}"/>
+                                        <scp trust="true"
+                                             todir="${serverUser}@${serverHost}:${websphereInstallDir}java/jre/lib/ext/"
+                                             password="${serverPassword}">
+                                            <fileset dir="${project.build.directory}/jvm-shared-libraries"/>
+                                        </scp>
 
-                                <!-- All copying is complete, we will now start the server -->
+                                        <!-- All copying is complete, we will now start the server -->
 
-                                <sshexec host="${serverHost}" username="${serverUser}" password="${serverPassword}"
-                                         command="${websphereProfileDir}bin/startServer.sh ${distant.hosts.websphere.serverName}"
-                                         trust="true" failonerror="true"/>
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/startServer.sh ${distant.hosts.websphere.serverName}"
+                                                 trust="true" failonerror="true"/>
 
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-        </plugins>
-    </build>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

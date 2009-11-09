@@ -278,6 +278,11 @@
           <doUpdate>false</doUpdate>
           <useLastCommittedRevision>true</useLastCommittedRevision>
           <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+          <!-- seems this doesn't work well yet, but maybe in a new future ?
+          <providerImplementations>
+            <svn>javasvn</svn>
+          </providerImplementations>
+           -->
         </configuration>
       </plugin>
     </plugins>

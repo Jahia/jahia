@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Application_Jahia" version="1.4" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd">
+    <display-name>Jahia Enterprise Application</display-name>
+    <module>
+        <web>
+            <web-uri>jahia.war</web-uri>
+            <context-root>/</context-root>
+        </web>
+    </module>
+    <!--
+    <module>
+        <web>
+            <web-uri>pluto-testsuite-websphere</web-uri>
+            <context-root>pluto-testsuite-websphere</context-root>
+        </web>
+    </module>
+    <module>
+        <web>
+            <web-uri>fileupload</web-uri>
+            <context-root>fileupload</context-root>
+        </web>
+    </module>
+    -->
+    <security-role id="SecurityRole_manager">
+        <role-name>manager</role-name>
+    </security-role>
+    <security-role id="SecurityRole_jahiaManager">
+        <role-name>jahiaManager</role-name>
+    </security-role>
+    <security-role id="SecurityRole_role1">
+        <role-name>role1</role-name>
+    </security-role>
+    <security-role id="SecurityRole_role2">
+        <role-name>role2</role-name>
+    </security-role>
+    <security-role id="SecurityRole_tomcat" >
+        <role-name>tomcat</role-name>
+    </security-role>
+</application>

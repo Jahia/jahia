@@ -77,6 +77,29 @@
         </properties>
       </profile>
 
+      <profile>
+        <id>websphere</id>
+        <properties>
+          <jahia.deploy.websphere.server.host>127.0.0.1</jahia.deploy.websphere.server.host>
+          <jahia.deploy.websphere.server.username>root</jahia.deploy.websphere.server.username>
+          <jahia.deploy.websphere.server.password>password</jahia.deploy.websphere.server.password>
+          <jahia.deploy.websphere.server.stagingDir>/root/websphere/</jahia.deploy.websphere.server.stagingDir>
+          <jahia.deploy.websphere.server.installDir>/opt/IBM/WebSphere/AppServer/</jahia.deploy.websphere.server.installDir>
+          <jahia.deploy.websphere.server.profileDir>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/</jahia.deploy.websphere.server.profileDir>
+          <jahia.deploy.websphere.server.name>server1</jahia.deploy.websphere.server.name>
+
+          <jahia.configure.websphere.database.url>jdbc:oracle:thin:@127.0.0.1:1521:test</jahia.configure.websphere.database.url>
+          <jahia.configure.websphere.database.username>scott</jahia.configure.websphere.database.username>
+          <jahia.configure.websphere.database.password>tiger</jahia.configure.websphere.database.password>
+          <jahia.configure.websphere.database.type>oracle</jahia.configure.websphere.database.type>
+          <jahia.configure.websphere.database.overwrite>true</jahia.configure.websphere.database.overwrite>
+          <jahia.configure.websphere.database.storeFilesInDB>true</jahia.configure.websphere.database.storeFilesInDB>
+          <jahia.configure.websphere.localIp>127.0.0.1</jahia.configure.websphere.localIp>
+          <jahia.configure.websphere.localPort>9080</jahia.configure.websphere.localPort>
+        </properties>
+      </profile>
+
+
   </profiles>
   
   <activeProfiles>

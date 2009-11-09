@@ -41,6 +41,15 @@
                   <module>jahia-qa-package</module>
               </modules>
         </profile>
+        <profile>
+            <id>websphere</id>
+            <modules>
+                <module>jahia-websphere-package</module>
+            </modules>
+        </profile>
     </profiles>
 
+    <modules>
+        <module>shared-libraries</module>
+    </modules>
 </project>

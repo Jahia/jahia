@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-websphere-package</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-websphere-ear-package</artifactId>
+    <name>Jahia Websphere EAR Package</name>
+    <packaging>pom</packaging>
+
+    <profiles>
+        <profile>
+            <id>websphere</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jahia.server</groupId>
+                    <artifactId>jahia-war</artifactId>
+                    <version>${jahia.package.version}</version>
+                    <type>war</type>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-war</artifactId>
+                                            <version>${jahia.package.version}</version>
+                                            <type>war</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>
+                                                ${project.build.directory}/websphere-${jahia.websphere.version}/${jahia.deploy.war.dirName}
+                                            </outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <configuration>
+                            <targetServerType>was</targetServerType>
+                            <targetServerVersion>6.1.0.25</targetServerVersion>
+                            <targetServerDirectory>${project.build.directory}/websphere-${jahia.websphere.version}
+                            </targetServerDirectory>
+                            <targetConfigurationDirectory>
+                                ${project.build.directory}/websphere-${jahia.websphere.version}
+                            </targetConfigurationDirectory>
+                            <cluster_activated>false</cluster_activated>
+                            <processingServer>true</processingServer>
+                            <databaseUrl>${jahia.configure.websphere.database.url}</databaseUrl>
+                            <databaseUsername>${jahia.configure.websphere.database.username}</databaseUsername>
+                            <databasePassword>${jahia.configure.websphere.database.password}</databasePassword>
+                            <databaseType>${jahia.configure.websphere.database.type}</databaseType>
+                            <overwritedb>${jahia.configure.websphere.database.overwrite}</overwritedb>
+                            <storeFilesInDB>${jahia.configure.websphere.database.storeFilesInDB}</storeFilesInDB>
+                            <localIp>${jahia.configure.websphere.localIp}</localIp>
+                            <localPort>${jahia.configure.websphere.localPort}</localPort>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <finalName>Jahia_v${jahia.package.version}-${buildNumber}</finalName>
+                            <descriptors>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>true</appendAssemblyId>
+                            <!--tarLongFileMode>gnu</tarLongFileMode-->
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.38</version>
+                            </dependency>
+                        </dependencies>
+
+                        <executions>
+                            <execution>
+                                <id>deploying</id>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
+
+                                        <!-- Here we copy the values just for cosmetics, to make them a bit shorter -->
+
+                                        <property name="serverHost" value="${jahia.deploy.websphere.server.host}"/>
+                                        <property name="serverUser" value="${jahia.deploy.websphere.server.username}"/>
+                                        <property name="serverPassword"
+                                                  value="${jahia.deploy.websphere.server.password}"/>
+                                        <property name="remoteStagingDir"
+                                                  value="${jahia.deploy.websphere.server.stagingDir}"/>
+                                        <property name="websphereInstallDir"
+                                                  value="${jahia.deploy.websphere.server.installDir}"/>
+                                        <property name="websphereProfileDir"
+                                                  value="${jahia.deploy.websphere.server.profileDir}"/>
+                                        <property name="distant.hosts.websphere.serverName"
+                                                  value="${jahia.deploy.websphere.server.name}"/>
+
+                                        <!-- Now let's undeploy then deploy Jahia -->
+
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminApp.uninstall('jahia')&quot;"
+                                                 trust="true" failonerror="false"/>
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminConfig.save()&quot;"
+                                                 trust="true" failonerror="true"/>
+
+                                        <scp trust="true"
+                                             file="${project.build.directory}/Jahia_v${jahia.package.version}-${buildNumber}-websphere-${jahia.websphere.version}.war"
+                                             todir="${serverUser}@${serverHost}:${remoteStagingDir}"
+                                             password="${serverPassword}"/>
+
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminApp.install('${remoteStagingDir}Jahia_v${jahia.package.version}-${buildNumber}-websphere-${jahia.websphere.version}.war', '[-contextroot / -appname jahia -preCompileJSPs true]')&quot;"
+                                                 trust="true" failonerror="true"/>
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminConfig.save()&quot;"
+                                                 trust="true" failonerror="true"/>
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminControl.invoke(AdminControl.queryNames('cell=localhostNode01Cell,node=localhostNode01,type=ApplicationManager,process=server1,*'), 'startApplication', 'jahia')&quot;"
+                                                 trust="true" failonerror="true"/>
+
+                                        <mkdir dir="${project.build.directory}/deployment-logs/"/>
+
+                                        <!-- Retrieve logs to be able to check for errors during deployment -->
+                                        <scp trust="true"
+                                             file="${serverUser}@${serverHost}:${websphereProfileDir}logs/${distant.hosts.websphere.serverName}/*.log"
+                                             todir="${project.build.directory}/deployment-logs/"
+                                             password="${serverPassword}"/>
+
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+
+</project>

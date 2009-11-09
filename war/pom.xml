@@ -28,6 +28,16 @@
 
     <profiles>
         <profile>
+            <id>websphere</id>
+            <dependencies>
+                <dependency>
+                    <groupId>de.odysseus.juel</groupId>
+                    <artifactId>juel-api</artifactId>
+                    <version>2.1.2</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>eclipse-integration</id>
             <build>
                 <plugins>

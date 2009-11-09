@@ -36,10 +36,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -112,6 +114,7 @@ public class EditContentEngine extends Window {
     private PropertiesEditor publicationEditor;
     private LayoutContainer htmlPreview;
 
+    private ButtonBar buttonBar;
     private Button ok;
     private Button restore;
     private Button cancel;
@@ -134,7 +137,7 @@ public class EditContentEngine extends Window {
         loadNode();
         initWindowProperties();
         initTabs();
-        initButtons();
+        initFooter();
     }
 
     /**
@@ -177,20 +180,21 @@ public class EditContentEngine extends Window {
 
         initWindowProperties();
         initTabs();
-        initButtons();
-        setFooter(true);
-        
-        setBottomComponent(new Html(Messages.getResource("copyrigth")));
+        initFooter();
+        setFooter(true);     
         ok.setEnabled(true);
     }
 
     /**
      * init buttons
      */
-    private void initButtons() {
-        setButtonAlign(Style.HorizontalAlignment.CENTER);
+    private void initFooter() {
+        LayoutContainer buttonsPanel = new LayoutContainer();
+        buttonsPanel.setBorders(false);
 
         final EditContentEngine editContentEngine = this;
+        buttonBar = new ButtonBar();
+        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
@@ -202,7 +206,7 @@ public class EditContentEngine extends Window {
             ok.addSelectionListener(new CreateSelectionListener());
         }
 
-        addButton(this.ok);
+        buttonBar.add(ok);
 
         /* ToDo: activate restore button in the engine
 
@@ -227,8 +231,18 @@ public class EditContentEngine extends Window {
                 editContentEngine.hide();
             }
         });
-        addButton(this.cancel);
+        buttonBar.add(cancel);
+        buttonsPanel.add(buttonBar);
+
+        // copyrigths
+        Text copyright = new Text(Messages.get("copyrigth","copyright"));
+        ButtonBar container = new ButtonBar();
+        container.setAlignment(Style.HorizontalAlignment.CENTER);
+        container.add(copyright);
+        buttonsPanel.add(container);
+        setBottomComponent(buttonsPanel);
         
+
 
     }
 
@@ -238,8 +252,7 @@ public class EditContentEngine extends Window {
     private void initTabs() {
         tabs = new TabPanel();
         tabs.setBodyBorder(false);
-        tabs.setBorders(false);
-        tabs.setAutoHeight(true);
+        tabs.setBorders(true);
 
         contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
         contentTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
@@ -284,6 +297,9 @@ public class EditContentEngine extends Window {
         add(tabs);
     }
 
+    /**
+     * fill current tab
+     */
     private void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
@@ -305,6 +321,9 @@ public class EditContentEngine extends Window {
         }
     }
 
+    /**
+     * Create classification tab
+     */
     private void createClassificationTab() {
         if (!classificationTab.isProcessed()) {
             if (!existingNode || (node != null)) {
@@ -317,6 +336,9 @@ public class EditContentEngine extends Window {
         }
     }
 
+    /**
+     * Create content tab
+     */
     private void createContentTab() {
         if (!contentTab.isProcessed()) {
             if (mixin != null && !isReference) {
@@ -367,6 +389,9 @@ public class EditContentEngine extends Window {
         return formPanel;
     }
 
+    /**
+     * create layout tab
+     */
     private void createLayoutTab() {
         if (!layoutTab.isProcessed()) {
             if (mixin != null) {
@@ -402,17 +427,19 @@ public class EditContentEngine extends Window {
                         subNodesTemplateField.addSelectionChangedListener(listener);
                     }
                     htmlPreview = new LayoutContainer(new FitLayout());
-                    htmlPreview.setHeight(250);
+                    //htmlPreview.setHeight(250);
                     htmlPreview.addStyleName("x-panel");
                     htmlPreview.setScrollMode(Style.Scroll.AUTO);
                     layoutTab.add(htmlPreview);
                 }
-//            layoutTab.layout();
                 layout();
             }
         }
     }
 
+    /**
+     * Create metadata tab
+     */
     private void createMetadataTab() {
         if (!metadataTab.isProcessed()) {
             if (mixin != null) {
@@ -426,15 +453,17 @@ public class EditContentEngine extends Window {
         }
     }
 
+    /**
+     * Create option tab
+     */
     private void createOptionsTab() {
         if (!optionsTab.isProcessed()) {
             if (mixin != null) {
                 optionsTab.setProcessed(true);
                 optionsTab.setStyleName("x-panel-mc");
                 optionsEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.OPTIONS, null, null, !existingNode || node.isWriteable(), true);
+                optionsTab.setHeight(504);                
                 optionsTab.add(optionsEditor);
-//            metadataTab.layout();
-                optionsTab.setHeight(504);
                 layout();
             }
         }
@@ -442,13 +471,15 @@ public class EditContentEngine extends Window {
 
     }
 
+    /**
+     * Create publication tab
+     */
     private void createPublicationTab() {
         if (!publicationTab.isProcessed()) {
             if (mixin != null) {
                 publicationTab.setProcessed(true);
                 publicationEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.PUBLICATION, null, null, !existingNode || node.isWriteable(), true);
                 publicationTab.add(publicationEditor);
-//            metadataTab.layout();
                 publicationTab.setHeight("400px");
                 layout();
             }
@@ -457,6 +488,9 @@ public class EditContentEngine extends Window {
 
     }
 
+    /**
+     * load node
+     */
     private void loadNode() {
         contentService.getProperties(contentPath, new AsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onFailure(Throwable throwable) {
@@ -473,7 +507,7 @@ public class EditContentEngine extends Window {
                 if (referencedNode != null || !isReference) {
                     fillCurrentTab();
                     ok.setEnabled(true);
-                    restore.setEnabled(true);
+                    //restore.setEnabled(true);
                 }
             }
         });
@@ -491,13 +525,16 @@ public class EditContentEngine extends Window {
                     if (node != null) {
                         fillCurrentTab();
                         ok.setEnabled(true);
-                        restore.setEnabled(true);
+                        //restore.setEnabled(true);
                     }
                 }
             });
         } 
     }
 
+    /**
+     * load mixin
+     */
     private void loadMixin() {
         definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
@@ -511,6 +548,11 @@ public class EditContentEngine extends Window {
         });
     }
 
+    /**
+     * Update preview
+     * @param template
+     * @param contextParams
+     */
     private void updatePreview(String template, Map<String,String> contextParams) {
         if (node != null) {
             JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, new AsyncCallback<String>() {
@@ -530,6 +572,10 @@ public class EditContentEngine extends Window {
         }
     }
 
+    /**
+     * set preview HTML
+     * @param html
+     */
     public void setHTML(HTML html) {
         htmlPreview.removeAll();
         if (html != null) {
@@ -543,6 +589,8 @@ public class EditContentEngine extends Window {
      * Initializes basic window properties: size, state and title.
      */
     private void initWindowProperties() {
+        setLayout(new FillLayout());
+        setBodyBorder(false);
         setSize(950, 750);
         setClosable(true);
         setResizable(true);
@@ -558,6 +606,9 @@ public class EditContentEngine extends Window {
         }
     }
 
+    /**
+     * Save selection listener
+     */
     private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
         public SaveSelectionListener() {
         }

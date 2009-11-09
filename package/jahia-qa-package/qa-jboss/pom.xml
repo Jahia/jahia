@@ -163,6 +163,7 @@
                 <artifactId>maven-jahia-plugin</artifactId>
                 <configuration>
                     <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
+                    <targetConfigurationDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetConfigurationDirectory>
                     <targetServerType>jboss</targetServerType>
                     <targetServerVersion>4.2.x</targetServerVersion>
                     <!--

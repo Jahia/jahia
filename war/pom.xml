@@ -158,6 +158,7 @@
                         <configuration>
                             <!-- do not change these three nor remove them -->
                             <targetServerDirectory>${project.build.directory}</targetServerDirectory>
+                            <targetConfigurationDirectory>${project.build.directory}</targetConfigurationDirectory>
                             <webAppDirName>/${project.build.finalName}</webAppDirName>
                             <configureBeforePackaging>true</configureBeforePackaging>
                             <!-- these following could be removed to configure them from settings.xml -->

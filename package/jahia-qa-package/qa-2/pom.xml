@@ -119,6 +119,7 @@
                             <targetServerType>tomcat</targetServerType>
                             <targetServerVersion>6</targetServerVersion>
                             <targetServerDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetServerDirectory>
+                            <targetConfigurationDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetConfigurationDirectory>
                             <siteImportLocation>
                                 <!--param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param-->

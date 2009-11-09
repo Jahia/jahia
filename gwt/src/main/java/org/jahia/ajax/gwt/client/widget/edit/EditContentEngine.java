@@ -116,6 +116,7 @@ public class EditContentEngine extends Window {
     private Button restore;
     private Button cancel;
     private ClassificationEditor classificationEditor;
+    private static final int BUTTON_HEIGHT = 24;
 
     /**
      * Initializes an instance of this class.
@@ -183,13 +184,16 @@ public class EditContentEngine extends Window {
         ok.setEnabled(true);
     }
 
+    /**
+     * init buttons
+     */
     private void initButtons() {
-
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         final EditContentEngine editContentEngine = this;
 
         ok = new Button(Messages.getResource("fm_save"));
+        ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
         if (existingNode) {
@@ -215,6 +219,7 @@ public class EditContentEngine extends Window {
             addButton(this.restore);
         }*/
         cancel = new Button(Messages.getResource("fm_cancel"));
+        cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -223,6 +228,7 @@ public class EditContentEngine extends Window {
             }
         });
         addButton(this.cancel);
+        
 
     }
 

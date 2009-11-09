@@ -200,7 +200,8 @@ public class LegacyImportHandler extends DefaultHandler {
                      */
                     System.out.println("create content " + localName);
 
-                    createContent(attributes.getValue(Constants.JCR_NS, "primaryType"), uuid);
+                    createContent(attributes.getValue(Constants.JCR_NS, "primaryType"), uuid, attributes
+                            .getValue("jahia:jahiaLinkActivation_picker_relationship"));
                     setMetadata(attributes);
                     break;
                 case CTX_FIELD:
@@ -243,7 +244,7 @@ public class LegacyImportHandler extends DefaultHandler {
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
+        if (currentCtx.peek().ctx.peek() == CTX_PAGE) {
             currentCtx.pop();
         } else {
             currentCtx.peek().pop();
@@ -314,7 +315,7 @@ public class LegacyImportHandler extends DefaultHandler {
         currentCtx.peek().pushList(node, listType);
     }
 
-    private void createContent(String primaryType, String uuid) throws RepositoryException {
+    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid) throws RepositoryException {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
 
@@ -326,7 +327,20 @@ public class LegacyImportHandler extends DefaultHandler {
             if (uuidMapping.containsKey(uuid)) {
                 JCRNodeWrapper node = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
-            } else {
+            } else if (pickerRelationshipUuid != null) {
+                JCRNodeWrapper node = getCurrentContentNode().addNode(
+                        "ctn" + (ctnId++), "jnt:nodeReference");
+
+                uuidMapping.put(uuid, node.getIdentifier());
+
+                if (!references.containsKey(pickerRelationshipUuid)) {
+                    references.put(pickerRelationshipUuid,
+                            new ArrayList<String>());
+                }
+                references.get(pickerRelationshipUuid).add(
+                        node.getIdentifier() + "/j:node");
+                currentCtx.peek().pushSkip();
+            } else {             
                 try {
                     NodeTypeRegistry.getInstance().getNodeType(nodeType);
                 } catch (NoSuchNodeTypeException e) {

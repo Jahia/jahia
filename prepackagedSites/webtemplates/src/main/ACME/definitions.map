@@ -98,3 +98,8 @@ web_templates:footerContentContainer = jnt:bigText
 web_templates:footerContentContainer.footer = jnt:bigText.text
 
 web_templates:bottomLinksContainer = #skip
+
+## Portlet containers
+
+jnt:portletContainer = jnt:nodeReference
+jnt:portletContainer.portlet = j:node

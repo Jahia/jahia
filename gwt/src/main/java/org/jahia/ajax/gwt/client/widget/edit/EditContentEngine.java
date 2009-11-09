@@ -177,6 +177,8 @@ public class EditContentEngine extends Window {
         initWindowProperties();
         initTabs();
         initButtons();
+        setFooter(true);
+        
         setBottomComponent(new Html(Messages.getResource("copyrigth")));
         ok.setEnabled(true);
     }
@@ -540,6 +542,7 @@ public class EditContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         if (existingNode) {
             setHeading("Edit");
             //setHeading("Edit " + contentPath);

@@ -225,7 +225,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     addEditModeResources();
                     pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
                     pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
-                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" locale=\""+r.getLocale()+"\" template=\""+r.getResolvedTemplate()+"\">");
+                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getResolvedTemplate() + "\">");
                     editDivOpen = true;
                     return SKIP_BODY;
                 } else {
@@ -294,7 +294,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("annotatedTimelime", getMessage("toolbar.analytics.annotatedTimelime"));
 
     }
-    
+
     private void addEditModeResources() {
         addGwtDictionaryMessage("fm_newdir", getJahiaInternalResourceValue("toolbar.manager.button.createFolder"));
         addGwtDictionaryMessage("fm_newdirname", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"));
@@ -458,7 +458,18 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_repository_savedSearch", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"));
         addGwtDictionaryMessage("fm_repository_portletDefinitionRepository", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
         addGwtDictionaryMessage("fm_select_portlet", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.description.label"));
-
+        addGwtDictionaryMessage("fm_repository_myRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"));
+        addGwtDictionaryMessage("fm_repository_usersRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"));
+        addGwtDictionaryMessage("fm_repository_myExternalRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"));
+        addGwtDictionaryMessage("fm_repository_sharedRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"));
+        addGwtDictionaryMessage("fm_repository_websiteRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"));
+        addGwtDictionaryMessage("fm_repository_myMashupRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"));
+        addGwtDictionaryMessage("fm_repository_sharedMashupRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"));
+        addGwtDictionaryMessage("fm_repository_websiteMashupRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"));
+        addGwtDictionaryMessage("fm_repository_siteRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"));
+        addGwtDictionaryMessage("fm_repository_globalRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"));
+        addGwtDictionaryMessage("fm_repository_categoryRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"));
+        addGwtDictionaryMessage("fm_repository_tagRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.tagRepository.label"));
 
         addGwtDictionaryMessage("fm_portlet_ready", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.portletReady.label"));
         addGwtDictionaryMessage("fm_portlet_deploy", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.deployNewComponents.label"));
@@ -558,6 +569,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     /**
      * Add mandatory messages
+     *
      * @param jData
      */
     private void addMandatoryGwtMessages(JahiaData jData) {
@@ -566,7 +578,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.alert", jData.getProcessingContext().getLocale()));
         addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.warning", jData.getProcessingContext().getLocale()));
         addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.all", jData.getProcessingContext().getLocale()));
-        String copyright = Jahia.COPYRIGHT_TXT + " "+ Jahia.VERSION+Jahia.getPatchNumber()+ " r"+Jahia.getBuildNumber();
+        String copyright = Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber();
         addGwtDictionaryMessage("fm_copyright", copyright);
 
     }

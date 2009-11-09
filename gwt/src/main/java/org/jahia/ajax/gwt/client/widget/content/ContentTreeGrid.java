@@ -40,7 +40,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -51,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -64,7 +62,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 import java.util.ArrayList;
@@ -81,7 +78,7 @@ public class ContentTreeGrid extends ContentPanel {
     protected TreeLoader<GWTJahiaNode> loader;
     protected TreeGrid<GWTJahiaNode> m_treeGrid;
     protected TreeTableStore<GWTJahiaNode> store;
-    private String rootPath;
+    private String repoType;
     private boolean multiple;
 
     protected boolean init = true;
@@ -92,13 +89,13 @@ public class ContentTreeGrid extends ContentPanel {
     /**
      * Content tree table
      *
-     * @param rootPath
+     * @param repoType
      * @param selectedNodes
      * @param multiple
      * @param configuration
      */
-    public ContentTreeGrid(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
-        this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
+    public ContentTreeGrid(String repoType, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
+        this.repoType = repoType != null && repoType.length() > 0 ? repoType : null;
         this.multiple = multiple;
         this.configuration = configuration;
 
@@ -139,8 +136,8 @@ public class ContentTreeGrid extends ContentPanel {
             @Override
             protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
-                    if (rootPath != null) {
-                        service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
+                    if (repoType != null) {
+                        service.getRoot(repoType, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
                     } else {
                         service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
                     }
@@ -351,7 +348,6 @@ public class ContentTreeGrid extends ContentPanel {
     }
 
 
-
     /**
      * This class extends the standard load listener to allow automated child selection once the children are retrieved.
      */
@@ -372,8 +368,8 @@ public class ContentTreeGrid extends ContentPanel {
         }
     }
 
-    protected String getRootPath() {
-        return rootPath;
+    protected String getRepoType() {
+        return repoType;
     }
 
 

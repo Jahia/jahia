@@ -155,6 +155,11 @@ public class ManagerConfigurationFactory {
         filePickerConfig.setEnableTextMenu(false);
         filePickerConfig.setToolbarGroup("file-picker");
         filePickerConfig.setHideLeftPanel(true);
+        filePickerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
+        filePickerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        filePickerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        filePickerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
+        filePickerConfig.addAccordion(JCRClientUtils.USERS_REPOSITORY);
         filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
         filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
@@ -164,7 +169,7 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getPagePickerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
-        // ToDO
+        filePickerConfig.addAccordion(JCRClientUtils.SITE_REPOSITORY);
         filePickerConfig.setToolbarGroup("file-picker");
         filePickerConfig.setHideLeftPanel(true);
         filePickerConfig.setNodeTypes(JCRClientUtils.PAGE_NODETYPES);
@@ -222,6 +227,9 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.addColumn("picker");
 
         mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        mashupPickerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        mashupPickerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
+        mashupPickerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
 
         // hide the left panel
         mashupPickerConfig.setHideLeftPanel(true);
@@ -299,6 +307,8 @@ public class ManagerConfigurationFactory {
 
         categoryPickerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         categoryPickerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+
+        categoryPickerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
 
         return categoryPickerConfig;
     }

@@ -56,11 +56,10 @@ public class ContentPickerBrowser extends TopRightComponent {
     private ManagerConfiguration config;
     private String pickerType;
     private ContentPanel m_component;
-    private ContentTreeGrid m_treeGrid;
+    private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
     private ThumbView m_thumbs;
     private SearchGrid m_search;
     private TabPanel tabs;
-    private TabItem treeTable;
     private TabItem search;
     private GWTJahiaNode lastSelection;
 
@@ -68,13 +67,18 @@ public class ContentPickerBrowser extends TopRightComponent {
         this.pickerType = pickerType;
         this.config = config;
 
-        m_treeGrid = new ContentTreeGrid(rootPath, selectedNodes, multiple, config) {
-            @Override
-            public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
-                super.onContentPicked(gwtJahiaNode);
-                pickContent(gwtJahiaNode);
-            }
-        };
+
+        for (String repoId : config.getAccordionPanels()) {
+            ContentTreeGrid treeGrid = new ContentTreeGrid(repoId, selectedNodes, multiple, config) {
+                @Override
+                public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
+                    super.onContentPicked(gwtJahiaNode);
+                    pickContent(gwtJahiaNode);
+                }
+            };
+            contentTreeGrids.add(treeGrid);
+        }
+
 
         m_search = new SearchGrid(config, multiple) {
             @Override
@@ -95,14 +99,18 @@ public class ContentPickerBrowser extends TopRightComponent {
         tabs.setHeight(400);
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
-        treeTable = new TabItem(Messages.getResource("fm_browse"));
-        treeTable.setBorders(false);
+
+        for (ContentTreeGrid treeGrid : contentTreeGrids) {
+            TabItem treeTable = new TabItem(Messages.getResource("fm_repository_" + treeGrid.getRepoType()));
+            treeTable.setBorders(false);
+            treeTable.setLayout(new FitLayout());
+            treeTable.add(treeGrid);
+            tabs.add(treeTable);
+        }
+
         search = new TabItem(Messages.getResource("fm_search"));
         search.setBorders(false);
 
-        treeTable.setLayout(new FitLayout());
-        treeTable.add(m_treeGrid);
-        tabs.add(treeTable);
 
         search.setLayout(new FitLayout());
         search.add(m_search.getComponent());
@@ -117,7 +125,7 @@ public class ContentPickerBrowser extends TopRightComponent {
      */
     public void handleNewSelection() {
         // TODo: getSelection should alwas return a list of GWTJahiaNode
-        m_treeGrid.handleNewLinkerSelection();
+        //m_treeGrid.handleNewLinkerSelection();
 
     }
 
@@ -153,7 +161,9 @@ public class ContentPickerBrowser extends TopRightComponent {
      */
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-        m_treeGrid.initWithLinker(linker);
+        for (ContentTreeGrid treeGrid : contentTreeGrids) {
+            treeGrid.initWithLinker(linker);
+        }
         m_search.initWithLinker(linker);
         m_thumbs.initWithLinker(linker);
     }
@@ -187,7 +197,9 @@ public class ContentPickerBrowser extends TopRightComponent {
      * Clear
      */
     public void clearTable() {
-        m_treeGrid.clearTable();
+        for (ContentTreeGrid treeGrid : contentTreeGrids) {
+            treeGrid.clearTable();
+        }
         m_search.clearTable();
     }
 
@@ -204,7 +216,9 @@ public class ContentPickerBrowser extends TopRightComponent {
      * Refresh
      */
     public void refresh() {
-        m_treeGrid.refresh();
+        for (ContentTreeGrid treeGrid : contentTreeGrids) {
+            treeGrid.refresh();
+        }
         m_search.refresh();
     }
 
@@ -223,7 +237,9 @@ public class ContentPickerBrowser extends TopRightComponent {
      * @param path
      */
     public void setSelectPathAfterDataUpdate(String path) {
-        m_treeGrid.setSelectPathAfterDataUpdate(path);
+        for (ContentTreeGrid treeGrid : contentTreeGrids) {
+            treeGrid.setSelectPathAfterDataUpdate(path);
+        }
     }
 
     /**

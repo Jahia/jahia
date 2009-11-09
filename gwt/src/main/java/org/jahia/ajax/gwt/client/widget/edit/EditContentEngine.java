@@ -235,7 +235,7 @@ public class EditContentEngine extends Window {
         buttonsPanel.add(buttonBar);
 
         // copyrigths
-        Text copyright = new Text(Messages.get("copyrigth","copyright"));
+        Text copyright = new Text(Messages.getResource("fm_copyright"));
         ButtonBar container = new ButtonBar();
         container.setAlignment(Style.HorizontalAlignment.CENTER);
         container.add(copyright);

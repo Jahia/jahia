@@ -567,7 +567,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.warning", jData.getProcessingContext().getLocale()));
         addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.all", jData.getProcessingContext().getLocale()));
         String copyright = Jahia.COPYRIGHT_TXT + " "+ Jahia.VERSION+Jahia.getPatchNumber()+ " r"+Jahia.getBuildNumber();
-        addGwtDictionaryMessage("copyright", copyright);
+        addGwtDictionaryMessage("fm_copyright", copyright);
 
     }
 

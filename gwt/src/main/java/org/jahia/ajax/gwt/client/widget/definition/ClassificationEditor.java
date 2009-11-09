@@ -328,6 +328,7 @@ public class ClassificationEditor extends LayoutContainer {
         action.setFixed(true);
         TreeGrid<GWTJahiaNode> catGrid = new TreeGrid<GWTJahiaNode>(catStore, new ColumnModel(Arrays.asList(
                 columnConfig, action)));
+        catGrid.setHeight(360);
         catGrid.setAutoExpandColumn("name");
         catGrid.getTreeView().setRowHeight(25);
         catGrid.getTreeView().setForceFit(true);
@@ -432,7 +433,7 @@ public class ClassificationEditor extends LayoutContainer {
 
         TreeGrid<GWTJahiaNode> tagGrid = new TreeGrid<GWTJahiaNode>(tagStore, new ColumnModel(Arrays.asList(
                 columnConfig, action)));
-        tagGrid.setHeight(200);
+        tagGrid.setHeight(360);
 
         tagGrid.setAutoExpandColumn("name");
         tagGrid.getTreeView().setRowHeight(25);

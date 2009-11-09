@@ -155,6 +155,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
             if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
                 if (nodes.peek().isWriteable()) {
+                    if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
+                        nodes.peek().addMixin("jmix:accessControlled");
+                    }
                     child = nodes.peek().addNode(decodedQName, pt);
 
                     addMixins(child, atts);
@@ -224,7 +227,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String attrName = ISO9075.decode(atts.getQName(i));
             String attrValue = atts.getValue(i);
 
-
             if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
                 // nodeType = attrValue; // ?
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
@@ -234,6 +236,14 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {
+                if ((attrName.equals(Constants.JCR_TITLE) || attrName
+                        .equals("jcr:description"))
+                        && !child.isNodeType(Constants.MIX_TITLE)) {
+                    child.addMixin(Constants.MIX_TITLE);
+                } else if (attrName.equals("j:defaultCategory")
+                        && !child.isNodeType(Constants.JAHIAMIX_CATEGORIZED)) {
+                    child.addMixin(Constants.JAHIAMIX_CATEGORIZED);                    
+                }
                 ExtendedPropertyDefinition propDef;
                 try {
                     if (lang != null && attrName.endsWith("_" + lang)) {

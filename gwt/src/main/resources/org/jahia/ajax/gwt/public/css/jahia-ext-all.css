@@ -876,7 +876,7 @@ textarea.x-form-field {
 	position: relative;
 }
 .ext-strict .x-form-text {
-    height:18px;
+    height:16px;
 }
 .ext-safari.ext-mac textarea.x-form-field {
     margin-bottom:-2px;  
@@ -4122,6 +4122,7 @@ a.x-menu-item {
 }
 .x-window-header-text {
     cursor:pointer;
+    margin-left:13px;
 }
 .x-window-tc {
 	background: transparent repeat-x 0 0;
@@ -5724,7 +5725,7 @@ ul.x-tab-strip-bottom{
     border-color:#99bbe8;
 }
 .x-form-field{
-    font:normal 12px tahoma, arial, helvetica, sans-serif;
+    font:normal 11px tahoma, arial, helvetica, sans-serif;
 }
 .x-form-text, textarea.x-form-field{
     background-color:#fff;
@@ -5783,9 +5784,10 @@ ul.x-tab-strip-bottom{
 	font:normal 12px tahoma, arial, helvetica, sans-serif;
 }
 .x-form-item label {
-    font:normal 12px tahoma, arial, helvetica, sans-serif;
-    font-weight:bold;
-    color:#15428B;
+    font:normal 11px tahoma, arial, helvetica, sans-serif;
+    color:#000000;
+    border:1px solid #dce9ed;
+    background-color:#f6f8fa;
 }
 .x-form-invalid-msg {
     color:#c0272b;
@@ -5805,7 +5807,7 @@ ul.x-tab-strip-bottom{
     background-image:url(../images/default/form/exclamation.gif);
 }
 .x-fieldset {
-    border-color:#b5b8c8;
+    border-color:#b7cbd8;
 }
 .x-fieldset legend {
     font:bold 12px tahoma, arial, helvetica, sans-serif;
@@ -6562,7 +6564,7 @@ a.x-menu-item {
 }
 .x-window-tl .x-window-header {
     color:#15428b;
-	font:bold 11px tahoma,arial,verdana,sans-serif;
+	font:bold 14px tahoma,arial,verdana,sans-serif;
 }
 .x-window-tc {
 	background-image: url(../images/default/window/top-bottom.png);

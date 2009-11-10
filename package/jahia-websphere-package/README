@@ -29,6 +29,9 @@ Quickstart :
           <jahia.deploy.websphere.server.installDir>/opt/IBM/WebSphere/AppServer/</jahia.deploy.websphere.server.installDir>
           <jahia.deploy.websphere.server.profileDir>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/</jahia.deploy.websphere.server.profileDir>
           <jahia.deploy.websphere.server.name>server1</jahia.deploy.websphere.server.name>
+          <jahia.deploy.websphere.server.cell>localhostNode01Cell</jahia.deploy.websphere.server.cell>
+          <jahia.deploy.websphere.server.node>localhostNode01</jahia.deploy.websphere.server.node>
+          <jahia.deploy.websphere.server.authDataAlias>localhostNode01/Jahia DB Authentification</jahia.deploy.websphere.server.authDataAlias>
 
           <jahia.configure.websphere.database.url>jdbc:oracle:thin:@127.0.0.1:1521:test</jahia.configure.websphere.database.url>
           <jahia.configure.websphere.database.username>scott</jahia.configure.websphere.database.username>

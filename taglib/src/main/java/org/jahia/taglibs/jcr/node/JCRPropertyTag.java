@@ -88,7 +88,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                 }
             }
         } catch (PathNotFoundException e) {
-            logger.warn("Property : "+name+" not found in node "+node.getPath());
+            logger.debug("Property : "+name+" not found in node "+node.getPath());
         } catch (ConstraintViolationException e) {
             logger.warn("Property : "+name+" not defined in node "+node.getPath());
         } catch (RepositoryException e) {

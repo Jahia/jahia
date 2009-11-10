@@ -2701,6 +2701,13 @@ body {
     border-bottom: none;
 }
 
+#bodywrapper .resultsList h5 {
+    margin: 0;
+    padding: 0;
+    font-size: 0.9em;
+    border-bottom: none;
+}
+
 #bodywrapper .resultsList .resultslistDesc {
 
 }

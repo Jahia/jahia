@@ -10,18 +10,15 @@
 
     <div class="peopleBody">
 
-<table>
-    <thead><td> </td><td>First Name</td><td>Last Name</td><td>Function (BU)</td><td>Email</td></thead>
+<table width="100%" border="1">
+    <thead style="font-weight:bold; font-color:#333333"><td> </td><td>First Name</td><td>Last Name</td><td>Function (BU)</td><td>Email</td></thead>
 
     <tr>
 <c:forEach items="${currentNode.editableChildren}" var="subchild">
-<p>
     <template:module node="${subchild}" template="${subNodesTemplate}" />
-</p>
 </c:forEach>
 
 </table>
-
 
                 <div class="clear"></div>
     </div>

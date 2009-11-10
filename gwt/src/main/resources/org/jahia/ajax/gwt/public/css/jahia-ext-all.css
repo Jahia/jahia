@@ -1272,7 +1272,7 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
 
 .x-form-label {
   padding: 2px 3px 3px 0px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .x-form-label-top .x-form-item {
@@ -5728,7 +5728,6 @@ ul.x-tab-strip-bottom{
 }
 .x-form-text, textarea.x-form-field{
     background-color:#fff;
-    background-image:url(../images/default/form/text-bg.gif);
     border-color:#b5b8c8;
 }
 .x-form-select-one {
@@ -5785,6 +5784,8 @@ ul.x-tab-strip-bottom{
 }
 .x-form-item label {
     font:normal 12px tahoma, arial, helvetica, sans-serif;
+    font-weight:bold;
+    color:#15428B;
 }
 .x-form-invalid-msg {
     color:#c0272b;
@@ -5798,7 +5799,7 @@ ul.x-tab-strip-bottom{
     font:normal 11px arial, tahoma, helvetica, sans-serif;
 }
 .ext-safari .x-small-editor .x-form-field {
-    font:normal 12px arial, tahoma, helvetica, sans-serif;
+    font:normal 11px arial, tahoma, helvetica, sans-serif;
 }
 .x-form-invalid-icon {
     background-image:url(../images/default/form/exclamation.gif);
@@ -5807,7 +5808,7 @@ ul.x-tab-strip-bottom{
     border-color:#b5b8c8;
 }
 .x-fieldset legend {
-    font:bold 11px tahoma, arial, helvetica, sans-serif;
+    font:bold 12px tahoma, arial, helvetica, sans-serif;
     color:#15428b;
 }
 

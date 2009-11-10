@@ -173,7 +173,7 @@
                                                  trust="true" failonerror="true"/>
                                         <sshexec host="${serverHost}" username="${serverUser}"
                                                  password="${serverPassword}"
-                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminControl.invoke(AdminControl.queryNames('cell=localhostNode01Cell,node=localhostNode01,type=ApplicationManager,process=server1,*'), 'startApplication', 'jahia')&quot;"
+                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminControl.invoke(AdminControl.queryNames('cell=${jahia.deploy.websphere.server.cell},node=${jahia.deploy.websphere.server.node},type=ApplicationManager,process=${jahia.deploy.websphere.server.name},*'), 'startApplication', 'jahia')&quot;"
                                                  trust="true" failonerror="true"/>
 
                                         <mkdir dir="${project.build.directory}/deployment-logs/"/>

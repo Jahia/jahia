@@ -80,7 +80,7 @@
                         <template:import>
                             <topMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
                                     jcr:primaryType='jnt:navBar' j:maxDepth='1' j:nodename='jnt_navBar' j:startLevel='1' jcr:mixinTypes='jmix:renderable'
-                                    j:template='dropDown' j:expandOnlyPageInPath="false"/>
+                                    j:template='dropDown'/>
                         </template:import>
                     </template:module>
                     <div class="clear"></div>

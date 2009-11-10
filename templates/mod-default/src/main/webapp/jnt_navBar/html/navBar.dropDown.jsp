@@ -31,8 +31,8 @@
                         </ul>
                     </div>
                 </c:if>
+        	</li>
         </c:forEach>
-        </li>
         </ul>
 </c:if>
 </div>

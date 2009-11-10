@@ -32,15 +32,10 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -57,10 +52,9 @@ public class ContentPickerBrowser extends TopRightComponent {
     private String pickerType;
     private ContentPanel m_component;
     private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
-    private ThumbView m_thumbs;
     private SearchGrid m_search;
     private TabPanel tabs;
-    private TabItem search;
+    private TabItem searchTabItem;
     private GWTJahiaNode lastSelection;
 
     public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
@@ -88,7 +82,6 @@ public class ContentPickerBrowser extends TopRightComponent {
             }
         };
 
-        m_thumbs = new ThumbView(config);
         m_component = new ContentPanel(new FitLayout());
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
@@ -108,13 +101,13 @@ public class ContentPickerBrowser extends TopRightComponent {
             tabs.add(treeTable);
         }
 
-        search = new TabItem(Messages.getResource("fm_search"));
-        search.setBorders(false);
+        searchTabItem = new TabItem(Messages.getResource("fm_search"));
+        searchTabItem.setBorders(false);
 
 
-        search.setLayout(new FitLayout());
-        search.add(m_search.getComponent());
-        tabs.add(search);
+        searchTabItem.setLayout(new FitLayout());
+        searchTabItem.add(m_search);
+        tabs.add(searchTabItem);
 
         m_component.add(tabs);
     }
@@ -125,8 +118,6 @@ public class ContentPickerBrowser extends TopRightComponent {
      */
     public void handleNewSelection() {
         // TODo: getSelection should alwas return a list of GWTJahiaNode
-        //m_treeGrid.handleNewLinkerSelection();
-
     }
 
 
@@ -154,19 +145,6 @@ public class ContentPickerBrowser extends TopRightComponent {
         return l;
     }
 
-    /**
-     * init with linker
-     *
-     * @param linker the linker
-     */
-    public void initWithLinker(ManagerLinker linker) {
-        super.initWithLinker(linker);
-        for (ContentTreeGrid treeGrid : contentTreeGrids) {
-            treeGrid.initWithLinker(linker);
-        }
-        m_search.initWithLinker(linker);
-        m_thumbs.initWithLinker(linker);
-    }
 
     /**
      * init contextMenu
@@ -197,9 +175,7 @@ public class ContentPickerBrowser extends TopRightComponent {
      * Clear
      */
     public void clearTable() {
-        for (ContentTreeGrid treeGrid : contentTreeGrids) {
-            treeGrid.clearTable();
-        }
+
         m_search.clearTable();
     }
 
@@ -216,9 +192,6 @@ public class ContentPickerBrowser extends TopRightComponent {
      * Refresh
      */
     public void refresh() {
-        for (ContentTreeGrid treeGrid : contentTreeGrids) {
-            treeGrid.refresh();
-        }
         m_search.refresh();
     }
 
@@ -231,21 +204,11 @@ public class ContentPickerBrowser extends TopRightComponent {
         return m_component;
     }
 
-    /**
-     * Set selcetd path after data update
-     *
-     * @param path
-     */
-    public void setSelectPathAfterDataUpdate(String path) {
-        for (ContentTreeGrid treeGrid : contentTreeGrids) {
-            treeGrid.setSelectPathAfterDataUpdate(path);
-        }
-    }
 
     /**
      * Clear selection
      */
     public void clearSelection() {
-        //lastSelection = null;
+        lastSelection = null;
     }
 }

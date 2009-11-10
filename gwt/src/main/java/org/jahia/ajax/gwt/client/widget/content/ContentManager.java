@@ -33,8 +33,6 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
-import org.jahia.ajax.gwt.client.widget.content.ContentToolbar;
-import org.jahia.ajax.gwt.client.widget.content.ContentStatusBar;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import com.extjs.gxt.ui.client.widget.Component;

@@ -65,9 +65,9 @@ import java.util.Date;
  * User: rfelden
  * Date: 21 oct. 2008 - 16:53:43
  */
-public class SearchGrid extends TopRightComponent {
+public class SearchGrid extends ContentPanel {
 
-    private ContentPanel m_component;
+    //private ContentPanel m_component;
     private Grid<GWTJahiaNode> grid;
     private ListStore<GWTJahiaNode> store;
 
@@ -81,10 +81,9 @@ public class SearchGrid extends TopRightComponent {
 
     public SearchGrid(ManagerConfiguration config) {
         this.config = config;
-
-        m_component = new ContentPanel(new FitLayout());
-        m_component.setBorders(false);
-        m_component.setBodyBorder(false);
+        setLayout(new FitLayout());
+        setBorders(false);
+        setBodyBorder(false);
         SearchField searchField = new SearchField("Search: ", false) {
             public void onFieldValidation(String value) {
                 setSearchContent(value);
@@ -94,39 +93,30 @@ public class SearchGrid extends TopRightComponent {
                 // ... no save button
             }
         };
-        m_component.setHeaderVisible(false);
-        m_component.setTopComponent(searchField);
+        setHeaderVisible(false);
+        setTopComponent(searchField);
         store = new ListStore<GWTJahiaNode>();
         grid = new Grid<GWTJahiaNode>(store, getHeaders());
         grid.getView().setForceFit(true);
         grid.setBorders(false);
         grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        m_component.add(grid);
+        add(grid);
     }
 
     public void setSearchContent(String text) {
         clearTable();
         if (text != null && text.length() > 0) {
             final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-            if (getLinker() != null) {
-                getLinker().loading("searching content...");
-            }
+
             service.search(text, 0, config.getNodeTypes(), config.getMimeTypes(), config.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
                 public void onFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
+
                 }
 
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
                         setProcessedContent(gwtJahiaNodes);
-                    } else {
-
-                    }
-                    if (getLinker() != null) {
-                        getLinker().loaded();
                     }
                 }
             });
@@ -161,9 +151,6 @@ public class SearchGrid extends TopRightComponent {
         // nothing here
     }
 
-    public Component getComponent() {
-        return m_component;
-    }
 
     public void clearSelection() {
         grid.getSelectionModel().deselectAll();

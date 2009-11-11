@@ -336,8 +336,9 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String, ExtendedNodeDefinition> getChildNodeDefinitionsAsMap() {
         Map<String, ExtendedNodeDefinition> l = new ListOrderedMap();
-        for (int i = 0; i < getSupertypes().length; i++) {
-            ExtendedNodeType nodeType = getSupertypes()[i];
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            ExtendedNodeType nodeType = supertypes[i];
             Map<String, ExtendedNodeDefinition> c = nodeType.getDeclaredChildNodeDefinitionsAsMap();
             l.putAll(c);
         }

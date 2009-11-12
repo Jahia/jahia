@@ -107,12 +107,49 @@
     </dependencies>
     <build>
         <plugins>
+			<plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-site-plugin</artifactId>
+                <executions>
+					<execution>
+                    	<phase>generate-resources</phase>
+                        <goals>
+                        	<goal>site</goal>
+						</goals>
+                    </execution>
+                </executions>
+		    </plugin>
             <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
  need to force the version of the plugin to version 2.1-beta-1 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1-beta-1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>site/**</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+	                <archive>
+	                    <manifestEntries>
+	                    	<Implementation-Title>${project.name}</Implementation-Title>
+	                    	<Implementation-Version>${project.version}</Implementation-Version>
+	                    	<Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+	                    	<Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+	                    	<Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+	                    	<Specification-Title>${project.name}</Specification-Title>
+	                    	<Specification-Version>${project.version}</Specification-Version>
+	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+	                        <package-name>${project.name}</package-name>
+	                        <root-folder>test</root-folder>
+                            <depends>Default Jahia Templates</depends>	                        
+	                    </manifestEntries>
+	                </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

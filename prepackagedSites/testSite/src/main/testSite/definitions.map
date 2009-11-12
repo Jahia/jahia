@@ -1,0 +1,67 @@
+## Box
+
+jnt:box = #box
+*.boxTitle = mix:title.jcr:title
+*.skin = jmix:skinnable.j:skin
+
+## Main content
+
+jnt:mainContentContainer = jnt:mainContent
+jnt:mainContentContainer.mainContentBody = body
+jnt:mainContentContainer.mainContentAlign = align
+jnt:mainContentContainer.mainContentTitle = mix:title.jcr:title
+jnt:mainContentContainer.mainContentImage = image
+
+## Text container
+
+jnt:textContainer = jnt:bigText
+jnt:textContainer.bigText = jnt:bigText.text
+
+## File container
+
+jnt:fileContainer = jnt:nodeReference
+jnt:fileContainer.file = j:node
+jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+jnt:fileContainer.fileDisplayDetails.true = details
+jnt:fileContainer.fileDisplayDetails.false = link
+
+## Portlet containers
+
+jnt:portletContainer = jnt:nodeReference
+jnt:portletContainer.portlet = j:node
+
+## Page templates
+
+test_templates:generic = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:login = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:dateutil = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:boxtags = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:inherit = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:generic_full = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:displaytags = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:ContentFormHandler = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:home = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:allFieldsTest = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:allFieldsTwiceTest = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:allSelectorsTest = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:mixinTypesTest = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:contType = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:usingBoxes = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:displayingLanguageSwitchingLinks = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:multilingualSearch = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:customIndexOptions = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:opensearch = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:validation = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:extensions = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:addressing = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:expressions = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:querytags = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:rules = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:form = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:cache = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:tagcache = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:samelistviews = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:render = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:newsletterIssuePage = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:newsletter = jnt:page, setProperty jmix:renderable.j:template=tckbase
+test_templates:newsletterSubscription = jnt:page, setProperty jmix:renderable.j:template=tckbase

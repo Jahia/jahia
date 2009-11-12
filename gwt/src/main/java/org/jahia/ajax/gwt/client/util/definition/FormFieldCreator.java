@@ -132,6 +132,8 @@ public class FormFieldCreator {
                 break;*/
                 case GWTJahiaNodeSelectorType.CHECKBOX:
                     field = new CheckBox();
+                    // hack to align check box to rigth
+                    ((CheckBox)field).setBoxLabel("");
                     break;
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;

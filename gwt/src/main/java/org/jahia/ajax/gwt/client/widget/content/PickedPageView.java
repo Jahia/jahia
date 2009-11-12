@@ -17,8 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.allen_sauer.gwt.log.client.Log;
@@ -73,6 +72,10 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
     private GWTJahiaNode selectedContent = null;
+    private static final boolean EXTERNAL_VALUE = true;
+    private static final boolean INTERNAL_VALUE = false;
+    private boolean isInternal = true;
+
 
     public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
 
@@ -100,17 +103,21 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         pageLinkForm.setHeaderVisible(false);
         pageLinkForm.setScrollMode(Style.Scroll.AUTO);
         pageLinkForm.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        Radio external = new Radio();
+        Radio internal = new Radio();
 
         if (externalAllowed && internalAllowed) {
-            Radio external = new Radio();
             external.setName("external");
             external.setBoxLabel(Messages.get("cm_external_link", "external link"));
-            external.setValue(true);
-
-            Radio internal = new Radio();
+            external.addListener(Events.Change, new Listener<FieldEvent>() {
+                public void handleEvent(FieldEvent fieldEvent) {
+                    isInternal = !isInternal;
+                }
+            });
 
             internal.setName("internal");
             internal.setBoxLabel(Messages.get("cm_internal_link", "internal link"));
+            internal.setValue(INTERNAL_VALUE);
 
             pageTypeGroup.setFieldLabel(Messages.get("cm_page_type", "Page type"));
             pageTypeGroup.add(external);
@@ -142,10 +149,12 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         ListStore<TargetModelData> store = new ListStore<TargetModelData>();
         TargetModelData modelData = new TargetModelData();
         modelData.setTarget(Messages.get("cm_new_window", "New window"));
+        modelData.setTarget(Messages.get("cm_new_window", "_blank"));
         store.add(modelData);
 
         modelData = new TargetModelData();
         modelData.setTarget(Messages.get("cm_same_window", "Same window"));
+        modelData.setTarget(Messages.get("cm_new_window", "_self"));
         store.add(modelData);
 
         target = new ComboBox<TargetModelData>();
@@ -167,13 +176,15 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
             GWTJahiaNode node = (GWTJahiaNode) selectedContent.get("j:node");
             if (node != null) {
                 link.setValue(node.getName());
-                alt.setValue(node.getName());
                 url.setValue(node.getUrl());
+                pageTypeGroup.setValue(internal);
             } else {
                 link.setValue((String) selectedContent.get("jcr:title"));
-                alt.setValue((String) selectedContent.get("j:alt"));
                 url.setValue((String) selectedContent.get("j:url"));
+                pageTypeGroup.setValue(external);
             }
+            alt.setValue((String) selectedContent.get("j:alt"));
+
         }
         m_component.add(pageLinkForm);
         LayoutContainer right = new LayoutContainer();
@@ -204,29 +215,26 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
             clear();
         }
 
-        if (pageTypeGroup != null && pageTypeGroup.getValue().getName().equalsIgnoreCase("external")) {
-            selectedContent = new GWTJahiaNode();
-            selectedContent.set("linkType", "external");
-        } else {
-            List<GWTJahiaNode> list = (List<GWTJahiaNode>) root;
-            if (list != null && list.size() > 0) {
-                GWTJahiaNode node = list.get(0);
-                link.setValue(node.getName());
-                alt.setValue(node.getName());
-                url.setValue(node.getUrl());
 
-                selectedContent = new GWTJahiaNode();
-                selectedContent.set("j:node", node);
-                selectedContent.set("linkType", "internal");
-            }
+        List<GWTJahiaNode> list = (List<GWTJahiaNode>) root;
+        if (list != null && list.size() > 0) {
+            GWTJahiaNode node = list.get(0);
+            link.setValue(node.getName());
+            alt.setValue(node.getName());
+            url.setValue(node.getUrl());
+
+            selectedContent = new GWTJahiaNode();
+            selectedContent.set("j:node", node);
+            selectedContent.set("linkType", "internal");
         }
+
 
         // add extra parameter
         if (selectedContent != null) {
             selectedContent.set("jcr:title", link.getValue());
             selectedContent.set("j:url", url.getValue());
             selectedContent.set("j:alt", alt.getValue());
-            selectedContent.remove("clear");            
+            selectedContent.remove("clear");
         }
     }
 
@@ -246,14 +254,41 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         public void setTarget(String target) {
             set("target", target);
         }
+
+        public String getValue() {
+            return get("value");
+        }
+
+        public void setValue(String target) {
+            set("value", target);
+        }
     }
 
     public List<GWTJahiaNode> getSelectedContent() {
-        if (selectedContent == null) {
+        // case of external link
+        if (isExternalLink()) {
+            selectedContent = new GWTJahiaNode();
+            selectedContent.set("linkType", "external");
+            selectedContent.set("jcr:title", link.getValue());
+            selectedContent.set("j:url", url.getValue());
+            selectedContent.set("j:alt", alt.getValue());
+            selectedContent.remove("clear");
+        }
+        // case of internal link
+        else if (selectedContent == null) {
             return null;
         }
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
         l.add(selectedContent);
         return l;
+    }
+
+    /**
+     * Return tru if it's an internal link
+     *
+     * @return
+     */
+    private boolean isExternalLink() {
+        return !isInternal;
     }
 }

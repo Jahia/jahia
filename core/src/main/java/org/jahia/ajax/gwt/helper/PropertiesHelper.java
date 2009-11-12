@@ -155,24 +155,24 @@ public class PropertiesHelper {
                     } else if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
                         linkNode.set("linkType", "external");
                     } else if (node.isNodeType(Constants.JAHIANT_DIRECT_PAGE_LINK)) {
-                        linkNode.set("linkType", "direct");
+                        linkNode.set("linkType", "internal");
                     }
 
                     // url
                     if (node.hasProperty(Constants.URL)) {
-                        String linkUrl = node.getProperty(Constants.URL).getValue().toString();
+                        String linkUrl = node.getProperty(Constants.URL).getValue().getString();
                         linkNode.set(Constants.URL, linkUrl);
                     }
 
                     // title
                     if (node.hasProperty(Constants.JCR_TITLE)) {
-                        String linkTitle = node.getProperty(Constants.JCR_TITLE).getValue().toString();
+                        String linkTitle = node.getProperty(Constants.JCR_TITLE).getValue().getString();
                         linkNode.set(Constants.JCR_TITLE, linkTitle);
                     }
 
                     // alt
                     if (node.hasProperty(Constants.ALT)) {
-                        String alt = node.getProperty(Constants.ALT).getValue().toString();
+                        String alt = node.getProperty(Constants.ALT).getValue().getString();
                         linkNode.set(Constants.ALT, alt);
                     }
 

@@ -323,6 +323,8 @@
 //---------------------------------------------------------
 
 [jmix:link] mixin
+- j:alt (string)
+- j:target (string, choicelist) < '_blank','_self'
 
 [jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:node (weakreference)

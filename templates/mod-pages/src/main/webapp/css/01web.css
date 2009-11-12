@@ -90,7 +90,7 @@ body {
 	border-bottom:1px solid #e7e2de;
 	padding-top:10px;
 	position:relative;
-	z-index:900;
+	z-index:90;
 	width:100%
 	
 }
@@ -101,7 +101,7 @@ body {
 	background:#dad0c7 url(../img/bottomheader-bg.png) repeat-x bottom left;
 	padding-top:10px;
 	position:relative;
-	z-index:800;
+	z-index:80;
 	width:100%
 }
 #bodywrapper #bottomheader a,
@@ -137,7 +137,7 @@ body {
 	padding-left: 10px;
 	margin-right: 15px;
 	position:relative;
-	z-index:898;
+	z-index:88;
 }
 #bodywrapper #bodywrapper #navigation #navbar ul.main-nav li ul li {
 	display: block;
@@ -158,7 +158,7 @@ body {
 	border-color: #df6b04;	
 	line-height: 36px;
 	position: relative; 
-	z-index:899;
+	z-index:89;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover a,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover a {
@@ -190,7 +190,7 @@ body {
 	top: 36px;
 	border: 1px solid #CECECE;
 	position: absolute;
-	z-index:999;
+	z-index:99;
 }
 
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul {
@@ -287,7 +287,7 @@ body {
 	background-color:#eaeaea;
 	padding-top:10px;
 	position:relative;
-	z-index:700;
+	z-index:70;
 	width:100%
 }
 /******************************************************************************
@@ -297,7 +297,7 @@ body {
 	border-top:1px solid #b9a99b;
 	background-color:#dad0c7;
 	position:relative;
-	z-index:600;
+	z-index:60;
 	width:100%;
 	padding-top:10px;
 }
@@ -308,7 +308,7 @@ body {
 	border-top:1px solid #666666;
 	background-color:#7b7b7b;
 	position:relative;
-	z-index:500;
+	z-index:50;
 	width:100%;
 	padding-top:10px;
 }

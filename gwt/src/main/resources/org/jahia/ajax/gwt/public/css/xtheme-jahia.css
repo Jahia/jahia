@@ -2,7 +2,7 @@
  * Ext JS Library 2.0.1
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
- * 
+ *
  * http://extjs.com/license
  */
 
@@ -61,7 +61,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
 }
 .x-panel-mc {
-    background:#FFFFFF;
+    background:#e1e9ee;
 }
 .x-panel-mc .x-panel-body {
     background:transparent;
@@ -361,7 +361,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 
 /* Borders go last for specificity */
 .x-panel-noborder .x-panel-body-noborder {
-    border-width:0;
+    border-width:1px;
 }
 
 .x-panel-noborder .x-panel-header-noborder {
@@ -637,7 +637,7 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
     cursor: pointer;
     background: transparent url(../images/xtheme-jahia-andromeda/default/grid/page-next.gif) no-repeat;
 }
-                                                         
+
 /*portlet*/
 .x-tool-portlet-view{background-position:0 -405px;}
 .x-tool-portlet-view-over{background-position:-15px -405px;}
@@ -662,3 +662,30 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
 
 .x-tool-portlet-maximize{background-position:0 -510px;}
 .x-tool-portlet-maximize-over{background-position:-15px -510px;}
+
+.x-window-header-text {
+    font-size:14px;
+	margin-left:12px;
+}
+.x-fieldset {
+    background-color:#ffffff;
+}
+.x-fieldset legend {
+    font-size:12px;
+}
+.x-form-item {
+    font-size:11px;
+}
+.x-form-text, textarea.x-form-field {
+	background-image:none;
+}
+.x-form-field:hover {
+border:1px solid #3680ba;
+}
+.x-panel-fbar {
+	padding-top:10px;
+	padding-bottom:5px;
+}
+.x-fieldset {
+margin:5px 10px;
+}

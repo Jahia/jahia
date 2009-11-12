@@ -79,7 +79,7 @@ public class ContentTypeWindow extends Window {
         } else {
             baseType = null;
         }
-        if (parentNode != null) {
+        if (parent != null) {
             this.parentNode = parent;
         } else {
             this.parentNode = linker.getMainNode();

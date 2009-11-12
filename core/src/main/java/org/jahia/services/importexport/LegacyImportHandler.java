@@ -253,6 +253,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private void createPage(String primaryType, String title, String template, String pageKey, String uuid) throws RepositoryException {
         JCRNodeWrapper subPage;
+        ExtendedNodeType t = registry.getNodeType(primaryType);
         if (uuidMapping.containsKey(uuid)) {
             subPage = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
@@ -282,9 +283,8 @@ public class LegacyImportHandler extends DefaultHandler {
             if (template != null && template.length() > 0) {
                 subPage.setProperty("j:template", template);
             }
+            autosetPropertiesForType(t, subPage);
         }
-
-        ExtendedNodeType t = registry.getNodeType(primaryType);
 
         currentCtx.push(new PageContext(subPage, t));
 
@@ -352,19 +352,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 currentCtx.peek().pushContainer(node, t);
 
-                Map<String, String> autoSet = mapping.getAutosetPropertiesForType(t);
-
-                for (Map.Entry<String, String> entry : autoSet.entrySet()) {
-                    String propertyName = entry.getKey();
-                    if (propertyName.contains(".")) {
-                        String mixinType = StringUtils.substringBefore(propertyName, ".");
-                        propertyName = StringUtils.substringAfter(propertyName, ".");
-                        if (!node.isNodeType(mixinType)) {
-                            node.addMixin(mixinType);
-                        }
-                    }
-                    node.setProperty(propertyName, entry.getValue());
-                }
+                autosetPropertiesForType(t, node);
             }
 
             if (currentCtx.peek().boxProperties.peek() != null) {
@@ -372,6 +360,22 @@ public class LegacyImportHandler extends DefaultHandler {
                     setPropertyField(getCurrentContentType().getName(),entry.getKey(), entry.getValue());
                 }
             }
+        }
+    }
+    
+    private void autosetPropertiesForType (ExtendedNodeType t, JCRNodeWrapper node) throws RepositoryException {
+        Map<String, String> autoSet = mapping.getAutosetPropertiesForType(t);
+
+        for (Map.Entry<String, String> entry : autoSet.entrySet()) {
+            String propertyName = entry.getKey();
+            if (propertyName.contains(".")) {
+                String mixinType = StringUtils.substringBefore(propertyName, ".");
+                propertyName = StringUtils.substringAfter(propertyName, ".");
+                if (!node.isNodeType(mixinType)) {
+                    node.addMixin(mixinType);
+                }
+            }
+            node.setProperty(propertyName, entry.getValue());
         }
     }
 

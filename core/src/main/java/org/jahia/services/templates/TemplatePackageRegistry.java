@@ -152,6 +152,9 @@ class TemplatePackageRegistry {
         registry.put(templatePackage.getName(), templatePackage);
         fileNameRegistry.put(templatePackage.getFileName(), templatePackage);
         File rootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), templatePackage.getRootFolder());
+        if (!rootFolder.exists()) {
+            rootFolder = new File(templatePackage.getFilePath());
+        }
 
         templatePackage.getLookupPath().add(templatePackage.getRootFolderPath());
 

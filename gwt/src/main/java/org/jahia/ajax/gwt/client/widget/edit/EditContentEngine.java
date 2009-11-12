@@ -508,28 +508,27 @@ public class EditContentEngine extends Window {
                     fillCurrentTab();
                     ok.setEnabled(true);
                     //restore.setEnabled(true);
+                } else {
+                    contentService.getProperties(node.getReferencedNode().getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                        public void onFailure(Throwable throwable) {
+                            Log.debug("Cannot get properties", throwable);
+                        }
+                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                            referencedNode = result.getNode();
+                            referencedNodeTypes = result.getNodeTypes();
+                            referencedProps = result.getProperties();
+
+                            if (node != null) {
+                                fillCurrentTab();
+                                ok.setEnabled(true);
+                                //restore.setEnabled(true);
+                            }
+                        }
+                    });
                 }
             }
         });
 
-        if (isReference) {
-            contentService.getProperties(node.getReferencedNode().getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                public void onFailure(Throwable throwable) {
-                    Log.debug("Cannot get properties", throwable);
-                }
-                public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                    referencedNode = result.getNode();
-                    referencedNodeTypes = result.getNodeTypes();
-                    referencedProps = result.getProperties();
-
-                    if (node != null) {
-                        fillCurrentTab();
-                        ok.setEnabled(true);
-                        //restore.setEnabled(true);
-                    }
-                }
-            });
-        } 
     }
 
     /**

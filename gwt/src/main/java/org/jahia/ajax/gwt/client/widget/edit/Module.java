@@ -16,6 +16,14 @@ public interface Module {
 
     LayoutContainer getContainer();
 
+    int getDepth();
+
+    void setDepth(int depth);
+
+    void setSelectable(boolean selectable);
+
+    boolean isSelectable();
+
     String getModuleId();
 
     String getPath();

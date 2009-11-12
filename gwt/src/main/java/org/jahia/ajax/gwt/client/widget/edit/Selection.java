@@ -26,8 +26,6 @@ public class Selection extends LayoutContainer {
     private BoxComponent bottom;
     private BoxComponent left;
     private BoxComponent right;
-//    private LayoutContainer bg;
-
 
     public static Selection getInstance() {
         if (instance == null) {
@@ -45,27 +43,6 @@ public class Selection extends LayoutContainer {
         bottom = new LayoutContainer();
         left = new LayoutContainer();
         right = new LayoutContainer();
-//        bg = new LayoutContainer();
-
-        top.setBorders(true);
-        top.setStyleAttribute("border-width", "2px");
-        top.setStyleAttribute("border", "2px dashed");
-
-        bottom.setBorders(true);
-        bottom.setStyleAttribute("border-width", "2px");
-        bottom.setStyleAttribute("border", "2px dashed");
-
-        left.setBorders(true);
-        left.setStyleAttribute("border-width", "2px");
-        left.setStyleAttribute("border", "2px dashed");
-
-        right.setBorders(true);
-        right.setStyleAttribute("border-width", "2px");
-        right.setStyleAttribute("border", "2px dashed");
-
-//        bg.setStyleAttribute("background-color", "yellow");
-//        bg.setStyleAttribute("z-index", "-10");
-//        bg.add(new HTML("************"));
     }
 
     public void setMainModule(MainModule m) {
@@ -80,8 +57,28 @@ public class Selection extends LayoutContainer {
         });
     }
 
-    public void setCurrentContainer(final LayoutContainer currentContainer) {
-        this.currentContainer = currentContainer;
+    public void select(Module module) {
+        this.currentContainer = module.getContainer();
+//        top.setBorders(true);
+//        bottom.setBorders(true);
+//        left.setBorders(true);
+//        right.setBorders(true);
+        if (module instanceof ListModule) {
+            top.setStyleAttribute("border-top", "1px solid rgb(12, 150, 243)");
+            bottom.setStyleAttribute("border-bottom", "1px solid rgb(12, 150, 243)");
+            left.setStyleAttribute("border-left", "1px solid rgb(12, 150, 243)");
+            right.setStyleAttribute("border-right", "1px solid rgb(12, 150, 243)");
+        } else {
+            top.setStyleAttribute("border-top", "1px solid red");
+            bottom.setStyleAttribute("border-bottom", "1px solid red");
+            left.setStyleAttribute("border-left", "1px solid red");
+            right.setStyleAttribute("border-right", "1px solid red");
+        }
+        top.setStyleAttribute("z-index", "995");
+        bottom.setStyleAttribute("z-index", "995");
+        left.setStyleAttribute("z-index", "995");
+        right.setStyleAttribute("z-index", "995");
+        show();
     }
 
     public void setPosition(int x,int y, int w, int h) {
@@ -93,9 +90,6 @@ public class Selection extends LayoutContainer {
         left.setSize(0,h);
         right.setPosition(x+w, y);
         right.setSize(0,h);
-//        bg.setPosition(x,y);
-//        bg.setSize(w,h);
-//        bg.setZIndex(-99);
     }
 
     private boolean hidden = true;
@@ -110,13 +104,11 @@ public class Selection extends LayoutContainer {
         RootPanel.get().add(bottom);
         RootPanel.get().add(left);
         RootPanel.get().add(right);
-//        RootPanel.get().add(bg);
 
         top.el().makePositionable(true);
         bottom.el().makePositionable(true);
         left.el().makePositionable(true);
         right.el().makePositionable(true);
-//        bg.el().makePositionable(true);
 
         onShow();
 
@@ -135,8 +127,6 @@ public class Selection extends LayoutContainer {
         RootPanel.get().remove(bottom);
         RootPanel.get().remove(left);
         RootPanel.get().remove(right);
-//        RootPanel.get().remove(bg);
-
       }
 
 }

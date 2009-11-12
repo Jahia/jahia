@@ -30,6 +30,7 @@ public class MainModule extends ContentPanel implements Module {
     private HTML html;
     private String path;
     private String template;
+    private boolean selectable;
 
     private EditLinker editLinker;
 
@@ -43,7 +44,7 @@ public class MainModule extends ContentPanel implements Module {
         this.path = path;
         this.template = template;
 
-        Selection.getInstance().setMainModule(this);
+        Hover.getInstance().setMainModule(this);
 
     }
 
@@ -72,7 +73,8 @@ public class MainModule extends ContentPanel implements Module {
                 int i = getVScrollPosition();
 
                 removeAll();
-
+                Selection.getInstance().hide();
+                Hover.getInstance().removeAll();
                 html = new HTML(result);
                 add(html);
 
@@ -120,6 +122,22 @@ public class MainModule extends ContentPanel implements Module {
         return this;
     }
 
+    public int getDepth() {
+        return 0;
+    }
+
+    public void setDepth(int depth) {
+    }   
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+
     public String getPath() {
         return path;
     }
@@ -151,7 +169,7 @@ public class MainModule extends ContentPanel implements Module {
         Selection l = Selection.getInstance();
         l.hide();
         if (selectedModule != null) {
-            l.setCurrentContainer(selectedModule.getContainer());
+            l.select(selectedModule);
             l.show();
         }
         l.layout();

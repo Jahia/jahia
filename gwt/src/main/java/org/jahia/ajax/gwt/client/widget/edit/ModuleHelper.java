@@ -159,6 +159,7 @@ public class ModuleHelper {
                     Module subModule = modulesById.get(id);
 
                     if (subModule != null) {
+                        subModule.setDepth(module.getDepth() + 1);
                         m.putAll(parse(subModule));                        
                         m.put(divElement, subModule);
                         divElement.setInnerHTML("");

@@ -8,7 +8,6 @@ import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -35,6 +34,8 @@ public class SimpleModule extends LayoutContainer implements Module {
     private MainModule mainModule;
     private String nodetypes;
     private boolean isDraggable=false;
+    private int depth;
+    private boolean selectable;
 
     public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodetypes, final MainModule mainModule) {
         this.id = id;
@@ -50,22 +51,38 @@ public class SimpleModule extends LayoutContainer implements Module {
     }
 
     public void onParsed() {
-            Log.debug("Add drag source for simple module "+path);
-            DragSource source = new SimpleModuleDragSource(this);
-            source.addDNDListener(mainModule.getEditLinker().getDndListener());
+        Log.debug("Add drag source for simple module "+path);
+        DragSource source = new SimpleModuleDragSource(this);
+        source.addDNDListener(mainModule.getEditLinker().getDndListener());
 
-            DropTarget target = new SimpleModuleDropTarget(this);
-            target.setAllowSelfAsSource(true);
-            target.addDNDListener(mainModule.getEditLinker().getDndListener());
-            sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
-            Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent ce) {
+        DropTarget target = new SimpleModuleDropTarget(this);
+        target.setAllowSelfAsSource(true);
+        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
+        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                if (selectable) {
                     Log.info("click" + path + " : " + scriptInfo);
                     mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                 }
-            };
-            addListener(Events.OnClick, listener);
-            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
+            }
+        };
+        addListener(Events.OnClick, listener);
+        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
+
+        Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                Hover.getInstance().addHover(SimpleModule.this);
+            }
+        };
+        Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                Hover.getInstance().removeHover(SimpleModule.this);
+            }
+        };
+
+        addListener(Events.OnMouseOver, hoverListener);
+        addListener(Events.OnMouseOut, outListener);
     }
 
     public String getModuleId() {
@@ -78,6 +95,22 @@ public class SimpleModule extends LayoutContainer implements Module {
 
     public LayoutContainer getContainer() {
         return this;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
     }
 
     public String getPath() {

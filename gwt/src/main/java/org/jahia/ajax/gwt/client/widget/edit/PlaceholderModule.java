@@ -22,6 +22,8 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     private Module parentModule;
     private MainModule mainModule;
     private String nodetypes;
+    private int depth;
+    private boolean selectable;
 
     public PlaceholderModule(String id, String path, String nodetypes, MainModule mainModule) {
         super(new FlowLayout());
@@ -62,6 +64,23 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     public LayoutContainer getContainer() {
         return this;
     }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
 
     public String getPath() {
         return path;

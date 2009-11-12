@@ -15,6 +15,9 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
     }
 
     public void handleEvent(ComponentEvent ce) {
+        if (!module.isSelectable()) {
+            return;
+        }
         if (module.getNode().isWriteable()) {
             new EditContentEngine(module.getNode(),editLinker).show();
         } else {

@@ -25,6 +25,8 @@ public class TextModule extends ContentPanel implements Module {
     private Module parentModule;
     private EditManager editManager;
     private HTML html;
+    private int depth;
+    private boolean selectable;
 
     public TextModule(String id, String path, String stringhtml, EditManager editManager) {
         super(new FlowLayout()) ;
@@ -64,6 +66,22 @@ public class TextModule extends ContentPanel implements Module {
 
     public LayoutContainer getContainer() {
         return this;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
     }
 
     public GWTJahiaNode getNode() {

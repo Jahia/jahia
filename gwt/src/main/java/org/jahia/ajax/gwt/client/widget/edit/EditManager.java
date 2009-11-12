@@ -27,10 +27,12 @@ public class EditManager extends ContentPanel {
         data.setCollapsible(true);
         data.setSplit(true);
         sidePanel = new SidePanel();
+        sidePanel.setStyleAttribute("z-index", "999");
         add(sidePanel, data);
 
         toolbar =  new ActionToolbarLayoutContainer("editmode");
         toolbar.init();
+        toolbar.setStyleAttribute("z-index", "999");
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.AUTO);

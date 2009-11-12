@@ -9,6 +9,37 @@
 /*fix jahia-gxt , with:5000px ---> with:100%*/
 ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
+/** styles added for list module in order to make them as nice as jahia6 **/
+
+.x-panel-listmodule {
+    border: 1px dashed rgb(183, 203, 216) !important;
+}
+
+.x-panel-listmodule:hover {
+    border: 1px dashed red !important;
+}
+
+.x-panel-header-listmodule {
+    background:transparent url(../images/jahiapanel.gif) repeat-x scroll left top !important;
+    color: rgb(64, 150, 238) !important;
+    font-size: 9px;
+    font-weight: normal;
+    border-bottom: 1px solid rgb(183, 203, 216);
+    border-right: 1px solid rgb(183, 203, 216);
+    height: 16px !important;
+    line-height:16px;
+	padding: 2px 2px 0 2px;
+	vertical-align: middle;
+}
+
+.x-panel-body-listmodule {
+    border-bottom-style: dashed !important;
+    border-left-style: dashed !important;
+    border-right-style: dashed !important;
+}
+
+/****************************************************************************/
+
 .x-panel {
     border-style: solid;
     border-color: #b7cbd8;

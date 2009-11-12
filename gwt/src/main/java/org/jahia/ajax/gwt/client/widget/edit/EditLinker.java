@@ -121,18 +121,25 @@ public class EditLinker implements Linker {
     }
 
     public void onModuleSelection(Module selection) {
-        selectedModule = selection;
-        if (selectedModule != null) {
-            selection.setDraggable(false);
-            if (previouslySelectedModule != null) {
-                final String path = previouslySelectedModule.getPath();
-                final String s = selectedModule.getPath();
-                if (!path.equals(s) && path.contains(s)) {
-                    previouslySelectedModule = null;
-                    return;
-                }
+        if (selection != null) {
+            if (!selection.isSelectable()) {
+                return;
             }
         }
+
+        selectedModule = selection;
+//        if (selectedModule != null) {
+//            selection.setDraggable(false);
+//            if (previouslySelectedModule != null) {
+//                final String path = previouslySelectedModule.getPath();
+//                final String s = selectedModule.getPath();
+//                if (!path.equals(s) && path.contains(s)) {
+//                    previouslySelectedModule = null;
+//                    return;
+//                }
+//            }
+//        }
+
         handleNewModuleSelection();
         if (selectedModule != null) {
             selectedModule.setDraggable(true);

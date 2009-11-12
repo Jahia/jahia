@@ -78,6 +78,7 @@
         <module>mod-topstories</module>
         <module>mod-contact</module>
         <module>mod-test</module>
+        <module>mod-pages</module>
     </modules>
 
 

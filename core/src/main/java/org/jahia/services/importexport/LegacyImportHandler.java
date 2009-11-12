@@ -169,10 +169,10 @@ public class LegacyImportHandler extends DefaultHandler {
                         }
                         if (itemDef != null) {
                             if (itemDef.isNode()) {
-                                currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
+                                currentCtx.peek().pushField(mapping.getMappedItem(getCurrentContentType().getName(), localName));
                             } else {
                                 if (setPropertyField(getCurrentContentType().getName(), localName, attributes.getValue("jahia:value"))) {
-                                    currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
+                                    currentCtx.peek().pushField(mapping.getMappedItem(getCurrentContentType().getName(), localName));
                                 } else {
                                     currentCtx.peek().pushSkip();
                                 }
@@ -190,7 +190,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else {
                         System.out.println("create box-field " + localName);
                         currentCtx.peek().boxProperties.peek().put(localName, attributes.getValue("jahia:value"));
-                        currentCtx.peek().pushField(mapping.getMappedField(getCurrentContentType().getName(), localName));
+                        currentCtx.peek().pushField(mapping.getMappedItem(getCurrentContentType().getName(), localName));
                     }
                     break;
                 case CTX_LIST:
@@ -281,9 +281,11 @@ public class LegacyImportHandler extends DefaultHandler {
             subPage = parent.addNode(pageKey, Constants.JAHIANT_PAGE);
             uuidMapping.put(uuid, subPage.getIdentifier());
             if (template != null && template.length() > 0) {
+                template = mapping.getMappedPropertyValue("jnt:page","jahia:template",template);
+                autosetProperties(mapping.getAutosetPropertiesForPropertyValue("jnt:page","jahia:template",template), subPage);
                 subPage.setProperty("j:template", template);
             }
-            autosetPropertiesForType(t, subPage);
+            autosetProperties(mapping.getAutosetPropertiesForType(t), subPage);
         }
 
         currentCtx.push(new PageContext(subPage, t));
@@ -297,7 +299,12 @@ public class LegacyImportHandler extends DefaultHandler {
 
 
     private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
-        String nodeName = mapping.getMappedList(getCurrentContentType(), listDefinition.getName());
+        String nodeName = mapping.getMappedItem(getCurrentContentType().getName(), listDefinition.getName());
+        String nodeType = Constants.JAHIANT_CONTENTLIST;
+        if (nodeName.indexOf(".") > 0) {
+            nodeType = StringUtils.substringBefore(nodeName, ".");
+            nodeName = StringUtils.substringAfter(nodeName, ".");
+        }
 //        if (nodeName.equals("merge")) {
 //            currentCtx.peek().pushMerge(listDefinition.getRequiredPrimaryTypes()[0]);
 //            return;
@@ -308,7 +315,14 @@ public class LegacyImportHandler extends DefaultHandler {
         if (parent.hasNode(nodeName)) {
             node = parent.getNode(nodeName);
         } else {
-            node = parent.addNode(nodeName, Constants.JAHIANT_CONTENTLIST);
+            ExtendedNodeType parentNodeType = parent.getPrimaryNodeType();
+            if (parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+                String[] strings = parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName).getRequiredPrimaryTypeNames();
+                node = parent.addNode(nodeName, strings[0]);
+            } else {
+                node = parent.addNode(nodeName, nodeType);
+            }
+            autosetProperties(mapping.getAutosetPropertiesForItem(getCurrentContentType().getName(), listDefinition.getName()), node);
             uuidMapping.put(uuid, node.getIdentifier());
         }
         ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
@@ -352,7 +366,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 currentCtx.peek().pushContainer(node, t);
 
-                autosetPropertiesForType(t, node);
+                autosetProperties(mapping.getAutosetPropertiesForType(t), node);
             }
 
             if (currentCtx.peek().boxProperties.peek() != null) {
@@ -363,9 +377,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
     
-    private void autosetPropertiesForType (ExtendedNodeType t, JCRNodeWrapper node) throws RepositoryException {
-        Map<String, String> autoSet = mapping.getAutosetPropertiesForType(t);
-
+    private void autosetProperties(Map<String, String> autoSet, JCRNodeWrapper node) throws RepositoryException {
         for (Map.Entry<String, String> entry : autoSet.entrySet()) {
             String propertyName = entry.getKey();
             if (propertyName.contains(".")) {
@@ -439,7 +451,7 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private boolean setPropertyField(String baseName, String localName, String value) throws RepositoryException {
-        String propertyName = mapping.getMappedField(baseName, localName);
+        String propertyName = mapping.getMappedItem(baseName, localName);
         JCRNodeWrapper node = getCurrentContentNode();
         if (propertyName.contains(".")) {
             String mixinType = StringUtils.substringBefore(propertyName, ".");

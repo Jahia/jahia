@@ -4,6 +4,15 @@ jnt:box = #box
 *.boxTitle = mix:title.jcr:title
 *.skin = jmix:skinnable.j:skin
 
+##
+#jnt:page.jahia:template.Home = default, setProperty jmix:gridPage.column=col1
+#jnt:page.jahia:template.simple = default, setProperty jmix:gridPage.column=col1
+
+## Menu
+jnt:navLink.navLink = navLink
+web_templates:home.navLink = jnt:navBar.topMenu, setProperty j:startLevel=0, setProperty j:maxDepth=1
+*.navLink = jnt:navBar.sideMenu, setProperty j:startLevel=2, setProperty j:maxDepth=3, setProperty jmix:renderable.j:template=sideMenu
+
 ## Main content
 
 jnt:mainContentContainer = jnt:mainContent
@@ -54,6 +63,7 @@ web_templates:eventContainer.eventsType.events.type.conference = conference
 ## Job module
 
 web_templates:jobContainer = jnt:job
+web_templates:jobContainer.country.Spain = ES
 
 ## Promo
 

@@ -13,10 +13,6 @@
 [jnt:fileList] > jnt:content, jmix:structuredContent
  - folder (weakreference, file[folder])
 
-[jnt:navLink] > jnt:content, mix:title
- page navLink primary
- - separator (string) i18n
-
 [jnt:image] > jnt:content, jmix:structuredContent
  - image (weakreference, file[mime='image/*']) i18n
 
@@ -85,6 +81,10 @@
 [jnt:navBar] > jnt:content, mix:title, jmix:interactiveContent
  - j:startLevel (long) = 1
  - j:maxDepth (long) = 3
+ + * (jnt:navLink)
+
+[jnt:navLink] > jnt:content, mix:title
+ page navLink primary
 
 [jnt:teaser] > jnt:content, mix:title, jmix:structuredContent
  - abstract (string, text[multiline])

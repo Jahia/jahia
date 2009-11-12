@@ -43,24 +43,88 @@ public class DefinitionsMapping {
         return properties;
     }
 
-    public String getMappedType(ExtendedNodeType type) {
+    private String[] getMappedTypeEntries(ExtendedNodeType type) {
         String key = type.getName();
         if (properties.containsKey(key)) {
-            return properties.getProperty(key).split(",")[0];
+            return properties.getProperty(key).split(",");
+        }
+        return null;
+    }
+
+    public String getMappedType(ExtendedNodeType type) {
+        String[] s = getMappedTypeEntries(type);
+        if (s != null) {
+            return s[0];
         }
         if (type.isNodeType("jnt:box")) {
             return "#box";
         }
-
-        return key;
+        return type.getName();
     }
 
-    public List<String> getMappedMixinTypes(ExtendedNodeType type) {
+    private String[] getMappedItemEntries(String baseName, String propertyName) {
+        String key = baseName + "." + propertyName;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key).split(",");
+        }
+        key = "*." + propertyName;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key).split(",");
+        }
+        return null;
+    }
+
+    public String getMappedItem(String baseName, String propertyName) {
+        String[] s = getMappedItemEntries(baseName, propertyName);
+        if (s != null) {
+            return s[0];
+        }
+
+        if (propertyName.endsWith("Title") || propertyName.equals(("title"))) {
+            return "mix:title.jcr:title";
+        }
+
+        return propertyName;
+    }
+
+    private String[] getMappedPropertyValueEntries(String baseName, String propertyName, String value) {
+        String key = baseName + "." + propertyName + "." + value;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key).split(",");
+        }
+        key = "*." + propertyName + "." + value;
+        if (properties.containsKey(key)) {
+            return properties.getProperty(key).split(",");
+        }
+        return null;
+    }
+
+    public String getMappedPropertyValue(String baseName, String propertyName, String value) {
+        String s[] = getMappedPropertyValueEntries(baseName, propertyName, value);
+        if (s != null) {
+            return s[0];
+        }
+
+        return value;
+    }
+
+
+    public List<String> getMappedMixinTypesForType(ExtendedNodeType type) {
+        return getMappedMixinTypes(getMappedTypeEntries(type));
+    }
+
+    public List<String> getMappedMixinTypesForItem(String baseName, String propertyName) {
+        return getMappedMixinTypes(getMappedItemEntries(baseName, propertyName));
+    }
+
+    public List<String> getMappedMixinTypesForPropertyValue(String baseName, String propertyName, String value) {
+        return getMappedMixinTypes(getMappedPropertyValueEntries(baseName, propertyName, value));
+    }
+
+    private List<String> getMappedMixinTypes(String[] s) {
         List<String> l = new ArrayList<String>();
 
-        String key = type.getName();
-        if (properties.containsKey(key)) {
-            String[] s = properties.getProperty(key).split(",");
+        if (s != null) {
             for (int i = 1; i < s.length; i++) {
                 String mix = s[i].trim();
                 if (mix.startsWith("addMixin")) {
@@ -71,12 +135,22 @@ public class DefinitionsMapping {
         return l;
     }
 
+
+
     public Map<String,String> getAutosetPropertiesForType(ExtendedNodeType type) {
+        return getAutosetProperties(getMappedTypeEntries(type));
+    }
+    public Map<String,String> getAutosetPropertiesForItem(String baseName, String propertyName) {
+        return getAutosetProperties(getMappedItemEntries(baseName, propertyName));
+    }
+    public Map<String,String> getAutosetPropertiesForPropertyValue(String baseName, String propertyName, String value) {
+        return getAutosetProperties(getMappedPropertyValueEntries(baseName, propertyName, value));
+    }
+
+    private Map<String,String> getAutosetProperties(String[] s) {
         Map<String,String> m  = new HashMap<String,String>();
 
-        String key = type.getName();
-        if (properties.containsKey(key)) {
-            String[] s = properties.getProperty(key).split(",");
+        if (s != null) {
             for (int i = 1; i < s.length; i++) {
                 String mix = s[i].trim();
                 if (mix.startsWith("setProperty")) {
@@ -89,43 +163,6 @@ public class DefinitionsMapping {
         return m;
     }
 
-    public String getMappedList(ExtendedNodeType parentType, String propertyName) {
-        String key = parentType.getName() + "." + propertyName;
-        if (properties.containsKey(key)) {
-            return properties.getProperty(key);
-        }
-
-        return propertyName;
-    }
-
-    public String getMappedPropertyValue(String baseName, String propertyName, String value) {
-        String key = baseName + "." + propertyName + "." + value;
-        if (properties.containsKey(key)) {
-            return properties.getProperty(key);
-        }
-        key = "*." + propertyName + "." + value;
-        if (properties.containsKey(key)) {
-            return properties.getProperty(key);
-        }
-
-        return value;
-    }
-
-    public String getMappedField(String baseName, String propertyName) {
-        String key = baseName + "." + propertyName;
-        if (properties.containsKey(key)) {
-            return properties.getProperty(key);
-        }
-        key = "*." + propertyName;
-        if (properties.containsKey(key)) {
-            return properties.getProperty(key);
-        }
-        if (propertyName.endsWith("Title") || propertyName.equals(("title"))) {
-            return "mix:title.jcr:title";
-        }
-
-        return propertyName;
-    }
 
     @Override
     public String toString() {

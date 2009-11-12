@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
-import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
+import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
@@ -605,7 +605,7 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new AddContentWizardWindow(linker, parent, nodeType).show();
+            new ContentTypeWindow(linker, parent, nodeType,false).show();
         }
     }
 

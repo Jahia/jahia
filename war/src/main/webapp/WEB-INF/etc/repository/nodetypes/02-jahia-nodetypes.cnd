@@ -390,8 +390,8 @@
 + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, jmix:interactiveContent, jmix:publication
- - j:application (string,portletdefinition) protected
- - j:applicationRef (reference) protected < jnt:portletDefinition
+ - j:application (string,portletdefinition) hidden
+ - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)
  - j:cacheScope (string, choicelist) < 'private','public'
  - j:expirationTime (long)

@@ -121,12 +121,15 @@
  date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa']) = eval(now+1000*60*60*24)
  date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
  
-[test_templates:fieldsWithIndexOptions] > jnt:container
+[test_templates:fieldsWithIndexOptions] > jnt:container, jmix:structuredContent
  date untokenizedDate indexed='untokenized' scoreboost=1 analyzer='keyword'
  date scoreboostedDate indexed='untokenized' scoreboost=6 analyzer='keyword'
  integer untokenizedLong indexed='untokenized' analyzer='keyword'
  sharedSmallText simpleSmallText analyzer='simple'
  sharedSmallText nonIndexedSmallText indexed='no'
+ sharedSmallText nofulltextSmallText nofulltext sortable
+ sharedSmallText scoreboostedSmallText scoreboost=5 sortable
+ float sortableFloat sortable
  
 [test_templates:multiSearchLangFields] > jnt:container
  sharedSmallText Title

@@ -782,6 +782,8 @@
                 <ref bean="org.jahia.toolbar.item.cut"/>
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.saveAsSchmurtz"/>
             </list>
         </property>
     </bean>
@@ -932,6 +934,7 @@
                 <ref bean="org.jahia.toolbar.item.cut"/>
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                <ref bean="org.jahia.toolbar.item.saveAsSchmurtz"/>
             </list>
         </property>
     </bean>
@@ -2255,7 +2258,6 @@
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>
 
-    <!-- TO DO: change icon-->
     <bean id="org.jahia.toolbar.item.newContentList" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
@@ -2265,7 +2267,6 @@
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContentList"/>
     </bean>
 
-    <!-- TO DO: add an actionItem-->
     <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem"/>
@@ -2383,6 +2384,15 @@
         <property name="mediumIconStyle" value="gwt-toolbar-icon-pasteref"/>
     </bean>
 
+    <bean id="org.jahia.toolbar.item.saveAsSchmurtz" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsSchmurtzActionItem"/>
+        </property>
+        <property name="titleKey" value="toolbar.manager.button.saveAsSchmurtz"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-saveAsSchmurtz"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsSchmurtz"/>
+    </bean>
+    
     <bean id="org.jahia.toolbar.item.preview" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PreviewActionItem"/>

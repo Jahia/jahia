@@ -357,7 +357,7 @@
 [jmix:listMixin] mixin
 
 //---------------------------------------------------------
-// Pages, content lists
+// Pages, content lists, schmurtzs
 //---------------------------------------------------------
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
@@ -369,6 +369,12 @@
  orderable
  + * (nt:base) version
 
+[jnt:schmurtz] > nt:base, jmix:collection, jmix:basemetadata
+ - j:name (string)
+ - j:description (string)
+ - j:picture (weakreference, file[mime='image/*'])
+ + * (nt:base) version
+ 
 //---------------------------------------------------------
 // Portlets
 //---------------------------------------------------------

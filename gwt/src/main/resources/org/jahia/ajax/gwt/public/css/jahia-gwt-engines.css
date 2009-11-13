@@ -315,6 +315,10 @@
     background-image: url( ../images/repository.png ) !important;
 }
 
+.gwt-toolbar-icon-saveAsSchmurtz {
+    background-image: url( ../images/disk_blue.png ) !important;
+}
+
 fm-globalMashupRepository {
     background-image: url( ../images/repository.png ) !important;
 }

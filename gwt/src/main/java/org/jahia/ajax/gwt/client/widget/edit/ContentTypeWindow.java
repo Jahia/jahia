@@ -33,18 +33,27 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -125,7 +134,31 @@ public class ContentTypeWindow extends Window {
         final ContentTypeModelData rootSchmurtzContent = new ContentTypeModelData("New Schmurtz Content");
         store.add(rootSchmurtzContent, false);
         ColumnConfig name = new ColumnConfig("label", "Label", 680);
-        name.setRenderer(new TreeGridCellRenderer());
+        name.setRenderer(new WidgetTreeGridCellRenderer() {
+            @Override
+            public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                    ListStore listStore, Grid grid) {
+                Label label = new Label((String) modelData.get(s));
+                ContentTypeModelData gwtJahiaNode = (ContentTypeModelData) modelData;
+                HorizontalPanel panel = new HorizontalPanel();
+                panel.setWidth(695);
+                panel.setTableWidth("100%");
+                TableData tableData;
+                if (gwtJahiaNode.getGwtJahiaNodeType()!=null) {
+                    tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
+                    tableData.setWidth("3%");
+                    panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNode.getGwtJahiaNodeType()).createImage());
+                    tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                    tableData.setWidth("97%");
+                    panel.add(label, tableData);
+                } else {
+                    tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                    tableData.setWidth("100%");
+                    panel.add(label, tableData);
+                }
+                return panel;
+            }
+        });
         name.setFixed(true);
         TreeGrid<ContentTypeModelData> treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(
                 Arrays.asList(name)));

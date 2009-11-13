@@ -314,4 +314,12 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public AbstractImagePrototype getPlusRound() {
         return CONTENT_ICONS.plusRound();
     }
+
+    public AbstractImagePrototype getFolderCloseIcon() {
+        return CONTENT_ICONS.folderClose();
+    }
+
+    public AbstractImagePrototype getFolderOpenIcon() {
+        return CONTENT_ICONS.folderOpen();
+    }
 }

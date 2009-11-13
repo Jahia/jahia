@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.Style;
@@ -61,7 +62,7 @@ import java.util.ArrayList; /**
  * Time: 7:11:56 PM
  */
 public class PickedPageView extends BottomRightComponent implements PickedContent {
-    private ContentPanel m_component;
+    private LayoutContainer m_component;
     private RadioGroup pageTypeGroup = new RadioGroup("pageType");
     private String defaultLinkType;
     private TextField<String> link = new TextField<String>();
@@ -72,16 +73,15 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
     private GWTJahiaNode selectedContent = null;
-    private static final boolean EXTERNAL_VALUE = true;
     private static final boolean INTERNAL_VALUE = false;
     private boolean isInternal = true;
 
 
     public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
 
-        m_component = new ContentPanel(new ColumnLayout());
-        m_component.setBodyBorder(false);
-        m_component.setHeaderVisible(false);
+        m_component = new LayoutContainer(new FitLayout());
+        //m_component.setBodyBorder(false);
+        //m_component.setHeaderVisible(false);
         m_component.setBorders(false);
 
         if (externalAllowed) {
@@ -95,6 +95,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
 
         // form panel
         FormPanel pageLinkForm = new FormPanel();
+        pageLinkForm.setPadding(5);
         pageLinkForm.setCollapsible(false);
         pageLinkForm.setFrame(false);
         pageLinkForm.setAnimCollapse(false);
@@ -103,6 +104,10 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         pageLinkForm.setHeaderVisible(false);
         pageLinkForm.setScrollMode(Style.Scroll.AUTO);
         pageLinkForm.setButtonAlign(Style.HorizontalAlignment.CENTER);
+
+        // filed set
+
+
         Radio external = new Radio();
         Radio internal = new Radio();
 
@@ -166,10 +171,26 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         if (pageTypeGroup != null) {
             pageLinkForm.add(pageTypeGroup);
         }
-        pageLinkForm.add(link);
-        pageLinkForm.add(alt);
-        pageLinkForm.add(url);
-        pageLinkForm.add(target);
+
+        FieldSet fieldSet = new FieldSet();
+        fieldSet.setStyleAttribute("padding", "0");
+        fieldSet.setBorders(false);
+        //fieldSet.setHeading(Messages.get("cm_link_properties", "Properties"));
+        fieldSet.setCollapsible(false);
+
+        FormPanel sub = new FormPanel();
+        sub.setBodyBorder(false);
+        sub.setBorders(false);
+        sub.setFieldWidth(500);
+        sub.setLabelWidth(140);
+        sub.setHeaderVisible(false);
+        sub.setFrame(false);
+        sub.add(link);
+        sub.add(alt);
+        sub.add(url);
+        sub.add(target);
+        fieldSet.add(sub);
+        pageLinkForm.add(fieldSet);
 
         if (selectedNodes != null && selectedNodes.size() > 0) {
             selectedContent = selectedNodes.get(0);

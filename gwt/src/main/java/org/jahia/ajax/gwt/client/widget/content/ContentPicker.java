@@ -95,7 +95,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
         // setup widgets in layout
 
         if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 375));
+            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
             initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, statusBar);
         } else {
             initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);

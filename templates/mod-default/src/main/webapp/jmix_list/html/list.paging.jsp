@@ -6,7 +6,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:remove var="currentList" scope="request"/>
-<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false"/>
+<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
+    <template:param name="forcedSkin" value="none" />
+</template:module>
+
 <c:if test="${empty editable}">
     <c:set var="editable" value="false"/>
 </c:if>
@@ -27,15 +30,10 @@
         <c:set var="end" value="${step - 1}"/>
     </c:if>
 
-Page :
-<%       // ugly scriptlet to remove
-            int pageSize = 2;
-            Collection c = (Collection)pageContext.findAttribute("currentList");
-            int nbPages = c.size() / pageSize;
-            for (int i = 0; i < nbPages; i++) {
-                %><a href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=<%=(i*pageSize)%>&end=<%=((i+1)*pageSize-1)%>')"> <%=(i+1)%></a>&nbsp;<%
-            }
-%>
+    <c:set var="nbPages" value="${currentList.size / 2}" />
+    <c:forEach begin="0" end="${nbPages}" var="i">
+        <a href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ i * 2 }&end=${ (i + 1)*2-1}')"> ${ i + 1}</a>&nbsp;
+    </c:forEach>
 
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
     <p>

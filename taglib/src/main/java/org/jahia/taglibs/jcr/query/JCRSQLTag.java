@@ -135,18 +135,6 @@ public class JCRSQLTag extends AbstractJahiaTag {
         return queryResult != null ? queryResult : new QueryResultAdapter();
     }
 
-    public int getScope() {
-        return scope;
-    }
-
-    public String getVar() {
-        return var;
-    }
-
-    public String getSql() {
-        return sql;
-    }
-
     @Override
     protected void resetState() {
         super.resetState();

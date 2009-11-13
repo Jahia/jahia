@@ -145,14 +145,6 @@ public class JQOMTag extends QueryDefinitionTag {
         return queryResult != null ? queryResult : new QueryResultAdapter();
     }
 
-    public int getScope() {
-        return scope;
-    }
-
-    public String getVar() {
-        return var;
-    }
-
     public String getQomBeanName() {
         return qomBeanName;
     }

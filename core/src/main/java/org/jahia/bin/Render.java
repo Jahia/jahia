@@ -435,6 +435,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 if (!"true".equals(req.getParameter("ajaxcall"))) {
                     resource.pushWrapper("wrapper.fullpage");
                     resource.pushWrapper("wrapper.bodywrapper");
+                } else {
+                    renderContext.getModuleParams().put("forcedRenderOptions", "none");
+                    renderContext.getModuleParams().put("forcedSkin", "none");
                 }
 
                 long lastModified = getLastModified(resource, renderContext);

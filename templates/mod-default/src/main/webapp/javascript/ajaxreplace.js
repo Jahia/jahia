@@ -8,7 +8,9 @@ function replace(id, url) {
     http.open("GET", url, true);
     http.onreadystatechange=function() {
         if(http.readyState == 4) {
-            document.getElementById(id).innerHTML = http.responseText;
+            result = http.responseText;
+            result = result.replace('<div id="' + id + '">', '<div id="replaced' + id + '">');
+            document.getElementById(id).innerHTML = result;
         }
     }
     http.send(null);

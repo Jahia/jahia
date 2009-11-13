@@ -8,6 +8,8 @@
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
         
-<jcr:sql var="currentList"
+<jcr:sql var="result"
          sql="select * from [jnt:news] as news  order by news.[date] desc"
-         limit="${maxNews.long}" />
+         limit="${maxNews.long}"   />
+<c:set var="currentList" value="${result.nodes}" scope="request" />
+<c:set var="editable" value="false" scope="request" />

@@ -5,7 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:remove var="currentList" scope="request"/>
-<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false" />
+<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false" >
+    <template:param name="forcedSkin" value="none" />
+</template:module>
+
 <c:if test="${empty editable}">
     <c:set var="editable" value="false"/>
 </c:if>

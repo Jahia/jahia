@@ -52,7 +52,6 @@
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
         </attribute>
     </tag>
     <tag>
@@ -128,7 +127,6 @@
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
         </attribute>
         <attribute>
             <description>the maximum size of the result set, expressed in terms of the number of Rows</description>
@@ -169,7 +167,6 @@
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
         </attribute>
     </tag>
     <tag>

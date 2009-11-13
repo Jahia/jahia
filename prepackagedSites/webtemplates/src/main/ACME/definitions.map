@@ -1,12 +1,10 @@
+### Standard mappings
+
 ## Box
 
 jnt:box = #box
 *.boxTitle = mix:title.jcr:title
 *.skin = jmix:skinnable.j:skin
-
-##
-#jnt:page.jahia:template.Home = default, setProperty jmix:gridPage.column=col1
-#jnt:page.jahia:template.simple = default, setProperty jmix:gridPage.column=col1
 
 ## Menu
 jnt:navLink.navLink = navLink
@@ -33,6 +31,15 @@ jnt:fileContainer.file = j:node
 jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
 jnt:fileContainer.fileDisplayDetails.true = details
 jnt:fileContainer.fileDisplayDetails.false = link
+
+## Portlet containers
+
+jnt:portletContainer = jnt:nodeReference
+jnt:portletContainer.portlet = j:node
+
+### Webtemplates mappings
+
+## File container
 
 web_templates:fileContainer = jnt:nodeReference
 web_templates:fileContainer.file = j:node
@@ -109,7 +116,3 @@ web_templates:footerContentContainer.footer = jnt:bigText.text
 
 web_templates:bottomLinksContainer = #skip
 
-## Portlet containers
-
-jnt:portletContainer = jnt:nodeReference
-jnt:portletContainer.portlet = j:node

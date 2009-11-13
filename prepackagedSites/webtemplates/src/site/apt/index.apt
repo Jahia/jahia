@@ -33,7 +33,7 @@ Jahia Migration - 6.0 to 6.5
     These files cannot be imported directly into Jahia 6.5 - original definitions and a mapping file must be added into
     the site exports first.
 
-    < todo : definitions.cnd will be directly inserted into the exports file for latest versions of jahia 6.0 >
+    < todo : definitions.cnd should be directly inserted into the exports file for latest versions of jahia 6.0 >
 
 ** Definitions
 
@@ -42,13 +42,15 @@ Jahia Migration - 6.0 to 6.5
   <definitions.cnd> file packaged with the templates, or inherit definitions from another packages. All definitions
   used in the site need to be aggregated into a single <definitions.cnd> file that will be added to the site export.
 
-  A simple definitions.cnd file for webtemplate can be found here : {{{definitions.cnd}definitions.cnd}}
+  A simple definitions.cnd file for webtemplate can be found in this package.
 
 ** Mapping
 
   The mapping file is a simple file that associates 6.0 to 6.5 definitions. Each line is a mapping rule, which can
   be viewed as two parts separated by the = (equals) sign. The left hand part is the original definition name - the
   right hand side describes what to do with these definitions.
+
+  The file is called definitions.map and is inserted into the site export zip, along with the definitions.cnd file.
 
   * Container definitions mapping
 
@@ -77,23 +79,150 @@ jnt:mainContentContainer.mainContentBody = body
 metadata.jahia:defaultCategory = jmix:categorized.j:defaultCategory
 ------------------------------------------------------
 
+  * Container list definitions mapping
+
+  A container list definition mapping is similar to a field mapping - it starts with the original declaring node type
+  name, followed by a . (dot) and the container list name. The list name should not contain the "List" suffix.
+
+  The container list will be mapped to a standard content list if no specific definition is present in the parent node
+  type, otherwise the nodetype will match the required type of the definition.
+
+  If no specific definition is present, it is still possible to specify a node type - in the right hand side you can
+  prefix the name of the required node type, followed by a dot. For example :
+
+------------------------------------------------------
+web_templates:home.navLink = jnt:navBar.topMenu
+------------------------------------------------------
+
+  will map the navLink list to a topMenu node of type jnt:navBar.
+
+
+  * Field value mapping
+
+  It is also possible to tranform field values during migration. It is especially useful when using constrained fields
+  ( like simple text coming from a drop down menu ). The rule starts like a field mapping rule, followed with a dot and
+  the field value to transform. For example the following rule will transform the "Spain" value from
+  web_templates:jobContainer.country to "ES" value :
+
+------------------------------------------------------
+web_templates:jobContainer.country.Spain = ES
+------------------------------------------------------
+
+  Combined the field mapping, it allows to do some complex stuff, like assigning a specific template to a node based on
+  a field value :
+  
+------------------------------------------------------
+web_templates:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+web_templates:fileContainer.fileDisplayDetails.true = details
+web_templates:fileContainer.fileDisplayDetails.false = link
+------------------------------------------------------
+
+  Here the value fileDisplayDetails, which was defining the way the file is rendered, is replaced by the template
+  property, and the values true and false are mapped to the template name to assign.
+
+  * 
+
+
   * Box mapping - merging containers lists
+
+  Jahia boxes are handled in a specific way - they were usually used to make heterogeneous containers list, containing
+  different types of boxes. The mechanism was to create typed sub-container lists, which is not needed anymore with the
+  new Jahia model. By default, these sub container lists are removed and elements are put and merged with the parent
+  box element.
+
+  For example, the following structure :
+
+-------------------------------------------------------
++boxList
+  +FilesBox
+    -titleA
+    -skinA
+    +Files
+      +fileContainer1
+       -refA
+      +fileContainer2
+       -refB
+  +TextsBox
+    -titleB
+    -skinB
+    +Texts
+      +textContainer1
+       -textA
+      +textContainer2
+       -textB
+-------------------------------------------------------
+
+  Will be mapped by default by :
+
+-------------------------------------------------------
++boxList
+  +fileContainer1
+    -titleA
+    -skinA
+    -refA
+  +fileContainer2
+    -titleA
+    -skinA
+    -refB
+  +textContainer1
+    -titleB
+    -skinB
+    -textA
+  +textContainer2
+    -titleB
+    -skinB
+    -textB
+-------------------------------------------------------
+
+
+  If a different behaviour is required for a specific box, the type can be mapped as any other standard type.
+
+
 
 
   []
 
 
 
-  All mappings provided in this example can be used for any export coming from a 6.0 site.
+  All mappings provided in this package can be used for any export coming from a 6.0 site.
 
-  Here is a simple example of mapping for the <mainContent> container :
+  Here is some standard mapping that can be used for any site using these standard types :
 
 ------------------------------------------------------
+## Box
+
+jnt:box = #box
+*.boxTitle = mix:title.jcr:title
+*.skin = jmix:skinnable.j:skin
+
+## Menu
+jnt:navLink.navLink = navLink
+web_templates:home.navLink = jnt:navBar.topMenu, setProperty j:startLevel=0, setProperty j:maxDepth=1
+*.navLink = jnt:navBar.sideMenu, setProperty j:startLevel=2, setProperty j:maxDepth=3, setProperty jmix:renderable.j:template=sideMenu
+
 ## Main content
 
 jnt:mainContentContainer = jnt:mainContent
 jnt:mainContentContainer.mainContentBody = body
 jnt:mainContentContainer.mainContentAlign = align
-jnt:mainContentContainer.mainContentTitle = jcr:title
+jnt:mainContentContainer.mainContentTitle = mix:title.jcr:title
 jnt:mainContentContainer.mainContentImage = image
+
+## Text container
+
+jnt:textContainer = jnt:bigText
+jnt:textContainer.bigText = jnt:bigText.text
+
+## File container
+
+jnt:fileContainer = jnt:nodeReference
+jnt:fileContainer.file = j:node
+jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+jnt:fileContainer.fileDisplayDetails.true = details
+jnt:fileContainer.fileDisplayDetails.false = link
+
+## Portlet containers
+
+jnt:portletContainer = jnt:nodeReference
+jnt:portletContainer.portlet = j:node
 ------------------------------------------------------

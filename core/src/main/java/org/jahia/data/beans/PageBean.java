@@ -31,6 +31,7 @@
  */
  package org.jahia.data.beans;
 
+import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
 import org.jahia.data.containers.JahiaContainerList;
@@ -42,21 +43,18 @@ import org.jahia.gui.HTMLToolBox;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.fields.JahiaFieldService;
+import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
-import org.jahia.services.pages.PageProperty;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.containers.JahiaContainersService;
-import org.jahia.services.importexport.ImportExportService;
 import org.jahia.utils.InsertionSortedMap;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 

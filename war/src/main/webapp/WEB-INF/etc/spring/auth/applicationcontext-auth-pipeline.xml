@@ -13,7 +13,6 @@
                 <bean class="org.jahia.params.valves.LoginEngineAuthValveImpl">
                 	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                 </bean>
-                <bean class="org.jahia.params.valves.UserAliasingEngineAuthValveImpl" />
                 <bean class="org.jahia.params.valves.SessionAuthValveImpl" />
                 <bean class="org.jahia.params.valves.CookieAuthValveImpl">
                 	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>

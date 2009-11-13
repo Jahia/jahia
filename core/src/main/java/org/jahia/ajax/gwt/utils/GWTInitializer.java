@@ -36,16 +36,12 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.exceptions.JahiaException;
-import org.apache.log4j.Logger;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -163,25 +159,6 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.USER_ALLOWED_TO_UNLOCK_FILES, Boolean
                 .toString(user != null && user.isRoot()));
 
-        AdvPreviewSettings advPreviewSettings = (AdvPreviewSettings) session.getAttribute(ParamBean.SESSION_ADV_PREVIEW_SETTINGS);
-        if (advPreviewSettings != null) {
-            params.put(JahiaGWTParameters.ENABLE_ADV_PREVIEW_SETTINGS, String.valueOf(advPreviewSettings.isEnabled()));
-            if (advPreviewSettings.getPreviewDate() != 0) {
-                params.put(JahiaGWTParameters.PREVIEW_DATE, String.valueOf(advPreviewSettings.getPreviewDate()));
-            }
-            user = advPreviewSettings.getAliasedUser();
-            if (user != null) {
-                String name = user.getUsername();
-                int index = name.indexOf(":");
-                if (index > 0) {
-                    String displayname = name.substring(0, index);
-                    params.put(JahiaGWTParameters.ALIASED_USER_NAME, displayname);
-                } else {
-                    params.put(JahiaGWTParameters.ALIASED_USER_NAME, name);
-                }
-            }
-        }
-
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
 
         Locale enginelocale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE_ENGINE);
@@ -189,7 +166,6 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.ENGINE_LANGUAGE, enginelocale.toString());
         }
 
-        try {
             // put live workspace url
             if (request.getAttribute("renderContext") != null) {
                 URLGenerator url = (URLGenerator) request.getAttribute("url");
@@ -199,15 +175,8 @@ public class GWTInitializer {
                 params.put(JahiaGWTParameters.COMPARE_URL, null);
             } else {
                 if (jData != null && jData.gui() != null) {
-                    params.put(JahiaGWTParameters.LIVE_URL, jData.gui().drawNormalModeLink());
-                    params.put(JahiaGWTParameters.EDIT_URL, jData.gui().drawEditModeLink());
-                    params.put(JahiaGWTParameters.PREVIEW_URL, jData.gui().drawPreviewModeLink());
-                    params.put(JahiaGWTParameters.COMPARE_URL, jData.gui().drawRevDifferenceModeLink(1, jData.getProcessingContext().getOperationMode()));
                 }
             }
-        } catch (JahiaException e) {
-            logger.error(e, e);
-        }
 
         // add jahia parameter dictionary
         buf.append("<script type='text/javascript'>\n");

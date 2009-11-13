@@ -31,12 +31,8 @@
  */
 package org.jahia.ajax.gwt.utils;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaAdvCompareModeSettings;
-import org.jahia.ajax.gwt.client.data.GWTJahiaAdvPreviewSettings;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContext;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.params.AdvCompareModeSettings;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -51,18 +47,6 @@ public class JahiaGWTUtils {
 
     public static GWTJahiaContext jahiaContextToGWTJahiaContext(ProcessingContext context){
         GWTJahiaContext gwtContext = new GWTJahiaContext();
-        if (context != null){
-            AdvPreviewSettings advPreviewSettings = (AdvPreviewSettings)context.getSessionState()
-                    .getAttribute(ProcessingContext.SESSION_ADV_PREVIEW_SETTINGS);
-            if (advPreviewSettings != null){
-                gwtContext.setAdvPreviewSettings(jahiaAdvPreviewSettingsToGWTBean(advPreviewSettings));
-            }
-            AdvCompareModeSettings advCompareModeSettings = (AdvCompareModeSettings)context.getSessionState()
-                    .getAttribute(ProcessingContext.SESSION_ADV_COMPARE_MODE_SETTINGS);
-            if (advCompareModeSettings != null){
-                gwtContext.setAdvCompareModeSettings(jahiaAdvCompareModeSettingsToGWTBean(advCompareModeSettings));
-            }
-        }
         return gwtContext;
     }
 
@@ -71,29 +55,6 @@ public class JahiaGWTUtils {
             return null;
         }
         return new GWTJahiaUser(user.getUsername(),user.getUserKey());
-    }
-
-    public static GWTJahiaAdvPreviewSettings jahiaAdvPreviewSettingsToGWTBean(AdvPreviewSettings settings){
-        if (settings==null){
-            return null;
-        }
-        GWTJahiaAdvPreviewSettings gwtAdvPreviewSettings = new GWTJahiaAdvPreviewSettings();
-        gwtAdvPreviewSettings.setMainUser(jahiaUserToGWTBean(settings.getMainUser()));
-        gwtAdvPreviewSettings.setAliasedUser(jahiaUserToGWTBean(settings.getAliasedUser()));
-        gwtAdvPreviewSettings.setEnabled(settings.isEnabled());
-        gwtAdvPreviewSettings.setPreviewDate(settings.getPreviewDate());
-        return gwtAdvPreviewSettings;
-    }
-
-    public static GWTJahiaAdvCompareModeSettings jahiaAdvCompareModeSettingsToGWTBean(AdvCompareModeSettings settings){
-        if (settings==null){
-            return null;
-        }
-        GWTJahiaAdvCompareModeSettings gwtAdvCompareModeSettings = new GWTJahiaAdvCompareModeSettings();
-        gwtAdvCompareModeSettings.setEnabled(settings.isEnabled());
-        gwtAdvCompareModeSettings.setRevision1(settings.getGWTRevision1());
-        gwtAdvCompareModeSettings.setRevision2(settings.getGWTRevision2());
-        return gwtAdvCompareModeSettings;
     }
 
     /**

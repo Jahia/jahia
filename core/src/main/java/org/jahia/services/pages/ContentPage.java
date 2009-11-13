@@ -46,7 +46,6 @@ import org.jahia.exceptions.JahiaTemplateNotFoundException;
 import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAcl;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -840,10 +839,6 @@ public class ContentPage extends ContentObject implements
             } else if ( ParamBean.PREVIEW.equals(operationMode) ){
                 final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
                         .getTimeBasedPublishingService();
-                if (!tbpServ.isValid(getObjectKey(),user,loadRequest,operationMode,
-                        AdvPreviewSettings.getThreadLocaleInstance()) && (context.getPageID() != this.getID())){
-                    return null;
-                }
                 /* @todo: preview mode should be done at a precise date not only what is published
                 // as this is not fully supported yet actually no preview is supported at all for
                 // page that are not available yet.
@@ -4348,10 +4343,6 @@ public class ContentPage extends ContentObject implements
                 final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
                         .getTimeBasedPublishingService();
                 try {
-                    if (!tbpServ.isValid(getObjectKey(),user,loadRequest,operationMode,
-                            AdvPreviewSettings.getThreadLocaleInstance())){
-                        return false;
-                    }
                 } catch ( Throwable t ){
                     logger.debug(t);
                     return false;

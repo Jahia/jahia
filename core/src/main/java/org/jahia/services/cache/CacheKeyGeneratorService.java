@@ -38,7 +38,6 @@ import org.jahia.content.ContentPageKey;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.acl.JahiaACLManagerService;
@@ -134,7 +133,7 @@ public class CacheKeyGeneratorService extends JahiaService {
     public String getUserCacheKey(JahiaUser user, int siteID) {
         String usercachekey;
         final String s = user.getUserKey() + SITE_PREFIX + siteID;
-        if (!AdvPreviewSettings.isInUserAliasingMode() && userKeyCache.containsKey(s)) {
+        if (userKeyCache.containsKey(s)) {
             return userKeyCache.get(s);
         }
         Collection<String> users = getAllUsers();
@@ -157,13 +156,9 @@ public class CacheKeyGeneratorService extends JahiaService {
         }
 
         // useraliasing mode
-        if (AdvPreviewSettings.isInUserAliasingMode()) {
-            usercachekey += "_" + AdvPreviewSettings.getThreadLocaleInstance().getAliasedUser().getUserKey();
-        } else {
             CacheEntry<String> cacheEntry = new CacheEntry<String>(usercachekey);
             cacheEntry.setExpirationDate(new Date(System.currentTimeMillis() + (300 * 1000)));
             userKeyCache.putCacheEntry(s,cacheEntry, true);
-        }
         return usercachekey;
     }
 

@@ -43,16 +43,12 @@
 
 package org.jahia.data;
 
-import org.jahia.data.containers.JahiaContainerSet;
+import org.apache.log4j.Category;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.usermanager.JahiaUser;
-import org.apache.log4j.Category;
 
 public class JahiaData {
 
@@ -63,7 +59,6 @@ public class JahiaData {
 
     private ProcessingContext               jParams;
 
-    private JahiaContainerSet       containerSet;
     private GuiBean                 guiBean;
     
     private boolean doBuildData;
@@ -98,50 +93,6 @@ public class JahiaData {
 
 
 
-    /***
-        * buildData
-        * EV    30.10.2000
-        *
-        */
-    private void buildData() throws JahiaException {
-        try {
-
-            // Get the current page and user
-            ContentPage currentPage = getProcessingContext().getContentPage();
-            JahiaUser currentUser = getProcessingContext().getUser();
-
-            if (currentPage != null)
-            {
-                if (currentUser != null)
-                {
-                    // test if the user has read access to the current page.
-                    if (currentPage.checkReadAccess (currentUser) && page() != null)
-                    {
-                        containerSet    = ServicesRegistry.getInstance().getJahiaContainersService(
-                                            ).buildContainerStructureForPage(getProcessingContext(), page());
-                    }
-
-                } else {
-                    throw new JahiaException ("No user present !",
-                            "No current user defined in the params in buildData() method.",
-                            JahiaException.USER_ERROR, JahiaException.ERROR_SEVERITY);
-                }
-            } else {
-                String errorMsg = "Page does not exist : " + jParams.getPageID();
-                logger.error( errorMsg + " -> BAILING OUT" );
-                throw new JahiaException ("404 Page not found",
-                                          errorMsg, JahiaException.PAGE_ERROR, JahiaException.ERROR_SEVERITY );
-            }
-
-        } catch (JahiaException je) {
-            if (je.getSeverity() > JahiaException.WARNING_SEVERITY) {
-                throw je;
-            } else {
-                logger.warn( "Warning in buildData. Continuing...", je);
-            }
-        }
-    } // end buildData;
-
     /**
      *
      * @return an object containing all the page parameters
@@ -163,10 +114,7 @@ public class JahiaData {
        * returns the current page
     */
     public  JahiaPage           page()          { return jParams.getPage(); }   // for upward compatibility
-    /***
-     * returns the container set of the current page
-    */
-    public  JahiaContainerSet   containers()    { return getContainerLists();      }
+
     /***
      * returns an object allowing to retrieve paths and to draw links
     */
@@ -194,16 +142,6 @@ public class JahiaData {
         return (ParamBean) jParams;
     }
 
-    public JahiaContainerSet getContainerLists() {
-        if (containerSet == null && doBuildData) {
-            try {
-                buildData();
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return containerSet;
-    }
 
 } // end JahiaData
 

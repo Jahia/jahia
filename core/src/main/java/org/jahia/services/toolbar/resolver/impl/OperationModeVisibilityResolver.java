@@ -32,13 +32,11 @@
 package org.jahia.services.toolbar.resolver.impl;
 
 import org.jahia.data.JahiaData;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerProvider;
 
 /**
  * User: jahia

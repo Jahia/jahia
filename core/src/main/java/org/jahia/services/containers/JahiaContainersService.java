@@ -48,12 +48,10 @@ import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
-import org.jahia.data.containers.JahiaContainerSet;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 
@@ -61,19 +59,6 @@ import java.util.*;
 
 public abstract class JahiaContainersService extends JahiaService {
 
-    /**
-     * builds the complete container structure for a specific page
-     * builds the complete container structure (containerlists->containers->fields/containerlists)
-     * for a specific page
-     * DO NOT CACHE THIS METHOD (it depends on other caches values) !!
-     *
-     * @param jData JahiaData
-     *
-     * @return a List of containerlist IDs
-     */
-    public abstract JahiaContainerSet buildContainerStructureForPage (ProcessingContext processingContext, JahiaPage page)
-        throws JahiaException;
-   
     /**
      * gets all container definitions ids on a page
      *

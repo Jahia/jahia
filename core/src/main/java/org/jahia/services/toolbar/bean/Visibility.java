@@ -31,7 +31,6 @@
  */
 package org.jahia.services.toolbar.bean;
 
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
@@ -279,8 +278,7 @@ public class Visibility {
     private boolean isLogging(JahiaUser jahiaUser) {
         if (needAuthentication != null) {
             if (Boolean.parseBoolean(needAuthentication)) {
-                return jahiaUser != null && (AdvPreviewSettings.isInUserAliasingMode() ||
-                        !jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerProvider.GUEST_USERNAME));
+                return jahiaUser != null && (!jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerProvider.GUEST_USERNAME));
             }
         }
         return true;

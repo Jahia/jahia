@@ -3262,19 +3262,6 @@ public class ProcessingContext {
             }
         }
 
-        if (PREVIEW.equals(getOpMode())){
-            try {
-                AdvPreviewSettings.setThreadLocalAdvPreviewSettings(getSessionState());
-            } catch ( Throwable t ){
-                logger.debug("Exception occured when setting Adv Preview Settings",t);
-            }
-        } else if (COMPARE.equals(getOpMode())){
-            try {
-                AdvCompareModeSettings.setThreadLocalAdvCompareModeSettings(getSessionState());
-            } catch ( Throwable t ){
-                logger.debug("Exception occured when setting Adv Preview Settings",t);
-            }
-        }
     }
 
     protected int resolvePageID() throws JahiaPageNotFoundException {
@@ -3321,14 +3308,6 @@ public class ProcessingContext {
         if (getTheUser() == null) {
             setUserGuest();
         }
-        try {
-            AdvPreviewSettings.setThreadLocalAdvPreviewSettings(getSessionState());
-        } catch ( Throwable t ){
-            throw new JahiaException("Exception occured initializing user aliasing"
-                ,"Exception occured initializing user aliasing",JahiaException.APPLICATION_ERROR,
-                JahiaException.ERROR_SEVERITY,t);
-        }
-
     }
 
     /**

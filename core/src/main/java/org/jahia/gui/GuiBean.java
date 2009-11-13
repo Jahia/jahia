@@ -52,9 +52,7 @@ import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
@@ -106,263 +104,6 @@ public class GuiBean {
 
     public ProcessingContext params() {
         return processingContext;
-    }
-
-    /**
-     * drawHttpPath
-     * EV    21.11.2000
-     */
-    public String drawHttpPath() {
-        if (processingContext != null) {
-            return processingContext.settings().getJahiaTemplatesHttpPath();
-        } else {
-            return "";
-        }
-    } // end drawHttpPath
-
-
-    /**
-     * drawHttpPath
-     * JB    25.04.2001
-     */
-    public String drawHttpPath(final String theTemplateFolderName) {
-        if (processingContext != null) {
-            final StringBuffer buff = new StringBuffer();
-            buff.append(processingContext.settings().getJahiaTemplatesHttpPath()).
-                    append(theTemplateFolderName);
-            return buff.toString();
-        } else {
-            return "";
-        }
-    } // end drawHttpPath
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * returns the URL of the JSP context
-     */
-    public String drawHttpJspContext(final HttpServletRequest req) {
-        return req.getRequestURI().substring(0, req.getRequestURI().lastIndexOf("/"));
-    }
-
-    /**
-     * drawPageLink
-     * EV    21.11.2000
-     */
-    public String drawPageLink(final int thePageID)
-            throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                result = processingContext.composePageUrl(thePageID);
-            }
-        }
-        return result;
-    } // end drawPageLink
-
-    /**
-     * Return the current page action url with cache/offonce
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public String getPageActionURL() throws JahiaException {
-        String actionURL = "";
-        if (processingContext != null) {
-            actionURL = processingContext.composePageUrl(processingContext.getPage().getID());
-        }
-        return actionURL;
-    }
-
-    /**
-     * returns the URL allowing to switch between normal mode and edition mode.
-     * EV    21.11.2000
-     */
-    public String drawSwitchModeLink() throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                // Check the write permission on the page
-                if (currentPage.checkWriteAccess(processingContext.getUser())) {
-                    if (processingContext.getOperationMode().equals(ProcessingContext.NORMAL)
-                            || processingContext.getOperationMode().equals(ProcessingContext.COMPARE)) {
-                        result = processingContext.composeOperationUrl(ProcessingContext.EDIT, "");
-                    } else {
-                        result = processingContext.composeOperationUrl(ProcessingContext.NORMAL, "");
-                    }
-                }
-            }
-        }
-        return result;
-    } // end drawSwitchModeLink
-
-    /**
-     * Builds an URL to the current page in view mode
-     *
-     * @return url string
-     * @throws JahiaException
-     */
-    public String drawNormalModeLink() throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                // Check the write permission on the page
-                result = processingContext.composeOperationUrl(ProcessingContext.NORMAL, "");
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Builds an URL to the current page in edit mode, only if the current
-     * user has that right. If not an empty string is returned.
-     *
-     * @return The URL to the current page in edit mode
-     * @throws JahiaException
-     */
-    public String drawEditModeLink() throws JahiaException {
-        return drawEditModeLink(ProcessingContext.USERALIASING_MODE_OFF);
-    }
-
-    /**
-     * @param userAliasingMode
-     * @return
-     * @throws JahiaException
-     */
-    public String drawEditModeLink(String userAliasingMode) throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                if (currentPage.checkWriteAccess(processingContext.getUser(), true)) {
-                    boolean isInUserAliasingMode = AdvPreviewSettings.isInUserAliasingMode();
-                    String params = "";
-                    if (isInUserAliasingMode && userAliasingMode != null) {
-                        params = ProcessingContext.USERALIASING_MODE_PARAMETER + "=" + userAliasingMode;
-                    }
-                    result = processingContext.composeOperationUrl(ProcessingContext.EDIT, params);
-                } else {
-                    result = "";
-                }
-                //result = processingContext.composeOperationUrl( ProcessingContext.EDIT, "" );
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Builds an URL to the current page in compare mode, only if the current
-     * user has that right. If not an empty string is returned.
-     *
-     * @param revisionDiffID 0 to compare with staging.
-     * @param operationMode
-     * @return
-     * @throws JahiaException
-     */
-    public String drawRevDifferenceModeLink(final int revisionDiffID,
-                                            final String operationMode) throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                /* NK : EDIT_MODE_PAGE_ACCESS_ISSUE */
-                // Check the write permission on the page
-                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
-                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
-                    result = processingContext.composeRevDifferenceUrl(revisionDiffID, operationMode, "");
-                } else {
-                    result = "";
-                }
-                //result = processingContext.composeRevDifferenceUrl(revisionDiffID,operationMode,"");
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Generate a page url in compare mode between entryStateVersion version and revisionDiffVersion version.
-     *
-     * @param entryStateVersion
-     * @param revisionDiffVersion
-     * @param operationMode
-     * @param params
-     * @return
-     * @throws JahiaException
-     */
-    public String drawRevDifferenceModeLink(final int entryStateVersion,
-                                            final int revisionDiffVersion, final String operationMode,
-                                            final String params) throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
-                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
-                    result = processingContext.composeRevDifferenceUrl(entryStateVersion, revisionDiffVersion, operationMode, params);
-                } else {
-                    result = "";
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Builds an URL to the current page in staging preview  mode, only if
-     * the current user has that right. If not an empty string is returned.
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public String drawPreviewModeLink() throws JahiaException {
-        return drawPreviewModeLink(ProcessingContext.USERALIASING_MODE_ON);
-    }
-
-    /**
-     * Builds an URL to the current page in staging preview  mode, only if
-     * the current user has that right. If not an empty string is returned.
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public String drawPreviewModeLink(String userAliasingMode) throws JahiaException {
-        String result = "";
-
-        if (processingContext != null) {
-            // Get the current page
-            final JahiaPage currentPage = processingContext.getPage();
-            if (currentPage != null) {
-                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
-                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
-                    String params = "";
-                    AdvPreviewSettings advPreviewSettings = AdvPreviewSettings.getThreadLocaleInstance();
-                    boolean appendUserAliasingMode = advPreviewSettings != null && advPreviewSettings.isEnabled();
-                    if (appendUserAliasingMode) {
-                        params = ProcessingContext.USERALIASING_MODE_PARAMETER + "=" + userAliasingMode;
-                    }
-                    result = processingContext.composeOperationUrl(ProcessingContext.PREVIEW, params);
-                } else {
-                    result = "";
-                }
-                //result = processingContext.composeOperationUrl( ProcessingContext.PREVIEW, "" );
-            }
-        }
-        return result;
     }
 
     /**
@@ -1010,9 +751,7 @@ public class GuiBean {
             if (!allowUserAliasing) {
                 return getUser().getUsername();
             } else {
-                JahiaUser user = AdvPreviewSettings.getAliasedUser(getUser());
                 String s = getUser().getUsername();
-                if (!s.equals(user.getUsername())) s = s + " ( " + user.getUsername() + " )";
                 return s;
             }
         } else {
@@ -1446,17 +1185,7 @@ public class GuiBean {
         return drawUrlCheckWriteAccess("application", applicationBean);
     }
 
-    /**
-     * @param contentContainer
-     * @return
-     * @throws JahiaException
-     */
-    public String drawRestoreContainerUrl(final ContentContainer contentContainer)
-            throws JahiaException {
-        return drawUrlCheckWriteAccess(RestoreLiveContainer_Engine.ENGINE_NAME, contentContainer);
-    }
-
-    
+  
 
     private JahiaUser getUser() {
         return processingContext != null ? processingContext.getUser() : null;

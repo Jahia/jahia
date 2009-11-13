@@ -34,7 +34,6 @@ package org.jahia.taglibs.template.templatestructure;
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -163,7 +162,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
             gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
         }
 
-        if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
+        if (isLogged() || gwtForGuest) {
             buf.append(("<!-- cache:vars var=\"" + SkeletonAggregatorValve.GWT_VARIABLE + "\" -->"));
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
             buf.append("<!-- /cache:vars -->\n");
@@ -197,7 +196,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         try {
-            if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
+            if (isLogged() || gwtForGuest) {
                 pageContext.getOut().append(DefaultIncludeProvider.getJSToolsImportJavaScript(getJahiaData()));
             }
             pageContext.getOut().println("</head>");

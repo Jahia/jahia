@@ -157,32 +157,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         }
         return instance;
     }
-
-    /**
-     * builds the complete container structure for a specific page
-     * builds the complete container structure
-     * (containerlists->containers->fields/containerlists)
-     * for a specific page
-     * DO NOT CACHE THIS METHOD (it depends on other caches values) !!
-     *
-     * @return a List of containerlist IDs
-     */
-    public JahiaContainerSet buildContainerStructureForPage(ProcessingContext processingContext, JahiaPage page)
-            throws JahiaException {
-
-        JahiaContainerSet theSet = new JahiaContainerSet(processingContext, page);
-
-        JahiaPageDefinition def = page.getPageTemplate();
-        String typeName = def.getPageType();
-        if (typeName != null) {
-            for (Map.Entry<String, Integer> containerNamesAndDefId : getContainerDefRegistry().buildContainerDefinitionsForTemplate(typeName, page.getSiteID(), page.getPageTemplateID(), theSet).entrySet()) {
-                theSet.addDeclaredContainer(containerNamesAndDefId.getKey(), containerNamesAndDefId.getValue());
-                theSet.getContainerList(containerNamesAndDefId.getKey());
-            }
-        }
-
-        return theSet;
-    } // end buildContainerStructureForPage
     
     /**
      * gets all container definitions ids on a page

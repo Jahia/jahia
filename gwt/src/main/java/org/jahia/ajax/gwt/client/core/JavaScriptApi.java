@@ -130,19 +130,6 @@ public class JavaScriptApi {
         });
     }
 
-
-    static void releaseLock(String lockType) {
-            JahiaService.App.getInstance().releaseLock(lockType, new AsyncCallback<Boolean>() {
-                public void onSuccess(Boolean result) {
-                    Log.info("Lock released successfully.");
-                }
-
-                public void onFailure(Throwable throwable) {
-                    Log.warn("Error releasing lock", throwable);
-                }
-            });
-    }
-
     private native void initJavaScriptApi() /*-{
         $wnd.onBlurEditableContent = function (element, containerID, fieldID) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::onBlurEditableContent(Lcom/google/gwt/user/client/Element;Ljava/lang/String;Ljava/lang/String;)(element, containerID, fieldID); };
         $wnd.onClickEditableContent = function (element, containerID, fieldID) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::onClickEditableContent(Lcom/google/gwt/user/client/Element;Ljava/lang/String;Ljava/lang/String;)(element, containerID, fieldID); };
@@ -152,6 +139,5 @@ public class JavaScriptApi {
             $wnd.jahia = new Object();
         }
         $wnd.jahia.request = function (url, options) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::request(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(url, options); };
-        $wnd.jahia.releaseLock = function (lockType) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::releaseLock(Ljava/lang/String;)(lockType); };
     }-*/;
 }

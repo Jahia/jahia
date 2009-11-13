@@ -71,8 +71,6 @@ public interface JahiaService extends RemoteService {
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString);
 
-    public void releaseLocks(String lockType) throws GWTJahiaServiceException ;
-    
     public GWTJahiaRSSFeed loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries) throws GWTJahiaServiceException;
 
     public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine);
@@ -91,5 +89,4 @@ public interface JahiaService extends RemoteService {
 
     public List<GWTJahiaSite> getAvailableSites ();
     
-    Boolean releaseLock(String lockType);
 }

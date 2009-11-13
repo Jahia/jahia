@@ -39,7 +39,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.AdvPreviewSettings;
 
 import java.util.Collection;
 import java.util.List;
@@ -172,20 +171,6 @@ public abstract class TimeBasedPublishingService extends JahiaService
             boolean withoutInheritedRule) throws JahiaException;    
 
 
-    /**
-     * Returns true if the given object is valid checking agains the AdvPreviewSettings
-     *
-     * @param objectKey
-     * @param user
-     * @param loadRequest
-     * @param operationMode
-     * @param advPreviewSettings
-     * @return
-     * @throws JahiaException
-     */
-    public abstract boolean isValid(ObjectKey objectKey,
-            JahiaUser user, EntryLoadRequest loadRequest, String operationMode, AdvPreviewSettings advPreviewSettings)
-    throws JahiaException;
 
     /**
      * Return true if the given object is valid at the given date

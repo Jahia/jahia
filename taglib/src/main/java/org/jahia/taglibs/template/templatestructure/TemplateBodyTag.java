@@ -33,20 +33,18 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
-import org.jahia.params.AdvPreviewSettings;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.bin.Jahia;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -54,8 +52,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * <p>Title: Defines the body part of a jahia template</p>
@@ -160,7 +158,8 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
-            useGwt = false;
+            useGwt = renderContext.isEditMode();
+
             ServletRequest request = pageContext.getRequest();
             JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
@@ -169,9 +168,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             boolean gwtForGuest = false;
             if (parent instanceof TemplateTag) {
                 gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
-            }
-            if (jData != null) {
-                useGwt = AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest;
             }
 
             StringBuilder buf = new StringBuilder("<body");

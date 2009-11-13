@@ -35,7 +35,6 @@ import org.jahia.content.*;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.*;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -702,28 +701,6 @@ public class TimeBasedPublishingImplService extends TimeBasedPublishingService {
 
     public void setContainerListMgr(JahiaContainerListManager containerListMgr) {
         this.containerListMgr = containerListMgr;
-    }
-
-    /**
-     * Returns true if the given object is valid checking agains the AdvPreviewSettings
-     *
-     * @param objectKey
-     * @param user
-     * @param loadRequest
-     * @param operationMode
-     * @param advPreviewSettings
-     * @return
-     * @throws JahiaException
-     */
-    public boolean isValid(ObjectKey objectKey,
-            JahiaUser user, EntryLoadRequest loadRequest, String operationMode, AdvPreviewSettings advPreviewSettings)
-    throws JahiaException {
-
-        Date date = null;
-        if (advPreviewSettings != null && advPreviewSettings.isEnabled() && advPreviewSettings.getPreviewDate() != 0){
-            date = new Date(advPreviewSettings.getPreviewDate());
-        }
-        return isValid(objectKey,user,loadRequest,operationMode,date);
     }
 
     /**

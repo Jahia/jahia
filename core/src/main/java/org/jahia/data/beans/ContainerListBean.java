@@ -357,61 +357,6 @@ public class ContainerListBean extends ContentBean {
         return jahiaContainerList.getctndefid();
     }
 
-    public Map<String, ActionURIBean> getActionURIBeans() {
-        if (actionURIs == null) {
-            buildActionURIs();
-        }
-        return actionURIs;
-    }
-
-    public boolean isCompletelyLocked() {
-        if (actionURIs == null) {
-            buildActionURIs();
-        }
-        return completelyLocked;
-    }
-
-    public boolean isPartiallyLocked() {
-        if (actionURIs == null) {
-            buildActionURIs();
-        }
-        if (!completelyLocked) {
-            boolean partiallyLocked = false;
-            for (final Map.Entry<String, ActionURIBean> curActionURIEntry : actionURIs.entrySet()) {
-                final ActionURIBean curActionURIBean = curActionURIEntry.getValue();
-                if (curActionURIBean.isLocked()) {
-                    partiallyLocked = true;
-                }
-            }
-            return partiallyLocked;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isIndependantWorkflow() {
-        return independantWorkflow;
-    }
-
-    public int getGroupWorkflowState() {
-        return groupWorkflowState;
-    }
-
-    public boolean isActionURIsEmpty() {
-        if (!processingContext.getOperationMode().equals(ProcessingContext.EDIT)) {
-            return true;
-        }
-        if (actionURIs == null) {
-            buildActionURIs();
-        }
-        return actionURIs.isEmpty();
-    }
-
-    private void buildActionURIs() {
-        return;
-    }
-
-
     public boolean isPicker() {
         return false;
     }

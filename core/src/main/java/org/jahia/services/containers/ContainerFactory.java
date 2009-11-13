@@ -33,19 +33,18 @@ package org.jahia.services.containers;
 
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.CoreFilterNames;
-import org.jahia.data.containers.*;
-import org.jahia.data.fields.LoadFlags;
+import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.containers.JahiaContainerList;
+import org.jahia.data.containers.JahiaContainerListPagination;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.SessionState;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 
 import java.util.*;
 
@@ -148,80 +147,6 @@ public class ContainerFactory {
     }
 
     /**
-     * Fully load a container list (containers and their own container lists...).
-     * This is performed only if the containerList.isContainersLoaded() return false.
-     *
-     * @param cList                      , a container list that is not completely loaded.
-     * @param jParams                    , used to handle all filtering
-     * @param loadFlag
-     * @param cachedFieldsFromContainers map with key=ctnid, obj=List of the ctn's field ids.
-     *                                   can be null, but for performance this map should be loaded with all fields of same page ID as the container's pageID.
-     * @throws JahiaException
-     */
-    public JahiaContainerList fullyLoadContainerList(final JahiaContainerList cList,
-                                                     final int loadFlag,
-                                                     final ProcessingContext jParams,
-                                                     final EntryLoadRequest loadRequest,
-                                                     final Map<Integer, List<Integer>> cachedFieldsFromContainers,
-                                                     final Map<Integer, List<Integer>> cachedContainersFromContainerLists,
-                                                     final Map<Integer, List<Integer>> cachedContainerListsFromContainers,
-                                                     final String listViewId)
-            throws JahiaException {
-        if (cList == null) {
-            return null;
-        }
-        if (!cList.isContainersLoaded()) {
-            cList.clearContainers();
-            cList.setIsContainersLoaded(true);
-            // start check for correct rights.
-            if (jParams != null) { // no jParams, can't check for rights
-                final JahiaUser currentUser = jParams.getUser();
-                if (currentUser != null) {
-                    logger.debug("loadContainerList(): checking rights...");
-                    // if the user has no read rights, return an empty list.
-                    if (!cList.checkReadAccess(currentUser)) {
-                        logger.debug("loadContainerList(): NO read rights! -> returning empty list");
-                        return cList;
-                    }
-                    logger.debug("loadContainerList(): read rights OK");
-                } else {
-                    throw new JahiaException("No user present !",
-                            "No current user defined in the params in loadContainerList() method.",
-                            JahiaException.USER_ERROR, JahiaException.ERROR_SEVERITY);
-                }
-
-                ContainerListLoaderContext listLoaderContext = new ContainerListLoaderContext(jParams,loadRequest,cList,
-                        LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
-                listLoaderContext.setListViewId(listViewId);
-
-                List<Integer> ctnids = jahiaContainersService.getctnidsInList(cList.getID(), loadRequest);
-                listLoaderContext.setLoadingUseSingleSearchQuery(Boolean.FALSE);
-
-                if (ctnids == null) {
-                    ctnids = new ArrayList<Integer>();
-                }
-                if (!cList.isContainersLoaded() || !listLoaderContext.getLoadingUseSingleSearchQuery().booleanValue()){
-                    cList.setIsContainersLoaded(true);
-                    ctnids = loadContainerListWithContainers(cList, ctnids, loadFlag, jParams, loadRequest,
-                            cachedFieldsFromContainers, cachedContainersFromContainerLists,
-                            cachedContainerListsFromContainers, currentUser, listViewId);
-                } else {
-                    ctnids = repaginateContainerListWithContainers(cList, ctnids, jParams, currentUser, listViewId);
-                }
-                final SessionState session = jParams.getSessionState();
-                if (session != null) {
-                    if ( ctnids != null && !ctnids.isEmpty() ){
-                        session.setAttribute("getSorteredAndFilteredCtnIds" + cList.getID(), ctnids);
-                    } else {
-                        session.removeAttribute("getSorteredAndFilteredCtnIds" + cList.getID());
-                    }
-                }
-            }
-        }
-        return cList;
-    }
-
-    /**
      * Returns the Container IDs of a container list. These Ids are sorted and filtered.
      *
      * @param jParams , used to handle all filtering
@@ -247,45 +172,6 @@ public class ContainerFactory {
         return ctnids;
     }
 
-    /**
-     * Fully load a container list (containers and their own container lists...).
-     *
-     * @param ctnListID                  , a container list ID.
-     * @param jParams                    , used to handle all filtering
-     * @param loadFlag
-     * @param cachedFieldsFromContainers map with key=ctnid, obj=List of the ctn's field ids.
-     *                                   can be null, but for performance this map should be loaded with all fields of same page ID as the container's pageID.
-     * @return a fully loaded Container.
-     * @throws JahiaException
-     */
-    public JahiaContainerList fullyLoadContainerList(final int ctnListID,
-                                                     final int loadFlag,
-                                                     final ProcessingContext jParams,
-                                                     final EntryLoadRequest loadRequest,
-                                                     final Map<Integer, List<Integer>> cachedFieldsFromContainers,
-                                                     final Map<Integer, List<Integer>> cachedContainersFromContainerLists,
-                                                     final Map<Integer, List<Integer>> cachedContainerListsFromContainers)
-            throws JahiaException {
-        JahiaContainerList cList = jahiaContainersService.
-                loadContainerListInfo(ctnListID, loadRequest);
-        /*
-         * We bybass lazy load here! 
-        cList = fullyLoadContainerList(cList, loadFlag, jParams, loadRequest,
-                cachedFieldsFromContainers, cachedContainersFromContainerLists,
-                cachedContainerListsFromContainers);
-        */
-        if (cList != null) {
-            final ContainerListFactoryProxy cListFactory =
-                    new ContainerListFactoryProxy(loadFlag,
-                            jParams,
-                            loadRequest,
-                            cachedFieldsFromContainers,
-                            cachedContainersFromContainerLists,
-                            cachedContainerListsFromContainers);
-            cList.setFactoryProxy(cListFactory);
-        }
-        return cList;
-    }
 
     //-------------------------------------------------------------------------
     /**
@@ -301,7 +187,6 @@ public class ContainerFactory {
      * @param loadVersion
      * @param cachedFieldsInContainer
      * @param cachedContainersFromContainerLists
-     * @param cachedContainersListsFromContainers
      * @param currentUser
      * @param listViewId   
      *
@@ -399,11 +284,6 @@ public class ContainerFactory {
                                         continue;
                                     }
                                 } else if ( ParamBean.PREVIEW.equals(jParams.getOperationMode()) ){
-                                    if (!tbpServ.isValid(new ContentContainerKey(ctnID),
-                                            jParams.getUser(),jParams.getEntryLoadRequest(),jParams.getOperationMode(),
-                                            AdvPreviewSettings.getThreadLocaleInstance())){
-                                        continue;
-                                    }
                                 }
                             }
                             try {

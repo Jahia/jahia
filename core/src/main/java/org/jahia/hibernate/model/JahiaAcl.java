@@ -51,7 +51,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaAclManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLInfo;
@@ -442,30 +441,6 @@ public class JahiaAcl implements Serializable,Cloneable, ParentACLFinder, ACLRes
                                   boolean siteAdminsHaveAllRights,
                                   int objectSiteID) {
 
-        if (AdvPreviewSettings.isInUserAliasingMode()){
-            AdvPreviewSettings advPreviewSettings = AdvPreviewSettings.getThreadLocaleInstance();
-            if ( !user.byPassUserAliasing() && permission == JahiaBaseACL.READ_RIGHTS ){
-                return (getUserPermission(parentACLFinder,
-                                  aclResource,
-                                  advPreviewSettings.getAliasedUser(),
-                                  permission,
-                                  siteAdminsHaveAllRights,
-                                  objectSiteID)
-                    && getUserPermission(parentACLFinder,
-                                  aclResource,
-                                  advPreviewSettings.getMainUser(),
-                                  permission,
-                                  siteAdminsHaveAllRights,
-                                  objectSiteID));
-            } else {
-                return getUserPermission(parentACLFinder,
-                                  aclResource,
-                                  user,
-                                  permission,
-                                  siteAdminsHaveAllRights,
-                                  objectSiteID);
-            }
-        }
         return getUserPermission(parentACLFinder,
                                   aclResource,
                                   user,

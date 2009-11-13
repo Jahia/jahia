@@ -50,8 +50,6 @@ public interface JahiaServiceAsync {
 
     void drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
 
-    void releaseLocks(String lockType, AsyncCallback async) ;
-
     void loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries, AsyncCallback<GWTJahiaRSSFeed> async);
 
     void getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine, AsyncCallback<GWTJahiaLanguageSwitcherBean> async) ;
@@ -69,6 +67,4 @@ public interface JahiaServiceAsync {
     void getLanguageURL(String language, AsyncCallback<String> async) ;
 
     void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);
-    
-    void releaseLock(String lockType, AsyncCallback<Boolean> async);
 }

@@ -67,16 +67,6 @@ public abstract class ContentBean extends AbstractJahiaObjectBean {
      * @return the type of the ContentBean as a String object
      */
     public abstract String getBeanType();
-    
-    public abstract Map<String, ActionURIBean> getActionURIBeans();
-    
-    public abstract boolean isCompletelyLocked();
-    
-    public abstract boolean isPartiallyLocked();
-    
-    public abstract boolean isIndependantWorkflow();
-    
-    public abstract int getGroupWorkflowState();
 
     public abstract JahiaBaseACL getACL();
 

@@ -39,8 +39,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.PageGeneratorQueue;
 import org.jahia.operations.PageState;
-import org.jahia.params.AdvCompareModeSettings;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
@@ -153,13 +151,7 @@ public class SkeletonAggregatorValve implements Valve {
                 String queryString = processingContext.getQueryString();
                 String aesMode = (String) processingContext.getSessionState().getAttribute("aesMode") ;
                 StringBuffer advPreviewMode = new StringBuffer();
-                if (AdvPreviewSettings.isInUserAliasingMode() || AdvPreviewSettings.isPreviewingAtDefinedDateMode()){
-                    advPreviewMode.append(AdvPreviewSettings.getThreadLocaleInstance());
-                }
                 StringBuffer advCompareMode = new StringBuffer();
-                if (AdvCompareModeSettings.isComparingUsingArchivedRevision()){
-                    advCompareMode.append(AdvCompareModeSettings.getThreadLocaleInstance());
-                }
                 if (aesMode == null) {
                     aesMode = "" ;
                 }
@@ -299,11 +291,7 @@ public class SkeletonAggregatorValve implements Valve {
                                 StartTag segment = (StartTag) i.next();
                                 String variableName = segment.getAttributeValue("var");
                                 if (variableName.equals(ESI_VARIABLE_USERNAME)) {
-                                    JahiaUser user = AdvPreviewSettings.getAliasedUser(jahiaUser);
                                     String s = jahiaUser.getUsername();
-                                    if (!s.equals(user.getUsername())) {
-                                        s = s + " ( " + user.getUsername() + " )";
-                                    }
                                     outputDocument.replace(segment.getBegin(),
                                                            segment.getElement().getEndTag().getEnd(),
                                                            s);

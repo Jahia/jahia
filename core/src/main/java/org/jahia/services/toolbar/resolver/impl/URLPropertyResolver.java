@@ -32,15 +32,10 @@
 package org.jahia.services.toolbar.resolver.impl;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
-import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.AdvCompareModeAjaxActionImpl;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.AdvCompareModeSettings;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.toolbar.resolver.PropertyResolver;
-import org.jahia.services.version.ContentObjectEntryState;
 
 
 /**
@@ -91,56 +86,6 @@ public class URLPropertyResolver implements PropertyResolver {
             try {
                 if (input.equalsIgnoreCase(ADMIN)) {
                     value = jData.gui().drawAdministrationLauncher();
-                } else if (input.equalsIgnoreCase(LIVE)) {
-                    value = jData.gui().drawNormalModeLink();
-                } else if (input.equalsIgnoreCase(EDIT)) {
-                    value = jData.gui().drawEditModeLink();
-                } else if (input.equalsIgnoreCase(COMPARE)) {
-                    AdvCompareModeSettings settings = (AdvCompareModeSettings)
-                            jData.getProcessingContext().getSessionState()
-                                    .getAttribute(ProcessingContext.SESSION_ADV_COMPARE_MODE_SETTINGS);
-                    if (settings != null && settings.isEnabled()) {
-
-                        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult();
-
-                        ContentObjectEntryState version1EntryState = settings.getContentObjectEntryState(settings.getVersion1(),
-                                jData.getProcessingContext().getContentPage(), jData.getProcessingContext().getLocale());
-                        if (((settings.getVersion1().getDate() > 0 && !settings.getVersion2().isUseVersion())
-                                || (settings.getVersion1().getVersion() != null &&
-                                settings.getVersion1().isUseVersion()))
-                                && (version1EntryState == null || version1EntryState.getWorkflowState() == -1)) {
-                            actionResult.addError("Wrong version 1: the page does not exist or is deleted at that date");
-                        }
-
-                        ContentObjectEntryState version2EntryState = settings.getContentObjectEntryState(settings.getVersion1(),
-                                jData.getProcessingContext().getContentPage(), jData.getProcessingContext().getLocale());
-                        if (((settings.getVersion2().getDate() > 0 && !settings.getVersion2().isUseVersion())
-                                || (settings.getVersion2().getVersion() != null &&
-                                settings.getVersion2().isUseVersion()))
-                                && (version1EntryState == null || version1EntryState.getWorkflowState() == -1)) {
-                            actionResult.addError("Wrong version 2: the page does not exist or is deleted at that date");
-                        }
-
-                        if (version1EntryState != null && version2EntryState != null) {
-                            int version1 = AdvCompareModeAjaxActionImpl
-                                    .resolveVersionForComparison(settings.getVersion1());
-                            int version2 = AdvCompareModeAjaxActionImpl
-                                    .resolveVersionForComparison(settings.getVersion2());
-                            if (version1 == 0 || version2 == 0) {
-                                value = jData.gui().drawRevDifferenceModeLink(1, jData.getProcessingContext().getOperationMode());
-                            } else if (version1 == version2) {
-                                actionResult.addError("Versions have to be different");
-                            } else {
-                                value = AdvCompareModeAjaxActionImpl.getComparisonURL(version1, version2, jData, "");
-                            }
-                        } else {
-                            value = jData.gui().drawRevDifferenceModeLink(1, jData.getProcessingContext().getOperationMode());
-                        }
-                    } else {
-                        value = jData.gui().drawRevDifferenceModeLink(1, jData.getProcessingContext().getOperationMode());
-                    }
-                } else if (input.equalsIgnoreCase(PREVIEW)) {
-                    value = jData.gui().drawPreviewModeLink();
                 } else if (input.equalsIgnoreCase(MONITOR)) {
                     value = jData.getProcessingContext().getContextPath() + "/processing/processing.jsp";
                 } else if (input.equalsIgnoreCase(WORKFLOW)) {

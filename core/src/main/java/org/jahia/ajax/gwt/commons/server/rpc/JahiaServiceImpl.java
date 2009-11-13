@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import net.htmlparser.jericho.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.engines.LockHelper;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
@@ -133,27 +132,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             logger.error(e.getMessage(), e);
         }
         return result;
-    }
-
-    /**
-     * Release the locks of the given type for the current user.
-     *
-     * @param type the lock type
-     */
-    public void releaseLocks(String type) throws GWTJahiaServiceException {
-        try {
-            final Set<LockKey> lockKeys = (Set<LockKey>) getThreadLocalRequest().getSession().getAttribute("workflowLocks");
-            if (lockKeys != null && !lockKeys.isEmpty()) {
-                JahiaUser user = retrieveParamBean().getUser();
-                final LockService lockService = servicesRegistry.getLockService();
-                for (LockKey lock : lockKeys) {
-                    lockService.release(lock, user, user.getUserKey());
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not release " + type + " locks", e);
-            throw new GWTJahiaServiceException("Could not release " + type + " locks");
-        }
     }
 
     public GWTJahiaRSSFeed loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries) throws GWTJahiaServiceException {
@@ -341,22 +319,4 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
 
         return returnedSites;
     }
-
-    public Boolean releaseLock(String lockType) {
-        if (lockType == null || lockType.length() == 0) {
-            return false;
-        }
-
-        boolean result;
-        try {
-            result = LockHelper.release(lockType, retrieveParamBean());
-        } catch (JahiaException e) {
-            result = false;
-            logger.warn("Unable to release the lock. Cause: " + e.getMessage(),
-                    e);
-        }
-
-        return result;
-    }
-
 }

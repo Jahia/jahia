@@ -43,7 +43,6 @@ import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.AdvPreviewSettings;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.ACLNotFoundException;
@@ -1814,10 +1813,6 @@ public class JahiaPageBaseService extends JahiaPageService {
                 } else if ( ParamBean.PREVIEW.equals(operationMode) ){
                     final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
                             .getTimeBasedPublishingService();
-                    if (!tbpServ.isValid(contentPage.getObjectKey(),user,loadRequest,operationMode,
-                            AdvPreviewSettings.getThreadLocaleInstance())){
-                        return null;
-                    }
                 }
             }
             page = contentPage.getPage(loadRequest, operationMode, user);

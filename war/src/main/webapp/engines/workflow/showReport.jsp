@@ -112,7 +112,7 @@
                     </thead>
                     <c:forEach items="${group.results}" var="obj">
                       <bean:define id="targetPageId" name="obj" property="pageId" type="java.lang.String"/>
-                      <% String targetPageUrl = jData.gui().drawPageLink(Integer.parseInt(targetPageId)); %>
+                      
                       <c:set var="lineCss" value="${lineCss == 'oddLine' ? 'evenLine' : 'oddLine'}" />
                       <tr class="<c:out value="${lineCss}"/>">
                         <td>

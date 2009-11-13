@@ -98,33 +98,7 @@ public class ContainerListFactoryProxy {
      * Load this container's sub containers list if not already loaded
      */
     public void load(JahiaContainerList containerList) {
-        if (containerList == null || containerList.isContainersLoaded()) {
-            return;
-        }
-        try {
-            // When requesting an archived loadRequest
-            EntryLoadRequest currentLoadRequest =
-                    (EntryLoadRequest) loadRequest.clone();
-            if (jParams.showRevisionDiff()) {
-                currentLoadRequest.setWithDeleted(true);
-                currentLoadRequest.setWithMarkedForDeletion(true);
-            } else {
-                currentLoadRequest.setWithDeleted(false);
-                if (jParams.getOpMode().equals(ProcessingContext.EDIT)) {
-                    currentLoadRequest.setWithMarkedForDeletion(org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());
-                } else {
-                    currentLoadRequest.setWithMarkedForDeletion(false);
-                }
-            }
-            ContainerFactory.getInstance().fullyLoadContainerList(containerList,
-                    loadFlag, jParams, currentLoadRequest, cachedFieldsFromContainers,
-                    this.cachedContainersFromContainerLists,
-                    this.cachedContainerListsFromContainers, getListViewId());
-            containerList.setIsContainersLoaded(true);
-        } catch (JahiaException je) {
-            logger.debug("Exception occured when loading Container List ["
-                    + containerList.getID() + "]", je);
-        }
+        return;
     }
 
     public String getListViewId() {

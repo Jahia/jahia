@@ -12,7 +12,7 @@
 <jcr:nodeProperty node="${currentNode}" name="longitude" var="longitude"/>
 
 <div class="preferences"><!--start preferences-->
-    <h2><fmt:message key="jahia.location.value"/></h2>
+    <h2>${title.string}</h2>
 
     <p class="preference-item"><span class="preference-label"><fmt:message key="jahia.location.street"/> : </span>
         <span class="preference-value">${street.string}</span>

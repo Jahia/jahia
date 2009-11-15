@@ -720,3 +720,6 @@ border:1px solid #3680ba;
 .x-fieldset {
 margin:5px 10px;
 }
+fieldset.x-panel-collapsed {
+background-color:#E1E9EE;
+}

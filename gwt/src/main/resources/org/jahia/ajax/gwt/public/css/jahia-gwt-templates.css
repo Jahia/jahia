@@ -188,7 +188,9 @@
 .gwt-toolbar-icon-categorymanager-min {
     background: url( ../images/min/categorymanager.png ) no-repeat scroll 0 center !important;
 }
-
+.gwt-toolbar-icon-tagmanager-min {
+    background: url( ../images/min/tagmanager.png ) no-repeat scroll 0 center !important;
+}
 .gwt-toolbar-icon-sitemanager-min {
     background: url( ../images/min/sitemanager.png ) no-repeat scroll 0 center !important;
 }
@@ -355,7 +357,9 @@
 .gwt-toolbar-icon-categorymanager-normal {
     background: url( ../images/normal/categorymanager.png ) no-repeat scroll 0 center !important;
 }
-
+.gwt-toolbar-icon-tagmanager-normal {
+    background: url( ../images/min/tagmanager.png ) no-repeat scroll 0 center !important;
+}
 .gwt-toolbar-icon-sitemanager-normal {
     background: url( ../images/normal/sitemanager.png ) no-repeat scroll 0 center !important;
 }
@@ -423,6 +427,24 @@
     background-color: whitesmoke;
     font-size: 11px;
     border: none;
+}
+.gwt-toolbar-icon-newaction-min {
+    background: url( ../images/min/new.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-newaction-normal {
+    background: url( ../images/min/new.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-editaction-min {
+    background: url( ../images/min/edit.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-editaction-normal {
+    background: url( ../images/normal/edit.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-publicationaction-min {
+    background: url( ../images/min/publication.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-publicationaction-normal {
+    background: url( ../images/min/publication.png ) no-repeat scroll 0 center !important;
 }
 
 .gwt-MenuBar .gwt-toolbar-ItemsGroup-submenu {

@@ -111,18 +111,21 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <!--
                 ToDo : activate LanguageSwitcher
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>-->
+                <ref bean="org.jahia.toolbar.itemsgroup.NewAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
-                <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.User"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -660,36 +663,7 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Live"/>
-                <ref bean="org.jahia.toolbar.item.Edit"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.createPage"/>
-                <ref bean="org.jahia.toolbar.item.createContent"/>
-                <ref bean="org.jahia.toolbar.item.publish"/>
-                <ref bean="org.jahia.toolbar.item.publishall"/>
-                <ref bean="org.jahia.toolbar.item.unpublish"/>
-                <ref bean="org.jahia.toolbar.item.viewPublishStatus"/>
-                <ref bean="org.jahia.toolbar.item.lock"/>
-                <ref bean="org.jahia.toolbar.item.unlock"/>
-                <ref bean="org.jahia.toolbar.item.edit"/>
-                <ref bean="org.jahia.toolbar.item.delete"/>
-                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.ContentAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.delete"/>
-                <ref bean="org.jahia.toolbar.item.copy"/>
+                <!-- <ref bean="org.jahia.toolbar.item.Edit"/> -->
             </list>
         </property>
     </bean>
@@ -710,6 +684,64 @@
             </list>
         </property>
     </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+            <property name="layout" value="menu"/>
+            <property name="titleKey" value="NewAction.label"/>
+                <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
+                <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
+            <property name="items">
+                <list>
+                    <ref bean="org.jahia.toolbar.item.createPage"/>
+                    <ref bean="org.jahia.toolbar.item.createContent"/>
+                </list>
+            </property>
+        </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="EditAction.label"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-editaction-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-editaction-normal"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.edit"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
+                <ref bean="org.jahia.toolbar.item.lock"/>
+                <ref bean="org.jahia.toolbar.item.unlock"/>
+                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.PublicationAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="PublicationAction.label"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-publicationaction-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-publicationaction-normal"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.publish"/>
+                <ref bean="org.jahia.toolbar.item.publishall"/>
+                <ref bean="org.jahia.toolbar.item.unpublish"/>
+                <ref bean="org.jahia.toolbar.item.viewPublishStatus"/>
+            </list>
+        </property>
+    </bean>
+
+
+
+
+    <bean id="org.jahia.toolbar.itemsgroup.ContentAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.delete"/>
+                <ref bean="org.jahia.toolbar.item.copy"/>
+            </list>
+        </property>
+    </bean>
+
+
 
     <bean id="org.jahia.toolbar.itemsgroup.Admin" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
@@ -1476,8 +1508,8 @@
     <bean id="org.jahia.toolbar.item.TagManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
         <property name="titleKey" value="button.tagmanager"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-categorymanager-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-categorymanager-normal"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-tagmanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-tagmanager-normal"/>
         <property name="descriptionKey" value="button.tagmanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">

@@ -739,7 +739,7 @@ public class NavigationHelper {
                 n.setTemplate(f.getProperty("j:template").getValue().getString());
             }
 
-            if(f.isNodeType("mix:title")) {
+            if(f.hasProperty("jcr:title")) {
                 n.setDisplayName(f.getProperty("jcr:title").getString());
             }
         } catch (RepositoryException e) {

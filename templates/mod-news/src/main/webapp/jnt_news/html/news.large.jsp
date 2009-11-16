@@ -4,13 +4,13 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
- <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="newsTitle"/>
+
  <jcr:nodeProperty node="${currentNode}" name="date" var="newsDate"/>
  <jcr:nodeProperty node="${currentNode}" name="desc" var="newsDesc"/>
  <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
 
 <div class="newsListItem"><!--start newsListItem -->
-    <h4><a href="${url.base}${currentNode.path}.detail.html">${newsTitle.string}</a></h4>
+    <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
     <p class="newsInfo">
         <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>

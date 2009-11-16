@@ -4,14 +4,11 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
- <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
- <jcr:nodeProperty node="${currentNode}" name="abstract" var="abstract"/>
  <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
- <%--<jcr:nodeProperty node="${currentNode}" name="link" var="link"/>--%>
 
-        <div class="spacer"><!--start spacer -->
+        <div class="spacer">
             <div class="box box-fixed-height">
-                <a href="<template:module template="link" path="link"/>" alt="${title.string}"><img src="${image.node.url}" class="floatleft" alt="${title.string}"/></a>
+                <a href="${currentNode.properties.link.string}" alt="<jcr:nodeProperty node='${currentNode}" name="jcr:title"/>'><img src="${image.node.url}" class="floatleft" alt="${title.string}"/></a>
             </div>
         <div class="clear"> </div>
-        </div><!--stop spacer -->
+        </div>

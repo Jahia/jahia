@@ -4,38 +4,33 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
-<jcr:nodeProperty node="${currentNode}" name="startDate" var="startDate"/>
-<jcr:nodeProperty node="${currentNode}" name="endDate" var="endDate"/>
-<jcr:nodeProperty node="${currentNode}" name="location" var="location"/>
-<jcr:nodeProperty node="${currentNode}" name="eventsType" var="eventsType"/>
-<jcr:nodeProperty node="${currentNode}" name="body" var="body"/>
+
 
         <div class="eventsListItem"><!--start eventsListItem -->
             <div class="eventsInfoDate">
                 <div class="eventsDate">
-                    <span class="day"><fmt:formatDate pattern="dd" value="${startDate.time}"/></span>
-                    <span class="month"><fmt:formatDate pattern="MM" value="${startDate.time}"/></span>
-                    <span class="year"><fmt:formatDate pattern="yyyy" value="${startDate.time}"/></span>
+                    <span class="day"><fmt:formatDate pattern="dd" value="${currentNode.properties.startDate.time}"/></span>
+                    <span class="month"><fmt:formatDate pattern="MM" value="${currentNode.properties.startDate.time}"/></span>
+                    <span class="year"><fmt:formatDate pattern="yyyy" value="${currentNode.properties.startDate.time}"/></span>
                 </div>
-                <c:if test="${not empty endDate}">
+                <c:if test="${not empty currentNode.properties.endDate}">
                     <div class="eventsTxtDate">
                         <span><fmt:message key='to'/></span>
                     </div>
                     <div class="eventsDate">
-                        <span class="day"><fmt:formatDate pattern="dd" value="${endDate.time}"/></span>
-                        <span class="month"><fmt:formatDate pattern="MM" value="${endDate.time}"/></span>
-                        <span class="year"><fmt:formatDate pattern="yyyy" value="${endDate.time}"/></span>
+                        <span class="day"><fmt:formatDate pattern="dd" value="${currentNode.properties.endDate.time}"/></span>
+                        <span class="month"><fmt:formatDate pattern="MM" value="${currentNode.properties.endDate.time}"/></span>
+                        <span class="year"><fmt:formatDate pattern="yyyy" value="${currentNode.properties.endDate.time}"/></span>
                     </div>
                 </c:if>
             </div>
             <div class="eventsBody"><!--start eventsBody -->
-                <p class="eventsLocation"><span>${location.string}</span></p>
-                <p class="eventsLocation"><span>${eventsType.string}</span></p>
-                <h4>${title.string}</h4>
+                <p class="eventsLocation"><span>${currentNode.properties.location.string}</span></p>
+                <p class="eventsLocation"><span>${currentNode.properties.eventsType.string}</span></p>
+                <h4><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h4>
 
                 <p class="eventsResume">
-                    ${body.string}</p>
+                    ${currentNode.properties.body.string}</p>
                     <div class="eventsMeta">
         	    <span class="categoryLabel"><fmt:message key='category'/>:</span>
                         <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>

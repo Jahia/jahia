@@ -23,19 +23,17 @@
     <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div class="peoplePhoto">
-            <jcr:nodeProperty node="${currentNode}" name="lastname" var="lastname"/>
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${lastname} picture"></div>
+
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${currentNode.properties.lastname.string} picture"></div>
     </c:if>
     <div class="peopleBody">
-        <h5><jcr:nodeProperty node="${currentNode}" name="peopleFirstname"/>&nbsp;<jcr:nodeProperty
-                node="${currentNode}" name="lastname"/></h5>
+        <h5>${currentNode.properties.firstname.string}&nbsp;${currentNode.properties.lastname.string}</h5>
 
-        <p class="peopleFonction"><jcr:nodeProperty node="${currentNode}" name="function"/></p>
+        <p class="peopleFonction">${currentNode.properties.function.string}</p>
 
-        <p class="peopleBusinessUnit"><jcr:nodeProperty node="${currentNode}" name="businessUnit"/></p>
+        <p class="peopleBusinessUnit">${currentNode.properties.businessUnit.string}</p>
 
-        <jcr:nodeProperty node="${currentNode}" name="email" var="email"/>
-        <p class="peopleEmail"><a href='mailto:${email.string}'>${email.string}</a></p>
+        <p class="peopleEmail"><a href='mailto:${currentNode.properties.email.string}'>${currentNode.properties.email.string}</a></p>
 
         <div class="peopleAction">
             <a class="peopleDownload" href="${picture.node.url}" rel="facebox"><fmt:message

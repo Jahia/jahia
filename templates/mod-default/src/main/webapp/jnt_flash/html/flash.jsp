@@ -2,7 +2,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jcr:nodeProperty node="${currentNode}" name="flashSource" var="flashSource"/>
+<%-- <jcr:nodeProperty node="${currentNode}" name="flashSource" var="flashSource"/>
 <jcr:nodeProperty node="${currentNode}" name="width" var="widthFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="height" var="heightFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="flashPlayer" var="flashPlayer"/>
@@ -19,7 +19,8 @@
 <jcr:nodeProperty node="${currentNode}" name="wmode" var="wmodeFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="bgcolor" var="bgcolorFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="base" var="baseFlash"/>
-<jcr:nodeProperty node="${currentNode}" name="flashvars" var="flashvarsFlash"/>
+<jcr:nodeProperty node="${currentNode}" name="flashvars" var="flashvarsFlash"/>  --%>
+
 	    <div id="flashcontent${currentNode.UUID}">
             <div id="flashcontent"><!--START FLASH -->
                 <strong>You need to upgrade your Flash Player</strong><br />

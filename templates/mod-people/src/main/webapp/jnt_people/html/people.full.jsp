@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <script type="text/javascript">
     function ShowHideLayer(boxID) {
 	/* Obtain reference for the selected boxID layer and its button */
@@ -20,33 +21,22 @@
 }
 </script>
 
-
-
-
-
 <div style="border:1px solid #CCCCCC; padding:5px">
     <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div>
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${lastname} picture" align="left" width="58" height="58" style="border:1px solid #CCCCCC; margin-right:7px; ">
+            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${currentNode.properties.lastname.string} picture" align="left" width="58" height="58" style="border:1px solid #CCCCCC; margin-right:7px; ">
         </div>
     </c:if>
 
-            <h5><jcr:nodeProperty node="${currentNode}" name="peopleFirstname"/> <jcr:nodeProperty
-                    node="${currentNode}" name="lastname"/></h5>
-
-            <p><jcr:nodeProperty node="${currentNode}" name="function"/></p>
-             <p><jcr:nodeProperty node="${currentNode}" name="businessUnit"/></p>
-            <p>M.:<jcr:nodeProperty node="${currentNode}" name="cellular"/></p>
-            <p>T.:<jcr:nodeProperty node="${currentNode}" name="telephone"/></p>
-            <p>F.:<jcr:nodeProperty node="${currentNode}" name="fax"/></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="email" var="email"/>
-            <a href='mailto:${email.string}'>${email.string}</a></p>
-            <p><jcr:nodeProperty node="${currentNode}" name="biography"/>      </p>
-        
-        <!--stop collapsible -->
-        
+            <h4>${currentNode.properties.firstname.string} ${currentNode.properties.lastname.string}</h4>
+            <p>${currentNode.properties.function.string}</p>
+            <p>${currentNode.properties.businessUnit.string}</p>
+            <p>M.: ${currentNode.properties.cellular.string}</p>
+            <p>T.: ${currentNode.properties.telephone.string}</p>
+            <p>F.: ${currentNode.properties.fax.string}</p>
+            <p><a href='mailto:${currentNode.properties.email.string}'>${currentNode.properties.email.string}</a></p>
+            <p>${currentNode.properties.biography.string}</p>
 </div>
-    <!--stop peopleBody -->
-<div class="clear"></div>
 
+<div class="clear"></div>

@@ -5,5 +5,4 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<jcr:nodeProperty node="${currentNode}" name="text" var="text"/>
-           ${text.string}
+ ${currentNode.properties.text.string}

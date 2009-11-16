@@ -10,10 +10,10 @@
     <div class="pressRealeseForm"><!--start pressRealeseForm -->
         <form action="${url.base}${renderContext.mainResource.node.path}.html" method="get">
             <fieldset>
-                <legend><fmt:message key="web_templates_pressContainer.legend"/></legend>
+                <legend><fmt:message key="press.search"/></legend>
                 <div class="pressdatefrom">
 
-                    <div><label><fmt:message key="web_templates_pressContainer.from"/> :</label>
+                    <div><label><fmt:message key="date.from"/> :</label>
                         <ui:dateSelector cssClassName="dateSelection" fieldName="pressdatefrom"
                                          value="${param.pressdatefrom}"/>
                     </div>
@@ -22,7 +22,7 @@
                 <div class="clear"></div>
                 <div class="pressdateto">
 
-                    <div><label><fmt:message key="web_templates_pressContainer.to"/> :</label>
+                    <div><label><fmt:message key="date.to"/> :</label>
                         <ui:dateSelector cssClassName="dateSelection" fieldName="pressdateto"
                                          value="${param.pressdateto}"/>
                     </div>

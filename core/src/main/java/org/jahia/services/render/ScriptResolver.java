@@ -3,7 +3,6 @@ package org.jahia.services.render;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import java.util.SortedSet;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.

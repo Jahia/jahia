@@ -71,6 +71,8 @@ public class RequestDispatcherScript implements Script {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String templatePath;
+    private String templateName;
+    private Template template;
     private JahiaTemplatesPackage module;
 
     /**
@@ -90,6 +92,8 @@ public class RequestDispatcherScript implements Script {
                     logger.debug("Template '" + templatePath + "' resolved for resource: " + resource);
                 }
             }
+
+            template = new RequestDispatcherTemplate(templatePath, templateName, module, templateName);
 
             this.request = context.getRequest();
             this.response = context.getResponse();
@@ -121,6 +125,7 @@ public class RequestDispatcherScript implements Script {
                         templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
                         if (templatePath != null) {
                             module = aPackage;
+                            templateName = template;
                             return;
                         }
                     }
@@ -203,13 +208,12 @@ public class RequestDispatcherScript implements Script {
     }
 
     /**
-     * Return printable information about the script : type, localization, file, .. in order to help
-     * template developer to find the original source of the script
+     * Return template information associated to this script
      *
      * @return
      */
-    public String getInfo() {
-        return "JSP dispatch : " + templatePath;
+    public Template getTemplate() {
+        return template;
     }
 
     /**

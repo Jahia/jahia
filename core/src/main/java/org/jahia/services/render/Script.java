@@ -49,16 +49,9 @@ public interface Script {
     public String execute() throws IOException ;
 
     /**
-     * Return printable information about the script : type, localization, file, .. in order to help
-     * template developer to find the original source of the script
+     * Return template information associated to this script
      * @return
      */
-    public String getInfo();
-
-    /**
-     * Return the module where the script comes from
-     * @return the module name
-     */
-    public JahiaTemplatesPackage getModule();
+    public Template getTemplate();
 
 }

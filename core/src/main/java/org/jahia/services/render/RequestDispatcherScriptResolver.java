@@ -69,7 +69,7 @@ public class RequestDispatcherScriptResolver implements ScriptResolver {
                                 key = "default";
                             }
                             if (!templates.containsKey(key)) {
-                                templates.put(key, new Template(path + "/" + file.getName(), key, tplPackage, filename));
+                                templates.put(key, new RequestDispatcherTemplate(path + "/" + file.getName(), key, tplPackage, filename));
                             }
                         }
                     }
@@ -116,7 +116,7 @@ public class RequestDispatcherScriptResolver implements ScriptResolver {
                         key = "default";
                     }
                     if (!templates.containsKey(key)) {
-                        templates.put(key, new Template(path + "/" + file.getName(), key, tplPackage, filename));
+                        templates.put(key, new RequestDispatcherTemplate(path + "/" + file.getName(), key, tplPackage, filename));
                     }
                 }
             }

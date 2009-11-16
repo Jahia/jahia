@@ -32,20 +32,16 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.Template;
+import org.jahia.services.render.RequestDispatcherTemplate;
 import org.jahia.services.render.RenderService;
-import org.jahia.settings.SettingsBean;
+import org.jahia.services.render.Template;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.*;
-import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.

@@ -97,8 +97,8 @@ public class RenderService extends JahiaService {
         pushAttribute(request, "locale", node.getSession().getWorkspace().getName(), old);
 
         pushAttribute(request, "currentResource", resource, old);
-        pushAttribute(request, "scriptInfo", script.getInfo(), old);
-        pushAttribute(request, "currentModule", script.getModule(), old);
+        pushAttribute(request, "scriptInfo", script.getTemplate().getInfo(), old);
+        pushAttribute(request, "currentModule", script.getTemplate().getModule(), old);
 
         Map<String,Object> params = new HashMap<String,Object>();
         Map<String, Object> moduleParams = context.getModuleParams();
@@ -171,7 +171,7 @@ public class RenderService extends JahiaService {
                     if (hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                         script = resolveScript(wrappedResource, context);
                         request.setAttribute("wrappedContent", output);
-                        request.setAttribute("currentModule", script.getModule());
+                        request.setAttribute("currentModule", script.getTemplate().getModule());
                         output = script.execute();
                     } else {
                         logger.warn("Cannot get wrapper "+wrapper);
@@ -206,7 +206,7 @@ public class RenderService extends JahiaService {
                     wrappedResource.setWrappedMixinType(option.getNodeType());
                     pushAttribute(request,"optionsAutoRendering",true,old);
                     script = resolveScript(wrappedResource, context);
-                    request.setAttribute("currentModule", script.getModule());
+                    request.setAttribute("currentModule", script.getTemplate().getModule());
                     output += script.execute();
                 } catch (IOException e) {
                     logger.error("Cannot execute wrapper " + wrapper, e);

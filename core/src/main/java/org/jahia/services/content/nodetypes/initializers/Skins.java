@@ -32,18 +32,14 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.bin.Jahia;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.render.Template;
 import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Template;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
-import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.

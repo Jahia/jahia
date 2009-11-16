@@ -93,10 +93,10 @@ public class TemplateHelper {
             SortedSet<Template> set = getTemplatesSet(node);
             for (Template s : set) {
                 String tpl;
-                if (s.getOwnerPackage() == null) {
+                if (s.getModule() == null) {
                     tpl = "Default";
                 } else {
-                    tpl = s.getOwnerPackage().getName();
+                    tpl = s.getModule().getName();
                 }
                 if (s.getKey().equals(def)) {
                     templatesPath.add(new String[]{s.getKey(), "* " + s.getKey() + " (" + tpl + ")"});

@@ -1174,7 +1174,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final Locale locale = getSession().getLocale();
         if (locale != null) {
             try {
-                return getI18N(locale).hasProperty(s);
+                return getI18N(locale).hasProperty(s+"_"+locale.toString());
             } catch (ItemNotFoundException e) {
             }
         }

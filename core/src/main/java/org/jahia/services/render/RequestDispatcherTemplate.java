@@ -45,6 +45,8 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
                     e.printStackTrace();
                 }
             }
+        } else {
+            properties = propCache.get(propName);
         }
     }
 

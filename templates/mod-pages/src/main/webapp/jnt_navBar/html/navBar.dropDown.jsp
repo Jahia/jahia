@@ -3,18 +3,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}"/>
+<jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
 <template:addResources type="css" resources="navigation.css" nodetype="jnt:navBar"/>
 <!--start navigation-->
 <div id="navigation">
-    <div id="shortcuts">
+<%--
+    // Not use yet
+   <div id="shortcuts">
         <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
     </div>
+--%>
     <div id="navbar">
         <jcr:JCRSimpleNavigation node="${rootPage}" var="menu"/>
         <c:if test="${not empty menu}">
             <ul class="main-nav">
-                <li class="home"><a href="/">Home</a></li>
+                <li class="home"><a href="${url.base}${rootPage.path}.html">Home</a></li>
                 <c:forEach items="${menu}" var="navNode">
                     <jcr:nodeProperty node="${navNode}" name="jcr:title" var="title"/>
                     <c:set var="submenu" value="submenu"/>
@@ -44,4 +47,3 @@
     <div class="clear"></div>
 </div>
 <!--stop navigation-->
-

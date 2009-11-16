@@ -738,6 +738,10 @@ public class NavigationHelper {
             if (f.hasProperty("j:template")) {
                 n.setTemplate(f.getProperty("j:template").getValue().getString());
             }
+
+            if(f.isNodeType("mix:title")) {
+                n.setDisplayName(f.getProperty("jcr:title").getString());
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

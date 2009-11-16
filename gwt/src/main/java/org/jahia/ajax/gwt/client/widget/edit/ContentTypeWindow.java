@@ -32,16 +32,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -50,13 +48,15 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
-import com.extjs.gxt.ui.client.Style;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
@@ -65,6 +65,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -137,23 +138,23 @@ public class ContentTypeWindow extends Window {
         store.add(rootSchmurtzContent, false);
         final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
         schmurtzFolder.setPath("/content/schmurtzs");
-        JahiaContentManagementService.App.getInstance().ls(
-                JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
-                "jnt:schmurtz", null, null, null, false,
-                new AsyncCallback<List<GWTJahiaNode>>() {
-                    public void onFailure(Throwable caught) {
-                        MessageBox.alert("Alert", "Unable to load available schmurtzs. Cause: "
-                                        + caught.getLocalizedMessage(), null);
-                    }
+        JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
+                                                           "jnt:schmurtz", null, null, null, false,
+                                                           new AsyncCallback<List<GWTJahiaNode>>() {
+                                                               public void onFailure(Throwable caught) {
+                                                                   MessageBox.alert("Alert",
+                                                                                    "Unable to load available schmurtzs. Cause: " + caught.getLocalizedMessage(),
+                                                                                    null);
+                                                               }
 
-                    public void onSuccess(List<GWTJahiaNode> result) {
-                        for (GWTJahiaNode gwtJahiaNode : result) {
-                            // TODO use title of the schmurtz if available
-                            store.add(rootSchmurtzContent,
-                                    new ContentTypeModelData(gwtJahiaNode.getName()), false);
-                        }
-                    }
-                });
+                                                               public void onSuccess(List<GWTJahiaNode> result) {
+                                                                   for (GWTJahiaNode gwtJahiaNode : result) {
+                                                                       store.add(rootSchmurtzContent,
+                                                                                 new ContentTypeModelData(gwtJahiaNode),
+                                                                                 false);
+                                                                   }
+                                                               }
+                                                           });
 
         ColumnConfig name = new ColumnConfig("label", "Label", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
@@ -166,10 +167,11 @@ public class ContentTypeWindow extends Window {
                 panel.setWidth(695);
                 panel.setTableWidth("100%");
                 TableData tableData;
-                if (gwtJahiaNode.getGwtJahiaNodeType()!=null) {
+                if (gwtJahiaNode.getGwtJahiaNodeType() != null) {
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("3%");
-                    panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNode.getGwtJahiaNodeType()).createImage());
+                    panel.add(ContentModelIconProvider.getInstance().getIcon(
+                            gwtJahiaNode.getGwtJahiaNodeType()).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("97%");
                     panel.add(label, tableData);
@@ -190,24 +192,82 @@ public class ContentTypeWindow extends Window {
         treeGrid.getTreeView().setRowHeight(25);
         treeGrid.getTreeView().setForceFit(true);
         final Window window = this;
+        final ContentPanel previewPanel = new ContentPanel();
+        final LayoutContainer layoutContainer = new LayoutContainer();
+        previewPanel.add(layoutContainer);
+        treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
+        treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent baseEvent) {
+                ContentTypeModelData contentTypeModelData = (ContentTypeModelData) (((TreeGridEvent)baseEvent).getModel());
+                final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
+                final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
+                if (gwtJahiaNodeType != null) {
+                    new EditContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
+                    window.hide();
+                } else if (gwtJahiaNode != null) {
+                    final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
+                    instance.getNode(gwtJahiaNode.getPath() + "/j:target",new AsyncCallback<GWTJahiaNode>() {
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert("Alert","Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                                                    null);
+                        }
+
+                        public void onSuccess(GWTJahiaNode result) {
+                            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
+                            result.setName(gwtJahiaNode.getName());
+                            nodes.add(result);
+                            instance.paste(nodes, parentNode.getPath(),false,new AsyncCallback() {
+                                public void onFailure(Throwable caught) {
+                                    //To change body of implemented methods use File | Settings | File Templates.
+                                }
+
+                                public void onSuccess(Object result) {
+                                    hide();
+                                    linker.refreshMainComponent();
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
         treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ContentTypeModelData>() {
             @Override
             public void selectionChanged(
                     SelectionChangedEvent<ContentTypeModelData> contentTypeModelDataSelectionChangedEvent) {
                 final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNodeType();
+                final GWTJahiaNode gwtJahiaNode = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNode();
                 if (gwtJahiaNodeType != null) {
-                    new EditContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
-                    window.hide();
+                    layoutContainer.removeAll();
+                    layout();
+                } else if (gwtJahiaNode != null) {
+                    final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
+                    instance.getRenderedContent(gwtJahiaNode.getPath() + "/j:target", null,
+                                                ((EditLinker) linker).getLocale(), null, "wrapper.previewwrapper", null,
+                                                false, new AsyncCallback<String>() {
+                                public void onSuccess(String result) {
+                                    HTML html = new HTML(result);
+                                    layoutContainer.removeAll();
+                                    layoutContainer.add(html);
+                                    layout();
+                                }
+
+                                public void onFailure(Throwable caught) {
+                                    Log.error("", caught);
+//                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
+                                }
+                            });
                 }
             }
         });
         add(treeGrid);
-        add(new ContentPanel());
+        add(previewPanel);
         layout();
     }
 
     private class ContentTypeModelData extends BaseModelData implements Serializable {
         private GWTJahiaNodeType gwtJahiaNodeType;
+        private GWTJahiaNode gwtJahiaNode;
 
         public ContentTypeModelData(String label) {
             set("label", label);
@@ -218,15 +278,26 @@ public class ContentTypeWindow extends Window {
             set("label", gwtJahiaNodeType.getLabel());
         }
 
+        public ContentTypeModelData(GWTJahiaNode gwtJahiaNode) {
+            this.gwtJahiaNode = gwtJahiaNode;
+            set("label", gwtJahiaNode.getDisplayName());
+        }
+
         public String getLabel() {
             if (gwtJahiaNodeType != null) {
                 return gwtJahiaNodeType.getLabel();
+            } else if (gwtJahiaNode != null) {
+                return gwtJahiaNode.getDisplayName();
             }
             return get("label");
         }
 
         public GWTJahiaNodeType getGwtJahiaNodeType() {
             return gwtJahiaNodeType;
+        }
+
+        public GWTJahiaNode getGwtJahiaNode() {
+            return gwtJahiaNode;
         }
     }
 }

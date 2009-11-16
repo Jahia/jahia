@@ -72,10 +72,6 @@
                 <!--stop breadcrumbs-->
                 <h1>${currentNode.propertiesAsString['jcr:title']}</h1>
                 <div class="clear"></div>
-                <div id="navigation"><!--start navigation-->
-                    <div id="shortcuts">
-                        <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
-                    </div>
                     <template:module path="${rootPage.path}/topMenu">
                         <template:import>
                             <topMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
@@ -83,9 +79,6 @@
                                     j:template='dropDown'/>
                         </template:import>
                     </template:module>
-                    <div class="clear"></div>
-                </div>
-                <!--stop navigation-->
             </div>
         </div>
         <div class="clear"></div>

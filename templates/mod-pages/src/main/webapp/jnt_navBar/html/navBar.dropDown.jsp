@@ -4,11 +4,11 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}"/>
-
+<template:addResources type="css" resources="navigation.css" nodetype="jnt:navBar"/>
 <!--start navigation-->
 <div id="navigation">
     <div id="shortcuts">
-        <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
+        <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
     </div>
     <div id="navbar">
         <jcr:JCRSimpleNavigation node="${rootPage}" var="menu"/>

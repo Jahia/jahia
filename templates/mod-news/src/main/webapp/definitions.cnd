@@ -5,6 +5,7 @@
  - image (weakreference, file[mime='image/*'])
  page link (page[type="external,internal"])
  - date (date) = now()
+ - type (string,choicelist) < script(groovy,tests.groovy)
 
 [jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent
   - maxNews (long) = 10 indexed=no

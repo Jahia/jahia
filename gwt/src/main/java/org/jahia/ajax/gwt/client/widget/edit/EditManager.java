@@ -35,7 +35,7 @@ public class EditManager extends ContentPanel {
         toolbar.setStyleAttribute("z-index", "999");
         setTopComponent(toolbar);
 
-        setScrollMode(Style.Scroll.AUTO);
+        setScrollMode(Style.Scroll.NONE);
         add(mainModule = new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar);

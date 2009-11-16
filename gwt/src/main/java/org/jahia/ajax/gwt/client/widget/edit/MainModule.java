@@ -30,7 +30,7 @@ public class MainModule extends ContentPanel implements Module {
     private HTML html;
     private String path;
     private String template;
-    private boolean selectable;
+    private boolean selectable = true;
 
     private EditLinker editLinker;
 
@@ -45,6 +45,7 @@ public class MainModule extends ContentPanel implements Module {
         this.template = template;
 
         Hover.getInstance().setMainModule(this);
+        Selection.getInstance().setMainModule(this);
 
     }
 
@@ -52,15 +53,27 @@ public class MainModule extends ContentPanel implements Module {
         this.editLinker = linker;
         refresh();
 
-        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
+        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
+
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                Log.info("click" + path);
-                editLinker.onModuleSelection(MainModule.this);
+                if (selectable) {
+                    editLinker.onModuleSelection(MainModule.this);
+                }
             }
         };
-        getHeader().addListener(Events.OnClick, listener);
-        getHeader().addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));                
+        addListener(Events.OnClick, listener);
+        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));
+
+//        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
+//        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+//            public void handleEvent(ComponentEvent ce) {
+//                Log.info("click" + path);
+//                editLinker.onModuleSelection(MainModule.this);
+//            }
+//        };
+//        getHeader().addListener(Events.OnClick, listener);
+//        getHeader().addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));
     }
 
     public EditLinker getEditLinker() {

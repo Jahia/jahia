@@ -26,6 +26,8 @@ public class Hover {
 
     private static Hover instance;
 
+    private Module mainModule;
+
     private Map<Module, Box> boxes = new HashMap<Module, Box>();
 
 //    private LayoutContainer bg;
@@ -51,6 +53,7 @@ public class Hover {
     }
 
     public void setMainModule(final MainModule m) {
+        this.mainModule = m;
     }
 
     private boolean hidden = true;
@@ -106,6 +109,7 @@ public class Hover {
             }
         }
 
+        mainModule.setSelectable(false);
 
         b.show();
         boxes.put(module, b);
@@ -116,6 +120,9 @@ public class Hover {
         if (b != null) {
             b.hide();
             boxes.remove(module);
+        }
+        if (boxes.isEmpty()) {
+            mainModule.setSelectable(true);
         }
     }
 

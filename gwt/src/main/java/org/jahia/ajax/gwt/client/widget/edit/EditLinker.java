@@ -121,12 +121,6 @@ public class EditLinker implements Linker {
     }
 
     public void onModuleSelection(Module selection) {
-        if (selection != null) {
-            if (!selection.isSelectable()) {
-                return;
-            }
-        }
-
         selectedModule = selection;
 //        if (selectedModule != null) {
 //            selection.setDraggable(false);

@@ -585,18 +585,8 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>quartz-all</artifactId>
-            <version>1.6.5</version>
+            <version>1.6.6</version>
         </dependency>
-        <!--<dependency>
-            <groupId>openjms</groupId>
-            <artifactId>openjms-client</artifactId>
-            <version>0.7.6.1</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>oreilly</groupId>
-            <artifactId>cos</artifactId>
-            <version>20021105</version>
-        </dependency>-->
         <dependency>
             <groupId>jsptags</groupId>
             <artifactId>pager-taglib</artifactId>
@@ -607,32 +597,12 @@
             <artifactId>pdfbox</artifactId>
             <version>0.7.3</version>
         </dependency>
-        <!--<dependency>
-            <groupId>ppi</groupId>
-            <artifactId>JDBCDirectory</artifactId>
-            <version>0.05</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>proxytoys</groupId>
-            <artifactId>proxytoys</artifactId>
-            <version>0.1-J2PATCHED</version>
-        </dependency>-->
         <!-- todo: migrate to 1.5 or get rid of this and use java.regexp -->
         <dependency>
             <groupId>jakarta-regexp</groupId>
             <artifactId>jakarta-regexp</artifactId>
             <version>1.4</version>
         </dependency>
-        <!--<dependency>
-            <groupId>saaj</groupId>
-            <artifactId>saaj</artifactId>
-            <version>1.1</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>saxpath</groupId>
-            <artifactId>saxpath</artifactId>
-            <version>1.0-FCS</version>
-        </dependency>-->
 
         <dependency>
             <groupId>struts</groupId>
@@ -667,28 +637,6 @@
             <version>1.1.0</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>tm-extractors</groupId>
-            <artifactId>tm-extractors</artifactId>
-            <version>0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>tyrex</groupId>
-            <artifactId>tyrex</artifactId>
-            <version>1.0.1</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-            <version>1.4</version>
-        </dependency>-->
-        <!--
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

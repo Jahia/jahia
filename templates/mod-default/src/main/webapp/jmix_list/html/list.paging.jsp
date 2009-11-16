@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:remove var="currentList" scope="request"/>
 <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
@@ -30,7 +31,7 @@
         <c:set var="end" value="${step - 1}"/>
     </c:if>
 
-    <c:set var="nbPages" value="${currentList.size / 2}" />
+    <c:set var="nbPages" value="${fn:length(currentList) / 2}" />
     <c:forEach begin="0" end="${nbPages}" var="i">
         <a href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ i * 2 }&end=${ (i + 1)*2-1}')"> ${ i + 1}</a>&nbsp;
     </c:forEach>

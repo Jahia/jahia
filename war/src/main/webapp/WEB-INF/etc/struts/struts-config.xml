@@ -48,8 +48,6 @@
         <!-- Default Engine Apply Any Popup -->
         <forward name="EnginesApplyAnyPopup" path="engines.apply-any-popup"/>
 
-        <!-- Struts faces test -->
-        <forward name="sayHello" path="/jsp/sayHello.faces"/>
 
 
 
@@ -74,13 +72,6 @@
                 type="org.jahia.views.engines.coreengine.CoreAction"
                 scope="request"
                 input="engines.helloworld.input">
-        </action>
-
-        <!-- Struts faces test -->
-        <action path="/sayHello"
-                type="org.jahia.views.engines.SayHelloAction"
-                scope="request"
-                input="sayHello">
         </action>
 
         <!-- Hello World engine -->
@@ -114,40 +105,6 @@
             </forward>
         </action>
 
-        <!-- Container Versioning engine -->
-        <action path="/ContainerVersioning"
-                name="mainForm"
-                type="org.jahia.views.engines.versioning.actions.ContentVersioningAction"
-                scope="request"
-                input="engines.versioning.container.revisions-list"
-                parameter="method"
-                validate="false">
-            <forward name="operationChoices" path="engines.versioning.container.operation-choices"/>
-            <forward name="revisionsList" path="engines.versioning.container.revisions-list"/>
-            <forward name="containerVersionCompare" path="engines.versioning.container.compare-version"/>
-            <forward name="confirmRestore" path="engines.versioning.container.confirm-restore"/>
-            <forward name="confirmUndoStaging" path="engines.versioning.container.confirm-undo-staging"/>
-            <forward name="confirmUndelete" path="engines.versioning.container.confirm-undelete"/>
-            <forward name="close" path="engines.close"/>
-        </action>
-
-        <!-- Container Versioning engine -->
-        <action path="/ContainerListVersioning"
-                name="mainForm"
-                type="org.jahia.views.engines.versioning.actions.ContainerListVersioningAction"
-                scope="request"
-                input="engines.versioning.containerlist.containers-list"
-                parameter="method"
-                validate="false">
-            <forward name="operationChoices" path="engines.versioning.containerlist.operation-choices"/>
-            <forward name="containersList" path="engines.versioning.containerlist.containers-list"/>
-            <forward name="revisionsList" path="engines.versioning.containerlist.revisions-list"/>
-            <forward name="confirmRestore" path="engines.versioning.containerlist.confirm-restore"/>
-            <forward name="confirmUndoStaging" path="engines.versioning.containerlist.confirm-undo-staging"/>
-            <forward name="containerVersionDetail" path="engines.versioning.containerlist.containerversiondetail"/>
-            <forward name="confirmUndelete" path="engines.versioning.containerlist.confirm-undelete"/>
-            <forward name="close" path="engines.close"/>
-        </action>
 
         <!-- Versioning Revisions Detail -->
         <action path="/RevisionEntrySetDetail"
@@ -168,92 +125,6 @@
                 validate="false">
         </action>
 
-        <!-- Metadata engine -->
-        <action path="/MetadataAction"
-                name="mainForm"
-                type="org.jahia.views.engines.metadata.MetadataAction"
-                scope="request"
-                input="engines.metadata.edit"
-                parameter="method"
-                validate="false">
-            <forward name="edit" path="engines.metadata.edit"/>
-        </action>
-
-        <!-- Ajax Actions -->
-        <action path="/GetServerTime"
-                type="org.jahia.ajax.serverdatetime.GetServerTimeAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetClientServerTimeDiff"
-                type="org.jahia.ajax.serverdatetime.GetClientServerTimeDiffAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetMenuItems"
-                type="org.jahia.ajax.actionmenus.GetMenuItemsAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/PDisp"
-                type="org.jahia.ajax.monitors.PDisplayAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetWorkflowState"
-            type="org.jahia.ajax.actionmenus.GetWorkflowState"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetExtendedWorkflowState"
-            type="org.jahia.ajax.actionmenus.GetExtendedWorkflowStateAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetTimeBasedPublishingState"
-            type="org.jahia.ajax.actionmenus.GetTimeBasedPublishingState"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetQuotedPrintable"
-                type="org.jahia.ajax.GetQuotedPrintableStringAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetPatchesStatus"
-            type="org.jahia.ajax.admin.PatchStatusAction"
-                parameter="method"
-                validate="false">
-        </action>
-        
-        <action path="/ReleaseLock"
-            type="org.jahia.ajax.engines.ReleaseLock"
-                validate="false">
-        </action>
-
-        <action path="/QuickValidate"
-            type="org.jahia.ajax.actionmenus.QuickValidationAction"
-                validate="false">
-        </action>
-
-        <action path="/IndexSite"
-            type="org.jahia.ajax.admin.IndexSiteAction"
-                validate="false">
-        </action>
-        
-        <action path="/subscription"
-            type="org.jahia.ajax.subscriptions.SubscribeAction"
-                parameter="action"
-                validate="false">
-        </action>
 
         <!--=======================================================================-->
         <!-- ADMININSTRATION SECTION 											   -->

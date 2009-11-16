@@ -42,7 +42,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -563,16 +562,18 @@ public class ContentActions {
         showContentWizard(linker, null);
     }
 
-
+    public static void showContentWizard(final Linker linker, final String nodeType){
+        showContentWizard(linker, nodeType, false);
+    }
     /**
      * Show content wizard with a selected node type
      *
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizard(final Linker linker, final String nodeType) {
+    public static void showContentWizard(final Linker linker, final String nodeType, final boolean displaySchmurtz) {
         if(nodeType ==  null){
-            showContentWizardByNodeType(linker, null);
+            showContentWizardByNodeType(linker, null, true);
             return;
         }
 
@@ -581,7 +582,7 @@ public class ContentActions {
             public void onSuccess(GWTJahiaNodeType jahiaNodeType) {
                 if (jahiaNodeType != null) {
                     Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
-                    showContentWizardByNodeType(linker, jahiaNodeType);
+                    showContentWizardByNodeType(linker, jahiaNodeType, displaySchmurtz);
                 }else{
                     Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");                    
                 }
@@ -599,8 +600,10 @@ public class ContentActions {
      *
      * @param linker
      * @param nodeType
+     * @param displaySchmurtz
      */
-    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType) {
+    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType,
+                                                   boolean displaySchmurtz) {
         GWTJahiaNode parent = linker.getSelectedNode();
         if (parent == null) {
             parent = linker.getMainNode();
@@ -612,7 +615,7 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeType,false).show();
+            new ContentTypeWindow(linker, parent, nodeType,displaySchmurtz).show();
         }
     }
 

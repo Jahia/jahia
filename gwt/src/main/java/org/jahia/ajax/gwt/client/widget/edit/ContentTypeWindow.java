@@ -63,9 +63,9 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,13 +79,13 @@ public class ContentTypeWindow extends Window {
     private GWTJahiaNode parentNode;
     private final Linker linker;
     private final GWTJahiaNodeType nodeType;
-    private final boolean createPage;
+    private final boolean displaySchmurtz;
 
 
-    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType, boolean createPage) {
+    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType, boolean displaySchmurtz) {
         this.linker = linker;
         this.nodeType = nodeType;
-        this.createPage = createPage;
+        this.displaySchmurtz = displaySchmurtz;
         if (nodeType != null) {
             this.baseType = nodeType.getName();
         } else {
@@ -111,7 +111,7 @@ public class ContentTypeWindow extends Window {
         final TreeStore<ContentTypeModelData> store = new TreeStore<ContentTypeModelData>();
         final ContentTypeModelData rootEmptyContent = new ContentTypeModelData("New Empty Content");
         store.add(rootEmptyContent, false);
-        if (!createPage) {
+        if (nodeType == null) {
             JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseType, parentNode,
                                                                             new AsyncCallback<List<GWTJahiaNodeType>>() {
                                                                                 public void onFailure(
@@ -134,28 +134,29 @@ public class ContentTypeWindow extends Window {
         } else {
             store.add(rootEmptyContent, new ContentTypeModelData(nodeType), false);
         }
-        final ContentTypeModelData rootSchmurtzContent = new ContentTypeModelData("New Schmurtz Content");
-        store.add(rootSchmurtzContent, false);
-        final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
-        schmurtzFolder.setPath("/content/schmurtzs");
-        JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
-                                                           "jnt:schmurtz", null, null, null, false,
-                                                           new AsyncCallback<List<GWTJahiaNode>>() {
-                                                               public void onFailure(Throwable caught) {
-                                                                   MessageBox.alert("Alert",
-                                                                                    "Unable to load available schmurtzs. Cause: " + caught.getLocalizedMessage(),
-                                                                                    null);
-                                                               }
-
-                                                               public void onSuccess(List<GWTJahiaNode> result) {
-                                                                   for (GWTJahiaNode gwtJahiaNode : result) {
-                                                                       store.add(rootSchmurtzContent,
-                                                                                 new ContentTypeModelData(gwtJahiaNode),
-                                                                                 false);
+        if (displaySchmurtz) {
+            final ContentTypeModelData rootSchmurtzContent = new ContentTypeModelData("New Schmurtz Content");
+            store.add(rootSchmurtzContent, false);
+            final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
+            schmurtzFolder.setPath("/content/schmurtzs");
+            JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
+                                                               "jnt:schmurtz", null, null, null, false,
+                                                               new AsyncCallback<List<GWTJahiaNode>>() {
+                                                                   public void onFailure(Throwable caught) {
+                                                                       MessageBox.alert("Alert",
+                                                                                        "Unable to load available schmurtzs. Cause: " + caught.getLocalizedMessage(),
+                                                                                        null);
                                                                    }
-                                                               }
-                                                           });
 
+                                                                   public void onSuccess(List<GWTJahiaNode> result) {
+                                                                       for (GWTJahiaNode gwtJahiaNode : result) {
+                                                                           store.add(rootSchmurtzContent,
+                                                                                     new ContentTypeModelData(
+                                                                                             gwtJahiaNode), false);
+                                                                       }
+                                                                   }
+                                                               });
+        }
         ColumnConfig name = new ColumnConfig("label", "Label", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
@@ -198,7 +199,7 @@ public class ContentTypeWindow extends Window {
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent baseEvent) {
-                ContentTypeModelData contentTypeModelData = (ContentTypeModelData) (((TreeGridEvent)baseEvent).getModel());
+                ContentTypeModelData contentTypeModelData = (ContentTypeModelData) (((TreeGridEvent) baseEvent).getModel());
                 final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
                 final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
                 if (gwtJahiaNodeType != null) {
@@ -206,17 +207,18 @@ public class ContentTypeWindow extends Window {
                     window.hide();
                 } else if (gwtJahiaNode != null) {
                     final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                    instance.getNode(gwtJahiaNode.getPath() + "/j:target",new AsyncCallback<GWTJahiaNode>() {
+                    instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
                         public void onFailure(Throwable caught) {
-                            MessageBox.alert("Alert","Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
-                                                                                    null);
+                            MessageBox.alert("Alert",
+                                             "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                             null);
                         }
 
                         public void onSuccess(GWTJahiaNode result) {
                             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
                             result.setName(gwtJahiaNode.getName());
                             nodes.add(result);
-                            instance.paste(nodes, parentNode.getPath(),false,new AsyncCallback() {
+                            instance.paste(nodes, parentNode.getPath(), false, new AsyncCallback() {
                                 public void onFailure(Throwable caught) {
                                     //To change body of implemented methods use File | Settings | File Templates.
                                 }

@@ -11,7 +11,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class NewContentListActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.showContentWizard(linker, "jnt:contentList");
+        ContentActions.showContentWizard(linker, "jnt:contentList",true);
     }
 
     public void handleNewLinkerSelection() {

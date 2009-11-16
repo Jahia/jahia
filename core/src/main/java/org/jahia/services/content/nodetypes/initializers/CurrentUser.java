@@ -38,7 +38,6 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +47,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class CurrentUser implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         if (jParams != null) {
             return new Value[] { new ValueImpl(jParams.getUser().getUsername(), PropertyType.STRING, false) };
         }

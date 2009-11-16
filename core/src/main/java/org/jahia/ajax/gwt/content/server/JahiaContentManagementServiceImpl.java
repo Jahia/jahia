@@ -59,6 +59,8 @@ import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.registries.ServicesRegistry;
+import org.exoplatform.services.jcr.impl.core.SessionFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -272,6 +274,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
         ParamBean jParams = retrieveParamBean();
         GWTJahiaNode node = navigation.getNode(path, "default", jParams);
+        try {
+            JCRNodeWrapper nodeWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNode(node.getPath());
+            jParams.setAttribute("contextNode", nodeWrapper);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+        }
         List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), jParams);
         Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, jParams);
         GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);

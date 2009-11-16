@@ -36,7 +36,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 
 import javax.jcr.Value;
-import javax.jcr.RepositoryException;
 import javax.jcr.PropertyType;
 import java.util.*;
 
@@ -48,7 +47,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Country implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         String[] iso = Locale.getISOCountries();
         Value [] result = new Value[iso.length];
         for (int i = 0; i < iso.length; i++) {

@@ -36,7 +36,12 @@ import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.params.ParamBean;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.registries.ServicesRegistry;
+import org.apache.log4j.Logger;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -45,6 +50,8 @@ import java.util.*;
  * Time: 6:26:11 PM
  */
 public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implements JahiaContentDefinitionService {
+    private static final transient Logger logger = Logger.getLogger(JahiaContentDefinitionServiceImpl.class);
+
     private ContentDefinitionHelper contentDefinition;
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
@@ -80,5 +87,16 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {
         return contentDefinition.getAvailableMixin(type, retrieveParamBean());
+    }
+
+    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) {
+        ParamBean ctx = retrieveParamBean();
+        try {
+            JCRNodeWrapper nodeWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNode(node.getPath());
+            ctx.setAttribute("contextNode", nodeWrapper);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+        }
+        return contentDefinition.getAvailableMixin(getNodeType(node.getNodeTypes().iterator().next()), ctx);
     }
 }

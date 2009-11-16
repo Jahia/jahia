@@ -123,9 +123,8 @@ public class ContentDefinitionHelper {
                     prop.setInternationalized(epd.isInternationalized());
                     prop.setRequiredType(epd.getRequiredType());
                     prop.setMultiple(epd.isMultiple());
-                    Map contextMap = new HashMap();
-                    contextMap.put("currentDefinition", nodeType);
-                    String[] constr = epd.getValueConstraints(contextMap);
+                    context.setAttribute("contextDefinition", nodeType);
+                    String[] constr = epd.getValueConstraints();
                     boolean constrained = constr != null && constr.length > 0;
                     prop.setConstrained(constrained);
                     if (constrained) {

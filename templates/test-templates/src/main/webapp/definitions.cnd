@@ -40,8 +40,6 @@
  sharedSmallText smallText
  sharedSmallText smallTextWithDefault = 'default value'
  sharedSmallText smallTextWithDefaultAsResource = defaultValue internationalized
- sharedSmallText smallTextWithDefaultAsFunction = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer')
- sharedSmallText smallTextWithDefaultAsFunctionReadOnly = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer') protected
  sharedSmallText smallTextWithDefaultAsExpression = eval(currentUser.username)
  sharedSmallText mandatorySmallText mandatory
  sharedSmallText alphanumericSmallText < '[a-zA-Z1-9]*'

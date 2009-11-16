@@ -50,8 +50,11 @@ import java.util.*;
  */
 public class Skins implements ValueInitializer {
 
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
-        ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+        if (jParams == null) {
+            return new Value[0];
+        }
+        ExtendedNodeType nt = (ExtendedNodeType) jParams.getAttribute("contextDefinition");
         if (nt == null) {
             return new Value[0];
         }

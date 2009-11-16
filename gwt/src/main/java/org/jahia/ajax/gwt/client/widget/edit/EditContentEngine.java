@@ -525,16 +525,29 @@ public class EditContentEngine extends Window {
      * load mixin
      */
     private void loadMixin() {
-        definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onSuccess(List<GWTJahiaNodeType> result) {
-                mixin = result;
-                fillCurrentTab();
-            }
+        if (node == null) {
+            definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
+                public void onSuccess(List<GWTJahiaNodeType> result) {
+                    mixin = result;
+                    fillCurrentTab();
+                }
 
-            public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught) {
 
-            }
-        });
+                }
+            });
+        } else {
+            definitionService.getAvailableMixin(node, new AsyncCallback<List<GWTJahiaNodeType>>() {
+                public void onSuccess(List<GWTJahiaNodeType> result) {
+                    mixin = result;
+                    fillCurrentTab();
+                }
+
+                public void onFailure(Throwable caught) {
+
+                }
+            });
+        }
     }
 
     /**

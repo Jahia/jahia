@@ -33,7 +33,6 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
@@ -51,7 +50,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
  * To change this template use File | Settings | File Templates.
  */
 public class Now implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         return new Value[] { new ValueImpl(ISO8601.format(new GregorianCalendar()), PropertyType.DATE, false) };        
     }
 }

@@ -58,4 +58,6 @@ public interface JahiaContentDefinitionServiceAsync {
 
     void getAvailableMixin(GWTJahiaNodeType type, AsyncCallback<List<GWTJahiaNodeType>> async);
 
+    void getAvailableMixin(GWTJahiaNode node, AsyncCallback<List<GWTJahiaNodeType>> async);
+
 }

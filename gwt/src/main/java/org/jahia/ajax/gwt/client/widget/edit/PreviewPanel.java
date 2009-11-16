@@ -185,8 +185,9 @@ public class PreviewPanel extends ContentPanel {
      * @param node the selected node (item on the page)
      */
     public void updateTemplateBox(GWTJahiaNode node) {
-        templateBox.getStore().removeAll();
         templateBox.clearSelections();
+        templateBox.getStore().removeAll();
+//        templateBox.getStore().clearFilters();
         if (node != null) {
             JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
                 public void onFailure(Throwable throwable) {
@@ -194,13 +195,15 @@ public class PreviewPanel extends ContentPanel {
 //                    com.google.gwt.user.client.Window.alert("-upda tpl box->" + throwable.getMessage());
                 }
                 public void onSuccess(List<String[]> strings) {
+                     GWTJahiaBasicDataBean selected = null;
                     for(String[] currentTpl:strings) {
                         GWTJahiaBasicDataBean dataBean = new GWTJahiaBasicDataBean(currentTpl[0], currentTpl[1]);
                         templateBox.getStore().add(dataBean);
                         if (currentTpl[0].equals(template)) {
-                            templateBox.setValue(dataBean);
+                            selected = dataBean;
                         }
                     }
+//                    templateBox.setValue(selected);
 
                 }
             });

@@ -33,14 +33,18 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.render.RequestDispatcherTemplate;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.analytics.reports.ReportParams;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
 /**
@@ -52,15 +56,40 @@ import java.util.*;
  */
 public class Templates implements ValueInitializer {
 
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
-        ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
-        if (nt == null) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+        if (jParams == null) {
+            return new Value[0];
+        }
+        
+        JCRNodeWrapper node = (JCRNodeWrapper) jParams.getAttribute("contextNode");
+
+        if (node == null) {
             return new Value[0];
         }
 
         SortedSet<Template> templates;
         if ("j:template".equals(declaringPropertyDefinition.getName())) {
-            templates = RenderService.getInstance().getTemplatesSet(nt);
+            templates = new TreeSet<Template>();
+            try {
+                for (String s : node.getNodeTypes()) {
+                    templates.addAll(RenderService.getInstance().getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s)));
+                }
+            } catch (RepositoryException e) {
+
+            }
+        } else if ("j:referenceTemplate".equals(declaringPropertyDefinition.getName())) {
+            templates = new TreeSet<Template>();
+            try {
+                if (node.hasProperty("j:node")) {
+                    JCRNodeWrapper ref = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+
+                    for (String s : ref.getNodeTypes()) {
+                        templates.addAll(RenderService.getInstance().getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s)));
+                    }
+                }
+            } catch (RepositoryException e) {
+
+            }
         } else {
             templates = RenderService.getInstance().getAllTemplatesSet();
         }

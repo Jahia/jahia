@@ -56,7 +56,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -133,6 +135,26 @@ public class ContentTypeWindow extends Window {
         }
         final ContentTypeModelData rootSchmurtzContent = new ContentTypeModelData("New Schmurtz Content");
         store.add(rootSchmurtzContent, false);
+        final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
+        schmurtzFolder.setPath("/content/schmurtzs");
+        JahiaContentManagementService.App.getInstance().ls(
+                JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
+                "jnt:schmurtz", null, null, null, false,
+                new AsyncCallback<List<GWTJahiaNode>>() {
+                    public void onFailure(Throwable caught) {
+                        MessageBox.alert("Alert", "Unable to load available schmurtzs. Cause: "
+                                        + caught.getLocalizedMessage(), null);
+                    }
+
+                    public void onSuccess(List<GWTJahiaNode> result) {
+                        for (GWTJahiaNode gwtJahiaNode : result) {
+                            // TODO use title of the schmurtz if available
+                            store.add(rootSchmurtzContent,
+                                    new ContentTypeModelData(gwtJahiaNode.getName()), false);
+                        }
+                    }
+                });
+
         ColumnConfig name = new ColumnConfig("label", "Label", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override

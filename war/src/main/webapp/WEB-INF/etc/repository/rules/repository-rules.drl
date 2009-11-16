@@ -247,3 +247,12 @@ rule "Profile Image update"
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60
 end
+
+rule "Create schmurtz"
+    when
+        A new node is created
+             - it has the type jnt:schmurtz
+    then
+        Log "Creating schmurtz node: " + node.getPath()
+        Create schmurtz node
+end

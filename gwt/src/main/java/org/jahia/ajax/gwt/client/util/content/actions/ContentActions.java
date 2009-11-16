@@ -41,6 +41,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -48,17 +51,21 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
+import org.jahia.ajax.gwt.client.widget.edit.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -920,6 +927,44 @@ public class ContentActions {
         final GWTJahiaNode selectedNode = linker.getMainNode();
         if (selectedNode != null) {
             new ContentImport(linker, selectedNode).show();
+        }
+    }
+
+    public static void saveAsSchmurtz(final Linker linker) {
+        final GWTJahiaNode target = linker.getSelectedNode();
+        if (target != null) {
+            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:schmurtz", new AsyncCallback<GWTJahiaNodeType>() {
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert("Alert",
+                                    "Unable to load node type definitions for type 'jnt:schmurtz'. Cause: "
+                                            + caught.getLocalizedMessage(),
+                                    null);
+                        }
+
+                        public void onSuccess(final GWTJahiaNodeType nodeType) {
+                            
+                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.SCHMURTZ_REPOSITORY, null, null, null, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                                public void onFailure(Throwable caught) {
+                                    MessageBox.alert("Alert",
+                                            "Unable to load schmurtzs node for current site. Cause: "
+                                                    + caught.getLocalizedMessage(),
+                                            null);
+                                }
+
+                                public void onSuccess(List<GWTJahiaNode> result) {
+                                    if (result.isEmpty()) {
+                                        MessageBox.alert("Alert",
+                                                "Unable to load schmurtzs root node",
+                                                null);
+                                    } else {
+                                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
+                                        props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target)));
+                                        new EditContentEngine(linker, result.get(0), nodeType, props, null, false).show();
+                                    }
+                                }
+                            });                            
+                        }
+                    });
         }
     }
 

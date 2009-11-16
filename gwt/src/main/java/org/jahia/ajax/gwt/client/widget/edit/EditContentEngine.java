@@ -85,7 +85,6 @@ public class EditContentEngine extends Window {
 
     private GWTJahiaNode referencedNode;
     private List<GWTJahiaNodeType> referencedNodeTypes;
-    private List<GWTJahiaNodeType> availableMixin;
     private Map<String,GWTJahiaNodeProperty> referencedProps;
 
     private TabPanel tabs;
@@ -95,10 +94,6 @@ public class EditContentEngine extends Window {
     private AsyncTabItem metadataTab;
     private AsyncTabItem classificationTab;
     private AsyncTabItem optionsTab;
-    private AsyncTabItem publicationTab;
-//    private AsyncTabItem workflowTab;
-//    private AsyncTabItem rightsTab;
-//    private AsyncTabItem versionsTab;
 
     private Linker linker = null;
     private GWTJahiaNode parent = null;
@@ -111,12 +106,10 @@ public class EditContentEngine extends Window {
     private PropertiesEditor layoutEditor;
     private PropertiesEditor metadataEditor;
     private PropertiesEditor optionsEditor;
-    private PropertiesEditor publicationEditor;
     private LayoutContainer htmlPreview;
 
     private ButtonBar buttonBar;
     private Button ok;
-    private Button restore;
     private Button cancel;
     private ClassificationEditor classificationEditor;
     private static final int BUTTON_HEIGHT = 24;
@@ -163,6 +156,20 @@ public class EditContentEngine extends Window {
      * @param createInParentAndMoveBefore
      */
     public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName, boolean createInParentAndMoveBefore) {
+        this(linker, parent, type, new HashMap<String, GWTJahiaNodeProperty>(), targetName, createInParentAndMoveBefore);
+    }
+
+    /**
+     * Open Edit content engine for a new node creation
+     *
+     * @param linker The linker
+     * @param parent The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
+     * @param type The selected node type of the new node
+     * @param props initial values for properties
+     * @param targetName The name of the new node, or null if automatically defined
+     * @param createInParentAndMoveBefore
+     */
+    public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
         this.linker = linker;
         this.existingNode = false;
         this.parent = parent;
@@ -174,7 +181,7 @@ public class EditContentEngine extends Window {
 
         nodeTypes = new ArrayList<GWTJahiaNodeType>(1);
         nodeTypes.add(type);
-        props = new HashMap<String, GWTJahiaNodeProperty>();
+        this.props = new HashMap<String, GWTJahiaNodeProperty>(props);
 
         loadMixin();
 
@@ -472,23 +479,6 @@ public class EditContentEngine extends Window {
     }
 
     /**
-     * Create publication tab
-     */
-    private void createPublicationTab() {
-        if (!publicationTab.isProcessed()) {
-            if (mixin != null) {
-                publicationTab.setProcessed(true);
-                publicationEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.PUBLICATION, null, null, !existingNode || node.isWriteable(), true);
-                publicationTab.add(publicationEditor);
-                publicationTab.setHeight("400px");
-                layout();
-            }
-        }
-
-
-    }
-
-    /**
      * load node
      */
     private void loadNode() {
@@ -613,8 +603,8 @@ public class EditContentEngine extends Window {
         }
 
         public void componentSelected(ButtonEvent event) {
-            List elements = new ArrayList<GWTJahiaNode>();
-            node.setName(((TextField)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue());
+            List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+            node.setName(((TextField<?>)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue());
             elements.add(node);
             List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
             if (propertiesEditor != null) {
@@ -624,7 +614,7 @@ public class EditContentEngine extends Window {
             }
 
             if (isReference) {
-                List refelements = new ArrayList<GWTJahiaNode>();
+                List<GWTJahiaNode> refelements = new ArrayList<GWTJahiaNode>();
                 refelements.add(referencedNode);
                 JahiaContentManagementService.App.getInstance().saveProperties(refelements, list, new AsyncCallback<Object>() {
                     public void onFailure(Throwable throwable) {
@@ -718,12 +708,12 @@ public class EditContentEngine extends Window {
 
     private class CreateSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
-            String nodeName = ((TextField)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue();
+            String nodeName = ((TextField<?>)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue();
             if(nodeName.equals("Automatically Created (you can type your name here if you want)")) {
                 nodeName = targetName;
             }
             if (createInParentAndMoveBefore) {
-                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<Object>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);

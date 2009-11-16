@@ -494,6 +494,12 @@ public class NavigationHelper {
                 if (root != null) {
                     userNodes.add(root);
                 }
+            } else if (key.equals(JCRClientUtils.SCHMURTZ_REPOSITORY)) {
+                GWTJahiaNode root = getNode("/content/schmurtzs", workspace, jParams);
+                if (root != null) {
+                    root.setDisplayName("schmurtzs");
+                    userNodes.add(root);
+                }
             }
         }
         for (GWTJahiaNode userNode : userNodes) {

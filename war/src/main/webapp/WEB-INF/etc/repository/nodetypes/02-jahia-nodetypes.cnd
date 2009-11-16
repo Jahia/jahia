@@ -369,11 +369,13 @@
  orderable
  + * (nt:base) version
 
-[jnt:schmurtz] > nt:base, jmix:collection, jmix:basemetadata
- - j:name (string)
- - j:description (string)
+[jnt:schmurtzs] > nt:base, jmix:hierarchyNode, jmix:collection
+ + * (jnt:schmurtz)
+
+[jnt:schmurtz] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:content
  - j:picture (weakreference, file[mime='image/*'])
- + * (nt:base) version
+ - j:targetReference (weakreference) hidden < nt:base
+ + j:target (nt:base) version
  
 //---------------------------------------------------------
 // Portlets

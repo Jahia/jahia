@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.rules;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
@@ -45,9 +46,13 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -827,6 +832,25 @@ public class Service {
         map.put("provider",((JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider")).getKey());
         service.deleteJob(jobName, "RULES_JOBS");
         service.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
+    }
+
+    public void createSchmurtz(final NodeWrapper node, KnowledgeHelper drools)
+            throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(
+                new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        String targetNode = node.getNode().getProperty(
+                                "j:targetReference").getNode().getPath();
+                        session.checkout(node.getNode());
+                        session.getWorkspace().copy(targetNode,
+                                node.getPath() + "/j:target");
+                        logger.info("Schmurtz is created with the name '"
+                                + node.getName() + "' for target node "
+                                + targetNode);
+                        return true;
+                    }
+                });
     }
 
 }

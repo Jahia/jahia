@@ -194,8 +194,7 @@ public class SidePanel extends ContentPanel {
         final ListStore<GWTJahiaNodeType> createStore = new ListStore<GWTJahiaNodeType>();
         JahiaContentDefinitionService.App.getInstance().getNodeTypes(new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onFailure(Throwable caught) {
-                MessageBox.alert("Alert", "Unable to load content definitions. Cause: "
-                                          + caught.getLocalizedMessage(), null);
+                Log.error("Unable to load content definitions. Cause: ",caught);
             }
 
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {

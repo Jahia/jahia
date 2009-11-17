@@ -85,18 +85,22 @@ public class AddResourcesTag extends BodyTagSupport {
         final Set<String> links = renderContext.getExternalLinks(type);
         String[] strings = resources.split(",");
         for (String resource : strings) {
-            File f = new File(path + "/" + type + "/" + resource);
-            if (f.exists()) {
-                boolean found = false;
-                if (links != null) {
-                    for (String link : links) {
-                        if (link.endsWith(f.getName())) {
-                            found = true;
+            if (resource.startsWith("/")) {
+                renderContext.addExternalLink(type, resource);
+            } else {
+                File f = new File(path + "/" + type + "/" + resource);
+                if (f.exists()) {
+                    boolean found = false;
+                    if (links != null) {
+                        for (String link : links) {
+                            if (link.endsWith(f.getName())) {
+                                found = true;
+                            }
                         }
                     }
-                }
-                if (!found) {
-                    renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+                    if (!found) {
+                        renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+                    }
                 }
             }
         }

@@ -34,17 +34,16 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.bin.Jahia;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.operations.valves.ThemeValve;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PropertyType;
@@ -52,7 +51,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -65,9 +63,14 @@ public class ContentDefinitionHelper {
     private static final Logger logger = Logger.getLogger(ContentDefinitionHelper.class);
 
     private NavigationHelper navigation;
+    private ChoiceListInitializerService choiceListInitializerService;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
+    }
+
+    public void setChoiceListInitializerService(ChoiceListInitializerService choiceListInitializerService) {
+        this.choiceListInitializerService = choiceListInitializerService;
     }
 
     private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
@@ -91,8 +94,11 @@ public class ContentDefinitionHelper {
         GWTJahiaNodeType gwt = getGWTJahiaNodeType(context, nodeType);
         return gwt;
     }
-
     private GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType) {
+        return getGWTJahiaNodeType(context, nodeType,null);
+    }
+
+    private GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType, String realNodeType) {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         Locale loc = context.getLocale();
@@ -127,48 +133,44 @@ public class ContentDefinitionHelper {
                     String[] constr = epd.getValueConstraints();
                     boolean constrained = constr != null && constr.length > 0;
                     prop.setConstrained(constrained);
-                    if (constrained) {
-                        boolean useResourceBundle = epd.getSelectorOptions().containsKey("resourceBundle");
-                        String templatePackageName = context.getSite().getTemplatePackageName();
-                        if (useResourceBundle && rb == null) {
-                            rb = new JahiaResourceBundle(null, context.getLocale(), context.getSite() != null ? templatePackageName : null);
-                        }
-                        List<GWTJahiaValueDisplayBean> l = new ArrayList<GWTJahiaValueDisplayBean>();
-                        for (String s : constr) {
-                            GWTJahiaValueDisplayBean bean = new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(epd.getName().replace(':', '_') + "." + s, s) : s);
-                            if (epd.getSelectorOptions().containsKey("countryName")) {
-                                bean = new GWTJahiaValueDisplayBean(s, new Locale("en", s).getDisplayCountry(context.getLocale()));
+                    final Map<String, String> map = epd.getSelectorOptions();
+                    final ArrayList<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(
+                            32);
+                    if (map.size() > 0) {
+                        final Map<String, ChoiceListInitializer> initializers = choiceListInitializerService.getInitializers();
+                        List<ChoiceListValue> listValues = null;
+                        for (Map.Entry<String, String> entry : map.entrySet()) {
+                            if (initializers.containsKey(entry.getKey())) {
+                                listValues = initializers.get(entry.getKey()).getChoiceListValues(context, epd,
+                                                                                                  entry.getValue(),realNodeType,
+                                                                                                  listValues);
                             }
-                            l.add(bean);
-
-                            if (epd.getSelectorOptions().containsKey("image")) {
-                                String path = null;
-                                JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName);
-                                for (Iterator iterator = pkg.getLookupPath().iterator(); iterator.hasNext();) {
-                                    String rootFolderPath = (String) iterator.next();
-                                    // look for theme png name
-                                    String lookupFile = Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath + "/" + epd.getName() + "s/" + s + "_" + context.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png");
-                                    File ft = new File(lookupFile);
-                                    if (ft.exists()) {
-                                        path = rootFolderPath + "/" + epd.getName() + "s/" + s + "_" + context.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png";
-                                    } else {
-                                        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath + "/" + epd.getName() + "s/" + s + ".png"));
-                                        if (f.exists()) {
-                                            path = rootFolderPath + "/" + epd.getName() + "s/" + s + ".png";
+                        }
+                        if (listValues != null) {
+                            for (ChoiceListValue choiceListValue : listValues) {
+                                try {
+                                    final GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(
+                                            choiceListValue.getValue().getString(), choiceListValue.getDisplayName());
+                                    final Map<String, Object> props = choiceListValue.getProperties();
+                                    if (props != null) {
+                                        for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
+                                            displayBean.set(objectEntry.getKey(), objectEntry.getValue());
                                         }
                                     }
-                                }
-                                if (path != null) {
-                                    bean.set("image", context.getContextPath() + path);
-                                } else {
-                                    bean.set("image", context.getContextPath() + "/css/blank.gif");
+                                    displayBeans.add(displayBean);
+                                } catch (RepositoryException e) {
+                                    logger.error(e.getMessage(), e);
                                 }
                             }
                         }
-                        prop.setValueConstraints(l);
                     } else {
-                        prop.setValueConstraints(new ArrayList<GWTJahiaValueDisplayBean>());
+                        if (constrained) {
+                            for (String s : constr) {
+                                displayBeans.add(new GWTJahiaValueDisplayBean(s, s));
+                            }
+                        }
                     }
+                    prop.setValueConstraints(displayBeans);
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
@@ -457,7 +459,7 @@ public class ContentDefinitionHelper {
             while (it.hasNext()) {
                 ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
                 if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                    res.add(getGWTJahiaNodeType(ctx, nodeType));
+                    res.add(getGWTJahiaNodeType(ctx, nodeType,type.getName()));
                     foundTypes.add(nodeType.getName());
                 }
             }

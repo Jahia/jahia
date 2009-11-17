@@ -12,7 +12,7 @@
  - contract (string, choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
  - date (string)
  - town (string)
- - country (string, choicelist[countryName]) facetable  < country()
+ - country (string, choicelist[country]) facetable
  - educationLevel (string) i18n analyzer='keyword'
  - description (string, richtext) i18n
  - skills (string, richtext) i18n

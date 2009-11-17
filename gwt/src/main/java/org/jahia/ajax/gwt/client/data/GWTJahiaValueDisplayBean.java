@@ -42,9 +42,6 @@ import java.io.Serializable;
  */
 public class GWTJahiaValueDisplayBean extends BaseModelData implements Serializable {
 
-    String value ;
-    String display ;
-
     public GWTJahiaValueDisplayBean() {
         super() ;
     }

@@ -345,7 +345,7 @@ sharedSmallText contract (choicelist) facetable sortable <
     resourceKey(contract3),
     resourceKey(contract4)
 smallText       town sortable
-smallText       country (choicelist) facetable sortable < country()
+smallText       country (choicelist[country]) facetable sortable
 smallText       educationLevel analyzer='keyword' sortable
 bigText         description
 bigText         skills

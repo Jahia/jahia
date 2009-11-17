@@ -190,7 +190,7 @@
  - j:street (string)
  - j:zipcode (string)
  - j:town (string)
- - j:country (string,choicelist) < country()
+ - j:country (string,choicelist[country])
  - j:private (boolean)=false
 
 [jnt:addresses]  > nt:base, jmix:collection
@@ -301,16 +301,16 @@
 [jmix:layout] mixin
 
 [jmix:renderable] > jmix:layout, jmix:contentMixin mixin
- - j:template (string, choicelist[resourceBundle,image]) < templates()
+ - j:template (string, choicelist[templates,resourceBundle,image])
 
 [jmix:renderableList] > jmix:layout, jmix:listMixin mixin
- - j:subNodesTemplate (string, choicelist[resourceBundle,image]) < templates()
+ - j:subNodesTemplate (string, choicelist[templates,resourceBundle,image])
 
 [jmix:renderableReference] > jmix:layout mixin
- - j:referenceTemplate (string, choicelist[resourceBundle,image]) < templates()
+ - j:referenceTemplate (string, choicelist[templates,resourceBundle,image])
 
 [jmix:skinnable] > jmix:layout, jmix:contentMixin mixin
- - j:skin (string, choicelist[resourceBundle,image]) indexed=no < skins()
+ - j:skin (string, choicelist[skins,resourceBundle,image]) indexed=no
 
 [jmix:positionable] > jmix:layout mixin
  - j:columnIndex (long)

@@ -143,4 +143,26 @@
         <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
     </bean>
 
+    <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
+    <bean id="countryInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerImpl"/>
+    <bean id="imageInitializer" class="org.jahia.services.content.nodetypes.initializers.ImageChoiceListInitializerImpl"/>
+    <bean id="templatesInitializer" class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
+    <bean id="skinsInitializer" class="org.jahia.services.content.nodetypes.initializers.SkinsChoiceListInitializerImpl"/>
+    <bean id="nodesInitializer" class="org.jahia.services.content.nodetypes.initializers.NodesChoiceListInitializerImpl">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
+    <bean id="scriptInitializer" class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
+    <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService">
+        <property name="initializers">
+            <map>
+                <entry key="resourceBundle" value-ref="rbInitializer"/>
+                <entry key="country" value-ref="countryInitializer"/>
+                <entry key="image" value-ref="imageInitializer"/>
+                <entry key="templates" value-ref="templatesInitializer"/>
+                <entry key="skins" value-ref="skinsInitializer"/>
+                <entry key="nodes" value-ref="nodesInitializer"/>
+                <entry key="script" value-ref="scriptInitializer"/>
+            </map>
+        </property>
+    </bean>
 </beans>

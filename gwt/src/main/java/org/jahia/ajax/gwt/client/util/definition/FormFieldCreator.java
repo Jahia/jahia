@@ -215,17 +215,26 @@ public class FormFieldCreator {
             Log.debug("selector : " + propDefinition.getSelector());
             if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.CHOICELIST) {
                 List<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
+                final List<GWTJahiaValueDisplayBean> displayBeans = propDefinition.getValueConstraints();
                 if (propDefinition.isMultiple()) {
                     for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : values) {
                         String val = jahiaNodePropertyValue.getString();
                         if (val != null && val.length() > 0) {
-                            selection.add(new GWTJahiaValueDisplayBean(val, val));
+                            for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
+                                if(displayBean.getValue().equals(val)) {
+                                    selection.add(displayBean);
+                                }
+                            }
                         }
                     }
                     ((ListField<GWTJahiaValueDisplayBean>) field).setSelection(selection);
                 } else {
                     String val = values.get(0).getString();
-                    selection.add(new GWTJahiaValueDisplayBean(val, val));
+                    for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
+                                if(displayBean.getValue().equals(val)) {
+                                    selection.add(displayBean);
+                                }
+                            }
                     ((ComboBox<GWTJahiaValueDisplayBean>) field).setSelection(selection);
                 }
             } else {

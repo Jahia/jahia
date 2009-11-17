@@ -52,52 +52,44 @@ import org.jahia.services.pages.JahiaPage;
 
 public class JahiaData {
 
-    private static transient final Category logger =
-        org.apache.log4j.Logger.getLogger(JahiaData.class);
+    private static transient final Category logger = org.apache.log4j.Logger.getLogger(JahiaData.class);
 
     public static final String JAHIA_DATA = "org.jahia.data.JahiaData";
 
-    private ProcessingContext               jParams;
+    private ProcessingContext jParams;
 
-    private GuiBean                 guiBean;
-    
-    private boolean doBuildData;
+    private GuiBean guiBean;
 
-    /***
-        * constructor
-        * Build a JahiaData and optionally can force to create or not the fields set or containers set.
-        * This is used in particular situation where fields and container sets are not required,
-        * i.e. : when some engines are called from JahiaAdministration Servlet
-        *
-        * @author NK
-        * @param jParams
-        * @param doBuildData
-        */
-    public JahiaData (ProcessingContext jParams, boolean doBuildData) throws JahiaException {
+    /**
+     * constructor
+     * Build a JahiaData and optionally can force to create or not the fields set or containers set.
+     * This is used in particular situation where fields and container sets are not required,
+     * i.e. : when some engines are called from JahiaAdministration Servlet
+     *
+     * @param jParams
+     * @param doBuildData
+     * @author NK
+     */
+    public JahiaData(ProcessingContext jParams, boolean doBuildData) throws JahiaException {
         this.jParams = jParams;
-        guiBean = new GuiBean( this.getProcessingContext() );
-        this.doBuildData = doBuildData;
+        guiBean = new GuiBean(this.getProcessingContext());
     }
 
 
-
-    /***
-        * constructor
-        * EV    30.10.2000
-        * EV    18.11.2000  added jSettings in parameters
-        *
-        */
-    public JahiaData (ProcessingContext jParams) throws JahiaException {
+    /**
+     * constructor
+     * EV    30.10.2000
+     * EV    18.11.2000  added jSettings in parameters
+     */
+    public JahiaData(ProcessingContext jParams) throws JahiaException {
         this(jParams, true);
     }
 
 
-
     /**
-     *
      * @return an object containing all the page parameters
      * @deprecated use getProcessingContext instead since we are trying
-     * to reduce the dependency on request/response pairs.
+     *             to reduce the dependency on request/response pairs.
      */
     public ParamBean params() {
         return getParamBean();
@@ -110,15 +102,19 @@ public class JahiaData {
         return jParams;
     }
 
-    /***
-       * returns the current page
-    */
-    public  JahiaPage           page()          { return jParams.getPage(); }   // for upward compatibility
+    /**
+     * returns the current page
+     */
+    public JahiaPage page() {
+        return jParams.getPage();
+    }   // for upward compatibility
 
-    /***
+    /**
      * returns an object allowing to retrieve paths and to draw links
-    */
-    public  GuiBean             gui()           { return getGui();           }
+     */
+    public GuiBean gui() {
+        return getGui();
+    }
     // end accessor methods
 
     /**
@@ -127,16 +123,14 @@ public class JahiaData {
      * @return
      */
     public GuiBean getGui() {
-        if (guiBean == null && doBuildData) {
-            
-        }
         return guiBean;
     }
+
     /**
      * @return the current ParamBean object if this is what we are really using
      * @deprecated we strongly recommend using getProcessingContext instead of
-     * this method, in order to avoid the requirement of the request/response
-     * pair.
+     *             this method, in order to avoid the requirement of the request/response
+     *             pair.
      */
     public ParamBean getParamBean() {
         return (ParamBean) jParams;

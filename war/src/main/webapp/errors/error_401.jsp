@@ -31,7 +31,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page language="java" contentType="text/html; charset=UTF-8" 
+<%@page language="java" contentType="text/html; charset=UTF-8"
 %><%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -65,7 +65,7 @@ function keyDown(e) {
 <body onload="autoFocus()" class="login">
 <center>
     <div id="adminLogin">
-        <ui:loginArea>
+        <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
         <h3 class="loginIcon"><fmt:message key="org.jahia.engines.loginToJahia.label"/></h3>
         <br class="clearFloat"/>
         <ui:isLoginError>
@@ -86,14 +86,6 @@ function keyDown(e) {
         <br/>
         <table align="center" width="100%" cellspacing="5">
           <tr>
-            <td class="alignCenter" colspan="2">
-              <select name="loginChoice" tabindex="3">
-                <option value="1"><fmt:message key="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/></option>
-                <option value="2"><fmt:message key="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/></option>
-              </select>
-            </td>
-          </tr>
-          <tr>
               <td class="alignCenter" colspan="2">
                 <label for="rememberme"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label><ui:loginRememberMe id="rememberme"/>
               </td>
@@ -107,7 +99,7 @@ function keyDown(e) {
              </span>
           </span>
         </div>
-        
+
         </ui:loginArea>
     </div>
 </center>

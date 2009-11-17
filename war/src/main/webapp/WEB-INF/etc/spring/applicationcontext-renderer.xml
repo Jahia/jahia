@@ -13,6 +13,14 @@
             	<entry key="/edit/**">
             		<bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit"/>
             	</entry>
+            	<entry key="/login">
+            		<bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
+            	</entry>
+            	<entry key="/logout">
+            		<bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
+                        <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+                    </bean>
+            	</entry>
             </map>
         </property>
     </bean>

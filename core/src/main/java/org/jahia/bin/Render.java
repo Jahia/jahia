@@ -45,6 +45,7 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.data.JahiaData;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.springframework.web.context.ServletConfigAware;
@@ -146,6 +147,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
+        if (renderContext.isEditMode()) {
+            resp.setHeader("Pragma", "no-cache");
+        }
 
         PrintWriter writer = resp.getWriter();
         writer.print(out);
@@ -393,6 +397,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             Object old = req.getSession(true).getAttribute(ParamBean.SESSION_SITE);
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
+            
+            JahiaData jData = new JahiaData(paramBean, false);
+            paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
 
             path = path.substring(path.indexOf('/', 1));
 

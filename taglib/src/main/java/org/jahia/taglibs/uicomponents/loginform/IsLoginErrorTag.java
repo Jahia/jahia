@@ -54,7 +54,7 @@ public class IsLoginErrorTag extends ValueJahiaTag {
         final JahiaData jData = getJahiaData();
         final ProcessingContext jParams = getProcessingContext();
         final String valveResult = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
-        if (!jData.gui().isLogged() && valveResult != null && !LoginEngineAuthValveImpl.OK.equals(valveResult)) {
+        if (valveResult != null && !LoginEngineAuthValveImpl.OK.equals(valveResult)) {
             if (getVar() != null) {
                 pageContext.setAttribute(getVar(), valveResult);
             }

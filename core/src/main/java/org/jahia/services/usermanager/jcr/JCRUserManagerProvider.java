@@ -427,7 +427,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                                     if ("*".equals(propertyKey)) {
                                         query.append("CONTAINS(u.*,'" + propertyValue.replaceAll("%", "") + "')");
                                     } else {
-                                        query.append("u.[" + propertyKey.replaceAll("\\.", "___") + "]").append(
+                                        query.append("u.[" + propertyKey + "]").append(
                                                 " LIKE '").append(propertyValue).append("'");
                                     }
                                     if (objectIterator.hasNext()) {

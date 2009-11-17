@@ -45,6 +45,7 @@
   <c:set target="${attributes}" property="name" value="${h:default(attributes.name, 'loginForm')}"/>
   <c:set target="${attributes}" property="method" value="${h:default(attributes.method, 'post')}"/>
   <form ${h:attributes(attributes)}>
+    <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
     <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="1"/>
     <c:if test="${doRedirect}">
         <input type="hidden" name="<%=LoginEngineAuthValveImpl.DO_REDIRECT%>" value="true"/>

@@ -15,7 +15,7 @@
                     <p> ${currentNode.properties.abstract.string}</p>
                 </div>
                 <div class="more">
-                    <span><a href="${currentNode.properties.link.url}">aa- ${currentNode.properties.link.string} -aa</a></span>
+                    <span><template:module template="link" path="link"/></span>
                  </div>
             </div><!--stop box -->
         <div class="clear"> </div>

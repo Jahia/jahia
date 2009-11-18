@@ -31,7 +31,6 @@
  */
 package org.jahia.utils.zip;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -43,9 +42,14 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class ExclusionWildcardFilter implements PathFilter {
 
-    private List<String> excludedResources;
+    private String[] excludedResources;
 
     public ExclusionWildcardFilter(List<String> excludedResources) {
+        super();
+        this.excludedResources = excludedResources.toArray(new String[0]);
+    }
+
+    public ExclusionWildcardFilter(String... excludedResources) {
         super();
         this.excludedResources = excludedResources;
     }
@@ -56,14 +60,12 @@ public class ExclusionWildcardFilter implements PathFilter {
      * @see org.jahia.utils.zip.PathFilter#accept(java.lang.String)
      */
     public boolean accept(String path) {
-        if (excludedResources == null || excludedResources.isEmpty()) {
+        if (excludedResources == null || excludedResources.length == 0) {
             return true;
         }
 
         boolean accept = true;
-        for (Iterator<String> iterator = excludedResources.iterator(); iterator
-                .hasNext();) {
-            String excludePattern = (String) iterator.next();
+        for (String excludePattern : excludedResources) {
             if (FilenameUtils.wildcardMatch(path, excludePattern)) {
                 accept = false;
                 break;

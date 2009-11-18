@@ -245,17 +245,7 @@ public class TidyHtmlParser implements HtmlParser {
                 DocumentBuilderFactory dfactory = DocumentBuilderFactory.
                         newInstance();
 
-                EntityResolver et = null;
-                try {
-                    et = ServicesRegistry.getInstance().
-                            getJahiaWebAppsDeployerService().getDtdEntityResolver();
-                }
-                catch (Exception t) {
-                }
                 DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-                if (et != null) {
-                    docBuilder.setEntityResolver(et);
-                }
 
                 Document doc;
                 try {

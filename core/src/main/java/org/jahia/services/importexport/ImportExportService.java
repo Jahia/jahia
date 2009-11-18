@@ -31,37 +31,27 @@
  */
  package org.jahia.services.importexport;
 
-import java.io.*;
-import java.text.ParseException;
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.webdav.lib.WebdavResource;
-import org.jahia.content.ContentObject;
-import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.categories.Category;
-import org.w3c.dom.Document;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.categories.Category;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.sites.JahiaSite;
+import org.xml.sax.SAXException;
+
 /**
- * Created by IntelliJ IDEA.
+ * Jahia import/export service to manipulate different types of content.
  * User: toto
  * Date: 13 d�c. 2004
  * Time: 12:21:48
- * To change this template use File | Settings | File Templates.
  */
 public interface ImportExportService {
     String JCR_URI ="http://www.jcp.org/jcr/1.0";
@@ -117,11 +107,30 @@ public interface ImportExportService {
 
     // Import
 
+    /**
+     * Performs an import of the XML content, detecting its type: users,
+     * categories or general JCR content.
+     * 
+     * @param parentNodePath
+     *            the path of the parent node, where the content should be
+     *            imported
+     * @param content
+     *            the XML content stream
+     * @throws IOException
+     *             in case of read/write errors
+     * @throws RepositoryException
+     *             in case of repository operation errors
+     * @throws JahiaException
+     *             in case of errors during categories import
+     */
+    void importXml(String parentNodePath, InputStream content) throws IOException, RepositoryException,
+            JahiaException;
+
     void importZip(JCRNodeWrapper file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
 
     void importZip(File file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
 
-    void importCategories(ProcessingContext jParams, Category rootCategory, InputStream is);
+    void importCategories(Category rootCategory, InputStream is);
 
     void importServerPermissions(ProcessingContext jParams, InputStream is);
 

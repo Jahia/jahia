@@ -129,18 +129,7 @@ public class GenericWebAppsDeployerBaseService extends JahiaWebAppsDeployerServi
 
     protected Document parseXml(InputStream source) throws Exception
     {
-        // Parse using the local dtds instead of remote dtds. This
-        // allows to deploy the application offline
-        SAXBuilder saxBuilder = new SAXBuilder();
-        saxBuilder.setEntityResolver(new EntityResolver()
-        {
-            public InputSource resolveEntity(java.lang.String publicId, java.lang.String systemId) throws SAXException,
-                                                                                                          java.io.IOException
-            {
-                return org.jahia.settings.SettingsBean.getInstance().getDtdEntityResolver().resolveEntity(publicId, systemId);
-            }
-        });
-        return saxBuilder.build(source);
+        return new SAXBuilder().build(source);
     }
 
     protected void writeFile(Document source, OutputStream jos) throws IOException

@@ -130,10 +130,6 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
     /** temp folder prefix * */
     protected static String m_TempFolderPrefix = "todelete_";
 
-    /** the DTD Entity Resolver we use with local dtd files * */
-    protected static EntityResolver m_Resolver;
-
-
     /** WEB-INF folder * */
     protected static final String m_WEB_INF = "WEB-INF";
 
@@ -167,7 +163,6 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         m_WebAppRootPath = settingsBean.getJahiaWebAppsDiskPath ();
         m_NewWebAppPath = settingsBean.getJahiaNewWebAppsDiskPath ();
         m_JahiaHomeDiskPath = settingsBean.getJahiaHomeDiskPath ();
-        m_Resolver = (EntityResolver) settingsBean.getDtdEntityResolver ();
 
         logger.debug (" jahiaHomeDiskPath= " + m_JahiaHomeDiskPath);
 
@@ -676,39 +671,6 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         }
         return null;
     }
-
-    /**
-     * return a reference to the DTD entity resolver
-     */
-    public EntityResolver getDtdEntityResolver () {
-        return (EntityResolver) m_Resolver;
-    }
-
-
-
-
-    /************************************************************************
-     * Web Application Packages ( .war , .ear or unzipped directory )
-     * handling.
-     *
-     * The directory jahiafiles/new_webapps is periodically scanned for new component
-     * packages. A package can be a war or ear file.
-     *
-     * If the informations contained in their deployment descriptor
-     * files ( META-INF/applications.xml, WEB-INF/web.xml ) is scanned successfully
-     * a JahiaWebAppsPackage object that holds all informations needed by Jahia
-     * to deploy them is created.
-     *
-     * If the deployment mode is automatic, they are automatically deployed and
-     * registered in Jahia. If not, they are added in the Map of packages
-     * waiting to be deployed manually throught the JahiaAdministration interface.
-     *
-     * The Key in the Map of packages used to identify each package is
-     * the filename of the package.
-     *
-     ************************************************************************/
-
-
 
     /**
      * delete a package reference in the Map of detected packages

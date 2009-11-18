@@ -56,10 +56,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.registries.ServicesRegistry;
 import org.w3c.dom.Document;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 
 /**
@@ -69,9 +66,6 @@ import org.xml.sax.SAXException;
  * @version 1.0
  */
 public abstract class JahiaXmlDocument {
-
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JahiaXmlDocument.class);
 
     /** The xml Document **/
     //protected XmlDocument m_XMLDocument;
@@ -154,25 +148,8 @@ public abstract class JahiaXmlDocument {
     private void loadFile (String sourceFileName)
         throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        //dfactory.setValidating(true); // create only parsers that are validating
 
-        EntityResolver et = null;
-        try {
-            if (SpringContextSingleton.getInstance().isInitialized()) {
-                et = ServicesRegistry.getInstance().
-                     getJahiaWebAppsDeployerService().
-                     getDtdEntityResolver();
-            } else {
-                logger.debug("Deployer service not available because services registry was not yet initialized");
-            }
-        } catch (Exception t) {
-            logger.error("Entityresolver could not be retrieved.", t);
-        }
         DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-        if (et != null) {
-            docBuilder.setEntityResolver(et);
-        }
-        //docBuilder.setEntityResolver();
         FileInputStream sourceStream = new FileInputStream(sourceFileName);
         m_XMLDocument = docBuilder.parse(sourceStream);
         m_XMLDocument.normalize(); // clean up DOM tree a little

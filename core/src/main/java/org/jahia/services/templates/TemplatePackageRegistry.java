@@ -143,6 +143,17 @@ class TemplatePackageRegistry {
     }
 
     /**
+     * Adds a collection of template packages to the repository.
+     *
+     * @param templatePackages a collection of packages to add
+     */
+    public void register(Collection<JahiaTemplatesPackage> templatePackages) {
+        for (JahiaTemplatesPackage pack : templatePackages) {
+            register(pack);
+        }
+    }
+    
+    /**
      * Adds the template package to the repository.
      *
      * @param templatePackage the template package to add
@@ -162,8 +173,12 @@ class TemplatePackageRegistry {
             File classesFolder = new File(rootFolder, "WEB-INF/classes");
             if (classesFolder.exists()) {
                 FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
+                FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF/classes"));
             }
-            FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF/classes"));
+            File webInfFolder = new File(rootFolder, "WEB-INF");
+            if (webInfFolder.exists() && webInfFolder.list().length == 0) {
+                webInfFolder.delete();
+            }
         } catch (IOException e) {
             logger.error("Cannot deploy classes for templates "+templatePackage.getName(),e);
         }

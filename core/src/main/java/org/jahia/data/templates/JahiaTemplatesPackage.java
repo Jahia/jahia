@@ -61,19 +61,6 @@ public class JahiaTemplatesPackage {
      * the full path to the source file or directory *
      */
     private String m_FilePath;
-    /**
-     * the package type *
-     */
-    private int m_Type;    // 1=jar,2=directory
-    /**
-     * jar package *
-     */
-    private static final int JAR = 1;
-    /**
-     * directory *
-     */
-    private static final int DIR = 2;
-    private static final int WAR = 3;
 
     /**
      * Name of the package *
@@ -82,23 +69,15 @@ public class JahiaTemplatesPackage {
     /**
      * Name of the parent package *
      */
-    private List<String> depends = new ArrayList<String>();
+    private List<String> depends = new LinkedList<String>();
     /**
      * The Folder Name where to extract package contents *
      */
     private String m_RootFolder;
     /**
-     * The name of the jar file containing classes used by this package  *
-     */
-    private String m_ClassesFile;
-    /**
-     * The root folder where the classes are deployed  *
-     */
-    private String m_ClassesRoot;
-    /**
      * The initial import file *
      */
-    private String m_InitialImport;
+    private List<String> initialImports = new LinkedList<String>();
     /**
      * The Package Provider Name *
      */
@@ -142,9 +121,9 @@ public class JahiaTemplatesPackage {
 
     private String resourceBundleName;
 
-    private List<String> definitionsFile = new ArrayList<String>();
+    private List<String> definitionsFile = new LinkedList<String>();
 
-    private List<String> rulesFiles = new ArrayList<String>();
+    private List<String> rulesFiles = new LinkedList<String>();
 
     /**
      * Contains names of the template sets starting from this one, then the direct parent and so on.
@@ -163,35 +142,6 @@ public class JahiaTemplatesPackage {
     private List<String> lookupPath = new LinkedList<String>();
 
     private Map<String, String> properties = new HashMap<String, String>();
-
-    /**
-     * Initializes an instance of this class.
-     */
-    public JahiaTemplatesPackage() {
-        super();
-    }
-
-    /**
-     * Constructor
-     */
-    public JahiaTemplatesPackage(
-            String name,
-            String rootFolder,
-            String classesFile,
-            String classesRoot,
-            String initialImport,
-            String providerName,
-            String thumbnail
-    ) {
-        this();
-        m_Name = name;
-        m_ClassesFile = classesFile;
-        m_ClassesRoot = classesRoot;
-        m_InitialImport = initialImport;
-        m_Provider = providerName;
-        m_Thumbnail = thumbnail;
-        setRootFolder(rootFolder);
-    }
 
     /**
      * Return the template name
@@ -256,46 +206,6 @@ public class JahiaTemplatesPackage {
         }
         changesMade = true;
     }
-
-    /**
-     * Return the Classes File name
-     *
-     * @return (String) the Classes File name
-     */
-    public String getClassesFile() {
-
-        return m_ClassesFile;
-    }
-
-
-    /**
-     * Set the Classes file
-     *
-     * @param classesFile the Classes file name
-     */
-    public void setClassesFile(String classesFile) {
-
-        m_ClassesFile = classesFile;
-    }
-
-    public String getClassesRoot() {
-        return m_ClassesRoot;
-    }
-
-    public void setClassesRoot(String classesRoot) {
-        this.m_ClassesRoot = classesRoot;
-    }
-
-    /**
-     * Return true if the classesFile is not null and length>0
-     *
-     * @return (boolean) true if m_ClassesFile != null && length>0
-     */
-    public boolean hasClasses() {
-
-        return (m_ClassesFile != null && m_ClassesFile.length() > 0);
-    }
-
 
     /**
      * Return the provider name
@@ -426,14 +336,6 @@ public class JahiaTemplatesPackage {
      */
     public void setFileName(String name) {
         this.m_FileName = name;
-
-        if (name.endsWith(".jar")) {
-            m_Type = JAR;
-        } else if (name.endsWith(".war")) {
-            m_Type = WAR;
-        } else {
-            m_Type = DIR;
-        }
     }
 
 
@@ -455,14 +357,6 @@ public class JahiaTemplatesPackage {
     }
 
 
-    /**
-     * if the source is a file
-     */
-    public boolean isFile() {
-        return (m_Type == JAR);
-    }
-
-
 	/**
 	 * Returns <code>true</code> if this package is the default template set.
 	 * 
@@ -472,24 +366,12 @@ public class JahiaTemplatesPackage {
 		return getRootFolder() != null && "default".equals(getRootFolder());
 	}
 
-    /**
-     * if the source is a directory
-     */
-    public boolean isDirectory() {
-        return (m_Type == DIR);
+    public List<String> getInitialImports() {
+        return initialImports;
     }
 
-    public boolean isWar() {
-        return (m_Type == WAR);
-    }
-
-
-    public String getInitialImport() {
-        return m_InitialImport;
-    }
-
-    public void setInitialImport(String initIport) {
-        m_InitialImport = initIport;
+    public void addInitialImport(String initImport) {
+        initialImports.add(initImport);
     }
 
     /**

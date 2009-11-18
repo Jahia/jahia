@@ -34,18 +34,10 @@
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLEntry;
-import org.jahia.services.acl.JahiaACLException;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -55,23 +47,19 @@ import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Import handler for categories.
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:47
- * To change this template use File | Settings | File Templates.
  */
 public class CategoriesImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(CategoriesImportHandler.class);
     private Stack<Category> cats = new Stack<Category>();
     private CategoryService cs ;
-    private JahiaSite site;
     private List<String[]> uuidProps = new ArrayList<String[]>();
     private Category rootCategory = null;
-    private ProcessingContext ctx;
-    public CategoriesImportHandler(ProcessingContext jParams) {
-        ctx = jParams;
-        site = jParams.getSite();
+
+    public CategoriesImportHandler() {
         cs = ServicesRegistry.getInstance().getCategoryService();
     }
 
@@ -139,58 +127,6 @@ public class CategoriesImportHandler extends DefaultHandler {
             throw new SAXException(e);
         }
     }
-
-    private void fillAcl(JahiaBaseACL jAcl, String acl) {
-        StringTokenizer st = new StringTokenizer(acl, "|");
-        try {
-            while (st.hasMoreTokens())  {
-                String ace = st.nextToken();
-                if (ace.equals("break")) {
-                    jAcl.setInheritance(1);
-                } else {
-                    int colonIndex = ace.lastIndexOf(":");
-                    String perm = ace.substring(colonIndex+1);
-
-                    JahiaAclEntry permissions = new JahiaAclEntry ();
-                    permissions.setPermission (JahiaBaseACL.READ_RIGHTS, perm.charAt (0) == 'r' ?
-                            JahiaACLEntry.ACL_YES :
-                            JahiaACLEntry.ACL_NO);
-                    permissions.setPermission (JahiaBaseACL.WRITE_RIGHTS, perm.charAt (1) == 'w' ?
-                            JahiaACLEntry.ACL_YES :
-                            JahiaACLEntry.ACL_NO);
-                    permissions.setPermission (JahiaBaseACL.ADMIN_RIGHTS, perm.charAt (2) == 'a' ?
-                            JahiaACLEntry.ACL_YES :
-                            JahiaACLEntry.ACL_NO);
-                    String principal = ace.substring(0, colonIndex);
-
-                    String userName = principal.substring(2);
-                    if (principal.charAt(0) == 'u') {
-                        try {
-                            JahiaUser user = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(site.getID(), userName);
-                            if (user == null) {
-                                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userName);
-                            }
-                            if (user != null) {
-                                jAcl.setUserEntry (user, permissions);
-                            }
-                        } catch (JahiaException e) {
-                        }
-                    } else {
-                        JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(site.getID(), userName);
-                        if (group == null) {
-                            group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(userName);
-                        }
-                        if (group != null) {
-                            jAcl.setGroupEntry (group, permissions);
-                        }
-                    }
-                }
-            }
-        } catch (JahiaACLException jae) {
-            logger.error ("Cannot set user or group ACL entry !!", jae);
-        }
-    }
-
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (localName.equals("category")) {

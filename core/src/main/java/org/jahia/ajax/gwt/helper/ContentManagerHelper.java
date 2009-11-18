@@ -842,47 +842,13 @@ public class ContentManagerHelper {
 //    }
 
 
-    public void importContent(ProcessingContext jParams, String parentPath, String fileKey) throws GWTJahiaServiceException {
+    public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
             if ("application/zip".equals(item.contentType)) {
 
             } else if ("application/xml".equals(item.contentType)) {
-                File tempFile = File.createTempFile("tmp", "");
-                FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-                IOUtils.copy(item.file, fileOutputStream);
-                fileOutputStream.close();
-                FileInputStream inputStream = new FileInputStream(tempFile);
-                int format = importExport.detectXmlFormat(inputStream);
-                inputStream.close();
-
-                try {
-                    switch (format) {
-                        case XMLFormatDetectionHandler.JCR_DOCVIEW: {
-                            JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
-                            JCRNodeWrapper node = session.getNode(parentPath);
-                            if (!node.isCheckedOut()) {
-                                node.checkout();
-                            }
-
-                            session.importXML(parentPath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                            session.save();
-                            break;
-                        }
-
-                        case XMLFormatDetectionHandler.USERS: {
-                            importExport.importUsers(tempFile);
-                            break;
-                        }
-                        case XMLFormatDetectionHandler.CATEGORIES: {
-                            Category cat = categoryService.getCategoryByPath(parentPath);
-                            importExport.importCategories(jParams, cat, new FileInputStream(tempFile));
-                            break;
-                        }
-                    }
-                } finally {
-                    tempFile.delete();
-                }
+                importExport.importXml(parentPath, item.file);
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);

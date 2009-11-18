@@ -52,13 +52,10 @@ package org.jahia.settings;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
-import org.jahia.services.templates.JahiaTemplatesPackageHandler;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
 import org.jahia.utils.properties.PropertiesManager;
-import org.jahia.utils.xml.DtdEntityResolver;
 import org.springframework.core.io.Resource;
-import org.xml.sax.EntityResolver;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,8 +162,6 @@ public class SettingsBean {
     private String mail_from;
     private String mail_paranoia;
     private int mail_maxRegroupingOfPreviousException = 500;
-
-    private DtdEntityResolver mResolver;
 
     private String defaultResponseBodyEncoding;
     private String defaultURIEncoding;
@@ -404,9 +399,6 @@ public class SettingsBean {
 
             // paranoia settings...
             mail_paranoia = getString("mail_paranoia", "Disabled");
-
-            // load mime types
-            initDtdEntityResolver ();
 
             // load MaxCached values (max_cached_*)
             maxCachedValues = new HashMap<String, Long>();
@@ -767,30 +759,6 @@ public class SettingsBean {
         siteServerNameTestConnectTimeout) {
         this.siteServerNameTestConnectTimeout =
             siteServerNameTestConnectTimeout;
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * initiate the Dtd entity resolver we use with local dtd
-     */
-    private void initDtdEntityResolver () {
-
-        mResolver = new DtdEntityResolver();
-        String diskPath = this.jahiaEtcDiskPath;
-
-        mResolver.registerSchema(
-                JahiaTemplatesPackageHandler.TEMPLATES_DESCRIPTOR_20_URI,
-                new File(diskPath, "xml_dtd/templates_2_0.xsd"));
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Return the Dtd entity resolver
-     *
-     * @return EntityResolver
-     */
-    public EntityResolver getDtdEntityResolver () {
-        return mResolver;
     }
 
     /**

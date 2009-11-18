@@ -449,19 +449,18 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             File initialZip = null;
             String initialZipName = null;
-            JahiaTemplatesPackage templPackage = null;
             if (selectTmplSet != null) {
-                templPackage = ServicesRegistry.getInstance()
+                ServicesRegistry.getInstance()
                         .getJahiaTemplateManagerService()
                         .associateTemplatePackageWithSite(selectTmplSet,
                                 site);
-
-                if ("defaultImport".equals(firstImport)) {
-                    initialZip = templPackage.getInitialImport() != null ? new File(
-                            templPackage.getRootFolderPath(), templPackage
-                            .getInitialImport())
-                            : null;
-                }
+                // no site level initial imports for now              
+//                if ("defaultImport".equals(firstImport)) {
+//                    initialZip = templPackage.getInitialImport() != null ? new File(
+//                            templPackage.getRootFolderPath(), templPackage
+//                            .getInitialImport())
+//                            : null;
+//                }
             }
 
             jParams.setSite(site);
@@ -631,7 +630,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 try {
                     JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
                     JCRNodeWrapper nodeWrapper = session.getNode("/content/sites/" + site.getSiteKey());
-                    nodeWrapper.checkout();
+                    session.checkout(nodeWrapper);
                     JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
                     page.setProperty("jcr:title","Welcome to " + site.getServerName());
                     session.save();

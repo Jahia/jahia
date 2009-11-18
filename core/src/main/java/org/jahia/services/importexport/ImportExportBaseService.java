@@ -38,6 +38,7 @@ import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.admin.permissions.ManageSitePermissions;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
@@ -52,6 +53,7 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
+import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
@@ -75,6 +77,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
+import javax.jcr.lock.LockException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
@@ -114,6 +117,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JahiaGroupManagerService groupManagerService;
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
+    private CategoryService categoryService;
 
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
@@ -330,7 +334,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             while (ni.hasNext()) {
                 Node child = ni.nextNode();
                 if (child.isNodeType("nt:resource")) {
-                    InputStream is = child.getProperty("jcr:data").getStream();
+                    InputStream is = child.getProperty("jcr:data").getBinary().getStream();
                     if (is != null) {
                         try {
                             String path = node.getPath();
@@ -636,7 +640,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importZip(File file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException {
-        CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler(jParams);
+        CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         UsersImportHandler usersImportHandler = new UsersImportHandler(jParams.getSite());
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
@@ -1066,8 +1070,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return importHandler.getUuidProps();
     }
 
-    public void importCategories(ProcessingContext jParams, Category rootCategory, InputStream is) {
-        CategoriesImportHandler importHandler = new CategoriesImportHandler(jParams);
+    public void importCategories(Category rootCategory, InputStream is) {
+        CategoriesImportHandler importHandler = new CategoriesImportHandler();
         importHandler.setRootCategory(rootCategory);
         importCategoriesAndGetUuidProps(is, importHandler);
     }
@@ -1157,4 +1161,74 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return handler.getType();
     }
 
+    public void importXml(final String parentNodePath, InputStream content) throws IOException, RepositoryException, JahiaException {
+        File tempFile = null;
+
+        try {
+            tempFile = File.createTempFile("import-xml-", "");
+            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+            IOUtils.copy(content, fileOutputStream);
+            fileOutputStream.close();
+            FileInputStream inputStream = new FileInputStream(tempFile);
+            int format = detectXmlFormat(inputStream);
+            inputStream.close();
+
+            switch (format) {
+                case XMLFormatDetectionHandler.JCR_DOCVIEW: {
+                    if (JcrSessionFilter.getCurrentUser() != null) {
+                        importXml(parentNodePath, tempFile, jcrStoreService.getSessionFactory().getCurrentUserSession());
+                    } else {
+                        final File contentFile = tempFile;
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                try {
+                                    importXml(parentNodePath, contentFile, session);
+                                } catch (IOException e) {
+                                    throw new RepositoryException(e);
+                                }
+                                return Boolean.TRUE;
+                            }
+                        });
+                    }
+                    break;
+                }
+
+                case XMLFormatDetectionHandler.USERS: {
+                    importUsers(tempFile);
+                    break;
+                }
+                case XMLFormatDetectionHandler.CATEGORIES: {
+                    Category cat = categoryService.getCategoryByPath(parentNodePath);
+                    importCategories(cat, new FileInputStream(tempFile));
+                    break;
+                }
+            }
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
+        }
+        
+    }
+
+    private void importXml(String parentNodePath, File content, JCRSessionWrapper session)
+            throws RepositoryException, IOException {
+        JCRNodeWrapper node = null;
+        try {
+            node = session.getNode(parentNodePath);
+        } catch (PathNotFoundException e) {
+            logger.warn("Specified path for the import '" + parentNodePath
+                    + "' is not found. Skipping import.");
+        }
+        if (node != null) {
+            session.checkout(node);
+            session.importXML(parentNodePath, new FileInputStream(content),
+                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+            session.save();
+        }
+    }
+
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 }

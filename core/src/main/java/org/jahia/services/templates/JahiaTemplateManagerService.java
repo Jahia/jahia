@@ -45,7 +45,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.cache.Cache;
-import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
@@ -65,10 +64,6 @@ public class JahiaTemplateManagerService extends JahiaService {
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    private PageDefinitionHelper pageDefinitionHelper;
-
-    private JahiaPageService pageService;
-
     private JahiaSitesService siteService;
 
     private JahiaPageTemplateService tplService;
@@ -79,10 +74,6 @@ public class JahiaTemplateManagerService extends JahiaService {
     
     public void setTplService(JahiaPageTemplateService tplService) {
         this.tplService = tplService;
-    }
-
-    public void setPageService(JahiaPageService pageService) {
-        this.pageService = pageService;
     }
 
     public JahiaTemplatesPackage associateTemplatePackageWithSite(
@@ -446,7 +437,7 @@ public class JahiaTemplateManagerService extends JahiaService {
         ((JahiaPageTemplateBaseService)tplService).setTemplateManagerService(this);
         
         // start template package watcher
-		templatePackageDeployer.startWatchdog(this);
+		templatePackageDeployer.startWatchdog();
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found template packages: "
@@ -469,11 +460,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         logger.info("... JahiaTemplateManagerService stopped successfully");
     }
 
-    public void setPageDefinitionHelper(
-            PageDefinitionHelper pageDefinitionHelper) {
-        this.pageDefinitionHelper = pageDefinitionHelper;
-    }
-    
     public String getCurrentResourceBundleName(ProcessingContext ctx) {
         return getTemplatePackage(ctx.getSite().getTemplatePackageName())
                 .getResourceBundleName();

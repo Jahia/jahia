@@ -39,89 +39,58 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaArchiveFileException;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaTemplateServiceException;
-import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+
 /**
  * This class is responsible for loading data from a Template Jar File
- * For the format of the template deployment descriptor file, see corresponding XML schema.
- *
+ * 
  * @author Khue ng
  */
-public class JahiaTemplatesPackageHandler {
-    
-    static final String NS_URI_DEF = "http://www.w3.org/2000/xmlns/";
+final class JahiaTemplatesPackageHandler {
 
-    static final String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+    private static final Logger logger = Logger
+            .getLogger(JahiaTemplatesPackageHandler.class);
 
-    static final String NS_URI_JAHIA = "http://www.jahia.org/jahia/templates";
-    
-    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.org/shemas/templates_2_0.xsd";
-    
-    static final String SCHEMA_LOCATION = NS_URI_JAHIA + " "
-            + TEMPLATES_DESCRIPTOR_20_URI;
-    
-    /**
-     * The file representing template set archive or folder
-     */
-    private File file;
-
-    /**
-     * The JahiaTemplatesPackage Object created with data from the templates.xml file
-     */
-    private JahiaTemplatesPackage templatePackage;
-
-    /**
-     * Constructor is initialized with the template File
-     */
-    public JahiaTemplatesPackageHandler(File file)
-            throws JahiaException {
-
-        this.file = file;
-        
-        try {
-            buildTemplatesPackage();
-        } catch (JahiaException je) {
-            throw new JahiaTemplateServiceException(
-                    "Error building the TemplatesPackageHandler for file: "
-                            + file, je);
-        }
-
+    private JahiaTemplatesPackageHandler() {
+        super();
     }
 
     /**
-     * Extract data from the templates.xml file and build the JahiaTemplatesPackage object
+     * Extract data from the MANIFEST.MF file and builds the
+     * JahiaTemplatesPackage object
+     * 
+     * @param file
+     *            the package file to read
      */
-    private void buildTemplatesPackage()
-            throws JahiaException {
+    private static JahiaTemplatesPackage read(File file) {
 
-    	// extract data from the templates.xml file
+        JahiaTemplatesPackage templatePackage = new JahiaTemplatesPackage();
+        // extract data from the META-INF/MANIFEST.MF file
         try {
-            File xml = new File(file,TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
-            if (!xml.exists()) {
-                xml = new File(file,"WEB-INF/"+TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
-            }
-            if (xml.exists()) {
-            Reader contentReader = new FileReader(xml);
-            // extract data from the templates.xml file
-                templatePackage = TemplateDeploymentDescriptorHelper.parse(contentReader);
-            } else {
-                templatePackage = new JahiaTemplatesPackage();
-            }
             File manifestFile = new File(file, "META-INF/MANIFEST.MF");
             if (manifestFile.exists()) {
-                Manifest manifest = new Manifest(new FileInputStream(manifestFile));
-                String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
-                String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
+                FileInputStream manifestStream = new FileInputStream(
+                        manifestFile);
+                Manifest manifest = new Manifest(manifestStream);
+                IOUtils.closeQuietly(manifestStream);
+                String packageName = (String) manifest.getMainAttributes().get(
+                        new Attributes.Name("package-name"));
+                String rootFolder = (String) manifest.getMainAttributes().get(
+                        new Attributes.Name("root-folder"));
                 if (packageName == null) {
                     packageName = file.getName();
                 }
@@ -129,7 +98,8 @@ public class JahiaTemplatesPackageHandler {
                     rootFolder = file.getName();
                 }
 
-                String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
+                String depends = (String) manifest.getMainAttributes().get(
+                        new Attributes.Name("depends"));
                 if (depends != null) {
                     String[] dependencies = depends.split(",");
                     for (int i = 0; i < dependencies.length; i++) {
@@ -138,77 +108,93 @@ public class JahiaTemplatesPackageHandler {
                     }
                 }
 
+                String imports = (String) manifest.getMainAttributes().get(
+                        new Attributes.Name("initial-imports"));
+                if (imports != null) {
+                    String[] importFiles = imports.split(",");
+                    for (String imp : importFiles) {
+                        templatePackage.addInitialImport(imp.trim());
+                    }
+                }
+
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);
             }
         } catch (IOException ioe) {
-            throw new JahiaTemplateServiceException("Failed extracting templates.xml file data", ioe);
-        } catch (JahiaArchiveFileException ex) {
-        	if (ex.getErrorCode() != JahiaException.ENTRY_NOT_FOUND) {
-        		throw ex;
-        	}
+            logger
+                    .warn(
+                            "Failed extracting template package data from META-INF/MANIFEST.MF file for package "
+                                    + file, ioe);
         }
-        postProcess();
+
+        return templatePackage;
     }
 
-    private void postProcess() {
+    private static JahiaTemplatesPackage postProcess(
+            JahiaTemplatesPackage templatePackage, File file) {
         if (templatePackage == null) {
-        	templatePackage = new JahiaTemplatesPackage();
+            templatePackage = new JahiaTemplatesPackage();
         }
-        
+
         templatePackage.setFilePath(file.getPath());
-        
+
         if (StringUtils.isEmpty(templatePackage.getName())) {
-        	templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
+            templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
         }
         if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
-        	templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath()).replace('-', '_')).toLowerCase());
+            templatePackage.setRootFolder((FilenameUtils.getBaseName(file
+                    .getPath()).replace('-', '_')).toLowerCase());
         }
         if (templatePackage.getDefinitionsFiles().isEmpty()) {
             // check if there is a definitions file
-            if (new File(file,"definitions.cnd").exists()) {
+            if (new File(file, "definitions.cnd").exists()) {
                 templatePackage.setDefinitionsFile("definitions.cnd");
             }
             // check if there is a definitions grouping file
-            if (new File(file,"definitions.grp").exists()) {
+            if (new File(file, "definitions.grp").exists()) {
                 templatePackage.setDefinitionsFile("definitions.grp");
             }
         }
         if (templatePackage.getRulesFiles().isEmpty()) {
             // check if there is a rules file
-            if (new File(file,"rules.drl").exists()) {
+            if (new File(file, "rules.drl").exists()) {
                 templatePackage.setRulesFile("rules.drl");
             }
         }
         if (templatePackage.getResourceBundleName() == null) {
             // check if there is a resource bundle file in the resources folder
             String rbName = templatePackage.getName().replace(' ', '_');
-            if (new File(file,"resources/" + rbName + ".properties").exists()) {
+            if (new File(file, "resources/" + rbName + ".properties").exists()) {
                 templatePackage.setResourceBundleName("resources." + rbName);
             } else {
                 rbName = templatePackage.getName().replace(" ", "");
-                if (new File(file, "resources/" + rbName + ".properties").exists()) {
-                    templatePackage.setResourceBundleName("resources." + rbName);
+                if (new File(file, "resources/" + rbName + ".properties")
+                        .exists()) {
+                    templatePackage
+                            .setResourceBundleName("resources." + rbName);
                 }
             }
         }
-    }
+        
+        if (templatePackage.getInitialImports().isEmpty()) {
+            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[] {
+                    "import.xml", "import.zip", "import-*.xml", "import-*.zip" }, IOCase.INSENSITIVE));
+            Arrays.sort(files);
+            for (File importFile : files) {
+                templatePackage.addInitialImport(importFile.getName());
+            }
+        }
 
-	/**
-     * Returns the Generated JahiaTemplatesPackage Object
-     *
-     * @return (JahiaTemplatesPackage) the package object
-     */
-    public JahiaTemplatesPackage getPackage() {
         return templatePackage;
     }
 
-	/**
-	 * Returns the file descriptor, representing this template package.
-	 * 
-	 * @return the file descriptor, representing this template package
-	 */
-	public File getFile() {
-		return file;
-	}
+    /**
+     * Returns the Generated JahiaTemplatesPackage Object
+     * 
+     * @return (JahiaTemplatesPackage) the package object
+     */
+    public static JahiaTemplatesPackage build(File packageSource) {
+        return postProcess(read(packageSource), packageSource);
+    }
+
 }

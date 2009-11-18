@@ -503,7 +503,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
-        contentManager.importContent(retrieveParamBean(), parentPath, fileKey);
+        contentManager.importContent(parentPath, fileKey);
     }
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {

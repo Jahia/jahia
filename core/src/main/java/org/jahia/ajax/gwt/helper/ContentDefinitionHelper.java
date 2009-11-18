@@ -44,7 +44,6 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -111,7 +110,7 @@ public class ContentDefinitionHelper {
 
         List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>();
         List<GWTJahiaItemDefinition> inheritedItems = new ArrayList<GWTJahiaItemDefinition>();
-        JahiaResourceBundle rb = null;
+
         for (ExtendedItemDefinition def : defs) {
             if (!excludedTypes.contains(def.getDeclaringNodeType().getName()) && !excludedItems.contains(def.getName())) {
                 GWTJahiaItemDefinition item;
@@ -443,7 +442,7 @@ public class ContentDefinitionHelper {
         Set<String> foundTypes = new HashSet<String>();
         try {
             if (type.getSuperTypes().contains("jmix:list")) {
-                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:contentListMixin");
+                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:listMixin");
                 NodeTypeIterator it = baseMixin.getSubtypes();
                 while (it.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) it.next();

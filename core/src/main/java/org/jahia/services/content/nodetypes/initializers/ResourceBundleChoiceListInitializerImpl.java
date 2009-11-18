@@ -65,7 +65,7 @@ public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitia
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
             for (String s : constr) {
-                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getName().replace(':', '_') + "." + s, s), new HashMap<String, Object>(),
+                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + s, s), new HashMap<String, Object>(),
                                                            new ValueImpl(s, PropertyType.STRING, false));
 
                 l.add(bean);
@@ -74,7 +74,7 @@ public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitia
         } else {
             for (ChoiceListValue choiceListValue : values) {
                 final String displayName = choiceListValue.getDisplayName();
-                choiceListValue.setDisplayName(rb.get(epd.getName().replace(':', '_') + "." + displayName,
+                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + displayName,
                                                       displayName));
             }
             return values;

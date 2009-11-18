@@ -32,7 +32,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -45,14 +44,19 @@ import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * An implementation for choice list initializer and renderer that displays a list of available countries.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
-    private transient static Logger logger = Logger.getLogger(CountryChoiceListInitializerAndRendererImpl.class);
+    
+    private static final Comparator<ChoiceListValue> DISPLAY_NAME_COMPARATOR = new Comparator<ChoiceListValue>() {
+        public int compare(ChoiceListValue o1, ChoiceListValue o2) {
+            return o1.getDisplayName().compareTo(o2.getDisplayName());
+        }
+    }; 
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
@@ -62,11 +66,7 @@ public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListIn
             l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(jParams.getLocale()), null,
                                       new ValueImpl(anIso, PropertyType.STRING, false)));
         }
-        Collections.sort(l, new Comparator<ChoiceListValue>() {
-            public int compare(ChoiceListValue o1, ChoiceListValue o2) {
-                return o1.getDisplayName().compareTo(o2.getDisplayName());
-            }
-        });
+        Collections.sort(l, DISPLAY_NAME_COMPARATOR);
         return l;
     }
 

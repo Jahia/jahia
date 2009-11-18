@@ -38,7 +38,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Defines the choice list value initializer.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

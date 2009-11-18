@@ -42,11 +42,10 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Value initializer for available skins.
  * User: toto
  * Date: Oct 10, 2008
  * Time: 11:09:54 AM
- * To change this template use File | Settings | File Templates.
  */
 public class Skins implements ValueInitializer {
 

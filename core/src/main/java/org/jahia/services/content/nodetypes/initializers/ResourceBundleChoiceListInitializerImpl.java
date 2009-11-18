@@ -32,7 +32,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -44,14 +43,13 @@ import java.util.List;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * Choice list initializer, based on the resource bundle values lookup.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ResourceBundleChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {

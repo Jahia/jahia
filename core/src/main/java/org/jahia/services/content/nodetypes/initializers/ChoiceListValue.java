@@ -32,21 +32,19 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
-
 import javax.jcr.Value;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents a single item in the choice list.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class ChoiceListValue {
-    private transient static Logger logger = Logger.getLogger(ChoiceListValue.class);
+
     private String displayName;
     private Value value;
     private Map<String, Object> properties;

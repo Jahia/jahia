@@ -40,11 +40,10 @@ import javax.jcr.PropertyType;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Value initializer for available countries, which are taken from the {@link Locale#getISOCountries()}.
  * User: rincevent
  * Date: 19 févr. 2009
  * Time: 14:05:57
- * To change this template use File | Settings | File Templates.
  */
 public class Country implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {

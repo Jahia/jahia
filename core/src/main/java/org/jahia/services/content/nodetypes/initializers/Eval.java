@@ -51,11 +51,11 @@ import java.util.List;
 import java.lang.reflect.Method;
 
 /**
- * Created by IntelliJ IDEA.
+ * An implementation of the value initializer that uses {@link ExpressionEvaluator} to evaluate 
+ * the specified expression and use its result as the initial value.
  * User: toto
  * Date: Oct 10, 2008
  * Time: 11:49:50 AM
- * To change this template use File | Settings | File Templates.
  */
 public class Eval implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {

@@ -40,11 +40,10 @@ import javax.jcr.PropertyType;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Value initializer that returns current user's name.
  * User: toto
  * Date: Dec 30, 2008
  * Time: 5:35:31 PM
- * To change this template use File | Settings | File Templates.
  */
 public class CurrentUser implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {

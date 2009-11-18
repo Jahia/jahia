@@ -48,7 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Choice list initializer that looks up child nodes of the specified one 
+ * filtering them out by the specified type, if any is provided. 
  *
  * @author : rincevent
  * @since : JAHIA 6.1

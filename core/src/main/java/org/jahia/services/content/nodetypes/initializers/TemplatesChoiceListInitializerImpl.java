@@ -47,7 +47,7 @@ import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Choice list initializer ro provide a selection of available templates. 
  *
  * @author : rincevent
  * @since : JAHIA 6.1

@@ -48,7 +48,7 @@ import java.io.FileReader;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Script-based value initializer. Evaluates the specified script to get the initial value.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

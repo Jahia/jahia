@@ -38,21 +38,17 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.analytics.reports.ReportParams;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Value initializer for availale templates.
  * User: toto
  * Date: Oct 10, 2008
  * Time: 11:09:54 AM
- * To change this template use File | Settings | File Templates.
  */
 public class Templates implements ValueInitializer {
 

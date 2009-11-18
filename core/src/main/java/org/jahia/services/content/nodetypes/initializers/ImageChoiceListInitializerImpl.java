@@ -32,7 +32,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.operations.valves.ThemeValve;
@@ -46,14 +45,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Choice list implementation that looks up image files.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ImageChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {

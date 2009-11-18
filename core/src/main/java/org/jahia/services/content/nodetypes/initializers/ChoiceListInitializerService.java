@@ -32,19 +32,17 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
-
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Service implementation for managing all possible choice list value initializers.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class ChoiceListInitializerService {
-    private transient static Logger logger = Logger.getLogger(ChoiceListInitializerService.class);
+
     private Map<String, ChoiceListInitializer> initializers;
     private static ChoiceListInitializerService instance;
 

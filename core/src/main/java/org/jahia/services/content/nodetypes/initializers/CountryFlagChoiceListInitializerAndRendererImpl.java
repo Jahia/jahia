@@ -45,7 +45,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * An implementation for choice list initializer and renderer that displays a list of available flags for countries.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

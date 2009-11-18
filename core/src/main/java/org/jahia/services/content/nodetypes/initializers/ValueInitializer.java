@@ -32,7 +32,6 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.Value;
 
@@ -40,11 +39,10 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 /**
- * Created by IntelliJ IDEA.
+ * Defines a property value initializer.
  * User: toto
  * Date: Apr 3, 2008
  * Time: 4:09:58 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface ValueInitializer {
 

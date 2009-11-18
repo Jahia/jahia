@@ -32,6 +32,7 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ProcessingContext;
@@ -42,11 +43,12 @@ import javax.script.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Script-based choice list initializer implementation.
+ * Evaluates the specified script to get the list of values.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -70,17 +72,23 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 final File scriptPath = new File(
                         template.getFilePath() + File.separator + "scripts" + File.separator + param);
                 if (scriptPath.exists()) {
+                    FileReader scriptContent = null;
                     try {
-                        return (List<ChoiceListValue>) byName.eval(new FileReader(scriptPath),bindings);
+                        scriptContent = new FileReader(scriptPath);
+                        return (List<ChoiceListValue>) byName.eval(scriptContent, bindings);
                     } catch (ScriptException e) {
                         logger.error(e.getMessage(), e);
                     } catch (FileNotFoundException e) {
                         logger.error(e.getMessage(), e);
+                    } finally {
+                        if (scriptContent != null) {
+                            IOUtils.closeQuietly(scriptContent);
+                        }
                     }
                 }
             }
         }
         }
-        return new ArrayList<ChoiceListValue>();
+        return Collections.emptyList();
     }
 }

@@ -43,11 +43,10 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 
 /**
- * Created by IntelliJ IDEA.
+ * Initial value provider for the current date.
  * User: toto
  * Date: Oct 10, 2008
  * Time: 11:09:45 AM
- * To change this template use File | Settings | File Templates.
  */
 public class Now implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {

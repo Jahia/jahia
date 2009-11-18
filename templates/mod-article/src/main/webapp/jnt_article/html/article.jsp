@@ -6,10 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
-<div>
-	<fmt:message key="tags"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
-	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>
-</div>
+
 
 <div class="intro">
     ${currentNode.properties.intro.string}
@@ -17,3 +14,7 @@
 <c:forEach items="${currentNode.editableChildren}" var="paragraph">
     <template:module node="${paragraph}" template="default"/>
 </c:forEach>
+<div>
+	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
+	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>
+</div>

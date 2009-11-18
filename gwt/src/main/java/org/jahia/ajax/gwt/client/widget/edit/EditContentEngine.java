@@ -112,7 +112,7 @@ public class EditContentEngine extends Window {
     private Button ok;
     private Button cancel;
     private ClassificationEditor classificationEditor;
-    private static final int BUTTON_HEIGHT = 24;
+    public static final int BUTTON_HEIGHT = 24;
 
     /**
      * Initializes an instance of this class.

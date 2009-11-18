@@ -40,7 +40,7 @@
 <%--use Themes--%>
 <c:if test="${!empty theme}">
     <c:forEach var="themeFile" items="${theme.node.children}">
-        <template:addResources type="css" resources="${url.base}${themeFile.path}" nodetype="jnt:page"/>
+        <template:addResources type="css" resources="${url.base}${themeFile.url}" nodetype="jnt:page"/>
     </c:forEach>
 </c:if>
 

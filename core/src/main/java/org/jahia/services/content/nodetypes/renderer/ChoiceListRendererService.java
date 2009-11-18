@@ -30,7 +30,7 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.content.nodetypes.initializers;
+package org.jahia.services.content.nodetypes.renderer;
 
 import org.apache.log4j.Logger;
 
@@ -43,22 +43,22 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class ChoiceListInitializerService {
-    private transient static Logger logger = Logger.getLogger(ChoiceListInitializerService.class);
-    private Map<String, ChoiceListInitializer> initializers;
-    private static ChoiceListInitializerService instance;
+public class ChoiceListRendererService {
+    private transient static Logger logger = Logger.getLogger(ChoiceListRendererService.class);
+    private Map<String, ChoiceListRenderer> renderers;
+    private static ChoiceListRendererService instance;
 
-    public Map<String, ChoiceListInitializer> getInitializers() {
-        return initializers;
+    public Map<String, ChoiceListRenderer> getRenderers() {
+        return renderers;
     }
 
-    public void setInitializers(Map<String, ChoiceListInitializer> initializers) {
-        this.initializers = initializers;
+    public void setRenderers(Map<String, ChoiceListRenderer> renderers) {
+        this.renderers = renderers;
     }
 
-    public static ChoiceListInitializerService getInstance() {
+    public static ChoiceListRendererService getInstance() {
         if (instance == null) {
-            instance = new ChoiceListInitializerService();
+            instance = new ChoiceListRendererService();
         }
         return instance;
     }

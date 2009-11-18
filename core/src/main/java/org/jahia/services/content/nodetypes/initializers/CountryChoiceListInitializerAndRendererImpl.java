@@ -36,11 +36,13 @@ import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.render.RenderContext;
 
 import javax.jcr.PropertyType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,8 +51,8 @@ import java.util.Locale;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(CountryChoiceListInitializerImpl.class);
+public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
+    private transient static Logger logger = Logger.getLogger(CountryChoiceListInitializerAndRendererImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
@@ -60,6 +62,21 @@ public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
             l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(jParams.getLocale()), null,
                                       new ValueImpl(anIso, PropertyType.STRING, false)));
         }
+        Collections.sort(l, new Comparator<ChoiceListValue>() {
+            public int compare(ChoiceListValue o1, ChoiceListValue o2) {
+                return o1.getDisplayName().compareTo(o2.getDisplayName());
+            }
+        });
         return l;
+    }
+
+    public Map<String,Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("displayName",new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(context.getMainResource().getLocale()));
+        return map;
+    }
+
+    public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException {
+        return new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(context.getMainResource().getLocale());
     }
 }

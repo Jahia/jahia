@@ -159,7 +159,8 @@ public class FormFieldCreator {
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
-                        if (definition.getSelectorOptions().containsKey("image")) {
+                        if (propDefinition.getValueConstraints().size()>0 &&
+                            propDefinition.getValueConstraints().get(0).getPropertyNames().contains("image")) {
                             combo.setTemplate(getComboTemplate());
                         }
                         field = combo;

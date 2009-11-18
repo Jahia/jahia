@@ -143,7 +143,8 @@
     </bean>
 
     <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
-    <bean id="countryInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerImpl"/>
+    <bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerAndRendererImpl"/>
+    <bean id="countryFlagInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerAndRendererImpl"/>
     <bean id="imageInitializer" class="org.jahia.services.content.nodetypes.initializers.ImageChoiceListInitializerImpl"/>
     <bean id="templatesInitializer" class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="skinsInitializer" class="org.jahia.services.content.nodetypes.initializers.SkinsChoiceListInitializerImpl"/>
@@ -151,16 +152,25 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
     <bean id="scriptInitializer" class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
-    <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService">
+    <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
             <map>
                 <entry key="resourceBundle" value-ref="rbInitializer"/>
-                <entry key="country" value-ref="countryInitializer"/>
+                <entry key="country" value-ref="countryInitializerRenderer"/>
                 <entry key="image" value-ref="imageInitializer"/>
                 <entry key="templates" value-ref="templatesInitializer"/>
                 <entry key="skins" value-ref="skinsInitializer"/>
                 <entry key="nodes" value-ref="nodesInitializer"/>
                 <entry key="script" value-ref="scriptInitializer"/>
+                <entry key="flag" value-ref="countryFlagInitializer"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="choiceListRenderers" class="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService" factory-method="getInstance">
+        <property name="renderers">
+            <map>
+                <entry key="country" value-ref="countryInitializerRenderer"/>
+                <entry key="flagcountry" value-ref="countryFlagInitializer"/>
             </map>
         </property>
     </bean>

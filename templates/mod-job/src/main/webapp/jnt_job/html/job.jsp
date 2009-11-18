@@ -12,7 +12,7 @@
         <div class="jobInfo">
             <p class="jobLocation">
                 <span class="jobLabel">Location: </span>
-                <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;${fn:escapeXml(values.country)}</span>
+                <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry"/></span>
             </p>
 
             <p class="jobType">

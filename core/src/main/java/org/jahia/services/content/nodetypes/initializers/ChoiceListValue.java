@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 
 import javax.jcr.Value;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,8 +82,9 @@ public class ChoiceListValue {
     }
 
     public void addProperty(String key, Object value) {
-        if(properties!=null) {
-            properties.put(key,value);
+        if(properties==null) {
+            properties = new LinkedHashMap<String, Object>();
         }
+        properties.put(key,value);
     }
 }

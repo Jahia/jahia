@@ -240,6 +240,40 @@
             <type>int</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Allow access to a property of a node</description>
+        <name>nodePropertyRenderer</name>
+        <tag-class>org.jahia.taglibs.jcr.node.JCRPropertyCustomRendererTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The node on which you want to find the property</description>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <description>The name of the property you want to find in the node</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of a variable for storage of javax.jcr.Value object associated with this property</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of renderer defined in ChoiceListRendererService in Spring</description>
+            <name>renderer</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
     <function>
         <description>
             Get label value depending on the current local

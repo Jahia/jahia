@@ -972,7 +972,7 @@ public class JahiaCndReader {
 
     private void doSelectorOptions(ExtendedItemDefinition pdi) throws ParseException, IOException {
         nextToken();
-        Map<String,String> options = new HashMap<String,String>();
+        Map<String,String> options = new LinkedHashMap<String,String>();
         while (true) {
             String key = currentToken;
             String value = "";

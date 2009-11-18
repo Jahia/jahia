@@ -32,19 +32,16 @@
  */
 package org.jahia.services.content.nodetypes.renderer;
 
-import org.apache.log4j.Logger;
-
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Service implementation for managing different renderer implementations.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
 public class ChoiceListRendererService {
-    private transient static Logger logger = Logger.getLogger(ChoiceListRendererService.class);
     private Map<String, ChoiceListRenderer> renderers;
     private static ChoiceListRendererService instance;
 

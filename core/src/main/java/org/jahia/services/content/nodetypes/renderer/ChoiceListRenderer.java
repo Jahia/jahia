@@ -7,7 +7,7 @@ import javax.jcr.RepositoryException;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Defines the renderer for a choice list.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

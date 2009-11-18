@@ -24,6 +24,15 @@ under the License.
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
     <body>
         <menu ref="parent"/>
+        <menu name="Overview">
+            <item name="Introduction" href="./index.html"/>
+            <item name="ChoiceList Initializers" href="./initializers_renderers/initializers.html">
+                <item name="How ChoiceList Initializers work" href="./initializers_renderers/initializers.html#work"/>
+                <item name="Country Initializer Example" href="./initializers_renderers/country_initializer.html"/>
+                <item name="Other Initializers" href="./initializers_renderers/other_initializers.html"/>
+                <item name="Custom Property Rendering" href="./initializers_renderers/renderers.html"/>
+            </item>
+        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

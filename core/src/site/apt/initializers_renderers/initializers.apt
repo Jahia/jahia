@@ -1,0 +1,65 @@
+Jahia Crazy Jane - Core Module - ChoiceList Initializers
+
+  ChoiceList initializers allows developper to extends the way you populate dropdown list (or combobox) for end users when editing or creating content.
+  Jahia allows you to define in your definitions, that a property must use a choicelist (will be rendered by a dropdown list) to specify its value.
+
+  The simplest example is to use choicelist for the selector and to list the allowed values in the constraint of the definition :
+
+------------------------------------
+- contract (string, choicelist) < contract1, contract2, contract3, contract4  
+------------------------------------
+
+  This will give you a dropdown list like that :
+
+[../images/simple_initializer.png] A simple Initializer
+
+  This is nice but maybe our end users will want to have something more explanatory for choosing the right values.\
+  We will now show you how to use resource bundle to modifiy the rendering of your dropdown list :
+
+------------------------------------
+- contract (string, choicelist[resourceBundle]) < contract1, contract2, contract3, contract4
+------------------------------------
+
+  This will give you a dropdown list like that :
+
+[../images/rb_initializer.png] A Resource Bundle Initializer
+
+* How ChoiceList Initializers {work} ?
+
+  ChoiceList Initializers are implementations of the <<<ChoiceListInitializer>>> interface. All implementations are managed by the <<<ChoiceListInitializerService>>>.
+  This service is defined in the applicationcontext-jcr.xml file :
+
+-------------------------------------
+    <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
+    <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
+        <property name="initializers">
+            <map>
+                <entry key="resourceBundle" value-ref="rbInitializer"/>
+            </map>
+        </property>
+    </bean>
+-------------------------------------
+
+  When initializing the <<<ChoiceListInitializerService>>> we pass a map of initializers we want to used in the system. Each Initializer will be associated to a keyword.
+  Here the <<<ResourceBundleChoiceListInitializerImpl>>> will be attached to the keyword <<<resourceBundle>>>.
+  When writing your definition you can chain your Initializers to make complex stuff. Each initializer will receive the list of values from its predecessors.
+  This way you can have one initializer that fill the values, and other in the pipe that change some of those values or add properties to them.
+  Here an example for the Templates choicelist in the layout panel :
+
+--------------------------------------
+[jmix:renderable] > jmix:layout, jmix:contentMixin mixin
+ - j:template (string, choicelist[templates,resourceBundle,image])
+--------------------------------------
+
+  This means that for displaying this dropdown list we first call the <<<templates>>> initializer that is responsible for filling the available values.\
+  Then this list of values is passed to the <<<resourceBundle>>> initializer which will try to replace the label displayed in the dropdown list
+  by one found in the resource bundles if available. Then all this updated values will go to the <<<image>>> initializer that will add an image to be
+  associated with each value.
+
+* Rendering of ChoiceList in GWT
+
+  When a user create or update a content using the Jahia UI, each time he will see a popup with data to enter for each fields of the current definition.
+  If a field is associated with a <<<choicelist>>> selector, we will go through the pipe of initializers if defined.
+  For the rendering we will use the <<<displayName>>> property of the <<<ChoiceListValue>>> object we will have received from the pipe.
+  Each option value will be associated with the javax.jcr.Value of the same object.
+  Then if in the properties of the <<<ChoiceListValue>>> we found a property called <<<image>>> we will use it to display an image if front of the option name.

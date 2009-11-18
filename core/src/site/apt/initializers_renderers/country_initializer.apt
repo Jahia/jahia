@@ -1,0 +1,90 @@
+Jahia Crazy Jane - Core Module - Country Initializer Example
+
+  A full example for creating a complex initializer that will allow user to choose a country from a dropdown list and
+  display a flag if available for in front of the country name.
+
+  This example will use two classes, of for filling the countries in the list of values available for the dropdown list.
+  And another class to add the flag if found for each country.
+
+  The code of the country initializer :
+
+-------------------------------------------
+public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
+    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
+                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+        String[] iso = Locale.getISOCountries();
+        List<ChoiceListValue> l = new ArrayList<ChoiceListValue>(iso.length);
+        for (String anIso : iso) {
+            l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(jParams.getLocale()), null,
+                                      new ValueImpl(anIso, PropertyType.STRING, false)));
+        }
+        Collections.sort(l, new Comparator<ChoiceListValue>() {
+            public int compare(ChoiceListValue o1, ChoiceListValue o2) {
+                return o1.getDisplayName().compareTo(o2.getDisplayName());
+            }
+        });
+        return l;
+    }
+}
+-------------------------------------------
+
+  You see taht in this example when we create the <<<ChoiceListValue>>> we do not associated any properties,
+  but only a display name in current locale of the user, and a value not sensitive to the locale the iso code of the country.
+  We sort the list based on the displayName (this could totally be done in another initializer in the pipe (for example a sort initializer at the end of the pipe)).
+
+  Now the code of the initializer for adding an image property to the <<<ChoiceListValue>>> objects of my list :
+
+--------------------------------------------
+public class CountryFlagChoiceListInitializerImpl implements ChoiceListInitializer {
+    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
+                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+        if (values != null) {
+            for (ChoiceListValue value : values) {
+                try {
+                    String flagPath = "/css/images/flags/shadow/flag_" + new Locale("en",
+                                                                                    value.getValue().getString()).getDisplayCountry(
+                            Locale.ENGLISH).toLowerCase().replaceAll(" ", "_") + ".png";
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+                    if (!f.exists()) {
+                        flagPath = "/css/blank.gif";
+                    }
+                    value.addProperty("image", context.getContextPath() + flagPath);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            return values;
+        }
+        return new ArrayList<ChoiceListValue>();
+    }
+}
+--------------------------------------------
+
+  This initializer if place at the start of the pipe will be of no use as it will return an empty list.
+
+  Those initializers need to be declared in the <<<ChoiceListInitializerService>>> :
+
+--------------------------------------------
+<bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
+<bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerImpl"/>
+<bean id="countryFlagInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerImpl"/>
+<bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
+  <property name="initializers">
+    <map>
+      <entry key="resourceBundle" value-ref="rbInitializer"/>
+      <entry key="country" value-ref="countryInitializerRenderer"/>
+      <entry key="flag" value-ref="countryFlagInitializer"/>
+    </map>
+  </property>
+</bean>  
+--------------------------------------------
+
+ A definition example :
+
+--------------------------------------------
+- country (string, choicelist[country,flag])
+--------------------------------------------
+
+ This will generate a dropdown list like that :
+
+[../images/country_initializer.png]  

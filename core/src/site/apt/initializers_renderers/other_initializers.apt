@@ -1,0 +1,93 @@
+Jahia Crazy Jane - Core Module - Other Initializer
+
+  You can define as many initializers as you want, Jahia provide to you two other very flexible initializer :
+
+  * {{{node} Node Initializer}}
+
+  * {{{Script} Script Initializer}}
+
+* Usage of the {node} initializer
+
+  The node initializer allow you to bind a dropdown list to the content of a node in the jcr, by defining the root path
+  of this dropdown list and the type of node you want to list.
+
+-----------------------------------
+- firstLevelCategory (weakreference,choicelist[nodes='/content/categories;jnt:category'])
+-----------------------------------
+
+  This will create a dropdown listing all the <<<jnt:category>>> elements from the folder <<</content/categories>>>.
+
+-----------------------------------
+ - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
+-----------------------------------
+
+  This will create a dropdown listing all the subfolders elements of the folder  themes in the current site.
+
+
+* Usage of the {script} initializer
+
+  This is the most versatile initializer provided by Jahia as it allows you to use ant scrip language JSR-223 compatible
+  to write your initializer.
+
+  * How to declare a scripted initializer ?
+
+    This is as simple as that :
+
+-----------------------------------
+- type (string,choicelist[script=type.groovy])
+-----------------------------------
+
+    The initializer will look for the script in the module containing the definition in the scripts folder :
+
+-----------------------------------
+   .
+   |-jnt_lastNews
+   |---html
+   |-jnt_news
+   |---html
+   |-resources
+   |-scripts
+   |-WEB-INF
+-----------------------------------
+
+  The type of script is defined by the extension of the script, gor example if you script is name <<<type.groovy>>>,
+  the script engine manager will try to find a declared script engine for the groovy extension .
+
+  * What are the things my script must absolutely do ?
+
+  The script must return a List of <<<ChoiceListValue>>>.
+
+  * Whaou this is crazily powerful but any suggestion to how to use that in the real world will be greatly appreciated
+
+    The first usages that came in mind is to define script that interact with external system to fill the values,
+    like xml files, databases, REST service etc.
+
+    Example of groovy script paring an xml file to fill the values :
+
+--------------------------------------
+class RecordsHandler extends DefaultHandler {
+    def values
+
+    RecordsHandler(List values) {
+        this.values = values
+    }
+
+    void startElement(String ns, String localName, String qName, Attributes atts) {
+        switch (qName) {
+            case 'books':
+                String labelName = atts.getValue("title")
+                values.add(new ChoiceListValue(labelName,null,new ValueImpl(labelName,PropertyType.STRING,false))); break
+
+        }
+    }
+}
+
+def newValues = new ArrayList<ChoiceListValue>();
+def handler = new RecordsHandler(values)
+def reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader()
+reader.setContentHandler(handler)
+reader.parse(new InputSource(new FileInputStream(file)))
+return newValues
+--------------------------------------
+
+    Each script can also access to the list of values from its predecessors as it is binded to the <<<values>>> variable.  

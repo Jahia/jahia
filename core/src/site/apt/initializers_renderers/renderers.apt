@@ -1,0 +1,78 @@
+Jahia Crazy Jane - Core Module - Custom Property Renderer
+
+  We previously have seen how to customize dropdown list for updating or creation of content but how do I
+  correctly display the data selected by my user.
+  Keeping with the Country example, if you remember the code of my initializer, in the value I store only the ISO code of the selected country.
+  But what I want to display to my end user its the country name in his language and maybe the flag also.
+
+* How I declare some custom renderers ?
+
+  Renderers are initialized in the same manners as the initializers, in the same spring file (applicationcontext-jcr.xml).
+  Each renderer must extend <<<ChoiceListRenderer>>> interface.
+
+-------------------------------
+<bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerAndRendererImpl"/>
+<bean id="countryFlagInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerAndRendererImpl"/>
+<bean id="choiceListRenderers" class="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService" factory-method="getInstance">
+  <property name="renderers">
+    <map>
+      <entry key="country" value-ref="countryInitializerRenderer"/>
+      <entry key="flagcountry" value-ref="countryFlagInitializer"/>
+    </map>
+  </property>
+</bean>
+-------------------------------
+
+  Renderers are used through a tag in the templates, the tag can directly render the content of the property
+  in its own manner, or can simply return a map of objects.
+
+  Example from the CountryFlagChoiceListInitializerAndRendererImpl :
+
+----------------------------------
+public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
+    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        final String displayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+                context.getMainResource().getLocale());
+        final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+                Locale.ENGLISH);
+        String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        if (!f.exists()) {
+            flagPath = "/css/blank.gif";
+        }
+        map.put("displayName", displayName);
+        map.put("flag", context.getRequest().getContextPath()+flagPath);
+        return map;
+    }
+
+    public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        final String displayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+                context.getMainResource().getLocale());
+        final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+                Locale.ENGLISH);
+        String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        if (!f.exists()) {
+            flagPath = "/css/blank.gif";
+        }
+        return "<img src=\""+context.getRequest().getContextPath()+flagPath+"\"><span>"+displayName+"</span>";
+    }
+}
+----------------------------------
+
+  Example of usage in the templates :
+
+----------------------------------
+<span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry"/></span>
+----------------------------------
+
+  Or :
+
+----------------------------------
+<jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry" var="country"/>
+
+<span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<img src="${country.flag}"/>&nbsp;${country.displayName}</span>    
+----------------------------------

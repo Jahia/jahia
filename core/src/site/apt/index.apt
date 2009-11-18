@@ -1,1 +1,5 @@
-Jahia Crazy Jane - Core Module 
+Jahia Crazy Jane - Core Module
+
+ This module is contains all the core parts of Jahia. We will describe several functionnalities here.
+
+ * {{{initializers_renderers/initializers.html}ChoiceList Initializers}}

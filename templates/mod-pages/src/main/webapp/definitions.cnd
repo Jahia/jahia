@@ -2,7 +2,8 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:gridPage] > jmix:layout mixin, jmix:pageMixin
-- column (string,choicelist[resourceBundle,image]) = 'col2' < 'col1','col2','col3' 
+- column (string,choicelist[resourceBundle,image]) = '1c16' < '1col16','2col412','2col124','2col106','2col610','2col88','3col448','3col466','3col484','3col664','3col844'
 
 [jmix:theme] > jmix:option mixin, jmix:pageMixin
  - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
+ 

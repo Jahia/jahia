@@ -34,11 +34,10 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.impl.jahia.PropertyImpl;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Property;
-import javax.jcr.PathNotFoundException;
+import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;
@@ -54,6 +53,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     private JCRNodeWrapper node;
     private String name;
     private String var;
+    private boolean inherited = false;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
@@ -69,34 +69,52 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     @Override
     public int doStartTag() throws JspException {
         int returnValue = SKIP_BODY;
-        if(var!=null)
-        pageContext.removeAttribute(var);
-        try {
-            Property property = node.getProperty(name);
-            if (property != null) {
-                if (var != null) {
-                    if (property.getDefinition().isMultiple()) {
-                        pageContext.setAttribute(var, property.getValues());
+        if (var != null)
+            pageContext.removeAttribute(var);
+        JCRNodeWrapper curNode = node;
+        while (true) {
+            try {
+                Property property = curNode.getProperty(name);
+                if (property != null) {
+                    if (var != null) {
+                        returnValue = EVAL_BODY_INCLUDE;
+                        if (property.getDefinition().isMultiple()) {
+                            pageContext.setAttribute(var, property.getValues());
+                        } else {
+                            pageContext.setAttribute(var, property.getValue());
+                        }
                     } else {
-                        pageContext.setAttribute(var, property.getValue());
+                        if (!property.getDefinition().isMultiple()) {
+                            pageContext.getOut().print(property.getValue().getString());
+                        }
                     }
-                    returnValue = EVAL_BODY_INCLUDE;
+                    return returnValue;
+                }
+            } catch (PathNotFoundException e) {
+                logger.debug("Property : " + name + " not found in node " + node.getPath());
+                return returnValue;
+            } catch (ConstraintViolationException e) {
+                logger.warn("Property : " + name + " not defined in node " + node.getPath());
+                if (!inherited) {
+                    return returnValue;
                 } else {
-                    if (!property.getDefinition().isMultiple()) {
-                        pageContext.getOut().print(property.getValue().getString());
+                    try {
+                        curNode = curNode.getParent();
+                    }
+                    catch (ItemNotFoundException e2) {
+                        logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
+                        return returnValue;
+                    } catch (RepositoryException e1) {
+                        e1.printStackTrace();
+                        return returnValue;                        
                     }
                 }
+            } catch (RepositoryException e) {
+                throw new JspException(e);
+            } catch (IOException e) {
+                throw new JspException(e);
             }
-        } catch (PathNotFoundException e) {
-            logger.debug("Property : "+name+" not found in node "+node.getPath());
-        } catch (ConstraintViolationException e) {
-            logger.warn("Property : "+name+" not defined in node "+node.getPath());
-        } catch (RepositoryException e) {
-            throw new JspException(e);
-        } catch (IOException e) {
-            throw new JspException(e);
         }
-        return returnValue;
     }
 
     /**
@@ -110,6 +128,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         node = null;
         name = null;
+        inherited = false;
         return EVAL_PAGE;
     }
 
@@ -130,5 +149,16 @@ public class JCRPropertyTag extends AbstractJahiaTag {
      */
     public void setVar(String var) {
         this.var = var;
+    }
+
+    /**
+     * If you want to recursivly look for a property in current node parent's nodes
+     * Set this value to true
+     *
+     * @param inherited (false is default) if true look up in parents properties
+     */
+
+    public void setInherited(boolean inherited) {
+        this.inherited = inherited;
     }
 }

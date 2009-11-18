@@ -99,6 +99,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>inherited  (false is default) if true look up in parents properties</description>
+            <name>inherited</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>    
     <tag>
         <description>

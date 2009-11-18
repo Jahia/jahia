@@ -36,6 +36,13 @@
 <%@ include file="../../common/declarations.jspf" %>
 <template:addResources type="css" resources="960.css,01web.css" nodetype="jnt:page"/>
 <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
+<jcr:nodeProperty var="theme" node="${currentNode}" name="j:theme" inherited="true"/>
+<%--use Themes--%>
+<c:if test="${!empty theme}">
+    <c:forEach var="themeFile" items="${theme.node.children}">
+        <template:addResources type="css" resources="${url.base}${themeFile.path}" nodetype="jnt:page"/>
+    </c:forEach>
+</c:if>
 
 <div id="bodywrapper"><!--start bodywrapper-->
     <div id="topheader"><!--start topheader-->

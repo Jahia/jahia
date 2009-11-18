@@ -61,9 +61,7 @@ import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-import org.jahia.services.workflow.ExternalWorkflow;
-import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.services.workflow.WorkflowService;
+
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -469,8 +467,6 @@ public abstract class ContentObject extends JahiaObject {
         // flag that we restored this content object
          opResult.addRestoredContent(this.getObjectKey());
 
-        WorkflowEvent theEvent = new WorkflowEvent (this, this, user, entryState.getLanguageCode(), false);
-        ServicesRegistry.getInstance ().getJahiaEventService ().fireObjectChanged(theEvent);
 
         if ( this.getPageID() > 0 ){
             try {
@@ -484,17 +480,14 @@ public abstract class ContentObject extends JahiaObject {
                     parentId = contentPage.getParentID(loadRequest);
                     if ( parentId > 0 ){
                         contentPageKey = new ContentPageKey(parentId);
-                        ServicesRegistry.getInstance().getWorkflowService().flushCacheForObjectChanged(contentPageKey);
                     }
                     loadRequest = new EntryLoadRequest(EntryLoadRequest.CURRENT);
                     loadRequest.setWithDeleted(true);
                     parentId = contentPage.getParentID(loadRequest);
                     if ( parentId > 0 ){
                         contentPageKey = new ContentPageKey(parentId);
-                        ServicesRegistry.getInstance().getWorkflowService().flushCacheForObjectChanged(contentPageKey);
                     }
                 } else {
-                    ServicesRegistry.getInstance().getWorkflowService().flushCacheForObjectChanged(contentPageKey);
                 }
             } catch ( Exception t ){
                 logger.debug("Exeption flushing linked object cache",t);
@@ -1363,15 +1356,15 @@ public abstract class ContentObject extends JahiaObject {
             for (Iterator<String> iterator = languageCodes.iterator(); iterator.hasNext();) {
                 String s = iterator.next();
                 if (pickedObject.getStagingStatus(s) != VersioningDifferenceStatus.UNCHANGED) {
-                    try {
+//                    try {
                         activationTestResults.setStatus (ActivationTestResults.FAILED_OPERATION_STATUS);
-                        ContentObjectKey mainKey = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
-                        final EngineMessage msg = new EngineMessage(
-                                "org.jahia.content.ContentObject.validateSourceObjectError");
-                        activationTestResults.appendError(new IsValidForActivationResults(mainKey, s, msg));
-                    } catch (ClassNotFoundException e) {
+//                        ContentObjectKey mainKey = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
+//                        final EngineMessage msg = new EngineMessage(
+//                                "org.jahia.content.ContentObject.validateSourceObjectError");
+//                        activationTestResults.appendError(new IsValidForActivationResults(mainKey, s, msg));
+//                    } catch (ClassNotFoundException e) {
                         //...
-                    }
+//                    }
                 }
             }
         }
@@ -1500,8 +1493,7 @@ public abstract class ContentObject extends JahiaObject {
      * Return an Array of ContentField that have a core "metadata" strutural
      * relationship with this one.
      * 
-     * @see StructuralRelationship.METADATA_LINK
-     * 
+     *
      * @return List of JahiaObject
      */
     public List<ContentField> getMetadatas() throws JahiaException {
@@ -1609,9 +1601,6 @@ public abstract class ContentObject extends JahiaObject {
     /**
      * Returns the metadata value
      *
-     * @param name the metadata name
-     * @param jParams
-     * @param defaultValue
      * @return
      * @throws JahiaException
      */
@@ -1824,7 +1813,7 @@ public abstract class ContentObject extends JahiaObject {
             try {
                 ObjectLink.createLink(this.getObjectKey(), object.getObjectKey(), type, new HashMap<String, String>());
                 object.resetPicked();
-                ServicesRegistry.getInstance().getWorkflowService().flushCacheForPageCreatedOrDeleted((ContentObjectKey) object.getObjectKey());
+//                ServicesRegistry.getInstance().getWorkflowService().flushCacheForPageCreatedOrDeleted((ContentObjectKey) object.getObjectKey());
             } catch (Exception e) {
                 logger.debug("Error while adding picker object", e);
             }
@@ -2093,32 +2082,6 @@ public abstract class ContentObject extends JahiaObject {
         }
     }
     
-    public boolean checkValidationAccess(JahiaUser user) {
-        boolean result = true;
-        try {
-            List<? extends ContentObject> childs = getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest());
-            WorkflowService service = ServicesRegistry.getInstance().getWorkflowService();
-            for (Iterator<? extends ContentObject> it = childs.iterator(); it.hasNext() && result;) {            
-                ContentObject contentObject = it.next();
-                if (service.getWorkflowMode(contentObject) == WorkflowService.EXTERNAL) {
-                    final String name = service.getInheritedExternalWorkflowName(contentObject);
-                    if(name == null) {
-                        result = contentObject.checkValidationAccess(user);
-                    } else {
-                        ExternalWorkflow workflow = service.getExternalWorkflow(name);
-                        final String processId = service.getInheritedExternalWorkflowProcessId(contentObject);
-                        result = workflow.isUserAuthorizedForWorkflow(processId, contentObject, user);
-                    }
-                } else {
-                    result = contentObject.checkValidationAccess(user);
-                }
-            }
-        } catch (JahiaException ex) {
-            logger.debug("Cannot load ACL ID " + getAclID(), ex);
-        }
-        return result;
-    }
-
     public boolean isAclSameAsParent() {
         try {
             if (getAclID() == -1 ) {

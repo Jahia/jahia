@@ -111,8 +111,6 @@ public class URLPropertyResolver implements PropertyResolver {
                     value = jData.getProcessingContext().getContextPath() + "/engines/gwttagmanager/tag.jsp";                    
                 } else if (input.equalsIgnoreCase(GWT_SITEMANAGER)) {
                     value = jData.getProcessingContext().getContextPath() + "/engines/gwtsitemanager/site.jsp";                    
-                } else if (input.equalsIgnoreCase(PAGE_PROPERTIES)) {
-                    value = jData.gui().drawPagePropertiesUrl();
                 } else if (input.equalsIgnoreCase(CacheModeSelectedResolver.CACHE_DEBUG)) {
                     value = jData.getProcessingContext().composePageUrl() + "?containercache=debug";
                 } else if (input.equalsIgnoreCase(CacheModeSelectedResolver.CACHE_ON)) {

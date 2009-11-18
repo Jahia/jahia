@@ -60,8 +60,6 @@ public class JahiaObject implements TimeBasedPublishingState, Serializable, Clon
 
     private Long validToDate = new Long(0);
 
-    private JahiaRetentionRule retentionRule;
-
     public JahiaObject(){
     }
 
@@ -122,19 +120,6 @@ public class JahiaObject implements TimeBasedPublishingState, Serializable, Clon
 
     public void setValidToDate(Long validToDate) {
         this.validToDate = validToDate;
-    }
-
-    /**
-     * @hibernate.many-to-one not-null="false"
-     * @hibernate.column name="retrule_jahia_obj"
-     * @return
-     */
-    public JahiaRetentionRule getRetentionRule() {
-        return retentionRule;
-    }
-
-    public void setRetentionRule(JahiaRetentionRule retentionRule) {
-        this.retentionRule = retentionRule;
     }
 
     public boolean equals(Object obj) {
@@ -227,7 +212,6 @@ public class JahiaObject implements TimeBasedPublishingState, Serializable, Clon
         jahiaObject.setTimeBPState(this.getTimeBPState());
         jahiaObject.setValidFromDate(this.getValidFromDate());
         jahiaObject.setValidToDate(this.getValidToDate());
-        jahiaObject.setRetentionRule(this.getRetentionRule());
         return jahiaObject;
     }
 

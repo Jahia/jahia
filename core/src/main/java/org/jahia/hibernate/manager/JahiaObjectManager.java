@@ -50,7 +50,6 @@ import org.jahia.content.TimeBasedPublishingJahiaObject;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.dao.JahiaObjectDAO;
-import org.jahia.hibernate.dao.JahiaRetentionRuleDAO;
 import org.jahia.hibernate.model.JahiaObject;
 import org.jahia.hibernate.model.JahiaObjectPK;
 import org.jahia.params.ProcessingContext;
@@ -82,8 +81,6 @@ public class JahiaObjectManager {
         org.apache.log4j.Logger.getLogger (JahiaObjectManager.class);
 
     private JahiaObjectDAO dao = null;
-
-    private JahiaRetentionRuleDAO retentionRuleDao = null;
 
     private CacheService cacheService = null;
 
@@ -117,14 +114,6 @@ public class JahiaObjectManager {
 
     public void setJahiaObjectDAO(JahiaObjectDAO dao) {
         this.dao = dao;
-    }
-
-    public JahiaRetentionRuleDAO getJahiaRetentionRuleDAO() {
-        return retentionRuleDao;
-    }
-
-    public void setJahiaRetentionRuleDAO(JahiaRetentionRuleDAO retentionRuleDao) {
-        this.retentionRuleDao = retentionRuleDao;
     }
 
 // ------------------------- OTHER METHODS --------------------------
@@ -393,11 +382,6 @@ public class JahiaObjectManager {
             } else {
                 //hibJahiaObject.setSite(null);
             }
-            if ( delegate.getRule()!=null ){
-                hibJahiaObject.setRetentionRule(retentionRuleDao.findByPK(delegate.getRule().getId()));
-            } else {
-                hibJahiaObject.setRetentionRule(null);
-            }
         }
         this.dao.save(hibJahiaObject);
         this.flushCache(hibJahiaObject.getComp_id());
@@ -459,12 +443,6 @@ public class JahiaObjectManager {
         }
         if (hibJahiaObject.getValidToDate()!= null){
             delegate.setValidToDate(hibJahiaObject.getValidToDate());
-        }
-        if ( hibJahiaObject.getRetentionRule() != null ){
-            try {
-                delegate.setRule(hibJahiaObject.getRetentionRule().getRetentionRule());
-            } catch ( Exception t){
-            }
         }
         return delegate;
     }

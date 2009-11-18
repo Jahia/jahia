@@ -70,38 +70,8 @@ public interface JahiaContentLegacyService extends RemoteService {
 
     }
 
-    public GWTJahiaContainerList loadContainerList(GWTJahiaPageContext page, String containerListName);
-
-    public String insertAddContainerHref(GWTJahiaPageContext page);
-
-    public void saveContainerProperty(GWTJahiaPageContext page, int containerId, String propertyName, String propertyValue);
-
     public List<GWTJahiaUserProperty> getJahiaUserProperties(boolean onlyMySettings);
 
     public GWTJahiaAjaxActionResult updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties);
-
-    public String getContent(GWTJahiaPageContext page, int containerId);
-
-    public String getFieldValues(int containerId, String field);
-
-    public GWTJahiaContainer loadContainer(int containerId);
-
-    public String getPagePropertyValue(GWTJahiaPageContext page, String propertyName);
-
-    public void updatePagePropertyValue(GWTJahiaPageContext page, String propertyName, String propertyValue);
-
-    public GWTJahiaPageWrapper getSiteHomePage(int siteId);
-
-    public GWTJahiaPageWrapper getPage(int pid);
-
-    public List<GWTJahiaPageWrapper> getSubPagesForCurrentUser(int pid, String mode, GWTJahiaPageWrapper parentPage);
-
-    public List<GWTJahiaPageWrapper> getSubPagesForCurrentUser(int parent);
-
-    public List<GWTJahiaPageWrapper> getSubPagesForCurrentUser(GWTJahiaPageWrapper parentPage);
-
-    public GWTJahiaPageWrapper getHomePageForCurrentUser(int pid, String mode, boolean recursive);
-
-    public List<GWTJahiaPageWrapper> searchInPages(String queryString);
 
 }

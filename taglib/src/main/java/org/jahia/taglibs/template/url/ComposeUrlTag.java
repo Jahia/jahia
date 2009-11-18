@@ -87,23 +87,17 @@ public class ComposeUrlTag extends ValueJahiaTag {
                         buffer.append(jData.gui().html().drawLogoutLauncher());
                     }
                     
-                } else if (page.equals("login")) {                     	
+                } else if (page.equals("login")) {
                     buffer.append("javascript:").append(pageID > 0 ? jData.gui().html()
                         .drawLoginLauncher(pageID) : jData.gui().html()
                         .drawLoginLauncher());
-                    
+
                 } else if (page.equals("mySettings")) {
                     buffer.append(jData.gui().html().drawMySettingsLauncher());
-                    
+
                 } else if (page.equals("administration")) {
                     buffer.append(jData.gui().html().drawAdministrationLauncher());
                     
-                } else if (page.equals("siteMap")) {
-                    buffer.append(jData.gui().html().drawSiteMapLauncher());
-                    
-                } else if (page.equals("search")) {
-                    buffer.append(jData.gui().html().drawSearchLauncher());
-
                 } else {
                     logger.warn("Invalid value for 'page' attribute: \"" + page + "\". Valid values are 'administration', 'login', 'logout', 'mySettings', 'siteMap', 'search'");
                     buffer.append(jParams.composePageUrl(jData.page()));

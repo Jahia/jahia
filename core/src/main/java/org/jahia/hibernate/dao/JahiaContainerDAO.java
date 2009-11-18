@@ -46,7 +46,6 @@ import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
-import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.hibernate.model.JahiaContainer;
 import org.jahia.hibernate.model.JahiaContainerProperty;
@@ -1029,7 +1028,6 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         Map<Serializable, Integer> map = new HashMap<Serializable, Integer>(list.size());
         for (Object aList : list) {
             JahiaContainer data = (JahiaContainer) aList;
-            map.put(new ContentContainerKey(data.getComp_id().getId()), data.getJahiaAclId());
             deleteProperties(data.getComp_id().getId());
         }
         template.deleteAll(list);
@@ -1097,7 +1095,6 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         Map<String, Object> parameters = new HashMap<String, Object>();
 
         if (sortByMetadata) {
-            parameters.put("contentType", ContentContainerKey.CONTAINER_TYPE);
         }
 
         buff.append(" SELECT f.comp_id.id, f.comp_id.workflowState, f.comp_id.versionId, f.metadataOwnerId, f.containerId FROM JahiaFieldsData f, JahiaContainer c  ");

@@ -77,48 +77,6 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaContainerManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaContainerManager">
-                <property name="jahiaContainerDAO" ref="jahiaContainerDAO" />
-                <property name="jahiaContainerDefinitionDAO" ref="jahiaContainerDefinitionDAO" />
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="jahiaWorkflowDAO" ref="jahiaWorkflowDAO" />
-                <property name="workflowHistoryDAO" ref="nstepWorkflowHistoryDAO" />
-                <property name="workflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
-                <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="batchLoadingSize" value="20"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaContainerListManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaContainerListManager">
-                <property name="jahiaContainerListDAO" ref="jahiaContainerListDAO" />
-                <property name="jahiaContainerDefinitionDAO" ref="jahiaContainerDefinitionDAO" />
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="jahiaWorkflowDAO" ref="jahiaWorkflowDAO" />
-                <property name="jahiaPagesDAO" ref="jahiaPagesDAO" />
-                <property name="workflowHistoryDAO" ref="nstepWorkflowHistoryDAO" />
-                <property name="workflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
-                <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaContainerDefinitionManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaContainerDefinitionManager">
-                <property name="jahiaContainerDefinitionDAO" ref="jahiaContainerDefinitionDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
     <bean id="org.jahia.hibernate.manager.JahiaContainerStructureManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaContainerStructureManager">
@@ -153,8 +111,6 @@
                 <property name="jahiaFieldsDataDAO" ref="jahiaFieldsDataDAO" />
                 <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
                 <property name="jahiaWorkflowDAO" ref="jahiaWorkflowDAO" />
-                <property name="workflowHistoryDAO" ref="nstepWorkflowHistoryDAO" />
-                <property name="workflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
                 <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
                 <property name="jahiaPagesDAO" ref="jahiaPagesDAO" />
                 <property name="jahiaPagesDefinitionDAO" ref="jahiaPagesDefinitionDAO" />
@@ -211,16 +167,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaAuditLogManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaAuditLogManager">
-                <property name="jahiaAuditLogDAO" ref="jahiaAuditLogDAO" />
-                <property name="jahiaContainerDAO" ref="jahiaContainerDAO" />
-                <property name="jahiaFieldsDataDAO" ref="jahiaFieldsDataDAO" />
-                <property name="jahiaContainerListDAO" ref="jahiaContainerListDAO" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaLockManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaLockManager">
@@ -233,24 +179,7 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaObjectManager">
                 <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="jahiaRetentionRuleDAO" ref="jahiaRetentionRuleDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaRetentionRuleManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaRetentionRuleManager">
-                <property name="jahiaRetentionRuleDAO" ref="jahiaRetentionRuleDAO" />
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="jahiaObjectManager" ref="org.jahia.hibernate.manager.JahiaObjectManager" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaRetentionRuleDefManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaRetentionRuleDefManager">
-                <property name="jahiaRetentionRuleDefDAO" ref="jahiaRetentionRuleDefDAO" />
             </bean>
         </property>
     </bean>
@@ -275,14 +204,6 @@
             <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager">
                 <property name="jahiaSiteLanguageMappingDAO" ref="jahiaSiteLanguageMappingDAO" />
                 <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaWorkflowManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaWorkflowManager">
-                <property name="jahiaWorkflowDAO" ref="jahiaWorkflowDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
             </bean>
         </property>
     </bean>

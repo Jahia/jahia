@@ -35,19 +35,15 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.query.QueryService;
 import org.jahia.services.JahiaService;
-import org.jahia.services.notification.SubscriptionService;
-import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;
-import org.jahia.services.audit.JahiaAuditLogManagerService;
 import org.jahia.services.cache.CacheKeyGeneratorService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.cluster.ClusterService;
-import org.jahia.services.containers.JahiaContainersService;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.fetchers.JahiaFetcherService;
@@ -59,28 +55,30 @@ import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.metadata.MetadataService;
+import org.jahia.services.notification.SubscriptionService;
+import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.JahiaVersionService;
 import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.springframework.context.ApplicationContext;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The ServicesRegistry class that give a unique access point to Jahia Services.
@@ -335,13 +333,6 @@ public class ServicesRegistry {
     }
 
     /**
-     *
-     */
-    public JahiaContainersService getJahiaContainersService() {
-        return (JahiaContainersService) getService(JAHIA_CONTAINERS_SERVICE);
-    }
-
-    /**
      * EV 11.01.2001
      */
     public JahiaFetcherService getJahiaFetcherService() {
@@ -375,13 +366,6 @@ public class ServicesRegistry {
     public ApplicationsManagerService getApplicationsManagerService() {
         return (ApplicationsManagerService) getService(
                 APPLICATIONS_MANAGER_SERVICE);
-    }
-
-    /**
-     * MJ 20.02.2001
-     */
-    public JahiaAuditLogManagerService getJahiaAuditLogManagerService() {
-        return (JahiaAuditLogManagerService) getService(JAHIA_AUDIT_LOG_MANAGER_SERVICE);
     }
 
     /**
@@ -419,10 +403,6 @@ public class ServicesRegistry {
         return (CacheService) getService(JAHIA_CACHE_SERVICE);
     }
 
-    public JahiaSiteMapService getJahiaSiteMapService() {
-        return (JahiaSiteMapService) getService(JAHIA_SITE_MAP_SERVICE);
-    }
-
     public HtmlEditorsService getHtmlEditorsService() {
         return (HtmlEditorsService) getService(JAHIA_HTMLEDITORS_SERVICE);
     }
@@ -440,10 +420,6 @@ public class ServicesRegistry {
 
     public HtmlParserService getHtmlParserService() {
         return (HtmlParserService) getService(HTML_PARSER_SERVICE);
-    }
-
-    public WorkflowService getWorkflowService() {
-        return (WorkflowService) getService(WORKFLOW_SERVICE);
     }
 
     public MetadataService getMetadataService() {
@@ -473,10 +449,6 @@ public class ServicesRegistry {
 
     public ClusterService getClusterService() {
         return (ClusterService) getService(CLUSTER_SERVICE);
-    }
-
-    public TimeBasedPublishingService getTimeBasedPublishingService() {
-        return (TimeBasedPublishingService) getService(TIME_BASED_PUBLISHING_SERVICE);
     }
 
     public ImportExportService getImportExportService() {

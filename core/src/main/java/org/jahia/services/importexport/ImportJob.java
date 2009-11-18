@@ -31,34 +31,20 @@
  */
 package org.jahia.services.importexport;
 
-import groovy.lang.Binding;
-import groovy.util.GroovyScriptEngine;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.mail.GroovyMimeMessagePreparator;
-import org.jahia.services.mail.MailService;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.UserProperty;
-import org.jahia.services.workflow.AbstractActivationJob;
-import org.jahia.services.workflow.PublishAllJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -101,51 +87,51 @@ public class ImportJob extends BackgroundJob {
         if (f != null) {
             ServicesRegistry.getInstance().getImportExportService().importZip(f, actions, result, context);
 
-            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
-                if (result.getErrors().isEmpty()) {
-                    Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
-                    JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
-                    JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
-                    publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
-                    publishjobDataMap.put(BackgroundJob.JOB_TYPE, AbstractActivationJob.WORKFLOW_TYPE);
-                    publishjobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, "Auto publish " + uri);
-                    final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                    schedulerServ.scheduleJobAtEndOfRequest(publishjobDetail);
-                } else {
-                    MailService mailService = ServicesRegistry.getInstance().getMailService();
-                    GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
-                    GroovyMimeMessagePreparator messageMimePreparator = new GroovyMimeMessagePreparator();
-                    messageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
-                    String senderEmail = mailService.defaultSender();
-
-                    JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                            .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                    Set<Principal> members = adminGroup.getRecursiveUserMembers();
-
-                    String recipientEmail = mailService.defaultRecipient();
-                    if (members.iterator().hasNext()) {
-                        JahiaUser user = (JahiaUser) members.iterator().next();
-                        UserProperty userProperty = user.getUserProperty("email");
-                        if (userProperty != null) {
-                            String s = userProperty.getValue();
-                            if (s != null && s.trim().length() > 0) {
-                                recipientEmail += ";" + s;
-                            }
-                        }
-                    }
-                    Binding binding = new Binding();
-                    // Bind all necessary variables for groovy script
-                    binding.setVariable("processingContext", context);
-                    binding.setVariable("from", senderEmail);
-                    binding.setVariable("to", recipientEmail);
-                    binding.setVariable("locale", context.getLocale());
-                    binding.setVariable("results", result);
-
-                    messageMimePreparator.setBinding(binding);
-                    messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
-                    mailService.sendTemplateMessage(messageMimePreparator);
-                }
-            }
+//            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
+//                if (result.getErrors().isEmpty()) {
+//                    Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
+//                    JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
+//                    JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
+//                    publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
+//                    publishjobDataMap.put(BackgroundJob.JOB_TYPE, AbstractActivationJob.WORKFLOW_TYPE);
+//                    publishjobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, "Auto publish " + uri);
+//                    final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
+//                    schedulerServ.scheduleJobAtEndOfRequest(publishjobDetail);
+//                } else {
+//                    MailService mailService = ServicesRegistry.getInstance().getMailService();
+//                    GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
+//                    GroovyMimeMessagePreparator messageMimePreparator = new GroovyMimeMessagePreparator();
+//                    messageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
+//                    String senderEmail = mailService.defaultSender();
+//
+//                    JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
+//                            .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+//                    Set<Principal> members = adminGroup.getRecursiveUserMembers();
+//
+//                    String recipientEmail = mailService.defaultRecipient();
+//                    if (members.iterator().hasNext()) {
+//                        JahiaUser user = (JahiaUser) members.iterator().next();
+//                        UserProperty userProperty = user.getUserProperty("email");
+//                        if (userProperty != null) {
+//                            String s = userProperty.getValue();
+//                            if (s != null && s.trim().length() > 0) {
+//                                recipientEmail += ";" + s;
+//                            }
+//                        }
+//                    }
+//                    Binding binding = new Binding();
+//                    // Bind all necessary variables for groovy script
+//                    binding.setVariable("processingContext", context);
+//                    binding.setVariable("from", senderEmail);
+//                    binding.setVariable("to", recipientEmail);
+//                    binding.setVariable("locale", context.getLocale());
+//                    binding.setVariable("results", result);
+//
+//                    messageMimePreparator.setBinding(binding);
+//                    messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
+//                    mailService.sendTemplateMessage(messageMimePreparator);
+//                }
+//            }
 
 //                if (Boolean.TRUE.equals(jobDataMap.get(COPY_TO_JCR)) ) {
 //                    ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();

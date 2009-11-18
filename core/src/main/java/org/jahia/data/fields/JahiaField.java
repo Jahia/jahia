@@ -31,13 +31,10 @@
  */
 package org.jahia.data.fields;
 
-import org.apache.commons.lang.StringUtils;
+import name.fraser.neil.plaintext.DiffMatchPatch;
 import org.apache.log4j.Logger;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.PropertiesInterface;
-import org.jahia.data.containers.ContainerFacadeInterface;
-import org.jahia.engines.EngineLanguageHelper;
-import org.jahia.engines.validation.ValidationError;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
@@ -51,10 +48,8 @@ import org.jahia.utils.JahiaTools;
 import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.Serializable;
-import java.util.Properties;
 import java.util.LinkedList;
-
-import name.fraser.neil.plaintext.DiffMatchPatch;
+import java.util.Properties;
 
 public abstract class JahiaField implements Cloneable, Serializable,
         ACLResourceInterface, PropertiesInterface, Comparable<JahiaField> {
@@ -646,15 +641,6 @@ public abstract class JahiaField implements Cloneable, Serializable,
 
     protected boolean isMandatory() throws JahiaException {
         return getDefinition().getItemDefinition().isMandatory();
-    }
-
-    public ValidationError validate(
-            ContainerFacadeInterface jahiaContentContainerFacade,
-            EngineLanguageHelper elh,
-            ProcessingContext jParams) throws JahiaException {
-        return isMandatory() && StringUtils.isBlank(this.getValue()) ? new ValidationError(
-                this, "Value required")
-                : null;
     }
 
     public boolean isForComparisonOnly() {

@@ -181,12 +181,6 @@ public class JahiaFieldsDataManager {
                 cache.remove(ContentFieldKey.FIELD_TYPE);
             }
         }
-        cache = cacheService.getCache(JahiaContainerManager.JAHIACONTAINER_CACHE_NAME);
-        if (cache != null) {
-            synchronized (cache) {
-                cache.flushGroup(JahiaContainerManager.CACHE_KEY_PREFIX + containerId);
-            }
-        }
     }
 
     public synchronized void changeEntryState(ContentField contentField, ContentObjectEntryState entryState,

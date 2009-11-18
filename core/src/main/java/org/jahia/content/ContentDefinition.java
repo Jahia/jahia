@@ -43,7 +43,6 @@ import org.jahia.hibernate.manager.JahiaLinkManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.metadata.MetadataBaseService;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 
@@ -155,42 +154,8 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
     }
 
     /**
-     * Return an Array of JahiaObject that have a core "metadata" strutural relationship
-     * with this one. @see StructuralRelationship.METADATADEFINITION_LINK
-     *
-     * @return List of JahiaObject
-     */
-    public List<? extends JahiaObject> getMetadataDefinitions() throws JahiaException {
-        return getMetadataDefinitions(this);
-    }
-
-    /**
-     * Return an Array of JahiaObject that have a core "metadata" strutural relationship
-     * with the given objectKey. @see StructuralRelationship.METADATADEFINITION_LINK
-     *
-     * @param objectKey ObjectKey
-     * @throws JahiaException
-     * @return List of JahiaObject
-     */
-    public static List<? extends JahiaObject> getMetadataDefinitions(ContentDefinition objectKey) throws JahiaException {
-        List<JahiaObject> objects = new ArrayList<JahiaObject>();
-        List<ObjectKey> fields = MetadataBaseService.getInstance().getMatchingMetadatas(objectKey);
-        for (Iterator<ObjectKey> iterator = fields.iterator(); iterator.hasNext();) {
-            ContentDefinitionKey contentDefinitionKey = (ContentDefinitionKey) iterator.next();
-            try {
-                JahiaObject jahiaObject = ContentObject.getInstance(contentDefinitionKey);
-                objects.add(jahiaObject);
-            } catch (ClassNotFoundException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return objects;
-    }
-
-    /**
      * Return the given JahiaObject that has a core "metadata" strutural relationship
      * with this one and having the given name.
-     * @see StructuralRelationship.METADATADEFINITION_LINK
      *
      * @return a JahiaObject
      */

@@ -31,24 +31,14 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.content.ContentContainerKey;
-import org.jahia.content.ContentContainerListKey;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
-import org.jahia.services.cache.ContainerHTMLCache;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.webdav.UsageEntry;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -118,14 +108,9 @@ public class CacheListener extends DefaultEventListener {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        try {
-                            for (String s : nodes) {
-                                JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
-                                flushNodeRefs(n);
-                                cache.remove(n.getPath());
-                            }
-                        } catch (JahiaException e) {
-                            logger.error("Error flushing node references", e);
+                        for (String s : nodes) {
+                            JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
+                            cache.remove(n.getPath());
                         }
                         return null;
                     }
@@ -137,50 +122,4 @@ public class CacheListener extends DefaultEventListener {
 //        System.out.println("----------------> "+nodes);
     }
 
-    private void flushNodeRefs(JCRNodeWrapper n) throws RepositoryException, JahiaException {
-        if (n.isFile()) {
-            for (UsageEntry usageEntry : n.findUsages(false)) {
-                int id = usageEntry.getId();
-                ContentField field = ContentField.getField(id);
-                if (field != null) {
-                    ContentContainerKey key = new ContentContainerKey(field.getContainerID());
-                    ContentContainerListKey listkey = (ContentContainerListKey) key.getParent(null);
-                    ContainerHTMLCache<?, ?> containerHTMLCache = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
-                    if (usageEntry.getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        if (listkey != null) {
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        }
-                        if (!field.hasStagingEntries()) {
-                            containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                            if (listkey != null) {
-                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                            }
-                        }
-                    } else if (usageEntry.getWorkflow() == EntryLoadRequest.STAGING_WORKFLOW_STATE ||
-                            usageEntry.getWorkflow() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
-                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        if (listkey != null) {
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        }
-                    }
-                } else {
-                    logger.warn("No content field with the ID " + id + " can be found.");
-                }
-            }
-        } else {
-            List<JCRNodeWrapper> children = n.getChildren();
-            for (JCRNodeWrapper child : children) {
-                flushNodeRefs(child);
-            }
-        }
-    }
 }

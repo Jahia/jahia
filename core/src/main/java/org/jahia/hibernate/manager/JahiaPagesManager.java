@@ -51,17 +51,11 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.integrity.Link;
 import org.jahia.services.integrity.Link.Type;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPageContentRights;
-import org.jahia.services.pages.JahiaPageInfo;
-import org.jahia.services.pages.PageInfoInterface;
-import org.jahia.services.pages.PageProperty;
+import org.jahia.services.pages.*;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntryStateable;
 import org.jahia.services.version.RevisionEntry;
-import org.jahia.workflow.nstep.dao.WorkflowInstanceDAO;
-import org.jahia.workflow.nstep.dao.WorkflowHistoryDAO;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
 import java.util.*;
@@ -81,9 +75,6 @@ public class JahiaPagesManager {
     private JahiaFieldsDataDAO fieldDAO = null;
     private JahiaObjectDAO jahiaObjectDAO = null;
     private JahiaWorkflowDAO jahiaWorkflowDAO = null;
-
-    private WorkflowInstanceDAO workflowInstanceDAO;
-    private WorkflowHistoryDAO workflowHistoryDAO;
 
     private JahiaGroupManager groupManager;
 
@@ -122,21 +113,6 @@ public class JahiaPagesManager {
         this.jahiaWorkflowDAO = jahiaWorkflowDAO;
     }
 
-    public WorkflowInstanceDAO getWorkflowInstanceDAO() {
-        return workflowInstanceDAO;
-    }
-
-    public void setWorkflowInstanceDAO(WorkflowInstanceDAO workflowInstanceDAO) {
-        this.workflowInstanceDAO = workflowInstanceDAO;
-    }
-
-    public WorkflowHistoryDAO getWorkflowHistoryDAO() {
-        return workflowHistoryDAO;
-    }
-
-    public void setWorkflowHistoryDAO(WorkflowHistoryDAO workflowHistoryDAO) {
-        this.workflowHistoryDAO = workflowHistoryDAO;
-    }
 
     public void setJahiaPagesDAO(JahiaPagesDAO dao) {
         this.dao = dao;
@@ -242,18 +218,12 @@ public class JahiaPagesManager {
                 jahiaObjectDAO.delete(new JahiaObjectPK(ContentPageKey.PAGE_TYPE, activeInfo.getID()));
                 String key = ContentPageKey.toObjectKeyString(activeInfo.getID());
                 jahiaWorkflowDAO.delete(key);
-                workflowHistoryDAO.removeWorkflowHistory(key);
-                workflowInstanceDAO.removeWorkflowInstance(key);
                 groupManager.searchAndDelete("workflowrole_" + key+"_%", null);
 
                 dao.deleteProperties(activeInfo.getID());
 
                 ContentPageXRefManager.getInstance().removeAllPageLinks(activeInfo.getID());;
-                JahiaContainerListManager containerListManager = (JahiaContainerListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaContainerListManager.class.getName());
-                JahiaContainerManager containerManager = (JahiaContainerManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaContainerManager.class.getName());
                 int jahiaID = activeInfo.getJahiaID();
-                flushCacheForMoving(activeInfo.getParentID(), jahiaID, containerListManager, containerManager);
-                flushCacheForMoving(activeInfo.getID(), jahiaID, containerListManager, containerManager);
             } catch (JahiaException e) {
                 throw new RuntimeException(e);
             }
@@ -529,15 +499,6 @@ public class JahiaPagesManager {
             parentID = oldData.getParentID();
         int jahiaID = newStagingInfo.getJahiaID();
         if (newStagingInfo.getParentID() != parentID) {
-            try {
-                JahiaContainerListManager containerListManager = (JahiaContainerListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaContainerListManager.class.getName());
-                JahiaContainerManager containerManager = (JahiaContainerManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaContainerManager.class.getName());
-                flushCacheForMoving(parentID, jahiaID, containerListManager, containerManager);
-                flushCacheForMoving(newStagingInfo.getParentID(), jahiaID, containerListManager, containerManager);
-                flushCacheForMoving(newStagingInfo.getID(), jahiaID, containerListManager, containerManager);
-            } catch (JahiaException e) {
-                log.warn("Error flushing cache", e);  //To change body of catch statement use File | Settings | File Templates.
-            }
 //            cacheService.flushAllCaches();
         }
         data.setParentID((newStagingInfo.getParentID()));
@@ -551,19 +512,6 @@ public class JahiaPagesManager {
             dao.save(data);
         }
         flushCache(newStagingInfo.getID(), jahiaID);
-    }
-
-    private void flushCacheForMoving(int parentID, int jahiaID, JahiaContainerListManager containerListManager, JahiaContainerManager containerManager) throws JahiaException {
-        Set<Integer> pageIDs = ContentPageXRefManager.getInstance().getPageIDs(parentID);
-        for (Object pageID1 : pageIDs) {
-            Integer pageID = (Integer) pageID1;
-            flushCache(pageID, jahiaID);
-            Collection<Integer> absoluteContainerListsFromPageID = containerListManager.getAllPageContainerListIDs(pageID);
-            for (Integer containerListKey : absoluteContainerListsFromPageID) {
-                containerListManager.flushCache(containerListKey, jahiaID, null);
-                containerManager.flushCache(0, jahiaID, containerListKey, pageID);
-            }
-        }
     }
 
     private JahiaPageInfo convertJahiaPagesDataToJahiaPageInfo(JahiaPagesData data) {

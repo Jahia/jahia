@@ -71,7 +71,7 @@ public class MetadataLookupBean extends LookupBaseBean<String, ContentBean> {
                     + key + "' for content object " + contentObject, e);
         }
 
-        return fld != null ? new FieldBean(fld, ctx) : null;
+        return null;
     }
 
 }

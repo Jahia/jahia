@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
-import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
@@ -46,7 +45,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
@@ -55,12 +53,10 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.toolbar.bean.*;
-import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.content.ContentPageKey;
-import org.jahia.content.ContentObject;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -558,12 +554,12 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
                 if (lastExecutedJobType != null) {
                     // is system job
-                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE);
+//                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE);
 
                     // workflow
-                    if (lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)) {
-                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.workflow.label");
-                    }
+//                    if (lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)) {
+//                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.workflow.label");
+//                    }
 
                     // check if current page validated
                     List<ProcessAction> processActionList = (List<ProcessAction>) lastExecutedJobDataMap.get(BackgroundJob.ACTIONS);
@@ -575,16 +571,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                                     if (contentPageKey.getPageID() == currentPageId) {
                                         isCurrentPageValided = true;
                                         break;
-                                    }
-                                } else {
-                                    try {
-                                        ContentObject contentObject = JahiaObjectCreator.getContentObjectFromKey(processAction.getKey());
-                                        if (contentObject != null && contentObject.getPageID() == currentPageId) {
-                                            isCurrentPageValided = true;
-                                            break;
-                                        }
-                                    } catch (ClassNotFoundException e) {
-                                        //
                                     }
                                 }
                             }
@@ -693,33 +679,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return SCHEDULER_SERVICE;
     }
 
-
-    /**
-     * Quick validate the current page/language using the given action.
-     *
-     * @param objectKey the objectKey corresponding to the current page
-     * @param lang      the language code corresponding to the current language
-     * @param action    the action to execute
-     * @param comment   an optional comment
-     * @throws GWTJahiaServiceException
-     */
-    public void quickValidate(String objectKey, String lang, String action, String comment) throws GWTJahiaServiceException {
-        WorkflowServiceHelper.quickValidate(objectKey, lang, action, comment, retrieveParamBean());
-    }
-
-    public void quickAddToBatch(String objectKey, String lang, String action) throws GWTJahiaServiceException {
-        WorkflowServiceHelper.addToBatch(objectKey, lang, action, retrieveParamBean());
-    }
-
-    /**
-     * Quick validation of the whole site.
-     *
-     * @param comment an optional comment
-     * @throws GWTJahiaServiceException
-     */
-    public void publishAll(String comment) throws GWTJahiaServiceException {
-        WorkflowServiceHelper.publishAll(comment, retrieveParamBean());
-    }
 
     /*
    * Google analytics   todo should be adapted to the new version

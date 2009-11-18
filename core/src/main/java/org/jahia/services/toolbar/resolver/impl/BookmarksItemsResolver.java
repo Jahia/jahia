@@ -7,7 +7,6 @@ import org.jahia.services.preferences.exception.JahiaPreferenceProviderException
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.data.JahiaData;
 import org.jahia.registries.ServicesRegistry;
 
@@ -82,13 +81,7 @@ public class BookmarksItemsResolver   extends DefaultItemsResolver {
       * @return
       */
      private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
-         try {
-             JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNodeByUUID(uuid);
-             return (ContentPage) nodeWrapper.getContentObject();
-         } catch (Exception e) {
-             logger.error(e, e);
-             return null;
-         }
+        return null;
      }
 
 }

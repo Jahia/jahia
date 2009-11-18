@@ -32,7 +32,12 @@
 package org.jahia.operations.valves;
 
 
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import net.htmlparser.jericho.Tag;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
@@ -45,20 +50,13 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.cache.CacheKeyGeneratorService;
-import org.jahia.services.cache.ContainerHTMLCache;
-import org.jahia.services.cache.ContainerHTMLCacheEntry;
-import org.jahia.services.cache.GroupCacheKey;
-import org.jahia.services.cache.SkeletonCache;
-import org.jahia.services.cache.SkeletonCacheEntry;
+import org.jahia.services.cache.*;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.theme.ThemeService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.RequestDispatcher;
@@ -66,21 +64,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Tag;
-import net.htmlparser.jericho.StartTag;
 
 /**
  * <p>Title: </p> <p>Description: </p> <p>Copyright: Copyright (c) 2004</p> <p>Company: Jahia Ltd</p>
@@ -96,7 +83,7 @@ public class SkeletonAggregatorValve implements Valve {
     public static final String ESI_VARIABLE_USER = "user";
     public static final String THEME_VARIABLE = "theme";
     public static final String GWT_VARIABLE = "gwtInit";
-    private static ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>  containerHTMLCache = null;
+//    private static ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>  containerHTMLCache = null;
     private JahiaEventGeneratorBaseService eventService;
     private PageGeneratorQueue generatorQueue;
     private CacheKeyGeneratorService cacheKeyGeneratorService;
@@ -230,48 +217,48 @@ public class SkeletonAggregatorValve implements Valve {
                             List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
                             List<? extends Tag> esiVarsTags = htmlContent.getAllStartTags("esi:vars");
                             watch.stop();
-                            if (containerHTMLCache == null) {
-                                try {
-                                    containerHTMLCache = ServicesRegistry.getInstance()
-                                            .getCacheService()
-                                            .getContainerHTMLCacheInstance();
-                                } catch (JahiaInitializationException e) {
-                                    throw new PipelineException(e);
-                                }
-                            }
+//                            if (containerHTMLCache == null) {
+//                                try {
+//                                    containerHTMLCache = ServicesRegistry.getInstance()
+//                                            .getCacheService()
+//                                            .getContainerHTMLCacheInstance();
+//                                } catch (JahiaInitializationException e) {
+//                                    throw new PipelineException(e);
+//                                }
+//                            }
                             watch.start("Iterate through include tags (" + esiIncludeTags.size() + ")");
                             for (Iterator<? extends Tag> i = esiIncludeTags.iterator(); i.hasNext();) {
                                 StartTag segment = (StartTag) i.next();
                                 String srcAtribute = segment.getAttributeValue("src");
                                 if (srcAtribute.contains("cacheKey")) {
-                                    if (containerHTMLCache != null) {
-                                        String[] attrs = srcAtribute.split("&");
-                                        String cacheKey = "";
-                                        try {
-                                            cacheKey = attrs[1].split("=")[1];
-                                        } catch (ArrayIndexOutOfBoundsException e) {
-                                            // No cachekey
-                                        }
-                                        int ctnid = Integer.parseInt(attrs[0].split("=")[1]);
-                                        GroupCacheKey containerKey =
-                                                cacheKeyGeneratorService.computeContainerEntryKey(ctnid,
-                                                                                 cacheKey,
-                                                                                 jahiaUser,
-                                                                                 curLanguageCode,
-                                                                                 processingContext.getOperationMode(),
-                                                                                 processingContext.getScheme(),
-                                                                                 processingContext.getSiteID());
-                                        ContainerHTMLCacheEntry containerHTMLCacheEntry =
-                                                (ContainerHTMLCacheEntry) containerHTMLCache.get(containerKey);
-                                        if (containerHTMLCacheEntry != null)
-                                            outputDocument.replace(segment.getBegin(), segment.getElement()
-                                                    .getEndTag().getEnd(), containerHTMLCacheEntry.getBodyContent());
-                                        else {
-                                            logger.debug("Couldn't find container cache fragment " + containerKey + " for page " + entryKey + " exiting aggregator... ");
-                                            ValveContext.valveResources.set(new PageState(false, entryKey));
-                                            return exit;
-                                        }
-                                    }
+//                                    if (containerHTMLCache != null) {
+//                                        String[] attrs = srcAtribute.split("&");
+//                                        String cacheKey = "";
+//                                        try {
+//                                            cacheKey = attrs[1].split("=")[1];
+//                                        } catch (ArrayIndexOutOfBoundsException e) {
+//                                            // No cachekey
+//                                        }
+//                                        int ctnid = Integer.parseInt(attrs[0].split("=")[1]);
+//                                        GroupCacheKey containerKey =
+//                                                cacheKeyGeneratorService.computeContainerEntryKey(ctnid,
+//                                                                                 cacheKey,
+//                                                                                 jahiaUser,
+//                                                                                 curLanguageCode,
+//                                                                                 processingContext.getOperationMode(),
+//                                                                                 processingContext.getScheme(),
+//                                                                                 processingContext.getSiteID());
+//                                        ContainerHTMLCacheEntry containerHTMLCacheEntry =
+//                                                (ContainerHTMLCacheEntry) containerHTMLCache.get(containerKey);
+//                                        if (containerHTMLCacheEntry != null)
+//                                            outputDocument.replace(segment.getBegin(), segment.getElement()
+//                                                    .getEndTag().getEnd(), containerHTMLCacheEntry.getBodyContent());
+//                                        else {
+//                                            logger.debug("Couldn't find container cache fragment " + containerKey + " for page " + entryKey + " exiting aggregator... ");
+//                                            ValveContext.valveResources.set(new PageState(false, entryKey));
+//                                            return exit;
+//                                        }
+//                                    }
                                 } else {
                                     String content = null;
                                     try {

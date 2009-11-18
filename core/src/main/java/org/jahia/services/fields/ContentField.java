@@ -38,25 +38,19 @@ import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
-import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.JahiaContainersService;
+
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.io.IOException;
@@ -104,7 +98,6 @@ public abstract class ContentField extends ContentObject
     private static transient JahiaVersionService jahiaVersionService;
     private static transient JahiaEventGeneratorService jahiaEventService;
     private static transient JahiaFieldService jahiaFieldService;
-    private static transient JahiaContainersService jahiaContainersService;
 
     protected ObjectKey metadataOwnerObjectKey;
 
@@ -137,12 +130,6 @@ public abstract class ContentField extends ContentObject
                 ContentObject co = (ContentObject) ContentObject.getInstance(getMetadataOwnerObjectKey());
                 return co.getAclID();
             } catch (ClassNotFoundException e) {
-            }
-        } else if (containerID > 0) {
-            try {
-                ContentContainer container = ContentContainer.getContainer(containerID);
-                return container.getAclID();
-            } catch (JahiaException e) {
             }
         }
         return -1;
@@ -393,10 +380,6 @@ public abstract class ContentField extends ContentObject
 
             notifyFieldUpdate();
 
-            if (!isMetadata()) {
-                WorkflowEvent theEvent = new WorkflowEvent (this, this, user, languageCode, true);
-                getJahiaEventService ().fireObjectChanged(theEvent);
-            } 
 
             return;
         }
@@ -438,9 +421,7 @@ public abstract class ContentField extends ContentObject
             }
 
             if (!isMetadata()) {
-                WorkflowEvent theEvent = new WorkflowEvent (this, this, user, curLanguageCode, true);
-                getJahiaEventService ().fireObjectChanged(theEvent);
-            } 
+            }
         }
 
         if (stateModified) {
@@ -463,7 +444,6 @@ public abstract class ContentField extends ContentObject
     /**
      * This method should be called when the staged version has to be activated.
      *
-     * @param JahiaSaveVersion containing the new VersionID
      * @param jParams          ProcessingContext needed to destroy page related data such as
      *                         fields, sub pages, as well as generated JahiaEvents.
      */
@@ -478,7 +458,6 @@ public abstract class ContentField extends ContentObject
     /**
      * This method should be called when the staged version has to be activated.
      *
-     * @param JahiaSaveVersion containing the new VersionID
      * @param jParams          ProcessingContext needed to destroy page related data such as
      *                         fields, sub pages, as well as generated JahiaEvents.
      */
@@ -720,98 +699,6 @@ public abstract class ContentField extends ContentObject
             throws JahiaException {
         ActivationTestResults activationTestResults = super.isValidForActivation(languageCodes, jParams, stateModifContext);
 
-        int containerId = this.getContainerID();
-        ContentContainer contentContainer = null;
-        if ( containerId > 0 ){
-            contentContainer = ContentContainer.getContainer(containerId);
-        }
-
-        // skip test mandatory language if we're going to delete it
-        int now = new Long(System.currentTimeMillis()/1000).intValue();
-
-        boolean deleted = this.isDeleted(now);
-        boolean markedForDelete = this.isMarkedForDelete();
-        if ( ((contentContainer == null) && !(deleted || markedForDelete)) ||
-             ((contentContainer != null) && !((contentContainer.isMarkedForDelete() || contentContainer.isDeleted(now)))
-              && !(deleted || markedForDelete) ) ){
-
-            // first we must test if we have all the mandatory languages in our
-            // field
-            JahiaSite theSite = jParams.getSite();
-
-            // first let's check if all the languages have unitialized values,
-            // in which case we do not need to do mandatory language checks.
-            boolean allEntriesUninitialized = true;
-            Map<String, Boolean> languagesInitialized = new HashMap<String, Boolean>(32);
-            for (ContentObjectEntryState curEntryState : activeAndStagingEntryStates) {
-                if (isEntryInitialized(curEntryState)) {
-                    allEntriesUninitialized = false;
-                    languagesInitialized.put(curEntryState.getLanguageCode(),Boolean.TRUE);
-                }
-            }
-
-            if (!markedForDelete && (!allEntriesUninitialized)) {
-                List<SiteLanguageSettings> languageSettings = theSite.getLanguageSettings(true);
-                for (SiteLanguageSettings curSettings : languageSettings) {
-                    if (curSettings.isMandatory()) {
-                        // we found a mandatory language, let's check that there at
-                        // least an active or a staged entry for this field.
-                        boolean foundLanguage = false;
-                        if(languagesInitialized.containsKey(curSettings.getCode()) ||
-                           languagesInitialized.containsKey(ContentField.SHARED_LANGUAGE))
-                        foundLanguage = true;
-                        ContentObjectKey mainKey = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
-
-                        if (!foundLanguage) {
-                            final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
-                            activationTestResults.mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                            try {
-                                String containerName = JahiaContainerDefinitionsRegistry.getInstance().getDefinition(getParent(null).getDefinitionID(null)).getTitle(jParams.getLocale());
-
-                                final EngineMessage msg = new EngineMessage(
-                                        "org.jahia.services.fields.ContentField.mandatoryLangMissingError",
-                                        getFieldTitle(jParams), curSettings.getCode(), containerName, getContainerID());
-                                for (String code : languageCodes) {
-                                    if (!code.equals(curSettings.getCode())) {
-                                        IsValidForActivationResults activationResults = new IsValidForActivationResults(
-                                                mainKey, code, msg);
-                                        if (!isAdminMember) {
-                                            activationResults.setBlocker(true);
-                                        }
-                                        activationTestResults.appendError(activationResults);
-                                    }
-                                }
-                            } catch (ClassNotFoundException cnfe) {
-                                logger.error("Error while creating activation test node result", cnfe);
-                            }
-                        } else if (!languagesInitialized.containsKey(ContentField.SHARED_LANGUAGE)
-                                && !languageCodes.contains(curSettings.getCode())
-                                && !hasActiveEntry(curSettings.getCode())) {
-                            final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
-                            activationTestResults.mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                            try {
-                                for (String code : languageCodes) {
-                                    IsValidForActivationResults activationResults = new IsValidForActivationResults(
-                                            mainKey, code, new EngineMessage(
-                                                    "org.jahia.services.fields.ContentField.mandatoryLangNotPublished",
-                                                    getFieldTitle(jParams), curSettings.getCode()));
-                                    if (!isAdminMember) {
-                                        activationResults.setBlocker(true);
-                                    }
-                                    activationTestResults.appendError(activationResults);
-                                }
-                            } catch (ClassNotFoundException e) {
-                                logger.error("Error while creating activation test node result", e);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        activationTestResults.merge(
-                isContentValidForActivation(languageCodes, jParams, stateModifContext));
-
         return activationTestResults;
     }
 
@@ -1029,7 +916,6 @@ public abstract class ContentField extends ContentObject
      * @param connectType the type of connection for the field, legacy method
      *                    for storing big text editor type and previously to specify if the field
      *                    was local or remote (datasourcing)
-     * @param parentAclid the acl ID of the parent object
      * @param aclID       the ACL for this new field if we already have one, or 0 to
      *                    create a new ACL for the field
      *
@@ -1061,7 +947,6 @@ public abstract class ContentField extends ContentObject
      * Get a ContentField from its ID
      *
      * @param fieldID
-     * @param forceloadFromDB
      *
      * @return
      *
@@ -1086,9 +971,6 @@ public abstract class ContentField extends ContentObject
 
     /**
      * Get a ContentField from its ID
-     *
-     * @param fieldID
-     * @param forceloadFromDB
      *
      * @return
      *
@@ -1280,9 +1162,6 @@ public abstract class ContentField extends ContentObject
     public void postSet(EntrySaveRequest saveRequest) throws JahiaException{
 
         if (!isMetadata()) {
-            WorkflowEvent theEvent = new WorkflowEvent(this, this, saveRequest.getUser(), saveRequest.getLanguageCode(), false);
-            theEvent.setNew(saveRequest.isNew());
-            getJahiaEventService ().fireObjectChanged(theEvent);
         } else {
             JahiaFieldDefinition d = (JahiaFieldDefinition) JahiaFieldDefinition.getChildInstance(""+ getDefinitionID(null));
             if (!systemMetadata.contains(d.getName())) {
@@ -1294,9 +1173,6 @@ public abstract class ContentField extends ContentObject
                         for (Map.Entry<String, Integer> languageState : ls.entrySet()) {
                             if (languageState.getValue() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                                 c.createStaging(languageState.getKey());
-                                WorkflowEvent theEvent = new WorkflowEvent(this, c, saveRequest.getUser(), saveRequest.getLanguageCode(), false);
-                                theEvent.setNew(saveRequest.isNew());
-                                getJahiaEventService ().fireObjectChanged(theEvent);
                             }
                         }
                     }
@@ -1511,7 +1387,6 @@ public abstract class ContentField extends ContentObject
      * @param newWorkflowState the integer value of the new workflow state
      * @param jParams          a ProcessingContext object useful for some treatments, notably
      *                         when we address ContentPageFields
-     * @param withSubPages     if set to true, sub pages inside content page fields
      *                         will also be asked to change their state.
      *
      * @throws JahiaException raised if we have trouble storing the new
@@ -1557,7 +1432,6 @@ public abstract class ContentField extends ContentObject
      *
      * @param fieldType        the new field type.
      * @param fieldValue       the field value needed to create a new Staging entry of the new type.
-     * @param ParamBean        the param Bean.
      * @param entrySaveRequest
      *
      * @return a new instance of ContentField of new Field Type.
@@ -1686,7 +1560,7 @@ public abstract class ContentField extends ContentObject
             // this is the case for field used as Metadata
             return null;
         } else if (getContainerID () > 0) {
-            parent = ContentContainer.getContainer (getContainerID ());
+
         } else {
             parent = ContentPage.getPage (getPageID ());
         }
@@ -1762,7 +1636,6 @@ public abstract class ContentField extends ContentObject
      * the text file corresponding to the field entry
      *
      * @param deleteEntryState the entry state to delete
-     * @param jParams          ProcessingContext needed to destroy page related data such as
      *                         fields, sub pages, as well as generated JahiaEvents.
      */
     protected void deleteEntry (EntryStateable deleteEntryState)
@@ -1830,7 +1703,6 @@ public abstract class ContentField extends ContentObject
     /**
      * update ContainersChangeEventListener listener
      *
-     * @param operation @see ContainersChangeEventListener
      */
     private void notifyFieldUpdate(){
         // do nothing
@@ -1884,32 +1756,6 @@ public abstract class ContentField extends ContentObject
                 append(getID()).append(", Type: ").
                 append(getObjectKey().getType());
         return buff.toString();
-    }
-
-    public boolean checkAccess(JahiaUser user, int permission, boolean checkChilds) {
-        if (containerID > 0) {
-            // We must get the acl associated with the container list
-            try {
-                ContentContainer container = ContentContainer.getContainer(containerID);
-                if (container.getParentContainerListID() > 0) {
-                    Map<Object, Object> properties = getJahiaContainersService().getContainerListProperties(container.getParentContainerListID());
-                    String aclID = (String)properties.get("view_field_acl_" + getJahiaFieldService().loadFieldDefinition(fieldDefID).getName());
-                    if (aclID != null && !"".equals(aclID)) {
-                        boolean result = false;
-                        try {
-                            JahiaBaseACL acl = new JahiaBaseACL(Integer.parseInt(aclID));
-                            result = acl.getPermission(user, permission);
-                        } catch (JahiaException ex) {
-                            logger.debug("Cannot load ACL ID " + getAclID(), ex);
-                        }
-                        return result;
-                    }
-                }
-            } catch (JahiaException e) {
-                logger.error("Cannot check acl on field"+ this.getID(), e);
-            }
-        }
-        return super.checkAccess(user, permission,false);
     }
 
     /**
@@ -2020,10 +1866,4 @@ public abstract class ContentField extends ContentObject
         return jahiaFieldService;
     }
 
-    public static JahiaContainersService getJahiaContainersService() {
-        if (jahiaContainersService == null) {
-            jahiaContainersService = ServicesRegistry.getInstance().getJahiaContainersService();
-        }
-        return jahiaContainersService;
-    }
 }

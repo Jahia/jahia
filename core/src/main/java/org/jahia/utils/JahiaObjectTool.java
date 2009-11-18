@@ -41,8 +41,6 @@ package org.jahia.utils;
 import java.util.Map;
 
 import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.applications.Application_Engine;
 import org.jahia.exceptions.JahiaException;
@@ -106,18 +104,6 @@ public class JahiaObjectTool
         EntryLoadRequest loadRequest = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, jParams.getEntryLoadRequest().getLocales());
 
         switch(objectType) {
-            case CONTAINERLIST_TYPE:
-                return sReg.getJahiaContainersService().loadContainerListInfo(objectID).getDefinition().getName();
-            case CONTAINER_TYPE:
-                JahiaContainer jahiaContainer = sReg.getJahiaContainersService().loadContainerInfo(objectID,jParams.getEntryLoadRequest());
-                if (jahiaContainer == null) {
-                    jahiaContainer = sReg.getJahiaContainersService().loadContainerInfo(objectID,EntryLoadRequest.STAGED);
-                }
-                if (jahiaContainer != null) {
-                    return jahiaContainer.getDefinition().getName();
-                } else {
-                    return "container [" + objectID + "]";
-                }
             case PAGE_TYPE:
                 JahiaPage thePage = sReg.getJahiaPageService().lookupPage(objectID,
                     loadRequest, jParams.getOperationMode(), jParams.getUser(), true);
@@ -162,8 +148,6 @@ public class JahiaObjectTool
     throws JahiaException
     {
         switch(objectType) {
-            case CONTAINERLIST_TYPE: return ((JahiaContainerList) engineMap.get( "theContainerList" )).getDefinition().getName();
-            case CONTAINER_TYPE:     return ((JahiaContainer) engineMap.get( "theContainer" )).getDefinition().getName();
             case PAGE_TYPE:          return ((JahiaPage) engineMap.get( "thePage" )).getTitle();
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getDefinition().getName();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getName();
@@ -215,8 +199,6 @@ public class JahiaObjectTool
     {
         switch(objectType) {
 
-            case CONTAINERLIST_TYPE: return ((JahiaContainerList) engineMap.get( "theContainerList" )).getID();
-            case CONTAINER_TYPE:     return ((JahiaContainer) engineMap.get( "theContainer" )).getID();
             case PAGE_TYPE:          return ((JahiaPage) engineMap.get( "thePage" )).getID();
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getID();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getID();

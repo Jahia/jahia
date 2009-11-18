@@ -38,7 +38,6 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -84,16 +83,6 @@ public class JahiaWebAppListener implements HttpSessionListener, ServletContextL
         }
         ServicesRegistry servReg = ServicesRegistry.getInstance();
         if (servReg != null) {
-            try {
-                JahiaSiteMapService siteMapService = servReg
-                        .getJahiaSiteMapService();
-                if (siteMapService != null) {
-                    siteMapService.removeSessionSiteMap(sessionId);
-                }
-            } catch (Exception e) {
-                logger.error("Error removing site map session cache for session ID '"
-                        + sessionId + "'", e);
-            }
             JahiaUser u = null;
             try {
                 u = (JahiaUser) se.getSession().getAttribute(

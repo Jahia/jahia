@@ -33,21 +33,13 @@ package org.jahia.query;
 
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
-import org.jahia.data.beans.ContainerListBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.SiteBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
 import org.jahia.services.JahiaService;
-import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
-import org.jahia.services.content.impl.jahia.JahiaSiteNodeImpl;
-import org.jahia.services.pages.ContentPage;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.QueryObjectModelFactory;
@@ -131,129 +123,5 @@ public class QueryService extends JahiaService {
         return this.valueFactory;
     }
 
-//    public PathFactory getPathFactory() {
-//        return pathFactory;
-//    }
-
-    /**
-     *
-     * @param contentObject
-     * @param context
-     * @return
-     * @throws JahiaException
-     */
-
-//    public Path getPath(ContentObject contentObject, ProcessingContext context)
-//            throws JahiaException {
-//        Path path = null;
-//        if ( contentObject instanceof ContentPage) {
-//            String jcrPath = contentObject.getJCRPath(context);
-//            path = this.pathFactory.create(jcrPath);
-//        }
-//        return path;
-//    }
-
-    /**
-     *
-     * @param pathString
-     * @param context
-     * @return
-     * @throws JahiaException
-     */
-
-//    public Path getPath(String pathString, ProcessingContext context)
-//            throws JahiaException {
-//        pathString = StringUtils.replaceChars(pathString,'/',Path.DELIMITER);
-//        return this.pathFactory.create(pathString);
-//    }
-
-    /**
-     *
-     * @param pathString
-     * @param context
-     * @return
-     * @throws JahiaException
-     */
-    public Object getPathObject(String pathString, ProcessingContext context)
-            throws JahiaException, RepositoryException {
-        if ("/".equals(pathString)){
-            return pathString;
-        }
-        Node n = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(pathString).getRealNode();
-        if (n instanceof JahiaContentNodeImpl) {
-            Object result = ((JahiaContentNodeImpl)n).getContentObject();
-            if (result instanceof ContentPage){
-                result = new PageBean(((ContentPage)result).getPage(context),context);
-            } else if (result instanceof ContentContainerList){
-                result = new ContainerListBean(((ContentContainerList)result)
-                        .getJahiaContainerList(context,context.getEntryLoadRequest()),
-                        context);
-            }
-            return result;
-        } else if (n instanceof JahiaSiteNodeImpl) {
-            return new SiteBean(((JahiaSiteNodeImpl)n).getSite(), context);
-        }
-        return null;
-//        if ("/".equals(pathString)){
-//            return pathString;
-//        }
-//        if (pathString.startsWith("/")){
-//            pathString = pathString.substring(1);
-//        }
-//        Object result = null;
-//        Path path = getPath(pathString,context);
-//        if (path==null){
-//            return null;
-//        }
-//        if (path.getLength()==1){
-//            try {
-//                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService()
-//                    .getSiteByKey(path.getElements()[0].getName().getLocalName());
-//                result = site.getSiteKey();
-//                result = new SiteBean(site,context);
-//            } catch ( Exception t ){
-//                logger.debug(t);
-//            }
-//        } else {
-//            Path.Element lastElement = path.getElements()[path.getElements().length-1];
-//            result = getContentObject(lastElement,context);
-//            if (result != null){
-//                if (result instanceof ContentPage){
-//                    result = new PageBean(((ContentPage)result).getPage(context),context);
-//                } else if (result instanceof ContentContainerList){
-//                    result = new ContainerListBean(((ContentContainerList)result)
-//                            .getJahiaContainerList(context,context.getEntryLoadRequest()),
-//                            context);
-//                }
-//            }
-//        }
-//        return result;
-    }
-
-//    public ContentObject getContentObject(Path.Element element, ProcessingContext context){
-//        if (element == null){
-//            return null;
-//        }
-//        ContentObject contentObject = null;
-//        try {
-//            contentObject = ContentObject.getContentObjectInstance(
-//                    ObjectKey.getInstance(element.getName().getLocalName()));
-//        } catch ( Exception t){
-//            logger.debug(t);
-//        }
-//        return contentObject;
-//    }
-
-//    public void setPathFactory(PathFactory pathFactory) {
-//        this.pathFactory = pathFactory;
-//    }
-
-//    public NameFactory getNameFactory() {
-//        return nameFactory;
-//    }
-
-//    public void setNameFactory(NameFactory nameFactory) {
-//        this.nameFactory = nameFactory;
-//    }
 
 }

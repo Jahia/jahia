@@ -1092,7 +1092,6 @@ public class ManageSites extends AbstractAdministrationModule {
         if (jParams.settings().isOutputContainerCacheActivated()) {
             try {
                 ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flush(true);
-                ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance().flush(true);
             } catch (JahiaInitializationException e) {
                 logger.info("could not do triggering of Skeleton And Container cache flush due to Default site change. Exception : " + e);
             }

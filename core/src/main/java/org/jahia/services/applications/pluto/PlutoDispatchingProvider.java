@@ -45,20 +45,14 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.DispatchingProvider;
-import org.jahia.services.cache.ContainerHTMLCacheEntry;
-import org.jahia.services.cache.ContainerHTMLCache;
-import org.jahia.bin.Jahia;
 
-import javax.portlet.WindowState;
 import javax.portlet.MimeResponse;
+import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.jcr.*;
-import javax.jcr.nodetype.PropertyDefinition;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,16 +83,16 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
     public String render(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException {
         String cacheKey = null;
-        final ContainerHTMLCache cacheInstance = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
+//        final ContainerHTMLCache cacheInstance = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         // Check if cache is available for this portlet
         if (entryPointInstance.getExpirationTime() != 0) {
             cacheKey = "portlet_instance_" + windowID;
             if (entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
                 cacheKey += "_" + jParams.getUser().getUserKey();
                 // Try to find the entry in cache
-                final ContainerHTMLCacheEntry htmlCacheEntry2 =
-                        cacheInstance.getFromContainerCache(null, jParams, cacheKey, false, 0, null, null);
-                if (htmlCacheEntry2 != null) return htmlCacheEntry2.getBodyContent();
+//                final ContainerHTMLCacheEntry htmlCacheEntry2 =
+//                        cacheInstance.getFromContainerCache(null, jParams, cacheKey, false, 0, null, null);
+//                if (htmlCacheEntry2 != null) return htmlCacheEntry2.getBodyContent();
             }
         }
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
@@ -158,7 +152,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         }
         final String portletRendering = portalResponse.getInternalBuffer().getBuffer().toString();
         if (cacheKey != null) {
-            cacheInstance.writeToContainerCache(null, jParams, portletRendering, cacheKey, new HashSet(), entryPointInstance.getExpirationTime());
+//            cacheInstance.writeToContainerCache(null, jParams, portletRendering, cacheKey, new HashSet(), entryPointInstance.getExpirationTime());
         }
         return portletRendering;
     }

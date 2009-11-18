@@ -58,18 +58,6 @@ public abstract class MetadataService extends JahiaService
     throws java.io.FileNotFoundException, JahiaException;
 
     /**
-     * Return the JahiaEventListener used to handle Metadata
-     *
-     */
-    public abstract JahiaEventListenerInterface getMetadataEventListener();
-
-    /**
-     * Add an aopalliance interceptor to the JahiaEventListener
-     *
-     */
-    public abstract void addAOPInterceptor(Interceptor interceptor);
-
-    /**
      * Returns an array list of metadata that match this contentDefinition
      *
      * @param contentDefinition ContentDefinition
@@ -77,32 +65,7 @@ public abstract class MetadataService extends JahiaService
      */
     public abstract List getMatchingMetadatas(ContentDefinition contentDefinition);
 
-    /**
-     * Returns true if the given field definition is declared in metadata config file
-     * @param name the metadata name ( jahia field definition name )
-     * @return
-     */
-    public abstract boolean isDeclaredMetadata(String name);
 
-    /**
-     * Create all metadata associations between a ContentDefinition and
-     * registered Metadata Definitions
-     *
-     * @param contentDefinition ContentDefinition
-     * @throws JahiaException
-     */
-    public abstract void assignMetadataToContentDefinition(ContentDefinition contentDefinition)
-    throws JahiaException;
-
-    /**
-     * Returns an array of ObjectKey that are metadatas
-     *
-     * @param name String, the metadata name
-     * @throws JahiaException
-     * @return ArrayList
-     */
-    public abstract List<ObjectKey> getMetadataByName(String name)
-    throws JahiaException;
 
     /**
      * Returns an array of ObjectKey that are metadatas of a given site

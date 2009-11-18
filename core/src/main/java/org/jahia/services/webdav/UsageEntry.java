@@ -43,7 +43,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 
 
@@ -108,12 +107,7 @@ public class UsageEntry {
     }
 
     public String getExtendedWorkflowState() {
-        try {
-            return WorkflowService.getInstance().getExtendedWorkflowState(getPage(), lang) ;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e) ;
-            return "000" ;
-        }
+        return "000" ;
     }
 
     public String getLang () {

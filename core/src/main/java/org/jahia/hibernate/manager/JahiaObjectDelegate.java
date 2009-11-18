@@ -31,7 +31,6 @@
  */
  package org.jahia.hibernate.manager;
 
-import org.jahia.services.timebasedpublishing.RetentionRule;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TimeBasedPublishingState;
 
@@ -51,8 +50,7 @@ public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable,
     private Integer siteId = 0;
     private Long validFromDate = 0L;
     private Long validToDate = 0L;
-    private RetentionRule rule;
-    
+
     JahiaObjectDelegate(){}
 
     public ObjectKey getObjectKey() {
@@ -95,13 +93,6 @@ public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable,
         this.validToDate = validToDate;
     }
 
-    public RetentionRule getRule() {
-        return rule;
-    }
-
-    public void setRule(RetentionRule rule) {
-        this.rule = rule;
-    }
 
     public boolean isValid(){
         return (this.getTimeBPState() == IS_VALID_STATE);
@@ -136,8 +127,6 @@ public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable,
         super.clone();
         final JahiaObjectDelegate clone = new JahiaObjectDelegate();
         clone.setObjectKey(getObjectKey());
-        final RetentionRule rule = getRule();
-        if (rule != null) clone.setRule((RetentionRule)getRule().clone());
         clone.setSiteId(getSiteId());
         clone.setTimeBPState(getTimeBPState());
         clone.setValidFromDate(getValidFromDate());

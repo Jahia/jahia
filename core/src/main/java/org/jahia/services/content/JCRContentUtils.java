@@ -34,21 +34,9 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
-import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
-import org.jahia.services.content.impl.jahia.JahiaRootNodeImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -59,7 +47,6 @@ import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -112,17 +99,7 @@ public final class JCRContentUtils {
      */
     public static String getContentNodeName(Node node)
             throws RepositoryException {
-        String name = null;
-        if (node instanceof JahiaContentNodeImpl) {
-            name = ((JahiaContentNodeImpl) node).getContentObject()
-                    .getObjectKey().getKey();
-        } else if (node instanceof JCRJahiaContentNode) {
-            name = ((JCRJahiaContentNode) node).getContentObject()
-                    .getObjectKey().getKey();
-        } else {
-            name = node.getName();
-        }
-        return name;
+        return node.getName();
     }
     
     /**
@@ -157,11 +134,6 @@ public final class JCRContentUtils {
             } catch (ItemNotFoundException e) {
                 parent = null;
             }
-            if (parent instanceof JahiaRootNodeImpl
-                    || (parent instanceof JCRNodeDecorator && ((JCRNodeDecorator) parent)
-                            .getRealNode() instanceof JahiaRootNodeImpl)) {
-                parent = null; // stop
-            }
         }
         
         return path.toString();
@@ -175,95 +147,6 @@ public final class JCRContentUtils {
 
     public static JCRContentUtils getInstance() {
         return instance;
-    }
-
-    /**
-     * Returns the node type for the specified content object.
-     * 
-     * @param contentObjectKey
-     *            the content object key
-     * @return the node type for the specified content object
-     */
-    public static ExtendedNodeType getNodeType(ContentObjectKey contentObjectKey) {
-        ExtendedNodeType nt = null;
-        ContentObject contentObject = null;
-        try {
-            contentObject = ContentObject
-                    .getContentObjectInstance(contentObjectKey);
-        } catch (ClassNotFoundException e) {
-            logger.warn("Unable to get content object for key '"
-                    + contentObjectKey + "'", e);
-        }
-
-        if (contentObject != null) {
-            if (contentObject instanceof ContentContainer || contentObject instanceof ContentContainerList) {
-                JahiaContainerDefinition containerDef = null;
-                try {
-                    containerDef = JahiaContainerDefinitionsRegistry
-                            .getInstance()
-                            .getDefinition(
-                                    contentObject instanceof ContentContainer ? ((ContentContainer) contentObject)
-                                            .getDefinitionID()
-                                            : ((ContentContainerList) contentObject)
-                                                    .getDefinitionID());
-                } catch (JahiaException e) {
-                    logger.warn("Unable to get container definition for ID '"
-                            + ((ContentContainer) contentObject)
-                                    .getDefinitionID() + "'", e);
-                }
-                if (containerDef != null) {
-                    try {
-                        nt = NodeTypeRegistry.getInstance().getNodeType(
-                                containerDef.getContainerType());
-                    } catch (NoSuchNodeTypeException e) {
-                        logger
-                                .warn(
-                                        "Unable to find node type definition for type '"
-                                                + containerDef
-                                                        .getContainerType()
-                                                + "'", e);
-                    }
-                }
-            }
-        }
-        return nt;
-    }
-
-    /**
-     * Returns the name of the primary node type for the specified content
-     * object.
-     * 
-     * @param contentObjectKey
-     *            the content object key
-     * @return the name of the primary node type for the specified content
-     *         object
-     */
-    public static String getNodeTypeName(ContentObjectKey contentObjectKey) {
-        ExtendedNodeType nt = getNodeType(contentObjectKey);
-        return nt != null ? nt.getName() : null;
-    }
-
-    /**
-     * Returns the names of the primary node and all the super types for the
-     * specified content object.
-     * 
-     * @param contentObjectKey
-     *            the content object key
-     * @return Returns the names of the primary node and all the super types for
-     *         the specified content object
-     */
-    public static String[] getNodeTypeNamesWithSuperTypes(
-            ContentObjectKey contentObjectKey) {
-        List<String> typeNames = new LinkedList<String>();
-        ExtendedNodeType nt = getNodeType(contentObjectKey);
-        if (nt != null) {
-            typeNames.add(nt.getName());
-            ExtendedNodeType[] superTypes = nt.getSupertypes();
-            for (ExtendedNodeType superType : superTypes) {
-                typeNames.add(superType.getName());
-            }
-        }
-        return typeNames.toArray(new String[] {});
     }
 
     private static ExtendedPropertyDefinition getPropertyDefExtension(

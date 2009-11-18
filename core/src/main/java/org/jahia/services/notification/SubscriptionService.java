@@ -206,14 +206,14 @@ public class SubscriptionService extends JahiaService {
         } catch (ClassNotFoundException e) {
             // not a content object key
         }
-        String[] objectKeys = contentObjectKey != null ? JCRContentUtils
-                .getNodeTypeNamesWithSuperTypes(contentObjectKey)
-                : new String[] { event.getObjectKey() };
-
-        objectKeys = (String[]) ArrayUtils.addAll(StringUtils.split(event
-                .getObjectPath(), "/"), objectKeys);
-        subscriptions.addAll(subscriptionManager.getParentSubscriptions(
-                criteria, objectKeys));
+//        String[] objectKeys = contentObjectKey != null ? JCRContentUtils
+//                .getNodeTypeNamesWithSuperTypes(contentObjectKey)
+//                : new String[] { event.getObjectKey() };
+//
+//        objectKeys = (String[]) ArrayUtils.addAll(StringUtils.split(event
+//                .getObjectPath(), "/"), objectKeys);
+//        subscriptions.addAll(subscriptionManager.getParentSubscriptions(
+//                criteria, objectKeys));
 
         return subscriptions;
     }

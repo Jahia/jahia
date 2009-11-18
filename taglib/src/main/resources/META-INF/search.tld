@@ -132,72 +132,7 @@
         </attribute>
     </tag>
 
-    <tag>
-        <description>
-            Uses view settings for the saved search results display, i.e. displayed table columns, default sorting.
-            View settings are based on the current saved search container ID, saved search query ID and the user key.
-            If no settings were provided for the current saved search box yet, uses default view settings, configured in
-            the applicationcontext-savesearch.xml file.
-            This tag should be nested into the 'results' tag and the 'content:container' tag.
-
-            The retrieved view settings will be applied to child 'resultTable' tag or can be exposed into the page scope
-            under the name, provided by 'var' attribute,
-            and can be passed as an attribute 'viewSettings' into the 'resultTable' tag to control the view parameters.
-        </description>
-        <name>resultTableSettings</name>
-        <tag-class>org.jahia.taglibs.search.ResultTableSettingsTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>
-                If evaluates to 'true' the button for Customize View engine is shown.
-                For example, to prevent guest user from customizing the view, set the value to:
-                ${jahia.requestInfo.logged}
-                To allow only members of "administrators" group to change the view, set the value to:
-                ${jahia.requestInfo.admin}
-            </description>
-            <name>allowChanges</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description>If this tag is not nested into 'content:container' tag this value should be provided to
-                identify the usage context.
-            </description>
-            <name>contextId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The path to the icon to be displayed in the button.</description>
-            <name>icon</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>Tooltip text for the button.</description>
-            <name>title</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the page scope variable to expose the view settings object.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the page scope variable to expose the view settings object.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
+   
 
     <tag>
         <description>Generates the RSS feed view of the search results. Must be nested into the 'results' tag.</description>

@@ -34,10 +34,12 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.impl.jahia.PropertyImpl;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.jcr.*;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;

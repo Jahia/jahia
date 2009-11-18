@@ -38,13 +38,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.calendar.CalendarHandler;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.cache.ContainerHTMLCache;
-import org.jahia.services.cache.ContainerHTMLCacheEntry;
-import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -87,37 +81,37 @@ public class CacheTag extends AbstractJahiaTag {
             if(cacheKey== null || "".equals(cacheKey.trim())) throw new JspException("None of cacheKey or cacheKeyName, cacheKeyProperty, cacheKeyScope is filled");
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
-                    ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
+//            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
+//                    ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key
             String cacheKey2 = buildCacheKey(context2);
             // Try to find the entry in cache
-            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry2 =
-                    cacheInstance2.getCacheEntryFromContainerCache(null, context2, cacheKey2, false, 0, null, null);
+//            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry2 =
+//                    cacheInstance2.getCacheEntryFromContainerCache(null, context2, cacheKey2, false, 0, null, null);
             // This will containes the html to output in the skeleton (HTML Page)
             String htmlOutput2;
             boolean cacheParam2 = (!ProcessingContext.NORMAL.equals(context2.getOperationMode()) && Jahia.getSettings().isContainerCacheLiveModeOnly())
                 || (context2.getEntryLoadRequest() != null && context2.getEntryLoadRequest().isVersioned()) ;
             final boolean outputContainerCacheActivated = org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
-            if (!(forceExecutionInEditMode && context2.isInEditMode()) &&
-                    outputContainerCacheActivated &&
-                    htmlCacheEntry2 != null &&
-                    !cacheParam2) {
-                Date expireDate = htmlCacheEntry2.getExpirationDate();
-                // entry is found and should be displayed
-                if (debug) {
-                    pageContext.getOut().print("<fieldset><legend align=\"right\">getting from cache (will expire at " +
-                            dateFormat.format(expireDate) + ")</legend>");
-                }
-                htmlOutput2 = ((ContainerHTMLCacheEntry) htmlCacheEntry2.getObject()).getBodyContent();
-                writeHtmlToStream(context2, cacheKey2, htmlOutput2);
-                if (debug) {
-                    pageContext.getOut().println("</fieldset>");
-                }
-                returned = SKIP_BODY;
-            }
-            else {
+//            if (!(forceExecutionInEditMode && context2.isInEditMode()) &&
+//                    outputContainerCacheActivated &&
+//                    htmlCacheEntry2 != null &&
+//                    !cacheParam2) {
+//                Date expireDate = htmlCacheEntry2.getExpirationDate();
+//                // entry is found and should be displayed
+//                if (debug) {
+//                    pageContext.getOut().print("<fieldset><legend align=\"right\">getting from cache (will expire at " +
+//                            dateFormat.format(expireDate) + ")</legend>");
+//                }
+//                htmlOutput2 = ((ContainerHTMLCacheEntry) htmlCacheEntry2.getObject()).getBodyContent();
+//                writeHtmlToStream(context2, cacheKey2, htmlOutput2);
+//                if (debug) {
+//                    pageContext.getOut().println("</fieldset>");
+//                }
+//                returned = SKIP_BODY;
+//            }
+//            else {
                 if (dependencies == null) dependencies = new HashSet<ContentObjectKey>();
                 if (debug) {
                     pageContext.getOut().print("<fieldset><legend align=\"right\">written to cache (at " +
@@ -129,9 +123,9 @@ public class CacheTag extends AbstractJahiaTag {
                                "?ctnid=0&cacheKey=" +
                                cacheKey2 +
                                "\" -->");
-            }
-        } catch (JahiaInitializationException e) {
-            logger.error("Jahia is not correctly initialized", e);
+//            }
+//        } catch (JahiaInitializationException e) {
+//            logger.error("Jahia is not correctly initialized", e);
         } catch (IOException e) {
             logger.error("Error during execution of this content:cache tag", e);
         }
@@ -139,21 +133,21 @@ public class CacheTag extends AbstractJahiaTag {
     }
 
     private String buildCacheKey(ProcessingContext context2) {
-        String cacheKey2 =
-                ContainerHTMLCache.appendAESMode(context2, new StringBuffer("_ctnListName_").append(cacheKey)
-                        .append("_siteKey_")
-                        .append(context2.getSiteKey()).toString());
-        debug = "debug".equals(context2.getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
-        if (debug && !(cacheKey2.indexOf("___debug___")>0)) cacheKey2 = cacheKey2 + "___debug___";
-        return cacheKey2;
+//        String cacheKey2 =
+//                ContainerHTMLCache.appendAESMode(context2, new StringBuffer("_ctnListName_").append(cacheKey)
+//                        .append("_siteKey_")
+//                        .append(context2.getSiteKey()).toString());
+//        debug = "debug".equals(context2.getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
+//        if (debug && !(cacheKey2.indexOf("___debug___")>0)) cacheKey2 = cacheKey2 + "___debug___";
+        return "";
     }
 
     public int doAfterBody() throws JspException {
         try {
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
-                    ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
+//            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
+//                    ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key
             String cacheKey2 = buildCacheKey(context2);
@@ -162,25 +156,25 @@ public class CacheTag extends AbstractJahiaTag {
             final boolean outputContainerCacheActivated = org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
             boolean cacheParam2 = (!ProcessingContext.NORMAL.equals(context2.getOperationMode()) && Jahia.getSettings().isContainerCacheLiveModeOnly())
                 || (context2.getEntryLoadRequest() != null && context2.getEntryLoadRequest().isVersioned());
-            if (!(forceExecutionInEditMode && context2.getOperationMode().equals(ProcessingContext.EDIT)) &&
-                outputContainerCacheActivated &&
-                content != null && !cacheParam2 &&
-                content.length() > 0) {
-                cacheInstance2.writeToContainerCache(null,
-                                                     context2, 
-                                                     content,
-                                                     cacheKey2,
-                                                     dependencies,
-                                                     expiration);
-            }
+//            if (!(forceExecutionInEditMode && context2.getOperationMode().equals(ProcessingContext.EDIT)) &&
+//                outputContainerCacheActivated &&
+//                content != null && !cacheParam2 &&
+//                content.length() > 0) {
+//                cacheInstance2.writeToContainerCache(null,
+//                                                     context2,
+//                                                     content,
+//                                                     cacheKey2,
+//                                                     dependencies,
+//                                                     expiration);
+//            }
             getPreviousOut().print(content);
             if (outputContainerCacheActivated)
                 getPreviousOut().print("<!-- /cache:include -->\n");
             if (debug) {
                 getPreviousOut().println("</fieldset>");
             }
-        } catch (JahiaInitializationException e) {
-            logger.error("Jahia is not correctly initialized", e);
+//        } catch (JahiaInitializationException e) {
+//            logger.error("Jahia is not correctly initialized", e);
         } catch (IOException e) {
             logger.error("Error during execution of this content:cache tag", e);
         }

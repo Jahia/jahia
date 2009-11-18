@@ -33,19 +33,15 @@ package org.jahia.services.lock;
 
 import java.util.*;
 
-import org.jahia.content.ContentContainerKey;
-import org.jahia.content.ContentContainerListKey;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
-import org.jahia.data.containers.JahiaContainerStructure;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.WorkflowService;
 import org.springframework.util.StopWatch;
 
 /**
@@ -158,7 +154,7 @@ public class LockPrerequisites {
             verifyLockForImport(obj, owner, lockID, justTesting, results, false, false, true);
             verifyLockForParentPage(obj, owner, lockID, justTesting, results);
             verifyLockForEditObject(obj, owner, lockID, justTesting, results);
-            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, true, JahiaContainerStructure.ALL_TYPES);
+//            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, true, JahiaContainerStructure.ALL_TYPES);
             results.addDisabledTab(CONTENT_PICKER);
             results.addDisabledTab(IMPORT);
             results.addDisabledTab(EXPORT);
@@ -174,70 +170,6 @@ public class LockPrerequisites {
             lockPrerequisitesResultMap.put(lockKey, results);
         }
         // Lock for add container engine.
-        else if (LockKey.ADD_CONTAINER_TYPE.equals(type)) {
-            ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
-            verifyLockForParentDelete(obj, owner, lockID, justTesting, results);
-            verifyLockForImport(obj, owner, lockID, justTesting, results, true, false, true);
-            verifyLockForWorkflow(obj, owner, lockID, justTesting, results, false, false);
-            verifyWaitingState(lockKey.getContentObject(), results);
-            verifyLockForParentPage(obj, owner, lockID, justTesting, results);
-            verifyLockForUpdateContainerList(obj.getIdInType(), owner, lockID, justTesting, results);
-            verifyLockForMarkForDeletion(obj, results);
-            results.addReadOnlyTab(ALL_LEFT);
-            results.addDisabledTab(IMPORT);
-            results.addDisabledTab(VERSIONNING);
-            results.addDisabledTab(CONTENT_PICKER);
-            lockPrerequisitesResultMap.put(lockKey, results);
-        }
-        // Lock for update container engine.
-        else if (LockKey.UPDATE_CONTAINER_TYPE.equals(type)) {
-            ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
-            verifyLockForParentDelete(obj, owner, lockID, justTesting, results);
-            verifyLockForImport(obj, owner, lockID, justTesting, results, true, false, true);
-            verifyLockForWorkflow(obj, owner, lockID, justTesting, results, false, false);
-            verifyWaitingState(lockKey.getContentObject(), results);
-            verifyLockForParentPage(obj, owner, lockID, justTesting, results);
-            verifyLockForUpdateContainerList(obj.getParent(EntryLoadRequest.STAGED).getIdInType(), owner, lockID, justTesting, results);
-            verifyLockForEditObject(obj, owner, lockID, justTesting, results);
-            verifyLockForMarkForDeletion(obj, results);
-            results.addReadOnlyTab(EDIT);
-            results.addReadOnlyTab(METADATA);
-            results.addReadOnlyTab(RIGHTS);
-            results.addReadOnlyTab(EXPORT);
-            results.addReadOnlyTab(TIME_BASED_PUBLISHING);
-            results.addReadOnlyTab(MANAGE_WORKFLOW);
-            results.addReadOnlyTab(VERSIONNING);
-            results.addReadOnlyTab(LOGS);
-            results.addDisabledTab(IMPORT);
-            results.addDisabledTab(VERSIONNING);
-            results.addDisabledTab(CONTENT_PICKER);
-            lockPrerequisitesResultMap.put(lockKey, results);
-        }
-        // Lock for delete container engine
-        else if (LockKey.DELETE_CONTAINER_TYPE.equals(type)) {
-            ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
-            verifyLockForParentDelete(obj, owner, lockID, justTesting, results);
-            verifyLockForImport(obj, owner, lockID, justTesting, results, true, false, true);
-            verifyLockForWorkflow(obj, owner, lockID, justTesting, results, false, false);
-            verifyWaitingState(lockKey.getContentObject(), results);
-            verifyLockForParentPage(obj, owner, lockID, justTesting, results);
-            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, true, JahiaContainerStructure.JAHIA_CONTAINER);
-            verifyLockForUpdateContainerList(obj.getParent(EntryLoadRequest.STAGED).getIdInType(), owner, lockID, justTesting, results);
-            verifyLockForEditObject(obj, owner, lockID, justTesting, results);
-            verifyLockForMarkForDeletion(obj, results);
-            results.addReadOnlyTab(EDIT);
-            results.addReadOnlyTab(METADATA);
-            results.addReadOnlyTab(RIGHTS);
-            results.addReadOnlyTab(TIME_BASED_PUBLISHING);
-            results.addReadOnlyTab(MANAGE_WORKFLOW);
-            results.addReadOnlyTab(VERSIONNING);
-            results.addReadOnlyTab(LOGS);
-            results.addReadOnlyTab(EXPORT);
-            results.addDisabledTab(CONTENT_PICKER);
-            results.addDisabledTab(VERSIONNING);
-            results.addDisabledTab(IMPORT);
-            lockPrerequisitesResultMap.put(lockKey, results);
-        }
         // Lock for update field engine.
         else if (LockKey.UPDATE_FIELD_TYPE.equals(type)) {
             ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
@@ -260,30 +192,6 @@ public class LockPrerequisites {
             results.addDisabledTab(VERSIONNING);
             lockPrerequisitesResultMap.put(lockKey, results);
         }
-        // Lock for update container list engine.
-        else if (LockKey.UPDATE_CONTAINERLIST_TYPE.equals(type)) {
-            ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
-            verifyLockForParentDelete(obj, owner, lockID, justTesting, results);
-            verifyLockForImport(obj, owner, lockID, justTesting, results, true, false, true);
-            verifyLockForWorkflow(obj, owner, lockID, justTesting, results, false, false);
-            verifyLockForParentPage(obj, owner, lockID, justTesting, results);
-            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, false, JahiaContainerStructure.JAHIA_CONTAINER);
-            verifyLockForEditObject(obj, owner, lockID, justTesting, results);
-            verifyLockForMarkForDeletion(obj, results);
-            verifyWaitingState(lockKey.getContentObject(), results);
-            results.addReadOnlyTab(EDIT);
-            results.addReadOnlyTab(METADATA);
-            results.addReadOnlyTab(RIGHTS);
-            results.addReadOnlyTab(FIELD_RIGHTS);
-            results.addReadOnlyTab(TIME_BASED_PUBLISHING);
-            results.addReadOnlyTab(MANAGE_WORKFLOW);
-            results.addReadOnlyTab(VERSIONNING);
-            results.addReadOnlyTab(LOGS);
-            results.addDisabledTab(CONTENT_PICKER);
-            results.addDisabledTab(IMPORT);
-            results.addDisabledTab(VERSIONNING);
-            lockPrerequisitesResultMap.put(lockKey, results);
-        }
         // Lock for update page engine.
         else if (LockKey.UPDATE_PAGE_TYPE.equals(type)) {
             ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
@@ -292,7 +200,7 @@ public class LockPrerequisites {
             verifyLockForWorkflow(obj, owner, lockID, justTesting, results, false, false);
             verifyWaitingState(lockKey.getContentObject(), results);
             verifyLockForEditObject(obj, owner, lockID, justTesting, results);
-            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, false, JahiaContainerStructure.ALL_TYPES);
+//            verifyLockForAllChildren(obj, owner, lockID, justTesting, results, false, JahiaContainerStructure.ALL_TYPES);
             verifyLockForMarkForDeletion(obj, results);
             results.addReadOnlyTab(EDIT);
             results.addReadOnlyTab(METADATA);
@@ -305,10 +213,6 @@ public class LockPrerequisites {
             results.addDisabledTab(VERSIONNING);
             lockPrerequisitesResultMap.put(lockKey, results);
 
-        } else if (LockKey.RESTORE_LIVE_CONTAINER_TYPE.equals(type)) {
-            ContentObjectKey obj = (ContentObjectKey) lockKey.getObjectKey();
-            verifyLockForRestoreLiveContent(obj, owner, lockID, justTesting, results);
-            lockPrerequisitesResultMap.put(lockKey, results);
         }
         stopWatch.stop();
         return results.size() <= 0;
@@ -350,10 +254,6 @@ public class LockPrerequisites {
                                            JahiaUser owner, String context, boolean justTesting, LockPrerequisitesResult results) {
 
         while (object != null) {
-            if (object.getType().equals(ContentContainerKey.CONTAINER_TYPE)) {
-                LockKey lockKey = LockKey.composeLockKey(LockKey.DELETE_ACTION + "_" + object.getType(), object.getIdInType());
-                putLockIfNotSameContext(lockKey, owner, context, justTesting, results, false);
-            }
             object = object.getParent(EntryLoadRequest.STAGED);
         }
     }
@@ -381,8 +281,6 @@ public class LockPrerequisites {
         try {
             final ContentObject theObject = ContentObject.getContentObjectInstance(objectKey);
             if (theObject.isMarkedForDelete()) {
-                final LockKey lockKey = LockKey.composeLockKey(LockKey.RESTORE_LIVE_CONTAINER_TYPE, objectKey.getIdInType());
-                putLockIfNotSameContext(lockKey, owner, context, justTesting, results, false);
             }
         } catch (final Exception e) {
             logger.warn("Error in verifyLockForRestoreLiveContent", e);
@@ -429,20 +327,20 @@ public class LockPrerequisites {
                                             JahiaUser owner, String context, boolean justTesting,
                                             LockPrerequisitesResult results) {
         final ServicesRegistry instance = ServicesRegistry.getInstance();
-        try {
-            WorkflowService workflowService = instance.getWorkflowService();
-            verifyLockForImport(workflowService.getMainLinkObject(object), owner, context, justTesting, results, false, true, true);
-            List linked = workflowService.getLinkedContentObjects(object, false);
-            for (Iterator iterator = linked.iterator(); iterator.hasNext();) {
-                ContentObjectKey linkedObject = (ContentObjectKey) iterator.next();
-                LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WORKFLOW_ACTION + "_" + linkedObject.getType(), linkedObject.getIdInType());
-                putLockIfNotSameContext(workflowLockKey, owner, context, justTesting, results, false);
-                verifyLockForEditObject(linkedObject, owner, context, justTesting, results);
-                verifyLockForImport(linkedObject, owner, context, justTesting, results, false, true, false);
-            }
-        } catch (JahiaException je) {
-            logger.warn("Problem when iterate through page childs to get a lock !", je);
-        }
+//        try {
+//            WorkflowService workflowService = instance.getWorkflowService();
+//            verifyLockForImport(workflowService.getMainLinkObject(object), owner, context, justTesting, results, false, true, true);
+//            List linked = workflowService.getLinkedContentObjects(object, false);
+//            for (Iterator iterator = linked.iterator(); iterator.hasNext();) {
+//                ContentObjectKey linkedObject = (ContentObjectKey) iterator.next();
+//                LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WORKFLOW_ACTION + "_" + linkedObject.getType(), linkedObject.getIdInType());
+//                putLockIfNotSameContext(workflowLockKey, owner, context, justTesting, results, false);
+//                verifyLockForEditObject(linkedObject, owner, context, justTesting, results);
+//                verifyLockForImport(linkedObject, owner, context, justTesting, results, false, true, false);
+//            }
+//        } catch (JahiaException je) {
+//            logger.warn("Problem when iterate through page childs to get a lock !", je);
+//        }
     }
 
     private void verifyLockForEditObject(final ContentObjectKey object,
@@ -454,15 +352,6 @@ public class LockPrerequisites {
         LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_ACTION + "_" + object.getType(), object.getIdInType());
         putLockIfNotSameContext(lockKey, owner, context, justTesting, results, false);
 
-        if (object instanceof ContentContainerListKey) {
-            ContentContainerListKey containerList = (ContentContainerListKey) object;
-            lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, containerList.getIdInType());
-            putLockIfNotSameContext(lockKey, owner, context, justTesting, results, false);
-        } else if (object instanceof ContentContainerKey) {
-            ContentContainerKey contentContainer = (ContentContainerKey) object;
-            LockKey deleteContainerLockKey = LockKey.composeLockKey(LockKey.DELETE_CONTAINER_TYPE, contentContainer.getIdInType());
-            putLockIfNotSameContext(deleteContainerLockKey, owner, context, justTesting, results, false);
-        }
     }
 
     private void verifyLockForWorkflow(final ContentObjectKey object,
@@ -472,7 +361,7 @@ public class LockPrerequisites {
                                        LockPrerequisitesResult results,
                                        final boolean recurse,
                                        final boolean checkNoWorkflow) {
-        try {
+//        try {
             if (recurse) {
                 Set s = LockRegistry.getInstance().getLockKeys(LockKey.WORKFLOW_ACTION);
                 for (Iterator iterator = s.iterator(); iterator.hasNext();) {
@@ -487,55 +376,49 @@ public class LockPrerequisites {
                     }
                 }
             } else {
-                WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
-                ContentObjectKey main = workflowService.getMainLinkObject(object);
-
-                LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WORKFLOW_ACTION + "_" + main.getType(), main.getIdInType());
-                putLockIfNotSameContext(workflowLockKey, owner, context, justTesting, results, false);
-
-                if (checkNoWorkflow) {
-                    boolean isInactive = workflowService.getInheritedMode(object) == WorkflowService.INACTIVE;
-                    if (isInactive) {
-                        verifyLockForWorkflowGroup(object, owner, context, justTesting, results);
-                    }
-                }
+//                WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
+//                ContentObjectKey main = workflowService.getMainLinkObject(object);
+//
+//                LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WORKFLOW_ACTION + "_" + main.getType(), main.getIdInType());
+//                putLockIfNotSameContext(workflowLockKey, owner, context, justTesting, results, false);
+//
+//                if (checkNoWorkflow) {
+//                    boolean isInactive = workflowService.getInheritedMode(object) == WorkflowService.INACTIVE;
+//                    if (isInactive) {
+//                        verifyLockForWorkflowGroup(object, owner, context, justTesting, results);
+//                    }
+//                }
             }
-        } catch (JahiaException e) {
-            logger.warn("Cannot get workflow objects", e);
-        }
+//        } catch (JahiaException e) {
+//            logger.warn("Cannot get workflow objects", e);
+//        }
     }
 
     private void verifyWaitingState(ContentObject object, LockPrerequisitesResult results) {
-        try {
-            ContentObjectKey key = (ContentObjectKey) object.getObjectKey();
-            key = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject(key);
-            final LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WAITING_FOR_APPROVAL_TYPE, key.getIdInType());
-            if (!results.getResultsList().contains(workflowLockKey)) {
-                final Map languagesStates = ServicesRegistry.getInstance().getWorkflowService().getLanguagesStates(object);
-                final Iterator languageIt = languagesStates.keySet().iterator();
-                boolean hasPageAWaitingState = false;
-                while (languageIt.hasNext()) {
-                    final String language = (String) languageIt.next();
-                    final Integer languageState = (Integer) languagesStates.get(language);
-                    if (languageState.intValue() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
-                        results.addLanguage(language);
-                        hasPageAWaitingState = true;
-                    }
-                }
-                if (hasPageAWaitingState) {
-                    results.put(workflowLockKey);
-                    lockPrerequisitesResultMap.put(workflowLockKey, results);
-                }
-            }
-        } catch (JahiaException e) {
-            logger.warn("Problem when getting languages states", e);
-        }
-    }
-
-    private void verifyLockForUpdateContainerList(int containerListID, JahiaUser owner, String context, boolean justTesting, LockPrerequisitesResult results) {
-        // Verify if the parent container list is not edited.
-        LockKey updateContainerListLockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINERLIST_TYPE, containerListID);
-        putLockIfNotSameContext(updateContainerListLockKey, owner, context, justTesting, results, false);
+//        try {
+//            ContentObjectKey key = (ContentObjectKey) object.getObjectKey();
+//            key = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject(key);
+//            final LockKey workflowLockKey = LockKey.composeLockKey(LockKey.WAITING_FOR_APPROVAL_TYPE, key.getIdInType());
+//            if (!results.getResultsList().contains(workflowLockKey)) {
+//                final Map languagesStates = ServicesRegistry.getInstance().getWorkflowService().getLanguagesStates(object);
+//                final Iterator languageIt = languagesStates.keySet().iterator();
+//                boolean hasPageAWaitingState = false;
+//                while (languageIt.hasNext()) {
+//                    final String language = (String) languageIt.next();
+//                    final Integer languageState = (Integer) languagesStates.get(language);
+//                    if (languageState.intValue() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
+//                        results.addLanguage(language);
+//                        hasPageAWaitingState = true;
+//                    }
+//                }
+//                if (hasPageAWaitingState) {
+//                    results.put(workflowLockKey);
+//                    lockPrerequisitesResultMap.put(workflowLockKey, results);
+//                }
+//            }
+//        } catch (JahiaException e) {
+//            logger.warn("Problem when getting languages states", e);
+//        }
     }
 
     private void verifyLockForParentPage(ContentObjectKey obj, JahiaUser owner, String context, boolean justTesting, LockPrerequisitesResult results) {
@@ -560,14 +443,14 @@ public class LockPrerequisites {
             putLockIfNotSameContext(exportLockKey, owner, context, justTesting, results, true);
         }
 
-        try {
-            if (!checkLiveExport) {
-                checkLiveExport = ServicesRegistry.getInstance().getWorkflowService().getInheritedMode(object) == WorkflowService.INACTIVE;
-            }
-        } catch (JahiaException e) {
-            logger.error("Cannot get workflow mode", e);
-        }
-
+//        try {
+//            if (!checkLiveExport) {
+//                checkLiveExport = ServicesRegistry.getInstance().getWorkflowService().getInheritedMode(object) == WorkflowService.INACTIVE;
+//            }
+//        } catch (JahiaException e) {
+//            logger.error("Cannot get workflow mode", e);
+//        }
+//
         if (checkLiveExport) {
             LockKey exportLockKey = LockKey.composeLockKey(LockKey.LIVEEXPORT_ACTION + "_" + object.getType(), object.getIdInType());
             putLockIfNotSameContext(exportLockKey, owner, context, justTesting, results, true);

@@ -35,8 +35,6 @@ import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Form;
 import org.apache.commons.validator.ValidatorResources;
 import org.apache.struts.validator.Resources;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
@@ -106,56 +104,6 @@ public class EngineValidationHelper {
         buff.append(EngineValidationHelper.class.getName());
         buff.append(": Errors: ").append(validationErrors);
         return buff.toString();
-    }
-
-    /**
-     * Checks the Validation Rules to see if a given field is mandatory or not.
-     */
-    public static boolean isFieldMandatory(final JahiaContainer parentContainer,
-                                           final JahiaField theField,
-                                           final ProcessingContext jParams) throws JahiaException {
-        if (parentContainer == null || theField == null) return false;
-
-        final String fieldName = theField.getDefinition().getName();
-
-        final JahiaContainerDefinition def = parentContainer.getDefinition();
-        if (def == null) return false;
-
-        String v = def.getNodeType().getValidator();
-        String containerBeanName = null;
-        String validatorKey = null;
-        if ( v != null ) {
-            containerBeanName = v.contains(":") ? v.substring(0,v.indexOf(":")) : null;
-            validatorKey = v.contains(":") ? v.substring(v.indexOf(":")+1) : v;
-        }
-
-        logger.debug("containerBeanName: " + containerBeanName +
-                ", validatorKey: " + validatorKey);
-
-        if (containerBeanName != null
-                && containerBeanName.length() > 0
-                && validatorKey != null
-                && validatorKey.length() > 0) {
-
-            final ParamBean paramBean = (ParamBean) jParams;
-            final ValidatorResources vr = Resources.getValidatorResources(paramBean.getContext(),
-                    paramBean.getRequest());
-            if (vr == null) return false;
-            final Form form = vr.getForm(jParams.getLocale(), validatorKey);
-            logger.debug("Form: " + form);
-            if (form == null) return false;
-            Field f = form.getField(fieldName);
-            if (f == null) {
-                String[] aliasNames = theField.getDefinition().getAliasNames();
-                for (int i = 0; f == null && i < aliasNames.length; i++) {
-                    String aliasName = aliasNames[i];
-                    f = form.getField(aliasName);
-                }                
-            }
-            if (f == null) return false;
-            return f.getDepends().indexOf("required") > -1;
-        }
-        return false;
     }
 
     public EngineMessages getEngineMessages(String property) {

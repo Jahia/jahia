@@ -39,8 +39,6 @@ import java.util.List;
 import javax.jcr.Node;
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.jahia.content.ContentContainerKey;
-import org.jahia.content.ContentContainerListKey;
 import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.content.ObjectKey;
@@ -52,7 +50,6 @@ import org.jahia.services.pages.JahiaPage;
  * in one of its fields.
  *
  * @see org.jahia.data.search.JahiaSearchResult
- * @see org.jahia.engines.search.Search_Engine
  * @author DJ
  */
 public class JahiaSearchHit implements JahiaSearchHitInterface
@@ -237,14 +234,8 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
         if ( objectKey == null ){
             if ( this.getType() == JahiaSearchHitInterface.PAGE_TYPE ){
                 objectKey = new ContentPageKey(this.integerID);
-            } else if ( this.getType() == JahiaSearchHitInterface.CONTAINER_TYPE ){
-                objectKey = new ContentContainerKey(this.integerID);
-            } else if ( this.getType() == JahiaSearchHitInterface.CONTAINERLIST_TYPE ){
-                objectKey = new ContentContainerListKey(this.integerID);
             } else if ( this.getType() == JahiaSearchHitInterface.FIELD_TYPE ){
                 objectKey = new ContentFieldKey(this.integerID);
-            } else if ( this.getType() == JahiaSearchHitInterface.FILE_TYPE ){
-                objectKey = new ContentContainerKey(this.integerID);
             }
         }
         return objectKey;

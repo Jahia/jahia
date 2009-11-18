@@ -31,7 +31,6 @@
  */
 package org.jahia.services.version;
 
-import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
@@ -81,8 +80,6 @@ public class RestoreVersionTestResults extends TreeOperationResult {
     public void addRestoredContent(ObjectKey key){
         if (key instanceof ContentPageKey){
             this.restoredPages.add(key);
-        } else if (key instanceof ContentContainerKey){
-            this.restoredContainers.add(key);
         }
     }
 

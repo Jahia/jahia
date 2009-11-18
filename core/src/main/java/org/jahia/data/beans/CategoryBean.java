@@ -31,24 +31,20 @@
  */
 package org.jahia.data.beans;
 
-import org.jahia.content.*;
-import org.jahia.content.comparators.ContainerComparator;
-import org.jahia.content.comparators.ContainerListComparator;
+import org.jahia.bin.Jahia;
+import org.jahia.content.ContentObject;
+import org.jahia.content.JahiaObject;
+import org.jahia.content.ObjectKey;
 import org.jahia.content.comparators.ObjectTypeDispatcherComparator;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.bin.Jahia;
 
 import java.util.*;
 
@@ -180,18 +176,6 @@ public class CategoryBean extends AbstractJahiaObjectBean {
                         if (jahiaField != null) {
                             acceptObject = true;
                         }
-                    } else if (curContentObject instanceof ContentContainer) {
-                        ContentContainer contentContainer = (ContentContainer) curContentObject;
-                        JahiaContainer jahiaContainer = contentContainer.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest());
-                        if (jahiaContainer != null) {
-                            acceptObject = true;
-                        }
-                    } else if (curContentObject instanceof ContentContainerList) {
-                        ContentContainerList contentContainerList = (ContentContainerList) curContentObject;
-                        JahiaContainerList jahiaContainerList = contentContainerList.getJahiaContainerList(processingContext, processingContext.getEntryLoadRequest());
-                        if (jahiaContainerList != null) {
-                            acceptObject = true;
-                        }
                     } else if (curContentObject instanceof ContentPage) {
                         ContentPage contentPage = (ContentPage) curContentObject;
                         JahiaPage jahiaPage = contentPage.getPage(processingContext.getEntryLoadRequest(), processingContext.getOperationMode(), processingContext.getUser());
@@ -292,11 +276,6 @@ public class CategoryBean extends AbstractJahiaObjectBean {
          */
         ObjectTypeDispatcherComparator comparator = new
                 ObjectTypeDispatcherComparator();
-        comparator.addTypeComparator(ContentContainerKey.CONTAINER_TYPE,
-                new ContainerComparator(processingContext));
-        comparator.addTypeComparator(ContentContainerListKey.
-                CONTAINERLIST_TYPE,
-                new ContainerListComparator());
         Collections.sort(childJahiaObjects, comparator);
         return childJahiaObjects;
     }

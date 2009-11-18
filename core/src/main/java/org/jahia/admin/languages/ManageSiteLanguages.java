@@ -273,7 +273,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             }
             if (flushCache) {
                 ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
-                ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance().flushContainersForSite(site.getID());
             }
 
             // second let's process the rank modifications of each language
@@ -511,12 +510,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
 //                                         new JahiaSaveVersion(true, true),
 //                                         jParams.getUser(),
 //                                         jParams, stateModifContext);
-                ActivationTestResults activationResults = ServicesRegistry.getInstance().getWorkflowService().activate(siteHomeContentPage, languageCodeSet,
-                        new JahiaSaveVersion(true, true), jParams, stateModifContext);
 
-                if (activationResults.getStatus() != ActivationTestResults.COMPLETED_OPERATION_STATUS) {
-                    logger.debug("Activation results=" + activationResults.toString());
-                }
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
 
                 // now let's remove the languageCodeSet elements from the site

@@ -7,7 +7,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.impl.jahia.JahiaContentStoreProvider;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -30,9 +29,6 @@ public class ContentTest extends TestCase {
         TestSuite suite = new TestSuite();
         final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
         for (String providerRoot : mountPoints.keySet()) {
-            if (mountPoints.get(providerRoot) instanceof JahiaContentStoreProvider) {
-                continue;
-            }
             if (providerRoot.equals("/")) {
                 providerRoot = "/content/shared";
             }

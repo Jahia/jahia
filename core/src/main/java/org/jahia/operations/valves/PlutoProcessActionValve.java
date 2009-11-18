@@ -186,11 +186,11 @@ public class PlutoProcessActionValve implements Valve {
             cacheKey += "_" + jParams.getUser().getUserKey();
         }
         // Try to flush the entry in cache
-        cacheInstance.getContainerHTMLCacheInstance().remove(cacheKeyGeneratorService.computeContainerEntryKey(
-                null, cacheKey, processingContext.getUser(),
-                processingContext.getLocale().toString(),
-                processingContext.getOperationMode(),
-                processingContext.getScheme()));
+//        cacheInstance.getContainerHTMLCacheInstance().remove(cacheKeyGeneratorService.computeContainerEntryKey(
+//                null, cacheKey, processingContext.getUser(),
+//                processingContext.getLocale().toString(),
+//                processingContext.getOperationMode(),
+//                processingContext.getScheme()));
     }
 
     /**

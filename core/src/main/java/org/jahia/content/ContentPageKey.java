@@ -36,8 +36,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.containers.JahiaContainerStructure;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.version.EntryLoadRequest;
 
@@ -111,44 +109,16 @@ public class  ContentPageKey extends ContentObjectKey {
     }
 
     public Collection<ContentObjectKey> getChilds(EntryLoadRequest request) {
-        return getChilds(request, JahiaContainerStructure.ALL_TYPES);
+        return null;
     }
     
     public Collection<ContentObjectKey> getChilds(EntryLoadRequest request, int loadFlag) {
         Collection<ContentObjectKey> results = new ArrayList<ContentObjectKey>();
-        if ((loadFlag & JahiaContainerStructure.JAHIA_CONTAINER) != 0) {
-            results = getChildLists(request);
-        }
-        if ((loadFlag & JahiaContainerStructure.JAHIA_FIELD) != 0
-                && org.jahia.settings.SettingsBean.getInstance().areDeprecatedNonContainerFieldsUsed()) {
-            try {
-                for (Object[] o : ServicesRegistry.getInstance().getJahiaFieldService()
-                        .getNonContainerFieldIDsAndTypesInPageByWorkflowState(getIdInType(), request)) {
-                    ContentFieldKey key = new ContentFieldKey(((Integer) o[0])
-                            .intValue());
-                    key.setFieldType(((Integer) o[1]).intValue());
-                    key.setParent(this);
-                    results.add(key);
-                }
-            } catch (JahiaException e) {
-                logger.warn("Exception getting page children", e);
-            }
-        }
         return results;
     }
 
     public Collection<ContentObjectKey> getChildLists(EntryLoadRequest request) {
         List<ContentObjectKey> results = new ArrayList<ContentObjectKey>();
-        try {
-            for (Integer integer : ServicesRegistry.getInstance().getJahiaContainersService()
-                    .getAllPageTopLevelContainerListIDs(getIdInType(), request)) {
-                ContentContainerListKey cclk = new ContentContainerListKey(integer.intValue());
-                cclk.setParent(this);
-                results.add(cclk);
-            }
-        } catch (JahiaException e) {
-            logger.warn("Exception getting page children container lists", e);
-        }
         return results;
     }    
     

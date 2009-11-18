@@ -33,7 +33,6 @@ package org.jahia.services.pages;
 
 import org.jahia.content.TimeBasedPublishingState;
 import org.jahia.data.JahiaDOMObject;
-import org.jahia.data.fields.JahiaPageField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
@@ -89,38 +88,6 @@ public abstract class JahiaPageService extends JahiaService
             String creator,
             int parentAclID,
             ProcessingContext jParam)
-            throws JahiaException;
-
-    //-------------------------------------------------------------------------
-    /**
-     * Create a new page.
-     *
-     * @param siteID      The Jahia ID (site ID).
-     * @param parentID    The parent page ID.
-     * @param pageType    The page type (see constants in JahiaPage).
-     * @param title       The page title.
-     * @param pageDefID   The page defiNition ID.
-     * @param creator     The creators nickname used by Jahia internally.
-     * @param parentAclID The parent ACL ID.
-     * @param jParam      The Jahia parameters.
-     *
-     * @return Return a new JahiaPage instanciated object.
-     *
-     * @throws JahiaException Throws this exception when any error occured in the page
-     *                        creation process.
-     */
-    public abstract JahiaPage createPage (
-            int siteID,
-            int parentID,
-            int pageType,
-            String title,
-            int pageDefID,
-            String remoteURL,
-            int pageLinkID,
-            String creator,
-            int parentAclID,
-            ProcessingContext jParam,
-            JahiaPageField parentField)
             throws JahiaException;
 
     //-------------------------------------------------------------------------

@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.template.all.live.client;
 
 import org.jahia.ajax.gwt.client.core.JahiaModule;
 import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.client.module.SitemapJahiaModule;
 import org.jahia.ajax.gwt.client.module.LayoutManagerJahiaModule;
 import org.jahia.ajax.gwt.client.module.OpenSearchJahiaModule;
 
@@ -47,8 +46,6 @@ public class LiveJahiaModuleProvider extends org.jahia.ajax.gwt.template.common.
         if (jahiaType != null) {
             if (jahiaType.equalsIgnoreCase(JahiaType.LAYOUT_MANAGER)) {
                 return new LayoutManagerJahiaModule();
-            } else if (jahiaType.equalsIgnoreCase(JahiaType.SITEMAP)) {
-                return new SitemapJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.OPENSEARCH)) {
                 return new OpenSearchJahiaModule();
             }

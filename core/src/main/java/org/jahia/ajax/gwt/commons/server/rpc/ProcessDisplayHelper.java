@@ -40,8 +40,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
-import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;
@@ -52,8 +50,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
-import org.jahia.services.workflow.AbstractActivationJob;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
@@ -107,12 +103,6 @@ public class ProcessDisplayHelper {
 
         if (currentJobDataMap.getString(BackgroundJob.JOB_TITLE) != null ) {
             gwtProcessJob.setJobTitle(currentJobDataMap.getString(BackgroundJob.JOB_TITLE));
-        }
-
-        // job: extra comment depending on the type
-        String currentJobExtraComment = currentJobDataMap.getString(AbstractActivationJob.COMMENTS_INPUT);
-        if (currentJobExtraComment != null) {
-            // gwtProcessJob.setJobExtraComment(currentJobExtraComment);
         }
 
         // job: server
@@ -178,17 +168,17 @@ public class ProcessDisplayHelper {
             for (ProcessAction action : actions) {
                 ObjectKey objectKey = action.getKey();
                 Map<String, String> wfStates = null ;
-                try {
-                    ContentObject obj = JahiaObjectCreator.getContentObjectFromKey(objectKey) ;
-                    if (WorkflowService.getInstance().getWorkflowMode(obj) != WorkflowService.LINKED) {
-
-                        wfStates = WorkflowServiceHelper.getWorkflowStates(JahiaObjectCreator.getContentObjectFromKey(objectKey)) ;
-                    }
-                } catch (ClassNotFoundException e) {
-                    logger.error(e.toString(), e) ;
-                } catch (JahiaException e) {
-                    logger.error(e.toString(), e);
-                }
+//                try {
+//                    ContentObject obj = JahiaObjectCreator.getContentObjectFromKey(objectKey) ;
+//                    if (WorkflowService.getInstance().getWorkflowMode(obj) != WorkflowService.LINKED) {
+//
+//                        wfStates = WorkflowServiceHelper.getWorkflowStates(JahiaObjectCreator.getContentObjectFromKey(objectKey)) ;
+//                    }
+//                } catch (ClassNotFoundException e) {
+//                    logger.error(e.toString(), e) ;
+//                } catch (JahiaException e) {
+//                    logger.error(e.toString(), e);
+//                }
                 GWTJahiaProcessJobAction gwtAction = new GWTJahiaProcessJobAction(action.getKey().toString(), new HashSet<String>(action.getLangs()), action.getAction(), wfStates);
                 if (!batchContent.containsKey(action.getAction())) {
                     batchContent.put(action.getAction(), new ArrayList<GWTJahiaProcessJobAction>());
@@ -232,7 +222,6 @@ public class ProcessDisplayHelper {
         gwtProcessJob.setLogs(logs);
 
         logger.debug("Current job: " + gwtProcessJob.getJobType() + "," + gwtProcessJob.getJobBegin() + "," + gwtProcessJob.getJobEnd() + "," + gwtProcessJob.getJobStatus() + "," + gwtProcessJob.getJobUserName() + "," + gwtProcessJob.getJobInterruptStatus());
-        logger.debug("Current job extrat comment: " + currentJobExtraComment);
 
         return gwtProcessJob;
     }

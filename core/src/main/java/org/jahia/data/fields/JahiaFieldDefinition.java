@@ -58,8 +58,6 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.calendar.CalendarHandler;
-import org.jahia.api.Constants;
-import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
@@ -262,7 +260,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
         if (itemDef == null) {
             return -1;
         }
-        return JahiaContainerDefinitionsRegistry.getType(itemDef);
+        return -1;
     }
 
     public boolean getIsMetadata() {

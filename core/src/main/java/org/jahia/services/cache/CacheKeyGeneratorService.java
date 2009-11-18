@@ -32,10 +32,8 @@
 package org.jahia.services.cache;
 
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
-import org.jahia.data.containers.JahiaContainer;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
@@ -98,7 +96,7 @@ public class CacheKeyGeneratorService extends JahiaService {
     public void rightsUpdated() throws JahiaInitializationException {
         SortedSet<String> newusers = new TreeSet<String>(jahiaACLManagerService.getAllUsersInAcl());
         final CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache = cacheService.getContainerHTMLCacheInstance();
+//        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache = cacheService.getContainerHTMLCacheInstance();
         SkeletonCache skeletonCache = cacheService.getSkeletonCacheInstance();
         if (!newusers.equals(users)) {
             Set<String> removedUsers = new HashSet<String>(users);
@@ -108,7 +106,7 @@ public class CacheKeyGeneratorService extends JahiaService {
 
             for (String removedUser : removedUsers) {
                 String s = USERNAME_PREFIX + removedUser;
-                containerHTMLCache.flushGroup(s);
+//                containerHTMLCache.flushGroup(s);
                 skeletonCache.flushGroup(s);
             }
             userKeyCache.flush();
@@ -124,7 +122,7 @@ public class CacheKeyGeneratorService extends JahiaService {
 
             groups = newgroups;
 
-            containerHTMLCache.flush();
+//            containerHTMLCache.flush();
             skeletonCache.flush();
             userKeyCache.flush();
         }
@@ -175,7 +173,6 @@ public class CacheKeyGeneratorService extends JahiaService {
     /**
      * <p>Builds the cache key that is used to reference the cache entries in the lookup table.</p>
      *
-     * @param container    the container identification number
      * @param cacheKey     the cacheKey
      * @param user         the user name
      * @param languageCode the language code
@@ -183,46 +180,42 @@ public class CacheKeyGeneratorService extends JahiaService {
      * @param scheme       the request scheme (http/https)
      * @return the generated cache key
      */
-    public GroupCacheKey computeContainerEntryKey(JahiaContainer container,
-                                                  String cacheKey,
-                                                  JahiaUser user,
-                                                  String languageCode,
-                                                  String mode,
-                                                  String scheme) {
+    public GroupCacheKey computeContainerEntryKey(
+            String cacheKey,
+            JahiaUser user,
+            String languageCode,
+            String mode,
+            String scheme) {
         int id = 0;
-        if (container != null)
-            id = container.getID();
         String usercachekey = getUserCacheKey(user, Jahia.getThreadParamBean().getSiteID());
 
         Object key = getKey(id, mode, languageCode, usercachekey, cacheKey, scheme);
 
         return new GroupCacheKey(key, new HashSet<String>());
     }
-    public GroupCacheKey computeContainerEntryKeyWithGroups(JahiaContainer container,
-                                                            String group,
-                                                            JahiaUser user,
-                                                            String languageCode,
-                                                            String mode,
-                                                            String scheme,
-                                                            Set<ContentObjectKey> dependencies) {
+    public GroupCacheKey computeContainerEntryKeyWithGroups(
+            String group,
+            JahiaUser user,
+            String languageCode,
+            String mode,
+            String scheme,
+            Set<ContentObjectKey> dependencies) {
         int id = 0;
-        if (container != null)
-            id = container.getID();
-        String containerkey = new ContentContainerKey(id).toString();
+//        String containerkey = new ContentContainerKey(id).toString();
         String usercachekey = getUserCacheKey(user, Jahia.getThreadParamBean().getSiteID());
 
         Object key = getKey(id, mode, languageCode, usercachekey, group, scheme);
 
         Set<String> groups = new HashSet<String>();
         if (SettingsBean.getInstance().isDevelopmentMode()) {
-            groups.add(containerkey + WORKFLOWSTATE_PREFIX + mode + LANGUAGECODE_PREFIX + languageCode);
+//            groups.add(containerkey + WORKFLOWSTATE_PREFIX + mode + LANGUAGECODE_PREFIX + languageCode);
             groups.add(USERNAME_PREFIX + usercachekey);
             groups.add(SITE_PREFIX + Jahia.getThreadParamBean().getSiteID());
             for (ContentObjectKey objectKey : dependencies) {
                 groups.add(objectKey.toString() + WORKFLOWSTATE_PREFIX + mode + LANGUAGECODE_PREFIX + languageCode);
             }
         } else {
-            groups.add(Integer.toString((containerkey + WORKFLOWSTATE_PREFIX + mode + LANGUAGECODE_PREFIX + languageCode).hashCode()));
+//            groups.add(Integer.toString((containerkey + WORKFLOWSTATE_PREFIX + mode + LANGUAGECODE_PREFIX + languageCode).hashCode()));
             groups.add(Integer.toString((USERNAME_PREFIX + usercachekey).hashCode()));
             groups.add(Integer.toString((SITE_PREFIX + Jahia.getThreadParamBean().getSiteID()).hashCode()));
             for (ContentObjectKey objectKey : dependencies) {

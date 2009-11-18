@@ -31,21 +31,20 @@
  */
  package org.jahia.services.importexport;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.xml.sax.SAXException;
+
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Jahia import/export service to manipulate different types of content.

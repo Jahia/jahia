@@ -31,12 +31,8 @@
  */
 package org.jahia.services.fields;
 
-import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
-import org.jahia.engines.EngineMessage;
-import org.jahia.engines.validation.IntegrityChecksHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
@@ -46,8 +42,6 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
 
@@ -106,7 +100,7 @@ public class ContentPageField extends ContentField {
         logger.debug("Saving page field..." + verInfo.toString());
         postSet(entrySaveRequest);
         if (pageID > 0) {
-            WorkflowService.getInstance().flushCacheForPageCreatedOrDeleted(new ContentFieldKey(getID()));
+
         }
     }
 
@@ -214,208 +208,6 @@ public class ContentPageField extends ContentField {
             StateModificationContext stateModifContext)
             throws JahiaException {
         ActivationTestResults activationTestResults = new ActivationTestResults();
-
-        if (isMarkedForDelete()) {
-            return activationTestResults;
-        }
-
-        ContentPage contentPage = null;
-
-        // 1) Try with staged value
-        ContentObjectEntryState activeEntryState = null;
-        ContentObjectEntryState stagedEntryState = null;
-
-        for (final ContentObjectEntryState entryState : this.getActiveAndStagingEntryStates()) {
-            if (entryState.getWorkflowState() > ContentObjectEntryState.WORKFLOW_STATE_ACTIVE) {
-                stagedEntryState = entryState;
-            } else {
-                activeEntryState = entryState;
-            }
-        }
-
-        boolean movedPage = false;
-        if (stagedEntryState != null) {
-            try {
-                final String value = this.getValue(stagedEntryState);
-                final int pid = Integer.parseInt(value);
-                if (value != null && pid > 0) {
-                    try {
-                        contentPage = ContentPage.getPage(pid);
-                        if (contentPage != null) {
-                            // check if page not currently moved
-                            if (ServicesRegistry.getInstance().getJahiaPageService()
-                                    .getStagingAndActivePageFieldIDs(contentPage.getID()).size() > 1) {
-                                // two different page fields are pointing the same page
-                                // It's a moved page !
-                                movedPage = true;
-                            }
-                        }
-                    } catch (JahiaPageNotFoundException pnfe) {
-                        logger.debug("Page not found." + value);
-                        // this is not considered an error
-                    }
-                }
-            } catch (NumberFormatException nfe) {
-                logger.debug("Page link seems to have an invalid value.");
-                // this is not considered an error because we must be able to
-                // validate containers that have "unfilled" values.
-            }
-        }
-
-        if (!movedPage && activeEntryState != null) {
-            try {
-                final String value = this.getValue(activeEntryState);
-                final int pid = Integer.parseInt(value);
-                if (value != null && pid > 0) {
-                    try {
-                        contentPage = ContentPage.getPage(Integer.parseInt(value));
-                        if (contentPage != null) {
-                            // check if page not currently moved
-                            if (ServicesRegistry.getInstance().getJahiaPageService()
-                                    .getStagingAndActivePageFieldIDs(contentPage.getID()).size() > 1) {
-                                // two different page fields are pointing the same page
-                                // It's a moved page !
-                                movedPage = true;
-                            }
-                        }
-                    }
-                    catch (JahiaPageNotFoundException pnfe) {
-                        logger.debug("Page not found." + value);
-                        // this is not considered an error
-                    }
-                }
-            } catch (NumberFormatException nfe) {
-                logger.debug("Page link seems to have an invalid value.");
-                // this is not considered an error because we must be able to
-                // validate containers that have "unfilled" values.
-            }
-        }
-/*
-        if (movedPage) {
-            // the page is currently in a move state, but not activated
-            if (!stateModifContext.getStartObject().equals(contentPage.getObjectKey())) {
-                activationTestResults.setStatus(ActivationTestResults.FAILED_OPERATION_STATUS);
-                try {
-                    final int id = getID();
-                    final EngineMessage msg = new EngineMessage(
-                            "org.jahia.services.fields.ContentPageField.referedToMovedPageError",
-                            Integer.toString(id));
-                    final IsValidForActivationResults activationResults = new IsValidForActivationResults(
-                            ContentFieldKey.FIELD_TYPE, id, jParams.getLocale()
-                                    .toString(), msg);
-                    activationTestResults.appendError(activationResults);
-                } catch (ClassNotFoundException cnfe) {
-                    logger.error(cnfe);
-                }
-                return activationTestResults;
-            }
-        }
-*/
-        if (contentPage == null) {
-            // this could happen if the database had a jahia_link_only value
-            return activationTestResults;
-        }
-
-        try {
-            // allow loading marked for delete page
-            final EntryLoadRequest loadRequest = new EntryLoadRequest(jParams.getEntryLoadRequest().getWorkflowState(),
-                    jParams.getEntryLoadRequest().getVersionID(),
-                    jParams.getEntryLoadRequest().getLocales(), true);
-            final JahiaPage thePage = contentPage.getPage(loadRequest, ProcessingContext.EDIT, jParams.getUser());
-            ContentObjectKey mainKey = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
-
-            if (thePage == null) {
-                activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                try {
-                    final EngineMessage msg = new EngineMessage(
-                            "org.jahia.services.fields.ContentPageField.pageLookupError",
-                            Integer.toString(pageID));
-                    final IsValidForActivationResults activationResults = new
-                            IsValidForActivationResults(mainKey, jParams.getLocale().toString(), msg);
-                    activationTestResults.appendError(activationResults);
-                } catch (ClassNotFoundException cnfe) {
-                    logger.error(cnfe);
-                }
-                return activationTestResults;
-            }
-
-            if (!stateModifContext.isDescendingInSubPages()) {
-                // sub pages is not activated, let's check the page type to know
-                // if we must validate or not.
-                final int pageType = thePage.getPageType();
-                switch (pageType) {
-                    case JahiaPage.TYPE_DIRECT:
-                        // Page publication is linked to its jahia field - so publication of the field is always ok
-                        break;
-                    case JahiaPage.TYPE_LINK:
-                        if (jParams.getSite().isURLIntegrityCheckEnabled()) {
-                            boolean hasIntegrityBypassRole = IntegrityChecksHelper
-                                .isAllowedToBypassLinkIntegrityChecks(jParams
-                                        .getUser(), jParams.getSite());
-                            ContentPage linkPage;
-                            try {
-                                List<Locale> l = new ArrayList<Locale>();
-                                for (String lang : languageCodes) {
-                                    l.add(LanguageCodeConverters.languageCodeToLocale(lang));
-                                }
-                                EntryLoadRequest elr = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, l);
-                                linkPage = ServicesRegistry.getInstance().getJahiaPageService().
-                                        lookupContentPage(thePage.getPageLinkID(), elr, true);
-                            } catch (JahiaPageNotFoundException jpnfe) {
-                                linkPage = null;
-                            }
-                            if (linkPage != null) {
-                                for (String languageCode : languageCodes) {
-                                    if (!linkPage.hasEntries(ContentPage.ACTIVE_PAGE_INFOS,languageCode) && !isMarkedForDelete() &&
-                                            !stateModifContext.isModifiedObject(WorkflowService.getInstance().getMainLinkObject(new ContentPageKey(linkPage.getID())))) {
-                                        activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                                        try {
-                                            String str = linkPage.getTitles(true).containsKey(languageCode) ? linkPage.getTitles(true).get(languageCode) : "";
-                                            final EngineMessage msg = new EngineMessage(
-                                                    "org.jahia.services.fields.ContentPageField.pageOnlyInStagingWarning",
-                                                    new StringBuilder(str).append(" (pid:").append(Integer.toString(linkPage.getID())).append(")").toString());
-                                            final IsValidForActivationResults activationResults = new
-                                                    IsValidForActivationResults(mainKey,
-                                                    languageCode, msg);
-                                            if (hasIntegrityBypassRole) {
-                                                activationTestResults.appendWarning(activationResults);
-                                            } else {
-                                                activationResults.setBlocker(true);
-                                                activationTestResults.appendError(activationResults);
-                                            }
-                                        } catch (ClassNotFoundException cnfe) {
-                                            logger.error(cnfe);
-                                        }
-                                    }
-                                }
-                            } else {
-                                activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                                try {
-                                    final EngineMessage msg = new EngineMessage(
-                                            "org.jahia.services.fields.ContentPageField.pageLinkNotFoundWarning",
-                                            Integer.toString(pageID), Integer.toString(thePage.getPageLinkID()));
-                                    final IsValidForActivationResults activationResults = new
-                                            IsValidForActivationResults(mainKey,
-                                            jParams.getLocale().toString(), msg);
-                                    if (hasIntegrityBypassRole) {
-                                        activationTestResults.appendWarning(activationResults);
-                                    } else {
-                                        activationResults.setBlocker(true);
-                                        activationTestResults.appendError(activationResults);
-                                    }
-                                } catch (ClassNotFoundException cnfe) {
-                                    logger.error(cnfe);
-                                }
-                            }
-                        }
-                        break;
-                    case JahiaPage.TYPE_URL:
-                        break;
-                }
-            }
-        } catch (NumberFormatException nfe) {
-            logger.error(nfe);
-        }
         return activationTestResults;
     }
 

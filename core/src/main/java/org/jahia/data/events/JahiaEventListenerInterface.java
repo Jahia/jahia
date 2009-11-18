@@ -36,9 +36,7 @@
 
 package org.jahia.data.events;
 
-import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.notification.NotificationEvent;
-import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
@@ -107,7 +105,6 @@ public interface JahiaEventListenerInterface {
     public void userLoggedIn( JahiaEvent je );
     public void userLoggedOut( JahiaEvent je );
 
-    public void objectChanged( WorkflowEvent we );
     public void aggregatedObjectChanged( JahiaEvent je );
 
     public void beforeStagingContentIsDeleted(JahiaEvent je );
@@ -222,13 +219,6 @@ public interface JahiaEventListenerInterface {
      * @param theEvent contains the currently edited category
      */
     public void categoryUpdated(JahiaEvent theEvent);
-
-    /**
-     * Event fired to notifying a retention rule' state change
-     *
-     * @param theEvent
-     */
-    public void timeBasedPublishingEvent( RetentionRuleEvent theEvent );
 
     /**
      * Event fired to notify all aggregated events will be processed.

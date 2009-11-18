@@ -50,12 +50,6 @@
         <parameter name="className" value="org.jahia.soap.CacheServer"/>
     </service>
 
-    <service name="Publication" provider="java:RPC">
-        <namespace>http://www.jahia.org/</namespace>
-        <parameter name="className" value="org.jahia.soap.Publication"/>
-        <parameter name="allowedMethods" value="changeContentObjectState"/>
-    </service>
-
     <service name="UserManager" provider="java:RPC">
         <namespace>http://www.jahia.org/</namespace>
         <parameter name="className" value="org.jahia.soap.UserManager"/>

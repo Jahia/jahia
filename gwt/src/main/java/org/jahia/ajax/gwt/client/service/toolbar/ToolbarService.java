@@ -79,12 +79,6 @@ public interface ToolbarService extends RemoteService {
 
     public GWTJahiaStateInfo updateGWTJahiaStateInfo(GWTJahiaPageContext pageContext,GWTJahiaStateInfo gwtJahiaStateInfo)throws GWTJahiaServiceException;
     
-    public void quickValidate(String objectKey, String lang, String action, String comment) throws GWTJahiaServiceException;
-
-    public void quickAddToBatch(String objectKey, String lang, String action) throws GWTJahiaServiceException;
-
-    public void publishAll(String comment) throws GWTJahiaServiceException ;
-
     public Map<String, String> getGAdata(GWTJahiaAnalyticsParameter p) throws GWTJahiaServiceException;
 
     public Map<String, String> getGAsiteProperties(int pid);

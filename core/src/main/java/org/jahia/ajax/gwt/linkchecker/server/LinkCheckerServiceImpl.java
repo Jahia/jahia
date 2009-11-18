@@ -50,7 +50,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.integrity.Link;
 import org.jahia.services.integrity.LinkValidationResult;
@@ -138,24 +137,24 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
                     fld = (ContentField) contentObj.getParent(ctx
                             .getEntryLoadRequest());
                 }
-                if (fld != null) {
-                    ContentContainer cnt = null;
-                    if (fld.getContainerID() != 0) {
-                        try {
-                            cnt = ContentContainer.getContainer(fld
-                                    .getContainerID());
-                        } catch (Exception ex) {
-                            // ignore
-                        }
-                    }
-                    updateUrl = (cnt != null ? jData.gui()
-                            .drawUpdateContainerUrl(cnt, fld.getID()) : jData
-                            .gui().drawUpdateFieldUrl(fld))
-                            + "&engine_lang="
-                            + link.getSource().getLanguageCode();
-                    viewObject.setFieldId(fld.getID());
-                    viewObject.setFieldType(FieldTypes.typeName[fld.getType()]);
-                }
+//                if (fld != null) {
+//                    ContentContainer cnt = null;
+//                    if (fld.getContainerID() != 0) {
+//                        try {
+//                            cnt = ContentContainer.getContainer(fld
+//                                    .getContainerID());
+//                        } catch (Exception ex) {
+//                            // ignore
+//                        }
+//                    }
+//                    updateUrl = (cnt != null ? jData.gui()
+//                            .drawUpdateContainerUrl(cnt, fld.getID()) : jData
+//                            .gui().drawUpdateFieldUrl(fld))
+//                            + "&engine_lang="
+//                            + link.getSource().getLanguageCode();
+//                    viewObject.setFieldId(fld.getID());
+//                    viewObject.setFieldType(FieldTypes.typeName[fld.getType()]);
+//                }
             } catch (JahiaException e) {
                 logger.error("Unable to compose update URL for the object: "
                         + link.getSource().getObjectKey() + ". Cause: "

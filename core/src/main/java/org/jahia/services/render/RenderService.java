@@ -3,18 +3,14 @@ package org.jahia.services.render;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.ContainerBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
-import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
@@ -259,15 +255,6 @@ public class RenderService extends JahiaService {
      */
     private void setJahiaAttributes(HttpServletRequest request, JCRNodeWrapper node, ParamBean threadParamBean) {
         try {
-            if (node instanceof JCRJahiaContentNode) {
-                ContentObject obj = ((JCRJahiaContentNode)node).getContentObject();
-                if (obj instanceof ContentContainer) {
-                    ContentContainer c = (ContentContainer) obj;
-
-                    ContainerBean bean = new ContainerBean(c.getJahiaContainer(threadParamBean, threadParamBean.getEntryLoadRequest()), threadParamBean);
-                    request.setAttribute("container", bean);
-                }
-            }
             if (request.getAttribute(JahiaData.JAHIA_DATA) == null) {
                 request.setAttribute(JahiaData.JAHIA_DATA,new JahiaData(threadParamBean, false));
             }

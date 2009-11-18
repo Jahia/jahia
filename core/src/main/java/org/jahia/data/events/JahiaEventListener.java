@@ -37,9 +37,7 @@ package org.jahia.data.events;
 
 import java.util.Set;
 
-import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.notification.NotificationEvent;
-import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
@@ -272,10 +270,6 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
         log("metadataEngineBeforeSave", je);
     }
 
-    public void objectChanged(WorkflowEvent je) {
-        log("objectChanged", je);
-    }
-
     public void pageAccepted(JahiaEvent je) {
         log("pageAccepted", je);
     }
@@ -327,10 +321,6 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void templateUpdated(JahiaEvent je) {
         log("templateUpdated", je);
-    }
-
-    public void timeBasedPublishingEvent(RetentionRuleEvent je) {
-        log("timeBasedPublishingEvent", je);
     }
 
     public void updateContainerEngineAfterInit(JahiaEvent je) {

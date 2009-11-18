@@ -74,20 +74,6 @@
             column="validto_jahia_obj"
         />
 
-        <many-to-one
-            name="retentionRule"
-            class="org.jahia.hibernate.model.JahiaRetentionRule"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            access="property"
-        >
-            <column
-                name="retrule_jahia_obj" 
-            />
-        </many-to-one>
-
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-JahiaObject.xml

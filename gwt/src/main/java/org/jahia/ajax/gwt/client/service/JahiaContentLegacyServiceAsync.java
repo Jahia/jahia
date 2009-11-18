@@ -46,39 +46,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * To change this template use File | Settings | File Templates.
  */
 public interface JahiaContentLegacyServiceAsync {
-
-    void loadContainerList(GWTJahiaPageContext page, String containerListName, AsyncCallback<GWTJahiaContainerList> async);
-
-    void insertAddContainerHref(GWTJahiaPageContext page, AsyncCallback<String> async);
-
-    void saveContainerProperty(GWTJahiaPageContext page, int containerId, String propertyName, String propertyValue, AsyncCallback async);
-
-    void getContent(GWTJahiaPageContext page, int containerId, AsyncCallback<String> async);
-
-    void getFieldValues(int containerId, String field, AsyncCallback<String> async);
-
-    void loadContainer(int containerId, AsyncCallback<GWTJahiaContainer> async);
-
-    void getPagePropertyValue(GWTJahiaPageContext page, String propertyName, AsyncCallback<String> async);
-
     void getJahiaUserProperties(boolean onlyMySettings,AsyncCallback<List<GWTJahiaUserProperty>> async);
 
     void updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties,AsyncCallback<GWTJahiaAjaxActionResult> async);
-
-    void updatePagePropertyValue(GWTJahiaPageContext page, String propertyName, String propertyValue, AsyncCallback async);
-
-    void getSiteHomePage(int siteId, AsyncCallback<GWTJahiaPageWrapper> async);
-
-    void getPage(int pid, AsyncCallback<GWTJahiaPageWrapper> async);
-
-    void getSubPagesForCurrentUser(int pid, String mode, GWTJahiaPageWrapper parentPage, AsyncCallback<List<GWTJahiaPageWrapper>> async);
-
-    void getSubPagesForCurrentUser(int parent, AsyncCallback<List<GWTJahiaPageWrapper>> async);
-
-    void getSubPagesForCurrentUser(GWTJahiaPageWrapper parentPage, AsyncCallback<List<GWTJahiaPageWrapper>> async);
-
-    void getHomePageForCurrentUser(int pid, String mode, boolean recursive, AsyncCallback<GWTJahiaPageWrapper> async);
-
-    void searchInPages(String queryString, AsyncCallback<List<GWTJahiaPageWrapper>> async);
 
 }

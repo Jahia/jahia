@@ -24,8 +24,6 @@
     <bean id="jahiaObjectDAO" class="org.jahia.hibernate.dao.JahiaObjectDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaPagesDAO" class="org.jahia.hibernate.dao.JahiaPagesDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaPagesDefinitionDAO" class="org.jahia.hibernate.dao.JahiaPagesDefinitionDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaRetentionRuleDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaRetentionRuleDefDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDefDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaSiteDAO" class="org.jahia.hibernate.dao.JahiaSiteDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaSitePropertyDAO" class="org.jahia.hibernate.dao.JahiaSitePropertyDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO" parent="abstractGeneratorDAO"/>
@@ -37,12 +35,7 @@
     <bean id="jahiaSiteLanguageMappingDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageMappingDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaWorkflowDAO" class="org.jahia.hibernate.dao.JahiaWorkflowDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaLanguagesStatesDAO" class="org.jahia.hibernate.dao.JahiaLanguagesStatesDAO" parent="abstractGeneratorDAO"/>
-    <bean id="nstepUserDAO" class="org.jahia.workflow.nstep.dao.hibernate.UserDAOHibernate" parent="abstractGeneratorDAO"/>
-    <bean id="nstepWorkflowDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowDAOHibernate" parent="abstractGeneratorDAO"/>
-    <bean id="nstepWorkflowStepDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowStepDAOHibernate" parent="abstractGeneratorDAO"/>
-    <bean id="nstepWorkflowInstanceDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowInstanceDAOHibernate" parent="abstractGeneratorDAO"/>
-    <bean id="nstepWorkflowHistoryDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowHistoryDAOHibernate" parent="abstractGeneratorDAO"/>
-    
+
     <bean id="jahiaServerPropertiesDAO" class="org.jahia.hibernate.dao.JahiaServerPropertiesDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractGeneratorDAO"/>

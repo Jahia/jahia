@@ -45,8 +45,6 @@ public class TestObjectKey extends TestCase {
     public void testGetInstanceSpeed() {
         // we do the following to register the classes before calling ObjectKey
         ContentPageKey pageKey = new ContentPageKey(1);
-        ContentContainerListKey containerListKey = new ContentContainerListKey(1);
-        ContentContainerKey containerKey = new ContentContainerKey(1);
         ContentFieldKey fieldKey = new ContentFieldKey(1);
         ContentMetadataKey metadataKey = new ContentMetadataKey(1);
 
@@ -61,8 +59,6 @@ public class TestObjectKey extends TestCase {
         for (int i=0; i < INSTANCE_LOOP_COUNT; i++) {
             try {
                 ObjectKey.getInstance(ContentPageKey.PAGE_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
-                ObjectKey.getInstance(ContentContainerListKey.CONTAINERLIST_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
-                ObjectKey.getInstance(ContentContainerKey.CONTAINER_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
                 ObjectKey.getInstance(ContentFieldKey.FIELD_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
                 ObjectKey.getInstance(ContentMetadataKey.METADATA_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i) );
 

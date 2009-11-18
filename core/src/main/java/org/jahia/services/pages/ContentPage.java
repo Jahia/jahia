@@ -35,13 +35,9 @@ package org.jahia.services.pages;
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentUndoStagingEvent;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerStructure;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.LoadFlags;
-import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
 import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -52,21 +48,15 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
-import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.*;
-import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.io.IOException;
@@ -416,24 +406,7 @@ public class ContentPage extends ContentObject implements
 
     private boolean isNegativeAclInListsOrContainersOrFields(Map<Integer, JahiaPageContentRights> children,
                                                              JahiaPageContentRights currentPage, Set<Integer> deniedAclIDs) {
-        Set<Integer> pageIDs = getAllPageIdsFromTree(children, currentPage,
-                new HashSet<Integer>());
-        JahiaContainersService containerService = ServicesRegistry
-                .getInstance().getJahiaContainersService();
-        boolean allowed = containerService
-                .getContainerListIDsOnPagesHavingAcls(pageIDs, deniedAclIDs)
-                .isEmpty();
-        if (allowed) {
-            allowed = containerService
-                    .getContainerIDsOnPagesHavingAcls(pageIDs, deniedAclIDs)
-                    .isEmpty();
-        }
-        if (allowed) {
-            allowed = ServicesRegistry.getInstance().getJahiaFieldService()
-                    .getFieldIDsOnPagesHavingAcls(pageIDs, deniedAclIDs)
-                    .isEmpty();
-        }
-        return allowed;
+        return true;
     }
 
     private Set<Integer> getAllPageIdsFromTree(Map<Integer, JahiaPageContentRights> children,
@@ -573,14 +546,6 @@ public class ContentPage extends ContentObject implements
                 templateChanged |= curInfo.hasTemplateChanged();
                 curInfo.commitChanges();
 
-                if (fireEvent) {
-                    try {
-                        WorkflowEvent theEvent = new WorkflowEvent(this, this, user, curInfo.getLanguageCode(), false);
-                        ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
-                    } catch (JahiaException e) {
-                        logger.warn("Exception while firing event", e);
-                    }
-                }
             }
         }
 
@@ -836,20 +801,6 @@ public class ContentPage extends ContentObject implements
         if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
             if (ParamBean.NORMAL.equals(operationMode) && !this.isAvailable()){
                 return null;
-            } else if ( ParamBean.PREVIEW.equals(operationMode) ){
-                final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
-                        .getTimeBasedPublishingService();
-                /* @todo: preview mode should be done at a precise date not only what is published
-                // as this is not fully supported yet actually no preview is supported at all for
-                // page that are not available yet.
-                /* @todo: if you change something here, perhaps it also needs to be changed in
-                // the isReachableByUser method
-                if ( ParamBean.PREVIEW.equals(operationMode)
-                        && context.getPageID() == this.getID() ){
-                    // in this case, we allow previsualisation of this page
-                } else {
-                    return null;
-                }*/
             }
         }
 
@@ -1185,8 +1136,6 @@ public class ContentPage extends ContentObject implements
                     // update the new definition ID in the page infos.
                     curPageInfo.setPageType(TYPE_DIRECT);
                     curPageInfo.setPageTemplateID(value);
-                    WorkflowEvent theEvent = new WorkflowEvent(this, this, user, curPageInfo.getLanguageCode(), false);
-                    ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
                     changed = true;
                 }
             } else {
@@ -1382,8 +1331,6 @@ public class ContentPage extends ContentObject implements
             // which would have more meaning.
             curPageInfo.setVersionID(0);
 
-            WorkflowEvent theEvent = new WorkflowEvent(this, this, user, curPageInfo.getLanguageCode(), false);
-            ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
 
         }
     }
@@ -1985,52 +1932,12 @@ public class ContentPage extends ContentObject implements
 
     public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
             throws JahiaException {
-        return getChilds(user, loadRequest, JahiaContainerStructure.ALL_TYPES);
+        return getChilds(user, loadRequest, 0);
     }
 
     public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
                                               int loadFlag) throws JahiaException {
         List<ContentObject> resultList = new ArrayList<ContentObject>();
-        switch (getPageType(loadRequest)) {
-            case JahiaPage.TYPE_DIRECT:
-                if ((loadFlag & JahiaContainerStructure.JAHIA_FIELD) != 0
-                        && org.jahia.settings.SettingsBean.getInstance()
-                        .areDeprecatedNonContainerFieldsUsed()) {
-                    // first let's add all the fields that are directly attached to the
-                    // page.
-                    List<Integer> nonContainerFieldIDs = ServicesRegistry.getInstance()
-                            .getJahiaFieldService()
-                            .getNonContainerFieldIDsInPageByWorkflowState(
-                                    getID(), loadRequest);
-                    for (Integer curFieldID : nonContainerFieldIDs) {
-                        ContentField curField = ContentField
-                                .getField(curFieldID.intValue());
-                        if (curField != null && !curField.isMetadata()) {
-                            resultList.add(curField);
-                        }
-                    }
-                }
-                if ((loadFlag & JahiaContainerStructure.JAHIA_CONTAINER) != 0) {
-                    // now let's add all the container lists that are the direct children
-                    // of this page (subcontainers lists are NOT included here !)
-                    SortedSet<Integer> containerListIDs = ServicesRegistry.getInstance()
-                            .getJahiaContainersService()
-                            .getAllPageTopLevelContainerListIDs(getID(),
-                                    loadRequest);
-                    for (Integer curContainerListID : containerListIDs) {
-                        ContentContainerList curContainerList = ContentContainerList
-                                .getContainerList(curContainerListID.intValue());
-                        if (curContainerList != null) {
-                            resultList.add(curContainerList);
-                        }
-                    }
-                }
-                break;
-            case JahiaPage.TYPE_LINK:
-            case JahiaPage.TYPE_URL:
-                break;
-        }
-
         return resultList;
     }
 
@@ -2157,16 +2064,6 @@ public class ContentPage extends ContentObject implements
         switch (getPageType(loadRequest)) {
 
             case JahiaPage.TYPE_DIRECT:
-
-                // we must now mark all page related content for deletion, that is to
-                // say :
-
-                // 1. all fields on the page
-                sr.getJahiaFieldService().purgePageFields(getID());
-
-                // 2. all container lists on the page
-                sr.getJahiaContainersService().purgePageContainerLists(getID());
-
                 break;
             case JahiaPage.TYPE_LINK:
                 break;
@@ -2784,100 +2681,6 @@ public class ContentPage extends ContentObject implements
         }
 
         ActivationTestResults activationResults = new ActivationTestResults();
-
-        activateLanguageCodes.retainAll(getStagingPageInfos().keySet());
-        if (activateLanguageCodes.isEmpty()) {
-            return activationResults;
-        }
-
-        activationResults.merge(
-                isValidForActivation(activateLanguageCodes,
-                        jParams, stateModifContext));
-        activationResults.merge(
-                isPickedValidForActivation(activateLanguageCodes, stateModifContext));
-
-        if (activationResults.getStatus() == ActivationTestResults.FAILED_OPERATION_STATUS) {
-            if (stateModified) {
-                stateModifContext.popAllLanguages();
-            }
-            return activationResults;
-        }
-
-        boolean stacked = false;
-
-        // the first operation is to check if we validate the object or not,
-        // depending on whether the objects pointed by this one are validated
-        // or not. In the case of internal links we must check that the
-        // page link has been validated or not, and depending on the parameters,
-        // whether to validate it first too.
-        int pageType;
-
-        // FIXME NK : we should get the staged entry first should we ?
-        Iterator<JahiaPageInfo> pageInfoIter = getStagingPageInfos().values().iterator();
-        if (!pageInfoIter.hasNext()) {
-            pageInfoIter = this.getActivePageInfos().values().iterator();
-        }
-
-        if (pageInfoIter.hasNext()) {
-            JahiaPageInfo curPageInfo = pageInfoIter.next();
-            pageType = curPageInfo.getPageType();
-            if (pageType == JahiaPage.TYPE_LINK) {
-                logger.debug("Activating link page object (id=" +
-                        curPageInfo.getID() + ") to page ID : " +
-                        curPageInfo.getPageLinkID());
-            }
-        }
-
-        // Invalidate the JahiaPageCacheInfo
-        this.commitChanges(true, false, user);
-        rebuildStatusMaps();
-
-        int sameParentID = hasSameParentID();
-        if (!stateModifContext.isAllLanguages() && (sameParentID != SAME_PARENT)) {
-            logger.debug(
-                    "Activation of move detected for page " + getID() + ", activating all languages...");
-            activateLanguageCodes.addAll(getStagingLanguages(true));
-        }
-
-        // NicolÃ¡s Charczewski - Neoris Argentina - modified 31/03/2006 - Begin
-        boolean nonDeleted = activeNonDeletedEntries(activateLanguageCodes, saveVersion, jParams);
-        // NicolÃ¡s Charczewski - Neoris Argentina - modified  31/03/2006 - End
-
-        if (nonDeleted) {
-            // if the activation was at least partially performed, we must now
-            // also activate all the content that points on this page.
-            activeReferringContent(languageCodes, saveVersion, user,
-                    jParams, stateModifContext, activationResults, versioningActive);
-        }
-
-        boolean deletedEntries = activeDeletedEntries(activateLanguageCodes, saveVersion);
-        if (deletedEntries) {
-            // some entries have been deleted, need to reactivate referring page fields
-            activeReferringContent(languageCodes, saveVersion, user,
-                    jParams, stateModifContext, activationResults, versioningActive);
-        }
-
-        if (stacked) {
-            stateModifContext.popObjectID();
-        }
-
-        if (stateModified) {
-            stateModifContext.popAllLanguages();
-        }
-
-        // Invalidate the JahiaPageCacheInfo
-        // todo : create a singleton for all pageInfo !!
-        this.commitChanges(true, false, user);
-
-        fireContentActivationEvent(activateLanguageCodes,
-                versioningActive,
-                saveVersion,
-                jParams,
-                stateModifContext,
-                activationResults);
-
-        syncClusterOnValidation();
-
         return activationResults;
 
     }
@@ -2914,9 +2717,6 @@ public class ContentPage extends ContentObject implements
 
                         removePageInfo(activeInfo);
 
-                        if (activeInfo.getParentID() != curPageInfo.getParentID()) {
-                            WorkflowService.getInstance().flushCacheForPageCreatedOrDeleted(new ContentPageKey(activeInfo.getParentID()));
-                        }
                     }
 
                     removePageInfo(curPageInfo);
@@ -2948,215 +2748,6 @@ public class ContentPage extends ContentObject implements
     }
 
 
-    private void activeReferringContent(Set<String> languageCodes,
-                                        JahiaSaveVersion saveVersion,
-                                        JahiaUser user, ProcessingContext jParams,
-                                        StateModificationContext
-                                                stateModifContext,
-                                        ActivationTestResults activationResults, boolean versioningActive)
-            throws JahiaException {
-        /**
-         * todo we might be missing code to handle the "activation" of
-         * deleted pages AND the content pointing on this page (ie broken
-         * links that have to be navigated up to destroy the content)
-         */
-        if (activationResults.getStatus() !=
-                ActivationTestResults.FAILED_OPERATION_STATUS
-                && (this.getPageType(jParams.getEntryLoadRequest()) != JahiaPage.TYPE_URL)
-                && (this.getPageType(jParams.getEntryLoadRequest()) != JahiaPage.TYPE_LINK)) {
-            // now that we've activate the page entry, let's activate all the
-            // related content on other pages.
-            List<JahiaPage> pages = getPageService().getPagesPointingOnPage(getID(), jParams);
-            for (JahiaPage curPage : pages) {
-                /*
-                Set curPageStagingFieldIDs =
-                    JahiaPageUtilsDB.getInstance().getStagingPageFieldIDs(curPage.getID());
-                */
-                List<Integer> curPointingPageFieldIDs = pageManager.getStagingAndActivePageFieldIDs(curPage.getID());
-
-                for (Integer curFieldIDObj : curPointingPageFieldIDs) {
-                    int curFieldID = curFieldIDObj.intValue();
-                    if (curFieldID != -1) {
-                        ContentField curPageField = ContentField.getField(curFieldID);
-                        if (curPageField == null) {
-                            logger.debug("Couldn't find page field " +
-                                    curFieldID +
-                                    " pointing on page " + getID() +
-                                    ", ignoring it...");
-                        } else {
-
-                            boolean notDeleted = (curPageField.hasActiveEntries()
-                                    ||
-                                    curPageField.hasStagingEntries());
-
-                            // we must now activate the field.
-                            stateModifContext.setDescendingInSubPages(false);
-                            boolean pageFieldActivationResult = true;
-                            if (curPageField.hasStagingEntries()) {
-                                // fire event
-                                JahiaEvent theEvent = new JahiaEvent(
-                                        saveVersion, jParams, curPageField);
-                                ServicesRegistry.getInstance()
-                                        .getJahiaEventService()
-                                        .fireBeforeFieldActivation(theEvent);
-                                // end fire event
-                                ActivationTestResults fieldActivationResult =
-                                        curPageField.activate(
-                                                languageCodes,
-                                                saveVersion.getVersionID(),
-                                                jParams,
-                                                stateModifContext);
-                                activationResults.merge(fieldActivationResult);
-                                pageFieldActivationResult = (fieldActivationResult.getStatus() ==
-                                        ActivationTestResults.COMPLETED_OPERATION_STATUS);
-
-                            }
-                            if (pageFieldActivationResult) {
-
-                                if ((curPageField.getContainerID() > 0) &&
-                                        notDeleted) {
-                                    // field is inside a container.
-                                    /**
-                                     * todo we might want to check this code
-                                     * to make sure we load the correct entry
-                                     * state here
-                                     */
-                                    JahiaContainer curPageFieldContainer =
-                                            ServicesRegistry.getInstance().
-                                                    getJahiaContainersService().
-                                                    loadContainer(
-                                                            curPageField.getContainerID(),
-                                                            LoadFlags.ALL, jParams,
-                                                            jParams.getEntryLoadRequest());
-                                    if (curPageFieldContainer == null) {
-                                        logger.debug(
-                                                "Error loading container (" +
-                                                        curPageField.getContainerID() +
-                                                        ") for a page field (" +
-                                                        curFieldID +
-                                                        ") that points on page " + getID());
-                                    } else {
-                                        // container was successfully loaded.
-                                        // we must now try to activate it.
-                                        stateModifContext.
-                                                setDescendingInSubPages(false);
-
-                                        // we must now activate all the other
-                                        // field in the container first, and
-                                        // then validate the container itself.
-                                        EntryLoadRequest loadRequest = new EntryLoadRequest(
-                                                EntryLoadRequest.STAGED);
-                                        loadRequest.setWithMarkedForDeletion(true);
-
-                                        List<Integer> fieldIDs = ServicesRegistry.
-                                                getInstance().
-                                                getJahiaContainersService().
-                                                getFieldIDsInContainer(
-                                                        curPageFieldContainer.getID(),
-                                                        loadRequest);
-
-                                        for (Integer fieldIDObj : fieldIDs) {
-                                            int fieldID = fieldIDObj.intValue();
-                                            if (fieldID != curFieldID) {
-                                                ContentField currentField =
-                                                        ContentField.getField(
-                                                                fieldID);
-
-                                                // fire event
-                                                JahiaEvent theEvent = new JahiaEvent(
-                                                        saveVersion, jParams, currentField);
-                                                ServicesRegistry.getInstance()
-                                                        .getJahiaEventService()
-                                                        .fireBeforeFieldActivation(theEvent);
-
-                                                activationResults.merge(
-                                                        currentField.activate(
-                                                                languageCodes,
-                                                                saveVersion.getVersionID(), jParams,
-                                                                stateModifContext));
-                                            }
-                                        }
-
-                                        // now that we have activated, or at
-                                        // least tried to activate all the
-                                        // fields, we must activate the
-                                        // container itself.
-
-                                        ActivationTestResults
-                                                containerActivationResult =
-                                                curPageFieldContainer.getContentContainer().activate(languageCodes, true, saveVersion, user, jParams, stateModifContext);
-
-                                        activationResults.merge(
-                                                containerActivationResult);
-                                    }
-                                } else {
-                                    // field is not in a container. nothing more to do...
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean activeDeletedEntries(Set<String> languageCodes,
-                                         JahiaSaveVersion saveVersion) {
-        boolean result = false;
-        // now we must find which active versions to backup, by figuring
-        // out what has changed.
-        for (JahiaPageInfo curPageInfo : new ArrayList<JahiaPageInfo>(getStagingPageInfos().values())) {
-            // only do the activation for the request languages.
-            if (languageCodes.contains(curPageInfo.getLanguageCode())) {
-                if (curPageInfo.getVersionID() == -1) {
-                    result = true;
-
-                    // now le'ts find the active page info corresponding to this
-                    // staged page info.
-                    JahiaPageInfo activeInfo = getActivePageInfos().get(curPageInfo.getLanguageCode());
-
-                    if (activeInfo != null) {
-                        // create a versioned version of the old active entry
-                        // First, we create an archive entry ( newVersionStatus = 0 , not -1 ! )
-                        pageManager.updatePageInfo(
-                                activeInfo,
-                                activeInfo.getVersionID(),
-                                ContentObjectEntryState.WORKFLOW_STATE_VERSIONED);
-
-                        removePageInfo(activeInfo);
-
-                        // Third, we replace the active with the staging entry
-                        pageManager.updatePageInfo(curPageInfo,
-                                saveVersion.getVersionID(),
-                                ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED);
-                        WorkflowService.getInstance().flushCacheForPageCreatedOrDeleted((ContentPageKey) getObjectKey());
-                        JahiaPageInfo deletedPageInfo =
-                                curPageInfo.clonePageInfo(saveVersion.getVersionID(),
-                                        ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED,
-                                        curPageInfo.getLanguageCode());
-
-                        // ensure to load all versioning entryStates
-                        this.loadVersioningEntryStates();
-
-                        addPageInfo(deletedPageInfo);
-
-                        // reset site map
-                        ServicesRegistry.getInstance().getJahiaSiteMapService()
-                                .resetSiteMap();
-
-                    }
-
-                    removePageInfo(curPageInfo);
-                    // marked for deletion, let's remove the staged version
-                    // too...
-                    pageManager.deletePageInfo(curPageInfo);
-                }
-            }
-        }
-        return result;
-    }
-
 
     /**
      * Tests if a page is valid for activation.
@@ -3178,195 +2769,6 @@ public class ContentPage extends ContentObject implements
             StateModificationContext stateModifContext)
             throws JahiaException {
         ActivationTestResults activationTestResults = super.isValidForActivation(languageCodes, jParams, stateModifContext);
-        // first we must test if we have all the mandatory languages in our
-        // page only if the page is not marked for deletion.
-        ContentObjectKey mainKey = (ContentObjectKey) ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
-        if (!isMarkedForDelete()) {
-            int pageType = getPageType(EntryLoadRequest.STAGED);
-            JahiaSite theSite = jParams.getSite();
-            Map<String, SiteLanguageSettings> siteLanguageSettings = new HashMap<String, SiteLanguageSettings>(languageCodes.size());
-            final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
-            List<SiteLanguageSettings> languageSettings = theSite.getLanguageSettings(true);
-            for (SiteLanguageSettings curSettings : languageSettings) {
-                siteLanguageSettings.put(curSettings.getCode(), curSettings);
-            }
-            for (SiteLanguageSettings curSettings : languageSettings) {
-                if (curSettings.isMandatory()) {
-                    // we found a mandatory language, let's check that there is at
-                    // least an active or a staged entry for this field.
-                    JahiaPageInfo foundPageInfo = getStagingPageInfos().get(curSettings.getCode());
-                    if (foundPageInfo == null) {
-                        foundPageInfo = getActivePageInfos().get(curSettings.getCode());
-                    }
-
-                    if (foundPageInfo == null) {
-                        activationTestResults.mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                        try {
-                            final EngineMessage msg = new EngineMessage("org.jahia.services.pages.ContentPage.mandatoryLangMissingError", curSettings.getCode());
-                            for (String code : languageCodes) {
-                                if (!code.equals(curSettings.getCode())) {
-                                    IsValidForActivationResults activationResults = new
-                                            IsValidForActivationResults(mainKey,code, msg);
-                                    if (!isAdminMember) {
-                                        activationResults.setBlocker(true);
-                                    }
-                                    activationTestResults.appendError(activationResults);
-                                }
-                            }
-                        } catch (ClassNotFoundException cnfe) {
-                            logger.debug("Error while creating activation test node result", cnfe);
-                        }
-                    }
-                    
-                    if (!languageCodes.contains(curSettings.getCode())
-                            && getActivePageInfos().get(curSettings.getCode()) == null) {
-                        activationTestResults
-                                .mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                        try {
-                            for (String code : languageCodes) {
-                                if (!code.equals(curSettings.getCode())) {
-                                    EngineMessage engineMessage = new EngineMessage("org.jahia.services.pages.ContentPage.mandatoryLangNotPublished", curSettings.getCode());
-                                    activationTestResults.appendError(new IsValidForActivationResults(mainKey,code,engineMessage));
-                                }
-                            }
-                        } catch (ClassNotFoundException e) {
-                            logger
-                                    .debug(
-                                            "Error while creating activation test node result",
-                                            e);
-                        }
-                        
-                    }
-                }
-            }
-            
-            // we stop if the status is already 'failed'
-            if (activationTestResults.getStatus() != ActivationTestResults.FAILED_OPERATION_STATUS) {
-                // let's check that all the page titles exist in the languages to be
-                // validated.
-                if (getPageType(jParams.getEntryLoadRequest()) == JahiaPage.TYPE_DIRECT) {
-                    boolean oneLanguageSet = false;
-                    JahiaPageInfo curPageInfo = null;
-                    for (Iterator<String> languageCodeIter = languageCodes.iterator(); languageCodeIter.hasNext();) {
-                        String curLanguageCode = languageCodeIter.next();
-                        curPageInfo = getStagingPageInfos().get(curLanguageCode);
-                        if (curPageInfo == null) {
-                            // no staging page info found, let's try in active...
-                            curPageInfo = getActivePageInfos().get(curLanguageCode);
-                        }
-                        if (curPageInfo == null || curPageInfo.getTitle() == null) {
-                            boolean b = "shared".equals(curLanguageCode.toLowerCase().trim());
-                            // do not treat shared as even if you have "shared" the title page infos will return the same title
-                            // for each language and the "shared" language do not exist in this case.
-                            // The title is replciated among all languages so avoid testing on shared.
-                            if (!b) {
-                                try {
-                                    final EngineMessage msg =
-                                            new EngineMessage("org.jahia.services.pages.ContentPage.noTitleError");
-                                    IsValidForActivationResults forActivationResults =
-                                            new IsValidForActivationResults(mainKey,curLanguageCode,msg);
-                                    activationTestResults.mergeStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                                    activationTestResults.appendError(forActivationResults);
-                                } catch (ClassNotFoundException cnfe) {
-                                    logger.debug("Error while creating activation test node result", cnfe);
-                                }
-                            }
-                        } else if (curPageInfo.getTitle().trim().length() == 0) {
-                            // empty title, let's signal it if mixed language mode is not activated
-                            if (!theSite.isMixLanguagesActive()) {
-                                activationTestResults.mergeStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                                try {
-                                    final EngineMessage msg = new EngineMessage(
-                                            "org.jahia.services.pages.ContentPage.emptyTitleError");
-                                    IsValidForActivationResults forActivationResults = new IsValidForActivationResults(
-                                          mainKey, curPageInfo.getLanguageCode(), msg);
-                                    activationTestResults.appendError(forActivationResults);
-                                } catch (ClassNotFoundException cnfe) {
-                                    logger.debug("Error while creating activation test node result", cnfe);
-                                }
-                            }
-                        } else {
-                            oneLanguageSet = true;
-                        }
-                    }
-                    if (theSite.isMixLanguagesActive() && !oneLanguageSet) {
-                        activationTestResults.mergeStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                        try {
-                            final EngineMessage msg = new EngineMessage(
-                                    "org.jahia.services.pages.ContentPage.emptyTitleError");
-                            IsValidForActivationResults forActivationResults = new IsValidForActivationResults(
-                                 mainKey, curPageInfo.getLanguageCode(), msg);
-                            forActivationResults.setBlocker(true);
-                            activationTestResults.appendError(forActivationResults);
-                        } catch (ClassNotFoundException cnfe) {
-                            logger.debug("Error while creating activation test node result", cnfe);
-                        }
-                    }
-                }
-    
-                // the next operation is to check if we validate the object or not,
-                // depending on whether the objects pointed by this one are validated
-                // or not. In the case of internal links we must check that the
-                // page link has been validated or not, and depending on the parameters,
-                // whether to validate it first too.
-                pageType = getPageType(jParams.getEntryLoadRequest());
-                if (pageType == JahiaPage.TYPE_LINK) {
-                    JahiaPageInfo curPageInfo = getPageInfoVersionIgnoreLanguage(jParams.getEntryLoadRequest(), false);
-                    int pageLinkId = curPageInfo.getPageLinkID();
-                    ContentPage linkedPage = null;
-                    try {
-                        getPageService().lookupContentPage(pageLinkId, true);
-                    } catch (JahiaPageNotFoundException jpnfe) {
-                        linkedPage = null;
-                        try {
-                            final EngineMessage msg = new EngineMessage(
-                                    "org.jahia.services.pages.ContentPage.linkNotToPageWarning");
-                            activationTestResults.appendWarning(new IsValidForActivationResults(mainKey, curPageInfo.getLanguageCode(), msg));
-                        } catch (ClassNotFoundException cnfe) {
-                            logger.debug("Error while creating activation test node result", cnfe);
-                        }
-                    }
-                    if (linkedPage != null) {
-                        if (!linkedPage.hasActiveEntries()) {
-                            logger.debug("Cannot validate page link " + curPageInfo.getID() + "since it links to a page ("
-                                    + pageLinkId + ") with no active entries");
-                            activationTestResults.mergeStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                            try {
-                                final EngineMessage msg = new EngineMessage(
-                                        "org.jahia.services.pages.ContentPage.linkNotToActivePageError");
-                                activationTestResults.appendError(new IsValidForActivationResults(mainKey, curPageInfo.getLanguageCode(), msg));
-                            } catch (ClassNotFoundException cnfe) {
-                                logger.debug("Error while creating activation test node result", cnfe);
-                            }
-                        }
-                    }
-                } else if (pageType == JahiaPage.TYPE_DIRECT) {
-                    // int siteID = getJahiaID();
-                    // ServicesRegistry sr = ServicesRegistry.getInstance();
-                    // we should modify this call to make it only test the fields
-                    // that are directly attached to the page, and not in
-                    // containers, otherwise we will
-                    // get doubles when testing the containers.
-                    // activationTestResults.merge(sr.getJahiaFieldService().areFieldsValidForActivation(
-                    // languageCodes, getID(), user, saveVersion, jParams,
-                    // withSubPages ));
-    // toto : do not recursively check other content, this is now externalized in workflowservice
-    /*
-                    activationTestResults.merge (
-                            sr.getJahiaFieldService ().areNonContainerFieldsValidForActivation (
-                                    languageCodes, getID (), user, saveVersion, jParams,
-                                    stateModifContext));
-                    activationTestResults.merge (
-                            sr.getJahiaContainersService ().areContainersValidForActivation (
-                                    languageCodes, getID (), user, saveVersion, jParams,
-                                    stateModifContext));
-                    activationTestResults.merge (
-                            sr.getJahiaContainersService ().areContainerListsValidForActivation (
-                                    languageCodes, getID (), user, saveVersion, stateModifContext));
-                                    */
-                }
-            }
-        }
 
         return activationTestResults;
     }
@@ -3461,203 +2863,9 @@ public class ContentPage extends ContentObject implements
                                         String languageCode,
                                         StateModificationContext stateModifContext)
             throws JahiaException {
-        boolean stateModified = false;
-        Set<String> languageCodes = new HashSet<String>();
-        if (stateModifContext.isAllLanguages()) {
-            languageCodes.addAll(getStagingLanguages(false));
-        } else if (willBeCompletelyDeleted(languageCode, null)) {
-            stateModified = true;
-            stateModifContext.pushAllLanguages(true);
-        }
-
-        if (languageCode != null
-                && !ContentObject.SHARED_LANGUAGE.equals(languageCode)) {
-            // otherwise we will create unwanted shared lang staged entry !!!!
-            // should throws Exception here ?
-            languageCodes.add(languageCode);
-        }
-        if (stateModified && stateModifContext.isAllLanguages()) {
-            languageCodes.addAll(getStagingLanguages(false));
-        }
-
-        List<JahiaPageInfo> allStagingPageInfos = getAllPageInfosForWrite(languageCodes);
-
-        ContentPageKey pageKey = new ContentPageKey(getID());
-        boolean stacked = false;
-
-        ServicesRegistry sr = ServicesRegistry.getInstance();
-
-        EntryLoadRequest loadRequest =
-                new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
-                        new ArrayList<Locale>());
-        switch (getPageType(loadRequest)) {
-
-            case JahiaPage.TYPE_DIRECT:
-
-                // we must now mark all page related content for deletion, that is to
-                // say :
-
-                // 1. all fields on the page
-                sr.getJahiaFieldService().markPageFieldsLanguageForDeletion(getID(),
-                        user, languageCode, stateModifContext);
-
-                // 2. all container lists on the page
-                sr.getJahiaContainersService().
-                        markPageContainerListsLanguageForDeletion(
-                                getID(),
-                                user,
-                                languageCode,
-                                stateModifContext);
-
-                stateModifContext.pushObjectID(pageKey);
-                stacked = true;
-
-                // 3. all links on this page, including the fields they are in AND
-                // the containers the fields are in.
-                if (stateModifContext.isAllLanguages()) {
-                    // we can only mark for delete page field, if the page is deleted in all langs.
-                    markReferringContentForDeletion(user, languageCode,
-                            stateModifContext);
-                }
-
-                break;
-            case JahiaPage.TYPE_LINK:
-                break;
-            case JahiaPage.TYPE_URL:
-                break;
-        }
-
-        // first we must check if there are active versions for the page info
-        // data. If not, we simply delete directly the existing staging entries
-        for (JahiaPageInfo curPageInfo : allStagingPageInfos) {
-            if (languageCodes.contains(curPageInfo.getLanguageCode())) {
-                Map<String, JahiaPageInfo> activePageInfos = getActivePageInfos();
-                if (activePageInfos.containsKey(curPageInfo.getLanguageCode())) {
-                    if (curPageInfo.getVersionID() != ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED) {
-
-                        // Page Move issue here:
-                        // switching to mark for delete without take care to undo
-                        // any page move state create a moved-deleted-phantom page!!!
-                        JahiaPageInfo activePageInfo = (JahiaPageInfo)
-                                activePageInfos.get(curPageInfo.getLanguageCode());
-                        curPageInfo.setParentID(activePageInfo.getParentID());
-                        pageManager.updatePageInfo(curPageInfo, -1, curPageInfo.getWorkflowState());
-                        curPageInfo.setVersionID(-1);
-                        curPageInfo.commitChanges(false);
-                    }
-                } else {
-                    JahiaEvent theEvent = new JahiaEvent(this, null, this);
-                    ServicesRegistry.getInstance().getJahiaEventService().fireBeforeStagingContentIsDeleted(theEvent);
-
-                    deleteEntry(curPageInfo);
-                }
-            }
-        }
-
-        if (stacked) {
-            stateModifContext.popObjectID();
-        }
-
-        if (stateModified) {
-            stateModifContext.popAllLanguages();
-        }
-
-        for (String currentLanguage : languageCodes) {
-            WorkflowEvent theEvent = new WorkflowEvent(this, this, user, currentLanguage, true);
-            ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
-        }
-
     }
 
-    private void markReferringContentForDeletion(JahiaUser user,
-                                                 String languageCode,
-                                                 StateModificationContext
-                                                         stateModifContext)
-            throws JahiaException {
 
-        List<Locale> locales = new ArrayList<Locale>();
-        locales.add(LanguageCodeConverters.languageCodeToLocale(languageCode));
-
-        EntryLoadRequest loadRequest = new EntryLoadRequest(
-                EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, locales);
-
-        List<JahiaPage> referingPages = getPageService().
-                getPagesPointingOnPage(getID(), loadRequest);
-
-        if (stateModifContext.getStartObject().equals(new ContentPageKey(getID()))) {
-            // let's add our own page.
-            referingPages.add(new JahiaPage(this, getPageTemplate(loadRequest),
-                    getACL(),
-                    loadRequest));
-        }
-
-        markReferringContentForDeletion(user, languageCode, stateModifContext, referingPages);
-    }
-
-    private void markReferringContentForDeletion(JahiaUser user,
-                                                 String languageCode,
-                                                 StateModificationContext
-                                                         stateModifContext,
-                                                 List<JahiaPage> referingPages)
-            throws JahiaException {
-        for (JahiaPage page : referingPages) {
-            int curPageFieldID = pageManager.getPageFieldID(page.getID());
-            if (curPageFieldID != -1) {
-                markReferringPageFieldLanguageForDeletion(curPageFieldID, user, languageCode,
-                        stateModifContext);
-            }
-        }
-    }
-
-    private void markReferringPageFieldLanguageForDeletion(int curPageFieldID,
-                                                           JahiaUser user,
-                                                           String languageCode,
-                                                           StateModificationContext stateModifContext)
-            throws JahiaException {
-        ContentField curPageField =
-                ContentField.getField(curPageFieldID);
-        if (curPageField == null) {
-            logger.debug("Couldn't find page field " +
-                    curPageFieldID +
-                    " pointing on page " + getID() +
-                    ", ignoring it...");
-        } else {
-            // we must now mark this field for deletion.
-            curPageField.markLanguageForDeletion(
-                    user, languageCode, stateModifContext);
-
-            if (curPageField.getContainerID() > 0) {
-                // field is inside a container.
-                try {
-                    ContentContainer curPageFieldContainer =
-                            ContentContainer.getContainer(curPageField.
-                                    getContainerID());
-                    if (curPageFieldContainer == null) {
-                        logger.debug(
-                                "Container (" +
-                                        curPageField.getContainerID()
-                                        +
-                                        ") for a page field (" +
-                                        curPageFieldID +
-                                        ") that points on page " +
-                                        getID() +
-                                        " couldn't be found, it might have been completely deleted already");
-                    } else {
-                        // container was successfully loaded.
-                        // we must now try to mark it for deletion.
-                        curPageFieldContainer.markLanguageForDeletion(
-                                user,
-                                languageCode,
-                                stateModifContext);
-                    }
-                } catch (JahiaException je) {
-                    logger.debug(
-                            "Container " + curPageField.getContainerID() + " not found in database. This is normal if the container has already previously been marked for deletion in the shared language.");
-                }
-            }
-        }
-
-    }
 
     /**
      * This method is used to determine if all the active entries of this
@@ -3752,7 +2960,7 @@ public class ContentPage extends ContentObject implements
             getPageService().invalidatePageCache(getID());
 
             // invalidate sitemap cahe too
-            ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
+//            ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
         }
     }
 
@@ -3815,7 +3023,7 @@ public class ContentPage extends ContentObject implements
         }
         getPageService().invalidatePageCache(getID());
         // invalidate sitemap cahe too
-        ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
+//        ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
     }
 
     /**
@@ -3978,12 +3186,7 @@ public class ContentPage extends ContentObject implements
     public Map<String, Integer> getLanguagesStates(boolean withContent) {
         Map<String, Integer> result = null;
         if (withContent) {
-            try {
-                result = ServicesRegistry.getInstance().getWorkflowService().getLanguagesStates(this);
-            } catch (JahiaException e) {
-                logger.warn("Exception while retrieving language entry states", e);
-                result = new HashMap<String, Integer>();
-            }
+
         } else {
             result = new HashMap<String, Integer>();
             /* FIXME : we roolback a bit in optimization in order to have something stable
@@ -4339,15 +3542,7 @@ public class ContentPage extends ContentObject implements
         if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
             if (ParamBean.NORMAL.equals(operationMode) && !this.isAvailable()){
                 return false;
-            } else if ( ParamBean.PREVIEW.equals(operationMode) ){
-                final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
-                        .getTimeBasedPublishingService();
-                try {
-                } catch ( Throwable t ){
-                    logger.debug(t);
-                    return false;
-                }
-            }
+        }
         }
 
         if ((loadRequest != null) && (user != null) && (operationMode != null)) {
@@ -4796,8 +3991,6 @@ public class ContentPage extends ContentObject implements
 
         this.commitChanges(true, true, user);
 
-        // Invalidate sitemap
-        ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
 
         // check for cyclic situation
         int parentId = this.getParentID(EntryLoadRequest.STAGED);
@@ -4927,7 +4120,6 @@ public class ContentPage extends ContentObject implements
 
         getPageService().invalidatePageCache(getID());
         // invalidate sitemap cahe too
-        ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
     }
 
     /**

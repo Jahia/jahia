@@ -44,7 +44,6 @@ import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -130,8 +129,8 @@ public class WorkflowMessageBuilder extends
                     .getSchedulerService().getJobDetail(jobName, jobGroup);
             JobDataMap dataMap = jobDetails.getJobDataMap();
             jobTitle = (String) dataMap.get(BackgroundJob.JOB_TITLE);
-            jobComment = (String) dataMap
-                    .get(AbstractActivationJob.COMMENTS_INPUT);
+//            jobComment = (String) dataMap
+//                    .get(AbstractActivationJob.COMMENTS_INPUT);
             if (StringUtils.isBlank(jobTitle)
                     && StringUtils.isNotBlank(jobComment)) {
                 jobTitle = StringUtils.left(jobComment, 80);

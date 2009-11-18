@@ -27,69 +27,6 @@
         </attribute>
     </tag>
     <tag>
-        <description>Used to build ContainerQueryBean</description>
-        <name>containerQuery</name>
-        <tag-class>org.jahia.taglibs.query.ContainerQueryTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description><![CDATA[
-                <p>Name of an existing QueryObjectModel stored in the Request scope of the PageContext
-                to use for building the concrete <code>ContainerQueryBean</code></p>]]>
-            </description>
-            <name>queryObjectModelBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>The name of the target containerList in the Jahia Page for which the concrete  containerQueryBean
-                will be created.</p>
-                <p>The target containerList is the one that will hold the filtering containers. This attribute is
-                optional if this tag is enclosed inside a containerListTag. In this case, the target containerList
-                will be the one referred by the parent <code>containerListTag</code>.</p>]]>
-            </description>
-            <name>targetContainerListName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[<p>
-                The target containerList can be defined using its ID instead by its name. It is the one that will
-                hold the filtered containers. </p>
-                <p>This attribute is optional if this tag is enclosed inside a
-                containerListTag. In this case, the target containerList will be the one referred by the parent <code>containerListTag</code></p>.]]>
-            </description>
-            <name>targetContainerListID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Unique id used to identify this query object model.</p>
-                <p>The object representing the current query object model is added to the pageContext under this
-                name in the Request scope.</p>]]>
-            </description>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Unique id used to identify this ContainerQueryBean.</p>
-                <p>The object representing the current ContainerQueryBean is added to the pageContext under this
-                name in the Request scope. It is only in the doEndTag that this bean is exposed.</p>]]>
-            </description>
-            <name>queryBeanID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>Used to define a comparison Constraint</description>
         <name>comparison</name>
         <tag-class>org.jahia.taglibs.query.ComparisonTag</tag-class>
@@ -696,34 +633,6 @@
         </example>
     </tag>
     <tag>
-        <description>Used effectively execute a logs query</description>
-        <name>executeLogsQuery</name>
-        <tag-class>org.jahia.taglibs.query.logs.ExecuteLogsQueryTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description><![CDATA[
-                     <p>Unique id used to identify the LogsResultList object.</p>
-                     <p>The object representing the current LogsResultList is added to the pageContext</p>
-                     ]]>
-             </description>
-             <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                    The pageContext scope under which to expose  the LogsResultList. The Default scope is
-                    PageContext.PAGE_SCOPE if null. Values can be "page", "session", "application"
-            ]]>
-            </description>
-            <name>scope</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>used to set the content definition names to the parent logsQuery tag</description>
         <name>contentDefinitionNamesConstraint</name>
         <tag-class>org.jahia.taglibs.query.logs.ContentDefinitionNamesConstraintTag</tag-class>
@@ -731,32 +640,6 @@
         <attribute>
             <description>A comma separated list of Content Defintion Names. Required.</description>
             <name>definitionNames</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>used to set the usernames to the parent logsQuery tag</description>
-        <name>usernamesConstraint</name>
-        <tag-class>org.jahia.taglibs.query.logs.UsernamesConstraintTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>A comma separated list of usernames. Required.</description>
-            <name>usernames</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Create a ContainerSorter using a LogsQuery instance</description>
-        <name>createContainerSorterFromLogsQuery</name>
-        <tag-class>org.jahia.taglibs.query.CreateContainerSorterFromLogsQueryTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>Name of the logQuery on which you want to create a ContainerSorter</description>
-            <name>logsQueryId</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
@@ -825,72 +708,7 @@
             <type>boolean</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Creates facet filters to be held in cache</description>
-        <name>createFacetFilter</name>
-        <tag-class>org.jahia.taglibs.query.CreateFacetFilterTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The facet name to identify the facet group</description>
-            <name>facetName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The property name for checking the facets.</description>
-            <name>propertyName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The value title which is required if propertyName is not set and the facet value is the result of a query.</description>
-            <name>valueTitle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the FacetBean will be set</description>
-            <name>facetBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the FacetBeanValue will be set</description>
-            <name>facetValueBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>queryObjectModelBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>targetContainerListName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>targetContainerListID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>queryBeanID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+
     <tag>
         <description>Returns the number of hits for a search/query per facet</description>
         <name>getHitsPerFacetValue</name>

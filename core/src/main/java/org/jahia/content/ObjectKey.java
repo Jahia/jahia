@@ -31,12 +31,12 @@
  */
 package org.jahia.content;
 
+import org.apache.log4j.Logger;
+import org.jahia.data.applications.EntryPointObjectKey;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.jahia.data.applications.EntryPointObjectKey;
 
 /**
  * The purpose of this class is to construct ContentObject references that can
@@ -69,8 +69,6 @@ public abstract class ObjectKey implements
     	keyTypeInstances = new HashMap<String, ObjectKeyInterface>();
     	registerType(CategoryKey.CATEGORY_TYPE, CategoryKey.class);
     	registerType(ContainerDefinitionKey.CONTAINER_TYPE, ContainerDefinitionKey.class);
-    	registerType(ContentContainerKey.CONTAINER_TYPE, ContentContainerKey.class);
-    	registerType(ContentContainerListKey.CONTAINERLIST_TYPE, ContentContainerListKey.class);
     	registerType(ContentFieldKey.FIELD_TYPE, ContentFieldKey.class);
     	registerType(ContentMetadataKey.METADATA_TYPE, ContentMetadataKey.class);
     	registerType(ContentPageKey.PAGE_TYPE, ContentPageKey.class);
@@ -251,7 +249,6 @@ public abstract class ObjectKey implements
     /**
      * Implementation of the comparable interface so that object keys may be
      * used in sets that need a comparable interface.
-     * @param o the ObjectKey to compare this object to
      * @return a negative integer, zero, or a positive integer as this
      * object's key string is less than, equal to, or greater than the
      * specified object key string

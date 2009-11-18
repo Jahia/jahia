@@ -43,16 +43,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="logsAdministrationModule" class="org.jahia.admin.audit.ManageLogs" parent="abstractAdministrationModule">
-        <property name="urlKey" value="logs" />
-        <property name="permissionName" value="admin.audit.ManageLogs" />
-        <property name="name" value="logs" />
-        <property name="icon" value="console_network" />
-        <property name="label" value="org.jahia.admin.administrativeAuditLog.label" />
-        <property name="urlAction" value="logs" />
-        <property name="urlParams" value="&amp;sub=settings" />
-    </bean>
-
     <bean id="rootUserAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="urlKey" value="profile" />
         <property name="permissionName" value="admin.users.ManageSuperAdminProps" />
@@ -183,17 +173,6 @@
         <property name="icon" value="users_into" />
         <property name="label" value="org.jahia.admin.manageGroups.label" />
         <property name="urlAction" value="groups" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
-    <bean id="templatesAdministrationModule" class="org.jahia.admin.templates.ManageTemplates" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="templates" />
-        <property name="permissionName" value="admin.templates.ManageTemplates" />
-        <property name="name" value="templates" />
-        <property name="icon" value="briefcase_document" />
-        <property name="label" value="org.jahia.admin.manageTemplates.label" />
-        <property name="urlAction" value="templates" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 

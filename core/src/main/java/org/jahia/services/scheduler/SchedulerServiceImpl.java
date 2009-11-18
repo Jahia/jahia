@@ -40,7 +40,6 @@ import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.AbstractActivationJob;
 import org.jgroups.Address;
 import org.quartz.*;
 import org.quartz.simpl.SimpleJobFactory;
@@ -622,9 +621,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         }
         try {
             JobDetail jobDetail = getJobDetail(jobName, groupName);
-            if (jobDetail != null && jobDetail.getJobClass().getName().equals(AbstractActivationJob.class.getName())) {
-                lockService.purgeLockForContext(jobDetail.getName());
-            }
             scheduler.deleteJob(jobName, groupName);
         } catch (SchedulerException se) {
             logger.debug(se);

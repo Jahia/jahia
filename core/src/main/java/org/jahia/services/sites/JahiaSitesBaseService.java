@@ -75,8 +75,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.WorkflowInfo;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -513,20 +511,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         jAcl.getID(),
                         jParams);
 
-                WorkflowInfo wfInfo = ServicesRegistry.getInstance()
-                        .getWorkflowService().getDefaultWorkflowEntry();
-                if (WorkflowService.EXTERNAL == wfInfo.getMode()) {
-                    ServicesRegistry.getInstance().getWorkflowService()
-                            .setWorkflowMode(page.getContentPage(),
-                                    wfInfo.getMode(), wfInfo.getWorkflowName(),
-                                    wfInfo.getProcessId(), jParams);
-                } else if (WorkflowService.INACTIVE == wfInfo.getMode()) {
-                    ServicesRegistry.getInstance().getWorkflowService()
-                            .setWorkflowMode(page.getContentPage(),
-                                    WorkflowService.INACTIVE, null, null,
-                                    jParams);
-                }
-                
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
 
                 logger.debug("Home Page created");

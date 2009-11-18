@@ -31,8 +31,10 @@
  */
 package org.jahia.ajax.gwt.commons.server.rpc;
 
-import net.htmlparser.jericho.*;
-import org.apache.commons.lang.StringUtils;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.SourceFormatter;
+import net.htmlparser.jericho.StartTag;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
@@ -40,17 +42,11 @@ import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.RequestBean;
 import org.jahia.data.beans.SiteBean;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerList;
-import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
@@ -62,9 +58,6 @@ import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
@@ -81,7 +74,7 @@ import java.util.*;
  */
 public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(JahiaServiceImpl.class);
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
@@ -162,94 +155,26 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         if (inEngine) {
             locale = getEngineLocale();
         }
-        Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
+//        Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
 //        Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
-        Map<String, GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>(availableLocaleMap.size());
-        Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
-        for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
-            final Locale value = stringLocaleEntry.getValue();
-            GWTLanguageSwitcherLocaleBean localeBean = new GWTLanguageSwitcherLocaleBean();
-            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ", "_");
-            localeBean.setCountryIsoCode(country);
-            if (displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
-            else if (displayLanguage) localeBean.setDisplayName(StringUtils.capitalize(value.getDisplayName(value)));
-            else localeBean.setDisplayName(value.getLanguage());
-            localeBean.setLanguage(value.getLanguage());
-            availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
-        }
+        Map<String, GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>();
+//        Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
+//        for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
+//            final Locale value = stringLocaleEntry.getValue();
+//            GWTLanguageSwitcherLocaleBean localeBean = new GWTLanguageSwitcherLocaleBean();
+//            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ", "_");
+//            localeBean.setCountryIsoCode(country);
+//            if (displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
+//            else if (displayLanguage) localeBean.setDisplayName(StringUtils.capitalize(value.getDisplayName(value)));
+//            else localeBean.setDisplayName(value.getLanguage());
+//            localeBean.setLanguage(value.getLanguage());
+//            availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
+//        }
         return new GWTJahiaLanguageSwitcherBean(availableLanguages, new HashMap<String,String>());
     }
 
     public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
         GWTJahiaInlineEditingResultBean resultBean = new GWTJahiaInlineEditingResultBean();
-        logger.debug("inlineUpdateField called for containerID=" + containerID + " fieldID=" + fieldID + " updatedContent=" + updatedContent);
-        ProcessingContext jParams = retrieveParamBean();
-        try {
-            JahiaContainer jahiaContainer = ServicesRegistry.getInstance().getJahiaContainersService().loadContainer(containerID, LoadFlags.ALL, jParams);
-            EntryLoadRequest loadVersion = EntryLoadRequest.STAGED;
-            final JahiaContainerList theList = ServicesRegistry.getInstance().getJahiaContainersService().
-                    loadContainerListInfo(jahiaContainer.getListID(), loadVersion);
-            // 0 for parentAclID in saveContainerInfo, because container already exists
-            //  -> container already has an aclID
-            //  -> no need to create a new one
-            ServicesRegistry.getInstance().getJahiaContainersService().saveContainerInfo(jahiaContainer,
-                    theList.getParentEntryID(), 0, jParams);
-            JahiaField jahiaField = jahiaContainer.getField(fieldID);
-            if (jahiaField.getID() == 0) {
-                JahiaSaveVersion saveVersion = ServicesRegistry.getInstance().
-                        getJahiaVersionService().getSiteSaveVersion(jParams.getJahiaID());
-                Object o = jahiaField.getObject();
-                jahiaField = ServicesRegistry.getInstance().
-                        getJahiaFieldService().
-                        createJahiaField(0, jahiaField.getJahiaID(), jahiaField.getPageID(),
-                                jahiaField.getctnid(), jahiaField.getFieldDefID(),
-                                jahiaField.getType(), jahiaField.getConnectType(),
-                                jahiaField.getValue(), jahiaField.getRank(), jahiaField.getAclID(),
-                                saveVersion.getVersionID(),
-                                saveVersion.getWorkflowState(),
-                                jahiaField.getLanguageCode());
-                if (jahiaField != null) {
-                    // save the field
-                    jahiaField.setObject(o);
-                    ServicesRegistry.getInstance().getJahiaFieldService().
-                            saveField(jahiaField, jahiaContainer.getAclID(), jParams);
-                }
-            }
-            String fieldValue = jahiaField.getValue();
-            // let's build the cleaned values now.
-            String trimmedUpdatedContent = updatedContent.trim();
-            String trimmedFieldValue = fieldValue.trim();
-
-            Source updatedSource = new Source((new SourceFormatter(new Source(updatedContent)).setTidyTags(true)).toString());
-            OutputDocument updatedDocument = new OutputDocument(updatedSource);
-            String cleanUpdatedContent = updatedDocument.toString();
-            Source fieldSource = new Source((new SourceFormatter(new Source(fieldValue)).setTidyTags(true)).toString());
-            OutputDocument fieldDocument = new OutputDocument(fieldSource);
-            String cleanFieldValue = fieldDocument.toString();
-            // we must test several case because unfortunately not all browsers return the same
-            // HTML for contentEditable DOM elements.
-            if ((updatedContent.equals(fieldValue)) ||
-                    trimmedUpdatedContent.equals(trimmedFieldValue) ||
-                    cleanUpdatedContent.equals(cleanFieldValue)) {
-                resultBean.setSuccessful(true);
-                resultBean.setContentModified(false);
-                return resultBean;
-            }
-            jahiaField.setValue(updatedContent);
-            jahiaField.setRawValue(updatedContent);
-            jahiaField.setObject(updatedContent);
-            jahiaField.save(jParams);
-            // ServicesRegistry.getInstance().getJahiaContainersService().saveContainer(jahiaContainer, jahiaContainer.getListID(), jParams);
-            JahiaEvent theEvent = new JahiaEvent(this, jParams, jahiaContainer);
-            ServicesRegistry.getInstance().getJahiaEventService().fireUpdateContainer(theEvent);
-            ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
-        } catch (JahiaException je) {
-            logger.error("Error while updating content, ignoring update", je);
-            resultBean.setSuccessful(false);
-            return resultBean;
-        }
-        resultBean.setContentModified(true);
-        resultBean.setSuccessful(true);
         return resultBean;
     }
 
@@ -261,9 +186,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         if (!inlineEditingActivatedPreference) {
             return false;
         }
-        LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINER_TYPE, containerID);
-        final LockService lockService = servicesRegistry.getLockService();
-        return lockService.isAcquireable(lockKey, jParams.getUser(), jParams.getUser().getUserKey());
+        return true;
     }
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName) {

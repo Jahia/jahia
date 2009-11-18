@@ -32,11 +32,8 @@
 package org.jahia.services.notification.templates;
 
 import groovy.lang.Binding;
-
 import org.apache.commons.codec.binary.Hex;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentObjectKey;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -93,19 +90,19 @@ public class SubscriptionConfirmationMessageBuilder extends MessageBuilder {
     }
 
     protected String getObjectType() {
-        if (objectType == null) {
-            ContentObjectKey contentObjectKey = null;
-            try {
-                contentObjectKey = (ContentObjectKey) ContentObjectKey
-                        .getInstance(subscription.getObjectKey());
-            } catch (ClassNotFoundException e) {
-                // not a content object key
-            }
-            objectType = JCRContentUtils
-                    .cleanUpNodeName(contentObjectKey != null ? JCRContentUtils
-                            .getNodeTypeName(contentObjectKey) : subscription
-                            .getObjectKey());
-        }
+//        if (objectType == null) {
+//            ContentObjectKey contentObjectKey = null;
+//            try {
+//                contentObjectKey = (ContentObjectKey) ContentObjectKey
+//                        .getInstance(subscription.getObjectKey());
+//            } catch (ClassNotFoundException e) {
+//                // not a content object key
+//            }
+//            objectType = JCRContentUtils
+//                    .cleanUpNodeName(contentObjectKey != null ? JCRContentUtils
+//                            .getNodeTypeName(contentObjectKey) : subscription
+//                            .getObjectKey());
+//        }
 
         return objectType;
     }

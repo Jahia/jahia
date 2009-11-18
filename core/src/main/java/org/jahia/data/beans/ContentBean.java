@@ -54,8 +54,6 @@ public abstract class ContentBean extends AbstractJahiaObjectBean {
     
     protected ProcessingContext processingContext;
     
-    public abstract ContentBean getParent();
-    
     public abstract int getID();
     
     public abstract int getDefinitionID();

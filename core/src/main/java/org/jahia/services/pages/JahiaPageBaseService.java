@@ -37,7 +37,6 @@ import org.jahia.content.ContentObject;
 import org.jahia.content.CoreFilterNames;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.fields.JahiaPageField;
 import org.jahia.exceptions.*;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.JahiaPagesManager;
@@ -51,8 +50,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -169,21 +166,6 @@ public class JahiaPageBaseService extends JahiaPageService {
                                              String creator,
                                              int parentAclID,
                                              ProcessingContext jParam)
-            throws JahiaException {
-       return createPage(siteID, parentID, pageType, title, pageTemplateID, remoteURL,pageLinkID,creator, parentAclID, jParam, null);
-    }
-
-    public JahiaPage createPage(int siteID,
-                                             int parentID,
-                                             int pageType,
-                                             String title,
-                                             int pageTemplateID,
-                                             String remoteURL,
-                                             int pageLinkID,
-                                             String creator,
-                                             int parentAclID,
-                                             ProcessingContext jParam,
-                                                JahiaPageField parentField)
             throws JahiaException {
 
         if (logger.isDebugEnabled()) {
@@ -318,8 +300,6 @@ public class JahiaPageBaseService extends JahiaPageService {
                 new JahiaPage(contentPage, pageTemplate, acl,
                         jParam.getEntryLoadRequest());
 
-        WorkflowEvent theEvent = new WorkflowEvent (this, contentPage, jParam.getUser(), languageCode, false);
-        ServicesRegistry.getInstance ().getJahiaEventService ().fireObjectChanged(theEvent);
 
         JahiaEvent objectCreatedEvent = new JahiaEvent(this, jParam, contentPage);
         ServicesRegistry.getInstance ().getJahiaEventService ().fireContentObjectCreated(objectCreatedEvent);
@@ -335,12 +315,6 @@ public class JahiaPageBaseService extends JahiaPageService {
             ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
         }
 
-        if (parentField != null) {
-            parentField.setValue(Integer.toString(page.getID()));
-            parentField.setObject(page);
-            ServicesRegistry.getInstance ().getJahiaFieldService ().
-                    saveField (parentField, -1, jParam);
-        }
 
         return page;
     }
@@ -1810,9 +1784,6 @@ public class JahiaPageBaseService extends JahiaPageService {
             if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
                 if (ParamBean.NORMAL.equals(operationMode) && !contentPage.isAvailable()){
                     return null;
-                } else if ( ParamBean.PREVIEW.equals(operationMode) ){
-                    final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance()
-                            .getTimeBasedPublishingService();
                 }
             }
             page = contentPage.getPage(loadRequest, operationMode, user);

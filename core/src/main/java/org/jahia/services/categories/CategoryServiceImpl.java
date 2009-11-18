@@ -180,12 +180,8 @@ public class CategoryServiceImpl extends CategoryService {
             ContentObjectKey objectKey = null;
             final int metadataOwnerId = ((Integer) jahiaFieldsData[0]).intValue();
             final String metadataOwnerType = (String) jahiaFieldsData[1];
-            if(metadataOwnerId >0 && metadataOwnerType.equals(ContentContainerKey.CONTAINER_TYPE))
-                objectKey = new ContentContainerKey(metadataOwnerId);
-            else if(metadataOwnerId >0 && metadataOwnerType.equals(ContentPageKey.PAGE_TYPE))
+            if(metadataOwnerId >0 && metadataOwnerType.equals(ContentPageKey.PAGE_TYPE))
                 objectKey = new ContentPageKey(metadataOwnerId);
-            else if(metadataOwnerId >0 && metadataOwnerType.equals(ContentContainerListKey.CONTAINERLIST_TYPE))
-                objectKey = new ContentContainerListKey(metadataOwnerId);
             if(!returnList.contains(objectKey))
                 returnList.add(objectKey);
         }

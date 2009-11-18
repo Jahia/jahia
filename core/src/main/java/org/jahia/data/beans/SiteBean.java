@@ -31,14 +31,6 @@
  */
 package org.jahia.data.beans;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.jahia.data.containers.JahiaContainerList;
-import org.jahia.data.fields.LoadFlags;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -49,6 +41,9 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageMapping;
 import org.jahia.services.sites.SiteLanguageSettings;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Title: Site JavaBean compliant JahiaSite facade</p>
@@ -96,72 +91,6 @@ public class SiteBean {
 
     public PageBean getPageByStringID(String pageIDStr) {
         return getPage(Integer.parseInt(pageIDStr));
-    }
-
-    /**
-     * Optimized method to retrieve all the container lists by a name in a
-     * Jahia site.
-     * WARNING : This method does *NOT* give access to sub container lists
-     * if they exist. Use the getAllContainerLists method if you need access
-     * to sub container lists.
-     *
-     * @param name String
-     * @return List
-     * @todo FIXME complete object model loading to include sub container list
-     * access
-     */
-    public List<ContainerListBean> getLightContainerLists(String name) {
-        List<ContainerListBean> containerLists = new ArrayList<ContainerListBean>();
-        try {
-            Set<Integer> containerListIDs = ServicesRegistry.getInstance().
-                    getJahiaContainersService().
-                    getSiteTopLevelContainerListsIDsByName(
-                            getId(), name, processingContext.getEntryLoadRequest());
-            Iterator<Integer> containerListIDIter = containerListIDs.iterator();
-            while (containerListIDIter.hasNext()) {
-                Integer curContainerListID = (Integer) containerListIDIter.next();
-                JahiaContainerList curContainerList = ServicesRegistry
-                        .getInstance()
-                        .getJahiaContainersService()
-                        .loadContainerList(
-                                curContainerListID.intValue(),
-                                LoadFlags.ALL,
-                                processingContext,
-                                processingContext.getEntryLoadRequest(),
-                                null,
-                                null, null);
-
-                ContainerListBean containerListBean = new ContainerListBean(curContainerList, processingContext);
-                containerLists.add(containerListBean);
-            }
-            return containerLists;
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving site top level container lists with name " + name + ":", je);
-            return null;
-        }
-    }
-
-    public List<ContainerListBean> getAllContainerLists(String name) {
-        List<ContainerListBean> containerLists = new ArrayList<ContainerListBean>();
-        try {
-            Set<Integer> containerListIDs = ServicesRegistry.getInstance().
-                    getJahiaContainersService().
-                    getSiteTopLevelContainerListsIDsByName(
-                            getId(), name, processingContext.getEntryLoadRequest());
-            Iterator<Integer> containerListIDIter = containerListIDs.iterator();
-            while (containerListIDIter.hasNext()) {
-                Integer curContainerListID = (Integer) containerListIDIter.next();
-                JahiaContainerList curContainerList = ServicesRegistry.getInstance().getJahiaContainersService()
-                        .loadContainerList(curContainerListID.intValue(),
-                                LoadFlags.ALL, processingContext, processingContext.getEntryLoadRequest(), null, null, null);
-                ContainerListBean containerListBean = new ContainerListBean(curContainerList, processingContext);
-                containerLists.add(containerListBean);
-            }
-            return containerLists;
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving site top level container lists with name " + name + ":", je);
-            return null;
-        }
     }
 
     public int getID() {

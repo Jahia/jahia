@@ -578,34 +578,7 @@ public class Category extends JahiaObject {
         return categoryService.getCategoryParentKeys(this);
     }
 
-    /**
-     * Retrieves the list of child content objects for this category
-     *
-     * @return the list contains ContentObject objects that correspond to the
-     *         child content objects associated with this category.
-     *
-     * @throws JahiaException thrown if there was a problem communicating with
-     *                        the database
-     */
-    public List<JahiaObject> getChildContentObjects ()
-            throws JahiaException {
-        List<ObjectKey> childKeys = getChildObjectKeys ();
-        List<JahiaObject> childContentObjects = new ArrayList<JahiaObject>();
-        for (ObjectKey curKey : childKeys) {
-            if (curKey instanceof ContentObjectKey) {
-                try {
-                    JahiaObject curChildCategory = JahiaObject.getInstance (
-                            curKey);
-                    childContentObjects.add (curChildCategory);
-                } catch (ClassNotFoundException cnfe) {
-                    logger.error (
-                            "Error while loading content object for object key " +
-                            curKey, cnfe);
-                }
-            }
-        }
-        return childContentObjects;
-    }
+
 
     /**
      * Returns the title in the specified language if it exists, or null if

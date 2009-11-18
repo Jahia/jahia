@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.aclmanagement.server;
 
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentLegacyServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -41,8 +40,6 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ParamBean;
 import org.apache.log4j.Logger;
@@ -55,7 +52,7 @@ import java.util.Map;
  */
 public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
-    private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(ACLServiceImpl.class);
 
     private ACLHelper acl;
 
@@ -95,12 +92,6 @@ public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
             if (engineMap.containsKey("thePage")) {
                 JahiaPage jahiaPage = ((JahiaPage) engineMap.get("thePage"));
                 setRightsEvent = new JahiaEvent(jahiaPage, bean, acl);
-            } else if (engineMap.containsKey("theContainer")) {
-                JahiaContainer jahiaContainer = ((JahiaContainer) engineMap.get("theContainer"));
-                setRightsEvent = new JahiaEvent(jahiaContainer, bean, acl);
-            } else if (engineMap.containsKey("theContainerList")) {
-                JahiaContainerList jahiaContainerList = ((JahiaContainerList) engineMap.get("theContainerList"));
-                setRightsEvent = new JahiaEvent(jahiaContainerList, bean, acl);
             }
             if (setRightsEvent!=null) {
                 ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);

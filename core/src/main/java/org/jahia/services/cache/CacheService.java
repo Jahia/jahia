@@ -86,19 +86,6 @@ public abstract class CacheService extends JahiaService {
 
     public abstract void syncClusterNow();
 
-    /**
-     * <p>Retrieves the Container HTML cache instance.</p>
-     *
-     * <p>When the Container HTML cache is not present, a new instance is created
-     * and inserted into the factory.<p>
-     *
-     * @return  the Container HTML cache instance
-     *
-     * @exception org.jahia.exceptions.JahiaInitializationException
-     *      when the Container HTML cache could not be instanciated and properly initialized
-     */
-    public abstract ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> getContainerHTMLCacheInstance() throws JahiaInitializationException;
-
     public abstract SkeletonCache<GroupCacheKey, SkeletonCacheEntry> getSkeletonCacheInstance() throws JahiaInitializationException;
     public abstract Map<String, CacheProvider> getCacheProviders();
 

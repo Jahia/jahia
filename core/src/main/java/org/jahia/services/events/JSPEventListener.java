@@ -42,8 +42,6 @@ import org.jahia.data.events.JahiaEventListener;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
-import org.jahia.services.workflow.WorkflowEvent;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.net.MalformedURLException;
@@ -292,10 +290,6 @@ public class JSPEventListener extends JahiaEventListener implements Initializing
         dispatchToJSP ("userLoggedOut", je);
     }
 
-    public void objectChanged (WorkflowEvent we) {
-        dispatchToJSP ("objectChanged", we);
-    }
-    
     public void aggregatedObjectChanged(JahiaEvent je) {
         dispatchToJSP("aggregatedObjectChanged", je);
     }    
@@ -369,10 +363,6 @@ public class JSPEventListener extends JahiaEventListener implements Initializing
 
     public void fileManagerAclChanged(JahiaEvent theEvent) {
         dispatchToJSP ("fileManagerAclChanged", theEvent);
-    }
-
-    public void timeBasedPublishingEvent( RetentionRuleEvent theEvent ) {
-        dispatchToJSP ("timeBasedPublishingEvent", theEvent);
     }
 
     public void aggregatedEventsFlush(JahiaEvent theEvent) {

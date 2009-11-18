@@ -38,41 +38,24 @@
 
 package org.jahia.gui;
 
-import java.util.Enumeration;
-import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentObject;
-import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerList;
-import org.jahia.data.containers.JahiaContainerListPagination;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.ACLResource;
-import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.JahiaTools;
-import org.jahia.api.Constants;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * Modified and cleaned by Xavier Lawrence
@@ -191,174 +174,6 @@ public class GuiBean {
         return drawPopupLogoutUrl(processingContext.getPageID());
     }
 
-    /**
-     * @param theField
-     * @return
-     * @throws JahiaException
-     * @deprecated
-     */
-    public String drawUpdateFieldUrl(final JahiaField theField)
-            throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            final ContentField contentField = theField.getContentField();
-            return drawUrlCheckWriteAccess("updatefield", contentField);
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * @param contentField
-     * @return
-     * @throws JahiaException
-     */
-    public String drawUpdateFieldUrl(final ContentField contentField)
-            throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            return drawUrlCheckWriteAccess("updatefield", contentField);
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * @param jahiaContainerList
-     * @return
-     * @throws JahiaException
-     */
-    public String drawAddContainerUrl(final JahiaContainerList jahiaContainerList)
-            throws JahiaException {
-        if (jahiaContainerList != null) {
-            final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-            if (aclService.getSiteActionPermission("engines.actions.add",
-                    processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                    processingContext.getSiteID()) > 0 &&
-                    aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                            processingContext.getUser(),
-                            JahiaBaseACL.READ_RIGHTS,
-                            processingContext.getSiteID()) > 0) {
-                return drawUrlCheckWriteAccess("addcontainer", jahiaContainerList);
-            } else {
-                return "";
-            }
-        } else {
-            final JahiaException je = new JahiaException("Accessing non-existing data",
-                    "GuiBean : Trying to access to non-existing containerlist (addContainerUrl)",
-                    JahiaException.DATA_ERROR, JahiaException.WARNING_SEVERITY);
-            logger.warn("Trying to generate URL for null container list", je);
-            return "";
-        }
-    }
-
-    /**
-     * @param theContainer
-     * @return
-     * @throws JahiaException
-     * @deprecated
-     */
-    public String drawUpdateContainerUrl(final JahiaContainer theContainer)
-            throws JahiaException {
-        final ContentContainer contentContainer = theContainer.getContentContainer();
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            return drawUrlCheckWriteAccess("updatecontainer", contentContainer);
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * @param contentContainer
-     * @return
-     * @throws JahiaException
-     */
-    public String drawUpdateContainerUrl(final ContentContainer contentContainer)
-            throws JahiaException {
-        return drawUpdateContainerUrl(contentContainer, 0);
-    }
-
-    /**
-     * @param contentContainer
-     * @param focusedFieldId
-     * @return
-     * @throws JahiaException
-     */
-    public String drawUpdateContainerUrl(final ContentContainer contentContainer, int focusedFieldId)
-            throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        String url = "";
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            url = drawUrlCheckWriteAccess("updatecontainer", contentContainer);
-        }
-        if (focusedFieldId > 0 && url.length() > 0) {
-            url = new StringBuffer(url.length() + 16).append(url).append(
-                    "&fid=").append(focusedFieldId).toString();
-        }
-
-        return url;
-    }
-
-
-    /**
-     * @param theContainer
-     * @return
-     * @throws JahiaException
-     * @deprecated
-     */
-    public String drawDeleteContainerUrl(final JahiaContainer theContainer)
-            throws JahiaException {
-        final ContentContainer contentContainer = theContainer.getContentContainer();
-        return drawUrlCheckWriteAccess("deletecontainer", contentContainer);
-    }
-
-    /**
-     * @param contentContainer
-     * @return
-     * @throws JahiaException
-     */
-    public String drawDeleteContainerUrl(final ContentContainer contentContainer)
-            throws JahiaException {
-        if (ServicesRegistry.getInstance().getJahiaACLManagerService().
-                getSiteActionPermission("engines.actions.delete",
-                        processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            /** todo we removed this version of the action check because it was dreadfully
-             * slow to check the rights on the whole sub tree, which could be very large.
-             * We might want to do this check when opening the engine instead, or use AJAX
-             * to indicate the background process is running.
-             */
-            // return drawUrlCheckWriteAccess( "deletecontainer", contentContainer,true,true);
-            return drawUrlCheckWriteAccess("deletecontainer", contentContainer);
-        } else {
-            return "";
-        }
-    }
 
     public String drawWorkflowUrl(final String key)
             throws JahiaException {
@@ -369,50 +184,6 @@ public class GuiBean {
     public String drawLockUrl(final LockKey lockKey)
             throws JahiaException {
         return drawUrl("lock", lockKey);
-    }
-
-    public String drawPagePropertiesUrl() throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            return drawUrlCheckWriteAccess("pageproperties", processingContext.getPage());
-        } else {
-            return "";
-        }
-    }
-
-    public String drawPagePropertiesUrl(final ContentPage page) throws JahiaException {
-        return drawPagePropertiesUrl(page.getID());
-    }
-
-    public String drawPagePropertiesUrl(final int pageID) throws JahiaException {
-        final int oldPageID = processingContext.getPageID();
-        if (oldPageID != pageID) processingContext.changePage(pageID);
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        final String result;
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
-                processingContext.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                        processingContext.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        processingContext.getSiteID()) > 0) {
-            result = drawUrlCheckWriteAccess("pageproperties", processingContext.getPage());
-        } else {
-            result = "";
-        }
-        if (oldPageID != pageID) processingContext.changePage(oldPageID);
-        return result;
-    }
-
-    public String drawUpdateTemplateUrl(final JahiaPageDefinition theTemplate)
-            throws JahiaException {
-        return drawUrlCheckWriteAccess("template", theTemplate);
     }
 
     public String drawUpdateCategoryUrl(final Category category)
@@ -435,198 +206,6 @@ public class GuiBean {
         return drawUrl("categoryEdit", parentCategoryKey);
     }
 
-    /**
-     * @param theContainerList
-     * @return
-     * @throws JahiaException
-     * @deprecated
-     */
-    public String drawContainerListPropertiesUrl(final JahiaContainerList theContainerList)
-            throws JahiaException {
-        final ContentContainerList contentContainerList = theContainerList.getContentContainerList();
-        return drawUrlCheckWriteAccess("containerlistproperties", contentContainerList);
-    }
-
-    /**
-     * @param contentContainerList
-     * @return
-     * @throws JahiaException
-     */
-    public String drawContainerListPropertiesUrl(final ContentContainerList contentContainerList)
-            throws JahiaException {
-        if (contentContainerList != null) {
-            return drawUrlCheckWriteAccess("containerlistproperties",
-                    contentContainerList);
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Generates an URL for a NEXT WINDOW on a containerlist.
-     *
-     * @param theContainerList   the containerList for which to generate the URL
-     * @param pageStep           the number of pages to skip through.
-     * @param newWindowSize      the size of the window (optional). -1 to keep
-     *                           current window size.
-     * @param scrollingValueOnly if true, return only the scrolling
-     *                           value , i.e. '5_10' , instead of the full url.
-     * @return the URL for the operation specified.
-     * @throws JahiaException on error accessing containerList definitions either
-     *                        in memory or in the database.
-     */
-    public String drawContainerListNextWindowPageURL(final JahiaContainerList theContainerList,
-                                                     final int pageStep,
-                                                     final int newWindowSize,
-                                                     final boolean scrollingValueOnly,
-                                                     final String listViewId)
-
-            throws JahiaException {
-        return drawContainerListWindowPageURL(theContainerList, pageStep,
-                newWindowSize,
-                scrollingValueOnly, listViewId);
-    }
-
-    /**
-     * Generates an URL for a PREVIOUS WINDOW on a containerlist.
-     *
-     * @param theContainerList   the containerList for which to generate the URL
-     * @param pageStep           the number of pages to skip through.
-     * @param newWindowSize      the size of the window (optional). -1 to keep
-     *                           current window size.
-     * @param scrollingValueOnly if true, return only the scrolling
-     *                           value , i.e. '5_10' , instead of the full url.
-     * @return the URL for the operation specified.
-     * @throws JahiaException on error accessing containerList definitions either
-     *                        in memory or in the database.
-     */
-    public String drawContainerListPreviousWindowPageURL(final JahiaContainerList theContainerList,
-                                                         final int pageStep,
-                                                         final int newWindowSize,
-                                                         final boolean scrollingValueOnly,
-                                                         final String listViewId)
-            throws JahiaException {
-        return drawContainerListWindowPageURL(theContainerList, -pageStep,
-                newWindowSize,
-                scrollingValueOnly, listViewId);
-    }
-
-    /**
-     * Generates an URL that allows navigation within a scrollable container
-     * list.
-     *
-     * @param theContainerList   the containerList for which to generate the URL
-     * @param pageStep           the number of pages to switch, this may be positive or
-     *                           negative, going both ways.
-     * @param newWindowSize      the size of the window, optional (set to -1 if deactivated).
-     * @param scrollingValueOnly if true, return only the scrolling value,
-     *                           i.e. '5_10' , instead of the full url.
-     * @return the URL generated for this operation. Size and offset are correct
-     *         to match containerList size.
-     * @throws JahiaException on error accessing containerList definitions either
-     *                        in memory or in the database.
-     */
-    public String drawContainerListWindowPageURL(final JahiaContainerList theContainerList,
-                                                 final int pageStep,
-                                                 final int newWindowSize,
-                                                 final boolean scrollingValueOnly,
-                                                 final String listViewId)
-            throws JahiaException {
-
-        if (theContainerList == null) {
-            return "";
-        }
-
-        JahiaContainerListPagination cListPagination = theContainerList.getCtnListPagination();
-        if (cListPagination == null || (newWindowSize != -1 && (cListPagination.getWindowSize() != newWindowSize))) {
-            cListPagination = new JahiaContainerListPagination(theContainerList, processingContext, newWindowSize);
-            theContainerList.setCtnListPagination(cListPagination);
-        }
-
-        // For next & previous button check
-        if (!cListPagination.isValid() || (cListPagination.getNbPages() < 2)) {
-            // feature is deactivated.
-            return "";
-        }
-
-        // For previous button check
-        if ((cListPagination.getCurrentPageIndex() == 1) && (pageStep < 0)) {
-            // feature is deactivated.
-            return "";
-        }
-
-        // For next button check
-        final int nextPage = cListPagination.getCurrentPageIndex() + 1;
-        if ((nextPage > cListPagination.getNbPages()) && (pageStep > 0)) {
-            // feature is deactivated.
-            return "";
-        }
-
-        final int windowSize = cListPagination.getWindowSize();
-        int windowOffset = cListPagination.getWindowOffset();
-        windowOffset += pageStep * windowSize;
-
-        // we now have all the correct values, let's build the URL...
-
-        final StringBuffer paramName = new StringBuffer();
-        paramName.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER)
-                .append(listViewId != null ? listViewId + "_" : "")
-                .append(theContainerList.getDefinition().getName());
-        final StringBuffer paramValue = new StringBuffer();
-        paramValue.append(Integer.toString(windowSize)).append("_").
-                append(Integer.toString(windowOffset));
-
-        if (scrollingValueOnly) {
-            return paramValue.toString();
-        }
-        final StringBuffer curPageURL = new StringBuffer();
-        curPageURL.append(processingContext.composePageUrl(processingContext.getPageID()));
-        curPageURL.append("?").append(paramName).append("=").append(paramValue);
-        // curPageURL.append("/").append(paramName).append("/").append(paramValue);
-        return curPageURL.toString();
-    }
-
-    /**
-     * Generates an URL that allows navigation within a scrollable container
-     * list.
-     *
-     * @param containerList      the container list with a valid JahiaContainerListPagination bean.
-     * @param pageStep           must be bigger than 0.
-     * @param scrollingValueOnly if true, return only the scrolling value , i.e. '5_10' , instead of the full url.
-     * @return the URL generated for this operation.
-     * @throws JahiaException on error accessing containerList definitions either
-     *                        in memory or in the database.
-     */
-    public String drawContainerListWindowPageURL(final JahiaContainerList containerList,
-                                                 final int pageStep,
-                                                 final boolean scrollingValueOnly,
-                                                 final String listViewId)
-
-            throws JahiaException {
-
-        if (containerList == null || containerList.getCtnListPagination() == null ||
-                !containerList.getCtnListPagination().isValid() || (pageStep <= 0)) {
-            return null;
-        }
-
-        final StringBuffer paramName = new StringBuffer();
-        paramName.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER)
-                .append(listViewId != null ? listViewId + "_" : "")
-                .append(containerList.getDefinition().getName());
-        final StringBuffer paramValue = new StringBuffer();
-        paramValue.append(Integer.toString(containerList.getCtnListPagination().getWindowSize())).
-                append("_").append(Integer.toString((pageStep - 1) * containerList.getCtnListPagination().
-                getWindowSize()));
-
-        if (scrollingValueOnly) {
-            return paramValue.toString();
-        }
-        final StringBuffer curPageURL = new StringBuffer();
-        curPageURL.append(processingContext.composePageUrl(processingContext.getPageID()));
-        curPageURL.append("?").append(paramName).append("=").append(paramValue);
-        // curPageURL.append("/").append(paramName).append("/").append(paramValue);
-        return curPageURL.toString();
-    }
 
     public String drawSearchUrl() throws JahiaException {
         return drawUrl("search", null);
@@ -682,57 +261,6 @@ public class GuiBean {
         return htmlResult;
     }
     // end drawUrl
-
-    private String drawUrlCheckWriteAccess(final String engineName, final Object anObject)
-            throws JahiaException {
-        return drawUrlCheckWriteAccess(engineName, anObject, false, false);
-    }
-
-    private String drawUrlCheckWriteAccess(final String engineName, final Object anObject, boolean checkChilds, boolean forceChilds)
-            throws JahiaException {
-        final JahiaEngine theEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine(engineName);
-        if (theEngine.authoriseRender(processingContext)) {
-            if (anObject instanceof ContentObject) {
-                final ContentObject contentObject = (ContentObject) anObject;
-                final ContentObject parent = contentObject.getParent(null);
-                if (contentObject.checkWriteAccess(getUser(), checkChilds, forceChilds)) {
-                    return theEngine.renderLink(processingContext, anObject);
-                }
-            } else if (anObject instanceof ACLResourceInterface) {
-                if (anObject instanceof JahiaField) {
-                }
-                if (ACLResource.checkWriteAccess(null, (ACLResourceInterface) anObject, getUser())) {
-                    if (anObject instanceof JahiaPage) {
-                    }
-                    return theEngine.renderLink(processingContext, anObject);
-                }
-            } else if (anObject instanceof JahiaContainerList) {
-                // this is mostly used to generate the add container URL when
-                // a container list doesn't yet exist (created at the same time
-                // as the first container).
-                final JahiaContainerList containerList = (JahiaContainerList) anObject;
-                if (containerList.getID() == 0) {
-                } else {
-                }
-
-                    // Add Container
-                    if (containerList.getID() == 0 &&
-                            processingContext.getPage().checkWriteAccess(getUser(), true) ||
-                            containerList.getID() != 0 &&
-                                    containerList.checkWriteAccess(getUser())) {
-                        return theEngine.renderLink(processingContext, anObject);
-                    }
-            } else if (anObject instanceof ApplicationBean) {
-                ApplicationBean bean = (ApplicationBean) anObject;
-                if(JCRContentUtils.hasPermission(getUser(), Constants.JCR_WRITE_RIGHTS,bean.getID())) {
-                    return theEngine.renderLink(processingContext, anObject);
-                }
-            }
-
-        }
-        return "";
-    }
-
     /**
      * returns the current user name.
      * JB   25.04.2001
@@ -1181,11 +709,6 @@ public class GuiBean {
 
     } // end getHomePage
 
-    public String drawUpdateAppplicationUrl(ApplicationBean applicationBean) throws JahiaException {
-        return drawUrlCheckWriteAccess("application", applicationBean);
-    }
-
-  
 
     private JahiaUser getUser() {
         return processingContext != null ? processingContext.getUser() : null;

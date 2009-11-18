@@ -40,8 +40,6 @@ import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaSite;
-import org.jahia.workflow.nstep.dao.WorkflowInstanceDAO;
-import org.jahia.workflow.nstep.dao.WorkflowHistoryDAO;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -261,9 +259,6 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         JahiaLanguagesStatesDAO jahiaLanguagesStatesDAO = (JahiaLanguagesStatesDAO) context.getBean("jahiaLanguagesStatesDAO");
         JahiaFieldXRefDAO jahiaFieldXRefDAO = (JahiaFieldXRefDAO) context.getBean("jahiaFieldXRefDAO");
 
-        WorkflowInstanceDAO workflowInstanceDAO = (WorkflowInstanceDAO) context.getBean("nstepWorkflowInstanceDAO");
-        WorkflowHistoryDAO workflowHistoryDAO = (WorkflowHistoryDAO) context.getBean("nstepWorkflowHistoryDAO");
-
         // flush all audit log entries for site
         ((JahiaAuditLogDAO) context.getBean("jahiaAuditLogDAO"))
                 .flushSiteLogs(findById(siteID).getKey());        
@@ -295,8 +290,6 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
                 try {
                     instance.removeAllObjectXRefs(objectKey);
                     jahiaWorkflowDAO.delete(objectKey.toString());
-                    workflowHistoryDAO.removeWorkflowHistory(objectKey.toString());
-                    workflowInstanceDAO.removeWorkflowInstance(objectKey.toString());
 
                     for (String s : groupDAO.searchGroupNameInJahiaGrp("workflowrole_" + objectKey.toString()+"_%", null)) {
                         groupDAO.delete(s);

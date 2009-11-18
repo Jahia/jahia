@@ -39,7 +39,6 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.jahia.content.ContentContainerListKey;
 import org.jahia.hibernate.model.JahiaContainerList;
 import org.jahia.hibernate.model.JahiaContainerListProperty;
 import org.jahia.hibernate.model.JahiaContainerListPropertyPK;
@@ -807,7 +806,6 @@ public class JahiaContainerListDAO extends AbstractGeneratorDAO {
                 }
             }
             deleteProperties(data.getComp_id().getId());
-            map.put(new ContentContainerListKey(data.getComp_id().getId()), data.getJahiaAclId());
         }
         template.deleteAll(list);
         return map;

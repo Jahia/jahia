@@ -111,7 +111,6 @@
                 <entry key="jnt:portlet" value="org.jahia.services.content.decorator.JCRPortletNode"/>
                 <entry key="nt:query" value="org.jahia.services.content.decorator.JCRQueryNode"/>
                 <entry key="jnt:mountPoint" value="org.jahia.services.content.decorator.JCRMountPointNode"/>
-                <entry key="jnt:jahiacontent" value="org.jahia.services.content.decorator.JCRJahiaContentNode"/>
                 <entry key="jnt:layout" value="org.jahia.services.content.decorator.JCRLayoutNode"/>
                 <entry key="nt:version" value="org.jahia.services.content.decorator.JCRVersion"/>
                 <entry key="nt:versionHistory" value="org.jahia.services.content.decorator.JCRVersionHistory"/>

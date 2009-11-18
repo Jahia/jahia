@@ -295,7 +295,7 @@ public class ContentCategoryField extends ContentField {
             // here we are not in the case of a metadata field, so we have
             // as a parent object either a container or a page.
             if (theField.getContainerID() > 0) {
-                objectKey = new ContentContainerKey(theField.getContainerID());
+
             } else {
                 objectKey = new ContentPageKey(theField.getPageID());
             }

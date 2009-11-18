@@ -60,7 +60,6 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
     private Cache<Integer, JahiaFieldDefinition> fieldDefTable;
     private Cache<String, JahiaFieldDefinition> fieldDefSiteAndNameTable;
     private CacheService cacheService;
-    private JahiaFieldService fieldService;
 
     private boolean initialized = false;
 
@@ -98,38 +97,18 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
         this.cacheService = cacheService;
     }
 
-    public void setFieldService(JahiaFieldService fieldService) {
-        this.fieldService = fieldService;
-    }
-
     private void loadAllDefinitions ()
         throws JahiaException {
-        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
-        for (Integer currentID : ids) {
-            JahiaFieldDefinition curDefinition = fieldService.loadFieldDefinition(currentID.
-                intValue());
-            if (curDefinition != null) {            
-                addToCache(curDefinition);
-            }    
-        }
     }
 
     private JahiaFieldDefinition loadDefinitionByID (int defID)
         throws JahiaException {
-        JahiaFieldDefinition curDefinition = fieldService.loadFieldDefinition(defID);
-        if (curDefinition != null) {
-            addToCache(curDefinition);
-        }
-        return curDefinition;
+        return null;
     }
 
     private JahiaFieldDefinition loadDefinitionBySiteIDAndName (int siteID, String definitionName)
         throws JahiaException {
-        JahiaFieldDefinition curDefinition = fieldService.loadFieldDefinition(siteID, definitionName);
-        if (curDefinition != null) {
-            addToCache(curDefinition);
-        }
-        return curDefinition;
+        return null;
     }
 
     private synchronized void addToCache(JahiaFieldDefinition curDefinition) {
@@ -158,13 +137,7 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
 
     public List<JahiaFieldDefinition> getAllDefinitions () throws JahiaException {
         /** @todo FIXME this will not work if the cache is limited */
-        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
         List<JahiaFieldDefinition> definitions = new ArrayList<JahiaFieldDefinition>();
-        JahiaFieldDefinition fieldDef = null;
-        for ( int i=0 ; i<ids.size() ; i++ ){
-            fieldDef = this.fieldDefTable.get(ids.get(i));
-            definitions.add(fieldDef);
-        }
         return definitions;
     }
 
@@ -195,20 +168,6 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
 
     public void setDefinition (JahiaFieldDefinition theFieldDef)
         throws JahiaException {
-
-        JahiaFieldDefinition aFieldDef = getDefinition(theFieldDef.getJahiaID(),
-            theFieldDef.getName());
-        if (aFieldDef != null) {
-            // field definition already exists, just have to update
-            // We ensure to perform an update
-            theFieldDef.setID(aFieldDef.getID());
-        } else {
-            // field definition doesn't exist, need to add to registry
-            //We ensure to create a new one
-            theFieldDef.setID(0);
-        }
-        fieldService.saveFieldDefinition(theFieldDef);
-        addToCache(theFieldDef);        
     } // end setDefinition
 
     public void removeFieldDefinition (int fieldDefID)

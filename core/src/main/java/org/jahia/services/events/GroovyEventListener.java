@@ -32,9 +32,9 @@
 package org.jahia.services.events;
 
 import groovy.lang.Binding;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
@@ -43,14 +43,10 @@ import org.jahia.data.events.JahiaErrorEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageDefinition;
-import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
-import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.settings.SettingsBean;
-import org.jahia.bin.Jahia;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.net.MalformedURLException;
@@ -316,10 +312,6 @@ public class GroovyEventListener extends JahiaEventListener implements Initializ
         dispatchToGroovyScript("userLoggedOut", je);
     }
 
-    public void objectChanged(WorkflowEvent we) {
-        dispatchToGroovyScript("objectChanged", we);
-    }
-
     public void aggregatedObjectChanged(JahiaEvent je) {
         dispatchToGroovyScript("aggregatedObjectChanged", je);
     }
@@ -397,10 +389,6 @@ public class GroovyEventListener extends JahiaEventListener implements Initializ
 
     public void fileManagerAclChanged(JahiaEvent theEvent) {
         dispatchToGroovyScript("fileManagerAclChanged", theEvent);
-    }
-
-    public void timeBasedPublishingEvent(RetentionRuleEvent theEvent) {
-        dispatchToGroovyScript("timeBasedPublishingEvent", theEvent);
     }
 
     public void aggregatedEventsFlush(JahiaEvent theEvent) {

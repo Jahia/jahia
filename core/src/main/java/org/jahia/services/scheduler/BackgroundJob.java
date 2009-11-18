@@ -48,7 +48,6 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
@@ -149,10 +148,6 @@ public abstract class BackgroundJob implements StatefulJob {
             ServicesRegistry.getInstance().getSchedulerService().startRequest();
 
             context = getProcessingContextFromBackgroundJobDataMap(data);
-            if (this instanceof AbstractActivationJob) {
-                context.setAttribute(BackgroundJob.class.getName() + "_name", jobDetail.getName());
-                context.setAttribute(BackgroundJob.class.getName() + "_group", jobDetail.getGroup());
-            }
             executeJahiaJob(jobExecutionContext, context);
             status = data.getString(BackgroundJob.JOB_STATUS);
             if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
@@ -166,10 +161,6 @@ public abstract class BackgroundJob implements StatefulJob {
             throw new JobExecutionException(e);
         } finally {
             ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
-            if (this instanceof AbstractActivationJob) {
-                context.removeAttribute(BackgroundJob.class.getName() + "_name");
-                context.removeAttribute(BackgroundJob.class.getName() + "_group");
-            }
 
             try {
                 releaseAllLocks(context, jobDetail);

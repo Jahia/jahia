@@ -55,11 +55,11 @@ public class SkeletonCache<K, V> extends Cache<GroupCacheKey, SkeletonCacheEntry
     // the Container HTML cache name.
     public static final String SKELETON_CACHE = "SkeletonCache";
 
-    private static final Category logger = getLogger(ContainerHTMLCache.class);
+    private static final Category logger = getLogger(SkeletonCache.class);
 
     private static final int INITIAL_CAPACITY = 1024;
 
-    private final CacheKeyGeneratorService cacheKeyGeneratorService;
+//    private final CacheKeyGeneratorService cacheKeyGeneratorService;
 
     private ConcurrentMap<GroupCacheKey, String> concurrentHashMap =
             new ConcurrentHashMap<GroupCacheKey, String>(INITIAL_CAPACITY);
@@ -71,7 +71,7 @@ public class SkeletonCache<K, V> extends Cache<GroupCacheKey, SkeletonCacheEntry
      */
     protected SkeletonCache(CacheImplementation<GroupCacheKey, CacheEntry<SkeletonCacheEntry>> cacheImplementation) {
         super(SKELETON_CACHE, cacheImplementation);
-        cacheKeyGeneratorService = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
+//        cacheKeyGeneratorService = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -84,9 +84,9 @@ public class SkeletonCache<K, V> extends Cache<GroupCacheKey, SkeletonCacheEntry
 
     public void flushSkeletonsForSite(int siteID) {
         if (SettingsBean.getInstance().isDevelopmentMode()) {
-            flushGroup(CacheKeyGeneratorService.SITE_PREFIX+siteID);
+//            flushGroup(CacheKeyGeneratorService.SITE_PREFIX+siteID);
         }else {
-            flushGroup(Integer.toString((CacheKeyGeneratorService.SITE_PREFIX+siteID).hashCode()));
+//            flushGroup(Integer.toString((CacheKeyGeneratorService.SITE_PREFIX+siteID).hashCode()));
         }
     }
 
@@ -104,19 +104,19 @@ public class SkeletonCache<K, V> extends Cache<GroupCacheKey, SkeletonCacheEntry
                      locale +
                      "]");
 
-        String s = cacheKeyGeneratorService.getPageKey(pageKey, mode, locale);
-        Set<GroupCacheKey> keys = getCacheImplementation().getGroupKeys(s);
-        if (keys != null) {
-            if(keys.contains("ALL")){
-                flush();
-                logger.warn("We are flushing all skeletons");
-            }
-            else {
-                for (Iterator<GroupCacheKey> it = keys.iterator(); it.hasNext();) {
-                    concurrentHashMap.putIfAbsent(it.next(), "");
-                }
-            }
-        }
+//        String s = cacheKeyGeneratorService.getPageKey(pageKey, mode, locale);
+//        Set<GroupCacheKey> keys = getCacheImplementation().getGroupKeys(s);
+//        if (keys != null) {
+//            if(keys.contains("ALL")){
+//                flush();
+//                logger.warn("We are flushing all skeletons");
+//            }
+//            else {
+//                for (Iterator<GroupCacheKey> it = keys.iterator(); it.hasNext();) {
+//                    concurrentHashMap.putIfAbsent(it.next(), "");
+//                }
+//            }
+//        }
     }
 
     public void invalidateSkeletonEntriesInAllModes(String key, String locale){

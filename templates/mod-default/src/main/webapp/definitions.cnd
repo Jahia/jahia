@@ -9,6 +9,14 @@
 
 [jmix:filteredList] > jmix:listMixin mixin
  - filter (string, choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
+ 
+[jmix:orderedList] > jmix:layout, jmix:listMixin mixin
+ - firstField (string, choicelist[sortableFieldnames])
+ - firstDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc' 
+ - secondField (string, choicelist[sortableFieldnames])
+ - secondDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
+ - thirdField (string, choicelist[sortableFieldnames])
+ - thirdDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'  
 
 [jnt:fileList] > jnt:content, jmix:structuredContent
  - folder (weakreference, file[folder])

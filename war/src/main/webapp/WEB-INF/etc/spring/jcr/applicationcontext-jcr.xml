@@ -152,6 +152,7 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
     <bean id="scriptInitializer" class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
+    <bean id="sortableFieldnamesInitializer" class="org.jahia.services.content.nodetypes.initializers.SortableFieldnamesChoiceListInitializerImpl"/>
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
             <map>
@@ -162,7 +163,8 @@
                 <entry key="skins" value-ref="skinsInitializer"/>
                 <entry key="nodes" value-ref="nodesInitializer"/>
                 <entry key="script" value-ref="scriptInitializer"/>
-                <entry key="flag" value-ref="countryFlagInitializer"/>
+                <entry key="flag" value-ref="countryFlagInitializer"/>                
+                <entry key="sortableFieldnames" value-ref="sortableFieldnamesInitializer"/>
             </map>
         </property>
     </bean>
@@ -173,5 +175,5 @@
                 <entry key="flagcountry" value-ref="countryFlagInitializer"/>
             </map>
         </property>
-    </bean>
+    </bean>    
 </beans>

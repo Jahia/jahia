@@ -24,13 +24,7 @@ import org.apache.jackrabbit.core.state.ChangeLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Dispatcher for dispatching events to listeners within a single workspace.
@@ -52,12 +46,12 @@ public final class ObservationDispatcher extends EventDispatcher
     /**
      * Currently active <code>EventConsumer</code>s for notification.
      */
-    private Set<EventConsumer> activeConsumers = new HashSet<EventConsumer>();
+    private Set<EventConsumer> activeConsumers = new LinkedHashSet<EventConsumer>();
 
     /**
      * Currently active synchronous <code>EventConsumer</code>s for notification.
      */
-    private Set<EventConsumer> synchronousConsumers = new HashSet<EventConsumer>();
+    private Set<EventConsumer> synchronousConsumers = new LinkedHashSet<EventConsumer>();
 
     /**
      * Set of <code>EventConsumer</code>s for read only Set access
@@ -118,7 +112,7 @@ public final class ObservationDispatcher extends EventDispatcher
     Set<EventConsumer> getAsynchronousConsumers() {
         synchronized (consumerChange) {
             if (readOnlyConsumers == null) {
-                readOnlyConsumers = Collections.unmodifiableSet(new HashSet<EventConsumer>(activeConsumers));
+                readOnlyConsumers = Collections.unmodifiableSet(new LinkedHashSet<EventConsumer>(activeConsumers));
             }
             return readOnlyConsumers;
         }
@@ -127,9 +121,7 @@ public final class ObservationDispatcher extends EventDispatcher
     Set<EventConsumer> getSynchronousConsumers() {
         synchronized (consumerChange) {
             if (synchronousReadOnlyConsumers == null) {
-                SortedSet<EventConsumer> sortedSet = new TreeSet<EventConsumer>(listenerComparator);
-                sortedSet.addAll(synchronousConsumers);
-                synchronousReadOnlyConsumers = Collections.unmodifiableSortedSet(sortedSet);
+                synchronousReadOnlyConsumers = Collections.unmodifiableSet(new LinkedHashSet<EventConsumer>(synchronousConsumers));
             }
             return synchronousReadOnlyConsumers;
         }

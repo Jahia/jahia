@@ -46,8 +46,6 @@
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRule.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRuleParam.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaResource.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaRetentionRule.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaRetentionRuleDef.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaSite.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaSiteLangList.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaSiteLangMap.hbm.xml</value>
@@ -63,11 +61,6 @@
                 <value>org/jahia/hibernate/model/JahiaVersion.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaInstalledPatch.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaFieldXRef.hbm.xml</value>
-                <value>org/jahia/workflow/nstep/model/User.hbm.xml</value>
-                <value>org/jahia/workflow/nstep/model/Workflow.hbm.xml</value>
-                <value>org/jahia/workflow/nstep/model/WorkflowStep.hbm.xml</value>
-                <value>org/jahia/workflow/nstep/model/WorkflowInstance.hbm.xml</value>
-                <value>org/jahia/workflow/nstep/model/WorkflowHistoryEntry.hbm.xml</value>
                 <value>org/jahia/hibernate/model/jahiaserver/JahiaServerProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPagesUsersProp.hbm.xml</value>
             </list>
@@ -93,7 +86,7 @@
                 <prop key="hibernate.cache.use_structured_entries">false</prop>
                 <!-- uncomment this to use JTA transactions.
                 <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop>
-                <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>                
+                <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>
                 -->
 <!-- Uncomment to use other provider than net.sf.ehcache.hibernate.EhCacheProvider -->
                 <!--<prop key="activated">${cluster.activated}</prop>

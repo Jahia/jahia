@@ -5,4 +5,4 @@
 - column (string,choicelist[resourceBundle,image]) = 'col2' < 'col1','col2','col3' 
 
 [jmix:theme] > jmix:contentMixin, jmix:option mixin
- - j:theme (weakreference, file[folder])
+ - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])

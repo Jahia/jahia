@@ -75,7 +75,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
             try {
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null,
                                                                                                  context.getLocale());
-                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0]);
+                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite",context.getSiteKey()));
                 final NodeIterator nodeIterator = node.getNodes();
                 while (nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();

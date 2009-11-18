@@ -99,7 +99,7 @@ public class AddResourcesTag extends BodyTagSupport {
                         }
                     }
                     if (!found) {
-                        renderContext.addExternalLink(type, aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+                        renderContext.addExternalLink(type,renderContext.getRequest().getContextPath() + aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
                     }
                 }
             }

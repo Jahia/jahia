@@ -451,7 +451,18 @@ public class ContentDefinitionHelper {
                         foundTypes.add(nodeType.getName());
                     }
                 }
+            } else if (type.getName().equals("jnt:page")) {
+                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:pageMixin");
+                NodeTypeIterator it = baseMixin.getSubtypes();
+                while (it.hasNext()) {
+                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+                    if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
+                        res.add(getGWTJahiaNodeType(ctx, nodeType));
+                        foundTypes.add(nodeType.getName());
+                    }
+                }
             }
+
 
             ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:contentMixin");
             NodeTypeIterator it = baseMixin.getSubtypes();

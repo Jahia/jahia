@@ -1,8 +1,8 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:gridPage] > jmix:contentMixin, jmix:layout mixin
+[jmix:gridPage] > jmix:layout mixin, jmix:pageMixin
 - column (string,choicelist[resourceBundle,image]) = 'col2' < 'col1','col2','col3' 
 
-[jmix:theme] > jmix:contentMixin, jmix:option mixin
+[jmix:theme] > jmix:option mixin, jmix:pageMixin
  - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])

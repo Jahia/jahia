@@ -1,5 +1,3 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:theme] > jmix:contentMixin, jmix:option mixin
- - j:theme (string, choicelist[resourceBundle]) = 'default' < 'default','blue'
  

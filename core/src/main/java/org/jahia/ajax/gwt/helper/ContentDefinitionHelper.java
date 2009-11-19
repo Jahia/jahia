@@ -461,6 +461,11 @@ public class ContentDefinitionHelper {
                         foundTypes.add(nodeType.getName());
                     }
                 }
+            } else if (type.getName().equals("jnt:nodeReference")) {
+                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:renderableReference");
+                res.add(getGWTJahiaNodeType(ctx, baseMixin,type.getName()));
+                foundTypes.add("jmix:renderable");
+                foundTypes.add("jmix:renderableReference");
             }
 
 

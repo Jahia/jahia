@@ -2,17 +2,46 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
 <template:addResources type="css" resources="navigation.css" nodetype="jnt:navBar"/>
+<template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js" nodetype="jnt:navBar"/>
+
 <!--start navigation-->
 <div id="navigation">
-<%--
-    // Not use yet
+
    <div id="shortcuts">
         <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
+                <ul>
+                    <c:if test="${requestScope.currentRequest.logged}">
+                        <li class="more-shortcuts">
+                            <a class="loginFormTopLogoutShortcuts"
+                               href="<template:composePageURL page="logout"/>"><span>logout</span></a>
+                        </li>
+                        <li>
+                            <span class="currentUser"><utility:userProperty/></span>
+                        </li>
+                        <li class="more-shortcuts">
+                            <a href="${url.userProfile}">my settings</a>
+                        </li>
+                        <li class="more-shortcuts">
+                            <a href="${url.page.edit}"><fmt:message key="edit"/></a>
+                        </li>
+                    </c:if>
+                    <li class="more-shortcuts"><a href="base.wrapper.bodywrapper.jsp#"
+                                                      onclick="javascript:window.print()">
+                        print</a>
+                    </li>
+                    <li class="more-shortcuts">
+                        <a href="${url.base}${rootPage.path}.html">home</a>
+                    </li>
+                    <li class="more-shortcuts">
+                        <a href="${url.base}${rootPage.path}.sitemap.html">sitemap</a>
+                    </li>
+                </ul>
+       <div class="clear"></div>
     </div>
---%>
     <div id="navbar">
         <jcr:JCRSimpleNavigation node="${rootPage}" var="menu"/>
         <c:if test="${not empty menu}">

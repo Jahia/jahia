@@ -59,7 +59,7 @@ public class URLGenerator {
         edit = context.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+resource.getLocale();
         preview = context.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+resource.getLocale();
 
-        final String resourcePath = resource.getNode().getPath();
+        final String resourcePath = context.getMainResource().getNode().getPath();
 
         live += resourcePath + ".html";
         edit += resourcePath + ".html";

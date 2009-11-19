@@ -90,9 +90,9 @@ body {
 	border-bottom:1px solid #e7e2de;
 	padding-top:10px;
 	position:relative;
-	z-index:90;
+	z-index:900;
 	width:100%
-	
+
 }
 /******************************************************************************
 *  bottomheader
@@ -101,7 +101,7 @@ body {
 	background:#dad0c7 url(../img/bottomheader-bg.png) repeat-x bottom left;
 	padding-top:10px;
 	position:relative;
-	z-index:80;
+	z-index:800;
 	width:100%
 }
 #bodywrapper #bottomheader a,
@@ -115,6 +115,127 @@ body {
 	color:#666666;
 	text-decoration:underline;
 }
+#bodywrapper #navigation {
+	position:relative;
+	width: 940px;
+}
+#bodywrapper #navigation #navbar {
+	background-image: url('../img/navbar-bg.png');
+	background-repeat: no-repeat;
+	width: 820px;
+	float: left;
+}
+#bodywrapper #navigation #navbar ul.main-nav {
+	margin-top: 2px;
+	margin-left: 30px;
+	list-style: none
+}
+#bodywrapper #navigation #navbar ul.main-nav li {
+	float: left;
+	line-height: 36px;
+	padding-right: 10px;
+	padding-left: 10px;
+	margin-right: 15px;
+	position:relative;
+	z-index:898;
+}
+#bodywrapper #bodywrapper #navigation #navbar ul.main-nav li ul li {
+	display: block;
+	float: none;
+}
+#bodywrapper #navigation #navbar ul.main-nav li a {
+	color: #333;
+	font-size: 14px;
+	line-height: 36px;
+	white-space:pre
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu:hover,
+#bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover {
+	background-image: url(../img/nav-bg.png);
+	background-color: #ea822c;
+	background-repeat: repeat-x;
+	background-position:top left;
+	border-color: #df6b04;
+	line-height: 36px;
+	position: relative;
+	z-index:899;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu:hover a,
+#bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover a {
+	color: #ffffff;
+	text-decoration: none;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu:hover div,
+#bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover div {
+	display: block;
+	margin-top: -1px;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu:hover div ul li a,
+#bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover div ul li a {
+	color: #3b3b3a;
+	white-space: normal
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu {
+	background-image: url(../img/arrow-down.png);
+	background-repeat: no-repeat; background-position: right 17px;
+	position: relative;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu a {
+	color: #333;
+}
+
+#bodywrapper #navigation #navbar ul.main-nav li.submenu div {
+	display: none;
+	left: -1px;
+	top: 36px;
+	border: 1px solid #CECECE;
+	position: absolute;
+	z-index:999;
+}
+
+#bodywrapper #navigation #navbar ul.main-nav li.submenu div ul {
+	list-style: none;
+	padding: 10px 4px;
+	width: 190px;
+	background-color: #f4f4f4;
+	overflow: hidden;
+	border: 1px solid #ffffff;
+	margin:0px;
+
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li {
+	padding: 5px;
+	padding-left: 10px;
+	font-size: 13px;
+	line-height: 20px;
+	width:162px;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li a {
+	color: #333;
+	line-height: 20px;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li a:hover {
+	color: #df6b04;
+	text-decoration: none;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.home{
+	line-height:17px;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.home a {
+	display: block;
+	height: 17px;
+	line-height:17px;
+	width: 25px;
+	text-indent: -9999px;
+	padding-right: 0px;
+	margin-right: 0px;
+	margin-top: 13px;
+	background-image: url(../img/icon-home.png);
+	background-repeat: no-repeat;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.home a:hover {
+	background-image: url(../img/icon-home-over.png);
+}
 
 #bodywrapper #breadcrumbs{
 	padding-bottom:10px;
@@ -123,7 +244,57 @@ body {
 	height:100%;
 	text-transform:uppercase;
 }
+/******************************************************************************
+shortcuts
+******************************************************************************/
+#navigation #shortcuts{
+	bottom:0;
+	position:absolute;
+	right:0;
+}
+#navigation #shortcuts h3 {
+	background-image:url(../img/shortcuts-bg.png);
+	padding:8px 10px 10px 10px;
+	position:absolute;
+	width:82px;
+	height:20px;
+	position:absolute;
+	bottom:0;
+	right:0;
+	display:block;
+	font-size:120%;
+}
+#navigation #shortcuts h3 a:hover {
+	text-decoration:none
+}
 
+#navigation #shortcuts ul {
+	background-color:#F4F4F4;
+	border:1px solid #A7A7A7;
+	display:none;
+	right:0;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	padding:10px 4px;
+	position:absolute;
+	top:-10px;
+	margin:0;
+	width:138px;
+	z-index:100;
+}
+#navigation #shortcuts li {
+	font-size:13px;
+	line-height:20px;
+	padding:5px 5px 5px 10px;
+}
+#navigation #shortcuts li a {
+	color: #333;
+}
+#navigation #shortcuts li a:hover {
+	color: #df6b04;
+	text-decoration:none
+}
 
 #bodywrapper #search-bar {
 	float:right;
@@ -158,9 +329,9 @@ body {
 ******************************************************************************/
 #bodywrapper #content{
 	background-color:#eaeaea;
-	padding-top:10px;
+	padding-top:20px;
 	position:relative;
-	z-index:70;
+	z-index:700;
 	width:100%
 }
 /******************************************************************************
@@ -170,7 +341,7 @@ body {
 	border-top:1px solid #b9a99b;
 	background-color:#dad0c7;
 	position:relative;
-	z-index:60;
+	z-index:600;
 	width:100%;
 	padding-top:10px;
 }
@@ -181,7 +352,7 @@ body {
 	border-top:1px solid #666666;
 	background-color:#7b7b7b;
 	position:relative;
-	z-index:50;
+	z-index:500;
 	width:100%;
 	padding-top:10px;
 }
@@ -239,7 +410,6 @@ body {
 }
 #bodywrapper p.intro {
 	font-size:1.3em;
-	font-style:italic;
 	line-height:1.4em;
 }
 
@@ -247,6 +417,7 @@ body {
 	color:#666666;
 	font-weight:normal;
 	font-size:2.8em;
+	line-height:normal;
 	padding:0 0 0.5em 0;
 }
 
@@ -254,10 +425,9 @@ body {
 	font-weight:normal;
 	font-size:24px;
 	padding-bottom:20px;
-	margin-top:15px;
 	margin-bottom:10px;
-	background:transparent url(../img/h2-bg.png) repeat-x bottom left;
-	
+	background:transparent url(../img/hr-bg.png) repeat-x bottom left;
+
 }
 
 #bodywrapper h3 {
@@ -286,9 +456,9 @@ body {
 
 #bodywrapper hr {
 	height:2px;
-	background:transparent url(../img/h2-bg.png) repeat-x bottom left;
+	background:transparent url(../img/hr-bg.png) repeat-x bottom left;
 	border: none;
-	margin : 18px 0; 
+	margin : 18px 0;
 }
 #bodywrapper blockquote {
 
@@ -303,26 +473,81 @@ body {
 	padding:20px;
 
 }
-#bodywrapper input {
-	font-family:Tahoma;
+#bodywrapper textarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:100%
+}
+#bodywrapper p.field{
+margin-bottom:0.2em
 }
 
 /******************************************************************************
 *  box
 ******************************************************************************/
-#bodywrapper div.box-outer {
+#bodywrapper div.box {
+	position:relative;
+		clear:both;
+}
 
+#bodywrapper div.box h3.boxtitleh3 {
+	margin:0;
+	padding:0;
+	display:inline
+}
+#bodywrapper .arrow-white-shadow-right {
+	height: 31px; width: 17px;
+	font-size:2px;
+	position:absolute;
+	top:16px;
+	right:-14px;
+	background: url(../img/arrow-white-shadow-right.png) no-repeat top left;
+}
+#bodywrapper .arrow-white-shadow-left {
+	height: 31px; width: 17px;
+	font-size:2px;
+	position:absolute;
+	top:16px;
+	left:-17px;
+	background: url(../img/arrow-white-shadow-left.png) no-repeat top left;
+}
+
+#bodywrapper .arrow-grey-shadow-right {
+	height: 31px; width: 17px;
+	font-size:2px;
+	position:absolute;
+	top:16px;
+	right:-14px;
+	background: url(../img/arrow-grey-shadow-right.png) no-repeat top left;
+}
+#bodywrapper .arrow-grey-inner-left {
+	height: 24px; width: 14px;
+	font-size:2px;
+	position:absolute;
+	top:16px;
+	left:0px;
+	background: url(../img/arrow-grey-inner-left.png) no-repeat top left;
+}
+#bodywrapper .arrow-white-inner-left {
+	height: 24px; width: 14px;
+	font-size:2px;
+	position:absolute;
+	top:16px;
+	left:0;
+	background: url(../img/arrow-white-inner-left.png) no-repeat top left;
 }
 #bodywrapper div.box-inner {
-	background-color:#F4F4F4;
+	background-color:#fff;
 	border:1px solid #cecece;
+	height:1%;
 
 }
 #bodywrapper div.box-inner p {
-	padding:0 0 0.5em 0;
+	padding:0;
 }
 #bodywrapper .box-inner .box-inner-border {
 	border:1px solid #fff;
+	height:1%;
+	background-color:#fff;
 }
 /*boxshadow*/
 #bodywrapper div.boxshadow {
@@ -330,7 +555,7 @@ body {
 }
 
 #bodywrapper div.boxshadow div.box-inner {
-	background-color:#F4F4F4;
+	background-color:#fff;
 	border:1px solid #cecece;
 	margin:-2px 0 0 -2px;
 }
@@ -338,8 +563,11 @@ body {
 #bodywrapper .boxgrey .box-inner .box-inner-border {
 	background-color:#e1e1e1
 }
+#bodywrapper .boxyellow .box-inner .box-inner-border {
+	background-color:#FCF0BA
+}
 #bodywrapper .boxwhite .box-inner {
-	background-color:#f00
+	background-color:#fff
 }
 #bodywrapper .boxwhite .box-inner .box-inner-border {
 	background-color:#fff
@@ -384,6 +612,7 @@ body {
 	padding:10px;
 	text-align:center;
 	font-weight:normal;
+	clear:both;
 }
 #bodywrapper h4.titleorange {
 	background:#df6c04 url(../img/h4titleorange.png) repeat-x top right;
@@ -411,25 +640,32 @@ body {
 	display:block;
 	padding:40px;
 }
-#bodywrapper .image {
-	background-color:#F4F4F4;
+#bodywrapper .imagefloatright {
+	background-color:#fff;
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
+}
+#bodywrapper .imagefloatleft {
+	background-color:#fff;
+	float:left;
+	margin-bottom:20px;
+	padding-right:20px;
 }
 
 #bodywrapper .itemImage {
 	background-color:#F4F4F4;
 	border:1px solid #CCC;
-	float:right;
+	position:relative;
 	margin-bottom:20px;
-	margin-left:20px;
 	padding:1px;
+}
+#bodywrapper div.itemImageRight {
+	float:right;
 }
 
 #bodywrapper .itemImage img {
 	background-color:#e1e1e1;
-	float:right;
 	padding:9px;
 }
 
@@ -444,6 +680,7 @@ body {
 }
 #bodywrapper .author {
 	line-height:20px;
+	height:1%;
 }
 #bodywrapper .author h4 {
 	color:#656565;
@@ -491,19 +728,22 @@ body {
 	padding:10px 20px;
 	margin:0
 }
+#bodywrapper .list2 li p {
+padding:0;
+}
 #bodywrapper .list2 li.last {
 	border-bottom-color:#fff;
 }
 #bodywrapper .list2 h3 {
 	color:#333;
 	font-size:24px;
-	padding:0 50px 15px 2px;
+	padding:20px 50px 15px 2px;
 	position:relative;
 }
 #bodywrapper .list2 h3 img {
 	position:absolute;
 	right:0;
-	top:-5px;
+	top:15px;
 }
 #bodywrapper .list2 li a span {
 	display:block;
@@ -527,7 +767,6 @@ body {
 #bodywrapper .list3 li {
 	padding:10px;
 	clear:left
-	
 }
 #bodywrapper .list3 h3 {
 	color:#333;
@@ -546,7 +785,7 @@ body {
 	color:#666;
 }
 #bodywrapper .list3 li span.fileinfo {
-	display:bloc;
+	display:block;
 	font-size:0.8em;
 	color:#333;
 	float:left;
@@ -557,11 +796,32 @@ body {
 	margin-top:3px;
 }
 #bodywrapper .list3 span.fileinfo2 {
-	display:bloc;
+	display:block;
 	font-size:0.9em;
 	color:#666;
 	float:right;
 	padding-right:0.5em
+}
+/*Template User profile*/
+#bodywrapper div.user-profile-list ul.twoCol{
+	float:left;
+	width:48%;
+	list-style:none;
+}
+#bodywrapper div.user-profile-list li {
+	padding:5px 5px 0px 5px;
+	clear:left
+}
+#bodywrapper .user-profile-list li span.label {
+	display:block;
+	font-size:0.8em;
+	color:#666;
+	float:left;
+	text-transform:uppercase;
+	margin-right:5px;
+}
+#bodywrapper .user-profile-list{
+	margin-bottom:0px;
 }
 /******************************************************************************
 *  Pagination
@@ -629,7 +889,7 @@ body {
 	padding:2px 15px 3px 15px;
 }
 #bodywrapper input.button:hover {
-	cursor: pointer; 
+	cursor: pointer;
 	background:#fff url(../img/bg-button-on.png) repeat-x top left;
 	color:#0072bc;
 }
@@ -640,7 +900,7 @@ body {
 #bodywrapper  a.aButton,
 #bodywrapper  a.aButton:link,
 #bodywrapper  a.aButton:visited {
-	background: transparent url(../img/button-right.png) no-repeat scroll top right; 
+	background: transparent url(../img/button-right.png) no-repeat scroll top right;
 	display: block;
 	float: left;
 	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
@@ -651,12 +911,12 @@ body {
 	color:#333;
 }
 #bodywrapper  a.aButton span {
-	/* Background left image */ 
-	background: transparent url(../img/button-left.png) no-repeat; 
+	/* Background left image */
+	background: transparent url(../img/button-left.png) no-repeat;
 	display: block;
 	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
 	padding: 6px 0 6px 18px;
-} 
+}
 #bodywrapper  a.aButton:hover span{
 	text-decoration:underline;
 }
@@ -682,3 +942,159 @@ body {
 	cursor: pointer;
 	text-decoration:UNDERLINE;
 }
+/******************************************************************************
+*  Thumbnails
+******************************************************************************/
+#bodywrapper div.thumbnail {
+	float:left;
+	margin-right:20px;
+	position:relative
+}
+#bodywrapper div.thumbnail img {
+	position:relative
+}
+/******************************************************************************
+* Thumbnails  List
+******************************************************************************/
+#bodywrapper div.thumbnailList{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#bodywrapper div.thumbnailList a{
+	float:left;
+	margin-right:10px;
+	margin-bottom:10px;
+	border:1px solid #fff
+}
+#bodywrapper div.thumbnailList a:hover{
+	border:1px solid #000
+}
+/******************************************************************************
+* teaser
+******************************************************************************/
+#bodywrapper .teaser {
+	margin:0;
+	padding:0;
+	color:#666;
+	font-size:0.9em;
+}
+/******************************************************************************
+* Menu simple
+******************************************************************************/
+#bodywrapper ul#menusimple  {
+	list-style:none;
+	margin:0;
+	padding:0;
+	text-align:left;
+	margin-bottom:10px;
+	background:#efefef;
+	border-bottom:1px solid #CCCCCC;
+}
+#bodywrapper ul#menusimple  li{
+	list-style:none;
+	margin:0;
+	padding:0;
+	height:1%
+}
+
+/*Links*/
+#bodywrapper ul#menusimple a,
+#bodywrapper ul#menusimple a:visited {
+	text-decoration:none;
+	padding:5px;
+	display:block;
+	color:#CC3300;
+	background:none;
+	height:1%
+}
+
+#bodywrapper ul#menusimple ul.submenu a:hover{
+	background-color:#fdd087; color:#333;
+}
+
+
+#bodywrapper ul#menusimple .menutop{
+	border:1px solid #CECECE;
+	border-width:0 1px;
+	overflow:hidden;
+	background:#dddddd;
+}
+
+/*Header Links*/
+#bodywrapper ul#menusimple .menutop a{
+	margin:0 0 1px 0;
+	border-top:1px solid white;
+}
+#bodywrapper ul#menusimple ul.submenu a{
+	border-top:none;
+}
+#bodywrapper ul#menusimple ul.submenu {
+	border-top:1px solid #CCCCCC;
+	border-bottom:1px solid #CCCCCC;
+	width:100%;
+	margin:0;
+	padding:0;
+	background-color:#efefef
+}
+
+/*Header Link Hover*/
+#bodywrapper ul#menusimple .menutop a:hover{
+	color:#333;
+}
+/******************************************************************************
+sendMailForm
+******************************************************************************/
+#bodywrapper .sendMailForm fieldset{
+	border:none;
+	padding:0px;
+	margin:0;
+}
+#bodywrapper .sendMailForm legend{
+	display:none
+}
+
+#bodywrapper .sendMailForm label {
+	display:block
+}
+
+#bodywrapper .sendMailForm textarea{
+	width:95%
+}
+#bodywrapper .sendMailForm input{
+	width:95%
+}
+/******************************************************************************
+AddItemForm
+******************************************************************************/
+#bodywrapper .AddItemForm {
+	border:none;
+	padding:10px 0px;
+	margin: 0px;
+	clear:both
+}
+#bodywrapper .AddItemForm fieldset{
+	border:none;
+	padding:0px;
+	margin:0;
+}
+#bodywrapper .AddItemForm legend{
+	display:none
+}
+
+#bodywrapper .AddItemForm label {
+	display:none
+}
+
+#bodywrapper .AddItemForm input{
+	width:40%;
+	display:inline
+}
+#bodywrapper .AddItemForm input.gobutton{
+	width:auto;
+	vertical-align:bottom;
+}
+#bodywrapper .sort {
+text-align:right;
+margin-right:10px
+}
+	

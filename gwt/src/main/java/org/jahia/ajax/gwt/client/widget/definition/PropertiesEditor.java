@@ -42,7 +42,6 @@ import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
 
 import java.util.*;
 
@@ -277,18 +276,17 @@ public class PropertiesEditor extends FormPanel {
             allItems.addAll(nodeType.getItems());
 
             for (GWTJahiaItemDefinition definition : allItems) {
-                if (dataType != null && !dataType.equals(definition.getDataType())) {
-                    continue;
-                }
-
-                if (!definition.isProtected()) {
-                    Field f = fields.get(definition.getName());
-                    GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                    if (f != null && f.isDirty()) {
-                        Log.debug("Set value for " + prop.getName());
-                        prop.setValues(getPropertyValues(f, definition));
+                if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
+                    (dataType != null && dataType.equals(definition.getDataType()))) {
+                    if (!definition.isProtected()) {
+                        Field f = fields.get(definition.getName());
+                        GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
+                        if (f != null && f.isDirty()) {
+                            Log.debug("Set value for " + prop.getName());
+                            prop.setValues(getPropertyValues(f, definition));
+                        }
+                        newProps.add(prop);
                     }
-                    newProps.add(prop);
                 }
             }
         }

@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
@@ -335,7 +336,8 @@ public class NavigationHelper {
         return false;
     }
 
-    public List<GWTJahiaNode> retrieveRoot(String repositoryKey, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> retrieveRoot(String repositoryKey, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,
+                                           boolean forceCreate, ContentManagerHelper contentManager) throws GWTJahiaServiceException {
         List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         if (nodeTypes == null) {
             nodeTypes = JCRClientUtils.FILE_NODETYPES;
@@ -495,7 +497,16 @@ public class NavigationHelper {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.SCHMURTZ_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/content/schmurtzs", workspace, jParams);
+                GWTJahiaNode root = null;
+                final String s = nodeTypes.replaceAll(":", "_");
+                try {
+                    root = getNode("/content/schmurtzs/"+ s, workspace, jParams);
+                } catch (GWTJahiaServiceException e) {
+                    if(forceCreate) {
+                        contentManager.createNode("/content/schmurtzs", s,"jnt:schmurtzsFolder",new ArrayList<GWTJahiaNodeProperty>(), jParams);
+                        root = getNode("/content/schmurtzs/"+ s, workspace, jParams);
+                    }
+                }
                 if (root != null) {
                     root.setDisplayName("schmurtzs");
                     userNodes.add(root);

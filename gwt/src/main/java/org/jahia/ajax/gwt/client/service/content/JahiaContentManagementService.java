@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -237,4 +238,8 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
 
+    List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,
+                               boolean forceCreate) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException;
 }

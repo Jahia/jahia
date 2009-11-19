@@ -87,6 +87,18 @@ public class SearchHelper {
         return result;
     }
 
+    public List<GWTJahiaNode> getNodesOfType(String nodeType,ProcessingContext context) {
+        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+        try {
+            String s = "select * from ["+nodeType+"]";
+            Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
+            return navigation.executeQuery(q, new String[0], new String[0], new String[0], context);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
     Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
         String s = "select * from [jmix:hierarchyNode] as h where contains(h.[j:nodename]," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")";
         return sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);

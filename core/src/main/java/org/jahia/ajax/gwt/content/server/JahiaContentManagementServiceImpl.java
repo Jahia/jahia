@@ -37,7 +37,6 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.helper.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -49,18 +48,16 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
-import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.preferences.JahiaPreferencesService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.registries.ServicesRegistry;
-import org.exoplatform.services.jcr.impl.core.SessionFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -164,7 +161,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
+        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths,
+                                       false, null);
     }
 
     public void saveOpenPaths(Map<String, List<String>> pathsForRepositoryType) throws GWTJahiaServiceException {
@@ -682,5 +680,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
         return navigation.getNode(path,"default",retrieveParamBean());
+    }
+
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,boolean forceCreate) throws GWTJahiaServiceException {
+        if (openPaths == null || openPaths.size() == 0) {
+            openPaths = getOpenPathsForRepository(repositoryType);
+        }
+
+        logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
+
+        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths,forceCreate,contentManager);
+    }
+
+    public List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException {
+        return search.getNodesOfType(nodeType,retrieveParamBean());
     }
 }

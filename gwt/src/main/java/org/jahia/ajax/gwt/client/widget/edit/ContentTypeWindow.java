@@ -61,8 +61,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.io.Serializable;
@@ -147,14 +147,12 @@ public class ContentTypeWindow extends Window {
             final ContentTypeModelData rootSchmurtzContent = new ContentTypeModelData("New Schmurtz Content");
             store.add(rootSchmurtzContent, true);
             final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
-            schmurtzFolder.setPath("/content/schmurtzs");
-            JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
+            if(nodeType!=null) {
+                schmurtzFolder.setPath("/content/schmurtzs/"+nodeType.getName().replaceAll(":","_"));
+                JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
                                                                "jnt:schmurtz", null, null, null, false,
                                                                new AsyncCallback<List<GWTJahiaNode>>() {
                                                                    public void onFailure(Throwable caught) {
-                                                                       MessageBox.alert("Alert",
-                                                                                        "Unable to load available schmurtzs. Cause: " + caught.getLocalizedMessage(),
-                                                                                        null);
                                                                    }
 
                                                                    public void onSuccess(List<GWTJahiaNode> result) {
@@ -165,6 +163,27 @@ public class ContentTypeWindow extends Window {
                                                                        }
                                                                    }
                                                                });
+            } else {
+                JahiaContentManagementService.App.getInstance().getNodesOfType("jnt:schmurtz",
+                                                               new AsyncCallback<List<GWTJahiaNode>>() {
+                                                                   public void onFailure(Throwable caught) {
+                                                                       MessageBox.alert("Alert",
+                                                                                        "Unable to load available schmurtzs. Cause: " + caught.getLocalizedMessage(),
+                                                                                        null);
+                                                                   }
+
+                                                                   public void onSuccess(List<GWTJahiaNode> result) {
+                                                                       for (GWTJahiaNode gwtJahiaNode : result) {
+                                                                           if(!gwtJahiaNode.getPath().contains("jnt_page")) {
+                                                                           store.add(rootSchmurtzContent,
+                                                                                     new ContentTypeModelData(
+                                                                                             gwtJahiaNode), false);
+                                                                           }
+                                                                       }
+                                                                   }
+                                                               });
+            }
+
         }
         ColumnConfig name = new ColumnConfig("label", "Label", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {

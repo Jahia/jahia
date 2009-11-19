@@ -113,5 +113,5 @@
         </j:acl>
     </categories>
 
-    <schmurtzs jcr:primaryType="jnt:schmurtzs"/>
+    <schmurtzs jcr:primaryType="jnt:schmurtzsRoot"/>
 </content>

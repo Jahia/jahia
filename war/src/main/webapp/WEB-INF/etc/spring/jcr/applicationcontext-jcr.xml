@@ -153,7 +153,19 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
     <bean id="scriptInitializer" class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
-    <bean id="sortableFieldnamesInitializer" class="org.jahia.services.content.nodetypes.initializers.SortableFieldnamesChoiceListInitializerImpl"/>
+    <bean id="sortableFieldnamesInitializer" class="org.jahia.services.content.nodetypes.initializers.SortableFieldnamesChoiceListInitializerImpl">
+    	<property name="excludedNodeTypes">
+    		<set>
+    			<value type="java.lang.String">jmix:hierarchyNode</value>
+    			<value type="java.lang.String">mix:referenceable</value>
+    			<value type="java.lang.String">mix:simpleVersionable</value>
+    			<value type="java.lang.String">mix:versionable</value>
+    			<value type="java.lang.String">nt:base</value>
+    		</set>
+    	</property>
+    	<property name="showHidden" value="false"/>
+    	<property name="showProtected" value="true"/>
+    </bean>
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
             <map>

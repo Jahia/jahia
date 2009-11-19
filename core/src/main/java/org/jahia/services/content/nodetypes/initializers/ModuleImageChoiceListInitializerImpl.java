@@ -37,13 +37,11 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.render.Template;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,8 +56,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
         if (values != null && values.size() > 0) {
-            SortedSet<Template> templates;
-            final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
+            final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(realNodeType.replaceAll(":","_"));
             for (ChoiceListValue value : values) {
                 try {
                     for (JahiaTemplatesPackage template : forModule) {

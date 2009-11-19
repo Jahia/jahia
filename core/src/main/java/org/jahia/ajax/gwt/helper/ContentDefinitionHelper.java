@@ -447,7 +447,7 @@ public class ContentDefinitionHelper {
                 while (it.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
                     if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                        res.add(getGWTJahiaNodeType(ctx, nodeType));
+                        res.add(getGWTJahiaNodeType(ctx, nodeType,type.getName()));
                         foundTypes.add(nodeType.getName());
                     }
                 }
@@ -457,7 +457,7 @@ public class ContentDefinitionHelper {
                 while (it.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
                     if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                        res.add(getGWTJahiaNodeType(ctx, nodeType));
+                        res.add(getGWTJahiaNodeType(ctx, nodeType,type.getName()));
                         foundTypes.add(nodeType.getName());
                     }
                 }

@@ -33,6 +33,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import javax.jcr.Value;
+
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -43,7 +44,7 @@ import java.util.LinkedHashMap;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class ChoiceListValue {
+public class ChoiceListValue implements Comparable<ChoiceListValue> {
 
     private String displayName;
     private Value value;
@@ -84,5 +85,9 @@ public class ChoiceListValue {
             properties = new LinkedHashMap<String, Object>();
         }
         properties.put(key,value);
+    }
+
+    public int compareTo(ChoiceListValue o) {
+        return getDisplayName().compareTo(o.getDisplayName());
     }
 }

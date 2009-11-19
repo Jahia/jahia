@@ -52,12 +52,6 @@ import java.util.*;
  */
 public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     
-    private static final Comparator<ChoiceListValue> DISPLAY_NAME_COMPARATOR = new Comparator<ChoiceListValue>() {
-        public int compare(ChoiceListValue o1, ChoiceListValue o2) {
-            return o1.getDisplayName().compareTo(o2.getDisplayName());
-        }
-    }; 
-
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
         String[] iso = Locale.getISOCountries();
@@ -66,13 +60,13 @@ public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListIn
             l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(jParams.getLocale()), null,
                                       new ValueImpl(anIso, PropertyType.STRING, false)));
         }
-        Collections.sort(l, DISPLAY_NAME_COMPARATOR);
+        Collections.sort(l);
         return l;
     }
 
     public Map<String,Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("displayName",new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(context.getMainResource().getLocale()));
+        Map<String, Object> map = new HashMap<String, Object>(1);
+        map.put("displayName", getStringRendering(context, propertyWrapper));
         return map;
     }
 

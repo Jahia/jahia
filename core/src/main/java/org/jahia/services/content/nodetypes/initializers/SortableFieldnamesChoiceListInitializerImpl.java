@@ -33,11 +33,15 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.render.RenderContext;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.PropertyType;
@@ -50,7 +54,7 @@ import java.util.*;
  * 
  */
 public class SortableFieldnamesChoiceListInitializerImpl implements
-        ChoiceListInitializer {
+        ChoiceListInitializer, ChoiceListRenderer {
     private transient static Logger logger = Logger
             .getLogger(TemplatesChoiceListInitializerImpl.class);
 
@@ -58,7 +62,7 @@ public class SortableFieldnamesChoiceListInitializerImpl implements
             ExtendedPropertyDefinition declaringPropertyDefinition,
             String param, String realNodeType, List<ChoiceListValue> values) {
         if (jParams == null) {
-            return new ArrayList<ChoiceListValue>();
+            return Collections.emptyList();
         }
 
         JCRNodeWrapper node = (JCRNodeWrapper) jParams
@@ -67,8 +71,9 @@ public class SortableFieldnamesChoiceListInitializerImpl implements
         ExtendedPropertyDefinition[] propertyDefs;
         try {
             if (node == null && realNodeType == null) {
-                return new ArrayList<ChoiceListValue>();
+                return Collections.emptyList();
             } else if (node != null) {
+                // TODO get the child nodes, their types and declared properties
                 propertyDefs = node.getPrimaryNodeType()
                         .getPropertyDefinitions();
             } else {
@@ -78,15 +83,30 @@ public class SortableFieldnamesChoiceListInitializerImpl implements
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return new ArrayList<ChoiceListValue>();
+            return Collections.emptyList();
         }
 
-        List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
+        List<ChoiceListValue> vs = new LinkedList<ChoiceListValue>();
         for (ExtendedPropertyDefinition propertyDef : propertyDefs) {
-            vs.add(new ChoiceListValue(propertyDef.getName(),
-                    new HashMap<String, Object>(), new ValueImpl(propertyDef
+            //logger.info(propertyDef.getName() + "("+ propertyDef.getLabel(jParams.getLocale()) + ")\nprotected: " + propertyDef.isProtected() + " hidden: " + propertyDef.isHidden() + " metadata: " + propertyDef.isMetadataItem());
+            vs.add(new ChoiceListValue(propertyDef.getLabel(jParams.getLocale()),
+                    null, new ValueImpl(propertyDef
                             .getName(), PropertyType.STRING, false)));
         }
+        Collections.sort(vs);
+        
         return vs;
+    }
+
+    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>(1);
+        map.put("displayName", getStringRendering(context, propertyWrapper));
+        return map;
+    }
+
+    public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        return JCRContentUtils.getDisplayLabel(propertyWrapper, context.getMainResource().getLocale());
     }
 }

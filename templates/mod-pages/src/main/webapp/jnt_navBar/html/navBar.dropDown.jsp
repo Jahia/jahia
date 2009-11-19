@@ -26,7 +26,7 @@
                             <a href="${url.userProfile}">my settings</a>
                         </li>
                         <li class="more-shortcuts">
-                            <a href="${url.page.edit}"><fmt:message key="edit"/></a>
+                            <a href="${url.edit}"><fmt:message key="edit"/></a>
                         </li>
                     </c:if>
                     <li class="more-shortcuts"><a href="base.wrapper.bodywrapper.jsp#"

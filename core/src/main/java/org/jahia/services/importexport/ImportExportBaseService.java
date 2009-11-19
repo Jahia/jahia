@@ -77,7 +77,6 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
@@ -1221,7 +1220,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     + "' is not found. Skipping import.");
         }
         if (node != null) {
-            session.checkout(node);
+            try {
+                session.checkout(node);
+            } catch (UnsupportedRepositoryOperationException ex) {
+                // versioning not supported
+            }
             session.importXML(parentNodePath, new FileInputStream(content),
                     ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
             session.save();

@@ -1,15 +1,15 @@
 Jahia Crazy Jane - Core Module - Other Initializer
 
-  You can define as many initializers as you want, Jahia provide to you two other very flexible initializer :
+  You can define as many initializers as you want. Jahia provides to you two other very flexible initializer :
 
   * {{{node} Node Initializer}}
 
-  * {{{Script} Script Initializer}}
+  * {{{script} Script Initializer}}
 
 * Usage of the {node} initializer
 
-  The node initializer allow you to bind a dropdown list to the content of a node in the jcr, by defining the root path
-  of this dropdown list and the type of node you want to list.
+  The node initializer allow you to bind a dropdown list to the content of a node in the JCR, by defining the root path
+  of this dropdown list and the type of child nodes you want to list.
 
 -----------------------------------
 - firstLevelCategory (weakreference,choicelist[nodes='/content/categories;jnt:category'])
@@ -26,7 +26,7 @@ Jahia Crazy Jane - Core Module - Other Initializer
 
 * Usage of the {script} initializer
 
-  This is the most versatile initializer provided by Jahia as it allows you to use ant scrip language JSR-223 compatible
+  This is the most versatile initializer provided by Jahia as it allows you to use ant script language JSR-223 compatible
   to write your initializer.
 
   * How to declare a scripted initializer ?
@@ -50,19 +50,19 @@ Jahia Crazy Jane - Core Module - Other Initializer
    |-WEB-INF
 -----------------------------------
 
-  The type of script is defined by the extension of the script, gor example if you script is name <<<type.groovy>>>,
+  The type of script is defined by the extension of the script, for example if your script has the name <<<type.groovy>>>,
   the script engine manager will try to find a declared script engine for the groovy extension .
 
   * What are the things my script must absolutely do ?
 
   The script must return a List of <<<ChoiceListValue>>>.
 
-  * Whaou this is crazily powerful but any suggestion to how to use that in the real world will be greatly appreciated
+  * Whaou, this is crazily powerful, but any suggestion to how to use that in the real world will be greatly appreciated
 
-    The first usages that came in mind is to define script that interact with external system to fill the values,
-    like xml files, databases, REST service etc.
+    The first usage that came in mind is to define script that interacts with external system to fill the values,
+    like XML files, databases, REST service etc.
 
-    Example of groovy script paring an xml file to fill the values :
+    Example of Groovy script parsing an XML file to fill the values :
 
 --------------------------------------
 class RecordsHandler extends DefaultHandler {

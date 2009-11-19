@@ -1,6 +1,6 @@
 Jahia Crazy Jane - Core Module - ChoiceList Initializers
 
-  ChoiceList initializers allows developper to extends the way you populate dropdown list (or combobox) for end users when editing or creating content.
+  ChoiceList initializers allows developer to extends the way you populate dropdown list (or combobox) for end users when editing or creating content.
   Jahia allows you to define in your definitions, that a property must use a choicelist (will be rendered by a dropdown list) to specify its value.
 
   The simplest example is to use choicelist for the selector and to list the allowed values in the constraint of the definition :
@@ -14,7 +14,7 @@ Jahia Crazy Jane - Core Module - ChoiceList Initializers
 [../images/simple_initializer.png] A simple Initializer
 
   This is nice but maybe our end users will want to have something more explanatory for choosing the right values.\
-  We will now show you how to use resource bundle to modifiy the rendering of your dropdown list :
+  We will now show you how to use resource bundle to modify the rendering of your dropdown list :
 
 ------------------------------------
 - contract (string, choicelist[resourceBundle]) < contract1, contract2, contract3, contract4
@@ -27,7 +27,7 @@ Jahia Crazy Jane - Core Module - ChoiceList Initializers
 * How ChoiceList Initializers {work} ?
 
   ChoiceList Initializers are implementations of the <<<ChoiceListInitializer>>> interface. All implementations are managed by the <<<ChoiceListInitializerService>>>.
-  This service is defined in the applicationcontext-jcr.xml file :
+  This service is defined in the <<<applicationcontext-jcr.xml>>> file :
 
 -------------------------------------
     <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
@@ -58,7 +58,7 @@ Jahia Crazy Jane - Core Module - ChoiceList Initializers
 
 * Rendering of ChoiceList in GWT
 
-  When a user create or update a content using the Jahia UI, each time he will see a popup with data to enter for each fields of the current definition.
+  When a user creates or updates a content using the Jahia UI, each time he will see a popup with data to enter for each field of the current definition.
   If a field is associated with a <<<choicelist>>> selector, we will go through the pipe of initializers if defined.
   For the rendering we will use the <<<displayName>>> property of the <<<ChoiceListValue>>> object we will have received from the pipe.
   Each option value will be associated with the javax.jcr.Value of the same object.

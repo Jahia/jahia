@@ -1,9 +1,9 @@
 Jahia Crazy Jane - Core Module - Country Initializer Example
 
   A full example for creating a complex initializer that will allow user to choose a country from a dropdown list and
-  display a flag if available for in front of the country name.
+  display a flag if available in front of the country name.
 
-  This example will use two classes, of for filling the countries in the list of values available for the dropdown list.
+  This example will use two classes, one for filling the countries in the list of values available for the dropdown list.
   And another class to add the flag if found for each country.
 
   The code of the country initializer :
@@ -28,7 +28,7 @@ public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
 }
 -------------------------------------------
 
-  You see taht in this example when we create the <<<ChoiceListValue>>> we do not associated any properties,
+  You see that in this example when we create the <<<ChoiceListValue>>> we do not associated any properties,
   but only a display name in current locale of the user, and a value not sensitive to the locale the iso code of the country.
   We sort the list based on the displayName (this could totally be done in another initializer in the pipe (for example a sort initializer at the end of the pipe)).
 
@@ -60,7 +60,7 @@ public class CountryFlagChoiceListInitializerImpl implements ChoiceListInitializ
 }
 --------------------------------------------
 
-  This initializer if place at the start of the pipe will be of no use as it will return an empty list.
+  This initializer if placed at the start of the pipe will be of no use as it will return an empty list.
 
   Those initializers need to be declared in the <<<ChoiceListInitializerService>>> :
 

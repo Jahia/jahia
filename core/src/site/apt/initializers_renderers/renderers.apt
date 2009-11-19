@@ -7,7 +7,7 @@ Jahia Crazy Jane - Core Module - Custom Property Renderer
 
 * How I declare some custom renderers ?
 
-  Renderers are initialized in the same manners as the initializers, in the same spring file (applicationcontext-jcr.xml).
+  Renderers are initialized in the same manner as the initializers, in the same Spring file (<<<applicationcontext-jcr.xml>>>).
   Each renderer must extend <<<ChoiceListRenderer>>> interface.
 
 -------------------------------

@@ -72,12 +72,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class) ;
 
-    private ZipHelper zip;
-
-    public void setZip(ZipHelper zip) {
-        this.zip = zip;
-    }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("Entered GWT upload servlet") ;
 
@@ -174,11 +168,12 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
             // direct blocking unzip
             if (unzip && pathsToUnzip.size() > 0) {
-//                try {
-//                    zip.unzip(pathsToUnzip, true);
-//                } catch (GWTJahiaServiceException e) {
-//                    logger.error("Auto-unzipping failed", e);
-//                }
+                try {
+                    ZipHelper zip = ZipHelper.getInstance();
+                    zip.unzip(pathsToUnzip, true);
+               } catch (GWTJahiaServiceException e) {
+                    logger.error("Auto-unzipping failed", e);
+                }
             }
         } else {
             response.setContentType("text/html");

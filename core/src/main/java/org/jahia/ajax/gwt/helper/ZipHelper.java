@@ -59,6 +59,7 @@ public class ZipHelper {
     private static Logger logger = Logger.getLogger(ZipHelper.class);
 
     private JCRSessionFactory sessionFactory;
+    private static ZipHelper instance;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -360,5 +361,11 @@ public class ZipHelper {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
+    }
+    public static ZipHelper getInstance() {
+        if (instance == null) {
+            instance = new ZipHelper();
+        }
+        return instance;
     }
 }

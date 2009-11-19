@@ -42,12 +42,13 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
- * Choice list initializer ro provide a selection of available templates. 
+ * Choice list initializer ro provide a selection of available templates.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -55,8 +56,9 @@ import java.util.*;
  */
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
-    
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
+
+    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams,
+                                                     ExtendedPropertyDefinition declaringPropertyDefinition,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
         if (jParams == null) {
             return new ArrayList<ChoiceListValue>();
@@ -65,9 +67,9 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         JCRNodeWrapper node = (JCRNodeWrapper) jParams.getAttribute("contextNode");
         final List<String> nodeTypeList;
 
-        if (node == null && realNodeType==null) {
+        if (node == null && realNodeType == null) {
             return new ArrayList<ChoiceListValue>();
-        } else if(node!=null) {
+        } else if (node != null) {
             try {
                 nodeTypeList = node.getNodeTypes();
             } catch (RepositoryException e) {
@@ -94,7 +96,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             templates = new TreeSet<Template>();
             try {
                 for (String s : nodeTypeList) {
-                    templates.addAll(RenderService.getInstance().getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s)));
+                    templates.addAll(RenderService.getInstance().getTemplatesSet(
+                            NodeTypeRegistry.getInstance().getNodeType(s)));
                 }
             } catch (RepositoryException e) {
 
@@ -106,11 +109,44 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     JCRNodeWrapper ref = (JCRNodeWrapper) node.getProperty("j:node").getNode();
 
                     for (String s : ref.getNodeTypes()) {
-                        templates.addAll(RenderService.getInstance().getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s)));
+                        templates.addAll(RenderService.getInstance().getTemplatesSet(
+                                NodeTypeRegistry.getInstance().getNodeType(s)));
                     }
                 }
             } catch (RepositoryException e) {
 
+            }
+        } else if ("jnt:contentList".equals(realNodeType)) {
+            if (node != null) {
+                templates = new TreeSet<Template>();
+                try {
+                    NodeIterator children = node.getNodes();
+                    while (children.hasNext()) {
+                        JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+                        final List<String> nodeTypesList = child.getNodeTypes();
+                        for (String s : nodeTypesList) {
+                            final SortedSet<Template> templateSortedSet = RenderService.getInstance().getTemplatesSet(
+                                    NodeTypeRegistry.getInstance().getNodeType(s));
+                            if (templates.isEmpty()) {
+                                templates.addAll(templateSortedSet);
+                            } else {
+                                SortedSet<Template> commonTemplateSortedSet = new TreeSet<Template>();
+                                for (Template template : templateSortedSet) {
+                                    for (Template template1 : templates) {
+                                        if(template1.getKey().equals(template.getKey())) {
+                                            commonTemplateSortedSet.add(template);
+                                        }
+                                    }
+                                }
+                                templates = commonTemplateSortedSet;
+                            }
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                templates = RenderService.getInstance().getAllTemplatesSet();
             }
         } else {
             templates = RenderService.getInstance().getAllTemplatesSet();
@@ -118,8 +154,10 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Template template : templates) {
-            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skins.") && !template.getKey().startsWith("debug.")) {
-                vs.add(new ChoiceListValue(template.getKey(),new HashMap<String, Object>(), new ValueImpl(template.getKey(), PropertyType.STRING, false)));
+            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith(
+                    "skins.") && !template.getKey().startsWith("debug.") && !template.getKey().contains("hidden.")) {
+                vs.add(new ChoiceListValue(template.getKey(), new HashMap<String, Object>(), new ValueImpl(
+                        template.getKey(), PropertyType.STRING, false)));
             }
         }
         return vs;

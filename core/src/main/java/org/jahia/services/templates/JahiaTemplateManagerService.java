@@ -434,6 +434,9 @@ public class JahiaTemplateManagerService extends JahiaService {
         // TODO validate template sets: count, package dependencies etc.
         templatePackageRegistry.validate();
 
+        // perform initial imports if any
+        templatePackageDeployer.performInitialImport();
+
         ((JahiaPageTemplateBaseService)tplService).setTemplateManagerService(this);
         
         // start template package watcher

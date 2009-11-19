@@ -37,9 +37,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
@@ -49,14 +47,11 @@ import org.jahia.utils.zip.PathFilter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Template package deployer service.
@@ -130,6 +125,8 @@ class TemplatePackageDeployer {
             for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
                 templatePackageRegistry.register(pack);
             }
+            
+            performInitialImport();
         }
 
     }
@@ -145,6 +142,8 @@ class TemplatePackageDeployer {
     private SettingsBean settingsBean;
 
     private Timer watchdog;
+
+    private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
 
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
@@ -266,7 +265,7 @@ class TemplatePackageDeployer {
             
             JahiaTemplatesPackage pack = JahiaTemplatesPackageHandler.build(tmplRootFolder);
             if (!pack.getInitialImports().isEmpty()) {
-                performInitialImport(pack);
+                initialImports.add(pack);
             }
 
             logger.info("Package '" + packageName + "' successfully deployed");
@@ -290,6 +289,14 @@ class TemplatePackageDeployer {
         
         logger.info("... finished initial import for template package '" + pack.getName() + "'.");
         
+    }
+
+    public void performInitialImport() {
+        if (!initialImports.isEmpty()) {
+            while (!initialImports.isEmpty()) {
+                performInitialImport(initialImports.remove(0));
+            }
+        }
     }
 
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(List<JahiaTemplatesPackage> remaining) {

@@ -162,7 +162,7 @@
     </function>
 
     <function>
-        <description>remove duplicate occurences in a string</description>
+        <description>removes duplicate occurences in a string</description>
         <name>removeDuplicates</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String removeDuplicates(java.lang.String, java.lang.String)
@@ -173,7 +173,7 @@
     </function>
 
     <function>
-        <description>count occurences of a string in a string</description>
+        <description>counts occurences of a string in a string</description>
         <name>countOccurences</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>int countOccurences(java.lang.String, java.lang.String)
@@ -183,4 +183,16 @@
         </example>
     </function>
 
+    <function>
+        <description>
+        	Returns a pseudorandom, uniformly distributed int value between '0' (inclusive) 
+        	and the specified value (exclusive), from the Math.random() sequence.
+        </description>
+        <name>randomInt</name>
+        <function-class>org.apache.commons.lang.math.RandomUtils</function-class>
+        <function-signature>int nextInt(int)</function-signature>
+        <example>
+            &lt;c:out value="${functions:randomInt(currentNode.nodes.size)}"&gt;
+        </example>
+    </function>
 </taglib>

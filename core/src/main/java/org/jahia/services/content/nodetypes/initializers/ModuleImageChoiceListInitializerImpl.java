@@ -53,18 +53,33 @@ import java.util.List;
 public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(ModuleImageChoiceListInitializerImpl.class);
 
+    /**
+     * This Initializer allows to add an dimage to a dropdown list. It tries to find an image having the name of
+     * the options inside the img folder of the module.
+     * <p/>
+     * - column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' < '1col16','2col412','2col124','2col106'
+     * <p/>
+     * This will search for images named img/1col16.png inside the module containing the definition.
+     *
+     * @param context
+     * @param epd
+     * @param param
+     * @param realNodeType
+     * @param values
+     * @return
+     */
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
         if (values != null && values.size() > 0) {
-            final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(realNodeType.replaceAll(":","_"));
+            final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                    epd.getDeclaringNodeType().getSystemId());
             for (ChoiceListValue value : values) {
                 try {
-                    for (JahiaTemplatesPackage template : forModule) {
-                        final File imagePath = new File(
-                                template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "." + param);
-                        if (imagePath.exists()) {
-                            value.addProperty("image",context.getContextPath()+"/"+template.getRootFolderPath()+"/img/"+value.getValue().getString() + "." + param);
-                        }
+                    final File imagePath = new File(
+                            template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "." + param);
+                    if (imagePath.exists()) {
+                        value.addProperty("image",
+                                          context.getContextPath() + "/" + template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

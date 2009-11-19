@@ -846,7 +846,7 @@ public class ContentManagerHelper {
         try {
             if ("application/zip".equals(item.contentType)) {
 
-            } else if ("application/xml".equals(item.contentType)) {
+            } else if ("application/xml".equals(item.contentType) || "text/xml".equals(item.contentType)) {
                 importExport.importXml(parentPath, item.file);
             }
         } catch (Exception e) {

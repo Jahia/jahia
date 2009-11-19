@@ -313,18 +313,17 @@ public class ContentManagerHelper {
                 final JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
                 JCRNodeWrapper node = session.getNode(aNode.getPath());
 
-                String name = node.getName();
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     JCRNodeWrapper dest = session.getNode(destinationPath);
                     if (dest.isCollection()) {
                         String destPath = dest.getPath();
-                        name = findAvailableName(dest, name);
                         if (dest.isWriteable()) {
-                            dest.checkout();
+                            String name = findAvailableName(dest, aNode.getName() != null ? aNode.getName() : node.getName());
+                            session.checkout(dest);
                             if (cut) {
                                 try {
-                                    node.checkout();
-                                    node.getParent().checkout();
+                                    session.checkout(node);
+                                    session.checkout(node.getParent());
                                     if (!node.moveFile(destPath, name)) {
                                         missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
                                         continue;
@@ -347,11 +346,11 @@ public class ContentManagerHelper {
                                 }
                             }
                         } else {
-                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
+                            missedPaths.add(new StringBuilder("File ").append(node.getName()).append(" could not be copied in ").append(dest.getPath()).toString());
                         }
                     }
                 } else {
-                    missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
+                    missedPaths.add(new StringBuilder("Source file ").append(node.getName()).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
                 }
             } catch (RepositoryException e) {
                 missedPaths.add(new StringBuilder("File cannot be read").toString());

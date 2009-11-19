@@ -58,7 +58,7 @@ import java.util.List;
 public class ZipHelper {
     private static Logger logger = Logger.getLogger(ZipHelper.class);
 
-    private JCRSessionFactory sessionFactory;
+    private JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

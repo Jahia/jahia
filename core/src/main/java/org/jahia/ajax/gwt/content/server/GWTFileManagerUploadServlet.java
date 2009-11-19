@@ -174,11 +174,12 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
             // direct blocking unzip
             if (unzip && pathsToUnzip.size() > 0) {
-//                try {
-//                    zip.unzip(pathsToUnzip, true);
-//                } catch (GWTJahiaServiceException e) {
-//                    logger.error("Auto-unzipping failed", e);
-//                }
+                try {
+                    zip = new ZipHelper();
+                    zip.unzip(pathsToUnzip, true);
+                } catch (GWTJahiaServiceException e) {
+                    logger.error("Auto-unzipping failed", e);
+                }
             }
             
         } else {

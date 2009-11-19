@@ -9,7 +9,7 @@
 [jmix:layout] mixin
 
 [jmix:skinnable] > jmix:layout mixin
- sharedSmallText skin (choicelist[image]) indexed=no < skins()
+ sharedSmallText skin (choicelist[skins,resourceBundle,image]) indexed=no
 
 [jmix:positionnable] > jmix:layout mixin
  integer rowIndex hidden indexed=no

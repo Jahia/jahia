@@ -10,10 +10,10 @@
 <%--As Iframe is deprecated in XHTML 1.0 we use object tag--%>
 
 <object
-        data="${source.string}"
-        name="${name.string}"
-        width="${width.long}"
-        height="${height.long}"
-        border="${frameborder.long}"
+        data="${currentNode.properties.source.string}"
+        name="${currentNode.properties.name.string}"
+        width="${currentNode.properties.width.long}"
+        height="${currentNode.properties.height.long}"
+        border="${currentNode.properties.frameborder.long}"
         type="text/html">
 </object>

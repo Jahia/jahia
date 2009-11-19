@@ -9,7 +9,7 @@
     <c:set var="avg" value="${sumVotes.long / nbVotes.long}"/>
 </c:if>
 <c:if test="${nbVotes.long == 0}">
-    <c:set var="avg" value="0"/>
+    <c:set var="avg" value="0.0"/>
 </c:if>
 <template:addResources type="css" resources="uni-form.css,ui.stars.css" nodetype="jmix:rating"/>
 <template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js" nodetype="jmix:rating"/>
@@ -42,7 +42,7 @@
 
 							// Update other text controls...
 							$("#all_votes${id}").text(result.${currentNode.name}.j_nbOfVotes);
-							$("#all_avg${id}").text(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes);
+							$("#all_avg${id}").text((''+result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes).substring(0,3));
 
 							// Display confirmation message to the user
 							$("#messages${id}").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
@@ -67,7 +67,7 @@
 
     <div class="rating-L"><strong>Average rating</strong>
         <span>(<span id="all_votes${id}">${nbVotes.long}</span> votes; <span
-                id="all_avg${id}">${avg}</span>)</span>
+                id="all_avg${id}">${fn:substring(avg,0,3)}</span>)</span>
 
         <form id="avg${id}" style="width: 200px" action="">
 

@@ -20,14 +20,14 @@
 
 				<div class="publicationBody"><!--start publicationBody -->
 					    <h5><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h5>
-					    <p class="publicationAuthor"><c:if test="${!empty author}"><fmt:message key="web_templates_publicationContainer.author"/>: ${currentNode.properties.author.string}</c:if></p>
-					    <p class="publicationSource"><c:if test="${!empty source}"><fmt:message key="web_templates_publicationContainer.source"/>: ${currentNode.properties.source.string}</c:if></p>
-					    <p class="publicationDate"><c:if test="${!empty date && date !=''}"> </c:if></p>
+					    <p class="publicationAuthor"><c:if test="${!empty author}"><fmt:message key="publication.author"/>: ${currentNode.properties.author.string}</c:if></p>
+					    <p class="publicationSource"><c:if test="${!empty source}"><fmt:message key="publication.source"/>: ${currentNode.properties.source.string}</c:if></p>
+					    <p class="publicationDate"><c:if test="${!empty date && date !=''}">${currentNode.properties.date.string}</c:if></p>
 					    <div class="publicationDescription">${currentNode.properties.body.string}</div>
 					    <div class="publicationAction">
 					        <c:if test="${file.node.fileContent.contentLength > 0}">
                                 <fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.node.fileContent.contentLength/1024)}"/>
-                                <a class="publicationDownload" href="${file.node.url}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} KB)</c:if>
+                                <a class="publicationDownload" href="${file.node.url}" ><fmt:message key="publication.download"/></a><span class="publicationDocSize">(${num} KB)</c:if>
                         </span>
 					</div>
 					<div class="clear"> </div>

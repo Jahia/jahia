@@ -34,28 +34,23 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR content related utilities.
  * User: jahia
  * Date: 28 mai 2009
  * Time: 15:46:07
- * To change this template use File | Settings | File Templates.
  */
 public class JCRTagUtils {
     private static final transient Logger logger = Logger.getLogger(JCRTagUtils.class);
@@ -71,53 +66,14 @@ public class JCRTagUtils {
     }
 
     /**
-     * Get the label value dependind on the local
+     * Get the node or property display name depending on the locale
      *
-     * @param nodeObject
-     * @param local
-     * @return
+     * @param item the item to get the label for
+     * @param locale current locale
+     * @return the node or property display name depending on the locale
      */
     public static String label(Object nodeObject, Locale local) {
-        if (nodeObject != null) {
-
-            try {
-                // case of property
-                if (nodeObject instanceof Property) {
-                    Property property = (Property) nodeObject;
-                    PropertyDefinition propertyDefintion = property.getDefinition();
-                    if (propertyDefintion != null && propertyDefintion instanceof ExtendedPropertyDefinition) {
-                        ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) propertyDefintion;
-                        return itemDef.getLabel(local);
-                    } else {
-                        logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
-                    }
-                }
-                // case of PropertyDefinition
-                else if (nodeObject instanceof PropertyDefinition) {
-                    if (nodeObject instanceof ExtendedPropertyDefinition) {
-                        ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) nodeObject;
-                        return itemDef.getLabel(local);
-                    } else {
-                        logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
-                    }
-                }
-                // case of node type
-                else if (nodeObject instanceof NodeType) {
-                    NodeType nodeType = (NodeType) nodeObject;
-                    if (nodeType instanceof ExtendedNodeType) {
-                        ExtendedNodeType extendNodeType = (ExtendedNodeType) nodeType;
-                        return extendNodeType.getLabel(local);
-                    } else {
-                        logger.error("nodeType doesn't implement 'org.jahia.services.content.nodetypes.ExtendedNodeType'");
-                    }
-                } else {
-                    logger.error("Object must be a 'javax.jcr.Property' or 'javax.jcr.nodetype.NodeType'");
-                }
-            } catch (RepositoryException e) {
-                logger.error(e, e);
-            }
-        }
-        return null;
+        return JCRContentUtils.getDisplayLabel(nodeObject, local);
     }
 
     /**

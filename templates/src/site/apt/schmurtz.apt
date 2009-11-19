@@ -1,0 +1,21 @@
+Crazy Jane - Jahia Templates - Schmurtz
+
+* What is a Schmurtz ?
+
+  A Schmurtz is a piece of reusable content, by that we means that if you have a section of your site that you want to generalize for further usage.
+  You can click on the top level page of the section you wnat to backup, then click on the "Save As Schmurtz" button in the "Edit" menu.
+  This will save a copy of your content in a specific folder. Then when you want to create a new content you can reuse this schmurtz or create a new content.
+
+[./images/schmurtz.png]  
+
+* Can I modify locally the content from an existing Schmurtz ?
+
+  Yes as soon as you have created a content from an already created Schmurtz, the local copy is yours and you can modify it in the way you want.
+
+* Can I bundle already configured Schmurtz with my modules ?
+
+  Yes
+
+* How ?
+
+  Next time ...

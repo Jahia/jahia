@@ -660,20 +660,6 @@
             <type>boolean</type>
         </attribute>
     </tag>
-
-    <tag>
-        <description>display selected Theme css with full path</description>
-        <name>themeDisplay</name>
-        <tag-class>org.jahia.taglibs.template.theme.ThemeDisplayTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>name of the default theme</description>
-            <name>defaultTheme</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
     <tag>
         <description>Helper tag that will only display if the specified user is the current user or if the property
         evaluates to a public (non-private)</description>

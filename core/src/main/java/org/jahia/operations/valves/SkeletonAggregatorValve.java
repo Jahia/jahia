@@ -52,7 +52,6 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.*;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
-import org.jahia.services.theme.ThemeService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
@@ -81,7 +80,6 @@ public class SkeletonAggregatorValve implements Valve {
     private static Logger logger = Logger.getLogger(SkeletonAggregatorValve.class);
     public static final String ESI_VARIABLE_USERNAME = "username";
     public static final String ESI_VARIABLE_USER = "user";
-    public static final String THEME_VARIABLE = "theme";
     public static final String GWT_VARIABLE = "gwtInit";
 //    private static ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>  containerHTMLCache = null;
     private JahiaEventGeneratorBaseService eventService;
@@ -288,16 +286,6 @@ public class SkeletonAggregatorValve implements Valve {
                                     outputDocument.replace(segment.getBegin(),
                                             segment.getElement().getEndTag().getEnd(),
                                             s != null ? s : "");
-                                } else if (variableName.equals(THEME_VARIABLE)) {
-                                    final String jahiaThemeCurrent = (String) processingContext.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + processingContext.getSite().getID());
-                                    if (jahiaThemeCurrent != null) {
-                                        if (logger.isDebugEnabled()) {
-                                            logger.debug("Try to apply theme : "+jahiaThemeCurrent);
-                                        }
-                                        outputDocument.replace(segment.getBegin(),
-                                                segment.getElement().getEndTag().getEnd(),
-                                                ThemeService.getInstance().getCssLinks(processingContext, processingContext.getSite(), jahiaThemeCurrent));
-                                    }
                                 } else if (variableName.equals(GWT_VARIABLE)) {
                                     outputDocument.replace(segment.getBegin(),
                                             segment.getElement().getEndTag().getEnd(),

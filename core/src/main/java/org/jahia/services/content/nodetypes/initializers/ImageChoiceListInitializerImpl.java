@@ -34,7 +34,6 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.operations.valves.ThemeValve;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -65,19 +64,10 @@ public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
                     String rootFolderPath = (String) o;
                     // look for theme png name
                     final Value value = bean.getValue();
-                    String lookupFile = Jahia.getStaticServletConfig().getServletContext().getRealPath(
-                            rootFolderPath + "/" + epd.getName() + "s/" + value + "_" + context.getAttribute(
-                                    ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png");
-                    File ft = new File(lookupFile);
-                    if (ft.exists()) {
-                        path = rootFolderPath + "/" + epd.getName() + "s/" + value + "_" + context.getAttribute(
-                                ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png";
-                    } else {
-                        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(
-                                rootFolderPath + "/" + epd.getName() + "s/" + value + ".png"));
-                        if (f.exists()) {
-                            path = rootFolderPath + "/" + epd.getName() + "s/" + value + ".png";
-                        }
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(
+                        rootFolderPath + "/" + epd.getName() + "s/" + value + ".png"));
+                    if (f.exists()) {
+                        path = rootFolderPath + "/" + epd.getName() + "s/" + value + ".png";
                     }
                 }
                 if (path != null) {

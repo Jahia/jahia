@@ -264,23 +264,6 @@
         <property name="patchManager" ref="org.jahia.hibernate.manager.JahiaInstalledPatchManager"/>
     </bean>
 
-
-    <bean id="ThemeService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.theme.ThemeService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="defaultCssFileName" value="css.css"/>
-                <property name="cssEditModeFileName" value="edit.css"/>
-                <property name="browserUserAgentSpecificCssMap">
-                    <map>
-                        <entry key="MSIE 6.0" value="ie6.css"/>
-                        <entry key="MSIE 5" value="ie5.css"/>
-                    </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-
     <bean id="captchaService" class="com.octo.captcha.service.multitype.GenericManageableCaptchaService">
         <constructor-arg index="0">
             <bean id="imageEngine" class="com.octo.captcha.engine.GenericCaptchaEngine">

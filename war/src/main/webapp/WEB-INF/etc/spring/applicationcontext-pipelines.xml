@@ -26,7 +26,6 @@
                         </map>
                     </property>
                 </bean>
-                <bean class="org.jahia.operations.valves.ThemeValve" />
                 <bean class="org.jahia.operations.valves.FormValve" />
                 <bean class="org.jahia.operations.valves.PlutoProcessActionValve">
                     <property name="cacheInstance" ref="JahiaCacheService"/>

@@ -79,7 +79,6 @@ import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.operations.valves.ThemeValve;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -431,8 +430,6 @@ public class ManageSites extends AbstractAdministrationModule {
         String warningMsg = "";
         boolean enforcePasswordPolicy = (request
                 .getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
-        String selectedTheme = StringUtils.left(JahiaTools.getStrParameter(request, "selectedTheme", "").trim(), 100);
-
         session.setAttribute(CLASS_NAME + "defaultSite", defaultSite);
 
         // check license limitation again
@@ -525,12 +522,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 site.getSettings().setProperty(
                         JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
                         enforcePasswordPolicy ? "true" : "false");
-                site.getSettings().setProperty(
-                        ThemeValve.THEME_ATTRIBUTE_NAME,
-                        selectedTheme);
-                
-
-
                 session.setAttribute(CLASS_NAME + "newJahiaSite", site);
                 request.setAttribute("newJahiaSite", site);
                 request.setAttribute("warningMsg", warningMsg);
@@ -899,7 +890,6 @@ public class ManageSites extends AbstractAdministrationModule {
         }
 
         String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
-        String selectedTheme = (String) request.getAttribute("selectedTheme");
 
         JahiaTemplateManagerService templateService = ServicesRegistry
                 .getInstance().getJahiaTemplateManagerService();
@@ -923,26 +913,6 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("selectedTmplSet", selectedTmplSet);
         request.setAttribute("tmplSets", orderedTemplateSets.values());
         request.setAttribute("selectedPackage", selectedPackage);
-
-        SortedMap<String, String> themes = new TreeMap<String, String>();
-        if (selectedPackage != null) {
-            for (String rootFolderPath : selectedPackage.getLookupPath()) {
-                File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath + "/theme"));
-                if (f.exists()) {
-                    for (String s : f.list()) {
-                        String name = ResourceBundleMarker.getValue(s, selectedPackage.getResourceBundleName(), "theme." + s, jParams.getLocale());
-                        themes.put(s, name);
-                    }
-                }
-            }
-        }
-
-        request.setAttribute("availableThemes", themes);
-        request.setAttribute("selectedTheme", selectedTheme);
-        if (selectedTheme != null) {
-            request.setAttribute("selectedThemeName", themes.get(selectedTheme));
-        }
-
         Locale currentLocale = (Locale) session
                 .getAttribute(ProcessingContext.SESSION_LOCALE);
         if (currentLocale == null) {
@@ -1041,11 +1011,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 if (currentSite != null) {
                     jParams.setSite(currentSite);
                     jParams.setSiteID(currentSite.getID());
-                }
-
-                String theme = (String) request.getAttribute("selectedTheme");
-                if (theme != null) {
-                    site.getSettings().setProperty(ThemeValve.THEME_ATTRIBUTE_NAME, theme);
                 }
                 sMgr.updateSite(site);
             } else {
@@ -1173,7 +1138,6 @@ public class ManageSites extends AbstractAdministrationModule {
         // get form values...
         String operation = jParams.getParameter("operation");
         String selectTmplSet = jParams.getParameter("selectTmplSet");
-        String selectTheme = jParams.getParameter("selectTheme");
         String siteAdminOption = (String) session.getAttribute("siteAdminOption");
         if (selectTmplSet == null || selectTmplSet.trim().equals("")) {
             selectTmplSet = "0";
@@ -1184,8 +1148,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
         request.setAttribute("siteAdminOption", siteAdminOption);
         request.setAttribute("selectedTmplSet", selectTmplSet);
-        request.setAttribute("selectedTheme", selectTheme);
-        request.setAttribute("selectedThemeName", selectTheme);
 
         String firstImport = jParams.getParameter("firstImport");
         request.setAttribute("firstImport", firstImport);
@@ -1221,7 +1183,6 @@ public class ManageSites extends AbstractAdministrationModule {
         logger.debug("selected template = " + selectTmplSet);
         request.setAttribute("selectedTmplSet", selectTmplSet);
 
-        request.setAttribute("selectedTheme", jParams.getParameter("selectTheme"));
         // first import
         String firstImport = jParams.getParameter("firstImport");
         request.setAttribute("firstImport", firstImport);
@@ -1384,8 +1345,6 @@ public class ManageSites extends AbstractAdministrationModule {
             Boolean versioningEnabled = Boolean.valueOf(site.isVersioningEnabled());
             Boolean stagingEnabled = Boolean.valueOf(site.isStagingEnabled());
             String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
-            String selectedTheme = (String) request.getAttribute("selectedTheme");
-            String selectedThemeName = (String) request.getAttribute("selectedThemeName");
             // get tmplPackage list...
             JahiaTemplateManagerService templateMgr = ServicesRegistry
                     .getInstance().getJahiaTemplateManagerService();
@@ -1429,8 +1388,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 request.setAttribute("templateName", tmplPack.getName());
             }
             request.setAttribute("selectedTmplSet", selectedTmplSet);
-            request.setAttribute("selectedTheme", selectedTheme);
-            request.setAttribute("selectedThemeName", selectedThemeName);
             request.setAttribute("selectedLocale", selectedLocale);
             // set display message...
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
@@ -1509,7 +1466,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
         boolean versioningEnabled = (request.getParameter("versioningEnabled") != null);
         boolean stagingEnabled = (request.getParameter("stagingEnabled") != null);
-        String selectedTheme = StringUtils.left(JahiaTools.getStrParameter(request, "selectedTheme", "").trim(), 100);
 
         // set request attributes...
         request.setAttribute("siteTitle", siteTitle);
@@ -1556,10 +1512,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 site.getSettings().setProperty(
                         JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
                         enforcePasswordPolicy ? "true" : "false");
-
-                
-
-                site.getSettings().setProperty(ThemeValve.THEME_ATTRIBUTE_NAME, selectedTheme);
                 sMgr.updateSite(site);
 
                 JahiaSite defSite = getDefaultSite();

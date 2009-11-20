@@ -113,7 +113,7 @@ public class ContentTreeGrid extends ContentPanel {
     /**
      * Override thi method to customize "add" button behaviour
      *
-     * @param gwtJahiaNode
+     * @param gwtJahiaNode the Picked Node
      */
     public void onContentPicked(final GWTJahiaNode gwtJahiaNode) {
 
@@ -142,7 +142,7 @@ public class ContentTreeGrid extends ContentPanel {
 
     /**
      * Get repository type
-     * @return
+     * @return String
      */
     protected String getRepoType() {
         return treeGridTopRightComponent.repositoryType;
@@ -230,12 +230,13 @@ public class ContentTreeGrid extends ContentPanel {
         /**
          * Get header from configuration
          *
-         * @return
+         * @return ColumnModel
          */
         private ColumnModel getHeaders() {
             List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
             List<String> columnIds = configuration.getTableColumns();
             if (columnIds == null || columnIds.size() == 0) {
+                columnIds = new ArrayList<String>();
                 columnIds.add("name");
                 columnIds.add("size");
                 columnIds.add("date");
@@ -253,7 +254,7 @@ public class ContentTreeGrid extends ContentPanel {
                     col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                         public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                             if (gwtJahiaNode != null && gwtJahiaNode.getSize() != null) {
-                                long size = gwtJahiaNode.getSize().longValue();
+                                long size = gwtJahiaNode.getSize();
                                 return Formatter.getFormattedSize(size);
                             } else {
                                 return "-";
@@ -268,7 +269,7 @@ public class ContentTreeGrid extends ContentPanel {
                         public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                             Date d = gwtJahiaNode.getLastModified();
                             if (d != null) {
-                                return DateTimeFormat.getFormat("d/MM/y").format(d).toString();
+                                return DateTimeFormat.getFormat("d/MM/y").format(d);
                             } else {
                                 return "-";
                             }
@@ -286,7 +287,7 @@ public class ContentTreeGrid extends ContentPanel {
                                 combo.setForceSelection(true);
                                 combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                                 for (GWTJahiaNodeVersion version : versions) {
-                                    combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()).toString() + ")");
+                                    combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()) + ")");
                                 }
                                 final String s2 = "Always Latest Version";
                                 combo.add(s2);

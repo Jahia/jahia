@@ -337,7 +337,7 @@ public class TableView extends TopRightComponent {
                 col.setSortable(false);
                 col.setResizable(true);
             } else if ("name".equals(columnName)) {
-	            col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 240);
+	            col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 240);
 	            col.setSortable(true);
 	            col.setResizable(true);
             } else if ("path".equals(columnName)) {

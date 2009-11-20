@@ -142,7 +142,7 @@ public class SidePanel extends ContentPanel {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("name", Messages.getResource("fm_info_name"), 250));
+        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 250));
 //        displayColumns.add(new ColumnConfig("path", "Path", 200));
         displayGrid = new Grid<GWTJahiaNode>(displayStore, new ColumnModel(displayColumns));
         displayGrid.setBorders(false);
@@ -204,6 +204,7 @@ public class SidePanel extends ContentPanel {
                     type.set("iconHtml", ContentModelIconProvider.getInstance().getIcon(type).getHTML());
                 }
                 createStore.add(list);
+                createStore.sort("label", Style.SortDir.ASC);
             }
 
         });
@@ -212,6 +213,7 @@ public class SidePanel extends ContentPanel {
         createView.setBorders(false);
         createView.setTemplate(getTemplate());
         createView.setStore(createStore);
+        createStore.setSortField("label");
         createView.setItemSelector("div.x-view-item");
         createView.setDisplayProperty("label");
         createView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
@@ -361,6 +363,7 @@ public class SidePanel extends ContentPanel {
         displayStore.removeAll();
         if (content != null) {
             displayStore.add(content);
+            displayStore.sort("displayName", Style.SortDir.ASC);
         }
         contentList.add(displayGrid);
         contentList.layout();
@@ -371,6 +374,7 @@ public class SidePanel extends ContentPanel {
         displayTypesStore.removeAll();
         if (content != null) {
             displayTypesStore.add(content);
+            displayTypesStore.sort("label", Style.SortDir.ASC);
         }
         contentList.add(displayTypesGrid);
         contentList.layout();

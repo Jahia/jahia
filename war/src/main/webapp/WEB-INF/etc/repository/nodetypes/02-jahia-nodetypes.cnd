@@ -318,6 +318,11 @@
  - j:columnSpan (long)
  - j:rowSpan (long)
 
+
+[jmix:theme] > jmix:layout, jmix:pageMixin mixin
+ - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
+
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

@@ -35,12 +35,17 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
-
+<%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <template:template>
     <template:templateHead title="${fn:escapeXml(currentNode.properties['jcr:title'].string)}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<jcr:nodeProperty var="theme" node="${currentNode}" name="j:theme" inherited="true"/>
+		<c:if test="${!empty theme}">
+			<c:forEach var="themeFile" items="${theme.node.children}">
+				<template:addResources type="css" resources="${themeFile.url}" nodetype="jnt:page"/>
+			</c:forEach>
+		</c:if>
         <utility:applicationResources/>
-
         <%--CSS--%>
         <c:forEach var="css" items="${renderContext.externalLinks.css}">
             <link rel="stylesheet" href="${css}" media="screen" type="text/css"/>

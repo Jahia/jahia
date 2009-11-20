@@ -3,7 +3,4 @@
 
 [jmix:gridPage] > jmix:layout, jmix:pageMixin mixin
 - column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' < '1col16','2col412','2col124','2col106','2col610','2col88','3col448','3col466','3col484','3col664','3col844'
-
-[jmix:theme] > jmix:option, jmix:pageMixin mixin
- - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
  

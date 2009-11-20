@@ -17,7 +17,7 @@
 
             <p class="jobType">
                 <span class="jobLabel">Contract type: </span>
-                <span class="jobtxt">${fn:escapeXml(values.contract)}</span>
+                <span class="jobtxt"><fmt:message key="jnt_job.contract.${values.contract}"/></span>
             </p>
 
             <p class="jobBusinessUnit">

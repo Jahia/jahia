@@ -135,6 +135,12 @@
                                                  command="${websphereProfileDir}bin/stopServer.sh ${distant.hosts.websphere.serverName}"
                                                  trust="true" failonerror="false"/>
 
+                                        <!-- Let's flush the logs -->
+                                        <sshexec host="${serverHost}" username="${serverUser}"
+                                                 password="${serverPassword}"
+                                                 command="rm -rf ${websphereProfileDir}logs/${distant.hosts.websphere.serverName}/SystemOut*.log"
+                                                 trust="true" failonerror="false"/>                                        
+
                                         <!-- Now let's deploy the shared resources if needed -->
 
                                         <scp trust="true"

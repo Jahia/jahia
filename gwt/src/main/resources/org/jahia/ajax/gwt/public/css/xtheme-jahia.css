@@ -52,7 +52,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
 .x-panel-body {
     border-color:#b7cbd8;
-	background-color:#fff;
+    background-color:transparent;
 }
 
 .x-panel-bbar .x-toolbar {

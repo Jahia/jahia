@@ -9,6 +9,6 @@
  - street (string)
  - zipCode (string) analyzer='keyword'
  - town (string) i18n facetable
- - country (string) i18n facetable
+ - country (string,choicelist[country,flag]) i18n facetable
  - latitude (string) i18n facetable
  - longitude (string) i18n facetable

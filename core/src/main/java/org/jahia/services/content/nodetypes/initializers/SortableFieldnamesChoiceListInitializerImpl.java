@@ -31,18 +31,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.log4j.Logger;
@@ -56,6 +44,11 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * Initializer to fill combobox with field names, which can be chosen to sort a
@@ -109,53 +102,56 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
     }
 
     @SuppressWarnings("unchecked")
-    private ExtendedPropertyDefinition[] getCommonChildNodeDefinitions(JCRNodeWrapper node)
-            throws RepositoryException {
+    private ExtendedPropertyDefinition[] getCommonChildNodeDefinitions(JCRNodeWrapper node) throws RepositoryException {
         Map<String, Map<String, ExtendedPropertyDefinition>> defs = null;
+        if (node.hasNodes()) {
+            NodeIterator children = node.getNodes();
+            while (children.hasNext()) {
 
-        NodeIterator children = node.getNodes();
-        while (children.hasNext()) {
-            
-            JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
-            if (defs == null) {
-                // first child
-                defs = LazyMap.decorate(new HashMap<String, Map<String, ExtendedPropertyDefinition>>(),
-                        new Factory() {
-                            public Object create() {
-                                return new HashMap<String, ExtendedPropertyDefinition>();
+                JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+                if (defs == null) {
+                    // first child
+                    defs = LazyMap.decorate(new HashMap<String, Map<String, ExtendedPropertyDefinition>>(),
+                                            new Factory() {
+                                                public Object create() {
+                                                    return new HashMap<String, ExtendedPropertyDefinition>();
+                                                }
+                                            });
+                    for (ExtendedPropertyDefinition propertyDef : child.getPrimaryNodeType().getPropertyDefinitions()) {
+                        // filter out hidden and protected if needed
+                        if ((showHidden || !propertyDef.isHidden()) && (showProtected || !propertyDef.isProtected())) {
+                            ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
+                            if (excludedNodeTypes.isEmpty() || !excludedNodeTypes.contains(nodeType.getName())) {
+                                defs.get(nodeType.getName()).put(propertyDef.getName(), propertyDef);
                             }
-                        });               
-                for (ExtendedPropertyDefinition propertyDef : child.getPrimaryNodeType().getPropertyDefinitions()) {
-                    // filter out hidden and protected if needed
-                    if ((showHidden || !propertyDef.isHidden()) && (showProtected || !propertyDef.isProtected())) {
-                        ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
-                        if (excludedNodeTypes.isEmpty() || !excludedNodeTypes.contains(nodeType.getName())) {
-                            defs.get(nodeType.getName()).put(propertyDef.getName(), propertyDef);
+                        }
+                    }
+                } else {
+                    // filter out node types
+                    for (Iterator<String> iterator = defs.keySet().iterator(); iterator.hasNext();) {
+                        String commonType = iterator.next();
+                        if (!child.isNodeType(commonType)) {
+                            // the node has no such type --> remove the type from common
+                            iterator.remove();
                         }
                     }
                 }
-            } else {
-                // filter out node types
-                for (Iterator<String> iterator = defs.keySet().iterator(); iterator.hasNext();) {
-                    String commonType = (String) iterator.next();
-                    if (!child.isNodeType(commonType)) {
-                        // the node has no such type --> remove the type from common
-                        iterator.remove();
-                    }
+
+                if (defs.isEmpty()) {
+                    // no common property definitions found -> stop
+                    break;
                 }
             }
-            
-            if (defs.isEmpty()) {
-                // no common property definitions found -> stop
-                break;
+            List<ExtendedPropertyDefinition> propertyDefinitions = new LinkedList<ExtendedPropertyDefinition>();
+            if (defs != null) {
+                for (Map<String, ExtendedPropertyDefinition> props : defs.values()) {
+                    propertyDefinitions.addAll(props.values());
+                }
             }
+            return propertyDefinitions.toArray(new ExtendedPropertyDefinition[propertyDefinitions.size()]);
+        } else {
+            return new ExtendedPropertyDefinition[0];
         }
-        List<ExtendedPropertyDefinition> propertyDefinitions = new LinkedList<ExtendedPropertyDefinition>();
-        for (Map<String, ExtendedPropertyDefinition> props : defs.values()) {
-            propertyDefinitions.addAll(props.values());
-        }
-
-        return propertyDefinitions.toArray(new ExtendedPropertyDefinition[0]);
     }
 
     public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)

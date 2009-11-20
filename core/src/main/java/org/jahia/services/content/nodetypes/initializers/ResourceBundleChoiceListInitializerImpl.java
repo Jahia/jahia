@@ -33,14 +33,20 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Choice list initializer, based on the resource bundle values lookup.
@@ -49,19 +55,18 @@ import java.util.HashMap;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer {
+public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer,  ChoiceListRenderer {
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
-        String[] constr = epd.getValueConstraints();
         String templatePackageName = context.getSite().getTemplatePackageName();
 
         JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getLocale(),
                                                          context.getSite() != null ? templatePackageName : null);
 
-
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
+            String[] constr = epd.getValueConstraints();
             for (String s : constr) {
                 ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + s, s), new HashMap<String, Object>(),
                                                            new ValueImpl(s, PropertyType.STRING, false));
@@ -77,5 +82,24 @@ public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitia
             }
             return values;
         }
+    }
+
+    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>(1);
+        map.put("displayName", getStringRendering(context, propertyWrapper));
+        return map;
+    }
+
+    public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
+            throws RepositoryException {
+        
+        String propValue = propertyWrapper.getValue().getString();
+        
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource().getLocale(), context
+                .getSite() != null ? context.getSite().getTemplatePackageName() : null);
+        
+        return rb.get(((ExtendedPropertyDefinition) propertyWrapper.getDefinition()).getResourceBundleKey()
+                + "." + propValue, propValue);
     }
 }

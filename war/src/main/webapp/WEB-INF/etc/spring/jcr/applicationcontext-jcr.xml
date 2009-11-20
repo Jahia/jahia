@@ -187,6 +187,7 @@
             <map>
                 <entry key="country" value-ref="countryInitializerRenderer"/>
                 <entry key="flagcountry" value-ref="countryFlagInitializer"/>
+                <entry key="resourceBundle" value-ref="rbInitializer"/>
             </map>
         </property>
     </bean>    

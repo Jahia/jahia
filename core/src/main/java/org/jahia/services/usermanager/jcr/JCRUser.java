@@ -240,8 +240,9 @@ public class JCRUser implements JahiaUser {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
                     if (property != null) {
+                        session.checkout(node);
                         property.remove();
-                        node.save();
+                        session.save();
                         properties = null;
                         userProperties = null;
                         return Boolean.TRUE;
@@ -270,8 +271,9 @@ public class JCRUser implements JahiaUser {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
+                    session.checkout(node);
                     node.setProperty(key, value);
-                    node.save();
+                    session.save();
                     properties = null;
                     userProperties = null;
                     return Boolean.TRUE;

@@ -35,11 +35,9 @@ package org.jahia.services.usermanager.jcr;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -140,17 +138,18 @@ public class JCRGroup extends JahiaGroup {
     public boolean removeProperty(final String key) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
                     if (property != null) {
+                        session.checkout(node);
                         property.remove();
-                        node.save();
+                        session.save();
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
-                 }
-            }).booleanValue();
+                }
+            });
         } catch (RepositoryException e) {
             logger.warn("Error while removing property " + key, e);
         }
@@ -169,11 +168,12 @@ public class JCRGroup extends JahiaGroup {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
+                    session.checkout(node);
                     node.setProperty(key, value);
-                    node.save();
+                    session.save();
                     return Boolean.TRUE;
                 }
-            }).booleanValue();
+            });
         } catch (RepositoryException e) {
             logger.warn("Error while setting property " + key + " with value " + value, e);
         }
@@ -224,13 +224,8 @@ public class JCRGroup extends JahiaGroup {
      *
      * @return int The group homepage id.
      */
-    public int getHomepageID() {
-        try {
-            return ServicesRegistry.getInstance().getJahiaSitesService().getSite(mSiteID).getHomePageID();
-        } catch (JahiaException e) {
-            logger.error("Error while retrieving home page ID", e);
-        }
-        return 0;
+    public int getHomepageID() {        
+        return -1;
     }
 
     /**

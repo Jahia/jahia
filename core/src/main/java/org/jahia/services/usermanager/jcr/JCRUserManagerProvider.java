@@ -133,7 +133,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     String l_password;
                     if (!password.startsWith("SHA-1:")) {
                         // Encrypt the password
-                        l_password = encryptPassword(password).substring(6);
+                        l_password = encryptPassword(password);
                     } else {
                         l_password = password.substring(6);
                     }

@@ -63,12 +63,12 @@
     <c:forEach items="${results.nodes}" var="job" varStatus="status">
         <template:module node="${job}" template="list"/>
         <c:if test="${status.last}">
-            <template:module node="${job.placeholder}" template="list"/>
+            <template:module node="${job.placeholder}" template="list" editable="true"/>
         </c:if>
     </c:forEach>
     <c:if test="${results.nodes.size == 0 && empty param.jobsSearchKeyword}">
         <c:forEach items="${currentNode.editableChildren}" var="job">
-            <template:module node="${job}" template="list"/>
+            <template:module node="${job}" template="list" editable="true"/>
         </c:forEach>
     </c:if>
     <c:if test="${results.nodes.size == 0 && not empty param.jobsSearchKeyword}">

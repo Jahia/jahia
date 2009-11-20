@@ -1,1 +1,10 @@
 Jahia Pages Templates
+
+* Goals Overview
+
+    The Jahia Pages module is a page display module. It allows you to define display for content of jnt:page types.
+    This module uses the global usages of jahia rendering system.
+
+    * Usage
+
+      You can choose pages as template set to create a new site in the site manager.

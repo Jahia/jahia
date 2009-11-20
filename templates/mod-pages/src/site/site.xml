@@ -27,7 +27,12 @@ under the License.
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
             <item name="Usage" href="./usage.html" collapse="false">
-                <item name="Default Pages Templates" href="./usage.html#Top"/>
+                <item name="Default Pages Templates" href="./usage.html#top"/>
+            </item>
+            <item name="Theme" href="./theme.html" collapse="false">
+                <item name="Introduction" href="./theme.html#top"/>
+                <item name="Introduction" href="./theme.html#create"/>
+                <item name="Introduction" href="./theme.html#deploy"/>
             </item>
         </menu>
         <menu ref="modules"/>

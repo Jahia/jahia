@@ -1,0 +1,34 @@
+Usage of themes in Jahia
+
+  Themes allow you to change the display (css mostly) of a website.
+
+  {{{top} Introduction }}
+  {{{create} Creating a theme}}
+  {{{deploy} Deploying a theme}}
+
+* {top} Introduction
+
+  Theme is a combination of css files stored in the JCR. Theses css are loaded after all other css to make the inheritance
+  works.
+
+* {create} Creating a theme
+
+  A theme should have this structure :
+
+  +ThemeRootDirectory/
+  | - cssfile1.css
+  | - cssfile2.css
+  | +imgDirectory/
+  | | - img1.png
+  | | - img1.png
+
+  The theme name will be the ThemeRootDirectory name by default. When uploaded, you will be able to change it and make
+  it internationalized.
+
+  * {deploy} Deploying a theme
+
+  If you create your theme offline, you can create a zip archive of your theme directory and upload it in the Content Manager in
+  sites/siteName/themes directory. Check unzip file box in the select box.
+
+  If you create it online and want to put it on other website, you can export the theme from the Content Manager and import it in the
+  theme directory of your destination server.

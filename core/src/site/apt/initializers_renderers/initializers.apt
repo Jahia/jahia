@@ -1,6 +1,6 @@
 Jahia Crazy Jane - Core Module - ChoiceList Initializers
 
-  ChoiceList initializers allows developer to extends the way you populate dropdown list (or combobox) for end users when editing or creating content.
+  ChoiceList initializers allow developers to extendsthe way you populate dropdown list (or combobox) for end users when editing or creating content.
   Jahia allows you to define in your definitions, that a property must use a choicelist (will be rendered by a dropdown list) to specify its value.
 
   The simplest example is to use choicelist for the selector and to list the allowed values in the constraint of the definition :

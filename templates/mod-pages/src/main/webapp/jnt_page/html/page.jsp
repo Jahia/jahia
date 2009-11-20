@@ -1,7 +1,5 @@
 <%@ include file="../../common/declarations.jspf" %>
 <jsp:useBean id="colMap" class="java.util.LinkedHashMap"/>
-<c:set target="${colMap}" property="col1" value="10"/>
-<c:set target="${colMap}" property="col2" value="6"/>
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:gridPage')}">
 	<jcr:nodeProperty node="${currentNode}" name="column" var="column"/>
 	<c:choose>
@@ -53,6 +51,10 @@
 	        <c:set target="${colMap}" property="col2" value="4"/>
 	        <c:set target="${colMap}" property="col3" value="4"/>
 	    </c:when>
+        <c:otherwise>
+            <c:set target="${colMap}" property="col1" value="10"/>
+            <c:set target="${colMap}" property="col2" value="6"/>
+        </c:otherwise>
 	</c:choose>
 </c:if>
 

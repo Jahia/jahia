@@ -85,6 +85,7 @@
 [jnt:pageTagging] > jnt:content, mix:title, jmix:interactiveContent
 
 [jnt:tagCloud] > jnt:content, mix:title, jmix:interactiveContent
+ - j:usageThreshold (long) = 1
 
 [jnt:navBar] > jnt:content, mix:title, jmix:interactiveContent
  - j:startLevel (long) = 1

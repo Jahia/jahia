@@ -206,7 +206,7 @@
                         <executions>
                             <execution>
                                 <id>checklogs</id>
-                                <phase>verify</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>check</goal>
                                 </goals>

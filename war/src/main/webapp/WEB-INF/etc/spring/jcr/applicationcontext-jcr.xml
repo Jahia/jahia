@@ -32,6 +32,12 @@
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.CacheListener"/>
+                        <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
+                            <property name="loggingService" ref="loggingService"/>
+                            <property name="nodeTypesList">
+                                <list/>
+                            </property>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">

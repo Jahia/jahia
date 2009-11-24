@@ -32,10 +32,10 @@
  */
 package org.jahia.services.logging;
 
-import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.profiler.Profiler;
+import org.slf4j.profiler.ProfilerRegistry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private transient static Logger metricsLogger = LoggerFactory.getLogger("loggingService");
-    private transient static Logger logger = LoggerFactory.getLogger(MetricsLoggingServiceImpl.class);
+    private transient static Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
     private Map<String, String> logTemplatesMap;
     private static MetricsLoggingServiceImpl instance;
     private final static String headerTemplate = "user {} ip {} path {} nodetype {} ";
@@ -65,14 +65,10 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         }
     }
 
-    public void logContentEvent(JahiaUser user, String ipAddress, String path, String nodeType, String logTemplate, String... args) {
-        Profiler profiler = new Profiler("MetricsLogging");
-        profiler.setLogger(logger);
-        profiler.start("find log templates");
+    public void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args) {
         String template = logTemplatesMap.get(logTemplate);
-        profiler.start("fill parameters");
         String[] templateParameters = new String[4+args.length];
-        templateParameters[0] = user.getName();
+        templateParameters[0] = user;
         templateParameters[1] = ipAddress;
         templateParameters[2] = path;
         templateParameters[3] = nodeType;
@@ -80,11 +76,27 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         for (String arg : args) {
             templateParameters[i++] = arg;
         }
-        profiler.start("log event");
         metricsLogger.trace(template,templateParameters);
-        profiler.log();
     }
 
+    public void startProfiler(String profilerName,String action) {
+        final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
+        Profiler profiler = profilerRegistry.get(profilerName);
+        if(profiler == null) {
+            profiler = new Profiler(profilerName);
+            profiler.setLogger(profilerMetricsLogger);
+            profilerRegistry.put(profilerName,profiler);
+        }
+        profiler.start(action);
+    }
+
+    public void stopProfiler(String profilerName) {
+        final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
+        Profiler profiler = profilerRegistry.get(profilerName);
+        if(profiler != null) {
+            profiler.stop().log();
+        }
+    }
 
     public static MetricsLoggingServiceImpl getInstance() {
         if (instance == null) {

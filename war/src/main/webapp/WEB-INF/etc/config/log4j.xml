@@ -17,7 +17,7 @@
 
     <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="jahia.log"/>
-        <param name="Threshold" value="debug"/>
+        <param name="Threshold" value="info"/>
         <param name="MaxFileSize" value="1MB"/>
         <param name="MaxBackupIndex" value="2"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -27,6 +27,31 @@
             -->
             <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
         </layout>
+    </appender>
+
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="info"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"/>
+            <!-- another useful pattern to see date time,class, lines
+            BUT cpu intensive
+            -->
+            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+        </layout>
+    </appender>
+
+    <appender name="profilerLogs" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="jahia_profiler.log"/>
+        <param name="Threshold" value="debug"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="debug"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+
     </appender>
 
     <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
@@ -41,17 +66,6 @@
         </filter>
         <filter class="org.apache.log4j.varia.DenyAllFilter"/>
 
-    </appender>
-
-    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
-        <param name="Threshold" value="debug"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"/>
-            <!-- another useful pattern to see date time,class, lines
-            BUT cpu intensive
-            -->
-            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
-        </layout>
     </appender>
 
     <logger name="REQUEST">
@@ -79,12 +93,11 @@
 
     <category name="org.jahia.bin.errors">
         <priority value="warn"/>
-    </category>    
+    </category>
 
     <category name="org.apache.jackrabbit.core.state.ItemStateMap">
         <priority value="error"/>
     </category>
-
 
 
     <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
@@ -153,7 +166,7 @@ think twice before changing it! -->
     <category name="org.jboss.cache.transaction.DummyTransactionManager">
         <priority value="fatal"/>
     </category>
-    
+
     <category name="org.jahia.services.events">
         <priority value="info"/>
     </category>
@@ -180,8 +193,9 @@ think twice before changing it! -->
         <appender-ref ref="hitAccess"/>
     </category>
 
-    <category name="org.jahia.services.logging.MetricsLoggingServiceImpl">
+    <category name="profilerLoggingService">
         <priority value="debug"/>
+        <appender-ref ref="profilerLogs"/>
     </category>
 
     <root>

@@ -102,7 +102,7 @@ public class RenderService extends JahiaService {
         pushAttribute(request, "currentResource", resource, old);
         pushAttribute(request, "scriptInfo", script.getTemplate().getInfo(), old);
         pushAttribute(request, "currentModule", script.getTemplate().getModule(), old);
-        loggingService.logContentEvent(context.getUser(),context.getRequest().getRemoteAddr(),node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
+        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
         Map<String,Object> params = new HashMap<String,Object>();
         Map<String, Object> moduleParams = context.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {

@@ -5,7 +5,11 @@
     <bean id="loggingService" class="org.jahia.services.logging.MetricsLoggingServiceImpl" factory-method="getInstance">
         <property name="logTemplatesMap">
             <map>
-                <entry key="moduleViewed" value="viewed with template {}"/>
+                <entry key="moduleViewed" value="module viewed with template {}"/>
+                <entry key="pageViewed" value="page viewed with {} from {}"/>
+                <entry key="nodeUpdated" value="node updated with {}"/>
+                <entry key="nodeCreated" value="node created with {}"/>
+                <entry key="nodeDeleted" value="node deleted"/>
             </map>
         </property>
     </bean>

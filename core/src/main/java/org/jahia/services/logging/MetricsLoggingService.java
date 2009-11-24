@@ -32,8 +32,6 @@
  */
 package org.jahia.services.logging;
 
-import org.jahia.services.usermanager.JahiaUser;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -42,5 +40,7 @@ import org.jahia.services.usermanager.JahiaUser;
  *        Created : 24 nov. 2009
  */
 public interface MetricsLoggingService {
-    void logContentEvent(JahiaUser user, String ipAddress, String path, String nodeType, String logTemplate, String... args);
+    void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args);
+    void startProfiler(String profilerName,String action);
+    void stopProfiler(String profilerName);
 }

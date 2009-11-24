@@ -33,11 +33,13 @@ package org.jahia.bin;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -45,9 +47,8 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.data.JahiaData;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -86,6 +87,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String STAY_ON_NODE = "stayOnNode";
     public static final String METHOD_TO_CALL = "methodToCall";
+
+    private MetricsLoggingService loggingService;
 
     static {
         reservedParameters = new HashSet<String>();
@@ -143,7 +146,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, TemplateNotFoundException, IOException {
         String out = RenderService.getInstance().render(resource, renderContext);
-
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
@@ -154,6 +156,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         PrintWriter writer = resp.getWriter();
         writer.print(out);
         writer.close();
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),resource.getNode().getPath(),resource.getNode().getPrimaryNodeType().getName(),"pageViewed",req.getHeader("User-Agent"),req.getHeader("Referer"));
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
@@ -183,6 +186,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         } else {
             performRedirect(null, null, req, resp);
         }
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),path,node.getPrimaryNodeType().getName(),"nodeUpdated",
+                                           new JSONObject(req.getParameterMap()).toString());
     }
 
     private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
@@ -219,6 +224,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             String nodeType = req.getParameter(NODE_TYPE);
             if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
+                return;
             }
             Node newNode;
             String nodeName = req.getParameter(NODE_NAME);
@@ -255,6 +261,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         resp.setStatus(HttpServletResponse.SC_CREATED);
         performRedirect(url, path, req, resp);
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),path,req.getParameter(NODE_TYPE),"nodeCreated",
+                                       new JSONObject(req.getParameterMap()).toString());
     }
 
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
@@ -262,7 +270,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         Node node = session.getNode(path);
         Node parent = node.getParent();
         node.remove();
-        parent.save();
+        session.save();
         String url = parent.getPath();
         session.save();
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -528,5 +536,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 	    // TODO move this into configuration
 	    return "/cms/render";
     }
-	
+
+    public void setLoggingService(MetricsLoggingService loggingService) {
+        this.loggingService = loggingService;
+    }
 }

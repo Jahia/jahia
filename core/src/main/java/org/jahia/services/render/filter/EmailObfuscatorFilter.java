@@ -9,11 +9,9 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 24, 2009
- * Time: 5:42:39 PM
- * To change this template use File | Settings | File Templates.
+ * Simple email obfuscation filter. Replaces all mail addresses by entity-encoded values.
+ *
+ * Based on http://obfuscatortool.sourceforge.net
  */
 public class EmailObfuscatorFilter extends AbstractFilter {
 
@@ -49,8 +47,8 @@ public class EmailObfuscatorFilter extends AbstractFilter {
     // compile version to check email within string
     public static final Pattern VALID_EMAIL_IN_STRING_SIMPLE = Pattern.compile(".*" + addrSpec + ".*", Pattern.DOTALL);
 
-    public String doFilter(RenderContext renderContext, Resource resource, String output, RenderChain chain) throws IOException, RepositoryException {
-        String out = chain.doFilter(renderContext, resource, output);
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+        String out = chain.doFilter(renderContext, resource);
 
         StringBuffer wholeHtml = new StringBuffer(out);
 

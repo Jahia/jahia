@@ -143,7 +143,7 @@ public class RenderService extends JahiaService {
 
             renderChain.addFilter(new TemplateScriptFilter());
 
-            output = renderChain.doFilter(context, resource, output);
+            output = renderChain.doFilter(context, resource);
         } finally {
             popAttributes(request, old);
         }

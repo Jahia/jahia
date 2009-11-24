@@ -11,11 +11,10 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 24, 2009
- * Time: 4:31:24 PM
- * To change this template use File | Settings | File Templates.
+ * MetricsLoggingFilter
+ *
+ * Calls the logging service to log the display of a resource.
+ * Also initializes profiling information.
  */
 public class MetricsLoggingFilter extends AbstractFilter {
     private MetricsLoggingService loggingService;
@@ -24,14 +23,14 @@ public class MetricsLoggingFilter extends AbstractFilter {
         this.loggingService = loggingService;
     }
 
-    public String doFilter(RenderContext context, Resource resource, String output, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext context, Resource resource, RenderChain chain) throws IOException, RepositoryException {
         JCRNodeWrapper node = resource.getNode();
 
-        String profilerName = "render module " + resource.getResolvedTemplate();
+        String profilerName = "render module " + node.getPath();
         Profiler profiler = loggingService.createNestedProfiler("MAIN", profilerName);
-        profiler.start("render node "+node.getPath());
+        profiler.start("render filters for "+node.getPath());
         context.getRequest().setAttribute("profiler", profiler);
-        output = chain.doFilter(context, resource, output);
+        String output = chain.doFilter(context, resource);
 
         Script script = (Script) context.getRequest().getAttribute("script");
 

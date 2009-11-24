@@ -8,15 +8,14 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 24, 2009
- * Time: 4:47:40 PM
- * To change this template use File | Settings | File Templates.
+ * ModuleFilter
+ *
+ * Composite filter containing all filters specifics to the module and/or the template to display.
+ *
  */
 public class ModuleFilter extends AbstractFilter {
 
-    public String doFilter(RenderContext renderContext, Resource resource, String output, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
 
         String addFilter = script.getTemplate().getProperties().getProperty("addFilter");
@@ -27,6 +26,6 @@ public class ModuleFilter extends AbstractFilter {
 //                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //            }
 //        }
-        return chain.doFilter(renderContext, resource, output);
+        return chain.doFilter(renderContext, resource);
     }
 }

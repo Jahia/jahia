@@ -12,16 +12,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 24, 2009
- * Time: 12:31:03 PM
- * To change this template use File | Settings | File Templates.
+ * OptionsFilter
+ *
+ * Filter that executes option mixin added to the current resource.
+ *
+ * The filter first fills in the available options in the resource, and add the remaining options (that were not
+ * displayed with the OptionTag) to the output. Depending on the value of the renderOption parameter, options will be
+ * added before or after the output.
+ *
  */
 public class OptionsFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(OptionsFilter.class);
 
-    public String doFilter(RenderContext renderContext, Resource resource, String output, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
         JCRNodeWrapper node = resource.getNode();
 
         ExtendedNodeType[] mixinNodeTypes = null;
@@ -41,7 +44,7 @@ public class OptionsFilter extends AbstractFilter {
             }
         }
 
-        output = chain.doFilter(renderContext, resource, output);
+        String output = chain.doFilter(renderContext, resource);
         
         Script script;
         if (resource.hasOptions()) {
@@ -55,9 +58,9 @@ public class OptionsFilter extends AbstractFilter {
                     script = service.resolveScript(wrappedResource, renderContext);
                     request.setAttribute("optionsAutoRendering", true);
                     if ("before".equals(request.getAttribute("renderOptions"))) {
-                        output = output + script.execute();
+                        output = script.execute() + output;
                     } else {
-                        output = script.execute() +output;
+                        output = output + script.execute();
                     }
                 } catch (IOException e) {
                     logger.error("Cannot execute wrapper " + wrapper, e);

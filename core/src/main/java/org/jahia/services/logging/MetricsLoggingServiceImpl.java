@@ -39,6 +39,7 @@ import org.slf4j.profiler.ProfilerRegistry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Stack;
 
 
 /**
@@ -54,6 +55,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private Map<String, String> logTemplatesMap;
     private static MetricsLoggingServiceImpl instance;
     private final static String headerTemplate = "user {} ip {} path {} nodetype {} ";
+    private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
 
     public MetricsLoggingServiceImpl() {
     }
@@ -61,31 +63,32 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     public void setLogTemplatesMap(Map<String, String> logTemplatesMap) {
         this.logTemplatesMap = new LinkedHashMap<String, String>(logTemplatesMap.size());
         for (Map.Entry<String, String> entry : logTemplatesMap.entrySet()) {
-            this.logTemplatesMap.put(entry.getKey(),headerTemplate+entry.getValue());
+            this.logTemplatesMap.put(entry.getKey(), headerTemplate + entry.getValue());
         }
     }
 
-    public void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args) {
+    public void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate,
+                                String... args) {
         String template = logTemplatesMap.get(logTemplate);
-        String[] templateParameters = new String[4+args.length];
+        String[] templateParameters = new String[4 + args.length];
         templateParameters[0] = user;
         templateParameters[1] = ipAddress;
         templateParameters[2] = path;
         templateParameters[3] = nodeType;
-        int i=4;
+        int i = 4;
         for (String arg : args) {
             templateParameters[i++] = arg;
         }
-        metricsLogger.trace(template,templateParameters);
+        metricsLogger.trace(template, templateParameters);
     }
 
-    public void startProfiler(String profilerName,String action) {
+    public void startProfiler(String profilerName, String action) {
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
-        if(profiler == null) {
+        if (profiler == null) {
             profiler = new Profiler(profilerName);
             profiler.setLogger(profilerMetricsLogger);
-            profilerRegistry.put(profilerName,profiler);
+            profiler.registerWith(profilerRegistry);
         }
         profiler.start(action);
     }
@@ -93,14 +96,50 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     public void stopProfiler(String profilerName) {
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
-        if(profiler != null) {
+        if (profiler != null) {
             profiler.stop().log();
+        }
+        profilerRegistry.clear();
+        threadLocal.set(null);
+    }
+
+    public Profiler createNestedProfiler(String parentProfilerName, String nestedProfilerName) {
+        Stack<Profiler> profilers;
+        if (threadLocal.get() == null) {
+            profilers = new Stack<Profiler>();
+            final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
+            profilers.push(profilerRegistry.get(parentProfilerName));
+            threadLocal.set(profilers);
+        } else {
+            profilers = threadLocal.get();
+        }
+        final Profiler profiler = profilers.peek();
+        Profiler nestedProfiler = profiler.startNested(nestedProfilerName);
+        profilers.push(nestedProfiler);
+        return nestedProfiler;
+    }
+
+    public void stopNestedProfiler(String parentProfilerName, String nestedProfilerName) {
+        Stack<Profiler> profilers = threadLocal.get();
+        final Profiler profiler = profilers.pop();
+        if (profiler.getName().equals(nestedProfilerName)) {
+            profiler.stop();
+        }
+    }
+
+    public void startProfiler(String profilerName) {
+        final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
+        Profiler profiler = profilerRegistry.get(profilerName);
+        if (profiler == null) {
+            profiler = new Profiler(profilerName);
+            profiler.setLogger(profilerMetricsLogger);
+            profiler.registerWith(profilerRegistry);
         }
     }
 
     public static MetricsLoggingServiceImpl getInstance() {
         if (instance == null) {
-            instance = new MetricsLoggingServiceImpl();            
+            instance = new MetricsLoggingServiceImpl();
         }
         return instance;
     }

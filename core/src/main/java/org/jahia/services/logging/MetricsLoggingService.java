@@ -32,6 +32,8 @@
  */
 package org.jahia.services.logging;
 
+import org.slf4j.profiler.Profiler;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -43,4 +45,8 @@ public interface MetricsLoggingService {
     void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args);
     void startProfiler(String profilerName,String action);
     void stopProfiler(String profilerName);
+    Profiler createNestedProfiler(String parentProfilerName, String nestedProfilerName);
+    void stopNestedProfiler(String parentProfilerName, String nestedProfilerName);
+
+    void startProfiler(String profilerName);
 }

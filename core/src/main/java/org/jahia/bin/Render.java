@@ -145,7 +145,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, TemplateNotFoundException, IOException {
-//        loggingService.startProfiler("MAIN", "doGet");
+        loggingService.startProfiler("MAIN");
         String out = RenderService.getInstance().render(resource, renderContext);
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
@@ -157,6 +157,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         PrintWriter writer = resp.getWriter();
         writer.print(out);
         writer.close();
+        loggingService.stopProfiler("MAIN");
         loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),resource.getNode().getPath(),resource.getNode().getPrimaryNodeType().getName(),"pageViewed",req.getHeader("User-Agent"),req.getHeader("Referer"));
     }
 

@@ -81,10 +81,7 @@ public class OptionTag extends BodyTagSupport {
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
                 wrappedResource.setWrappedMixinType(mixinNodeType);
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
-                JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-                pageContext.setAttribute("currentModule",script.getTemplate().getModule(),PageContext.REQUEST_SCOPE);
                 pageContext.getOut().write(script.execute());
-                pageContext.setAttribute("currentModule",templatesPackage,PageContext.REQUEST_SCOPE);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

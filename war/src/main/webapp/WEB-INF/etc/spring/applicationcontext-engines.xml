@@ -11,13 +11,10 @@
     <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine">
     	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
     </bean>
-    <bean id="siteMapEngine" class="org.jahia.engines.sitemap.SiteMap_Engine" />
     <bean id="selectPageEngine" class="org.jahia.engines.selectpage.SelectPage_Engine" />
     <bean id="templateEngine" class="org.jahia.engines.template.Template_Engine" />
     <bean id="selectUGEngine" class="org.jahia.engines.users.SelectUG_Engine" />
     <bean id="lockEngine" class="org.jahia.engines.lock.LockEngine" />
-    <bean id="editUserPreferencesEngine" class="org.jahia.engines.users.EditUserPreferences_Engine" />
-    <bean id="newUserRegistrationEngine" class="org.jahia.engines.users.NewUserRegistration_Engine" />
     <bean id="mySettingsEngine" class="org.jahia.engines.mysettings.MySettingsEngine" />
     <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
@@ -30,13 +27,10 @@
                 <ref bean="coreEngine" />
                 <ref bean="loginEngine" />
                 <ref bean="logoutEngine" />
-                <ref bean="siteMapEngine" />
                 <ref bean="selectPageEngine" />
                 <ref bean="templateEngine" />
                 <ref bean="selectUGEngine" />
                 <ref bean="lockEngine" />
-                <ref bean="editUserPreferencesEngine" />
-                <ref bean="newUserRegistrationEngine" />
                 <ref bean="mySettingsEngine" />
                 <ref bean="exportEngine" />
                 <ref bean="applicationEngine" />

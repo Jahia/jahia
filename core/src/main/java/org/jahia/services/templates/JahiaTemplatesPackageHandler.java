@@ -39,14 +39,6 @@
 
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
@@ -55,9 +47,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 /**
  * This class is responsible for loading data from a Template Jar File
- * 
+ *
  * @author Khue ng
  */
 final class JahiaTemplatesPackageHandler {
@@ -72,9 +72,8 @@ final class JahiaTemplatesPackageHandler {
     /**
      * Extract data from the MANIFEST.MF file and builds the
      * JahiaTemplatesPackage object
-     * 
-     * @param file
-     *            the package file to read
+     *
+     * @param file the package file to read
      */
     private static JahiaTemplatesPackage read(File file) {
 
@@ -87,10 +86,8 @@ final class JahiaTemplatesPackageHandler {
                         manifestFile);
                 Manifest manifest = new Manifest(manifestStream);
                 IOUtils.closeQuietly(manifestStream);
-                String packageName = (String) manifest.getMainAttributes().get(
-                        new Attributes.Name("package-name"));
-                String rootFolder = (String) manifest.getMainAttributes().get(
-                        new Attributes.Name("root-folder"));
+                String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
+                String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
                 if (packageName == null) {
                     packageName = file.getName();
                 }
@@ -98,8 +95,7 @@ final class JahiaTemplatesPackageHandler {
                     rootFolder = file.getName();
                 }
 
-                String depends = (String) manifest.getMainAttributes().get(
-                        new Attributes.Name("depends"));
+                String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
                 if (depends != null) {
                     String[] dependencies = depends.split(",");
                     for (int i = 0; i < dependencies.length; i++) {
@@ -108,8 +104,7 @@ final class JahiaTemplatesPackageHandler {
                     }
                 }
 
-                String imports = (String) manifest.getMainAttributes().get(
-                        new Attributes.Name("initial-imports"));
+                String imports = (String) manifest.getMainAttributes().get(new Attributes.Name("initial-imports"));
                 if (imports != null) {
                     String[] importFiles = imports.split(",");
                     for (String imp : importFiles) {
@@ -175,10 +170,10 @@ final class JahiaTemplatesPackageHandler {
                 }
             }
         }
-        
+
         if (templatePackage.getInitialImports().isEmpty()) {
-            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[] {
-                    "import.xml", "import.zip", "import-*.xml", "import-*.zip" }, IOCase.INSENSITIVE));
+            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                    "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
             Arrays.sort(files);
             for (File importFile : files) {
                 templatePackage.addInitialImport(importFile.getName());
@@ -190,7 +185,7 @@ final class JahiaTemplatesPackageHandler {
 
     /**
      * Returns the Generated JahiaTemplatesPackage Object
-     * 
+     *
      * @return (JahiaTemplatesPackage) the package object
      */
     public static JahiaTemplatesPackage build(File packageSource) {

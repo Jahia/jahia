@@ -60,7 +60,7 @@ Collections.sort(templateList, new LocalizedTemplateNameSorter(new JahiaResource
 <c:set var="templatePackage" value="<%=templatePackage%>"/>
 <c:set var="templateList" value="<%=templateList%>"/>    
 <c:forEach items="${templateList}" var="templateDef">
-  <c:if test="${templateDef.visible && !(templateDef.name == templatePackage.homePageName) && !(templateDef.name == templatePackage.defaultPageName)}">
+  <c:if test="${templateDef.visible}">
     <div class="fieldTitle">
       <fmt:message key="${templateDef.displayName}"/>
     </div>

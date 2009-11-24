@@ -145,6 +145,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, TemplateNotFoundException, IOException {
+//        loggingService.startProfiler("MAIN", "doGet");
         String out = RenderService.getInstance().render(resource, renderContext);
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");

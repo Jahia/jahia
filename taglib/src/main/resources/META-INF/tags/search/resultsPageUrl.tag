@@ -56,8 +56,8 @@
     JahiaTemplatesPackage templatePackage = templateMgr
             .getTemplatePackage(Utils.getProcessingContext((PageContext) jspContext).getSite().getTemplatePackageName());
 
-    if (templatePackage.getSearchResultsPageName() != null) {
-        path = templateMgr.resolveResourcePath(templatePackage.getSearchResultsPageName(), templatePackage.getName());
-    }
+//    if (templatePackage.getSearchResultsPageName() != null) {
+//        path = templateMgr.resolveResourcePath(templatePackage.getSearchResultsPageName(), templatePackage.getName());
+//    }
     path = path != null ? path : "/engines/search/searchresult_v2.jsp";
 %><c:set var="varName"><%= path %></c:set>

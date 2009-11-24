@@ -9,7 +9,9 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
-import org.jahia.services.logging.MetricsLoggingService;
+import org.jahia.services.render.filter.RenderFilter;
+import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.TemplateScriptFilter;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -44,7 +46,7 @@ public class RenderService extends JahiaService {
 
     private Collection<ScriptResolver> scriptResolvers;
 
-    private MetricsLoggingService loggingService;
+    private List<RenderFilter> filters;
 
     public JCRStoreService getStoreService() {
         return storeService;
@@ -58,8 +60,11 @@ public class RenderService extends JahiaService {
         this.scriptResolvers = scriptResolvers;
     }
 
-    public void setLoggingService(MetricsLoggingService loggingService) {
-        this.loggingService = loggingService;
+    public void setFilters(List<RenderFilter> filters) {
+        this.filters = filters;
+        for (RenderFilter filter : filters) {
+            filter.setService(this);
+        }
     }
 
     public void start() throws JahiaInitializationException {
@@ -87,22 +92,21 @@ public class RenderService extends JahiaService {
             return "loop";
         }
 
-        Script script = resolveScript(resource, context);
+        final Map<String, Object> old = new HashMap<String, Object>();
+        JCRNodeWrapper node = resource.getNode();
 
         request.setAttribute("renderContext", context);
 
-        Map<String, Object> old = new HashMap<String, Object>();
-        JCRNodeWrapper node = resource.getNode();
+        final Script script = resolveScript(resource, context);
 
-        pushAttribute(request, "currentNode", node, old);
-
-        pushAttribute(request, "workspace", node.getSession().getWorkspace().getName(), old);
-        pushAttribute(request, "locale", node.getSession().getWorkspace().getName(), old);
-
-        pushAttribute(request, "currentResource", resource, old);
+        pushAttribute(request, "script", script, old);
         pushAttribute(request, "scriptInfo", script.getTemplate().getInfo(), old);
-        pushAttribute(request, "currentModule", script.getTemplate().getModule(), old);
-        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
+        pushAttribute(request, "currentNode", node, old);
+        pushAttribute(request, "workspace", node.getSession().getWorkspace().getName(), old);
+        pushAttribute(request, "currentResource", resource, old);
+        pushAttribute(request, "url",new URLGenerator(context, resource, storeService), old);
+
+        // Resolve params
         Map<String,Object> params = new HashMap<String,Object>();
         Map<String, Object> moduleParams = context.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
@@ -129,62 +133,17 @@ public class RenderService extends JahiaService {
             pushAttribute(request, entry.getKey(), entry.getValue(), old);
         }
 
-        String skin = (String) params.get("skin");
-        if (!StringUtils.isEmpty(skin) && !skin.equals("none")) {
-            resource.pushWrapper(skin);
-        }
 
-        pushAttribute(request, "url",new URLGenerator(context, resource, storeService), old);
-
-        ExtendedNodeType[] mixinNodeTypes = null;
-
-        if (!params.containsKey("renderOptions") || !params.get("renderOptions").equals("none")) {
-            mixinNodeTypes = node.getMixinNodeTypes();
-            if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
-                for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
-                    final String[] supertypeNames = mixinNodeType.getDeclaredSupertypeNames();
-                    for (String supertypeName : supertypeNames) {
-                        if(supertypeName.equals("jmix:option") && hasTemplate(mixinNodeType, "hidden.options.wrapper"))  {
-                            resource.addOption("hidden.options.wrapper",mixinNodeType);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        String output;
+        String output = "";
         try {
             setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
 
-            context.getResourcesStack().push(resource);
-            String render = script.execute();
-            context.getResourcesStack().pop();
+            RenderChain renderChain = new RenderChain();
+            renderChain.addFilters(filters);
 
-            String options = renderOptions(resource, context, node, "", request, old);
-            if("before".equals(params.get("renderOptions"))) {
-                output = render+options;
-            } else {
-                output = options+render;
-            }
-            while (resource.hasWrapper()) {
-                String wrapper = resource.popWrapper();
-                try {
-                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
-                    if (hasTemplate(node.getPrimaryNodeType(), wrapper)) {
-                        script = resolveScript(wrappedResource, context);
-                        request.setAttribute("wrappedContent", output);
-                        request.setAttribute("currentModule", script.getTemplate().getModule());
-                        output = script.execute();
-                    } else {
-                        logger.warn("Cannot get wrapper "+wrapper);
-                    }
-                } catch (IOException e) {
-                    logger.error("Cannot execute wrapper "+wrapper,e);
-                } catch (TemplateNotFoundException e) {
-                    logger.debug("Cannot find wrapper "+wrapper,e);
-                }
-            }
+            renderChain.addFilter(new TemplateScriptFilter());
+
+            output = renderChain.doFilter(context, resource, output);
         } finally {
             popAttributes(request, old);
         }
@@ -193,31 +152,6 @@ public class RenderService extends JahiaService {
             ((Resource)request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
         }
 
-        return output;
-    }
-
-    private String renderOptions(Resource resource, RenderContext context, JCRNodeWrapper node, String output,
-                                 HttpServletRequest request, Map<String, Object> old) throws RepositoryException {
-        Script script;
-        if (resource.hasOptions()) {
-            List<Resource.Option> options = resource.getOptions();
-            Collections.sort(options);
-            for (Resource.Option option : options) {
-                String wrapper = option.getWrapper();
-                try {
-                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
-                    wrappedResource.setWrappedMixinType(option.getNodeType());
-                    pushAttribute(request,"optionsAutoRendering",true,old);
-                    script = resolveScript(wrappedResource, context);
-                    request.setAttribute("currentModule", script.getTemplate().getModule());
-                    output += script.execute();
-                } catch (IOException e) {
-                    logger.error("Cannot execute wrapper " + wrapper, e);
-                } catch (TemplateNotFoundException e) {
-                    logger.debug("Cannot find wrapper " + wrapper, e);
-                }
-            }
-        }
         return output;
     }
 
@@ -275,7 +209,7 @@ public class RenderService extends JahiaService {
         }
     }
 
-    private boolean hasTemplate(ExtendedNodeType nt, String key) {
+    public boolean hasTemplate(ExtendedNodeType nt, String key) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
             if (scriptResolver.hasTemplate(nt,key)) {
                 return true;
@@ -299,4 +233,5 @@ public class RenderService extends JahiaService {
         }
         return set;
     }
+
 }

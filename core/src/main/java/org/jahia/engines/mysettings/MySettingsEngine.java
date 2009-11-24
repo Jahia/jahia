@@ -425,16 +425,16 @@ public class MySettingsEngine implements JahiaEngine {
         JahiaTemplatesPackage templatePackage = templateMgr
                 .getTemplatePackage(ctx.getSite().getTemplatePackageName());
 
-        if (templatePackage.getMySettingsPageName() != null) {
-            path = templateMgr.resolveResourcePath(templatePackage
-                    .getMySettingsPageName(), templatePackage.getName());
-        } else {
+//        if (templatePackage.getMySettingsPageName() != null) {
+//            path = templateMgr.resolveResourcePath(templatePackage
+//                    .getMySettingsPageName(), templatePackage.getName());
+//        } else {
             String jspSiteMapFileName = ctx.getPage().getPageTemplate()
                     .getSourcePath();
             path = jspSiteMapFileName.substring(0,
                     jspSiteMapFileName.lastIndexOf("/") + 1)
                     + path;
-        }
+//        }
 
         return path;
     }
@@ -448,16 +448,16 @@ public class MySettingsEngine implements JahiaEngine {
         JahiaTemplatesPackage templatePackage = templateMgr
                 .getTemplatePackage(ctx.getSite().getTemplatePackageName());
 
-        if (templatePackage.getMySettingsSuccessPageName() != null) {
-            path = templateMgr.resolveResourcePath(templatePackage
-                    .getMySettingsSuccessPageName(), templatePackage.getName());
-        } else {
+//        if (templatePackage.getMySettingsSuccessPageName() != null) {
+//            path = templateMgr.resolveResourcePath(templatePackage
+//                    .getMySettingsSuccessPageName(), templatePackage.getName());
+//        } else {
             String jspSiteMapFileName = ctx.getPage().getPageTemplate()
                     .getSourcePath();
             path = jspSiteMapFileName.substring(0,
                     jspSiteMapFileName.lastIndexOf("/") + 1)
                     + path;
-        }
+//        }
 
         return path;
     }

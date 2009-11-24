@@ -99,26 +99,6 @@ public class JahiaTemplatesPackage {
 
     private String rootFolderPath;
 
-    private JahiaTemplateDef homePageTemplate;
-
-    private String homePageName;
-
-    private JahiaTemplateDef defaultPageTemplate;
-
-    private String defaultPageName;
-
-    private String mySettingsPageName;
-
-    private String mySettingsSuccessPageName;
-    
-    private String newUserRegistrationPageName;
-
-    private String newUserRegistrationSuccessPageName;    
-    
-    private String sitemapPageName;    
-
-    private String searchResultsPageName;
-
     private String resourceBundleName;
 
     private List<String> definitionsFile = new LinkedList<String>();
@@ -248,20 +228,6 @@ public class JahiaTemplatesPackage {
     public void setThumbnail(String val) {
 
         m_Thumbnail = val;
-    }
-
-
-    /**
-     * Return the home page template.
-     *
-     * @return the Home page template or null if no defined home page template
-     */
-    public JahiaTemplateDef getHomePageTemplate() {
-        return homePageTemplate;
-    }
-
-    public JahiaTemplateDef getDefaultPageTemplate() {
-        return defaultPageTemplate;
     }
 
     /**
@@ -419,16 +385,6 @@ public class JahiaTemplatesPackage {
             }
             templatesReadOnly = Collections.unmodifiableMap(tmpMap);
 
-            homePageTemplate = homePageName != null ? templates
-                    .get(homePageName) : null;
-            defaultPageTemplate = defaultPageName != null ? templates
-                    .get(defaultPageName) : null;
-
-            if (templateListReadOnly.size() > 0) {
-                if (homePageTemplate == null) homePageTemplate = templateListReadOnly.get(0);
-                if (defaultPageTemplate == null) defaultPageTemplate = templateListReadOnly.get(0);
-            }
-
             changesMade = false;
         }
     }
@@ -501,40 +457,6 @@ public class JahiaTemplatesPackage {
         this.description = description;
     }
 
-    public String getHomePageName() {
-        return homePageName;
-    }
-
-    public void setHomePageName(String homePageName) {
-        this.homePageName = homePageName;
-        changesMade = true;
-    }
-
-    public String getDefaultPageName() {
-        return defaultPageName;
-    }
-
-    public void setDefaultPageName(String defaultPageName) {
-        this.defaultPageName = defaultPageName;
-        changesMade = true;
-    }
-
-    public String getMySettingsPageName() {
-        return mySettingsPageName;
-    }
-
-    public void setMySettingsPageName(String mySettingsPageName) {
-        this.mySettingsPageName = mySettingsPageName;
-    }
-
-    public String getSearchResultsPageName() {
-        return searchResultsPageName;
-    }
-
-    public void setSearchResultsPageName(String searchResultsPageName) {
-        this.searchResultsPageName = searchResultsPageName;
-    }
-
     public String getResourceBundleName() {
         return resourceBundleName;
     }
@@ -559,26 +481,6 @@ public class JahiaTemplatesPackage {
         rulesFiles.add(rulesFile);
     }
 
-    public String getMySettingsSuccessPageName() {
-        return mySettingsSuccessPageName;
-    }
-
-    public void setMySettingsSuccessPageName(String mySettingsSuccessPageName) {
-        this.mySettingsSuccessPageName = mySettingsSuccessPageName;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public String getProperty(String key) {
-        return properties.get(key);
-    }
-
-    public String addProperty(String key, String value) {
-        return properties.put(key, value);
-    }
-
     public List<String> getResourceBundleHierarchy() {
         return resourceBundleHierarchy;
     }
@@ -587,32 +489,6 @@ public class JahiaTemplatesPackage {
         getHierarchy().clear();
         getLookupPath().clear();
         getResourceBundleHierarchy().clear();
-    }
-
-    public void setNewUserRegistrationPageName(
-            String newUserRegistrationPageName) {
-        this.newUserRegistrationPageName = newUserRegistrationPageName;
-    }
-
-    public String getNewUserRegistrationPageName() {
-        return newUserRegistrationPageName;
-    }
-
-    public void setNewUserRegistrationSuccessPageName(
-            String newUserRegistrationSuccessPageName) {
-        this.newUserRegistrationSuccessPageName = newUserRegistrationSuccessPageName;
-    }
-
-    public String getNewUserRegistrationSuccessPageName() {
-        return newUserRegistrationSuccessPageName;
-    }
-
-    public void setSitemapPageName(String sitemapPageName) {
-        this.sitemapPageName = sitemapPageName;
-    }
-
-    public String getSitemapPageName() {
-        return sitemapPageName;
     }
 
     @Override

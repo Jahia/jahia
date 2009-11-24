@@ -42,6 +42,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -177,6 +178,8 @@ public class RequestDispatcherScript implements Script {
         final StringWriter stringWriter = new StringWriter();
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
 
+        Object oldModule = request.getAttribute("currentModule");
+        request.setAttribute("currentModule",getTemplate().getModule());       
         try {
             rd.include(request, new HttpServletResponseWrapper(response) {
                 @Override
@@ -197,6 +200,8 @@ public class RequestDispatcherScript implements Script {
         } catch (ServletException e) {
             logger.error(e.getMessage(), e);
             throw new IOException(e.getMessage());
+        } finally {
+            request.setAttribute("currentModule",oldModule);
         }
         if (isWriter[0]) {
             return stringWriter.getBuffer().toString();

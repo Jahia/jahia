@@ -397,15 +397,15 @@ public class SkeletonAggregatorValve implements Valve {
         String onError = "full";
         try {
             if (ctx.getSite() != null) {
-                String value = ServicesRegistry.getInstance()
-                        .getJahiaTemplateManagerService().getTemplatePackage(
-                                ctx.getSite().getTemplatePackageName())
-                        .getProperty("boxes.onError");
-                if (value == null) {
-                    // get the default property value from jahia.properties
-                    value = SettingsBean.getInstance().lookupString(
+//                String value = ServicesRegistry.getInstance()
+//                        .getJahiaTemplateManagerService().getTemplatePackage(
+//                                ctx.getSite().getTemplatePackageName())
+//                        .getProperty("boxes.onError");
+//                if (value == null) {
+//                     get the default property value from jahia.properties
+                    String value = SettingsBean.getInstance().lookupString(
                             "templates.boxes.onError");
-                }
+//                }
                 onError = value != null ? value : "full";
             }
         } catch (Exception e) {

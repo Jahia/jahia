@@ -340,6 +340,7 @@
                         <bean class="org.jahia.services.render.RequestDispatcherScriptResolver"/>
                     </list>
                 </property>
+                <property name="loggingService" ref="loggingService"/>
             </bean>
         </property>
 

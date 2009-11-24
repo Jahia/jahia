@@ -16,11 +16,12 @@
     -->
 
     <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="jahia.log"></param>
-        <param name="MaxFileSize" value="1MB"></param>
-        <param name="MaxBackupIndex" value="2"></param>
+        <param name="File" value="jahia.log"/>
+        <param name="Threshold" value="debug"/>
+        <param name="MaxFileSize" value="1MB"/>
+        <param name="MaxBackupIndex" value="2"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"></param>
+            <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"/>
             <!-- another useful pattern to see date time,class, lines
             BUT cpu intensive
             -->
@@ -29,13 +30,13 @@
     </appender>
 
     <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="jahia_access.log"></param>
-        <param name="Threshold" value="debug"></param>
+        <param name="File" value="jahia_access.log"/>
+        <param name="Threshold" value="trace"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d%m%n"></param>
+            <param name="ConversionPattern" value="%d %m%n"/>
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="debug"/>
+            <param name="LevelToMatch" value="trace"/>
             <param name="AcceptOnMatch" value="true"/>
         </filter>
         <filter class="org.apache.log4j.varia.DenyAllFilter"/>
@@ -43,8 +44,9 @@
     </appender>
 
     <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"></param>
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"/>
             <!-- another useful pattern to see date time,class, lines
             BUT cpu intensive
             -->
@@ -53,11 +55,11 @@
     </appender>
 
     <logger name="REQUEST">
-        <appender-ref ref="ROLL"></appender-ref>
+        <appender-ref ref="ROLL"/>
     </logger>
 
     <logger name="SysOut">
-        <appender-ref ref="Console"></appender-ref>
+        <appender-ref ref="Console"/>
     </logger>
 
 
@@ -173,10 +175,19 @@ think twice before changing it! -->
         <appender-ref ref="hitAccess"/>
     </category>
 
+    <category name="loggingService">
+        <priority value="trace"/>
+        <appender-ref ref="hitAccess"/>
+    </category>
+
+    <category name="org.jahia.services.logging.MetricsLoggingServiceImpl">
+        <priority value="debug"/>
+    </category>
+
     <root>
-        <level value="info"></level>
-        <appender-ref ref="ROLL"></appender-ref>
-        <appender-ref ref="Console"></appender-ref>
+        <level value="info"/>
+        <appender-ref ref="ROLL"/>
+        <appender-ref ref="Console"/>
     </root>
 
 </log4j:configuration>

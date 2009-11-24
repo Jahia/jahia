@@ -9,6 +9,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
+import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -43,6 +44,8 @@ public class RenderService extends JahiaService {
 
     private Collection<ScriptResolver> scriptResolvers;
 
+    private MetricsLoggingService loggingService;
+
     public JCRStoreService getStoreService() {
         return storeService;
     }
@@ -53,6 +56,10 @@ public class RenderService extends JahiaService {
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
         this.scriptResolvers = scriptResolvers;
+    }
+
+    public void setLoggingService(MetricsLoggingService loggingService) {
+        this.loggingService = loggingService;
     }
 
     public void start() throws JahiaInitializationException {
@@ -95,7 +102,7 @@ public class RenderService extends JahiaService {
         pushAttribute(request, "currentResource", resource, old);
         pushAttribute(request, "scriptInfo", script.getTemplate().getInfo(), old);
         pushAttribute(request, "currentModule", script.getTemplate().getModule(), old);
-
+        loggingService.logContentEvent(context.getUser(),context.getRequest().getRemoteAddr(),node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
         Map<String,Object> params = new HashMap<String,Object>();
         Map<String, Object> moduleParams = context.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {

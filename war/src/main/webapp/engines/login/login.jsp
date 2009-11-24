@@ -34,6 +34,7 @@
 <%@ page import="org.jahia.params.ParamBean"%>
 <%@ page language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -42,8 +43,6 @@
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
 <utility:setBundle basename="JahiaInternalResources"/>
 <%
-String username = request.getParameter("username");
-username = (username == null) ? "" : username;
 Boolean cookieAuthActivated = (Boolean) request.getAttribute("cookieAuthActivated");
 if (cookieAuthActivated == null) {
     cookieAuthActivated = Boolean.FALSE;
@@ -54,8 +53,8 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
 <!-- Script used by the login jsp -->
 <script type="text/javascript">
 
-  function autoFocus(username) {
-    if (username && username != "null" && username != "") {
+  function autoFocus(usernameNotEmpty) {
+    if (usernameNotEmpty) {
       document.mainForm.password.focus();
     } else {
       document.mainForm.username.focus();
@@ -113,7 +112,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
           columns = 20;
         }
       }%>
-      <input type="text" name="username" size="<%=columns%>" maxlength="250" tabindex="1" style="width:150px;" value="<%=username%>">
+      <input type="text" name="username" size="<%=columns%>" maxlength="250" tabindex="1" style="width:150px;" value="${fn:escapeXml(param.username)}">
     </td>
   </tr>
   <tr>
@@ -162,7 +161,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
 </center>
 <script type="text/javascript">
   try{
-    autoFocus('<%=request.getParameter("username")%>');
+    autoFocus(${not empty param.username});
     function checkParent() {
       // Do nothing to avoid IE closing the window when trying to enter another login.
     }

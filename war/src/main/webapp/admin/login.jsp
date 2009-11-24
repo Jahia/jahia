@@ -32,11 +32,11 @@
 
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="jahiaAdministrationLogin" value="true" />
 <%@include file="/admin/include/header.inc" %>
 <%@page import="java.net.URLEncoder" %>
 <%
-String  jahiaLoginUsername   = (String) request.getAttribute("jahiaLoginUsername");
 String  redirectTo = (String) request.getAttribute("redirectTo");
 if (redirectTo == null) {
 redirectTo = "";
@@ -73,7 +73,7 @@ inputSize = 22;
         <fmt:message key="org.jahia.admin.username.label"/>
       </th>
       <td>
-        <input class="input" type="text" name="login_username" style="width: 150px" size="<%=inputSize%>" maxlength="250" value="<%=jahiaLoginUsername%>" tabindex="1">
+        <input class="input" type="text" name="login_username" style="width: 150px" size="<%=inputSize%>" maxlength="250" value="${fn:escapeXml(jahiaLoginUsername)}" tabindex="1">
       </td>
     </tr>
     <tr>

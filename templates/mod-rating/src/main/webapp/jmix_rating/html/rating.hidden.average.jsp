@@ -74,19 +74,19 @@
 
             <input type="radio" name="rate_avg" value="1" title="Poor"
                    disabled="disabled"
-                   <c:if test="${avg > 1}">checked="checked"</c:if> />
+                   <c:if test="${avg > 1.0}">checked="checked"</c:if> />
             <input type="radio" name="rate_avg" value="2" title="Fair"
                    disabled="disabled"
-                   <c:if test="${avg > 2}">checked="checked"</c:if> />
+                   <c:if test="${avg > 2.0}">checked="checked"</c:if> />
             <input type="radio" name="rate_avg" value="3" title="Average"
                    disabled="disabled"
-                   <c:if test="${avg > 3}">checked="checked"</c:if> />
+                   <c:if test="${avg > 3.0}">checked="checked"</c:if> />
             <input type="radio" name="rate_avg" value="4" title="Good"
                    disabled="disabled"
-                   <c:if test="${avg > 4}">checked="checked"</c:if> />
+                   <c:if test="${avg > 4.0}">checked="checked"</c:if> />
             <input type="radio" name="rate_avg" value="5" title="Excellent"
                    disabled="disabled"
-                   <c:if test="${avg > 5}">checked="checked"</c:if> />
+                   <c:if test="${avg > 5.0}">checked="checked"</c:if> />
 
         </form>
     </div>

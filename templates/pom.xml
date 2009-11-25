@@ -79,6 +79,7 @@
         <module>mod-contact</module>
         <module>mod-test</module>
         <module>mod-pages</module>
+        <module>mod-metrics</module>
     </modules>
 
 

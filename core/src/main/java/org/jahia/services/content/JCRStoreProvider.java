@@ -33,6 +33,8 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
+//import org.apache.jackrabbit.api.XASession;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -57,22 +59,20 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
+import javax.naming.*;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+import javax.transaction.UserTransaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.Transaction;
+import javax.transaction.Status;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A store provider to handle different backend stores within a site. There are multiple 
@@ -108,7 +108,6 @@ public class JCRStoreProvider {
     protected String rmibind;
 
     private boolean running;
-    private Map<String,List<DefaultEventListener>> listeners;
 
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
@@ -237,14 +236,6 @@ public class JCRStoreProvider {
         this.rmibind = rmibind;
     }
 
-    public Map<String, List<DefaultEventListener>> getListeners() {
-        return listeners;
-    }
-
-    public void setListeners(Map<String, List<DefaultEventListener>> listeners) {
-        this.listeners = listeners;
-    }
-
     public JahiaUserManagerService getUserManagerService() {
         return userManagerService;
     }
@@ -345,42 +336,38 @@ public class JCRStoreProvider {
     }
 
     protected void initObservers() throws RepositoryException {
-        if (listeners != null) {
-            for (String ws : listeners.keySet()) {
-                List<DefaultEventListener> l = listeners.get(ws);
+        Set<String> workspaces = service.getListeners().keySet();
+        for (String ws : workspaces) {
+            // This session must not be released
+            final Session session = getSystemSession(null,ws);
+            final Workspace workspace = session.getWorkspace();
 
-                // This session must not be released
-                final Session session = getSystemSession(null,ws);
-                final Workspace workspace = session.getWorkspace();
+            ObservationManager observationManager = workspace.getObservationManager();
+            JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
+            listener.setProvider(this);
+            listener.setWorkspace(ws);
+            observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), true, null, listener.getNodeTypes(), false);
 
-                ObservationManager observationManager = workspace.getObservationManager();
-                for (DefaultEventListener listener : l) {
-                    listener.setProvider(this);
-                    listener.setWorkspace(ws);
-                    observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), true, null, listener.getNodeTypes(), false);
-                }
-
-                // The thread should always checks if the session is still alive and reconnect it if lost
-                running = true;
-                Thread t = new Thread() {
-                    public void run() {
-                        while (isRunning() && session.isLive()) {
-                            try {
-                                session.refresh(false);
-                            } catch (RepositoryException e) {
-                                if (logger != null) logger.error(e.getMessage(), e);
-                            }
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
+            // The thread should always checks if the session is still alive and reconnect it if lost
+            running = true;
+            Thread t = new Thread() {
+                public void run() {
+                    while (isRunning() && session.isLive()) {
+                        try {
+                            session.refresh(false);
+                        } catch (RepositoryException e) {
+                            if (logger != null) logger.error(e.getMessage(), e);
                         }
-                        if (logger != null) logger.info("System session closed, deregister listeners");
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
                     }
-                };
-                t.start();
-            }
+                    if (logger != null) logger.info("System session closed, deregister listeners");
+                }
+            };
+            t.start();
         }
     }
 
@@ -543,7 +530,23 @@ public class JCRStoreProvider {
         }
 
         s = getRepository().login(credentials,workspace);
-
+//        if (s instanceof XASession) {
+//            try {
+//                Context ctx = new InitialContext();
+//                TransactionManager tm = (TransactionManager) ctx.lookup("java:TransactionManager");
+//                Transaction transaction = tm.getTransaction();
+//                if (transaction != null && transaction.getStatus() == Status.STATUS_ACTIVE) {
+//                    transaction.enlistResource(((XASession)s).getXAResource());
+//                    System.out.println("enlisted session into : " + transaction);
+//                } else {
+//                    System.out.println("tx non active");
+//                }
+//            } catch (NamingException e) {
+//            } catch (Exception e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+//
+//        }
         return s;
     }
 
@@ -570,8 +573,21 @@ public class JCRStoreProvider {
 
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
         PropertyDefinition def = prop.getDefinition();
-        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(def.getDeclaringNodeType().getName()).getDeclaredPropertyDefinitionsAsMap().get(def.getName());
-        return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this, epd);
+
+        JCRNodeWrapper jcrNode;
+
+        if (def.getDeclaringNodeType().getName().equals("jnt:translation")) {
+            Node parent = prop.getParent();
+            String lang = parent.getProperty("jcr:language").getString();
+            jcrNode = getNodeWrapper(parent.getParent(), session);
+            String name = StringUtils.substringBefore(prop.getName(), "_" + lang);
+            ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
+            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), session, this), prop, session, this, epd, name);
+        } else {
+            jcrNode = getNodeWrapper(prop.getParent(), session);
+            ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());
+            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), session, this), prop, session, this, epd);
+        }
     }
 
     protected boolean canRegisterCustomNodeTypes() {

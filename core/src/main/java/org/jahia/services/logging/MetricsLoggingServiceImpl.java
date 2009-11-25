@@ -43,9 +43,7 @@ import java.util.Stack;
 
 
 /**
- * his Service offer you to log information for metrics usages (not for information or debugging purposes).
- *
- * Or to profile some operations.
+ * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -143,7 +141,11 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         } else {
             profilers = threadLocal.get();
         }
-        final Profiler profiler = profilers.peek();
+        Profiler profiler = profilers.peek();
+        if(profiler==null) {
+            profiler = startProfiler(parentProfilerName);
+            profilers.push(profiler);
+        }
         Profiler nestedProfiler = profiler.startNested(nestedProfilerName);
         profilers.push(nestedProfiler);
         return nestedProfiler;

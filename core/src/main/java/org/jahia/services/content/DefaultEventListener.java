@@ -49,7 +49,6 @@ import java.util.Set;
 public abstract class DefaultEventListener implements SynchronousEventListener {
 
     protected Set<String> propertiesToIgnore;
-    protected JCRStoreProvider provider;
     protected String workspace;
 
     protected DefaultEventListener() {
@@ -71,10 +70,6 @@ public abstract class DefaultEventListener implements SynchronousEventListener {
         propertiesToIgnore.add(Constants.JCR_BASEVERSION);
         propertiesToIgnore.add(Constants.JCR_FROZENUUID);
 
-    }
-
-    public void setProvider(JCRStoreProvider provider) {
-        this.provider = provider;
     }
 
     public void setWorkspace(String workspace) {

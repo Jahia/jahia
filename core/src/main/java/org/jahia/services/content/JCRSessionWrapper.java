@@ -35,9 +35,10 @@ import org.apache.jackrabbit.commons.xml.DocumentViewExporter;
 import org.apache.jackrabbit.commons.xml.Exporter;
 import org.apache.jackrabbit.commons.xml.ParsingContentHandler;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.jahia.jaas.JahiaLoginModule;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -96,7 +97,11 @@ public class JCRSessionWrapper implements Session {
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRSessionFactory sessionFactory) {
         this.user = user;
         this.credentials = credentials;
-        this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
+        if (workspace == null) {
+            this.workspace = new JCRWorkspaceWrapper("default", this, sessionFactory);
+        } else {
+            this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
+        }
         this.locale = locale;
         this.sessionFactory = sessionFactory;
     }
@@ -224,9 +229,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+        JCRObservationManager.setCurrentSession(this);
         for (Session session : sessions.values()) {
             session.save();
         }
+        JCRObservationManager.consume(this);
     }
 
     public void refresh(boolean b) throws RepositoryException {
@@ -245,7 +252,9 @@ public class JCRSessionWrapper implements Session {
     }
 
     public ValueFactory getValueFactory() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return new ValueFactoryImpl() {
+
+        };
     }
     
     /**
@@ -257,7 +266,7 @@ public class JCRSessionWrapper implements Session {
      * @param actions a comma separated list of action strings.
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
-    public void checkPermission(String s, String s1) throws AccessControlException, RepositoryException {
+    public void checkPermission(String absPath, String actions) throws AccessControlException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
@@ -348,7 +357,7 @@ public class JCRSessionWrapper implements Session {
      * lock token makes the <code>Session</code> the owner of the lock
      * specified by that particular lock token.
      *
-     * @param lt a lock token (a string).
+     * @param token a lock token (a string).
      * @deprecated As of JCR 2.0, {@link LockManager#addLockToken(String)}
      * should be used instead.
      */    

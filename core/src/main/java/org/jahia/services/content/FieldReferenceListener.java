@@ -38,7 +38,6 @@ import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -49,7 +48,7 @@ import javax.jcr.observation.EventIterator;
  * Time: 2:36:05 PM
  */
 public class FieldReferenceListener extends DefaultEventListener {
-    private static Logger logger = Logger.getLogger (FieldReferenceListener.class);
+    private static Logger logger = Logger.getLogger(FieldReferenceListener.class);
 
     private JahiaFieldXRefManager fieldXRefManager = null;
 
@@ -65,33 +64,30 @@ public class FieldReferenceListener extends DefaultEventListener {
         return null;
     }
 
-    public void onEvent(EventIterator eventIterator) {
-        Session session = null;
-
+    public void onEvent(final EventIterator eventIterator) {
         try {
-            while (eventIterator.hasNext()) {
-                Event event = eventIterator.nextEvent();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    while (eventIterator.hasNext()) {
+                        Event event = eventIterator.nextEvent();
 
-                if (isExternal(event)) {
-                    continue;
-                }
+                        if (isExternal(event)) {
+                            continue;
+                        }
 
-                String path = event.getPath();
+                        String path = event.getPath();
 
-                if (event.getType() == Event.NODE_ADDED) {
-                    if (session == null) {
-                        session = provider.getSystemSession();
+                        if (event.getType() == Event.NODE_ADDED) {
+                            updateFullPath((Node) session.getItem(path));
+                        }
                     }
-                    updateFullPath((Node) session.getItem(path));
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
                 }
-            }
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
+
     }
 
     private void updateFullPath(Node node) throws RepositoryException {
@@ -104,14 +100,14 @@ public class FieldReferenceListener extends DefaultEventListener {
 //                move(node.getUUID(), oldPath, node.getPath());
             }
             node.setProperty(FULLPATH, node.getPath());
-            node.setProperty("j:nodename",node.getName());
+            node.setProperty("j:nodename", node.getName());
             node.save();
         }
         if (node.isNodeType(NT_FOLDER)) {
             for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
                 updateFullPath(ni.nextNode());
             }
-        }        
+        }
     }
 
     public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {

@@ -32,23 +32,23 @@
 package org.jahia.services.content.textextraction;
 
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import java.util.Locale;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,7 +58,7 @@ import java.util.Calendar;
  * To change this template use File | Settings | File Templates.
  */
 public class TextExtractionListener extends DefaultEventListener {
-    
+
     private static final transient Logger logger = Logger.getLogger(TextExtractionListener.class);
 
     public TextExtractionListener() {
@@ -73,58 +73,62 @@ public class TextExtractionListener extends DefaultEventListener {
     }
 
     public String[] getNodeTypes() {
-        return new String[] { Constants.JAHIANT_RESOURCE };
+        return new String[]{Constants.JAHIANT_RESOURCE};
     }
 
-    public void onEvent(EventIterator eventIterator) {
+    public void onEvent(final EventIterator eventIterator) {
 
         try {
-            Session s = provider.getSystemSession();
-            try {
-                while (eventIterator.hasNext()) {
-                    Event event = eventIterator.nextEvent();
-                    if (isExternal(event)) {
-                        continue;
-                    }
-
-                    Property p = (Property) s.getItem(event.getPath());
-                    if (p.getType() != PropertyType.BINARY) {
-                        continue;
-                    }
-                    Node n = p.getParent();
-                    if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
-                        if (n.hasProperty(Constants.EXTRACTION_DATE)) {
-                            Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-                            Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
-                            if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
+                    try {
+                        while (eventIterator.hasNext()) {
+                            Event event = eventIterator.nextEvent();
+                            if (isExternal(event)) {
                                 continue;
                             }
-                        }
-                        JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
 
-                        ProcessingContext jParams = Jahia.getThreadParamBean();
-                        if (jParams == null) {
-                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
-                            jParams.setCurrentLocale(Locale.getDefault());
-                        }
+                            Property p = (Property) s.getItem(event.getPath());
+                            if (p.getType() != PropertyType.BINARY) {
+                                continue;
+                            }
+                            Node n = p.getParent();
+                            if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
+                                if (n.hasProperty(Constants.EXTRACTION_DATE)) {
+                                    Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
+                                    Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
+                                    if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
+                                        continue;
+                                    }
+                                }
+                                JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
 
-                        JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for "+p.getParent().getName(), TextExtractorJob.class, jParams);
-                        Node file = p.getParent().getParent();
-                        SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                        JobDataMap jobDataMap;
-                        jobDataMap = jobDetail.getJobDataMap();
-                        jobDataMap.put(TextExtractorJob.PROVIDER, provider.getMountPoint());
-                        jobDataMap.put(TextExtractorJob.PATH, file.getPath());
-                        jobDataMap.put(TextExtractorJob.NAME, file.getName());
-                        jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
-                        schedulerServ.scheduleJobNow(jobDetail);
+                                ProcessingContext jParams = Jahia.getThreadParamBean();
+                                if (jParams == null) {
+                                    jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
+                                    jParams.setCurrentLocale(Locale.getDefault());
+                                }
+
+                                JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + p.getParent().getName(), TextExtractorJob.class, jParams);
+                                JCRNodeWrapper file = (JCRNodeWrapper) p.getParent().getParent();
+                                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
+                                JobDataMap jobDataMap;
+                                jobDataMap = jobDetail.getJobDataMap();
+                                jobDataMap.put(TextExtractorJob.PROVIDER, file.getProvider().getMountPoint());
+                                jobDataMap.put(TextExtractorJob.PATH, file.getPath());
+                                jobDataMap.put(TextExtractorJob.NAME, file.getName());
+                                jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
+                                schedulerServ.scheduleJobNow(jobDetail);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                     }
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
                 }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                s.logout();
-            }
+
+
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

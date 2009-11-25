@@ -31,24 +31,24 @@
  */
 package org.jahia.services.content;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.DynamicValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -78,7 +78,7 @@ public class DefaultValueListener extends DefaultEventListener {
 
     public void onEvent(EventIterator eventIterator) {
         try {
-            List<Event> events = new ArrayList<Event>();
+            final List<Event> events = new ArrayList<Event>();
             String username = null;
             while (eventIterator.hasNext()) {
                 Event event = eventIterator.nextEvent();
@@ -89,66 +89,67 @@ public class DefaultValueListener extends DefaultEventListener {
             if (username != null && username.equals("system")) {
                 username = null;
             }
-            Session s = provider.getSystemSession(username,workspace);
 
-            Iterator<Event> it = events.iterator();
-
-            try {
-                while (it.hasNext()) {
-                    Event event = it.next();
-                    if (isExternal(event)) {
-                        continue;
-                    }
-                    try {
-                        Node n = null;
-                        if (event.getType() == Event.NODE_ADDED) {
-                            n = (Node) s.getItem(event.getPath());
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
+                    Iterator<Event> it = events.iterator();
+                    while (it.hasNext()) {
+                        Event event = it.next();
+                        if (isExternal(event)) {
+                            continue;
                         }
-                        if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
-                            String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));
-                            n = (Node) s.getItem(path.length() == 0 ? "/" : path);
-                        }
-                        if (n != null) {
-                            List<NodeType> l = new ArrayList<NodeType>();
-                            NodeType nt = n.getPrimaryNodeType();
-                            l.add(nt);
-                            NodeType mixin[] = n.getMixinNodeTypes();
-                            l.addAll(Arrays.asList(mixin));
-                            for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext();) {
-                                NodeType nodeType = iterator.next();
-                                ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
-                                if (ent != null ) {
-                                    ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();
-                                    for (int i = 0; i < pds.length; i++) {
-                                        ExtendedPropertyDefinition pd = pds[i];
-                                        Value[] v = pd.getDefaultValues();
-                                        for (int j = 0; j < v.length; j++) {
-                                            Value value = v[j];
-                                            if (value instanceof DynamicValueImpl) {
-                                                if (!n.hasProperty(pd.getName())) {
-                                                    n.setProperty(pd.getName(), value.getString());
+                        try {
+                            Node n = null;
+                            if (event.getType() == Event.NODE_ADDED) {
+                                n = (Node) s.getItem(event.getPath());
+                            }
+                            if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
+                                String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));
+                                n = (Node) s.getItem(path.length() == 0 ? "/" : path);
+                            }
+                            if (n != null) {
+                                List<NodeType> l = new ArrayList<NodeType>();
+                                NodeType nt = n.getPrimaryNodeType();
+                                l.add(nt);
+                                NodeType mixin[] = n.getMixinNodeTypes();
+                                l.addAll(Arrays.asList(mixin));
+                                for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext();) {
+                                    NodeType nodeType = iterator.next();
+                                    ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
+                                    if (ent != null) {
+                                        ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();
+                                        for (int i = 0; i < pds.length; i++) {
+                                            ExtendedPropertyDefinition pd = pds[i];
+                                            Value[] v = pd.getDefaultValues();
+                                            for (int j = 0; j < v.length; j++) {
+                                                Value value = v[j];
+                                                if (value instanceof DynamicValueImpl) {
+                                                    if (!n.hasProperty(pd.getName())) {
+                                                        n.setProperty(pd.getName(), value.getString());
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                        } catch (NoSuchNodeTypeException e) {
+                        } catch (Exception e) {
+                            logger.error("Error when executing event", e);
                         }
-                    } catch (NoSuchNodeTypeException e) {
-                    } catch (Exception e) {
-                        logger.error("Error when executing event",e);
                     }
+                    if (s.hasPendingChanges()) {
+                        s.save();
+                    }
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
                 }
-                if (s.hasPendingChanges()) {
-                    s.save();
-                }
-            } finally {
-                s.logout();
-            }
+
+            });
+
         } catch (NoSuchNodeTypeException e) {
             // silent ignore
         } catch (Exception e) {
-            logger.error("Error when executing event",e);
+            logger.error("Error when executing event", e);
         }
 
     }

@@ -109,7 +109,7 @@ public class CacheListener extends DefaultEventListener {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         for (String s : nodes) {
-                            JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
+                            JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
                             cache.remove(n.getPath());
                         }
                         return null;

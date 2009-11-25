@@ -159,14 +159,14 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
      *             be used instead. 
      */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        item.save();
+        getSession().save();
     }
 
     /**
      * {@inheritDoc}
      */
     public void saveSession()  throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        item.getSession().save();
+        getSession().save();
     }
 
     /**

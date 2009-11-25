@@ -30,9 +30,9 @@ public class RuleJob implements StatefulJob {
             new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null, user, null,
                                   ProcessingContext.EDIT);
             final JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
-            wrapper = new NodeWrapper(jcrSessionWrapper.getNodeByUUID(map.getString("provider"), map.getString("node")).getRealNode());
+            wrapper = new NodeWrapper(jcrSessionWrapper.getNodeByUUID(map.getString("node")));
             list.add(new JobRuleExecution(map.getString("ruleToExecute"), wrapper));
-            final RulesListener listener = RulesListener.getInstance(map.getString("provider"));
+            final RulesListener listener = RulesListener.getInstance(map.getString("workspace"));
             listener.executeRules(list, listener.getGlobals(map.getString("user"), new ArrayList<Updateable>()));
             jcrSessionWrapper.save();
         } catch (RepositoryException e) {

@@ -611,7 +611,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
-        return NodeTypeRegistry.getInstance().getNodeType(objectNode.getPrimaryNodeType().getName());
+        try {
+            return NodeTypeRegistry.getInstance().getNodeType(objectNode.getPrimaryNodeType().getName());
+        } catch (NoSuchNodeTypeException e) {
+            return NodeTypeRegistry.getInstance().getNodeType("nt:base");
+        }
     }
 
     /**

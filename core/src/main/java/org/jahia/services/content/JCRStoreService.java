@@ -40,6 +40,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
+import javax.jcr.observation.ObservationManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +62,9 @@ public class JCRStoreService extends JahiaService  {
 
     static private JCRStoreService instance = null;
     private JCRSessionFactory sessionFactory;
+
+    private boolean running;
+    private Map<String,List<DefaultEventListener>> listeners;
 
     protected JCRStoreService() {
     }
@@ -81,6 +87,8 @@ public class JCRStoreService extends JahiaService  {
     public void start() throws JahiaInitializationException {
         try {
             NodeTypeRegistry.getInstance();
+
+            initObservers(listeners);
         } catch (Exception e) {
             logger.error("Repository init error", e);
         }
@@ -94,10 +102,35 @@ public class JCRStoreService extends JahiaService  {
         this.decorators = decorators;
     }
 
-    public void stop() throws JahiaException {
+    public void setListeners(Map<String, List<DefaultEventListener>> listeners) {
+        this.listeners = listeners;
     }
 
+    public Map<String, List<DefaultEventListener>> getListeners() {
+        return listeners;
+    }
 
+    private void initObservers(Map<String, List<DefaultEventListener>> listeners) throws RepositoryException {
+        if (listeners != null) {
+            for (String ws : listeners.keySet()) {
+                List<DefaultEventListener> l = listeners.get(ws);
+
+                // This session must not be released
+                final Session session = getSessionFactory().getSystemSession(null,ws);
+                final Workspace workspace = session.getWorkspace();
+
+                ObservationManager observationManager = workspace.getObservationManager();
+                for (DefaultEventListener listener : l) {
+                    listener.setWorkspace(ws);
+                    observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), true, null, listener.getNodeTypes(), false);
+                }
+            }
+        }
+    }
+
+    public void stop() throws JahiaException {
+        running = false;
+    }
 
     public void deployDefinitions(String systemId) {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {

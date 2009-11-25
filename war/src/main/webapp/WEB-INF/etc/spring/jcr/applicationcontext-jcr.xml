@@ -18,35 +18,6 @@
         <property name="rmibind" value="jackrabbit"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="publicationService" ref="jcrPublicationService"/>
-        <property name="listeners">
-            <map>
-                <entry key="default">
-                    <list>
-                        <bean class="org.jahia.services.content.FieldReferenceListener">
-                            <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
-                        </bean>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
-                            <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
-                            <property name="serverId" value="${cluster.node.serverId}"/>
-                        </bean>
-                        <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
-                        <bean class="org.jahia.services.content.DefaultValueListener"/>
-                        <bean class="org.jahia.services.content.CacheListener"/>
-                        <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
-                            <property name="loggingService" ref="loggingService"/>
-                            <property name="nodeTypesList">
-                                <list/>
-                            </property>
-                        </bean>
-                    </list>
-                </entry>
-                <entry key="live">
-                    <list>
-                        <bean class="org.jahia.services.content.CacheListener"/>
-                    </list>
-                </entry>                
-            </map>
-        </property>
     </bean>
 
     <!--<bean id="JahiaStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
@@ -133,6 +104,36 @@
                        value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
             </map>
         </property>
+        <property name="listeners">
+            <map>
+                <entry key="default">
+                    <list>
+                        <bean class="org.jahia.services.content.FieldReferenceListener">
+                            <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+                        </bean>
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}"/>
+                        </bean>
+                        <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
+                        <bean class="org.jahia.services.content.DefaultValueListener"/>
+                        <bean class="org.jahia.services.content.CacheListener"/>
+                        <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
+                            <property name="loggingService" ref="loggingService"/>
+                            <property name="nodeTypesList">
+                                <list/>
+                            </property>
+                        </bean>
+                    </list>
+                </entry>
+                <entry key="live">
+                    <list>
+                        <bean class="org.jahia.services.content.CacheListener"/>
+                    </list>
+                </entry>
+            </map>
+        </property>
+
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService" factory-method="getInstance">

@@ -64,7 +64,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
             this.name = property.getName();
             this.def = def;
         } catch (RepositoryException e) {
-            
+            e.printStackTrace();
         }
     }
 

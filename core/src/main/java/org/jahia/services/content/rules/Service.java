@@ -93,7 +93,7 @@ public class Service {
         }
         return instance;
     }
-    
+
     public void setPermissions(NodeWrapper node, String acl, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         StringTokenizer st = new StringTokenizer(acl,"|");
@@ -448,7 +448,7 @@ public class Service {
         }
         ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null,
                                                       user, null, ProcessingContext.EDIT);
-        
+
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("importFileName").equals("users.xml")) {
@@ -456,7 +456,7 @@ public class Service {
                 break;
             }
         }
-        
+
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
@@ -505,7 +505,7 @@ public class Service {
         }
 
     }
-    
+
 //    public void notify(NodeWrapper node, String eventType,
 //            KnowledgeHelper drools) {
 //        notify(node, eventType, (User) drools.getWorkingMemory().getGlobal(
@@ -755,11 +755,11 @@ public class Service {
 //
 
     private static JahiaUser lookupUser(String username) {
-        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);        
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
     }
 
     private static JahiaGroup lookupGroup(String group, int siteId) {
-        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, group);        
+        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, group);
     }
 
     public void incrementProperty(NodeWrapper node, String propertyName,
@@ -795,7 +795,7 @@ public class Service {
             logger.error("Error while adding "+value+" to property "+propertyName+" for node "+node,e);
         }
     }
-    
+
 	public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
 		String siteKey = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteKey() : null;
 		if (siteKey == null) {
@@ -815,7 +815,7 @@ public class Service {
         map.put("ruleToExecute",ruleToExecute);
         map.put("node", uuid);
         map.put("user",((User)drools.getWorkingMemory().getGlobal("user")).getName());
-        map.put("provider",((JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider")).getKey());
+        map.put("workspace",((String)drools.getWorkingMemory().getGlobal("workspace")));
         service.deleteJob(jobName, "RULES_JOBS");
         service.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
     }

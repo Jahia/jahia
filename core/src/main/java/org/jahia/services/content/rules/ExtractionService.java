@@ -361,21 +361,22 @@ public class ExtractionService {
     }
 
     private boolean isExtractedByEventListener(JCRNodeWrapper file) {
-        boolean listenerFound = false;
-        if (file.getProvider().getListeners() != null) {
-            for (List<DefaultEventListener> listeners : file.getProvider().getListeners().values()) {
-                for (DefaultEventListener eventListener : listeners) {
-                    if (eventListener instanceof TextExtractionListener) {
-                        listenerFound = true;
-                        break;
-                    }
-                }
-                if (listenerFound) {
-                    break;
-                }
-            }
-        }
-        return listenerFound;
+//        boolean listenerFound = false;
+        return file.getFileContent().getExtractedText() != null;
+//        if (file.getProvider().getListeners() != null) {
+//            for (List<DefaultEventListener> listeners : file.getProvider().getListeners().values()) {
+//                for (DefaultEventListener eventListener : listeners) {
+//                    if (eventListener instanceof TextExtractionListener) {
+//                        listenerFound = true;
+//                        break;
+//                    }
+//                }
+//                if (listenerFound) {
+//                    break;
+//                }
+//            }
+//        }
+//        return listenerFound;
     }
 
     private JCRNodeWrapper findTextExtractionNode(JCRSessionWrapper session) {

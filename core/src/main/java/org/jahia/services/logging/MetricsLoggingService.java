@@ -35,18 +35,58 @@ package org.jahia.services.logging;
 import org.slf4j.profiler.Profiler;
 
 /**
- * Created by IntelliJ IDEA.
+ * This Service offer you to log information for metrics usages (not for information or debugging purposes).
+ *
+ * Or to profile some operations.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2009
  */
 public interface MetricsLoggingService {
+    /**
+     * Log some metric about a node.
+     * @param user user achieving the operation
+     * @param ipAddress ip address of the user
+     * @param path the node path on which the operation has been achieved
+     * @param nodeType the type of the node
+     * @param logTemplate the name of the template log you want to use.
+     * @param args varaibale list of arguments depending of the template you choose
+     */
     void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args);
+
+    /**
+     * Start a profiler and start the associated action (if the profilerName is not foudn it will create it)
+     * @param profilerName name of the profiler you want to use or create
+     * @param action the action you want to profile
+     */
     void startProfiler(String profilerName,String action);
+
+    /**
+     * Stop all profiling for this profiler name
+     * @param profilerName the name of the profiler you want to stop
+     */
     void stopProfiler(String profilerName);
+
+    /**
+     * Create a sub profiler of an existing profiler
+     * @param parentProfilerName the parent profiler name
+     * @param nestedProfilerName the sub profiler name
+     * @return the nested profiler
+     */
     Profiler createNestedProfiler(String parentProfilerName, String nestedProfilerName);
+
+    /**
+     * Stop a nested profiler
+     * @param parentProfilerName the parent profiler name
+     * @param nestedProfilerName the sub profiler name
+     */
     void stopNestedProfiler(String parentProfilerName, String nestedProfilerName);
 
-    void startProfiler(String profilerName);
+    /**
+     * Start a new porfiler and return it to the caller.
+     * @param profilerName the new profiler you want to start
+     * @return the newly created Profiler
+     */
+    Profiler startProfiler(String profilerName);
 }

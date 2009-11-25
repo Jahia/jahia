@@ -43,7 +43,9 @@ import java.util.Stack;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * his Service offer you to log information for metrics usages (not for information or debugging purposes).
+ *
+ * Or to profile some operations.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -67,6 +69,16 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         }
     }
 
+    /**
+     * Log some metric about a node.
+     *
+     * @param user        user achieving the operation
+     * @param ipAddress   ip address of the user
+     * @param path        the node path on which the operation has been achieved
+     * @param nodeType    the type of the node
+     * @param logTemplate the name of the template log you want to use.
+     * @param args        varaibale list of arguments depending of the template you choose
+     */
     public void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate,
                                 String... args) {
         String template = logTemplatesMap.get(logTemplate);
@@ -82,6 +94,12 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         metricsLogger.trace(template, templateParameters);
     }
 
+    /**
+     * Start a profiler and start the associated action (if the profilerName is not foudn it will create it)
+     *
+     * @param profilerName name of the profiler you want to use or create
+     * @param action       the action you want to profile
+     */
     public void startProfiler(String profilerName, String action) {
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
@@ -93,6 +111,11 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         profiler.start(action);
     }
 
+    /**
+     * Stop all profiling for this profiler name
+     *
+     * @param profilerName the name of the profiler you want to stop
+     */
     public void stopProfiler(String profilerName) {
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
@@ -103,6 +126,13 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         threadLocal.set(null);
     }
 
+    /**
+     * Create a sub profiler of an existing profiler
+     *
+     * @param parentProfilerName the parent profiler name
+     * @param nestedProfilerName the sub profiler name
+     * @return the nested profiler
+     */
     public Profiler createNestedProfiler(String parentProfilerName, String nestedProfilerName) {
         Stack<Profiler> profilers;
         if (threadLocal.get() == null) {
@@ -119,6 +149,12 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         return nestedProfiler;
     }
 
+    /**
+     * Stop a nested profiler
+     *
+     * @param parentProfilerName the parent profiler name
+     * @param nestedProfilerName the sub profiler name
+     */
     public void stopNestedProfiler(String parentProfilerName, String nestedProfilerName) {
         Stack<Profiler> profilers = threadLocal.get();
         final Profiler profiler = profilers.pop();
@@ -127,7 +163,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         }
     }
 
-    public void startProfiler(String profilerName) {
+    public Profiler startProfiler(String profilerName) {
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
         if (profiler == null) {
@@ -135,8 +171,15 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
             profiler.setLogger(profilerMetricsLogger);
             profiler.registerWith(profilerRegistry);
         }
+        return profiler;
     }
 
+    /**
+     * Start a new porfiler and return it to the caller.
+     *
+     * @param profilerName the new profiler you want to start
+     * @return the newly created Profiler
+     */
     public static MetricsLoggingServiceImpl getInstance() {
         if (instance == null) {
             instance = new MetricsLoggingServiceImpl();

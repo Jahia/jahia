@@ -10,9 +10,9 @@
 <h4><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></h4>
 
 <jcr:nodeProperty node="${currentNode}" name='date' var="datePress"/>
-<span class="pressRealeseDate"><fmt:formatDate value="${datePress.date.time}" pattern="dd/MM/yyyy"/></span>
+<span class="pressRealeseDate"><fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/></span>
 
-<div><jcr:nodeProperty node="${currentNode}" name='body'/></div>
+<div>${currentNode.properties.body.string}</div>
 <jcr:nodeProperty node="${currentNode}" name="pdfVersion" var="pdfVersion"/>
 <c:if test="${not empty pdfVersion}">
     <div><strong><fmt:message key="web_templates_publicationContainer.download"/> :</strong>

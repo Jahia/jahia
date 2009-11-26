@@ -17,7 +17,7 @@
             </p>
 
             <div class="divButton">
-                <input type="submit" name="submit" id="submit" class="button" value="<fmt:message key="search"/>"
+                <input type="submit" name="submit" id="submit" class="button" value="<fmt:message key="jnt_jobOffers.search.form.label"/>"
                        tabindex="5"/>
             </div>
         </fieldset>

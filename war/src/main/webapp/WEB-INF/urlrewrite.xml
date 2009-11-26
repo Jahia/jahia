@@ -119,6 +119,10 @@
         <from>^(.*?)/gwt/(.*?)/clear.gif</from>
         <to last="true">$1/gwt/resources/clear.gif</to>
     </rule>
+    <rule>
+        <from>^(.*?)/gwt/(.*?)/ckeditor/(.*?)</from>
+        <to last="true">$1/gwt/resources/ckeditor/$3</to>
+    </rule>
 
     <!-- rule for any gwt page-->
     <rule>

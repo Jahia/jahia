@@ -53,8 +53,8 @@ public class CKEditor extends Component {
     private boolean isLoaded;
 
     public CKEditor(CKEditorConfig config) {
-        if(config == null){
-             config = new CKEditorConfig();
+        if (config == null) {
+            config = new CKEditorConfig();
         }
         this.config = config;
     }
@@ -71,11 +71,11 @@ public class CKEditor extends Component {
                 editorInstance = initEditor();
             }
         });
-      /*  addLoadListener(new CKEditorLoadListener() {
+        addLoadListener(new CKEditorLoadListener() {
             public void onLoad() {
                 isLoaded = true;
             }
-        });   */
+        });
         super.onRender(target, index);
     }
 
@@ -98,6 +98,7 @@ public class CKEditor extends Component {
 
     /**
      * Get html content
+     *
      * @return
      */
     public String getData() {
@@ -105,6 +106,22 @@ public class CKEditor extends Component {
             return getCKData();
         }
         return null;
+    }
+
+    /**
+     * Clear
+     */
+    public void clear() {
+        setData(null);
+    }
+
+
+    /**
+     * return is dirty
+     * @return
+     */
+    public boolean isDirty() {
+        return checkDirty();
     }
 
 
@@ -120,9 +137,10 @@ public class CKEditor extends Component {
 
     /**
      * Native methode to get html of the CKEditor
+     *
      * @return
      */
-    public native String getCKData()/*-{
+    private native String getCKData()/*-{
         var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
         return oEditor.getData();
       }-*/;
@@ -130,6 +148,7 @@ public class CKEditor extends Component {
 
     /**
      * init editior
+     *
      * @return
      */
     private native JavaScriptObject initEditor()/*-{
@@ -144,12 +163,18 @@ public class CKEditor extends Component {
 
     /**
      * Add a load listener
+     *
      * @param listener
      */
     public native void addLoadListener(CKEditorLoadListener listener)/*-{
-        $wnd.__FCK_addLoadListener(function() {
+        $wnd.CKEDITOR.on('instanceReady',function() {
           listener.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorLoadListener::onLoad()();
         });
+      }-*/;
+
+    private native boolean checkDirty()/*-{
+        var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
+        return oEditor.checkDirty();
       }-*/;
 
 }

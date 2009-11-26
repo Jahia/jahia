@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -101,8 +102,7 @@ public class FormFieldCreator {
                     }
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
-                    //field = new HtmlEditor();
-                    field = new AdapterField(new CKEditor(null));
+                    field = new CKEditorField();
                     field.setAutoWidth(false);
                     field.setAutoHeight(false);
                     field.setHeight(300);

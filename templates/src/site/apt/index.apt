@@ -7,3 +7,7 @@ Jahia Crazy Jane - Templates Module
 	* Dynamic Modules
 
 	  General instructions on how to create a new {{{dynamic_module.html} dynamic module}}.
+
+	* Render filters
+
+	  How to use and develop {{{filter.html} rendering filters}}.

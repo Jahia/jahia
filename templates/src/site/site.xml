@@ -27,6 +27,7 @@ under the License.
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
             <item name="Dynamic Module" href="./dynamic_module.html"/>
+            <item name="Rendering filters" href="./filter.html"/>
             <item name="Schmurtz" href="./schmurtz.html"/>
         </menu>
         <menu ref="modules"/>

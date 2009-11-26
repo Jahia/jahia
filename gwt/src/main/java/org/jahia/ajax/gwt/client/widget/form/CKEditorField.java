@@ -193,6 +193,7 @@ public class CKEditorField extends Field<String> {
         if (!ckeditor.isRendered()) {
             ckeditor.render(target, index);
         }
+        setElement(ckeditor.getElement(), target, index);    
     }
 
 

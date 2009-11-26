@@ -12,6 +12,21 @@ import java.io.IOException;
 
 /**
  * Simple regular expression filter
+ *
+ * Make replacements of all entries of the regexp table. Examples of use :
+ *
+ * <bean class="org.jahia.services.render.filter.RegexpFilter" >
+ *   <property name="regexp">
+ *      <map>
+ *         <entry key="(banana)">
+ *             <value><![CDATA[<em>fried $1</em>]]></value>
+ *         </entry>
+ *         <entry key="\[([a-zA-Z]*)\]">
+ *             <value><![CDATA[<em>$1</em>]]></value>
+ *         </entry>
+ *       </map>
+ *   </property>
+ * </bean>
  */
 public class RegexpFilter extends AbstractFilter {
     private Map<String,String> regexp;

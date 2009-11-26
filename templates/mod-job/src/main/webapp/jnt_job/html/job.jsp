@@ -11,37 +11,37 @@
     <div class="jobListItem">
         <div class="jobInfo">
             <p class="jobLocation">
-                <span class="jobLabel">Location: </span>
+                <span class="jobLabel"><fmt:message key="jnt_job.location"/>: </span>
                 <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry"/></span>
             </p>
 
             <p class="jobType">
-                <span class="jobLabel">Contract type: </span>
+                <span class="jobLabel"><fmt:message key="jnt_job.contract"/>: </span>
                 <span class="jobtxt"><jcr:nodePropertyRenderer node="${currentNode}" name="contract" renderer="resourceBundle"/></span>
             </p>
 
             <p class="jobBusinessUnit">
-                <span class="jobLabel">Business Unit: </span>
+                <span class="jobLabel"><fmt:message key="jnt_job.businessUnit"/>: </span>
                 <span class="jobtxt">${fn:escapeXml(values.businessUnit)}</span>
             </p>
 
             <p class="jobReference">
-                <span class="jobLabel">Offer reference: </span>
+                <span class="jobLabel"><fmt:message key="jnt_job.reference"/>: </span>
                 <span class="jobtxt">${fn:escapeXml(values.reference)}</span>
             </p>
 
             <p class="educationLevel">
-                <span class="jobLabel">Education Level: </span>
+                <span class="jobLabel"><fmt:message key="jnt_job.educationLevel"/>: </span>
                 <span class="jobtxt">${fn:escapeXml(values.educationLevel)}</span>
             </p>
         </div>
         <p class="jobDescription">
-            <span class="jobLabel">Job description:</span>
+            <span class="jobLabel"><fmt:message key="jnt_job.description"/>:</span>
             <span class="jobtxt">${values.description}</span>
         </p>
 
         <p class="jobSkills">
-            <span class="jobLabel">Required skills:</span>
+            <span class="jobLabel"><fmt:message key="jnt_job.skills"/>:</span>
             <span class="jobtxt">${values.skills}</span>
         </p>
 
@@ -60,22 +60,22 @@
                     <input type="hidden" name="newNodeOutputFormat" value="html"/>
                     <fieldset>
                         <p class="field">
-                            <label for="job-application-firstname">First name:</label>
+                            <label for="job-application-firstname"><fmt:message key="jnt_jobApplication.firstname"/>:</label>
                             <input type="text" name="firstname" id="job-application-firstname"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-lastname">Last name:</label>
+                            <label for="job-application-lastname"><fmt:message key="jnt_jobApplication.lastname"/>:</label>
                             <input type="text" name="lastname" id="job-application-lastname"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-email">E-mail:</label>
+                            <label for="job-application-email"><fmt:message key="jnt_jobApplication.email"/>:</label>
                             <input type="text" name="email" id="job-application-email"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-text">Text:</label>
+                            <label for="job-application-text"><fmt:message key="jnt_jobApplication.text"/>:</label>
                             <textarea name="text" id="job-application-text"></textarea>
                         </p>
                     </fieldset>

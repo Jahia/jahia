@@ -154,12 +154,12 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         ListStore<TargetModelData> store = new ListStore<TargetModelData>();
         TargetModelData modelData = new TargetModelData();
         modelData.setTarget(Messages.get("cm_new_window", "New window"));
-        modelData.setTarget(Messages.get("cm_new_window", "_blank"));
+        modelData.setValue(Messages.get("cm_new_window", "_blank"));
         store.add(modelData);
 
         modelData = new TargetModelData();
         modelData.setTarget(Messages.get("cm_same_window", "Same window"));
-        modelData.setTarget(Messages.get("cm_new_window", "_self"));
+        modelData.setValue(Messages.get("cm_new_window", "_self"));
         store.add(modelData);
 
         target = new ComboBox<TargetModelData>();

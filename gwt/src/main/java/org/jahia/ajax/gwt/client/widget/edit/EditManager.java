@@ -4,6 +4,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
@@ -18,9 +21,11 @@ public class EditManager extends ContentPanel {
     private SidePanel sidePanel;
     private ActionToolbarLayoutContainer toolbar;
     private EditLinker editLinker;
+    private BorderLayout borderLayout ;
 
     public EditManager(String path, String template, String locale) {
-        super(new BorderLayout());
+        borderLayout =  new BorderLayout();
+        setLayout(borderLayout);
         setHeaderVisible(false);
 
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
@@ -40,7 +45,17 @@ public class EditManager extends ContentPanel {
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar);
         editLinker.setLocale(locale);
+
+        /**setVisible(false);
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                borderLayout.collapse(Style.LayoutRegion.WEST);
+                setVisible(true);
+            }
+        });*/
+
     }
+
 
     public MainModule getMainModule() {
         return mainModule;

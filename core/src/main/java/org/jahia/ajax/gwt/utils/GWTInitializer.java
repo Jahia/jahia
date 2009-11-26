@@ -100,6 +100,7 @@ public class GWTInitializer {
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");        
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");

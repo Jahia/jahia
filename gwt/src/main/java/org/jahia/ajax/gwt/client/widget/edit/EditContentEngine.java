@@ -258,6 +258,7 @@ public class EditContentEngine extends Window {
      */
     private void initTabs() {
         tabs = new TabPanel();
+        
         tabs.setBodyBorder(false);
         tabs.setBorders(true);
 

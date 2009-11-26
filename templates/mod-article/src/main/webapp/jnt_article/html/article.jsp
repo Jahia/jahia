@@ -12,7 +12,7 @@
     ${currentNode.properties.intro.string}
 </div>
 <c:forEach items="${currentNode.editableChildren}" var="paragraph">
-    <template:module node="${paragraph}" template="default"/>
+    <template:module node="${currentNode.properties.paragraph}" template="default"/>
 </c:forEach>
 <div>
 	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>

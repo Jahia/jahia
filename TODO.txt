@@ -4,5 +4,3 @@ TODO
 - Reactivate JSP compilation
 - Generate Jahia windows installer in "jahia-windows-package" subprojects
 - Migrate Hibernate *.hbm.xml generated files to Java annotations
-- Integrate default portlets into subprojects in the portlets directory
-- Fix tests and reactivate them by default

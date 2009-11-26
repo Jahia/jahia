@@ -96,7 +96,7 @@ public class JCRStoreProvider {
     private String repositoryName;
     private String factory;
     private String url;
-    private String workspace;
+
 
     protected String systemUser;
     protected String systemPassword;

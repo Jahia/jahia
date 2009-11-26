@@ -2,6 +2,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.RepositoryException;
@@ -16,7 +17,7 @@ import java.io.IOException;
  *
  */
 public class SkinFilter extends AbstractFilter {
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
 
         String skin = (String) renderContext.getRequest().getAttribute("skin");
         if (!StringUtils.isEmpty(skin) && !skin.equals("none")) {

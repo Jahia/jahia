@@ -24,7 +24,7 @@ import java.util.List;
 public class OptionsFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(OptionsFilter.class);
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
         JCRNodeWrapper node = resource.getNode();
 
         ExtendedNodeType[] mixinNodeTypes = null;

@@ -3,6 +3,7 @@ package org.jahia.services.render.filter;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
+import org.jahia.services.render.TemplateNotFoundException;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.io.IOException;
  */
 public class ModuleFilter extends AbstractFilter {
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
 
         String addFilter = script.getTemplate().getProperties().getProperty("addFilter");

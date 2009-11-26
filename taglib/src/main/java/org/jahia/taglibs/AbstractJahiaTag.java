@@ -258,7 +258,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @return an {@link JahiaBean} instance with current Jahia data
      */
     protected JahiaBean getJahiaBean() {
-        return getJahiaBean(false);
+        return getJahiaBean(true);
     }
 
     /**

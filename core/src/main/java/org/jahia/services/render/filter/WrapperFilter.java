@@ -17,7 +17,7 @@ import java.io.IOException;
 public class WrapperFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(WrapperFilter.class);
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
 
         String output = chain.doFilter(renderContext, resource);
 

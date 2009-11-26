@@ -342,6 +342,7 @@
                 </property>
                 <property name="filters" >
                     <list>
+                        <bean class="org.jahia.services.render.filter.AttributesFilter" />
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
                             <property name="loggingService" ref="loggingService"/>
                         </bean>

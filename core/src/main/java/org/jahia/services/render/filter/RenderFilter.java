@@ -3,6 +3,7 @@ package org.jahia.services.render.filter;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderService;
+import org.jahia.services.render.TemplateNotFoundException;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -37,6 +38,6 @@ public interface RenderFilter {
      * @throws IOException
      * @throws RepositoryException
      */
-    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException,  RepositoryException;
+    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException,  RepositoryException, TemplateNotFoundException;
 
 }

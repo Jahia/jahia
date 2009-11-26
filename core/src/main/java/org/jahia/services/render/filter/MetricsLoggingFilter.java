@@ -5,6 +5,7 @@ import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.slf4j.profiler.Profiler;
 
 import javax.jcr.RepositoryException;
@@ -23,7 +24,7 @@ public class MetricsLoggingFilter extends AbstractFilter {
         this.loggingService = loggingService;
     }
 
-    public String doFilter(RenderContext context, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String doFilter(RenderContext context, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
         JCRNodeWrapper node = resource.getNode();
 
         String profilerName = "render module " + node.getPath();

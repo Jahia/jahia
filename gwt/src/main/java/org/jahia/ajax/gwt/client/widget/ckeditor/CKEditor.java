@@ -138,9 +138,7 @@ public class CKEditor extends Component {
 
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();
         oCKeditor.Height = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()();
-       
-        
-    alert('********** oki');
+
         return oCKeditor;
       }-*/;
 

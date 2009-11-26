@@ -143,17 +143,6 @@
 
     <!-- Site settings administration modules -->
 
-    <bean id="pagesAdministrationModule" class="org.jahia.admin.pages.ManagePages" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="pages" />
-        <property name="permissionName" value="admin.pages.ManagePages" />
-        <property name="name" value="pages" />
-        <property name="icon" value="server_document" />
-        <property name="label" value="org.jahia.admin.pageSettings.label" />
-        <property name="urlAction" value="pages" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="users" />
@@ -233,42 +222,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry">
-    <!-- 
-        <property name="serverModules">
-            <list>
-                <ref bean="sitesAdministrationModule" />
-                <ref bean="serverAdministrationModule" />
-                <ref bean="componentsAdministrationModule" />
-                <ref bean="logsAdministrationModule" />
-                <ref bean="rootUserAdministrationModule" />
-                <ref bean="statusAdministrationModule" />
-                <ref bean="serverPermissionsAdministrationModule" />
-                <ref bean="passwordPoliciesAdministrationModule" />
-                <ref bean="patchesAdministrationModule" />
-                <ref bean="communityJiraAdministrationModule"/>
-                <ref bean="enterpriseJiraAdministrationModule"/>
-                <ref bean="jahiaPediaAdministrationModule"/>
-                <ref bean="docsAdministrationModule"/>
-                <ref bean="infoAdministrationModule" />
-            </list>
-        </property>
-        <property name="siteModules">
-            <list>
-                <ref bean="pagesAdministrationModule" />
-                <ref bean="usersAdministrationModule" />
-                <ref bean="groupsAdministrationModule" />
-                <ref bean="templatesAdministrationModule" />
-                <ref bean="siteLanguagesAdministrationModule" />
-                <ref bean="productionManagerAdministrationModule" />
-                <ref bean="sitePermissionsAdministrationModule" />
-                <ref bean="htmlEditorsAdministrationModule" />
-                <ref bean="integrityChecksAdministrationModule" />
-                <ref bean="analyticsAdministrationModule" />
-                <ref bean="themesAdministrationModule" />
-            </list>
-        </property>
-         -->
-    </bean>
+    <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry"/>
 
 </beans>

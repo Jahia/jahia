@@ -334,7 +334,7 @@ public class PropertiesEditor extends FormPanel {
             }
         } else {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
-            // case of a simple property
+            // case of a list property
             if (fld instanceof ListField) {
                 List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>) fld).getSelection();
                 for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {

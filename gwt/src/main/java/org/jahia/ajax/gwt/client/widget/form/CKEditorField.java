@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -210,18 +211,18 @@ public class CKEditorField extends Field<String> {
 
     @Override
     public boolean isDirty() {
-        return ckeditor.isDirty() && super.isDirty();
+        return ckeditor.isDirty();
     }
 
     @Override
-    public String getValue() {
+    public String getRawValue() {
         return ckeditor.getData();
     }
 
     @Override
-    public void setValue(String html) {
+    public void setRawValue(String html) {
         ckeditor.setData(html);
-        super.setValue(html);
+        super.setRawValue(html);
     }
 }
 

@@ -102,9 +102,10 @@ public class CKEditor extends Component {
      * @return
      */
     public String getData() {
-        if (!isLoaded) {
+        if (isLoaded) {
             return getCKData();
         }
+        Log.error("cKeditor is not yet loaded. getData() returns null value");
         return null;
     }
 
@@ -172,6 +173,11 @@ public class CKEditor extends Component {
         });
       }-*/;
 
+
+    /**
+     * Check dirty
+     * @return
+     */
     private native boolean checkDirty()/*-{
         var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
         return oEditor.checkDirty();

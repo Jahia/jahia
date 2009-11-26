@@ -38,7 +38,50 @@
     <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
     <url>http://10.8.37.111/svn/jahia/trunk</url>
   </scm>
-
+  <developers>
+        <developer>
+            <name>Benjamin Papez</name>
+            <email>benjamin.papez@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Cédric Mailleux</name>
+            <email>cedric.mailleux@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>David Griffon</name>
+            <email>david.griffon@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Khaled Tlili</name>
+            <email>khaled.tlili@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Serge Huber</name>
+            <email>serge.huber@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sergiy Shyrkov</name>
+            <email>sergiy.shyrkov@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Thomas Draier</name>
+            <email>thomas.draier@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+    </developers>
   <repositories>
     <repository>
       <releases>

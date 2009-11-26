@@ -1,0 +1,21 @@
+/*Template User profile*/
+#bodywrapper ul.twoCol{
+	float:left;
+	width:48%;
+	list-style:none;
+}
+#bodywrapper ul.user-profile-list li {
+	padding:5px 5px 0px 5px;
+	clear:left
+}
+#bodywrapper ul.user-profile-list li span.label {
+	display:block;
+	font-size:0.8em;
+	color:#666;
+	float:left;
+	text-transform:uppercase;
+	margin-right:5px;
+}
+#bodywrapper ul.user-profile-list{
+	margin-bottom:0px;
+}

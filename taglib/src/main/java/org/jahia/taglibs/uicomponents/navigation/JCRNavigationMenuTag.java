@@ -108,13 +108,14 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         try {
             Set<NavMenuItemBean> navMenuUItemsBean = new LinkedHashSet<NavMenuItemBean>();
             settings();
-
-            JCRNodeWrapper siteNode = node.getParent();
-            while (!siteNode.isNodeType("jnt:virtualsite")) {
-                siteNode = siteNode.getParent();
+            if (node != null) {
+                JCRNodeWrapper siteNode = node.getParent();
+                while (!siteNode.isNodeType("jnt:virtualsite")) {
+                    siteNode = siteNode.getParent();
+                }
+                generateMenuAsFlatList(siteNode, 0, navMenuUItemsBean, 0, null, siteNode.getPath());
+                pageContext.setAttribute(var, navMenuUItemsBean);
             }
-            generateMenuAsFlatList(siteNode, 0, navMenuUItemsBean, 0, null, siteNode.getPath());
-            pageContext.setAttribute(var, navMenuUItemsBean);
             return EVAL_BODY_BUFFERED;
 
         } catch (IOException e) {

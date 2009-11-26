@@ -6,5 +6,5 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <a name="${currentNode.UUID}"></a>
-<h4>${question.string}</h4>
-<div class="resultslistDesc">${answer.string}</div>
+<h4>${currentNode.properties.question.string}</h4>
+<div class="resultslistDesc">${currentNode.properties.answer.string}</div>

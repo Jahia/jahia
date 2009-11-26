@@ -5,4 +5,4 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<a href="#${currentNode.UUID}">${question.string}</a>
+<a href="#${currentNode.UUID}">${currentNode.properties.question.string}</a>

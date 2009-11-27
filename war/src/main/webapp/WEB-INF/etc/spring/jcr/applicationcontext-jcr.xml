@@ -133,7 +133,11 @@
                 </entry>
             </map>
         </property>
-
+        <property name="interceptors">
+            <list>
+                <bean class="org.jahia.services.content.interceptor.URLInterceptor"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService" factory-method="getInstance">

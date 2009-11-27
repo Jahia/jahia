@@ -348,6 +348,7 @@
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
+                        <bean class="org.jahia.services.render.filter.URLFilter" />
                         <bean class="org.jahia.services.render.filter.WrapperFilter" />
                         <bean class="org.jahia.services.render.filter.SkinFilter" />
                         <bean class="org.jahia.services.render.filter.OptionsFilter" />

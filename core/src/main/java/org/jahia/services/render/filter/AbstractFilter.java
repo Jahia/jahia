@@ -252,6 +252,21 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Evaluates to <code>true</code> if the current resource is the main resource
+     *
+     * @author Thomas Draier
+     */
+    public static class MainResourceCondition implements ExecutionCondition {
+
+        public MainResourceCondition() {
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return (renderContext.getMainResource() == resource);
+        }
+    }
+
     private static final Logger logger = Logger.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
@@ -347,6 +362,12 @@ public abstract class AbstractFilter implements RenderFilter {
             addCondition(condition);
         } else {
             addCondition(new TemplateTypeCondition(templateTypes));
+        }
+    }
+
+    public void setApplyOnMainResource(boolean bool) {
+        if (bool) {
+            addCondition(new MainResourceCondition());
         }
     }
 

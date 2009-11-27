@@ -35,6 +35,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.interceptor.PropertyInterceptor;
+import org.jahia.services.content.interceptor.InterceptorChain;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.ContentHandler;
@@ -60,10 +62,12 @@ public class JCRStoreService extends JahiaService  {
 
     private Map<String, String> decorators = new HashMap<String, String>();
 
+    private List<PropertyInterceptor> interceptors = new ArrayList<PropertyInterceptor>();
+    private InterceptorChain interceptorChain;
+
     static private JCRStoreService instance = null;
     private JCRSessionFactory sessionFactory;
 
-    private boolean running;
     private Map<String,List<DefaultEventListener>> listeners;
 
     protected JCRStoreService() {
@@ -106,6 +110,16 @@ public class JCRStoreService extends JahiaService  {
         this.listeners = listeners;
     }
 
+    public void setInterceptors(List<PropertyInterceptor> interceptors) {
+        this.interceptors = interceptors;
+        interceptorChain = new InterceptorChain();
+        interceptorChain.setInterceptors(interceptors);
+    }
+
+    public InterceptorChain getInterceptorChain() {
+        return interceptorChain;
+    }
+
     public Map<String, List<DefaultEventListener>> getListeners() {
         return listeners;
     }
@@ -129,7 +143,6 @@ public class JCRStoreService extends JahiaService  {
     }
 
     public void stop() throws JahiaException {
-        running = false;
     }
 
     public void deployDefinitions(String systemId) {

@@ -78,59 +78,71 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, def, value);
         property.setValue(value);
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        for (int i = 0; i < values.length; i++) {
+            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, def, values[i]);
+        }
         property.setValue(values);
     }
 
-    public void setValue(String s) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(s);
+    public void setValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(strings);
+    public void setValue(String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value[] v = new Value[values.length];
+        for (int i = 0; i < values.length; i++) {
+            v[i] = getSession().getValueFactory().createValue(values[i]);
+        }
+        setValue(v);
     }
 
     /**
      * @deprecated As of JCR 2.0, {@link #setValue(Binary)} should be used instead.
      */
-    public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(inputStream);
+    public void setValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(l);
+    public void setValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(v);
+    public void setValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(calendar);
+    public void setValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(b);
+    public void setValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
-    public void setValue(Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        property.setValue(node);
+    public void setValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (value instanceof JCRNodeWrapper) {
+            value = ((JCRNodeWrapper) value).getRealNode();
+        }
+        setValue(getSession().getValueFactory().createValue(value, def.getRequiredType() == PropertyType.WEAKREFERENCE));
     }
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
     public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        setValue(getSession().getValueFactory().createValue(value));
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return new JCRValueWrapperImpl(property.getValue(),getDefinition(), getSession());
+        Value value = JCRStoreService.getInstance().getInterceptorChain().afterGetValue(this, property.getValue());
+        value = new JCRValueWrapperImpl(value , getDefinition(), getSession());
+        return value;
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
@@ -144,50 +156,50 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
-        return property.getString();
+        return getValue().getString();
     }
 
     /**
      * @deprecated As of JCR 2.0, {@link #getBinary()} should be used instead.
      */
     public InputStream getStream() throws ValueFormatException, RepositoryException {
-        return property.getStream();
+        return getValue().getStream();
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
-        return property.getLong();
+        return getValue().getLong();
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
-        return property.getDouble();
+        return getValue().getDouble();
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
-        return property.getDate();
+        return getValue().getDate();
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
-        return property.getBoolean();
+        return getValue().getBoolean();
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {
-        return session.getNodeByUUID(property.getString());
+        return session.getNodeByUUID(getValue().getString());
     }
 
     public Node getReferencedNode() throws ValueFormatException, RepositoryException {
-        return session.getNodeByUUID(property.getString());
+        return session.getNodeByUUID(getValue().getString());
     }
 
     public Binary getBinary() throws ValueFormatException, RepositoryException {
-        return property.getBinary();
+        return getValue().getBinary();
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return property.getDecimal();
+        return getValue().getDecimal();
     }
 
     public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-        return session.getProperty(property.getString());
+        return session.getProperty(getValue().getString());
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {

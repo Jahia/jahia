@@ -459,7 +459,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     /**
-     * @see #getNodes(name)
+     * @see getNodes(name)
      * @deprecated
      */
     public List<JCRNodeWrapper> getChildren(String name) {
@@ -954,220 +954,178 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, String s1) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), s1), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, s1), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, value);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), value), session, provider, getApplicablePropertyDefinition(s), s);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
             }
         }
 
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, value), session, provider, epd);
+        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, value);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), value, i), session, provider, getApplicablePropertyDefinition(s), s);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value, type), session, provider, getApplicablePropertyDefinition(name), name);
             }
         }
 
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, i), session, provider, epd);
+        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value, type), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        for (int i = 0; i < values.length; i++) {
+            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, values[i]);
+        }
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), values), session, provider, getApplicablePropertyDefinition(s), s);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), values), session, provider, getApplicablePropertyDefinition(name), name);
             }
         }
 
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, values), session, provider, epd);
+        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, values), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        for (int i = 0; i < values.length; i++) {
+            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, values[i]);
+        }
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), values, i), session, provider, getApplicablePropertyDefinition(s), s);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), values, type), session, provider, getApplicablePropertyDefinition(name), name);
             }
         }
 
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, values, i), session, provider, epd);
+        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, values, type), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), strings), session, provider, getApplicablePropertyDefinition(s), s);
-            }
+    public JCRPropertyWrapper setProperty(String name, String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value[] v = new Value[values.length];
+        for (int i = 0; i < values.length; i++) {
+            v[i] = getSession().getValueFactory().createValue(values[i]);
         }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, strings), session, provider, epd);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), strings, i), session, provider, getApplicablePropertyDefinition(s), s);
-            }
+    public JCRPropertyWrapper setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value[] v = new Value[values.length];
+        for (int i = 0; i < values.length; i++) {
+            v[i] = getSession().getValueFactory().createValue(values[i], type);
         }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, strings, i), session, provider, epd);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), s1, i), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, s1), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value, type);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), inputStream), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, inputStream), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), b), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, b), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), v), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, v), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), l), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, l), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), calendar), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, calendar), session, provider, epd);
+    public JCRPropertyWrapper setProperty(String name, Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
-
-        if (epd != null && epd.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-            return setProperty(s, node.getIdentifier());
+    public JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (value instanceof JCRNodeWrapper) {
+            value = ((JCRNodeWrapper) value).getRealNode();
         }
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
 
-        if (node instanceof JCRNodeWrapper) {
-            node = ((JCRNodeWrapper) node).getRealNode();
-        }
-
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s + "_" + locale.toString(), node), session, provider, getApplicablePropertyDefinition(s), s);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s, node), session, provider, epd);
+        Value v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
+        return setProperty(name, v);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -2130,36 +2088,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     */
-    public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value), session, provider, epd);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
-            }
-        }
-
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value), session, provider, epd);
-    }
-
-    /**
-     * {@inheritDoc}
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
@@ -2194,7 +2122,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return objectNode.getWeakReferences();
     }
 
     /**

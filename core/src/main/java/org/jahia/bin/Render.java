@@ -343,13 +343,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @param workspace The workspace where to get the node
      * @param locale    current locale
      * @param path      The path of the node, in the specified workspace
-     * @param user      Current user
      * @param ctx       request context
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-	protected Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user, ProcessingContext ctx) throws RepositoryException {
+	protected Resource resolveResource(String workspace, Locale locale, String path, ProcessingContext ctx) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
@@ -477,7 +476,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
+                Resource resource = resolveResource(workspace, locale, path, paramBean);
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/content/sites/" + paramBean.getSite().getSiteKey()));

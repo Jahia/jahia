@@ -339,6 +339,9 @@
 [jnt:externalLink] > nt:base, mix:title, jmix:hierarchyNode, jmix:link, jmix:basemetadata
  - j:url (string)
 
+[jmix:references] mixin
+ - j:references (weakreference) multiple
+
 //---------------------------------------------------------
 // Definition organization
 //---------------------------------------------------------

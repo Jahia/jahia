@@ -63,10 +63,12 @@
         <c:when test="${col.value > 8}">
     <div class='grid_${col.value}'><!--start grid_${col.value}-->
         <div class="box">
-            <div class="boxshadow bowpadding40 boxmarginbottom16">
-                <div class="box-inner-border">
-                <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
-                <div class='clear'></div>
+            <div class="boxshadow boxpadding40 boxmarginbottom16">
+                <div class="box-inner">
+                    <div class="box-inner-border">
+                        <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
+                        <div class='clear'></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,4 +82,4 @@
             </div><!--stop grid_${col.value}-->
         </c:otherwise>
     </c:choose>
-</c:forEach>
+</c:forEach>                       

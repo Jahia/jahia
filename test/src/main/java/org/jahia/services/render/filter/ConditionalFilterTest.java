@@ -104,11 +104,6 @@ public class ConditionalFilterTest extends TestCase {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
-        context.setSite(site);
-        Resource resource = new Resource(node.getNode("testType"), "html", null, null);
-        context.setMainResource(resource);
-
         RenderFilter outFilter = new AbstractFilter() {
             @Override
             protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
@@ -116,7 +111,13 @@ public class ConditionalFilterTest extends TestCase {
                 return "out";
             }
         };
+        outFilter.setRenderService(RenderService.getInstance());
         
+        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        context.setSite(site);
+        Resource resource = new Resource(node.getNode("testType"), "html", null, null);
+        context.setMainResource(resource);
+
         // test on a node that has jnt:tag type
         AttributesFilter attributesFilter = new AttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
@@ -131,12 +132,12 @@ public class ConditionalFilterTest extends TestCase {
 
         assertTrue("TestFilter is not applied for node, having jnt:tag type", result.contains("TestFilter"));
 
-        // test on a node that does not has jnt:tag type
+        // test on a node that does not have jnt:tag type
         resource = new Resource(node.getNode("testType2"), "html", null, null);
         context.setMainResource(resource);
         chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for node that does not has jnt:tag type", !result
+        assertTrue("TestFilter is applied for node that does not have jnt:tag type", !result
                 .contains("TestFilter"));
 
         // test multiple node types condition
@@ -170,6 +171,114 @@ public class ConditionalFilterTest extends TestCase {
         assertTrue("TestFilter is applied for node, having jmix:tagged mixin type", !result
                 .contains("TestFilter"));
 
+    }
+
+    public void testTemplateTypes() throws Exception {
+
+        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+
+        RenderFilter outFilter = new AbstractFilter() {
+            @Override
+            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+                    throws Exception {
+                return "out";
+            }
+        };
+        outFilter.setRenderService(RenderService.getInstance());
+        
+        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        context.setSite(site);
+        Resource resource = new Resource(node.getNode("testType"), "html", null, null);
+        context.setMainResource(resource);
+
+        // test on a resource with 'html' template type
+        AttributesFilter attributesFilter = new AttributesFilter();
+        attributesFilter.setRenderService(RenderService.getInstance());
+
+        TestFilter conditionalFilter = new TestFilter();
+        conditionalFilter.setRenderService(RenderService.getInstance());
+        conditionalFilter.setApplyOnTemplateTypes("html");
+
+        RenderChain chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        
+        String result = chain.doFilter(context, resource);
+
+        assertTrue("TestFilter is not applied for resource, having 'html' template type", result.contains("TestFilter"));
+
+        // test on a resource with 'xml' template type
+        resource = new Resource(node.getNode("testType"), "html", null, null);
+        context.setMainResource(resource);
+        conditionalFilter = new TestFilter();
+        conditionalFilter.setRenderService(RenderService.getInstance());
+        conditionalFilter.setApplyOnTemplateTypes("rss");
+        chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        result = chain.doFilter(context, resource);
+        assertTrue("TestFilter is applied for resource that does not have 'rss' template", !result
+                .contains("TestFilter"));
+        
+
+        // test multiple template types condition
+        resource = new Resource(node.getNode("testType"), "html", null, null);
+        context.setMainResource(resource);
+        conditionalFilter = new TestFilter();
+        conditionalFilter.setRenderService(RenderService.getInstance());
+        conditionalFilter.setApplyOnTemplateTypes("xml,html");
+        chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        result = chain.doFilter(context, resource);
+        assertTrue("TestFilter is not applied for resource, having 'html' template type", result.contains("TestFilter"));
+
+    }
+
+    public void testTemplates() throws Exception {
+
+        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+
+        RenderFilter outFilter = new AbstractFilter() {
+            @Override
+            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+                    throws Exception {
+                return "out";
+            }
+        };
+        outFilter.setRenderService(RenderService.getInstance());
+        
+        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        context.setSite(site);
+        Resource resource = new Resource(node.getNode("testType"), "html", "mine", null);
+        context.setMainResource(resource);
+
+        // test on a resource with 'mine' template
+        AttributesFilter attributesFilter = new AttributesFilter();
+        attributesFilter.setRenderService(RenderService.getInstance());
+
+        TestFilter conditionalFilter = new TestFilter();
+        conditionalFilter.setRenderService(RenderService.getInstance());
+        conditionalFilter.setApplyOnTemplates("mine");
+
+        RenderChain chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        
+        String result = chain.doFilter(context, resource);
+
+        assertTrue("TestFilter is not applied for resource, having 'mine' template", result.contains("TestFilter"));
+
+        // test on a resource with 'others' template
+        resource = new Resource(node.getNode("testType"), "html", "others", null);
+        context.setMainResource(resource);
+        chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        result = chain.doFilter(context, resource);
+        assertTrue("TestFilter is applied for resource that does not have 'mine' template", !result
+                .contains("TestFilter"));
+        
+
+        // test multiple templates condition
+        resource = new Resource(node.getNode("testType"), "html", "mine", null);
+        context.setMainResource(resource);
+        conditionalFilter = new TestFilter();
+        conditionalFilter.setRenderService(RenderService.getInstance());
+        conditionalFilter.setApplyOnTemplates("others,mine");
+        chain = new RenderChain(attributesFilter, conditionalFilter, outFilter);
+        result = chain.doFilter(context, resource);
+        assertTrue("TestFilter is not applied for resource, having 'mine' template", result.contains("TestFilter"));
     }
 
 }

@@ -338,6 +338,18 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    public void setApplyOnTemplateTypes(String templateTypes) {
+        if (templateTypes.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String templateType : templateTypes.split(",")) {
+                condition.add(new TemplateTypeCondition(templateType.trim()));
+            }
+            addCondition(condition);
+        } else {
+            addCondition(new TemplateTypeCondition(templateTypes));
+        }
+    }
+
     public void setConditions(Set<ExecutionCondition> conditions) {
         this.conditions.addAll(conditions);
     }

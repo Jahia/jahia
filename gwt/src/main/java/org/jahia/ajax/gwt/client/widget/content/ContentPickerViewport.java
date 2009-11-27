@@ -33,29 +33,42 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserViewport;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
+import java.util.Map;
+
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 
 /**
  * File and folder picker control.
+ *
  * @author rfelden
- * Date: 27 ao�t 2008
+ *         Date: 27 ao�t 2008
  */
 public class ContentPickerViewport extends TriPanelBrowserViewport {
+    private PickedContent pickedContent;
+    public static final int BUTTON_HEIGHT = 24;
 
-    public ContentPickerViewport(final String rootPath, List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
-        super() ;
-        //setWidth("714px");
 
-        ManagerConfiguration config  ;
+    public ContentPickerViewport(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
+        super();
+        ManagerConfiguration config;
         if (conf == null || conf.length() == 0) {
-            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker) ;
+            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker);
         } else {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker) ;
+            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
         }
 
         if (types != null && types.length() > 0) {
@@ -69,20 +82,86 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         }
 
         // construction of the UI components
-        TopBar toolbar = new ContentToolbar(config, linker) ;
-        TopRightComponent filepicker = new ContentPickerBrowser(conf,rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
+        final BottomRightComponent bottomComponents;
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+            String type = selectorOptions.get("type");
+            boolean externalAllowed = true;
+            boolean internalAllowed = true;
+            if (type != null) {
+                externalAllowed = true;
+                internalAllowed = true;
+            }
+            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config);
+        } else {
+            bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
+        }
 
-        // setup widgets in layout
-        initWidgets(null,
-                    filepicker.getComponent(),
-                    null,
-                    toolbar.getComponent(),
-                    null);
+        // top right componet
+        final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
+
+        // buttom component
+        final Component bar = initButtonBar();
+    
+        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
+            initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, bar);
+        } else {
+            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, bar);
+        }
 
         // linker initializations
-        linker.registerComponents(null, filepicker, null, toolbar, null) ;
-        filepicker.initContextMenu();
+        linker.registerComponents(null, contentPicker, bottomComponents, null, null);
+        contentPicker.initContextMenu();
         linker.handleNewSelection();
+
+        pickedContent = (PickedContent) bottomComponents;
     }
 
+    public List<GWTJahiaNode> getSelectedNodes() {
+        return pickedContent.getSelectedContent();
+    }
+
+    /**
+     * Init buttonBar
+     * @return
+     */
+    private Component initButtonBar() {
+        LayoutContainer buttonsPanel = new LayoutContainer();
+        buttonsPanel.setBorders(false);
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
+
+        Button ok = new Button(Messages.getResource("fm_save"));
+        ok.setHeight(BUTTON_HEIGHT);
+        ok.setEnabled(false);
+        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        //ok.addSelectionListener(new SaveSelectionListener());
+
+
+        buttonBar.add(ok);
+
+
+        Button cancel = new Button(Messages.getResource("fm_cancel"));
+        cancel.setHeight(BUTTON_HEIGHT);
+        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+
+            }
+        });
+        buttonBar.add(cancel);
+        buttonsPanel.add(buttonBar);
+
+        // copyrigths
+        Text copyright = new Text(Messages.getResource("fm_copyright"));
+        ButtonBar container = new ButtonBar();
+        container.setAlignment(Style.HorizontalAlignment.CENTER);
+        container.add(copyright);
+        buttonsPanel.add(container);
+
+        return buttonsPanel;
+
+    }
 }

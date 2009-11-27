@@ -34,36 +34,62 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 
 /**
  * Created by IntelliJ IDEA.
  * User: rfelden
  * Date: 28 ao�t 2008
  * Time: 11:53:24
- *
+ * <p/>
  * This is the Viewport version of the tripanel browser, replacing all the elements contained
  * in the target page.
  */
 public class TriPanelBrowserViewport extends Viewport {
-
-    protected ManagerLinker linker ;
+    private TriPanelBrowserLayout layout = new TriPanelBrowserLayout();
+    protected ManagerLinker linker;
 
     protected TriPanelBrowserViewport() {
-        super() ;
-        setLayout(new FitLayout());
-        linker = new ManagerLinker() ;
+        super();
+        setLayout(new FillLayout());
+        linker = new ManagerLinker();
     }
 
     protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
-        TriPanelBrowserLayout layout = new TriPanelBrowserLayout() ;
-        layout.initWidgets(leftTree, topTable, bottomTabs, topToolbar, statusBar) ;
+
+        layout.initWidgets(leftTree, topTable, bottomTabs, topToolbar, statusBar);
 
         // layout is the main widget contained in the viewport
-        add(layout) ;
+        add(layout);
     }
 
     public ManagerLinker getLinker() {
-        return linker ;
+        return linker;
+    }
+
+    public BorderLayoutData getCenterData() {
+        return layout.getCenterData();
+    }
+
+    public void setCenterData(BorderLayoutData centerData) {
+        layout.setCenterData(centerData);
+    }
+
+    public BorderLayoutData getNorthData() {
+        return layout.getNorthData();
+    }
+
+    public void setNorthData(BorderLayoutData northData) {
+        layout.setNorthData(northData);
+    }
+
+    public BorderLayoutData getWestData() {
+        return layout.getWestData();
+    }
+
+    public void setWestData(BorderLayoutData westData) {
+        layout.setWestData(westData);
     }
 
 }

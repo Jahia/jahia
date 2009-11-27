@@ -119,6 +119,7 @@ public class CKEditor extends Component {
 
     /**
      * return is dirty
+     *
      * @return
      */
     public boolean isDirty() {
@@ -152,8 +153,16 @@ public class CKEditor extends Component {
      *
      * @return
      */
+    
     private native JavaScriptObject initEditor()/*-{
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId);
+        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
+            filebrowserBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
+            filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
+            filebrowserUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker',
+            filebrowserImageUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp=filemanager'
+        });
+
+        // check if there is a default config in the html document
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
 
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();
@@ -176,6 +185,7 @@ public class CKEditor extends Component {
 
     /**
      * Check dirty
+     *
      * @return
      */
     private native boolean checkDirty()/*-{

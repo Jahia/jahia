@@ -34,6 +34,7 @@ package org.jahia.taglibs.internal.i18n;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.data.JahiaData;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.bin.Jahia;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspWriter;
@@ -74,6 +75,8 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
     private void addMandatoryGwtMessages(JahiaData jData, Locale currentLocale) {
         addGwtDictionaryMessage("workInProgressTitle", getAdminMessage("org.jahia.admin.workInProgressTitle", jData, currentLocale));
         addGwtDictionaryMessage("workInProgressProgressText", getAdminMessage("org.jahia.admin.workInProgressProgressText", jData, currentLocale));
+        String copyright = Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber();
+        addGwtDictionaryMessage("fm_copyright", copyright);
     }
 
     /**

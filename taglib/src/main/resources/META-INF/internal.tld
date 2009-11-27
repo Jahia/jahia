@@ -223,7 +223,7 @@
         <path>/META-INF/tags/ajax/jobreport.tag</path>
     </tag-file>
     <tag-file>
-        <description>Displays the file manager engine</description>
+        <description>Displays the content manager engine</description>
         <name>contentManager</name>
         <path>/META-INF/tags/ajax/contentmanager.tag</path>
     </tag-file>
@@ -233,9 +233,9 @@
         <path>/META-INF/tags/ajax/workflow.tag</path>
     </tag-file>
     <tag-file>
-        <description>Displays a catagories selector</description>
-        <name>categorySelector</name>
-        <path>/META-INF/tags/ajax/categoriespicker.tag</path>
+        <description>Displays a content picker</description>
+        <name>contentPicker</name>
+        <path>/META-INF/tags/ajax/contentpicker.tag</path>
     </tag-file>
     <tag-file>
         <description>Displays the file manager engine</description>

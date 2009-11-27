@@ -36,11 +36,15 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.core.client.EntryPoint;
+
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.DOM;
 
 /**
  * File picker to embed in container edition engine or anywhere else you want,
@@ -53,35 +57,25 @@ import java.util.List;
 public class ContentPickerEntryPoint implements EntryPoint {
     public void onModuleLoad() {
         JahiaGWT.init();
-        RootPanel panel = RootPanel.get("contentmanager");
+        final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {
-            String callback = DOM.getElementAttribute(panel.getElement(), "callback") ;
-            final List<GWTJahiaNode> selectedContentNodes = ContentHelper.getSelectedContentNodesFromHTML();
+            final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
+            final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
+            final Map<String, String> selectorOptions = new HashMap<String,String>();
+            final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
+            final String types = DOM.getElementAttribute(panel.getElement(), "nodeTypes");
+            final String filters = DOM.getElementAttribute(panel.getElement(), "filters");
+            final String mimeTypes = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
+            final String conf = DOM.getElementAttribute(panel.getElement(), "config");
+            boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
+            boolean allowThumbs =  Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
+            final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
+            panel.add(new ContentPickerViewport(selectionLabel,rootPath,selectorOptions,selectedNodes,types,filters,mimeTypes,conf,multiple,allowThumbs,callback));
 
-            if (callback == null || callback.length() == 0) {
-                panel.add(new ContentPicker("",
-                        DOM.getElementAttribute(panel.getElement(), "rootPath"),
-                        null,
-                        selectedContentNodes,
-                        DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "filters"),
-                        DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "config"),
-                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple")),
-                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
-                        callback));
-            } else {
-                panel.add(new ContentPickerViewport(
-                        DOM.getElementAttribute(panel.getElement(), "rootPath"),
-                        selectedContentNodes,
-                        DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "filters"),
-                        DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "config"),
-                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple")),
-                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
-                        callback));
-            }
+
+
+
+
         }
     }
 

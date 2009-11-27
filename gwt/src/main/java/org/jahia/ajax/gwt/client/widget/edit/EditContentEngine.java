@@ -248,9 +248,6 @@ public class EditContentEngine extends Window {
         container.add(copyright);
         buttonsPanel.add(container);
         setBottomComponent(buttonsPanel);
-        
-
-
     }
 
     /**

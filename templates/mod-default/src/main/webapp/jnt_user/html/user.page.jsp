@@ -183,23 +183,43 @@
                     <div class="box-inner-border"><!--start box -->
 
                     <h3 class="boxtitleh3">About Me</h3>
-                        <p>dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra, libero ipsum placerat diam, eu varius enim enim id metus. Fusce tincidunt semper tellus. Morbi hendrerit. In sit amet libero. Curabitur ultricies. Nulla at nunc tristique sem venenatis tristique. Integer nunc erat, vehicula quis, varius non, bibendum eget, ligula.</p>
-                        <h4>Titre de  niveau 4 (h4)</h4>
-                <p>Introduction dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra, libero ipsum placerat diam, eu varius enim enim id metus. Fusce tincidunt semper tellus. Morbi hendrerit. In sit amet libero. Curabitur ultricies. Nulla at nunc tristique sem venenatis tristique. Integer nunc erat, vehicula quis, varius non, bibendum eget, ligula. Sed pede enim, sagittis non, pulvinar sit amet, consectetuer in, dui. In ac ligula. Praesent vitae lacus. Curabitur quis purus.</p>
-                <ul>
-                  <!--start generic list -->
-                  <li><a href="#" title="generic list">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</a></li>
-
-                  <li><a href="#" title="generic list">In sit amet libero. Curabitur ultricies.</a></li>
-                  <li><a href="#" title="generic list">Nulla at nunc tristique sem venenatis tristique.</a></li>
-                  <li><a href="#" title="generic list">In sit amet libero. Curabitur ultricies. Nulla at nunc tristique sem venenatis tristique. Integer nunc erat, vehicula quis, varius non, bibendum eget, ligula. Sed pede enim, sagittis non, pulvinar sit amet, consectetuer in, dui. In ac ligula. Praesent vitae lacus. Curabitur quis purus.</a></li>
-                  <li><a href="#" title="generic list">Praesent vitae lacus. Curabitur quis purus.</a></li>
-                </ul>
-                <!--generic list -->
-                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra, libero ipsum placerat diam, eu varius enim enim id metus. Fusce tincidunt semper tellus. Morbi hendrerit. In sit amet libero. Curabitur ultricies. Nulla at nunc tristique sem venenatis tristique. Integer nunc erat, vehicula quis, varius non, bibendum eget, ligula. Sed pede enim, sagittis non, pulvinar sit amet, consectetuer in, dui. In ac ligula. Praesent vitae lacus. Curabitur quis purus.</p>
-
-
-
+                        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".j_aboutEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "textarea",
+                    textarea_rows: "40",
+                    textarea_cols: "60",
+                    callback: function(original_element, html, original) {
+                        var value = html;
+                        $.post("${url.base}${currentNode.path}", {'j:about': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        return(html);
+                    }
+                });
+            });
+            $(document).ready(function() {
+                $(".j_aboutPublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {'j:aboutPublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
+        </script>
+                        <div class="j_aboutEdit">${fields['j:about']}</div>
+            <span class="visibility j_aboutPublicEdit">
+            <c:if test="${fields['j:aboutPublic'] eq 'true'}">
+                Public
+            </c:if>
+            <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
+                Non Public
+            </c:if>
+            </span>
                         <div class="clear"></div>
                     </div>
 			</div>

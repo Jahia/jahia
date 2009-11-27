@@ -19,7 +19,7 @@
 <!-- twoCol clear -->
 <ul class="list3 user-profile-list">
     <c:forTokens
-            items="j:firstName,j:lastName,j:email,j:organization,j:function,j:about,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
+            items="j:firstName,j:lastName,j:email,j:organization,j:function,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
             delims="," var="key">
         <script type="text/javascript">
             $(document).ready(function() {

@@ -60,11 +60,7 @@ public class CKEditor extends Component {
             config = new CKEditorConfig();
         }
         this.config = config;
-        this.addListener(Events.OnClick, new Listener<BaseEvent>(){
-            public void handleEvent(BaseEvent baseEvent) {
-                Log.error("**************** "+baseEvent);
-            }
-        });
+
     }
 
     @Override
@@ -168,13 +164,10 @@ public class CKEditor extends Component {
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             filebrowserBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
             filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
-            filebrowserFlashBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=flashpicker'
+            filebrowserFlashBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=flashpicker',
+            filebrowserLinkBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker'
         });
-
-
-
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
-
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();
         oCKeditor.Height = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()();
 

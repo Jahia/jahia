@@ -39,7 +39,7 @@ public class CKEditorConfig {
 
     private String width = "100%";
     private String height = "300px";
-    private String toolbarSet = "Default";
+    private String toolbarSet = "Full";
 
     public String getWidth() {
         return width;

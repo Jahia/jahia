@@ -84,27 +84,21 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         }
 
         // construction of the UI components
+        boolean linkPicker = conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
         final BottomRightComponent bottomComponents;
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-            String type = selectorOptions.get("type");
-            boolean externalAllowed = true;
-            boolean internalAllowed = true;
-            if (type != null) {
-                externalAllowed = true;
-                internalAllowed = true;
-            }
-            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config);
+        if (linkPicker) {
+            bottomComponents = new PickedPageView(conf, false, true, selectedNodes, multiple, config, true);
         } else {
             bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
         }
 
         // top right componet
-        final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
+        final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
 
         // buttom component
-        final Component bar = initButtonBar(callback);
-    
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+        final Component bar = initButtonBar(callback, linkPicker);
+
+        if (linkPicker) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
             initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, bar);
         } else {
@@ -125,9 +119,10 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
     /**
      * Init buttonBar
+     *
      * @return
      */
-    private Component initButtonBar(final String callback) {
+    private Component initButtonBar(final String callback, final boolean linkPicker) {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 
@@ -136,15 +131,21 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
         Button ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
-        //ok.setEnabled(false);
         ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                 List<GWTJahiaNode> selectedNode = getSelectedNodes();
-                if(selectedNode != null && !selectedNode.isEmpty()){
+                List<GWTJahiaNode> selectedNode = getSelectedNodes();
+                if (selectedNode != null && !selectedNode.isEmpty()) {
                     GWTJahiaNode node = selectedNode.get(0);
-                    callback(callback,node.getUrl());
+                    if (linkPicker) {
+                        String url = (String) node.get("j:url");
+                        if (url != null) {
+                            callback(callback, url+".html");
+                        }
+                    } else {
+                        callback(callback, node.getUrl());
+                    }
                     WindowUtil.close();
                 }
             }
@@ -159,7 +160,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                 WindowUtil.close();
+                WindowUtil.close();
             }
         });
         buttonBar.add(cancel);
@@ -175,10 +176,9 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         return buttonsPanel;
     }
 
-    private native void callback(String callback,String url)/*-{
+    private native void callback(String callback, String url)/*-{
         $wnd.opener.CKEDITOR.tools.callFunction(callback, url,"");
       }-*/;
-
 
 
 }

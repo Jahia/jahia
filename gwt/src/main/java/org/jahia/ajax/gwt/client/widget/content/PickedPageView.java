@@ -77,7 +77,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     private boolean isInternal = true;
 
 
-    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config, boolean htmlEditor) {
 
         m_component = new LayoutContainer(new FitLayout());
         //m_component.setBodyBorder(false);
@@ -111,26 +111,31 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         Radio external = new Radio();
         Radio internal = new Radio();
 
-        if (externalAllowed && internalAllowed) {
-            external.setName("external");
-            external.setBoxLabel(Messages.get("cm_external_link", "external link"));
-            external.addListener(Events.Change, new Listener<FieldEvent>() {
-                public void handleEvent(FieldEvent fieldEvent) {
-                    isInternal = !isInternal;
-                }
-            });
+        external.setName("external");
+        external.setBoxLabel(Messages.get("cm_external_link", "external link"));
+        external.addListener(Events.Change, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent fieldEvent) {
+                isInternal = !isInternal;
+                url.setEnabled(!isInternal);
 
-            internal.setName("internal");
-            internal.setBoxLabel(Messages.get("cm_internal_link", "internal link"));
-            internal.setValue(INTERNAL_VALUE);
+            }
+        });
 
-            pageTypeGroup.setFieldLabel(Messages.get("cm_page_type", "Page type"));
-            pageTypeGroup.add(external);
-            pageTypeGroup.add(internal);
+        internal.setName("internal");
+        internal.setBoxLabel(Messages.get("cm_internal_link", "internal link"));
+        internal.setValue(INTERNAL_VALUE);
 
-            pageTypeGroup.setValue(internal);
+        pageTypeGroup.setFieldLabel(Messages.get("cm_page_type", "Page type"));
+        pageTypeGroup.add(external);
+        pageTypeGroup.add(internal);
+
+        pageTypeGroup.setValue(internal);
+
+
+        // if we can't change the oprion, we disable the radio button
+        if (!externalAllowed || !internalAllowed) {
+            pageTypeGroup.setEnabled(false);
         }
-
 
         link = new TextField<String>();
         link.setFieldLabel("Link");
@@ -142,6 +147,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
 
         url = new TextField<String>();
         url.setFieldLabel("Url");
+        url.setEnabled(!isInternal);
         Button pickContentButton = new Button(Messages.getResource("fm_remove"));
         pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -185,10 +191,14 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         sub.setLabelWidth(140);
         sub.setHeaderVisible(false);
         sub.setFrame(false);
-        sub.add(link);
-        sub.add(alt);
+        if (!htmlEditor) {
+            sub.add(link);
+            sub.add(alt);
+        }
         sub.add(url);
-        sub.add(target);
+        if (!htmlEditor) {
+            sub.add(target);
+        }
         fieldSet.add(sub);
         pageLinkForm.add(fieldSet);
 

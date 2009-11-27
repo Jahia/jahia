@@ -52,7 +52,7 @@ import com.extjs.gxt.ui.client.Style;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
+    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple) {
         super();
         //setWidth("714px");
         setHeight("700px");
@@ -84,11 +84,11 @@ public class ContentPicker extends TriPanelBrowserLayout {
                 externalAllowed = true;
                 internalAllowed = true;
             }
-            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config);
+            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config,false);
         } else {
             bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
         }
-        TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
+        TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
 
         MyStatusBar statusBar = new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes());
 

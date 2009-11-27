@@ -57,7 +57,7 @@ public class ContentPickerBrowser extends TopRightComponent {
     private TabItem searchTabItem;
     private GWTJahiaNode lastSelection;
 
-    public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
+    public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, boolean multiple) {
         this.pickerType = pickerType;
         this.config = config;
 

@@ -117,7 +117,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         }
         final Window w = new Window();
         w.setLayout(new FitLayout());
-        final ContentPicker contentPicker = new ContentPicker(selectionLabel,rootPath,selectorOptions, getValue(), types, filters, mimeTypes, configuration, multiple, allowThumbs, "");
+        final ContentPicker contentPicker = new ContentPicker(selectionLabel,rootPath,selectorOptions, getValue(), types, filters, mimeTypes, configuration, multiple);
 
         w.setHeading(header);
         w.setModal(true);

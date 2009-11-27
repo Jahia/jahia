@@ -31,6 +31,7 @@
  */
 package org.jahia.services.render;
 
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -68,6 +69,8 @@ public class RenderService extends JahiaService {
             return bean;
         }
     }
+    
+    private static final Logger logger = Logger.getLogger(RenderService.class);
     
     private static volatile RenderService instance;
     
@@ -142,7 +145,8 @@ public class RenderService extends JahiaService {
         } catch (TemplateNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            throw new IOException(e);
+            logger.warn("Error encountered in rendering service. Cause: " + e.getMessage(), e);
+            throw new IOException(e.getMessage());
         }
 
         ServletRequest request = context.getRequest();

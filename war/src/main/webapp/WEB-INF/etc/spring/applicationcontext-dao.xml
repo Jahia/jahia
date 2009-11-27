@@ -49,7 +49,7 @@
         <!-- hibernateSequenceOptimizer can take value none,hilo or pooled. -->
         <!-- Pooled And none are the only value supported by jahia -->
         <!-- Any changes of this values need to clean the whole-->
-        <property name="hibernateSequenceOptimizer" value="pooled"/>
+        <property name="hibernateSequenceOptimizer" value="org.jahia.hibernate.dao.IDGeneratorDAO.JahiaPooledOptimizer"/>
         <property name="hibernateSequenceIncrementSize" value="20"/>
         <!--<property name="clusterName" value="idGenerator" />-->
     		<property name="dbSequences">

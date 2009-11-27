@@ -36,12 +36,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.SessionImplementor;
+import org.hibernate.id.enhanced.AccessCallback;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
+import org.hibernate.id.enhanced.OptimizerFactory.OptimizerSupport;
+import org.hibernate.id.enhanced.OptimizerFactory.PooledOptimizer;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.type.LongType;
 import org.jahia.exceptions.JahiaException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -50,6 +54,57 @@ import java.util.Properties;
  * User: Serge Huber Date: 3 nov. 2005 Time: 17:41:09 Copyright (C) Jahia Inc.
  */
 public class IDGeneratorDAO extends HibernateDaoSupport {
+    
+    /**
+     * Adjusted version of the Hibernate's {@link PooledOptimizer} to handle the
+     * issue http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class JahiaPooledOptimizer extends OptimizerSupport {
+
+        private long value;
+        private long hiValue = -1;
+
+        public JahiaPooledOptimizer(Class<?> returnClass, int incrementSize) {
+            super(returnClass, incrementSize);
+            if (incrementSize < 1) {
+                throw new HibernateException("increment size cannot be less than 1");
+            }
+        }
+
+        public synchronized Serializable generate(AccessCallback callback) {
+            if (hiValue < 0 || value >= hiValue) {
+                value = callback.getNextValue();
+                hiValue = value + incrementSize;
+            }
+            return make(value++);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public long getLastSourceValue() {
+            return hiValue;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean applyIncrementSizeToSourceValues() {
+            return true;
+        }
+
+        /**
+         * Getter for property 'lastValue'.
+         * 
+         * @return Value for property 'lastValue'.
+         */
+        public long getLastValue() {
+            return value - 1;
+        }
+    }
+
     Map<String, String> dbSequences;
 
     Map<String, SequenceStyleGenerator> sequences;

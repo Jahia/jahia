@@ -185,7 +185,6 @@ public class NavigationHelper {
         String[] mimeTypesToMatch = getFiltersToApply(mimeTypes);
         String[] filtersToApply = getFiltersToApply(filters);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-        boolean displayAllVirtualSites = nodeTypes != null && nodeTypes.contains(Constants.JAHIANT_VIRTUALSITE);
         boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
         for (JCRNodeWrapper f : list) {
             if (logger.isDebugEnabled()) {
@@ -194,28 +193,15 @@ public class NavigationHelper {
             // in case of a folder, it allows to know if the node is selectable
             boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
             if (f.isVisible() && (matchNodeType || (!noFolders && f.isCollection()))) {
-                try {
-                    // if we are not in the site manager and the current site does not match the virtual site node --> hide it
-                    if (!displayAllVirtualSites && f.isNodeType(Constants.JAHIANT_VIRTUALSITE) && !f.getName().equals(context.getSiteKey())) {
-                        continue;
-                    }
-                } catch (RepositoryException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("cannot get site name " + f.getPath());
-                    }
-                }
-
                 // in case of a folder, it allows to know if the node is selectable
                 boolean matchFilters = matchesMimeTypeFilters(f.isFile(),f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
                 if (f.isCollection() || matchFilters) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
-                    if (displayAllVirtualSites) {
-                        try {
-                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
-                        } catch (GWTJahiaServiceException e) {
-                            logger.error(e.getMessage(), e);
-                        }
+                    try {
+                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
+                    } catch (GWTJahiaServiceException e) {
+                        logger.error(e.getMessage(), e);
                     }
                     if (displayTags) {
                         try {
@@ -235,13 +221,14 @@ public class NavigationHelper {
         }
 
         try {
-            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
+//            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
                 Resource r = new Resource(node, "html", null, null);
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
                 renderContext.setSite(context.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/content/sites/" + context.getSite().getSiteKey()));
                 renderContext.setIncludeSubModules(false);
-                renderService.render(r, renderContext);
+            renderContext.setMainResource(r);    
+            renderService.render(r, renderContext);
                 List<String> l = r.getMissingResources();
                 if (l != null) {
                     for (String s : l) {
@@ -252,7 +239,7 @@ public class NavigationHelper {
                         }
                     }
                 }
-            }
+//            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (TemplateNotFoundException e) {

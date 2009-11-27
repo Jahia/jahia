@@ -13,50 +13,192 @@
 
 <c:set var="userProperties" property="propertyName" value="${fn:escapeXml(fields['j:function'])}"/>
 
-<h3 class="boxtitleh3"><c:out value="${person}"/></h3>
+<h3 class="boxtitleh3" id="personDisplay2"><c:out value="${person}"/></h3>
 
 <div class="clear"></div>
 <!-- twoCol clear -->
 <ul class="list3 user-profile-list">
-    <c:forTokens items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,j:organization,j:function,j:about,j:email,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture"
+    <c:forTokens
+            items="j:firstName,j:lastName,j:email,j:organization,j:function,j:about,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
             delims="," var="key">
         <script type="text/javascript">
-        $(document).ready(function(){
-            $(".${fn:replace(key,":","_")}Edit").editInPlace({
-                url: "${url.base}${currentNode.path}",
-                show_buttons: true,
-                params: 'newNodeOutputFormat=html&methodToCall=put',
-                update_value: '${key}',
-                callback: function(ui, type, value)
-				{
-					ui.disable();
-
-					// Display message to the user at the begining of request
-					$("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
-
-					// Send request to the server using POST method
-					$.post("${url.base}${currentNode.path}", {'${key}': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-				}
+            $(document).ready(function() {
+                $(".${fn:replace(key,":","_")}Edit").editInPlace({
+                    show_buttons: true,
+                    callback: function(original_element, html, original) {
+                        var value = html;
+                        $.post("${url.base}${currentNode.path}", {'${key}': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
+                            $("#personDisplay2").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                            $("#personDisplay1").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                        }, "json");
+                        return(html);
+                    }
+                });
             });
-        });
+            $(document).ready(function() {
+                $(".${fn:replace(key,":","_")}PublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {'${key}Public': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
         </script>
-            <li>
-                <span class="label"><fmt:message key="${key}"/></span>
-                <div class="${fn:replace(key,":","_")}Edit">
-                        <c:if test="${empty fields[key]}">add property</c:if>
-                        <c:if test="${!empty fields[key]}">${fields[key]}</c:if>
-                </div>
-                <c:set var="keyPublic" value="${fields[key]}Public"/>
-            <span class="visibility">
-            <c:if test="${fields[keyPublic]}">
-                Visible
+        <li>
+            <span class="label"><fmt:message key='${fn:replace(key,":","_")}'/></span>
+
+            <div class="${fn:replace(key,":","_")}Edit">
+                <c:if test="${empty fields[key]}">add property</c:if>
+                <c:if test="${!empty fields[key]}">${fields[key]}</c:if>
+            </div>
+            <c:set var="pubKey" value="${key}Public"/>
+            <span class="visibility ${fn:replace(key,":","_")}PublicEdit">
+            <c:if test="${fields[pubKey] eq 'true'}">
+                Public
             </c:if>
-            <c:if test="${!fields[keyPublic]}">
-                <span class="visibility">Non Visible</span>
+            <c:if test="${fields[pubKey] eq 'false' or empty fields[pubKey]}">
+                Non Public
             </c:if>
-            | <a title="" href="#" class="main" onclick="javascript:changeContent('${key}ID');">Changer</a></span>
-            </li>
+            </span>
+        </li>
     </c:forTokens>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $(".j_birthDateEdit").editInPlace({
+                    show_buttons: true,
+                    callback: function(original_element, html, original) {
+                        var value = html;
+                        if(value.match("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]")) {
+                           var split = value.split("/");
+                            var birth = new Date();
+                            birth.setFullYear(split[2],split[1],split[0]);
+                            var month = "";
+                            if(birth.getMonth()<10) {
+                                month = "0"+birth.getMonth();
+                            } else month = birth.getMonth();
+                            value = birth.getFullYear()+'-'+month+'-'+birth.getDate()+'T00:00:00';
+                        $.post("${url.base}${currentNode.path}", {'j:birthDate': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
+                            //todo update age
+                        }, "json");
+                        return(html);
+                        } return "error date must be day/month/year";
+                    }
+                });
+            });
+            $(document).ready(function() {
+                $(".j_birthDatePublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {'j:birthDatePublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
+        </script>
+        <li>
+            <span class="label"><fmt:message key="j_birthDate"/></span>
+            <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
+            <c:if test="${not empty birthDate}">
+                <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="displayBirthDate"/>
+            </c:if>
+            <c:if test="${empty birthDate}">
+                <jsp:useBean id="now" class="java.util.Date"/>
+                <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+            </c:if>
+            <div class="j_birthDateEdit">${displayBirthDate}</div>
+        </li>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $(".j_genderEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "male,female,other",
+                    callback: function(original_element, html, original) {
+                        var value = html;
+                        $.post("${url.base}${currentNode.path}", {'j:gender': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
+                            //todo update age
+                        }, "json");
+                        return(html);
+                    }
+                });
+            });
+            $(document).ready(function() {
+                $(".j_genderPublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {'j:genderPublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
+        </script>
+        <li>
+            <span class="label"><fmt:message key="j_gender"/></span>
+            <div class="j_genderEdit">${fields['j:gender']}</div>
+            <span class="visibility j_genderPublicEdit">
+            <c:if test="${fields['j:genderPublic'] eq 'true'}">
+                Public
+            </c:if>
+            <c:if test="${fields['j:genderPublic'] eq 'false' or empty fields['j:genderPublic']}">
+                Non Public
+            </c:if>
+            </span>
+        </li>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $(".j_titleEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "mister,master,professor,doctor,miss,madam",
+                    callback: function(original_element, html, original) {
+                        var value = html;
+                        $.post("${url.base}${currentNode.path}", {'j:title': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
+                            $("#personDisplay2").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                            $("#personDisplay1").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                        }, "json");
+                        return(html);
+                    }
+                });
+            });
+            $(document).ready(function() {
+                $(".j_genderPublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {'j:titlePublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
+        </script>
+        <li>
+            <span class="label"><fmt:message key="j_title"/></span>
+            <div class="j_titleEdit">${fields['j:title']}</div>
+            <span class="visibility j_titlePublicEdit">
+            <c:if test="${fields['j:titlePublic'] eq 'true'}">
+                Public
+            </c:if>
+            <c:if test="${fields['j:titlePublic'] eq 'false' or empty fields['j:titlePublic']}">
+                Non Public
+            </c:if>
+            </span>
+        </li>
 </ul>
 <div class="clear"></div>
 <!-- twoCol clear -->

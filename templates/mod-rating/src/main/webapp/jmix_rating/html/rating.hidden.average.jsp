@@ -35,18 +35,17 @@
 					$("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
 					// Send request to the server using POST method
-					$.post("${url.base}${currentNode.path}", {'j:lastVote': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
+					$.post("${url.base}${currentNode.path}", {'j:lastVote': value,
+                        stayOnNode:"${url.base}${renderContext.mainResource.node.path}",
+                        newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
 					{
 							// Select stars from "Average rating" control to match the returned average rating value
-							$("#avg${id}").stars("select", Math.round(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes));
-
+							$("#avg${id}").stars("select", Math.round(result.j_sumOfVotes/result.j_nbOfVotes));
 							// Update other text controls...
-							$("#all_votes${id}").text(result.${currentNode.name}.j_nbOfVotes);
-							$("#all_avg${id}").text((''+result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes).substring(0,3));
-
+							$("#all_votes${id}").text(result.j_nbOfVotes);
+							$("#all_avg${id}").text((''+result.j_sumOfVotes/result.j_nbOfVotes).substring(0,3));
 							// Display confirmation message to the user
 							$("#messages${id}").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
-
 							// Hide confirmation message and enable stars for "Rate this" control, after 2 sec...
 							setTimeout(function(){
 								$("#messages${id}").fadeOut(1000, function(){ui.enable();});

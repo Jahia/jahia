@@ -4,11 +4,31 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-
+<jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="960.css,userProfile.css"/>
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
+<c:if test="${not empty birthDate}">
+<fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>
+<fmt:formatDate value="${now}" pattern="yyyy" var="currentYear"/>
+</c:if>
+<script type="text/javascript">
+            $(document).ready(function() {
+                $(".j_emailPublicEdit").editInPlace({
+                    show_buttons: true,
+                    field_type: "select",
+                    select_options: "true,false",
+                    callback: function(original_element, html, original) {
+                        $.post("${url.base}${currentNode.path}", {"j:emailPublic": html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (html == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    }
+                });
+            });
+        </script>
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
 <div class="container container_16"> <!--start container_16-->
@@ -22,13 +42,18 @@
                 <div class="box-inner">
                     <div class="box-inner-border">
 
-                    <h3 class="boxtitleh3"><c:out value="${person}"/></h3>
+                    <h3 class="boxtitleh3" id="personDisplay1"><c:out value="${person}"/></h3>
                     <div class="list3 user-profile-list">
                     <ul class="list3 user-profile-list">
-                    <li><span class="label">Age : </span> 45ans <span class="visibility">Visible | <a title="" href="#" class="main">Changer</a></span></li>
-                    <li><span class="label">Sexe : </span> 27 rue d'Hauteville 75001 Paris <span class="visibility">Visible | <a title="" href="#" class="main">Changer</a></span></li>
+                    <li><span class="label">Age : </span> ${currentYear - birthYear} ans</li>
+                    <li><span class="label">Sexe : </span> ${fields['j:gender']}</li>
 
-                    <li><span class="label">Email Perso: </span> jhon.james@intranet.com <span class="visibility">Visible | <a title="" href="#" class="main">Changer</a></span></li>
+                    <li><span class="label">Email Perso: </span> ${fields['j:email']} <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
+                Public
+            </c:if>
+            <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">
+                Non Public
+            </c:if></span></li>
                     </ul>
                     </div>
                     <div class="AddItemForm">

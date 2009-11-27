@@ -31,6 +31,7 @@
  */
 package org.jahia.bin;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.JahiaData;
@@ -39,6 +40,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -62,6 +64,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -176,10 +180,23 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             String key = entry.getKey();
             if (!reservedParameters.contains(key)) {
                 String[] values = entry.getValue();
-                if (((JCRNodeWrapper)node).getApplicablePropertyDefinition(key).isMultiple()) {
+                final ExtendedPropertyDefinition propertyDefinition = ((JCRNodeWrapper) node).getApplicablePropertyDefinition(
+                        key);
+                if (propertyDefinition.isMultiple()) {
                     node.setProperty(key, values);
+                } else if (propertyDefinition.getRequiredType()==PropertyType.DATE) {
+                    // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
+                    try {
+                        final Date date = new SimpleDateFormat(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern()).parse(
+                                values[0]);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        node.setProperty(key,calendar);
+                    } catch (ParseException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 } else {
-	                node.setProperty(key, values[0]);
+                    node.setProperty(key, values[0]);
                 }
             }
         }
@@ -203,14 +220,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                            new JSONObject(req.getParameterMap()).toString());
     }
 
-    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
-        JSONObject nodeJSON = new JSONObject();
+    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {        
         final Map<String, String> stringMap = node.getPropertiesAsString();
         Map<String,String > map = new HashMap<String, String>(stringMap.size());
         for (Map.Entry<String, String> stringStringEntry : stringMap.entrySet()) {
             map.put(stringStringEntry.getKey().replace(":","_"),stringStringEntry.getValue());
         }
-        nodeJSON.put(node.getName(), map);
+        JSONObject nodeJSON = new JSONObject(map);
         nodeJSON.write(resp.getWriter());
     }
 

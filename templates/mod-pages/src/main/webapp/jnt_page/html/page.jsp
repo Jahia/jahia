@@ -60,7 +60,7 @@
 
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <c:choose>
-        <c:when test="${col.value == 1}">
+        <c:when test="${col.value > 8}">
     <div class='grid_${col.value}'><!--start grid_${col.value}-->
         <div class="box">
             <div class="boxshadow bowpadding40 boxmarginbottom16">

@@ -31,14 +31,14 @@
  */
  package org.jahia.bin;
 
+import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * This class is used to implements listeners to the servlet containers events.
@@ -108,6 +108,9 @@ public class JahiaWebAppListener implements HttpSessionListener, ServletContextL
     }
 
     public void contextInitialized(ServletContextEvent event) {
+        /*final JspApplicationContext context = JspFactory.getDefaultFactory().getJspApplicationContext(
+                event.getServletContext());
+        context.addELResolver(new JCRNodePropertiesELResolver());*/
     }
 
     public void contextDestroyed(ServletContextEvent event) {

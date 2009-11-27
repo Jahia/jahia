@@ -9,6 +9,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
@@ -57,6 +60,11 @@ public class CKEditor extends Component {
             config = new CKEditorConfig();
         }
         this.config = config;
+        this.addListener(Events.OnClick, new Listener<BaseEvent>(){
+            public void handleEvent(BaseEvent baseEvent) {
+                Log.error("**************** "+baseEvent);
+            }
+        });
     }
 
     @Override
@@ -156,11 +164,11 @@ public class CKEditor extends Component {
      */
 
     private native JavaScriptObject initEditor()/*-{
+    
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             filebrowserBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
             filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
-            filebrowserUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker',
-            filebrowserImageUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp=filemanager'
+            filebrowserFlashBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=flashpicker'
         });
 
 
@@ -194,5 +202,6 @@ public class CKEditor extends Component {
         var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
         return oEditor.checkDirty();
       }-*/;
+
 
 }

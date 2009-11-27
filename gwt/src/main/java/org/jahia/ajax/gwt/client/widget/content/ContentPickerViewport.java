@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -50,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.google.gwt.user.client.Window;
 
 /**
  * File and folder picker control.
@@ -100,7 +102,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, callback, multiple, allowThumbs);
 
         // buttom component
-        final Component bar = initButtonBar();
+        final Component bar = initButtonBar(callback);
     
         if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
@@ -125,7 +127,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
      * Init buttonBar
      * @return
      */
-    private Component initButtonBar() {
+    private Component initButtonBar(final String callback) {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 
@@ -134,10 +136,19 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
         Button ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
-        ok.setEnabled(false);
+        //ok.setEnabled(false);
         ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
-        //ok.addSelectionListener(new SaveSelectionListener());
-
+        ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                 List<GWTJahiaNode> selectedNode = getSelectedNodes();
+                if(selectedNode != null && !selectedNode.isEmpty()){
+                    GWTJahiaNode node = selectedNode.get(0);
+                    callback(callback,node.getUrl());
+                    WindowUtil.close();
+                }
+            }
+        });
 
         buttonBar.add(ok);
 
@@ -148,7 +159,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-
+                 WindowUtil.close();
             }
         });
         buttonBar.add(cancel);
@@ -162,6 +173,12 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         buttonsPanel.add(container);
 
         return buttonsPanel;
-
     }
+
+    private native void callback(String callback,String url)/*-{
+        $wnd.opener.CKEDITOR.tools.callFunction(callback, url,"");
+      }-*/;
+
+
+
 }

@@ -58,6 +58,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -157,8 +158,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         PrintWriter writer = resp.getWriter();
         writer.print(out);
         writer.close();
+        String sessionID = "";
+        HttpSession httpSession = req.getSession(false);
+        if (httpSession != null) {
+            sessionID = httpSession.getId();
+        }
         loggingService.stopProfiler("MAIN");
-        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),resource.getNode().getPath(),resource.getNode().getPrimaryNodeType().getName(),"pageViewed",req.getHeader("User-Agent"),req.getHeader("Referer"));
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),sessionID, resource.getNode().getPath(),resource.getNode().getPrimaryNodeType().getName(),"pageViewed",req.getHeader("User-Agent"),req.getHeader("Referer"));
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
@@ -188,7 +194,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         } else {
             performRedirect(null, null, req, resp);
         }
-        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),path,node.getPrimaryNodeType().getName(),"nodeUpdated",
+        String sessionID = "";
+        HttpSession httpSession = req.getSession(false);
+        if (httpSession != null) {
+            sessionID = httpSession.getId();
+        }
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),sessionID, path,node.getPrimaryNodeType().getName(),"nodeUpdated",
                                            new JSONObject(req.getParameterMap()).toString());
     }
 
@@ -263,7 +274,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         resp.setStatus(HttpServletResponse.SC_CREATED);
         performRedirect(url, path, req, resp);
-        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),path,req.getParameter(NODE_TYPE),"nodeCreated",
+        String sessionID = "";
+        HttpSession httpSession = req.getSession(false);
+        if (httpSession != null) {
+            sessionID = httpSession.getId();
+        }
+        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(),sessionID, path,req.getParameter(NODE_TYPE),"nodeCreated",
                                        new JSONObject(req.getParameterMap()).toString());
     }
 

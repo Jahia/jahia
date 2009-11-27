@@ -48,12 +48,14 @@ public interface MetricsLoggingService {
      * Log some metric about a node.
      * @param user user achieving the operation
      * @param ipAddress ip address of the user
+     * @param sessionID   if available, the identifier of the session, otherwise null or an empty string is fine. Note
+     * that if you use null it will be outputted verbatim in the log.
      * @param path the node path on which the operation has been achieved
      * @param nodeType the type of the node
      * @param logTemplate the name of the template log you want to use.
-     * @param args varaibale list of arguments depending of the template you choose
+     * @param args variable list of arguments depending of the template you choose
      */
-    void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate, String... args);
+    void logContentEvent(String user, String sessionID, String ipAddress, String path, String nodeType, String logTemplate, String... args);
 
     /**
      * Start a profiler and start the associated action (if the profilerName is not foudn it will create it)

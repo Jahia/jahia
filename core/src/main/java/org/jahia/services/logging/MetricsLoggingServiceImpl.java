@@ -54,7 +54,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private transient static Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
     private Map<String, String> logTemplatesMap;
     private static MetricsLoggingServiceImpl instance;
-    private final static String headerTemplate = "user {} ip {} path {} nodetype {} ";
+    private final static String headerTemplate = "user {} ip {} session {} path {} nodetype {} ";
     private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
 
     public MetricsLoggingServiceImpl() {
@@ -72,20 +72,23 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      *
      * @param user        user achieving the operation
      * @param ipAddress   ip address of the user
+     * @param sessionID   if available, the identifier of the session, otherwise null or an empty string is fine. Note
+     * that if you use null it will be outputted verbatim in the log.
      * @param path        the node path on which the operation has been achieved
      * @param nodeType    the type of the node
      * @param logTemplate the name of the template log you want to use.
      * @param args        varaibale list of arguments depending of the template you choose
      */
-    public void logContentEvent(String user, String ipAddress, String path, String nodeType, String logTemplate,
-                                String... args) {
+    public void logContentEvent(String user, String ipAddress, String sessionID, String path, String nodeType, 
+                                String logTemplate, String... args) {
         String template = logTemplatesMap.get(logTemplate);
-        String[] templateParameters = new String[4 + args.length];
+        String[] templateParameters = new String[5 + args.length];
         templateParameters[0] = user;
         templateParameters[1] = ipAddress;
-        templateParameters[2] = path;
-        templateParameters[3] = nodeType;
-        int i = 4;
+        templateParameters[2] = sessionID;
+        templateParameters[3] = path;
+        templateParameters[4] = nodeType;
+        int i = 5;
         for (String arg : args) {
             templateParameters[i++] = arg;
         }

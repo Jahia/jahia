@@ -87,15 +87,15 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
                 Event event = events.nextEvent();
                 switch (event.getType()) {
                     case Event.NODE_ADDED:
-                        loggingService.logContentEvent(event.getUserID(), "", event.getPath(), "", "nodeCreated",
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeCreated",
                                                        new JSONObject(event.getInfo()).toString());
                         break;
                     case Event.NODE_MOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", event.getPath(), "", "nodeUpdated",
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeUpdated",
                                                        new JSONObject(event.getInfo()).toString());
                         break;
                     case Event.NODE_REMOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", event.getPath(), "", "nodeDeleted",
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeDeleted",
                                                        new JSONObject(event.getInfo()).toString());
                         break;
                 }

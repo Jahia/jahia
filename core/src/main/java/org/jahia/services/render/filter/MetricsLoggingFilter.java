@@ -7,6 +7,8 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
 import org.slf4j.profiler.Profiler;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * MetricsLoggingFilter
  *
@@ -31,7 +33,12 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         Script script = (Script) context.getRequest().getAttribute("script");
 
-        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
+        String sessionID ="";
+        HttpSession session = context.getRequest().getSession(false);
+        if (session != null) {
+            sessionID = session.getId();
+        }
+        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),sessionID, node.getPath(),node.getNodeTypes().get(0),"moduleViewed",script.getTemplate().getDisplayName());
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 

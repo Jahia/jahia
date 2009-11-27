@@ -59,7 +59,25 @@
 </c:if>
 
 <c:forEach items="${colMap}" var="col" varStatus="count">
+    <c:choose>
+        <c:when test="${col.value == 1}">
     <div class='grid_${col.value}'><!--start grid_${col.value}-->
-        <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
-    <div class='clear'></div></div><!--stop grid_${col.value}-->
+        <div class="box">
+            <div class="boxshadow bowpadding40 boxmarginbottom16">
+                <div class="box-inner-border">
+                <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
+                <div class='clear'></div>
+                </div>
+            </div>
+        </div>
+    </div><!--stop grid_${col.value}-->
+        </c:when>
+
+        <c:otherwise>
+            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+                <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
+                <div class='clear'></div>
+            </div><!--stop grid_${col.value}-->
+        </c:otherwise>
+    </c:choose>
 </c:forEach>

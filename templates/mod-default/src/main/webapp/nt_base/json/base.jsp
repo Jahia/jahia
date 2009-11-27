@@ -5,7 +5,6 @@
 <%@ page import="javax.jcr.RepositoryException" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="org.json.JSONArray" %>
 <%
     Logger logger = Logger.getLogger(this.getClass());
     try {
@@ -15,7 +14,7 @@
         for (Map.Entry<String, String> stringStringEntry : stringMap.entrySet()) {
             map.put(stringStringEntry.getKey().replace(":", "_"), stringStringEntry.getValue());
         }
-        JSONArray nodeJSON = new JSONArray(map);
+        JSONObject nodeJSON = new JSONObject(map);
         nodeJSON.write(pageContext.getOut());
     } catch (RepositoryException e) {
         logger.error(e.getMessage(), e);

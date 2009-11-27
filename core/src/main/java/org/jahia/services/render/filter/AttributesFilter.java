@@ -10,25 +10,22 @@ import org.jahia.bin.Jahia;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.Property;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * Stores the required request parameters before evaluating the template and restores original after. 
  * User: toto
  * Date: Nov 26, 2009
  * Time: 3:28:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public class AttributesFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(AttributesFilter.class);
 
-    public String doFilter(RenderContext context, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         final Map<String, Object> old = new HashMap<String, Object>();
         JCRNodeWrapper node = resource.getNode();
 

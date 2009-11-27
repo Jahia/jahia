@@ -4,7 +4,6 @@ import org.jahia.services.render.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
 
-import javax.jcr.RepositoryException;
 import java.io.IOException;
 
 /**
@@ -17,7 +16,7 @@ import java.io.IOException;
 public class WrapperFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(WrapperFilter.class);
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
         String output = chain.doFilter(renderContext, resource);
 

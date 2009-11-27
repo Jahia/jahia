@@ -5,7 +5,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collections;
@@ -24,7 +23,7 @@ import java.util.List;
 public class OptionsFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(OptionsFilter.class);
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         ExtendedNodeType[] mixinNodeTypes = null;

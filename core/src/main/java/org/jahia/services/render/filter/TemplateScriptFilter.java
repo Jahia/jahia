@@ -3,7 +3,6 @@ package org.jahia.services.render.filter;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.slf4j.profiler.Profiler;
 
 import javax.jcr.RepositoryException;
@@ -20,7 +19,7 @@ import java.io.IOException;
  */
 public class TemplateScriptFilter extends AbstractFilter {
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
         if (profiler != null) {
             profiler.start("render template "+resource.getResolvedTemplate());
@@ -29,8 +28,12 @@ public class TemplateScriptFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
         Script script = (Script) request.getAttribute("script");
         renderContext.getResourcesStack().push(resource);
-        String output = script.execute();
-        renderContext.getResourcesStack().pop();
+        String output;
+        try {
+            output = script.execute();
+        } finally {
+            renderContext.getResourcesStack().pop();
+        }
         return output;
     }
 }

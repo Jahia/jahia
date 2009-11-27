@@ -2,9 +2,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 
-import javax.jcr.RepositoryException;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,6 +19,25 @@ import java.io.IOException;
 public class RenderChain {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
     private int index = 0;
+
+    
+    /**
+     * Initializes an instance of this class.
+     */
+    public RenderChain() {
+        super();
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * @param filters a list of filters to be used in the chain
+     */
+    public RenderChain(RenderFilter... filters) {
+        this();
+        for (RenderFilter renderFilter : filters) {
+            addFilter(renderFilter);
+        }
+    }
 
     /**
      * Add one filter the chain.
@@ -47,10 +64,9 @@ public class RenderChain {
      * @param renderContext The render context
      * @param resource The current resource to display
      * @return Output from the next filter
-     * @throws IOException
-     * @throws RepositoryException
+     * @throws Exception in case of a JCR issue
      */
-    public String doFilter(RenderContext renderContext, Resource resource) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String doFilter(RenderContext renderContext, Resource resource) throws Exception {
         if (filters.size() >= index) {
             RenderFilter f = filters.get(index++);
 

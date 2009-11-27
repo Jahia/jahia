@@ -2,13 +2,10 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 
-import javax.jcr.RepositoryException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.io.IOException;
 
 /**
  * Simple regular expression filter
@@ -29,26 +26,27 @@ import java.io.IOException;
  * </bean>
  */
 public class RegexpFilter extends AbstractFilter {
-    private Map<String,String> regexp;
+    private Map<Pattern, String> regexp;
 
-    public Map getRegexp() {
-        return regexp;
+    public void setRegexp(Map<String, String> regexp) {
+        if (!regexp.isEmpty()) {
+            // compile patterns
+            this.regexp = new LinkedHashMap<Pattern, String>();
+            for (Map.Entry<String, String> replacement : regexp.entrySet()) {
+                this.regexp.put(Pattern.compile(replacement.getKey()), replacement.getValue());
+            }
+        }
     }
 
-    public void setRegexp(Map regexp) {
-        this.regexp = regexp;
-    }
-
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         String out = chain.doFilter(renderContext, resource);
 
         if (regexp == null) {
             return out;
         }
 
-        for (String s : regexp.keySet()) {
-            Matcher m = Pattern.compile(s).matcher(out);
-            out = m.replaceAll(regexp.get(s));
+        for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {
+            out = replacement.getKey().matcher(out).replaceAll(replacement.getValue());
         }
 
         return out;

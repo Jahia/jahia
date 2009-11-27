@@ -2,10 +2,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -48,7 +45,7 @@ public class EmailObfuscatorFilter extends AbstractFilter {
     // compile version to check email within string
     public static final Pattern VALID_EMAIL_IN_STRING_SIMPLE = Pattern.compile(".*" + addrSpec + ".*", Pattern.DOTALL);
 
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         String out = chain.doFilter(renderContext, resource);
 
         StringBuffer wholeHtml = new StringBuffer(out);

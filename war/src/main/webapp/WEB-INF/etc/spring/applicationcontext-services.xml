@@ -331,6 +331,8 @@
         <constructor-arg index="3"><value>180</value></constructor-arg>
     </bean>
 
+    <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
+    
     <bean id="RenderService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">

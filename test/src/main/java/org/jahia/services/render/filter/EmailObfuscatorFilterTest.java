@@ -1,11 +1,7 @@
 package org.jahia.services.render.filter;
 
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.params.ProcessingContext;
-import org.jahia.api.Constants;
-import org.apache.log4j.Logger;
 import junit.framework.TestCase;
 
 import javax.jcr.RepositoryException;
@@ -13,14 +9,12 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * Unit test for the e-mail obfuscation render filter. 
  * User: toto
  * Date: Nov 26, 2009
  * Time: 12:19:43 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EmailObfuscatorFilterTest extends TestCase {
-    private static Logger logger = Logger.getLogger(EmailObfuscatorFilterTest.class);
 
     private Pattern mailPattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}");
 
@@ -39,7 +33,7 @@ public class EmailObfuscatorFilterTest extends TestCase {
         EmailObfuscatorFilter filter = new EmailObfuscatorFilter();
         chain.addFilter(filter);
         chain.addFilter(new AbstractFilter() {
-            public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
                 return s;
             }
         });

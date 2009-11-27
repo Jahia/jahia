@@ -1,22 +1,18 @@
 package org.jahia.services.render.filter;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderService;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.test.TestHelper;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -26,20 +22,16 @@ import junit.framework.TestCase;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Unit test for the {@link WrapperFilter} 
  * User: toto
  * Date: Nov 26, 2009
  * Time: 12:57:51 PM
- * To change this template use File | Settings | File Templates.
  */
 public class WrapperFilterTest extends TestCase {
     private ParamBean paramBean;
     private JahiaSite site;
     private JCRSessionWrapper session;
     private JCRNodeWrapper node;
-
-    private static Logger logger = Logger.getLogger(WrapperFilterTest.class);
-
 
     @Override
     protected void setUp() throws Exception {
@@ -83,15 +75,15 @@ public class WrapperFilterTest extends TestCase {
 
         RenderChain chain = new RenderChain();
         AttributesFilter attributesFilter = new AttributesFilter();
-        attributesFilter.setService(RenderService.getInstance());
+        attributesFilter.setRenderService(RenderService.getInstance());
         chain.addFilter(attributesFilter);
 
         WrapperFilter filter = new WrapperFilter();
-        filter.setService(RenderService.getInstance());
+        filter.setRenderService(RenderService.getInstance());
         chain.addFilter(filter);
 
         chain.addFilter(new AbstractFilter() {
-            public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
                 return "test";
             }
         });

@@ -107,6 +107,10 @@
     <!--</rule>-->
 
     <!-- GXT resources-->
+     <rule>
+        <from>^(.*?)/gwt/(.*?)/ckeditor/(.*?)</from>
+        <to last="true">$1/gwt/resources/ckeditor/$3</to>
+    </rule>
     <rule>
         <from>^(.*?)/gwt/(.*?)/images/(.*?)</from>
         <to last="true">$1/gwt/resources/images/$3</to>
@@ -119,11 +123,7 @@
         <from>^(.*?)/gwt/(.*?)/clear.gif</from>
         <to last="true">$1/gwt/resources/clear.gif</to>
     </rule>
-    <rule>
-        <from>^(.*?)/gwt/(.*?)/ckeditor/(.*?)</from>
-        <to last="true">$1/gwt/resources/ckeditor/$3</to>
-    </rule>
-
+    
     <!-- rule for any gwt page-->
     <rule>
         <from>^(.*?)/gwt/(.*?)</from>

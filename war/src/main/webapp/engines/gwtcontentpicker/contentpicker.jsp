@@ -42,7 +42,7 @@
 	</head>
 	<body>
 
-		<internal:contentPicker conf='${param["type"]}'/>
+		<internal:contentPicker conf='${param["type"]}' mimeTypes='${param["mime"]}'/>
         <internal:gwtGenerateDictionary/>
 	</body>
 </html>

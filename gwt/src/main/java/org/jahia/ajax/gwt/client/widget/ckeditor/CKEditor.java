@@ -61,13 +61,14 @@ public class CKEditor extends Component {
 
     @Override
     protected void onRender(Element target, int index) {
-        Element ele = DOM.createDiv();
+        Element ele = DOM.createTextArea();
         DOM.setElementAttribute(ele, "width", config.getWidth());
         DOM.setElementAttribute(ele, "height", config.getHeight());
         setElement(ele, target, index);
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 instanceId = getElement().getId();
+                DOM.setElementAttribute(getElement(), "name", instanceId);
                 editorInstance = initEditor();
             }
         });
@@ -138,7 +139,7 @@ public class CKEditor extends Component {
       }-*/;
 
     /**
-     * Native methode to get html of the CKEditor
+     * Native methode to giamet html of the CKEditor
      *
      * @return
      */
@@ -153,16 +154,17 @@ public class CKEditor extends Component {
      *
      * @return
      */
-    
+
     private native JavaScriptObject initEditor()/*-{
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             filebrowserBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
-            filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
+            filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
             filebrowserUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker',
             filebrowserImageUploadUrl : '/engines/gwtcontentpicker/contentpicker.jsp=filemanager'
         });
 
-        // check if there is a default config in the html document
+
+
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
 
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();

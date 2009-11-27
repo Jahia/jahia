@@ -357,4 +357,60 @@ public abstract class AbstractFilter implements RenderFilter {
     public final void setRenderService(RenderService service) {
         this.service = service;
     }
+
+    public void setSkipOnModules(String modules) {
+        ExecutionCondition condition = null;
+        if (modules.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String module : modules.split(",")) {
+                anyOf.add(new ModuleCondition(module.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new ModuleCondition(modules);
+        }
+        addCondition(new NotCondition(condition));
+    }
+
+    public void setSkipOnNodeTypes(String nodeTypes) {
+        ExecutionCondition condition = null;
+        if (nodeTypes.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String nodeType : nodeTypes.split(",")) {
+                anyOf.add(new NodeTypeCondition(nodeType.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new NodeTypeCondition(nodeTypes);
+        }
+        addCondition(new NotCondition(condition));
+    }
+
+    public void setSkipOnTemplates(String templates) {
+        ExecutionCondition condition = null;
+        if (templates.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String template : templates.split(",")) {
+                anyOf.add(new TemplateCondition(template.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new TemplateCondition(templates);
+        }
+        addCondition(new NotCondition(condition));
+    }
+
+    public void setSkipOnTemplateTypes(String templateTypes) {
+        ExecutionCondition condition = null;
+        if (templateTypes.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String templateType : templateTypes.split(",")) {
+                anyOf.add(new TemplateTypeCondition(templateType.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new TemplateTypeCondition(templateTypes);
+        }
+        addCondition(new NotCondition(condition));
+    }
 }

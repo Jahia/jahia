@@ -35,8 +35,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -54,13 +56,15 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Sergiy Shyrkov
  */
 public class GWTController extends RemoteServiceServlet implements Controller,
-        ServletContextAware {
+        ServletContextAware, ApplicationContextAware {
 
     private final static Logger logger = Logger.getLogger(GWTController.class);
 
     private String remoteServiceName;
 
     private ServletContext servletContext;
+    
+    private ApplicationContext applicationContext;
     
     @Override
     public ServletContext getServletContext() {
@@ -89,8 +93,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     public String processCall(String payload) throws SerializationException {
         RemoteService remoteService = null;
         try {
-            remoteService = (RemoteService) SpringContextSingleton
-                    .getBean(remoteServiceName);
+            remoteService = (RemoteService) applicationContext.getBean(remoteServiceName);
             setServiceData(remoteService, false);
 
             RPCRequest rpcRequest = RPC.decodeRequest(payload, remoteService
@@ -100,7 +103,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
         } catch (Throwable e) {
-            logger.error("An error occured calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
+            logger.error("An error occurred calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
             return RPC.encodeResponseForFailure(null, e);
         } finally {
             try {
@@ -136,6 +139,10 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext; 
     }
 
 }

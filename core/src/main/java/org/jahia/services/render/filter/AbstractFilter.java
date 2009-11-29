@@ -309,9 +309,16 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     public final String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception {
-        return areConditionsMatched(renderContext, resource) ? execute(renderContext, resource, chain)
-                : chain.doFilter(renderContext, resource);
+            throws RenderFilterException {
+        try {
+            return areConditionsMatched(renderContext, resource) ? execute(renderContext, resource, chain)
+                    : chain.doFilter(renderContext, resource);
+        } catch (RenderFilterException e) {
+            throw e;
+        } catch (Exception e) {
+            // wrap it
+            throw new RenderFilterException(e);
+        }
     }
 
     protected abstract String execute(RenderContext renderContext, Resource resource, RenderChain chain)

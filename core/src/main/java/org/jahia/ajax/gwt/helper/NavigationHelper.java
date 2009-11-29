@@ -55,9 +55,9 @@ import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.FileUtils;
@@ -71,15 +71,12 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
-import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:16:27 PM
- * To change this template use File | Settings | File Templates.
  */
 public class NavigationHelper {
     private static Logger logger = Logger.getLogger(NavigationHelper.class);
@@ -198,11 +195,11 @@ public class NavigationHelper {
                 if (f.isCollection() || matchFilters) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
-                    try {
-                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
-                    } catch (GWTJahiaServiceException e) {
-                        logger.error(e.getMessage(), e);
-                    }
+                        try {
+                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
+                        } catch (GWTJahiaServiceException e) {
+                            logger.error(e.getMessage(), e);
+                        }
                     if (displayTags) {
                         try {
                             theNode.set("count", f.getReferences().getSize());
@@ -228,7 +225,7 @@ public class NavigationHelper {
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/content/sites/" + context.getSite().getSiteKey()));
                 renderContext.setIncludeSubModules(false);
             renderContext.setMainResource(r);    
-            renderService.render(r, renderContext);
+                renderService.render(r, renderContext);
                 List<String> l = r.getMissingResources();
                 if (l != null) {
                     for (String s : l) {
@@ -242,9 +239,7 @@ public class NavigationHelper {
 //            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-        } catch (TemplateNotFoundException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (RenderException e) {
             logger.error(e.getMessage(), e);
         }
 

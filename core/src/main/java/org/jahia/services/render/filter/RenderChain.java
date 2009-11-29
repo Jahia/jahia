@@ -1,12 +1,12 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.IOException;
 
 /**
  * RenderChain.
@@ -16,7 +16,7 @@ import java.io.IOException;
  * Date: Nov 24, 2009
  * Time: 12:33:52 PM
  */
-public class RenderChain {
+public class RenderChain implements RenderFilter {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
     private int index = 0;
 
@@ -64,15 +64,24 @@ public class RenderChain {
      * @param renderContext The render context
      * @param resource The current resource to display
      * @return Output from the next filter
-     * @throws Exception in case of a JCR issue
+     * @throws RenderFilterException in case of a rendering errors
      */
-    public String doFilter(RenderContext renderContext, Resource resource) throws Exception {
+    public String doFilter(RenderContext renderContext, Resource resource) throws RenderFilterException {
         if (filters.size() >= index) {
             RenderFilter f = filters.get(index++);
 
             return f.doFilter(renderContext, resource, this);
         } else {
-            throw new IOException("No content");
+            throw new RenderFilterException("No content");
         }
+    }
+
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
+            throws RenderFilterException {
+        return doFilter(renderContext, resource);
+    }
+
+    public void setRenderService(RenderService service) {
+        // do nothing
     }
 }

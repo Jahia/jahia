@@ -122,8 +122,16 @@ class TemplatePackageDeployer {
                     }
                 }
             }
+            boolean changed = false;
             for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
                 templatePackageRegistry.register(pack);
+                changed = true;
+            }
+            
+            if (changed) {
+                // reload the Spring application context for modules
+                templatePackageRegistry.resetFilters();
+                contextLoader.reload();
             }
             
             performInitialImport();
@@ -144,6 +152,8 @@ class TemplatePackageDeployer {
     private Timer watchdog;
 
     private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
+    
+    private TemplatePackageApplicationContextLoader contextLoader;
 
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
@@ -372,4 +382,7 @@ class TemplatePackageDeployer {
         this.importExportService = importExportService;
     }
 
+    public void setContextLoader(TemplatePackageApplicationContextLoader contextLoader) {
+        this.contextLoader = contextLoader;
+    }
 }

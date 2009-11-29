@@ -44,6 +44,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
@@ -63,7 +64,7 @@ public class JahiaTemplateManagerService extends JahiaService {
     private TemplatePackageDeployer templatePackageDeployer;
 
     private TemplatePackageRegistry templatePackageRegistry;
-
+    
     private JahiaSitesService siteService;
 
     private JahiaPageTemplateService tplService;
@@ -230,6 +231,17 @@ public class JahiaTemplateManagerService extends JahiaService {
         }
 
         return pkg;
+    }
+
+    /**
+     * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
+     * 
+     * @param module
+     *            the template module name to search for
+     * @return a list of {@link RenderFilter} instances, configured for the specified templates package
+     */
+    public List<RenderFilter> getRenderFiltersForModule(String module) {
+        return templatePackageRegistry.getRenderFiltersForModule(module);
     }
 
     /**
@@ -469,4 +481,5 @@ public class JahiaTemplateManagerService extends JahiaService {
         return getTemplatePackage(ctx.getSite().getTemplatePackageName())
                 .getResourceBundleName();
     }
+
 }

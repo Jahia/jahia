@@ -10,15 +10,12 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 
 import javax.jcr.RepositoryException;
-import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:54:41 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TemplateHelper {
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TemplateHelper.class);
@@ -71,9 +68,7 @@ public class TemplateHelper {
             res = renderService.render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-        } catch (TemplateNotFoundException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (RenderException e) {
             logger.error(e.getMessage(), e);
         }
         return res;

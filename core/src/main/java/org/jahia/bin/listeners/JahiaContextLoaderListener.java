@@ -34,7 +34,9 @@ package org.jahia.bin.listeners;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -66,11 +68,12 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
             boolean configExists = event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
             if (configExists) {
                 super.contextInitialized(event);
-                SpringContextSingleton
-                        .getInstance()
-                        .setContext(
-                                (WebApplicationContext) servletContext
-                                        .getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE));
+                SpringContextSingleton.getInstance().setContext(ContextLoader.getCurrentWebApplicationContext());
+                try {
+                    ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).start();
+                } catch (Exception e) {
+                    logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
+                }
             }
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, configExists ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());                
@@ -82,6 +85,11 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
     public void contextDestroyed(ServletContextEvent event) {
         try {
             if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
+                try {
+                    ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).stop();
+                } catch (Exception e) {
+                    logger.error("Error shutting down Jahia modules Spring application context. Cause: " + e.getMessage(), e);
+                }
                 super.contextDestroyed(event);
             }
         } catch (MalformedURLException e) {

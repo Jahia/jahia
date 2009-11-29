@@ -33,15 +33,12 @@ package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
 import org.jahia.data.beans.CategoryBean;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.JahiaData;
 import org.jahia.services.render.*;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.apache.commons.lang.StringUtils;
@@ -400,14 +397,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     buffer.delete(0, buffer.length());
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
         } catch (TemplateNotFoundException io) {
             buffer.append(io);
             if (var == null) {
                 pageContext.getOut().print(buffer);
                 buffer.delete(0, buffer.length());
             }
+        } catch (RenderException e) {
+            logger.error(e.getMessage(), e);
         }
 
     }

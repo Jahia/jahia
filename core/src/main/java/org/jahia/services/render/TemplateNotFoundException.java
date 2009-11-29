@@ -1,13 +1,12 @@
 package org.jahia.services.render;
 
 /**
- * Created by IntelliJ IDEA.
+ * Rendering service exception that is thrown when a template for the resource could not be found.
  * User: toto
  * Date: Oct 1, 2009
  * Time: 5:36:15 PM
- * To change this template use File | Settings | File Templates.
  */
-public class TemplateNotFoundException extends Exception {
+public class TemplateNotFoundException extends RenderException {
 
 
     /**
@@ -58,11 +57,4 @@ public class TemplateNotFoundException extends Exception {
         super(message);
     }
 
-    /**
-     * Constructs a new exception with <code>null</code> as its detail message.
-     * The cause is not initialized, and may subsequently be initialized by a
-     * call to {@link #initCause}.
-     */
-    public TemplateNotFoundException() {
-    }
 }

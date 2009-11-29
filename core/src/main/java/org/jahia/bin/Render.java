@@ -43,9 +43,9 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -149,7 +149,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return new RenderContext(req, resp, user);
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, TemplateNotFoundException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
         String out = RenderService.getInstance().render(resource, renderContext);
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
@@ -196,7 +196,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         logger.error(e.getMessage(), e);
                     }
                 } else {
-                    node.setProperty(key, values[0]);
+	                node.setProperty(key, values[0]);
                 }
             }
         }
@@ -220,7 +220,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                            new JSONObject(req.getParameterMap()).toString());
     }
 
-    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {        
+    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
         final Map<String, String> stringMap = node.getPropertiesAsString();
         Map<String,String > map = new HashMap<String, String>(stringMap.size());
         for (Map.Entry<String, String> stringStringEntry : stringMap.entrySet()) {

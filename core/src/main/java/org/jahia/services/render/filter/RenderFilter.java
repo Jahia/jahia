@@ -21,8 +21,8 @@ public interface RenderFilter extends RenderServiceAware {
      * @param resource Resource being displayed
      * @param chain RenderChain to use for chaining to next filter
      * @return Filtered output
-     * @throws Exception
+     * @throws RenderFilterException in case of rendering errors
      */
-    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
+    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderFilterException;
 
 }

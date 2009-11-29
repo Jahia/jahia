@@ -31,7 +31,6 @@
  */
 package org.jahia.services.render;
 
-import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -69,8 +68,6 @@ public class RenderService extends JahiaService {
             return bean;
         }
     }
-    
-    private static final Logger logger = Logger.getLogger(RenderService.class);
     
     private static volatile RenderService instance;
     
@@ -121,11 +118,9 @@ public class RenderService extends JahiaService {
      * @param resource Resource to display
      * @param context The render context
      * @return The rendered result
-     * @throws RepositoryException when jcr issue
-     * @throws IOException when input/output issue
-     * @throws TemplateNotFoundException when template issue
+     * @throws RenderException in case of rendering issues
      */
-    public String render(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException, IOException {
+    public String render(Resource resource, RenderContext context) throws RenderException {
         if (context.getResourcesStack().contains(resource)) {
             return "loop";
         }
@@ -135,19 +130,7 @@ public class RenderService extends JahiaService {
 
             renderChain.addFilter(new TemplateScriptFilter());
 
-        String output = null;
-        try {
-            output = renderChain.doFilter(context, resource);
-        } catch (RepositoryException e) {
-            throw e;
-        } catch (IOException e) {
-            throw e;
-        } catch (TemplateNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.warn("Error encountered in rendering service. Cause: " + e.getMessage(), e);
-            throw new IOException(e.getMessage());
-        }
+        String output = renderChain.doFilter(context, resource);
 
         ServletRequest request = context.getRequest();
         if (request.getAttribute("currentResource") != null) {

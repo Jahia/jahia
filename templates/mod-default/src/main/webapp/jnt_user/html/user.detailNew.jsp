@@ -30,6 +30,7 @@
                         $.post("${url.base}${currentNode.path}", {'${key}': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
                             $("#personDisplay2").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
                             $("#personDisplay1").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                            $("#emailDisplay").html(result.j_email);
                         }, "json");
                         return(html);
                     }

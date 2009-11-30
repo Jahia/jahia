@@ -48,7 +48,7 @@
                     <li><span class="label">Age : </span> ${currentYear - birthYear} ans</li>
                     <li><span class="label">Sexe : </span> ${fields['j:gender']}</li>
 
-                    <li><span class="label">Email Perso: </span> ${fields['j:email']} <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
+                    <li><span class="label">Email Perso: </span> <span id="emailDisplay">${fields['j:email']}</span> <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
                 Public
             </c:if>
             <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">

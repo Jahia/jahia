@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
@@ -73,7 +74,7 @@ public class CKEditor extends Component {
             public void execute() {
                 instanceId = getElement().getId();
                 DOM.setElementAttribute(getElement(), "name", instanceId);
-                editorInstance = initEditor();
+                editorInstance = initEditor(JahiaGWTParameters.getContextPath());
             }
         });
         addLoadListener(new CKEditorLoadListener() {
@@ -159,13 +160,13 @@ public class CKEditor extends Component {
      * @return
      */
 
-    private native JavaScriptObject initEditor()/*-{
+    private native JavaScriptObject initEditor(String contextPath)/*-{
     
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
-            filebrowserBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
-            filebrowserImageBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
-            filebrowserFlashBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=flashpicker',
-            filebrowserLinkBrowseUrl : '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker'
+            filebrowserBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
+            filebrowserImageBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
+            filebrowserFlashBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=flash',
+            filebrowserLinkBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker'
         });
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();

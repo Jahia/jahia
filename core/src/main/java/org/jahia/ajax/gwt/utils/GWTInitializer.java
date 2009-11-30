@@ -117,6 +117,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.OPERATION_MODE, processingContext.getOperationMode());
             params.put(JahiaGWTParameters.PATH_INFO, processingContext.getPathInfo());
             params.put(JahiaGWTParameters.QUERY_STRING, processingContext.getQueryString());
+            params.put(JahiaGWTParameters.CONTEXT_PATH, processingContext.getContextPath());
             try {
                 JahiaPage page = processingContext.getPage();
                 if (page != null) {
@@ -129,6 +130,9 @@ public class GWTInitializer {
                 logger.error(e, e);
             }
         } else {
+            params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath());
+            params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
+            params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());            
             params.put(JahiaGWTParameters.PID, String.valueOf(session.getAttribute(ParamBean.SESSION_LAST_REQUESTED_PAGE_ID)));
             params.put(JahiaGWTParameters.OPERATION_MODE, String.valueOf(session.getAttribute(ParamBean.SESSION_JAHIA_RUNNING_MODE)));
         }
@@ -184,6 +188,10 @@ public class GWTInitializer {
         buf.append("<script type='text/javascript'>\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
+
+        // add custom ck config
+        buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");  
+
 
         return buf.toString();
     }

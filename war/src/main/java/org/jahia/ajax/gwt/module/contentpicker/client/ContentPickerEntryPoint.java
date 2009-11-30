@@ -71,11 +71,6 @@ public class ContentPickerEntryPoint implements EntryPoint {
             boolean allowThumbs =  Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
             panel.add(new ContentPickerViewport(selectionLabel,rootPath,selectorOptions,selectedNodes,types,filters,mimeTypes,conf,multiple,allowThumbs,callback));
-
-
-
-
-
         }
     }
 

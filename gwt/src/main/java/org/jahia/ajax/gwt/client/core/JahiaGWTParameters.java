@@ -56,6 +56,7 @@ public class JahiaGWTParameters {
     public static final String ENGINE_LANGUAGE = "enginelang";
     public static final String JAHIA_SERVER_PATH = "serverPath";
     public static final String PATH_INFO = "pathInfo";
+    public static final String CONTEXT_PATH = "contextPath";
     public static final String PAGE_WRITE = "hasWrite";
     public static final String QUERY_STRING = "queryString";
     public static final String USER_ALLOWED_TO_UNLOCK_FILES = "allowFileUnlock";
@@ -147,6 +148,10 @@ public class JahiaGWTParameters {
 
     public static String getLanguage() {
         return jahiaParamDictionary.get(LANGUAGE);
+    }
+
+    public static String getContextPath() {
+        return jahiaParamDictionary.get(CONTEXT_PATH);
     }
 
     public static String getEngineLanguage() {

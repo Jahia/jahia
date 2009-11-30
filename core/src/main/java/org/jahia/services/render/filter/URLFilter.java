@@ -16,11 +16,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class URLFilter extends AbstractFilter {
-    public static String CURRENT_CONTEXT_PLACEHOLDER = "##current-context##";
-
-    //    public static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##";
-
+    public static String CURRENT_CONTEXT_PLACEHOLDER = "##mode##";
     public static String LANG_PLACEHOLDER = "##lang##";
+
     public static String[][] TAG_ATTRIBUTE_PAIR = {
             {HTMLElementName.A, "href"},
             {HTMLElementName.IMG, "src"},

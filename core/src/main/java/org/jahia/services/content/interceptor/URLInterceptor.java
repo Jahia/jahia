@@ -7,18 +7,17 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.render.filter.URLFilter;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.ServletConfigAware;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletConfig;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import javax.servlet.ServletContext;
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +33,10 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     private String context;
     private String dmsContext;
     private String cmsContext;
+
+    public static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
+    public static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -54,16 +57,19 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     public Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
-        List<String> refs = new ArrayList<String>();
+        Map<String, Long> refs = new HashMap<String, Long>();
 
-        if (node.isNodeType("jmix:references")) {
-            Value[] v = node.getProperty("j:references").getValues();
-            for (Value value : v) {
-                refs.add(value.getString());
+        if (node.isNodeType("jmix:referencesInField")) {
+            NodeIterator ni = node.getNodes("j:referenceInField");
+            while (ni.hasNext()) {
+                JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
+                if (definition.getName().equals(ref.getProperty("j:fieldName").getString())) {
+                    refs.put(ref.getProperty("j:reference").getString(), ref.getProperty("j:id").getLong());
+                }
             }
         }
 
-        List<String> newRefs = new ArrayList<String>();
+        Map<String, Long> newRefs = new HashMap<String, Long>();
 
         Source source = new Source(content);
         OutputDocument document = new OutputDocument(source);
@@ -73,19 +79,32 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             for (StartTag startTag : tags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute attribute = attributes.get(tagAttrPair[1]);
-                replaceRefs(document, attribute, newRefs, false);
+                newRefs.putAll(replaceRefsByPlaceholders(document, attribute, refs));
             }
         }
         String result = document.toString();
 
         if (!newRefs.equals(refs)) {
-            node.addMixin("jmix:references");
-            Value[] values = new Value[newRefs.size()];
-            int i = 0;
-            for (String ref : newRefs) {
-                values[i++] = node.getSession().getValueFactory().createValue(ref, PropertyType.WEAKREFERENCE);
+            if (!newRefs.isEmpty() && node.isNodeType("jmix:referencesInField")) {
+                node.addMixin("jmix:referencesInField");
             }
-            node.setProperty("j:references", values);
+
+            NodeIterator ni = node.getNodes("j:referenceInField");
+            while (ni.hasNext()) {
+                JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
+                if (definition.getName().equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
+                    ref.remove();
+                }
+            }
+
+            for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
+                if (!refs.containsKey(entry.getKey())) {
+                    JCRNodeWrapper ref = node.addNode("j:referenceInField", "jnt:referenceInField");
+                    ref.setProperty("j:fieldName",definition.getName());
+                    ref.setProperty("j:id", entry.getValue());
+                    ref.setProperty("j:reference", entry.getKey());
+                }
+            }
         }
 
 
@@ -98,12 +117,15 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();
 
-        List<String> refs = new ArrayList<String>();
+        Map<Long, String> refs = new HashMap<Long, String>();
 
-        if (property.getParent().isNodeType("jmix:references")) {
-            Value[] v = property.getParent().getProperty("j:references").getValues();
-            for (Value value : v) {
-                refs.add(value.getString());
+        if (property.getParent().isNodeType("jmix:referencesInField")) {
+            NodeIterator ni = property.getParent().getNodes("j:referenceInField");
+            while (ni.hasNext()) {
+                JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
+                if (property.getDefinition().getName().equals(ref.getProperty("j:fieldName").getString())) {
+                    refs.put(ref.getProperty("j:id").getLong(), ref.getProperty("j:reference").getString());
+                }
             }
         }
 
@@ -115,7 +137,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             for (StartTag startTag : tags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute attribute = attributes.get(tagAttrPair[1]);
-                replaceRefs(document, attribute, refs, true);
+                replacePlaceholdersByRefs(document, attribute, refs);
             }
         }
         String result = document.toString();
@@ -126,8 +148,9 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         return storedValue;
     }
 
-    void replaceRefs(OutputDocument document, Attribute attr, final List<String> refs, final boolean reverse) throws RepositoryException {
-        String originalValue = attr.getValue();
+    Map<String, Long> replaceRefsByPlaceholders(final OutputDocument document, final Attribute attr, final Map<String, Long> oldRefs) throws RepositoryException {
+        final HashMap<String, Long> refs = new HashMap<String, Long>();
+        final String originalValue = attr.getValue();
 
         String pathPart = originalValue;
         final boolean isCmsContext;
@@ -138,7 +161,94 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {
             // Remove CMS context part
-            Pattern p = Pattern.compile(cmsContext+"(((render)|(edit)/[a-zA-Z]+)|"+ URLFilter.CURRENT_CONTEXT_PLACEHOLDER +")/([a-zA-Z_]+|"+URLFilter.LANG_PLACEHOLDER+")/(.*)");
+            Pattern p = Pattern.compile(cmsContext + "(((render)|(edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)");
+            Matcher m = p.matcher(pathPart);
+            m.matches();
+            pathPart = m.group(6);
+            isCmsContext = true;
+        } else {
+            return refs;
+        }
+
+        final String path = "/" + pathPart;
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                String value = originalValue;
+                String ext = null;
+                String tpl = null;
+                JCRNodeWrapper reference;
+                try {
+                    String currentPath = path;
+                    if (isCmsContext) {
+                        while (true) {
+                            int i = currentPath.lastIndexOf('.');
+                            if (i > currentPath.lastIndexOf('/')) {
+                                if (ext == null) {
+                                    ext = currentPath.substring(i + 1);
+                                } else if (tpl == null) {
+                                    tpl = currentPath.substring(i + 1);
+                                } else {
+                                    tpl = currentPath.substring(i + 1) + "." + tpl;
+                                }
+                                currentPath = currentPath.substring(0, i);
+                            } else {
+                                throw new PathNotFoundException("not found");
+                            }
+                            try {
+                                reference = session.getNode(currentPath);
+                                break;
+                            } catch (PathNotFoundException e) {
+                                // continue
+                            }
+                        }
+                        value = CMS_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, cmsContext);
+                    } else {
+                        reference = session.getNode(currentPath);
+                        value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
+                    }
+                } catch (PathNotFoundException e) {
+                    throw new ConstraintViolationException("Invalid link", e);
+                }
+                String id = reference.getIdentifier();
+                if (!refs.containsKey(id) && oldRefs.containsKey(id)) {
+                    refs.put(id, oldRefs.get(id));
+                }
+                if (!refs.containsKey(id)) {
+                    Long max = oldRefs.isEmpty() ? 0 : Collections.max(oldRefs.values());
+                    refs.put(id, max + 1);
+                }
+                Long index = refs.get(id);
+                String link = "/##ref:link" + index + "##";
+                if (tpl != null) {
+                    link += "." + tpl;
+                }
+                if (ext != null) {
+                    link += "." + ext;
+                }
+                value = value.replace(path, link);
+                document.replace(attr.getValueSegment(), value);
+                return null;
+            }
+        });
+
+        return refs;
+    }
+
+
+    void replacePlaceholdersByRefs(final OutputDocument document, final Attribute attr, final Map<Long, String> refs) throws RepositoryException {
+        final String originalValue = attr.getValue();
+
+        String pathPart = originalValue;
+        final boolean isCmsContext;
+
+        if (pathPart.startsWith(DOC_CONTEXT_PLACEHOLDER)) {
+            // Remove DOC context part
+            pathPart = StringUtils.substringAfter(pathPart, DOC_CONTEXT_PLACEHOLDER);
+            isCmsContext = false;
+        } else if (pathPart.startsWith(CMS_CONTEXT_PLACEHOLDER)) {
+            // Remove CMS context part
+            Pattern p = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + "(((render)|(edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)");
             Matcher m = p.matcher(pathPart);
             m.matches();
             pathPart = m.group(6);
@@ -149,76 +259,31 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
 
         final String path = "/" + pathPart;
 
-        String link = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (!reverse) {
-                    String ext = null;
-                    String tpl = null;
-                    JCRNodeWrapper reference;
-                    try {
-                        String currentPath = path;
-                        if (isCmsContext) {
-                            while (true) {
-                                int i = currentPath.lastIndexOf('.');
-                                if (i > currentPath.lastIndexOf('/')) {
-                                    if (ext == null) {
-                                        ext = currentPath.substring(i + 1);
-                                    } else if (tpl == null) {
-                                        tpl = currentPath.substring(i + 1);
-                                    } else {
-                                        tpl = currentPath.substring(i + 1) + "." + tpl;
-                                    }
-                                    currentPath = currentPath.substring(0, i);
-                                } else {
-                                    throw new PathNotFoundException("not found");
-                                }
-                                try {
-                                    reference = session.getNode(currentPath);
-                                    break;
-                                } catch (PathNotFoundException e) {
-                                    // continue
-                                }
-                            }
-                        } else {
-                            reference = session.getNode(currentPath);
-                        }
-                    } catch (PathNotFoundException e) {
-                        throw new ConstraintViolationException("Invalid link", e);
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                try {
+                    Matcher matcher = Pattern.compile("/##ref:link([0-9]+)##(.*)").matcher(path);
+                    matcher.matches();
+                    String id = matcher.group(1);
+                    String ext = matcher.group(2);
+                    String uuid = refs.get(new Long(id));
+                    String nodePath = session.getNodeByUUID(uuid).getPath();
+                    String value = originalValue.replace(path, nodePath + ext);
+                    if (isCmsContext) {
+                        value = value.replace(CMS_CONTEXT_PLACEHOLDER, URLInterceptor.this.cmsContext);
+                    } else {
+                        value = value.replace(DOC_CONTEXT_PLACEHOLDER, URLInterceptor.this.dmsContext);
                     }
-
-                    if (!refs.contains(reference.getIdentifier())) {
-                        refs.add(reference.getIdentifier());
-                    }
-                    int index = refs.indexOf(reference.getIdentifier());
-                    String link = "/##ref:link"+index+"##";
-                    if (tpl != null) {
-                        link += "." + tpl;
-                    }
-                    if (ext != null) {
-                        link += "." + ext;
-                    }
-                    return link;
-                } else {
-                    try {
-                        Matcher matcher = Pattern.compile("/##ref:link([0-9]+)##(.*)").matcher(path);
-                        matcher.matches();
-                        String id = matcher.group(1);
-                        String ext = matcher.group(2);
-                        String uuid = refs.get(Integer.parseInt(id));
-                        String nodePath = session.getNodeByUUID(uuid).getPath();
-                        return nodePath + ext;
-                    } catch (Exception e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                    return  path;
+                    document.replace(attr.getValueSegment(), value);
+                } catch (Exception e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
+                return null;
             }
         });
 
 
-        document.replace(attr.getValueSegment(), originalValue.replace(path, link));
     }
-
 
 
 }

@@ -9,11 +9,11 @@ import net.htmlparser.jericho.*;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 27, 2009
- * Time: 5:39:04 PM
- * To change this template use File | Settings | File Templates.
+ * URLFilter replaces contextual placeholders in internal links like ##mode## and ##lang## with their actual value.
+ *
+ * ##mode## is the servlet name followed by the active workspace ( edit/default or render/live )
+ * ##lang## is the current language.
+ *
  */
 public class URLFilter extends AbstractFilter {
     public static String CURRENT_CONTEXT_PLACEHOLDER = "##mode##";
@@ -44,7 +44,7 @@ public class URLFilter extends AbstractFilter {
     }
 
 
-    void replacePlaceholders(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
+    private void replacePlaceholders(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
         String ctx;
         if (context.isEditMode()) {
             ctx = "edit/"+resource.getWorkspace();

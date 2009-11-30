@@ -12,24 +12,12 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
 /**
- * Interceptors are called one after the other
+ * Property interceptor catch get and set on properties. They can transform the value and veto a set operation, and
+ * retransform it back when getting values.
  *
- * Setting a property :
+ * An interceptor is called or not on a property, based on the parent node and property definition.
  *
- * v1 = interceptor1.beforeSet(v)
- * v2 = interceptor2.beforeSet(v1)
- * v3 = interceptor3.beforeSet(v2)
- * ..
- * property set (v3)
- *
- * Getting a property :
- *
- * v = get property
- * v1 = interceptor3.afterGet(v)
- * v2 = interceptor2.afterGet(v1)
- * v3 = interceptor1.afterGet(v2)
- * ...
- * return v3
+ * Interceptors are called only in localized sessions.
  *
  */
 public interface PropertyInterceptor {

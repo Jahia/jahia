@@ -87,6 +87,7 @@ public class JCRSessionWrapper implements Session {
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
     private Locale locale;
+    private boolean interceptorsEnabled = true;
     private List<String> tokens = new ArrayList<String>();
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
@@ -103,6 +104,10 @@ public class JCRSessionWrapper implements Session {
             this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
         }
         this.locale = locale;
+        // disable interceptors 
+        if (locale == null) {
+            interceptorsEnabled = false;
+        }
         this.sessionFactory = sessionFactory;
     }
 
@@ -135,6 +140,14 @@ public class JCRSessionWrapper implements Session {
     public Locale getLocale() {
         return locale;
     }
+
+    public boolean isInterceptorsEnabled() {
+        return interceptorsEnabled;
+    }
+
+//    public void setInterceptorsEnabled(boolean interceptorsEnabled) {
+//        this.interceptorsEnabled = interceptorsEnabled;
+//    }
 
     public Session impersonate(Credentials credentials) throws LoginException, RepositoryException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

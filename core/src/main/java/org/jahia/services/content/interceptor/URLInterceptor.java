@@ -1,7 +1,7 @@
 package org.jahia.services.content.interceptor;
 
-import net.htmlparser.jericho.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
@@ -19,18 +19,23 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.htmlparser.jericho.*;
+
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 27, 2009
- * Time: 11:31:43 AM
- * To change this template use File | Settings | File Templates.
+ * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
+ * instead of pathes. It also replaces the servlet context and servlet name by a placeholder so that the stored link
+ * is not dependant of the deployement.
+ *
+ * Two types of links are detected : CMS links (like /cms/render/default/en/content/sites/ACME/home.html ) and files
+ * links ( /files/content/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg ).
+ *
+ * File path are transformed with references placeholders like ##ref:link1##. References targets are stored in the
+ * jmix:referenceInField child nodes.
+ *
  */
 public class URLInterceptor implements PropertyInterceptor, ServletContextAware {
-    private ServletConfig servletConfig;
-    private ServletContext servletContext;
+    private static Logger logger = Logger.getLogger(URLInterceptor.class);
 
-    private String context;
     private String dmsContext;
     private String cmsContext;
 
@@ -39,8 +44,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
 
 
     public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
-        context = servletContext.getInitParameter("contextPath");
+        String context = servletContext.getInitParameter("contextPath");
         if (context.equals("/")) {
             dmsContext = "/files/";
             cmsContext = "/cms/";
@@ -54,10 +58,35 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         return definition.getRequiredType() == PropertyType.STRING && definition.getSelector() == SelectorType.RICHTEXT;
     }
 
+    /**
+     * Transform user URL with servlet context and links placeholders for storage.
+     *
+     * Only URLs starting with /<context>/cms or /<context>/files are recognized.
+     *
+     * CMS URLs can use mode and language placeholders : /<context>/cms/render/default/en/content/sites/ACME/home.html and
+     * /<context>/cms/##mode##/##lang##/content/sites/ACME/home.html are both recognized.
+     *
+     * If any link is invalid, a ConstraintViolationException is thrown.
+     *
+     * Add jmix:referencesInField mixin type to the parent node and j:referenceInField with the list of references
+     * contained in the value.
+     *
+     * @param node
+     * @param definition
+     * @param originalValue Original value  @return Value to set, or null
+     * @return
+     * @throws ValueFormatException
+     * @throws VersionException
+     * @throws LockException
+     * @throws ConstraintViolationException
+     * @throws RepositoryException
+     */
     public Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
         Map<String, Long> refs = new HashMap<String, Long>();
+
+        logger.debug("Intercept setValue for "+node.getPath()+"/"+definition.getName());
 
         if (node.isNodeType("jmix:referencesInField")) {
             NodeIterator ni = node.getNodes("j:referenceInField");
@@ -85,10 +114,10 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         String result = document.toString();
 
         if (!newRefs.equals(refs)) {
-            if (!newRefs.isEmpty() && node.isNodeType("jmix:referencesInField")) {
+            if (!newRefs.isEmpty() && !node.isNodeType("jmix:referencesInField")) {
                 node.addMixin("jmix:referencesInField");
             }
-
+            logger.debug("New references : "+newRefs);
             NodeIterator ni = node.getNodes("j:referenceInField");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
@@ -114,8 +143,21 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         return originalValue;
     }
 
+    /**
+     * Restore value by replace context ( ##doc-context## and ##cms-context## ) and references ( ##ref:link[0-9]+##
+     * placeholders. Resolves reference node and put path instead to make a valid link. If referenced node is not found,
+     * log an error and put # as a path.
+     *
+     * @param property
+     * @param storedValue
+     * @return
+     * @throws ValueFormatException
+     * @throws RepositoryException
+     */
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();
+
+        logger.debug("Intercept getValue for "+property.getPath());
 
         Map<Long, String> refs = new HashMap<Long, String>();
 
@@ -151,6 +193,8 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     Map<String, Long> replaceRefsByPlaceholders(final OutputDocument document, final Attribute attr, final Map<String, Long> oldRefs) throws RepositoryException {
         final HashMap<String, Long> refs = new HashMap<String, Long>();
         final String originalValue = attr.getValue();
+
+        logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
 
         String pathPart = originalValue;
         final boolean isCmsContext;
@@ -228,6 +272,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
                 }
                 value = value.replace(path, link);
                 document.replace(attr.getValueSegment(), value);
+                logger.debug("After replaceRefsByPlaceholders : "+value);
                 return null;
             }
         });
@@ -240,6 +285,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         final String originalValue = attr.getValue();
 
         String pathPart = originalValue;
+        logger.debug("Before replacePlaceholdersByRefs : "+originalValue);
         final boolean isCmsContext;
 
         if (pathPart.startsWith(DOC_CONTEXT_PLACEHOLDER)) {
@@ -250,7 +296,10 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             // Remove CMS context part
             Pattern p = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + "(((render)|(edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)");
             Matcher m = p.matcher(pathPart);
-            m.matches();
+            if (!m.matches()) {
+                logger.error("Cannot match URL : "+pathPart);
+                return;
+            }
             pathPart = m.group(6);
             isCmsContext = true;
         } else {
@@ -263,20 +312,30 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     Matcher matcher = Pattern.compile("/##ref:link([0-9]+)##(.*)").matcher(path);
-                    matcher.matches();
+                    if (!matcher.matches()) {
+                        logger.error("Cannot match value, should contain ##ref : " + path);
+                        return null;
+                    }
                     String id = matcher.group(1);
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
-                    String nodePath = session.getNodeByUUID(uuid).getPath();
+                    String nodePath = null;
+                    try {
+                        nodePath = session.getNodeByUUID(uuid).getPath();
+                    } catch (ItemNotFoundException infe) {
+                        logger.warn("Cannot found referenced item : "+uuid);
+                        nodePath = "#";
+                    }
                     String value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {
-                        value = value.replace(CMS_CONTEXT_PLACEHOLDER, URLInterceptor.this.cmsContext);
+                        value = value.replace(CMS_CONTEXT_PLACEHOLDER, cmsContext);
                     } else {
-                        value = value.replace(DOC_CONTEXT_PLACEHOLDER, URLInterceptor.this.dmsContext);
+                        value = value.replace(DOC_CONTEXT_PLACEHOLDER, dmsContext);
                     }
+                    logger.debug("After replacePlaceholdersByRefs : "+value);
                     document.replace(attr.getValueSegment(), value);
                 } catch (Exception e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Exception when transforming placeholder for" + path,e);
                 }
                 return null;
             }

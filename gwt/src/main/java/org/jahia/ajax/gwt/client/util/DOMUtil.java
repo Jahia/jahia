@@ -68,6 +68,7 @@ public class DOMUtil {
     public static void setStyleAttribute(Widget w, String styleAttributeName, String value) {
         if (w != null) {
             DOM.setStyleAttribute(w.getElement(), styleAttributeName, value);
+
         }
     }
 
@@ -79,6 +80,7 @@ public class DOMUtil {
 
     public static String getId(Element ele) {
         if (ele != null) {
+            
             return DOM.getElementAttribute(ele, "id");
         }
         return null;

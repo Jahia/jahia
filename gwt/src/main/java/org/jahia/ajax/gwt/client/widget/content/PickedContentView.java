@@ -328,9 +328,34 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         return m_component;
     }
 
+    /**
+     * return selected content
+     * @return
+     */
     public List<GWTJahiaNode> getSelectedContent() {
         return store.getModels();
     }
+
+    /**
+     * return url od the selected content. 
+     * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
+     * @return
+     */
+    public List<String> getSelectedContentPath(boolean rewrite){
+        List<GWTJahiaNode>  selectedContents = getSelectedContent();
+        if(selectedContents == null){
+            return null;
+        }else if(selectedContents.isEmpty()){
+            return new ArrayList<String>();
+        }else{
+            List<String> pathes = new ArrayList<String>();
+            for(GWTJahiaNode s:selectedContents){
+                pathes.add(s.getUrl());
+            }
+            return pathes;
+        }
+    }
+
 
     private class ThumbsListView extends ListView<GWTJahiaNode> {
         @Override

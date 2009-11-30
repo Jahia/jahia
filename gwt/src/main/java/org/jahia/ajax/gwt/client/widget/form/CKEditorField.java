@@ -1,36 +1,15 @@
 package org.jahia.ajax.gwt.client.widget.form;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.core.El;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.impl.RichTextAreaImpl;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
-
-import java.util.List;
-import java.util.ArrayList;
 
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor;
-import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig; /**
+import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
+import org.jahia.ajax.gwt.client.util.URL; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -66,9 +45,8 @@ import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig; /**
  * User: ktlili
  * Date: Nov 25, 2009
  * Time: 12:51:25 PM
- *
+ * <p/>
  * Code inspired from AdapterField. Update this class if GXT version is updated
- *
  */
 public class CKEditorField extends Field<String> {
 
@@ -194,7 +172,7 @@ public class CKEditorField extends Field<String> {
         if (!ckeditor.isRendered()) {
             ckeditor.render(target, index);
         }
-        setElement(ckeditor.getElement(), target, index);    
+        setElement(ckeditor.getElement(), target, index);
     }
 
 
@@ -216,13 +194,61 @@ public class CKEditorField extends Field<String> {
 
     @Override
     public String getRawValue() {
-        return ckeditor.getData();
+        return rewriteURL(ckeditor.getData());
     }
 
     @Override
     public void setRawValue(String html) {
         ckeditor.setData(html);
         super.setRawValue(html);
+    }
+
+    /**
+     * Add place holder for richText
+     *
+     * @param data
+     * @return
+     */
+    public String rewriteURL(String data) {
+        Element ele = DOM.createDiv();
+        ele.setInnerHTML(data);
+        return processElement(ele);
+    }
+
+    /**
+     * Add place holder for richText
+     *
+     * @param ele
+     * @return
+     */
+    public String processElement(Element ele) {
+        int nb = DOM.getChildCount(ele);
+        for (int i = 0; i < nb; i++) {
+            Element eleChild = DOM.getChild(ele, i);
+            rewriteTagAttribute(eleChild, "src");
+            rewriteTagAttribute(eleChild, "href");
+            rewriteTagAttribute(eleChild, "value");
+
+            // process subchildren
+            processElement(eleChild);
+        }
+        return ele.getInnerHTML();
+    }
+
+    /**
+     * Add place holder for richText
+     *
+     * @param n
+     * @param attribute
+     * @return
+     */
+    public boolean rewriteTagAttribute(Element n, String attribute) {
+        String value = DOM.getElementAttribute(n, attribute);
+        if (value != null && value.length() > 0) {
+            DOM.setElementAttribute(n, attribute, URL.rewrite(value));
+            return true;
+        }
+        return false;
     }
 }
 

@@ -118,6 +118,8 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.PATH_INFO, processingContext.getPathInfo());
             params.put(JahiaGWTParameters.QUERY_STRING, processingContext.getQueryString());
             params.put(JahiaGWTParameters.CONTEXT_PATH, processingContext.getContextPath());
+            params.put(JahiaGWTParameters.SERVLET_PATH, processingContext.getServletPath());
+
             try {
                 JahiaPage page = processingContext.getPage();
                 if (page != null) {
@@ -130,7 +132,8 @@ public class GWTInitializer {
                 logger.error(e, e);
             }
         } else {
-            params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath());
+            params.put(JahiaGWTParameters.CONTEXT_PATH, Jahia.getContextPath());
+            params.put(JahiaGWTParameters.SERVLET_PATH, Jahia.getServletPath());
             params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
             params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());            
             params.put(JahiaGWTParameters.PID, String.valueOf(session.getAttribute(ParamBean.SESSION_LAST_REQUESTED_PAGE_ID)));

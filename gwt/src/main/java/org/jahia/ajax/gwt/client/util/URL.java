@@ -32,13 +32,14 @@
 package org.jahia.ajax.gwt.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 /**
  * Created by Jahia.
  * User: ktlili
  * Date: 5 nov. 2007
  * Time: 09:02:11
- * To change this template use File | Settings | File Templates.
  */
 public class URL {
 
@@ -59,6 +60,11 @@ public class URL {
         }
     }
 
+    /**
+     * Get Jahia context
+     *
+     * @return
+     */
     public static String getJahiaContext() {
         String contextPath = "";
         String baseUrl = GWT.getModuleBaseURL();
@@ -68,19 +74,34 @@ public class URL {
         if (suffixPosition != -1) {
             contextPath = baseUrl.substring(0, suffixPosition);
         }
-
         return contextPath;
     }
 
+    /**
+     * Get absolute url
+     *
+     * @param url
+     * @return
+     */
     public static String getAbsolutleURL(String url) {
         String server = getServerBaseURL();
         return server + url;
     }
 
+    /**
+     * Get relative url
+     *
+     * @return
+     */
     public static String getRelativeURL() {
         return getWindowUrl().replaceAll(getJahiaContext(), "");
     }
 
+    /**
+     * Get queryString
+     *
+     * @return
+     */
     public static String getQueryString() {
         String windowUrl = getWindowUrl();
         int separatorIndex = windowUrl.indexOf('?');
@@ -90,6 +111,53 @@ public class URL {
         return null;
     }
 
+    /**
+     * REqrite url (ie. used for richtext)
+     *
+     * @param url
+     * @return
+     */
+    public static String rewrite(String url) {
+        if (url == null) {
+            return null;
+        }else if(url.indexOf("/##mode##/##lang##/") > 0){
+            // already rewited
+            return url;
+        } else {
+
+            // absolute url are not processed
+            String[] splittedUrl = url.split("/");
+            /*splittedUrl[0] = "http:"
+            splittedUrl[1] = ""
+            splittedUrl[2] = "www.example.com" */
+            if (splittedUrl.length > 2) {
+                if (splittedUrl[1].length() == 0) {
+                    return url;
+                }
+            }
+
+            // at this level, we are sur that its a relative url
+            String prefix = "";
+            if(JahiaGWTParameters.getServletPath() != null && JahiaGWTParameters.getServletPath().length()> 0){
+                prefix = JahiaGWTParameters.getServletPath();
+            }
+            if(JahiaGWTParameters.getContextPath() != null && JahiaGWTParameters.getContextPath().length()> 0){
+                prefix = prefix+JahiaGWTParameters.getContextPath();
+            }
+            prefix = prefix+"/##mode##/##lang##";
+            if (url.charAt(0) == '/') {
+                return prefix + url;
+            } else {
+                return prefix + "/" + url;      
+            }
+        }
+    }
+
+    /**
+     * Get window urle
+     *
+     * @return
+     */
     public static native String getWindowUrl() /*-{
     return $wnd.location.href;
 

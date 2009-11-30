@@ -96,10 +96,10 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
 
         // buttom component
-        final Component bar = initButtonBar(callback, linkPicker);
+        final Component bar = initButtonBar(callback);
 
         if (linkPicker) {
-            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
+            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
             initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, bar);
         } else {
             initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, bar);
@@ -113,8 +113,22 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         pickedContent = (PickedContent) bottomComponents;
     }
 
+    /**
+     * Get selected node
+     *
+     * @return
+     */
     public List<GWTJahiaNode> getSelectedNodes() {
         return pickedContent.getSelectedContent();
+    }
+
+    /**
+     * Get selectedNode pathes
+     *
+     * @return
+     */
+    public List<String> getSelectedNodePathes() {
+        return pickedContent.getSelectedContentPath(true);
     }
 
     /**
@@ -122,7 +136,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
      *
      * @return
      */
-    private Component initButtonBar(final String callback, final boolean linkPicker) {
+    private Component initButtonBar(final String callback) {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 
@@ -135,17 +149,9 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                List<GWTJahiaNode> selectedNode = getSelectedNodes();
+                List<String> selectedNode = getSelectedNodePathes();
                 if (selectedNode != null && !selectedNode.isEmpty()) {
-                    GWTJahiaNode node = selectedNode.get(0);
-                    if (linkPicker) {
-                        String url = (String) node.get("j:url");
-                        if (url != null) {
-                            callback(callback, url+".html");
-                        }
-                    } else {
-                        callback(callback, node.getUrl());
-                    }
+                    callback(callback, selectedNode.get(0));
                     WindowUtil.close();
                 }
             }
@@ -177,6 +183,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
     }
 
     private native void callback(String callback, String url)/*-{
+
         $wnd.opener.CKEDITOR.tools.callFunction(callback, url,"");
       }-*/;
 

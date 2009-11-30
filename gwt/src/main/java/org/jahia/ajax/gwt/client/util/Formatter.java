@@ -139,6 +139,11 @@ public class Formatter {
     }
 
 
+    /**
+     * Enable / disable item
+     * @param ti
+     * @param b
+     */
     public static void setMenuItemEnabled(MenuItem ti, boolean b) {
         if (b) {
             Formatter.enableMenuItem(ti);

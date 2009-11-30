@@ -122,6 +122,7 @@ public class TemplatesDOMUtil extends DOMUtil {
     public static Map<String, List<RootPanel>> getAllJahiaTypedRootPanels(Element parent) {
         List<Element> list = getAllJahiaTypedElementsRec(parent);
         Map<String, List<RootPanel>> elementsByJahiaType = new HashMap<String, List<RootPanel>>();
+
         for (Element current : list) {
             String jahiaType = DOM.getElementAttribute(current, JahiaType.JAHIA_TYPE);
             String id = DOM.getElementAttribute(current, "id");

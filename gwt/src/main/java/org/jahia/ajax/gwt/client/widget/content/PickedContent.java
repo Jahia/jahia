@@ -41,5 +41,16 @@ import java.util.List;
  * Time: 10:32:38 PM
  */
 public interface PickedContent {
+    /**
+     * Get selected contents
+     * @return
+     */
     public List<GWTJahiaNode> getSelectedContent();
+
+    /**
+     * Get selected content path
+     * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
+     * @return
+     */
+    public List<String> getSelectedContentPath(boolean rewrite);
 }

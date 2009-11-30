@@ -7,7 +7,9 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -252,7 +254,11 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
             GWTJahiaNode node = list.get(0);
             link.setValue(node.getName());
             alt.setValue(node.getName());
-            url.setValue(node.getUrl());
+            if (node.getNodeTypes() != null && node.getNodeTypes().contains(JCRClientUtils.PAGE_NODETYPES)) {
+                url.setValue(node.getPath() + ".html");
+            } else {
+                url.setValue(node.getPath());
+            }
 
             selectedContent = new GWTJahiaNode();
             selectedContent.set("j:node", node);
@@ -295,6 +301,11 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         }
     }
 
+    /**
+     * Get selected contents
+     *
+     * @return
+     */
     public List<GWTJahiaNode> getSelectedContent() {
         // case of external link
         if (isExternalLink()) {
@@ -312,6 +323,32 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
         l.add(selectedContent);
         return l;
+    }
+
+    /**
+     * Get selected content path
+     *
+     * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
+     * @return
+     */
+    public List<String> getSelectedContentPath(boolean rewrite) {
+        List<GWTJahiaNode> selectedContents = getSelectedContent();
+        if (selectedContents == null) {
+            return null;
+        } else if (selectedContents.isEmpty()) {
+            return new ArrayList<String>();
+        } else {
+            List<String> pathes = new ArrayList<String>();
+            for (GWTJahiaNode s : selectedContents) {
+                GWTJahiaNode n = (GWTJahiaNode) s.get("j:node");
+                if (n != null) {
+                    String url = n.getPath() + ".html";
+                    pathes.add(url);
+
+                }
+            }
+            return pathes;
+        }
     }
 
     /**

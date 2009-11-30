@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -56,7 +57,7 @@ public class TriPanelBrowserLayout extends ContentPanel {
     protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 200);
 
     public TriPanelBrowserLayout() {
-        super(new FitLayout());
+        super(new FillLayout());
         setHeaderVisible(false);
         linker = new ManagerLinker() ;
     }

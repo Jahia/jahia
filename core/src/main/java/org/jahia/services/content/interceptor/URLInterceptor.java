@@ -42,6 +42,11 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     public static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
     public static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
 
+    private static final String PATTERN = "(((render|edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)";
+
+    private Pattern cmsPattern;
+    private Pattern cmsPatternWithContextPlaceholder;
+    private Pattern refPattern;
 
     public void setServletContext(ServletContext servletContext) {
         String context = servletContext.getInitParameter("contextPath");
@@ -52,6 +57,9 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             dmsContext = context + "/files/";
             cmsContext = context + "/cms/";
         }
+        refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
+        cmsPattern = Pattern.compile(cmsContext + PATTERN);
+        cmsPatternWithContextPlaceholder = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + PATTERN);
     }
 
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
@@ -205,10 +213,11 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {
             // Remove CMS context part
-            Pattern p = Pattern.compile(cmsContext + "(((render)|(edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)");
-            Matcher m = p.matcher(pathPart);
-            m.matches();
-            pathPart = m.group(6);
+            Matcher m = cmsPattern.matcher(pathPart);
+            if (!m.matches()) {
+                throw new ConstraintViolationException("Invalid link "+pathPart);
+            }
+            pathPart = m.group(5);
             isCmsContext = true;
         } else {
             return refs;
@@ -294,13 +303,12 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             isCmsContext = false;
         } else if (pathPart.startsWith(CMS_CONTEXT_PLACEHOLDER)) {
             // Remove CMS context part
-            Pattern p = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + "(((render)|(edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)");
-            Matcher m = p.matcher(pathPart);
+            Matcher m = cmsPatternWithContextPlaceholder.matcher(pathPart);
             if (!m.matches()) {
                 logger.error("Cannot match URL : "+pathPart);
                 return;
             }
-            pathPart = m.group(6);
+            pathPart = m.group(5);
             isCmsContext = true;
         } else {
             return;
@@ -311,7 +319,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
-                    Matcher matcher = Pattern.compile("/##ref:link([0-9]+)##(.*)").matcher(path);
+                    Matcher matcher = refPattern.matcher(path);
                     if (!matcher.matches()) {
                         logger.error("Cannot match value, should contain ##ref : " + path);
                         return null;

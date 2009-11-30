@@ -47,6 +47,11 @@ public class WrapperFilterTest extends TestCase {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         JCRNodeWrapper shared = session.getNode("/content/shared");
+
+        if (!shared.isCheckedOut()) {
+            shared.checkout();
+        }
+
         if (shared.hasNode("testContent")) {
             shared.getNode("testContent").remove();
         }

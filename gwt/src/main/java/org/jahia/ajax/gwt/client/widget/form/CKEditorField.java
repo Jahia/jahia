@@ -194,7 +194,7 @@ public class CKEditorField extends Field<String> {
 
     @Override
     public String getRawValue() {
-        return rewriteURL(ckeditor.getData());
+        return ckeditor.getData();
     }
 
     @Override
@@ -203,52 +203,5 @@ public class CKEditorField extends Field<String> {
         super.setRawValue(html);
     }
 
-    /**
-     * Add place holder for richText
-     *
-     * @param data
-     * @return
-     */
-    public String rewriteURL(String data) {
-        Element ele = DOM.createDiv();
-        ele.setInnerHTML(data);
-        return processElement(ele);
-    }
-
-    /**
-     * Add place holder for richText
-     *
-     * @param ele
-     * @return
-     */
-    public String processElement(Element ele) {
-        int nb = DOM.getChildCount(ele);
-        for (int i = 0; i < nb; i++) {
-            Element eleChild = DOM.getChild(ele, i);
-            rewriteTagAttribute(eleChild, "src");
-            rewriteTagAttribute(eleChild, "href");
-            rewriteTagAttribute(eleChild, "value");
-
-            // process subchildren
-            processElement(eleChild);
-        }
-        return ele.getInnerHTML();
-    }
-
-    /**
-     * Add place holder for richText
-     *
-     * @param n
-     * @param attribute
-     * @return
-     */
-    public boolean rewriteTagAttribute(Element n, String attribute) {
-        String value = DOM.getElementAttribute(n, attribute);
-        if (value != null && value.length() > 0) {
-            DOM.setElementAttribute(n, attribute, URL.rewrite(value));
-            return true;
-        }
-        return false;
-    }
 }
 

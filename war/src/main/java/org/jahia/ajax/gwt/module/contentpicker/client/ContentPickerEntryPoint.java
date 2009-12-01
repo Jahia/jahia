@@ -59,6 +59,8 @@ public class ContentPickerEntryPoint implements EntryPoint {
         JahiaGWT.init();
         final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {
+            final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");
+            final String jahiaServletPath = DOM.getElementAttribute(panel.getElement(), "jahiaServletPath");
             final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
             final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
             final Map<String, String> selectorOptions = new HashMap<String,String>();
@@ -70,7 +72,7 @@ public class ContentPickerEntryPoint implements EntryPoint {
             boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
             boolean allowThumbs =  Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
-            panel.add(new ContentPickerViewport(selectionLabel,rootPath,selectorOptions,selectedNodes,types,filters,mimeTypes,conf,multiple,allowThumbs,callback));
+            panel.add(new ContentPickerViewport(jahiaContextPath,jahiaServletPath,selectionLabel,rootPath,selectorOptions,selectedNodes,types,filters,mimeTypes,conf,multiple,allowThumbs,callback));
         }
     }
 

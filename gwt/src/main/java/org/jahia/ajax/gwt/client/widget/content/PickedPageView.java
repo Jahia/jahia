@@ -331,7 +331,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
      * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
      * @return
      */
-    public List<String> getSelectedContentPath(boolean rewrite) {
+    public List<String> getSelectedContentPath(final String jahiaContextPath,final String jahiaServletPath, final boolean rewrite) {
         List<GWTJahiaNode> selectedContents = getSelectedContent();
         if (selectedContents == null) {
             return null;
@@ -343,8 +343,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
                 GWTJahiaNode n = (GWTJahiaNode) s.get("j:node");
                 if (n != null) {
                     String url = n.getPath() + ".html";
-                    pathes.add(url);
-
+                    pathes.add(URL.rewrite(jahiaContextPath,jahiaServletPath,url));
                 }
             }
             return pathes;

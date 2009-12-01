@@ -64,7 +64,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
+    public ContentPickerViewport(String jahiaContextPath, String jahiaServletPath, String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
         super();
         ManagerConfiguration config;
         if (conf == null || conf.length() == 0) {
@@ -96,7 +96,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
 
         // buttom component
-        final Component bar = initButtonBar(callback);
+        final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath,callback);
 
         if (linkPicker) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
@@ -127,8 +127,8 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
      *
      * @return
      */
-    public List<String> getSelectedNodePathes() {
-        return pickedContent.getSelectedContentPath(true);
+    public List<String> getSelectedNodePathes(final String jahiaContextPath,final String jahiaServletPath) {
+        return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath,true);
     }
 
     /**
@@ -136,7 +136,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
      *
      * @return
      */
-    private Component initButtonBar(final String callback) {
+    private Component initButtonBar(final String jahiaContextPath,final String jahiaServletPath, final String callback) {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 
@@ -149,7 +149,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                List<String> selectedNode = getSelectedNodePathes();
+                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath,jahiaServletPath);
                 if (selectedNode != null && !selectedNode.isEmpty()) {
                     callback(callback, selectedNode.get(0));
                     WindowUtil.close();

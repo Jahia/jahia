@@ -101,7 +101,7 @@ public class GWTInitializer {
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");                
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
@@ -132,10 +132,10 @@ public class GWTInitializer {
                 logger.error(e, e);
             }
         } else {
-            params.put(JahiaGWTParameters.CONTEXT_PATH, Jahia.getContextPath());
-            params.put(JahiaGWTParameters.SERVLET_PATH, Jahia.getServletPath());
+            params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath());
+            params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
             params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
-            params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());            
+            params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
             params.put(JahiaGWTParameters.PID, String.valueOf(session.getAttribute(ParamBean.SESSION_LAST_REQUESTED_PAGE_ID)));
             params.put(JahiaGWTParameters.OPERATION_MODE, String.valueOf(session.getAttribute(ParamBean.SESSION_JAHIA_RUNNING_MODE)));
         }
@@ -175,17 +175,17 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.ENGINE_LANGUAGE, enginelocale.toString());
         }
 
-            // put live workspace url
-            if (request.getAttribute("renderContext") != null) {
-                URLGenerator url = (URLGenerator) request.getAttribute("url");
-                params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
-                params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
-                params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
-                params.put(JahiaGWTParameters.COMPARE_URL, null);
-            } else {
-                if (jData != null && jData.gui() != null) {
-                }
+        // put live workspace url
+        if (request.getAttribute("renderContext") != null) {
+            URLGenerator url = (URLGenerator) request.getAttribute("url");
+            params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
+            params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
+            params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
+            params.put(JahiaGWTParameters.COMPARE_URL, null);
+        } else {
+            if (jData != null && jData.gui() != null) {
             }
+        }
 
         // add jahia parameter dictionary
         buf.append("<script type='text/javascript'>\n");
@@ -193,7 +193,7 @@ public class GWTInitializer {
         buf.append("\n</script>\n");
 
         // add custom ck config
-        buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");  
+        buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");
 
 
         return buf.toString();

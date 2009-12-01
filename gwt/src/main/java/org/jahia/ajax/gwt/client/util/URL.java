@@ -126,7 +126,7 @@ public class URL {
      * @param url
      * @return
      */
-    public static String rewrite(String url) {
+    public static String rewrite(final String jahiaContextPath,final String jahiaServletPath, final String url) {
         if (url == null) {
             return null;
         } else if (url.indexOf("/##mode##/##lang##/") > 0) {
@@ -139,28 +139,8 @@ public class URL {
                 return url;
             }
 
-            // sub url is the part that begins with /content. exemple: http://localhost:8080/cms/edit/default/en/content/sites/ACME/home.html returns /content/sites/ACME/home.html
-            final String subUrl;
-            if (url.charAt(0) == '/') {
-                int contentIndex = url.indexOf("/content/");
-                if (contentIndex > -1) {
-                    subUrl = url.substring(url.indexOf("/content/"));
-                }else{
-                    Log.error(url + ": is not an intern url. Could not be rewrited");
-                    return url;
-                }
-            } else {
-               int contentIndex = url.indexOf("content/");
-                if (contentIndex > -1) {
-                    subUrl = "/"+url.substring(url.indexOf("content/"));
-                }else{
-                    Log.error(url + ": is not an intern url. Could not be rewrited");
-                    return url;
-                }
-            }
-
             // return url like /jahia/cms/##mode##/##lang##"/content/sites/ACME/home.html
-            return getContextServletPath() + "/##mode##/##lang##" + subUrl;
+            return jahiaContextPath+ jahiaServletPath+ "/##mode##/##lang##" + url;
         }
     }
 

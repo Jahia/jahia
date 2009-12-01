@@ -341,7 +341,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
      * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
      * @return
      */
-    public List<String> getSelectedContentPath(boolean rewrite){
+    public List<String> getSelectedContentPath(final String jahiaContextPath,final String jahiaServletPath, final boolean rewrite){
         List<GWTJahiaNode>  selectedContents = getSelectedContent();
         if(selectedContents == null){
             return null;

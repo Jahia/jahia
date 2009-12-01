@@ -74,7 +74,7 @@ public class CKEditor extends Component {
             public void execute() {
                 instanceId = getElement().getId();
                 DOM.setElementAttribute(getElement(), "name", instanceId);
-                editorInstance = initEditor(JahiaGWTParameters.getContextPath());
+                editorInstance = initEditor(JahiaGWTParameters.getContextPath(),JahiaGWTParameters.getServletPath());
             }
         });
         addLoadListener(new CKEditorLoadListener() {
@@ -160,13 +160,13 @@ public class CKEditor extends Component {
      * @return
      */
 
-    private native JavaScriptObject initEditor(String contextPath)/*-{
+    private native JavaScriptObject initEditor(String contextPath,String servletPath)/*-{
     
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             filebrowserBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
             filebrowserImageBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
             filebrowserFlashBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=flash',
-            filebrowserLinkBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker'
+            filebrowserLinkBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker&contextPath='+contextPath+"&servletPath="+servletPath
         });
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
         oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();

@@ -41,7 +41,7 @@
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
 	</head>
 	<body>
-        <internal:contentPicker conf='${param["type"]}' mimeTypes='${param["mime"]}' callback='${param["CKEditorFuncNum"]}'/>    
+        <internal:contentPicker conf='${param["type"]}' mimeTypes='${param["mime"]}' jahiaServletPath='${param["servletPath"]}' jahiaContextPath='${param["contextPath"]}'  callback='${param["CKEditorFuncNum"]}'/>    
         <internal:gwtGenerateDictionary/>
 	</body>
 </html>

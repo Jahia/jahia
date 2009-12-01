@@ -43,6 +43,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ attribute name="jahiaServletPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
+<%@ attribute name="jahiaContextPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="rootPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="startPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="enginemode" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
@@ -119,7 +121,7 @@ while (selectedNodeIter.hasNext()) {
     var sAutoSelectParent = '${autoSelectParent}';
 
 </script>
-<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker" rootPath="<%=rootPath%>"
+<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="<%=jahiaServletPath%>" jahiaContextPath="<%=jahiaContextPath%>" rootPath="<%=rootPath%>"
                          startPath="<%=startPath%>"
                          nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
                          mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"

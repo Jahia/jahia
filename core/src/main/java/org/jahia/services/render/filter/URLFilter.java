@@ -16,8 +16,8 @@ import java.util.List;
  *
  */
 public class URLFilter extends AbstractFilter {
-    public static String CURRENT_CONTEXT_PLACEHOLDER = "##mode##";
-    public static String LANG_PLACEHOLDER = "##lang##";
+    public static String CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
+    public static String LANG_PLACEHOLDER = "{lang}";
 
     public static String[][] TAG_ATTRIBUTE_PAIR = {
             {HTMLElementName.A, "href"},

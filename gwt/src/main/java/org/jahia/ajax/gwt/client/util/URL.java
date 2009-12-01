@@ -129,7 +129,7 @@ public class URL {
     public static String rewrite(final String jahiaContextPath,final String jahiaServletPath, final String url) {
         if (url == null) {
             return null;
-        } else if (url.indexOf("/##mode##/##lang##/") > 0) {
+        } else if (url.indexOf("/{mode}/{lang}/") > 0) {
             // already rewited
             return url;
         } else {
@@ -140,7 +140,7 @@ public class URL {
             }
 
             // return url like /jahia/cms/##mode##/##lang##"/content/sites/ACME/home.html
-            return jahiaContextPath+ jahiaServletPath+ "/##mode##/##lang##" + url;
+            return jahiaContextPath+ jahiaServletPath+ "/{mode}/{lang}" + url;
         }
     }
 

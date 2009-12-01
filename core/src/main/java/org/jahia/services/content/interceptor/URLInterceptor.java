@@ -42,8 +42,6 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     public static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
     public static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
 
-    private static final String PATTERN = "(((render|edit)/[a-zA-Z]+)|" + URLFilter.CURRENT_CONTEXT_PLACEHOLDER + ")/([a-zA-Z_]+|" + URLFilter.LANG_PLACEHOLDER + ")/(.*)";
-
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
     private Pattern refPattern;
@@ -57,9 +55,20 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             dmsContext = context + "/files/";
             cmsContext = context + "/cms/";
         }
+
+        String pattern = "(((render|edit)/[a-zA-Z]+)|" + 
+                escape(URLFilter.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
+                escape(URLFilter.LANG_PLACEHOLDER) + ")/(.*)";
+
         refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
-        cmsPattern = Pattern.compile(cmsContext + PATTERN);
-        cmsPatternWithContextPlaceholder = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + PATTERN);
+        cmsPattern = Pattern.compile(cmsContext + pattern);
+        cmsPatternWithContextPlaceholder = Pattern.compile(escape(CMS_CONTEXT_PLACEHOLDER) + pattern);
+    }
+
+    private String escape(String s) {
+        s = s.replace("{","\\{");
+        s = s.replace("}","\\}");
+        return s;
     }
 
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {

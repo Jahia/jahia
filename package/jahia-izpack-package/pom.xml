@@ -183,7 +183,7 @@
                   <!--
                 <izpackBasedir>${staging.dir}</izpackBasedir>
                 <customPanelDirectory>${staging.dir}</customPanelDirectory>
-                -->
+                --> 
               </configuration>
               <executions>
                 <execution>

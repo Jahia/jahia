@@ -1,0 +1,56 @@
+Jahia Crazy Jane - Core Module - Property interceptors
+
+  Property interceptor catches all accesses to JCR properties. They may execute an action when a property is stored in
+  the JCR and when it is read from the JCR. It is also possible to make the property set fails if some checks fail.
+
+  Interceptors can transform the value before the storage into the JCR and/or after the property is read.
+
+  They are system-wide and can be filtered base on the parent node and the property definition.
+
+* Interceptor mechanism
+
+  By default, interceptors are executed for every get and set operation on a property - but they can be disabled for a
+  specific session. Currently interceptors are disabled when an unlocalized session is used.
+
+  When setting a property, the InterceptorChain.beforeSetValue() method is called before setting the value to the JCR.
+  The chain will iterate on all declared interceptors, checks if the interceptor need to be called on the property, and
+  calls the PropertyInterceptor.beforeSetValue(). The interceptor must return the property value, which is then passed
+  to next interceptor. If no exception has been thrown when all interceptors have been processed, the last value is
+  set into the property.
+
+  The same chain is executed when getting a property - after the property is got from the JCR,
+  RenderChain.afterGetValue() chains all interceptors starting from the last one to the first one, and calls
+  PropertyInterceptor.afterGetValue() on each of them. The final value is returned to the caller.
+
+
+* Configuration
+
+  Interceptors are declared in the JCRStoreService bean from the applicationContext-jcr.xml file.
+
+-----------------------------------------------
+      <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
+            factory-method="getInstance" lazy-init="true">
+
+          ....
+
+          <property name="interceptors">
+              <list>
+                  <bean class="org.jahia.services.content.interceptor.URLInterceptor"/>
+              </list>
+          </property>
+      </bean>
+-----------------------------------------------
+
+
+* Implementing an interceptor
+
+An interceptor needs to implement the PropertyInterceptor interface.
+
+-----------------------------------------------
+    boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException;
+
+    Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException ;
+
+    Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException;
+-----------------------------------------------
+

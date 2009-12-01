@@ -32,6 +32,7 @@ under the License.
                 <item name="Other Initializers" href="./initializers_renderers/other_initializers.html"/>
                 <item name="Custom Property Rendering" href="./initializers_renderers/renderers.html"/>
             </item>
+            <item name="CKEditor integration" href="./ckeditor/index.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

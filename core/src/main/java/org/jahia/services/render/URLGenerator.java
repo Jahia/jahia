@@ -66,6 +66,14 @@ public class URLGenerator {
         preview += resourcePath + ".html";
     }
 
+    public String getContext() {
+        return context.getRequest().getContextPath();
+    }
+
+    public String getFiles() {
+        return context.getRequest().getContextPath() + "/files";
+    }
+
     public String getBase() {
         return base;  
     }

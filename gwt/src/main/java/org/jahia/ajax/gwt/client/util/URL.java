@@ -112,7 +112,16 @@ public class URL {
     }
 
     /**
-     * REqrite url (ie. used for richtext)
+     * Return as example /jahia/cms if the url is like http//www.mysite.com/jahia/cms/edit/....
+     *
+     * @return
+     */
+    public static String getContextServletPath() {
+        return JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath();
+    }
+
+    /**
+     * Rewrite url (ie. used for richtext)
      *
      * @param url
      * @return
@@ -120,37 +129,58 @@ public class URL {
     public static String rewrite(String url) {
         if (url == null) {
             return null;
-        }else if(url.indexOf("/##mode##/##lang##/") > 0){
+        } else if (url.indexOf("/##mode##/##lang##/") > 0) {
             // already rewited
             return url;
         } else {
 
             // absolute url are not processed
-            String[] splittedUrl = url.split("/");
-            /*splittedUrl[0] = "http:"
-            splittedUrl[1] = ""
-            splittedUrl[2] = "www.example.com" */
-            if (splittedUrl.length > 2) {
-                if (splittedUrl[1].length() == 0) {
+            if (isAbsoluteUrl(url)) {
+                return url;
+            }
+
+            // sub url is the part that begins with /content. exemple: http://localhost:8080/cms/edit/default/en/content/sites/ACME/home.html returns /content/sites/ACME/home.html
+            final String subUrl;
+            if (url.charAt(0) == '/') {
+                int contentIndex = url.indexOf("/content/");
+                if (contentIndex > -1) {
+                    subUrl = url.substring(url.indexOf("/content/"));
+                }else{
+                    Log.error(url + ": is not an intern url. Could not be rewrited");
+                    return url;
+                }
+            } else {
+               int contentIndex = url.indexOf("content/");
+                if (contentIndex > -1) {
+                    subUrl = "/"+url.substring(url.indexOf("content/"));
+                }else{
+                    Log.error(url + ": is not an intern url. Could not be rewrited");
                     return url;
                 }
             }
 
-            // at this level, we are sur that its a relative url
-            String prefix = "";
-            if(JahiaGWTParameters.getServletPath() != null && JahiaGWTParameters.getServletPath().length()> 0){
-                prefix = JahiaGWTParameters.getServletPath();
-            }
-            if(JahiaGWTParameters.getContextPath() != null && JahiaGWTParameters.getContextPath().length()> 0){
-                prefix = prefix+JahiaGWTParameters.getContextPath();
-            }
-            prefix = prefix+"/##mode##/##lang##";
-            if (url.charAt(0) == '/') {
-                return prefix + url;
-            } else {
-                return prefix + "/" + url;      
+            // return url like /jahia/cms/##mode##/##lang##"/content/sites/ACME/home.html
+            return getContextServletPath() + "/##mode##/##lang##" + subUrl;
+        }
+    }
+
+    /**
+     * Chech if the url is absolute one
+     *
+     * @param url
+     * @return
+     */
+    private static boolean isAbsoluteUrl(String url) {
+        String[] splittedUrl = url.split("/");
+        /*splittedUrl[0] = "http:"
+        splittedUrl[1] = ""
+        splittedUrl[2] = "www.example.com" */
+        if (splittedUrl.length > 2) {
+            if (splittedUrl[1].length() == 0) {
+                return true;
             }
         }
+        return false;
     }
 
     /**

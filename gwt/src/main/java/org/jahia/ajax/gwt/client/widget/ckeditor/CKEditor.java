@@ -161,8 +161,9 @@ public class CKEditor extends Component {
      */
 
     private native JavaScriptObject initEditor(String contextPath,String servletPath)/*-{
-    
+
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
+            skin : 'jahia',
             filebrowserBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
             filebrowserImageBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
             filebrowserFlashBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=flash',

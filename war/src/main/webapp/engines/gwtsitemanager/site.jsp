@@ -41,7 +41,7 @@
 </head>
 <body>
 <internal:contentManager enginemode="true"
-                      rootPath="/content/sites"
+                      rootPath="/sites"
                       conf="sitemanager"/>
 <internal:gwtGenerateDictionary/>
 </body>

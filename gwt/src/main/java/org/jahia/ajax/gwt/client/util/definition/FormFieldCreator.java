@@ -127,7 +127,7 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField(Messages.get("picker_mashup_header", "Mashup picker"), Messages.get("picker_mashup_selection", "Mashup selected:"), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "jnt:portlet", "", "", ManagerConfigurationFactory.MASHUPPICKER, propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(Messages.get("picker_mashup_header", "Mashup picker"), Messages.get("picker_mashup_selection", "Mashup selected:"), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/", "jnt:portlet", "", "", ManagerConfigurationFactory.MASHUPPICKER, propDefinition.isMultiple(), false);
                     break;
                 /* case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
                 field = new PortletDefinitionField();
@@ -140,10 +140,10 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
-                    field = new ContentPickerField(Messages.get("picker_cat_header", "Categories picker"), Messages.get("picker_mashup_selection", "Category selected: "), definition.getSelectorOptions(), definition.getSelectorOptions().get("root") != null ? definition.getSelectorOptions().get("root") : "/content/categories", "", "", "", ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(Messages.get("picker_cat_header", "Categories picker"), Messages.get("picker_mashup_selection", "Category selected: "), definition.getSelectorOptions(), definition.getSelectorOptions().get("root") != null ? definition.getSelectorOptions().get("root") : "/categories", "", "", "", ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple(), false);
                     break;
                 case GWTJahiaNodeSelectorType.FILE:
-                    field = new ContentPickerField(Messages.get("picker_file_header", "Files picker"), Messages.get("picker_mashup_selection", "File selected: "), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), ManagerConfigurationFactory.FILEPICKER, propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(Messages.get("picker_file_header", "Files picker"), Messages.get("picker_mashup_selection", "File selected: "), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), ManagerConfigurationFactory.FILEPICKER, propDefinition.isMultiple(), false);
                     break;
 
                 case GWTJahiaNodeSelectorType.CHOICELIST:
@@ -180,7 +180,7 @@ public class FormFieldCreator {
 
             // case of page piker
             if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
-                field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), "", ManagerConfigurationFactory.LINKPICKER, false, false);
+                field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/", "", definition.getSelectorOptions().get("filters"), "", ManagerConfigurationFactory.LINKPICKER, false, false);
             }
         }
         if (field == null) {

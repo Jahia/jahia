@@ -479,7 +479,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Resource resource = resolveResource(workspace, locale, path, paramBean);
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
-                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/content/sites/" + paramBean.getSite().getSiteKey()));
+                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
                 if (!"true".equals(req.getParameter("ajaxcall"))) {
                     resource.pushWrapper("wrapper.fullpage");
                     resource.pushWrapper("wrapper.bodywrapper");

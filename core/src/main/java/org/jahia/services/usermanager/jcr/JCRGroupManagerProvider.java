@@ -116,11 +116,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         JCRNodeWrapper nodeWrapper;
                         JCRNodeWrapper parentNodeWrapper;
                         if (siteID == 0) {
-                            parentNodeWrapper = session.getNode("/" + Constants.CONTENT + "/groups");
+                            parentNodeWrapper = session.getNode("/groups");
                         } else {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
                             parentNodeWrapper = session.getNode(
-                                    "/" + Constants.CONTENT + "/sites/" + siteName + "/groups");
+                                    "/sites/" + siteName + "/groups");
                         }
                         session.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
                         nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
@@ -231,7 +231,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
@@ -304,7 +304,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
@@ -409,11 +409,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         Node usersFolderNode;
                         if (siteID == 0) {
-                            usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
+                            usersFolderNode = session.getNode("/groups/" + name.trim());
                         } else {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
                             usersFolderNode = session.getNode(
-                                    "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
+                                     "/sites/" + siteName + "/groups/" + name.trim());
                         }
                         return usersFolderNode != null;
                     } catch (JahiaException e) {
@@ -467,13 +467,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         Node usersFolderNode;
                         if (siteID1 == 0) {
-                            usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
+                            usersFolderNode = session.getNode("/groups/" + name.trim());
                         } else {
                             final JahiaSite site = sitesService.getSite(siteID1);
                             if(site==null) return null;
                             String siteName = site.getSiteKey();
                             usersFolderNode = session.getNode(
-                                    "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
+                                    "/sites/" + siteName + "/groups/" + name.trim());
                         }
                         JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1);
                         cache.put(trueGroupKey, group);
@@ -524,11 +524,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         Node usersFolderNode;
                         if (siteID1 <= 0) {
-                            usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
+                            usersFolderNode = session.getNode("/groups/" + name.trim());
                         } else {
                             String siteName = sitesService.getSite(siteID1).getSiteKey();
                             usersFolderNode = session.getNode(
-                                    "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
+                                  "/sites/" + siteName + "/groups/" + name.trim());
                         }
                         JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1);
                         cache.put(trueGroupKey, group);

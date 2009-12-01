@@ -361,7 +361,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    final JCRNodeWrapper parentNode = session.getNode("/content/portletdefinitions");
+                    final JCRNodeWrapper parentNode = session.getNode("/portletdefinitions");
                     final String name = app.getName().replaceAll("/", "___");
                     final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
                     wrapper.setProperty("j:context", app.getContext());

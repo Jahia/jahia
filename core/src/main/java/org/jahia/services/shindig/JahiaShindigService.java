@@ -171,13 +171,13 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Object>>() {
             public Map<String, Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Map<String, Object> appData = null;
-                Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + id);
+                Node userNode = session.getNode("/users/" + id);
                 Node appDataFolderNode;
                 if (!userNode.hasNode("appdata")) {
                     appDataFolderNode = userNode.addNode("appdata", Constants.NT_FOLDER);
                     session.save();
                 } else {
-                    appDataFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + id + "/appdata");
+                    appDataFolderNode = session.getNode("/users/" + id + "/appdata");
                 }
                 if (appDataFolderNode != null) {
                     if (fields.contains(Person.Field.APP_DATA.toString())) {
@@ -219,7 +219,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
             public JahiaPersonImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JahiaPersonImpl jahiaPersonImpl = new JahiaPersonImpl(jahiaUser);
                 String name = jahiaUser.getUserKey().split("}")[1];
-                Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
+                Node usersFolderNode = session.getNode("/users/" + name);
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                     jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrTemplate);
@@ -248,13 +248,13 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
       case friends:
           jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
               public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                  Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId);
+                  Node userNode = session.getNode("/users/" + userId);
                   Node usersFolderNode;
                   if (!userNode.hasNode("friends")) {
                       usersFolderNode = userNode.addNode("friends", Constants.NT_FOLDER);
                       session.save();
                   } else {
-                      usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId + "/friends");
+                      usersFolderNode = session.getNode("/users/" + userId + "/friends");
                   }
                   Node members = usersFolderNode.getNode("j:members");
                   if (members != null) {

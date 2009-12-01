@@ -20,7 +20,7 @@
 
 
 
-<jcr:node var="category" path="/content/categories"/>
+<jcr:node var="category" path="/categories"/>
 <form id="filter">
     Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&categorykey='+document.forms.filter.categorykey.value)"/>
     <c:if test="${empty param.categorykey}"><option selected value="">All</option></c:if>

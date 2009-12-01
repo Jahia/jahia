@@ -135,7 +135,7 @@ public class Core_Engine implements JahiaEngine {
             } else {
                 base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
             }
-            String jcrPath = "/content/sites/" + processingContext.getSiteKey() + "/home";
+            String jcrPath = "/sites/" + processingContext.getSiteKey() + "/home";
             processingContext.getRealResponse().sendRedirect(base + jcrPath + ".html");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

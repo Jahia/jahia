@@ -61,8 +61,7 @@ public class PublicationTest extends TestCase {
     private JahiaSite site;
     private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrWorkflowTest";
-    private final static String SITECONTENT_ROOT_NODE = "/" + Constants.CONTENT
-            + "/sites/" + TESTSITE_NAME;
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     protected void setUp() throws Exception {
         try {

@@ -63,7 +63,7 @@ public class ContentHubHelper {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper parent = session.getNode("/content");
+                        JCRNodeWrapper parent = session.getNode("/");
                         JCRNodeWrapper mounts;
                         try {
                             mounts = parent.getNode("mounts");

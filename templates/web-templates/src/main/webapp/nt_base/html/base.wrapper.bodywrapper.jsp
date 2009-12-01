@@ -37,7 +37,7 @@
 <template:addResources type="javascript" resources="swfobject.js,textsizer.js,collapse.js" nodetype="jnt:page"/>
 <template:addResources type="css" resources="01web.css" nodetype="jnt:page"/>
 <div id="bodywrapper">
-    <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
+    <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
     <div id="contentArea">
         <div id="toplinks">
 

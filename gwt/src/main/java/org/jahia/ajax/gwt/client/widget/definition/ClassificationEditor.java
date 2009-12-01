@@ -197,7 +197,7 @@ public class ClassificationEditor extends LayoutContainer {
 
     private void doSelectTab(GWTJahiaNode selectedNode) {
         String path = selectedNode.getPath();
-        if (path != null && path.indexOf("/content/categories") == 0) {
+        if (path != null && path.indexOf("/categories") == 0) {
             selectionTabPanel.setSelection(categoriesTab);
         } else {
             selectionTabPanel.setSelection(tagTab);

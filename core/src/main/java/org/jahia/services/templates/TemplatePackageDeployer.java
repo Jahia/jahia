@@ -287,7 +287,7 @@ class TemplatePackageDeployer {
                 + pack.getInitialImports());
         
         for (String imp : pack.getInitialImports()) {
-            String targetPath = "/content/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+            String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
             logger.info("... importing " + imp + " into " + targetPath);
             try {
                 importExportService.importXml(targetPath, new FileInputStream(new File(pack.getFilePath(), imp)));

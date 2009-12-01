@@ -4,7 +4,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
-<jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home"/>
+<jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <template:addResources type="css" resources="navigation.css" nodetype="jnt:navBar"/>
 <template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js" nodetype="jnt:navBar"/>
 <script type="text/javascript">

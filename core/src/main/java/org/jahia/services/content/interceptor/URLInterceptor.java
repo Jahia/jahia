@@ -26,8 +26,8 @@ import net.htmlparser.jericho.*;
  * instead of pathes. It also replaces the servlet context and servlet name by a placeholder so that the stored link
  * is not dependant of the deployement.
  *
- * Two types of links are detected : CMS links (like /cms/render/default/en/content/sites/ACME/home.html ) and files
- * links ( /files/content/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg ).
+ * Two types of links are detected : CMS links (like /cms/render/default/en/sites/ACME/home.html ) and files
+ * links ( /files/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg ).
  *
  * File path are transformed with references placeholders like ##ref:link1##. References targets are stored in the
  * jmix:referenceInField child nodes.
@@ -71,8 +71,8 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
      *
      * Only URLs starting with /<context>/cms or /<context>/files are recognized.
      *
-     * CMS URLs can use mode and language placeholders : /<context>/cms/render/default/en/content/sites/ACME/home.html and
-     * /<context>/cms/##mode##/##lang##/content/sites/ACME/home.html are both recognized.
+     * CMS URLs can use mode and language placeholders : /<context>/cms/render/default/en/sites/ACME/home.html and
+     * /<context>/cms/##mode##/##lang##/sites/ACME/home.html are both recognized.
      *
      * If any link is invalid, a ConstraintViolationException is thrown.
      *

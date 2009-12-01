@@ -91,9 +91,9 @@ public class ServiceLoggingTest extends TestCase {
     private void deleteAllTags() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.checkout("/content/sites/" + siteKey + "/tags");
+                session.checkout("/sites/" + siteKey + "/tags");
                 NodeIterator nodeIterator = session.getWorkspace().getQueryManager().createQuery(
-                        "select * from [jnt:tag] " + "where ischildnode([/content/sites/" + siteKey
+                        "select * from [jnt:tag] " + "where ischildnode([/sites/" + siteKey
                                 + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
                 while (nodeIterator.hasNext()) {
                     Node node = nodeIterator.nextNode();
@@ -105,9 +105,9 @@ public class ServiceLoggingTest extends TestCase {
                         // duplicate results
                     }
                 }
-                session.checkout("/content/sites/" + siteKey);
+                session.checkout("/sites/" + siteKey);
                 try {
-                    session.getNode("/content/sites/" + siteKey + "/tags-content").remove();
+                    session.getNode("/sites/" + siteKey + "/tags-content").remove();
                 } catch (PathNotFoundException e) {
                     // ignore it
                 }

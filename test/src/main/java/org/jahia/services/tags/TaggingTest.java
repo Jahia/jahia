@@ -84,9 +84,9 @@ public class TaggingTest extends TestCase {
 	protected void tearDown() throws Exception {
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				session.checkout("/content/sites/" + siteKey + "/tags");
+				session.checkout("/sites/" + siteKey + "/tags");
 				NodeIterator nodeIterator = session.getWorkspace().getQueryManager().createQuery(
-				        "select * from [jnt:tag] " + "where ischildnode([/content/sites/" + siteKey
+				        "select * from [jnt:tag] " + "where ischildnode([/sites/" + siteKey
 				                + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
 				while (nodeIterator.hasNext()) {
 					Node node = nodeIterator.nextNode();
@@ -98,9 +98,9 @@ public class TaggingTest extends TestCase {
 						// duplicate results
 					}
 				}
-				session.checkout("/content/sites/" + siteKey);
+				session.checkout("/sites/" + siteKey);
 				try {
-					session.getNode("/content/sites/" + siteKey + "/tags-content").remove();
+					session.getNode("/sites/" + siteKey + "/tags-content").remove();
 				} catch (PathNotFoundException e) {
 					// ignore it
 				}
@@ -139,7 +139,7 @@ public class TaggingTest extends TestCase {
 	public void testTagContentObject() throws RepositoryException {
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				Node siteNode = session.getNode("/content/sites/" + siteKey);
+				Node siteNode = session.getNode("/sites/" + siteKey);
 				session.checkout(siteNode);
 				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
 				Node contentNode = contentFolder.addNode("content-1", "jnt:content");
@@ -154,13 +154,13 @@ public class TaggingTest extends TestCase {
 		for (int i = 0; i < 10; i++) {
 			tag = generateTagName();
 			tags.add(tag);
-			service.tag("/content/sites/" + siteKey + "/tags-content/content-1", tag, siteKey, true);
+			service.tag("/sites/" + siteKey + "/tags-content/content-1", tag, siteKey, true);
 		}
 
 		List<String> assignedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(
 		        new JCRCallback<List<String>>() {
 			        public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				        Node node = session.getNode("/content/sites/" + siteKey + "/tags-content/content-1");
+				        Node node = session.getNode("/sites/" + siteKey + "/tags-content/content-1");
 				        Value[] values = node.getProperty("j:tags").getValues();
 				        List<String> nodeTags = new LinkedList<String>();
 				        for (Value val : values) {
@@ -177,7 +177,7 @@ public class TaggingTest extends TestCase {
 		// create 10 content nodes
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				Node siteNode = session.getNode("/content/sites/" + siteKey);
+				Node siteNode = session.getNode("/sites/" + siteKey);
 				session.checkout(siteNode);
 				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
 				for (int i = 1; i <= 10; i++) {
@@ -202,7 +202,7 @@ public class TaggingTest extends TestCase {
 		for (int i = 1; i <= 10; i++) {
 			for (int j = i; j <= 10; j++) {
 				service
-				        .tag("/content/sites/" + siteKey + "/tags-content/content-" + i, tags.get(j - 1), siteKey,
+				        .tag("/sites/" + siteKey + "/tags-content/content-" + i, tags.get(j - 1), siteKey,
 				                false);
 			}
 		}
@@ -212,7 +212,7 @@ public class TaggingTest extends TestCase {
 		        new JCRCallback<Object>() {
 			        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 				        for (int i = 1; i <= 10; i++) {
-				        	Node tagNode = session.getNode("/content/sites/" + siteKey + "/tags/" + tags.get(i-1));
+				        	Node tagNode = session.getNode("/sites/" + siteKey + "/tags/" + tags.get(i-1));
 				        	assertEquals("Wrong count for the tag '" + tagNode.getName() + "'", tagNode.getReferences().getSize(), i);
                         }
 				        return null;

@@ -113,7 +113,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
                 public JahiaUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT + "/users");
+                    JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
                     jcrSessionWrapper.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
@@ -291,7 +291,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
+                    Node usersFolderNode = session.getNode( "/users/" + name);
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
@@ -326,7 +326,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
+                    Node usersFolderNode = session.getNode("/users/" + name.trim());
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
@@ -355,7 +355,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
+                    Node usersFolderNode = session.getNode( "/users/" + name.trim());
                     if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);

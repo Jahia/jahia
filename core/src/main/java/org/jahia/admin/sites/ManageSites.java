@@ -2167,7 +2167,7 @@ public class ManageSites extends AbstractAdministrationModule {
 //
 //        try {
 //            JCRNodeWrapper source = page.getJCRNode(Jahia.getThreadParamBean());
-//            source.copyFile("/content/sites/"+site.getSiteKey());
+//            source.copyFile("/sites/"+site.getSiteKey());
 //        } catch (JahiaException e) {
 //            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //        } catch (RepositoryException e) {

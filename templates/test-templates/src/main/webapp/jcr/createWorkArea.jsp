@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
-<form action="<%= request.getContextPath() %>/render/default/en/content/sites/testSite/content/news/*" method="post">
+<form action="<%= request.getContextPath() %>/render/default/en/sites/testSite/content/news/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:newsContainer"/>
     <input type="text" name="newsTitle" value=""/>
     <textarea rows="10" cols="80" name="newsDesc">News content</textarea>

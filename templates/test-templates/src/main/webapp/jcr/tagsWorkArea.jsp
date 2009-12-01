@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
-<jcr:node var="jcrnode" path="/content/shared/files"/>
+<jcr:node var="jcrnode" path="/shared/files"/>
 <h3>Access to node attributes directly :</h3>
 <ul>
     <li>Node: ${jcrnode.name}</li>

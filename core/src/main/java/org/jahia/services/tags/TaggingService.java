@@ -61,7 +61,7 @@ public class TaggingService {
 		if (siteKey == null || siteKey.length() == 0) {
 			throw new IllegalArgumentException("The site key cannot be null or empty.");
 		}
-		return "/content/sites/" + siteKey + "/tags";
+		return "/sites/" + siteKey + "/tags";
 	}
 
 	/**

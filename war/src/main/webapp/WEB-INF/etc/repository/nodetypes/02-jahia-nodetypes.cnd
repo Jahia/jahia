@@ -320,7 +320,7 @@
 
 
 [jmix:theme] > jmix:layout, jmix:pageMixin mixin
- - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
+ - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
 
 
 //---------------------------------------------------------

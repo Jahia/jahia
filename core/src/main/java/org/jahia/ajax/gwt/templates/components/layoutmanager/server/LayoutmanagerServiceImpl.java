@@ -64,7 +64,7 @@ import java.util.*;
  */
 public class LayoutmanagerServiceImpl extends JahiaRemoteService implements LayoutmanagerService {
     private static transient final Logger logger = Logger.getLogger(LayoutmanagerServiceImpl.class);
-    private static final String LAYOUTMANAGER_NODE_PATH = "/content/layoutmanager";
+    private static final String LAYOUTMANAGER_NODE_PATH = "/layoutmanager";
 
     private JCRSessionFactory sessionFactory;
     private NavigationHelper navigation;

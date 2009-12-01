@@ -531,7 +531,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //                    JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
 //                    Node parent = source.getParent();
 //                    if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-//                        Node dest = sessionFactory.getCurrentUserSession().getNode("/content/sites/"+parent.getName());
+//                        Node dest = sessionFactory.getCurrentUserSession().getNode("/sites/"+parent.getName());
 //                        source.copyFile(dest.getPath());
 //                        dest.save();
 //                    }
@@ -613,7 +613,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             } else {
                 try {
                     JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
-                    JCRNodeWrapper nodeWrapper = session.getNode("/content/sites/" + site.getSiteKey());
+                    JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
                     session.checkout(nodeWrapper);
                     JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
                     page.setProperty("jcr:title","Welcome to " + site.getServerName());

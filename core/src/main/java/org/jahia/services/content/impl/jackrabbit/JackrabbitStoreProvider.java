@@ -87,13 +87,19 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             super.start();
             if (liveWorkspaceCreated) {
                 session = getSystemSession();
-                Node n = session.getNode("/content");
+                Node n = session.getNode("/");
                 recurseCheckin(n, session.getWorkspace().getVersionManager());
+                NodeIterator ni = n.getNodes();
+                Session livesession = getSystemSession(null, "live");
+
+                while (ni.hasNext()) {
+                    Node node = (Node) ni.next();
+                    if (!node.getName().equals("jcr:system") && !node.getName().equals("j:acl")) {
+                        livesession.getWorkspace().clone("default", node.getPath(), node.getPath(), false);
+                    }
+                }
                 session.logout();
-                session = getSystemSession(null, "live");
-                session.getWorkspace().clone("default",
-                        "/content", "/content", false);
-                session.logout();
+                livesession.logout();
             }
         } catch (RepositoryException e) {
             e.printStackTrace();

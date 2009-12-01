@@ -76,7 +76,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
 
     public void next() {
         // on  finish
-        String path = "/content/shared/mashups";
+        String path = "/shared/mashups";
         if (getParentNode() != null) {
             path = getParentNode().getPath();
         }

@@ -377,13 +377,14 @@ public class JCRStoreProvider {
             FileInputStream stream = null;
             try {
                 Node rootNode = session.getRootNode();
-                if (!rootNode.hasNode(Constants.CONTENT)) {
+                if (!rootNode.hasNode("shared")) {
+//                    rootNode.addMixin("mix:versionable");
                     initializeAcl(session);
 
                     stream = new FileInputStream(
                             org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
-                    session.importXML("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
-                    Node userNode = (Node) session.getItem("/"+Constants.CONTENT+"/users");
+                    session.importXMLWithoutRoot("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+                    Node userNode = (Node) session.getItem("/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {
                         Node node = (Node) nodeIterator.next();

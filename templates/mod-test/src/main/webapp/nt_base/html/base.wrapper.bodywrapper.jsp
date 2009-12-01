@@ -35,7 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <template:addResources type="css" resources="web.css" nodetype="jnt:page"/>
-<jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home" scope="request"/>
+<jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home" scope="request"/>
 
 <div id="bodywrapper"><!--start bodywrapper-->
     <div id="header"><!--start header-->

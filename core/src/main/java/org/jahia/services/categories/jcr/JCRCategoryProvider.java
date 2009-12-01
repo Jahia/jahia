@@ -90,8 +90,7 @@ public class JCRCategoryProvider {
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();
-            rootNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT
-                    + "/categories");
+            rootNodeWrapper = jcrSessionWrapper.getNode("/categories");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -109,8 +108,7 @@ public class JCRCategoryProvider {
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();
-            rootNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT
-                    + "/categories");
+            rootNodeWrapper = jcrSessionWrapper.getNode( "/categories");
             for (JCRNodeWrapper rootCategoryNode : rootNodeWrapper
                     .getChildren()) {
                 if (rootCategoryNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
@@ -220,8 +218,7 @@ public class JCRCategoryProvider {
                         .getJahiaCategory()).getCategoryNode();
             }
             if (parentNodeWrapper == null) {
-                parentNodeWrapper = jcrSessionWrapper.getNode("/"
-                        + Constants.CONTENT + "/categories");
+                parentNodeWrapper = jcrSessionWrapper.getNode("/categories");
             }
             final JCRNodeWrapper wrapper = (JCRNodeWrapper) parentNodeWrapper
                     .getNode(categoryKey);
@@ -552,8 +549,7 @@ public class JCRCategoryProvider {
                     .getJahiaCategory()).getCategoryNode();
         }
         if (parentNodeWrapper == null) {
-            parentNodeWrapper = jcrSessionWrapper.getNode("/"
-                    + Constants.CONTENT + "/categories");
+            parentNodeWrapper = jcrSessionWrapper.getNode("/categories");
         }
         return parentNodeWrapper;
     }

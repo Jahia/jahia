@@ -226,6 +226,6 @@
 /* 
  - book (string,choicelist[script=choicelistXml.groovy])
  - product (string,choicelist[script=choicelistDb.groovy])
- - content (weakreference,choicelist[nodes='/content/shared/content/myList;test_templates:choiceListItem'])
+ - content (weakreference,choicelist[nodes='/shared/content/myList;test_templates:choiceListItem'])
 */ 
- - category (weakreference,choicelist[nodes='/content/categories;jnt:category'])
+ - category (weakreference,choicelist[nodes='/categories;jnt:category'])

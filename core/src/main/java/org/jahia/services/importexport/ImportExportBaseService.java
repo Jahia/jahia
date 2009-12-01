@@ -168,7 +168,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     try {
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                JCRNodeWrapper dest = session.getNode("/content/imports");
+                                JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {
                                     try {
                                         dest.uploadFile(file.getName(), new FileInputStream(file),
@@ -262,7 +262,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         try {
             JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-            files.add(session.getNode("/content"));
+            files.add(session.getNode("/"));
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new IOException(e.getMessage());
@@ -285,7 +285,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         processingContext.setSite(jahiaSite);
         processingContext.setSiteID(jahiaSite.getID());
         processingContext.setSiteKey(jahiaSite.getSiteKey());
-        exportZip(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/content/sites/"+jahiaSite.getSiteKey()), out, processingContext, params);
+        exportZip(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/"+jahiaSite.getSiteKey()), out, processingContext, params);
     }
 
     public void exportZip(JCRNodeWrapper node, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException {
@@ -380,7 +380,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         ch.startElement("", "content", "content", attr);
 
         Stack<String> stack = new Stack<String>();
-        stack.push("/content");
+        stack.push("/");
         for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
             JCRNodeWrapper node = iterator.next();
             exportNodeInfo(node, ch, stack, prefixes, typesToIgnore);
@@ -405,7 +405,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 current = current.getParent();
             }
 
-            if (!path.equals("/content")) {
+            if (!path.equals("/")) {
 
                 String parentpath = path.substring(0, path.lastIndexOf('/'));
 
@@ -720,7 +720,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (!sitesFolder.isEmpty()) {
                 pathMapping.put("/", sitesFolder.iterator().next().getPath() + "/");
             } else {
-                pathMapping.put("/", "/content/");
+                pathMapping.put("/", "/");
             }
         }
 
@@ -826,7 +826,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void resolveCrossReferences(JCRSessionWrapper session, Map<String, String> uuidMapping, Map<String, List<String>> references) {
         try {
-            JCRNodeWrapper refRoot = session.getNode("/content/referencesKeeper");
+            JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
             NodeIterator ni = refRoot.getNodes();
             while (ni.hasNext()) {
                 Node refNode = ni.nextNode();

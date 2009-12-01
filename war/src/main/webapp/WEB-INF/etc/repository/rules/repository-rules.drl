@@ -175,7 +175,7 @@ end
 rule "Test type"
     when
         A new node is created
-        - it is in /content/shared/test
+        - it is in /shared/test
     then
         Add the type jmix:test
 end

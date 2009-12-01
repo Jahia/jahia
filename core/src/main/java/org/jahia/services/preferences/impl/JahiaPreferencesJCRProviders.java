@@ -366,7 +366,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } else {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
-        return "/content/users/" + ISO9075.encode(principalName) + "/preferences/";
+        return "/users/" + ISO9075.encode(principalName) + "/preferences/";
     }
 
     private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String sqlConstraint) {

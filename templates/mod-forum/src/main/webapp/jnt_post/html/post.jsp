@@ -44,7 +44,7 @@
     <h3 class="forum-h3-first"><a href="#">${title.string}</a></h3>
 
     <p class="forum-author"><fmt:message key="by"/><strong> <a
-            href="${url.base}/content/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate
+            href="${url.base}/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate
             value="${created.time}" type="both" dateStyle="full"/></p>
 
     <div class="content">${content.string}</div>
@@ -54,7 +54,7 @@
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <dl class="forum-postprofile">
     <dt>
-        <jcr:node var="userNode" path="/content/users/${createdBy.string}"/>
+        <jcr:node var="userNode" path="/users/${createdBy.string}"/>
         <template:module node="${userNode}" template="mini"/>
     </dt>
     <br/>

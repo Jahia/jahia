@@ -42,7 +42,7 @@
 </head>
 <body>
 <internal:contentManager enginemode="true"
-                      rootPath="/content/tags"
+                      rootPath="/tags"
                       nodeTypes="jnt:tag"
                       conf="tagmanager"/>
 <internal:gwtGenerateDictionary/>

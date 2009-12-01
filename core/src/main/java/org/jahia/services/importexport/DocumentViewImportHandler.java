@@ -115,6 +115,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
         String decodedQName = qName.replace(localName, decodedLocalName);
         pathes.push(pathes.peek() + "/" + decodedQName);
 
+        if (pathes.size() <= 2) {
+            return;
+        }
+
         try {
 
             if (ignorePath != null) {

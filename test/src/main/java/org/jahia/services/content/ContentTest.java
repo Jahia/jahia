@@ -30,7 +30,7 @@ public class ContentTest extends TestCase {
         final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
-                providerRoot = "/content/shared";
+                providerRoot = "/shared";
             }
             Method[] methods = ContentTest.class.getMethods();
             for (Method method : methods) {

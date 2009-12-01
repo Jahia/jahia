@@ -80,11 +80,11 @@ public class CrawlingPageVisitorTest extends TestCase {
 
     private final static String ACMESITE_NAME = "CrawlACMETest";
 
-    private final static String ACME_SITECONTENT_ROOT_NODE = "/" + Constants.CONTENT + "/sites/" + ACMESITE_NAME;
+    private final static String ACME_SITECONTENT_ROOT_NODE =  "/sites/" + ACMESITE_NAME;
 
     private final static String TESTSITE_NAME = "CrawlTCKTest";
 
-    private final static String TEST_SITECONTENT_ROOT_NODE = "/" + Constants.CONTENT + "/sites/" + TESTSITE_NAME;
+    private final static String TEST_SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     private Configuration conf;
     private FileSystem fs;

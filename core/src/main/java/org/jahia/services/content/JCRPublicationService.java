@@ -358,9 +358,15 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : pruneNodes) {
             deniedPath.add(node.getPath());
         }
+        String destinationPath;
+        if (destinationParentPath.equals("/")) {
+            destinationPath = "/" + sourceNode.getName();
+        } else {
+            destinationPath = destinationParentPath + "/" + sourceNode.getName();
+        }
         try {
             JahiaAccessManager.setDeniedPathes(deniedPath);
-            destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationParentPath+"/"+sourceNode.getName(), false);
+            destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, false);
         } finally {
             JahiaAccessManager.setDeniedPathes(null);
         }

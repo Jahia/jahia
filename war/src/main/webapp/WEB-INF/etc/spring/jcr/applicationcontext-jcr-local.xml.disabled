@@ -7,7 +7,7 @@
         <property name="key" value="local"/>
         <property name="root" value="file:///"/>
         <property name="rmibind" value="local"/>
-        <property name="mountPoint" value="/content/localFs"/>
+        <property name="mountPoint" value="/localFs"/>
     </bean>
 
 </beans>

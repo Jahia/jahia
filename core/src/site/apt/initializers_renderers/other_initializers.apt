@@ -12,13 +12,13 @@ Jahia Crazy Jane - Core Module - Other Initializer
   of this dropdown list and the type of child nodes you want to list.
 
 -----------------------------------
-- firstLevelCategory (weakreference,choicelist[nodes='/content/categories;jnt:category'])
+- firstLevelCategory (weakreference,choicelist[nodes='/categories;jnt:category'])
 -----------------------------------
 
-  This will create a dropdown listing all the <<<jnt:category>>> elements from the folder <<</content/categories>>>.
+  This will create a dropdown listing all the <<<jnt:category>>> elements from the folder <<</categories>>>.
 
 -----------------------------------
- - j:theme (weakreference,choicelist[nodes='/content/sites/$currentSite/themes;jnt:folder'])
+ - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
 -----------------------------------
 
   This will create a dropdown listing all the subfolders elements of the folder  themes in the current site.

@@ -36,7 +36,7 @@
 </template:containerList>
 
 <h3>File listing example</h3>
-<a href="<%= request.getContextPath() %>/render/default/content/shared/files.rss">RSS example</a> <br>
-<a href="<%= request.getContextPath() %>/render/default/content/shared.html">Full page recursive view</a><br>
-<jcr:node path="/content/shared" var="sharedFolder"/>
+<a href="<%= request.getContextPath() %>/render/default/shared/files.rss">RSS example</a> <br>
+<a href="<%= request.getContextPath() %>/render/default/shared.html">Full page recursive view</a><br>
+<jcr:node path="/shared" var="sharedFolder"/>
 <template:module nodeName="sharedFolder" />

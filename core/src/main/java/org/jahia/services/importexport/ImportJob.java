@@ -139,7 +139,7 @@ public class ImportJob extends BackgroundJob {
 //                        JCRNodeWrapper source = imported.getJCRNode(context);
 //                        Node parent = source.getParent();
 //                        if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-//                            Node dest = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/content/sites/"+parent.getName());
+//                            Node dest = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+parent.getName());
 //                            source.copyFile(dest.getPath());
 //                            if (source.hasNode("j:acl")) {
 //                                dest.addMixin("jmix:accessControlled");

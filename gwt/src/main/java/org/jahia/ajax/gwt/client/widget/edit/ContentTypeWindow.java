@@ -148,7 +148,7 @@ public class ContentTypeWindow extends Window {
             store.add(rootSchmurtzContent, true);
             final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
             if(nodeType!=null) {
-                schmurtzFolder.setPath("/content/schmurtzs/"+nodeType.getName().replaceAll(":","_"));
+                schmurtzFolder.setPath("/schmurtzs/"+nodeType.getName().replaceAll(":","_"));
                 JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
                                                                "jnt:schmurtz", null, null, null, false,
                                                                new AsyncCallback<List<GWTJahiaNode>>() {

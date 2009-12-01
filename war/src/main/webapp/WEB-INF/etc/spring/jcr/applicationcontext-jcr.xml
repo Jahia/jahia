@@ -46,7 +46,7 @@
                 <!--</entry>-->
             <!--</map>-->
         <!--</property>-->
-        <!--<property name="mountPoint" value="/content/jahia"/>-->
+        <!--<property name="mountPoint" value="/jahia"/>-->
     <!--</bean>-->
 
     <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance" lazy-init="true" init-method="start">

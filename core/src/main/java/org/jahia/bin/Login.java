@@ -41,7 +41,7 @@ public class Login extends HttpServlet implements Controller {
 
         String redirect = request.getParameter("redirect");
         if (redirect == null || redirect.length() == 0) {
-            redirect = request.getContextPath()+"/cms/render/default/"+ jParams.getLocale() +"/content/sites/" +
+            redirect = request.getContextPath()+"/cms/render/default/"+ jParams.getLocale() +"/sites/" +
                     JahiaSitesBaseService.getInstance().getDefaultSite().getSiteKey() + "/home.html";
         }
 

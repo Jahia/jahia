@@ -54,14 +54,14 @@
         <p>Folder path: <input type="text" name="filePath" id="filePath" value=""/><ui:folderSelector fieldId="filePath" displayIncludeChildren="false"/></p>
         <p>Folder path with subfolders: <input type="text" name="filePathWithSubfolders" id="filePathWithSubfolders" value=""/><ui:folderSelector fieldId="filePathWithSubfolders"/></p>
         <p>Folder path with custom callback: <input type="text" name="filePathWithCallback" id="filePathWithCallback" value=""/><ui:folderSelector fieldId="filePathWithCallback" displayIncludeChildren="false" onSelect="function (path) { alert('Selected folder: ' + path); return true; }"/></p>
-        <p>Folder path with custom root folder: <input type="text" name="filePathWithRoot" id="filePathWithRoot" value=""/><ui:folderSelector fieldId="filePathWithRoot" displayIncludeChildren="false" rootPath="/content"/></p>
+        <p>Folder path with custom root folder: <input type="text" name="filePathWithRoot" id="filePathWithRoot" value=""/><ui:folderSelector fieldId="filePathWithRoot" displayIncludeChildren="false" rootPath="/"/></p>
     </fieldset>
     <fieldset>
         <legend>File selector</legend>
         <p>File path: <input type="text" name="file" id="file" value=""/><ui:fileSelector fieldId="file"/></p>
         <p>File URL: <input type="text" name="fileUrl" id="fileUrl" value=""/><ui:fileSelector fieldId="fileUrl" useUrl="true" /></p>
         <p>File with custom callback: <input type="text" name="fileWithCallback" id="fileWithCallback" value=""/><ui:fileSelector fieldId="fileWithCallback" onSelect="function (path) { alert('Selected file: ' + path); return true; }"/></p>
-        <p>File with custom root folder: <input type="text" name="fileWithRoot" id="fileWithRoot" value=""/><ui:fileSelector fieldId="fileWithRoot" rootPath="/content"/></p>
+        <p>File with custom root folder: <input type="text" name="fileWithRoot" id="fileWithRoot" value=""/><ui:fileSelector fieldId="fileWithRoot" rootPath="/"/></p>
         <p>File with wildcard filter for images: <input type="text" name="fileWithFilter" id="fileWithFilter" value=""/><ui:fileSelector fieldId="fileWithFilter" filters="*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff"/></p>
         <p>File with MIME type for Word documents: <input type="text" name="fileWithMimiType" id="fileWithMimiType" value=""/><ui:fileSelector fieldId="fileWithMimiType" mimeTypes="application/msword,application/vnd.openxmlformats-officedocument"/></p>
     </fieldset>

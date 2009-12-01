@@ -42,7 +42,7 @@
 </head>
 <body>
 <internal:contentManager enginemode="true"
-                      rootPath="/content/categories"
+                      rootPath="/categories"
                       nodeTypes="jnt:category"
                       conf="categorymanager"/>
 <internal:gwtGenerateDictionary/>

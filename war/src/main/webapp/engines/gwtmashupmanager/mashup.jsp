@@ -42,8 +42,8 @@
 </head>
 <body>
 <internal:contentManager enginemode="true"
-                      rootPath="/content/mashups"
-                      startPath="/content/mashups"
+                      rootPath="/mashups"
+                      startPath="/mashups"
                       nodeTypes="jnt:portlet"
                       conf="mashupmanager"/>
 <internal:gwtGenerateDictionary/>

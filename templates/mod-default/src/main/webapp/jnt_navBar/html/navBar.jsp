@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<%--<jcr:node var="page" path="/content/sites/${renderContext.site.siteKey}/home" />--%>
+<%--<jcr:node var="page" path="/sites/${renderContext.site.siteKey}/home" />--%>
 
 <%--<div id="navigationN1"><!--start navigationN1-->--%>
     <%--<ul class="level_1">--%>

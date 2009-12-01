@@ -161,6 +161,22 @@ public class CKEditor extends Component {
      */
 
     private native JavaScriptObject initEditor(String contextPath,String servletPath)/*-{
+        $wnd.CKEDITOR.config.toolbar_Full =
+        [
+            ['Source','-','Preview','-','Templates'],
+            ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print','SpellChecker'],
+            ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+            '/',
+            ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+            ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+            ['Link','Unlink','Anchor'],
+            ['Image','Flash','Table','HorizontalRule','SpecialChar'],
+            '/',
+            ['Styles','Format','Font','FontSize'],
+            ['TextColor','BGColor'],
+            ['Maximize','ShowBlocks','-','About']
+        ];
 
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             skin : 'jahia',

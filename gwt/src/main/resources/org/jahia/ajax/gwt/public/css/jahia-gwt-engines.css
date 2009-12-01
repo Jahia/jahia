@@ -452,12 +452,6 @@ fm-globalMashupRepository {
     border: 0;
 }
 
-/* Process Display */
-.gwt-HTML {
-    font-family: arial, tahoma, helvetica, sans-serif;
-    font-size: 12px;
-    padding: 2px 2px;
-}
 
 .gwt-pdisplay-filter-up {
     background: url( ../images/icons/funnel_up.png ) no-repeat 0 0 !important;

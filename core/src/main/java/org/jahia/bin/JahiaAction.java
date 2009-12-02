@@ -37,7 +37,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.jahia.operations.OperationManager;
 import org.jahia.params.ParamBean;
-import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 
@@ -109,10 +109,10 @@ public final class JahiaAction extends Action {
                     }
                     response.sendRedirect(redirectURL);
                 } else {
-                    ErrorHandler.getInstance().handle(ex, request, response);
+                    DefaultErrorHandler.getInstance().handle(ex, request, response);
                 }
             } else {
-                ErrorHandler.getInstance().handle(ex, request, response);
+                DefaultErrorHandler.getInstance().handle(ex, request, response);
             }
         }
         return null;

@@ -1,0 +1,1 @@
+ ${currentNode.properties.text.string}

@@ -459,7 +459,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     /**
-     * @see getNodes(name)
+     * @see #getNodes(String)
      * @deprecated
      */
     public List<JCRNodeWrapper> getChildren(String name) {

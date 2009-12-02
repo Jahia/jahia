@@ -58,8 +58,6 @@
 
 package org.jahia.bin;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +65,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.admin.AdministrationModulesRegistry;
 import org.jahia.admin.AdministrationModule;
-import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.MenuItem;
 import org.jahia.exceptions.JahiaException;
@@ -255,9 +253,9 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                         ServicesRegistry.getInstance().getCacheService().syncClusterNow();
                         JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
                     } catch (JahiaException je) {
-                        ErrorHandler.getInstance().handle(je, request, response);
+                        DefaultErrorHandler.getInstance().handle(je, request, response);
                     } catch (Exception t) {
-                        ErrorHandler.getInstance().handle(t, request, response);
+                        DefaultErrorHandler.getInstance().handle(t, request, response);
                     }
                 }
             } else {
@@ -816,7 +814,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         try {
             initAdminJahiaData(request, response, session);
         } catch (JahiaException je) {
-            ErrorHandler.getInstance().handle(je, request, response);
+            DefaultErrorHandler.getInstance().handle(je, request, response);
             return;
         }
 
@@ -1049,7 +1047,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             }
         }
         catch (JahiaException je) {
-            ErrorHandler.getInstance().handle(je, request, response);
+            DefaultErrorHandler.getInstance().handle(je, request, response);
         }
 
         return true;

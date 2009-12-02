@@ -37,10 +37,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.filter.ModuleFilters;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
+import org.jahia.bin.errors.ErrorHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -57,10 +59,10 @@ class TemplatePackageRegistry {
     private static Logger logger = Logger
             .getLogger(TemplatePackageRegistry.class);
 
-    static class ModuleFilterRegistry implements BeanPostProcessor {
-        
+    static class ModuleRegistry implements BeanPostProcessor {
+
         private TemplatePackageRegistry templatePackageRegistry;
-        
+
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof ModuleFilters) {
                 ModuleFilters filters = (ModuleFilters) bean;
@@ -69,6 +71,10 @@ class TemplatePackageRegistry {
                 } else {
                     templatePackageRegistry.commonFilters.addAll(filters.getFilters());
                 }
+            } else if (bean instanceof ErrorHandler) {
+                templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
+            } else if (bean instanceof ChoiceListInitializer) {
+
             }
             return bean;
         }
@@ -80,8 +86,8 @@ class TemplatePackageRegistry {
         public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
             this.templatePackageRegistry = templatePackageRegistry;
         }
-    } 
-    
+    }
+
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
@@ -92,6 +98,7 @@ class TemplatePackageRegistry {
         }
     });
     private List<RenderFilter> commonFilters = new LinkedList<RenderFilter>();
+    private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
 
     private SettingsBean settingsBean;
 
@@ -161,6 +168,15 @@ class TemplatePackageRegistry {
         List<RenderFilter> filters = new LinkedList<RenderFilter>(filtersPerModule.get(moduleName));
         filters.addAll(commonFilters);
         return filters;
+    }
+
+    /**
+     * Returns a list of {@link ErrorHandler} instances
+     *
+     * @return a list of {@link ErrorHandler} instances
+     */
+    public List<ErrorHandler> getErrorHandlers() {
+        return errorHandlers;
     }
 
     /**
@@ -303,9 +319,10 @@ class TemplatePackageRegistry {
         templatePackages = null;
     }
 
-    public void resetFilters() {
+    public void resetBeanModules() {
         commonFilters.clear();
         filtersPerModule.clear();
+        errorHandlers.clear();
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {

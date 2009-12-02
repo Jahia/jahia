@@ -43,7 +43,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -181,7 +181,7 @@ public class AdminAction extends org.apache.struts.actions.DispatchAction {
             HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        ErrorHandler.getInstance().handle(e, request, response);
+        DefaultErrorHandler.getInstance().handle(e, request, response);
     }
 
     

@@ -42,7 +42,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -100,7 +100,7 @@ public final class CoreAction extends Action {
             jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
 
         } catch ( JahiaException je){
-            ErrorHandler.getInstance().handle(je, request, response);
+            DefaultErrorHandler.getInstance().handle(je, request, response);
             return null;
         }
 

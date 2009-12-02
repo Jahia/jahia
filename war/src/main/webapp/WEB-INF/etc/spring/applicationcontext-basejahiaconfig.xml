@@ -241,6 +241,6 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.ErrorHandler"/>
+    <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
     
 </beans>

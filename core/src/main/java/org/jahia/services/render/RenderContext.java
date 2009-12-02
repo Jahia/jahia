@@ -55,8 +55,6 @@ public class RenderContext {
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
 
-    private String templateWrapper;
-
     private Set<String> displayedModules = new HashSet<String>();
     private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
     
@@ -109,14 +107,6 @@ public class RenderContext {
 
     public void setEditMode(boolean editMode) {
         isEditMode = editMode;
-    }
-
-    public String getTemplateWrapper() {
-        return templateWrapper;
-    }
-
-    public void setTemplateWrapper(String pageWrapper) {
-        this.templateWrapper = pageWrapper;
     }
 
     public void addExternalLink(String externalLinkType,String externalLink) {

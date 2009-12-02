@@ -51,13 +51,14 @@ public class URLFilter extends AbstractFilter {
         } else {
             ctx = "render/"+resource.getWorkspace();
         }
+        if (attr != null) {
+            String value = attr.getValue();
 
-        String value = attr.getValue();
+            value = value.replace(CURRENT_CONTEXT_PLACEHOLDER, ctx);
+            value = value.replace(LANG_PLACEHOLDER, resource.getLocale().toString());
 
-        value = value.replace(CURRENT_CONTEXT_PLACEHOLDER, ctx);
-        value = value.replace(LANG_PLACEHOLDER, resource.getLocale().toString());
-
-        document.replace(attr.getValueSegment(), value);
+            document.replace(attr.getValueSegment(), value);
+        }
     }
 
 

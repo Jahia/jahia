@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<bean name="org.jahia.modules.default.ModuleFilterRegistry" class="org.jahia.services.templates.TemplatePackageRegistry$ModuleFilterRegistry">
+	<bean name="org.jahia.modules.default.ModuleRegistry" class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
 		<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
 	</bean>
 	

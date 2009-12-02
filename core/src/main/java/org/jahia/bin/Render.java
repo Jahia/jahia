@@ -32,7 +32,9 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -481,6 +483,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 renderContext.setSite(paramBean.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
                 if (!"true".equals(req.getParameter("ajaxcall"))) {
+                    if (renderContext.isEditMode()) {
+                        renderContext.setIncludeSubModules(false);
+                    }
                     resource.pushWrapper("wrapper.fullpage");
                     resource.pushWrapper("wrapper.bodywrapper");
                 } else {
@@ -532,7 +537,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
             }
         } catch (Exception e) {
-        	ErrorHandler.getInstance().handle(e, req, resp);
+            List<ErrorHandler> handlers = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getErrorHandler();
+            for (ErrorHandler handler : handlers) {
+                if (handler.handle(e, req, resp)) {
+                    return null;
+                }
+            }
+            DefaultErrorHandler.getInstance().handle(e, req, resp);
         } finally {
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);

@@ -1,0 +1,5 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:wikiContent] > jnt:content
+ - text (string, richtext) i18n
+

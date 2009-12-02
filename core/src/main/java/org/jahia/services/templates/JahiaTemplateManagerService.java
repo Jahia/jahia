@@ -36,6 +36,7 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -99,6 +100,10 @@ public class JahiaTemplateManagerService extends JahiaService {
      */
     public List<JahiaTemplatesPackage> getAvailableTemplatePackages() {
         return templatePackageRegistry.getAvailablePackages();
+    }
+
+    public List<ErrorHandler> getErrorHandler() {
+        return templatePackageRegistry.getErrorHandlers();
     }
 
     /**

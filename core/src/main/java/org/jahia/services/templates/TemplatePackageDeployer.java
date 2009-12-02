@@ -130,7 +130,7 @@ class TemplatePackageDeployer {
             
             if (changed) {
                 // reload the Spring application context for modules
-                templatePackageRegistry.resetFilters();
+                templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
             }
             

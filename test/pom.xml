@@ -261,6 +261,10 @@
                                               dir="${jahia.test.jmeter.path}/bin">
                                             <arg line="-n -t testPlan/allPlanTest.jmx -Jloginpath=${jahia.test.jmeter.loginpath} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
                                         </exec>
+                                      <!--  <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
+                                              dir="${jahia.test.jmeter.path}/bin">
+                                            <arg line="-n -t testPlan/createusers/createUsers.jmx -Jrootusername=${jahia.configure.databaseUsername} -Jrootpwd={jahia.configure.databasePassword} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
+                                        </exec>-->
                                     </tasks>
                                 </configuration>
                                 <goals>

@@ -46,10 +46,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.XMLFormatDetectionHandler;
 import org.jahia.services.sites.JahiaSitesService;
@@ -422,11 +419,18 @@ public class ContentManagerHelper {
                 member.setProperty("j:member", node.getUUID());
             }
         } else {
-            Node reference = dest.addNode(name, "jnt:nodeReference");
-            if (node.isNodeType("jnt:nodeReference")) {
-                node = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+            if (!node.isNodeType("mix:shareable")) {
+                node.addMixin("mix:shareable");
             }
-            reference.setProperty("j:node", node.getUUID());
+            node.getSession().save();
+            JCRWorkspaceWrapper wrapper = node.getSession().getWorkspace();
+            wrapper       .clone(wrapper.getName(), node.getPath(), dest.getPath() + "/" +name, false);
+
+//            Node reference = dest.addNode(name, "jnt:nodeReference");
+//            if (node.isNodeType("jnt:nodeReference")) {
+//                node = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+//            }
+//            reference.setProperty("j:node", node.getUUID());
         }
     }
 

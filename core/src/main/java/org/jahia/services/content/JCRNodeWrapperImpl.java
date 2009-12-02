@@ -2145,7 +2145,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public NodeIterator getSharedSet() throws RepositoryException {
-        return new NodeIteratorImpl(new ArrayList<JCRNodeWrapper>().iterator(), 0);
+        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
+
+        NodeIterator ni = objectNode.getSharedSet();
+        while (ni.hasNext()) {
+            Node node = ni.nextNode();
+            JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+            list.add(child);
+        }
+
+        return new NodeIteratorImpl(list.iterator(), list.size());
     }
 
     /**

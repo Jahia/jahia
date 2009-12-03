@@ -21,7 +21,7 @@ Creation of Dynamic Module
   We will now explain what all this extension means.
 
     * jmix:contentMixin will tell jahia that this mixin is a content extension so that this
-    definition will be added to the current defintion.
+    definition will be added to the current definition.
       By default this new properties will be displayed in the first panel of the content in the editor.
 
     * jmix:option will tell jahia that this mixin is part of the options and must be available for end users
@@ -105,7 +105,7 @@ Creation of Dynamic Module
   It is in fact very simple, we will look at the forum module where we want that all posts are rateable by end users,
   using a plus one / minus one type of vote.
 
-  First of all I have to hardcode in my definition the fact tha my post content is flagged by jmix:rating, here how ot do that :
+  First of all I have to hardcode in my definition the fact that my post content is flagged by jmix:rating, here how ot do that :
 
 ---------------------------------------
 [jnt:post] > jnt:content, jmix:rating, mix:title

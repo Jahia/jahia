@@ -1,0 +1,6 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:task] > jnt:content, mix:title
+ - priority (string, choicelist[resourceBundle]) analyzer='keyword' 'medium' < 'veryLow', 'low', 'medium', 'high', 'veryHigh'
+ - dueDate (date) = now() 
+ - status (string, choicelist[resourceBundle]) analyzer='keyword' 'active' < 'active', 'finished', 'hold'

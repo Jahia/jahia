@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+
 <div id="content"><!--start content-->
     <div class="container container_16"> <!--start container_16-->
         <div class='grid_3'><!--start grid_3-->
@@ -74,11 +78,29 @@
             <h2>Wiki Definition</h2>
 
             <div class="idTabsContainer"><!--start idTabsContainer-->
-                <ul class="idTabs">
-                    <li><a class="on selected" href="${url.base}${currentNode.path}.wikiHome.html"><span>Article</span></a></li>
-                    <li><a class="off" href="${url.base}${currentNode.path}.wikiContribute.html"><span>Contribute</span></a></li>
-                    <li class="spacing"><a class="off" href="${url.base}${currentNode.path}.wikiHistory.html"><span>source Historique </span></a></li>
-                </ul>
+                <c:choose>
+                    <c:when test="${currentResource.resolvedTemplate == 'wiki'}">
+                        <ul class="idTabs">
+                            <li><a class="on selected" href="${url.base}${currentNode.path}.wiki.html"><span>Article</span></a></li>
+                            <li><a class="off" href="${url.base}${currentNode.path}.wikiContribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="off" href="${url.base}${currentNode.path}.wikiHistory.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                    <c:when test="${currentResource.resolvedTemplate == 'wikiContribute'}">
+                        <ul class="idTabs">
+                            <li><a class="off" href="${url.base}${currentNode.path}.wiki.html"><span>Article</span></a></li>
+                            <li><a class="on selected" href="${url.base}${currentNode.path}.wikiContribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="off" href="${url.base}${currentNode.path}.wikiHistory.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                    <c:when test="${currentResource.resolvedTemplate == 'wikiHistory'}">
+                        <ul class="idTabs">
+                            <li><a class="off" href="${url.base}${currentNode.path}.wiki.html"><span>Article</span></a></li>
+                            <li><a class="off" href="${url.base}${currentNode.path}.wikiContribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="on selected" href="${url.base}${currentNode.path}.wikiHistory.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                </c:choose>
             </div>
             <div class="tabContainer"><!--start tabContainer-->
                 ${wrappedContent}

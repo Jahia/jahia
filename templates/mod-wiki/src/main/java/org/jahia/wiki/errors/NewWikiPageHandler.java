@@ -43,15 +43,10 @@ public class NewWikiPageHandler implements ErrorHandler {
             JCRNodeWrapper parent = session.getNode(parentPath);
             if (parent.isNodeType("jnt:page") && parent.hasProperty("j:template") &&
                     parent.getProperty("j:template").getString().equals("wikiHome")) {
-
                 String newName = StringUtils.substringAfterLast(path,"/");
                 newName = StringUtils.substringBefore(newName,".");
-                System.out.println("----->new "+ newName);
-
                 String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
                 link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?link="+newName;
-//                URLGenerator url = (URLGenerator) request.getAttribute("url");
-//                String link = url.getBase() + parent.getPath() + ".create.html?link="+newName;
                 response.sendRedirect(link);
                 return true;
             }

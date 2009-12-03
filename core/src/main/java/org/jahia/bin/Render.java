@@ -32,10 +32,10 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.Action;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -50,6 +50,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +97,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String METHOD_TO_CALL = "methodToCall";
 
     private MetricsLoggingService loggingService;
+    private JahiaTemplateManagerService templateService;
 
     static {
         reservedParameters = new HashSet<String>();
@@ -232,7 +234,21 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         nodeJSON.write(resp.getWriter());
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws Exception {
+        if (path.endsWith(".do")) {
+            Resource resource = resolveResource(workspace, locale, path);
+            renderContext.setMainResource(resource);
+            renderContext.setSite(Jahia.getThreadParamBean().getSite());
+            renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + Jahia.getThreadParamBean().getSite().getSiteKey()));
+
+            Action action = templateService.getActions().get(resource.getResolvedTemplate());
+            if  (action == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+            } else {
+                action.doExecute(req, resp, renderContext, resource);
+            }
+            return;
+        }
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         String[] subPaths = path.split("/");
         String lastPath = subPaths[subPaths.length - 1];
@@ -345,12 +361,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @param workspace The workspace where to get the node
      * @param locale    current locale
      * @param path      The path of the node, in the specified workspace
-     * @param ctx       request context
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-	protected Resource resolveResource(String workspace, Locale locale, String path, ProcessingContext ctx) throws RepositoryException {
+	protected Resource resolveResource(String workspace, Locale locale, String path) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
@@ -405,6 +420,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     String sitename = current.getName();
                     try {
                         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
+                        ProcessingContext ctx = Jahia.getThreadParamBean();
                         ctx.setSite(site);
                         ctx.setContentPage(site.getHomeContentPage());
                         ctx.setThePage(site.getHomePage());
@@ -478,7 +494,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = resolveResource(workspace, locale, path, paramBean);
+                Resource resource = resolveResource(workspace, locale, path);
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
@@ -583,5 +599,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
+    }
+
+    public void setTemplateService(JahiaTemplateManagerService templateService) {
+        this.templateService = templateService;
     }
 }

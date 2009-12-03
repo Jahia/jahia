@@ -15,4 +15,8 @@
     </bean>
 
     <bean name="NewWikiPageHandler" class="org.jahia.wiki.errors.NewWikiPageHandler" />
+
+    <bean name="NewPageAction" class="org.jahia.wiki.action.NewPageAction" >
+        <property name="name" value="newWikiPage" />
+    </bean>
 </beans>

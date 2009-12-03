@@ -358,7 +358,7 @@ class TemplatePackageDeployer {
     }
 
     public void startWatchdog() {
-        long interval = settingsBean.isDevelopmentMode() ? 5000 : SettingsBean.getInstance().getTemplatesObserverInterval();
+        long interval = 1000; // settingsBean.isDevelopmentMode() ? 5000 : SettingsBean.getInstance().getTemplatesObserverInterval();
         if (interval <= 0) {
             return;
         }

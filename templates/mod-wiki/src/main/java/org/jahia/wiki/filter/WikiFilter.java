@@ -29,7 +29,6 @@ public class WikiFilter extends AbstractFilter {
         Matcher m = p.matcher(out);
 
         JCRNodeWrapper page = renderContext.getMainResource().getNode();
-//        out = m.replaceAll("<a href=\"$1.html\">$1</a>");
 
         StringBuffer buf = new StringBuffer(out);
 
@@ -41,13 +40,13 @@ public class WikiFilter extends AbstractFilter {
             m.start();
             m.end();
             if (page.hasNode(value)) {
-                replacement = "<a class=\"wikidef\" href=\""+ page.getName() + "/" + value + ".html\">" + value + "</a>";
+                replacement = "<a class=\"wikidef\" href=\""+ value + ".html\">" + value + "</a>";
             } else {
-                replacement = "<a class=\"wikidef-new\" href=\""+ page.getName() + "/" + value + ".html\"> create " + value + "</a>";
+                replacement = "<a class=\"wikidef-new\" href=\""+ value + ".html\"> create " + value + "</a>";
             }
 
             buf.replace(m.start() + offset, m.end() + offset, replacement);
-            offset = offset + replacement.length() - m.end() - m.start();
+            offset = offset + replacement.length() - (m.end() - m.start());
             System.out.println("--"+value);
         }
 

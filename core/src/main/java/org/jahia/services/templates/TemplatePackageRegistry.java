@@ -43,6 +43,7 @@ import org.jahia.services.render.filter.ModuleFilters;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.Action;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -73,6 +74,9 @@ class TemplatePackageRegistry {
                 }
             } else if (bean instanceof ErrorHandler) {
                 templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
+            } else if (bean instanceof Action) {
+                Action action = (Action) bean;
+                templatePackageRegistry.actions.put(action.getName(), action);
             } else if (bean instanceof ChoiceListInitializer) {
 
             }
@@ -99,6 +103,7 @@ class TemplatePackageRegistry {
     });
     private List<RenderFilter> commonFilters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
+    private Map<String,Action> actions = new HashMap<String,Action>();
 
     private SettingsBean settingsBean;
 
@@ -160,7 +165,7 @@ class TemplatePackageRegistry {
     /**
      * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
      * 
-     * @param packageName
+     * @param moduleName
      *            the template package name to search for
      * @return a list of {@link RenderFilter} instances, configured for the specified templates package
      */
@@ -177,6 +182,10 @@ class TemplatePackageRegistry {
      */
     public List<ErrorHandler> getErrorHandlers() {
         return errorHandlers;
+    }
+
+    public Map<String, Action> getActions() {
+        return actions;
     }
 
     /**
@@ -323,6 +332,7 @@ class TemplatePackageRegistry {
         commonFilters.clear();
         filtersPerModule.clear();
         errorHandlers.clear();
+        actions.clear();
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {

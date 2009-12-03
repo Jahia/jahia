@@ -10,11 +10,13 @@
             	<entry key="/render/**">
             		<bean name="org.jahia.bin.Render" class="org.jahia.bin.Render">
                         <property name="loggingService" ref="loggingService"/>
+                        <property name="templateService" ref="JahiaTemplateManagerService"/>
             		</bean>
             	</entry>
             	<entry key="/edit/**">
             		<bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit">
                         <property name="loggingService" ref="loggingService"/>
+                        <property name="templateService" ref="JahiaTemplateManagerService"/>
             		</bean>
             	</entry>
             	<entry key="/login">

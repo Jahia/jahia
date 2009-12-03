@@ -99,6 +99,12 @@
         <div class="container container_16">
 
             <div class="grid_16">
+          <p class="copyright">
+          <span>COPYRIGHT (C) 2009 <a href="http://www.jahia.com/">Jahia Solutions Group</a></span>|
+          <span><a href="http://www.jahia.com/jahia/Jahia/Home/products/jahia_editions/licenses">Licence</a></span>|   
+          <span><a href="http://www.jahia.org/forum">COMMUNITY FORUMS</a></span>
+          <span><a href="http://www.jahia.com/jahia/Jahia/Home/services/annual_developer_subscription">COMMERCIAL SUPPORT</a></span>
+      </p>
                 <template:module path="${rootPage.path}/footer" autoCreateType="jnt:contentList"/>
             </div>
 

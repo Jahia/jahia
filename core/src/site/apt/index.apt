@@ -5,4 +5,6 @@ Jahia Crazy Jane - Core Module
  * {{{initializers_renderers/initializers.html}ChoiceList Initializers}}
 
  * {{{interceptors.html}Interceptors}}
+
+ * {{{ckeditor/index.html}CKEditor Integration}}
  

@@ -756,4 +756,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Add a wrapper.
+        </description>
+        <name>addWrapper</name>
+        <tag-class>org.jahia.taglibs.template.include.AddWrapperTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of the wrapper to include</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

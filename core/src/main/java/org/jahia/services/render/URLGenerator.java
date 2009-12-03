@@ -101,6 +101,10 @@ public class URLGenerator {
         return userProfile;
     }
 
+    public String getCurrentModule() {
+        return context.getRequest().getContextPath()+"/templates/"+((Script)context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
+    }
+
     public String getCurrent() {
         return base + resource.getNode().getPath() +".html";
     }

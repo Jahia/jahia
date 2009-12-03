@@ -47,6 +47,24 @@ q:before, q:after {
 blockquote, q {
 	quotes: "" "";
 }
+#bodywrapper .field input,
+#bodywrapper .select,
+#bodywrapper .field textarea {
+	background:#fefefe url(../img/input_bg.png) repeat-x top left;
+	border:1px solid #ccc;
+	color:#666;
+	margin:5px 0;
+	padding:4px 5px;
+	width:95%;
+}
+
+#bodywrapper input.gobutton{
+	background:none;
+	border:none;
+	margin:5px 0;
+	padding:0;
+	width:auto;
+}
 /******************************************************************************
 * Body
 ******************************************************************************/
@@ -81,6 +99,12 @@ body {
 }
 #bodywrapper .rightside{
 	float: right
+}
+#bodywrapper .docembed{
+border:1px solid #ccc; background-color:#FFFFFF;
+}
+#bodywrapper .docembed body{
+width:940px
 }
 /******************************************************************************
 *  topheader
@@ -145,14 +169,14 @@ body {
 }
 #bodywrapper #navigation #navbar ul.main-nav li a {
 	color: #333;
-	font-size: 14px;
+	font-size: 1.1em;
 	line-height: 36px;
 	white-space:pre
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover {
 	background-image: url(../img/nav-bg.png);
-	background-color: #ea822c;
+	background-color: #2050a8;
 	background-repeat: repeat-x;
 	background-position:top left;
 	border-color: #df6b04;
@@ -206,7 +230,6 @@ body {
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li {
 	padding: 5px;
 	padding-left: 10px;
-	font-size: 13px;
 	line-height: 20px;
 	width:162px;
 }
@@ -215,7 +238,7 @@ body {
 	line-height: 20px;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li a:hover {
-	color: #df6b04;
+	color: #3366cc;
 	text-decoration: none;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.home{
@@ -240,7 +263,7 @@ body {
 #bodywrapper #breadcrumbs{
 	padding-bottom:10px;
 	color:#666666;
-	font-size:0.8em;
+	font-size:0.85em;
 	height:100%;
 	text-transform:uppercase;
 }
@@ -248,24 +271,31 @@ body {
 shortcuts
 ******************************************************************************/
 #navigation #shortcuts{
-	bottom:0;
-	position:absolute;
-	right:0;
 }
 #navigation #shortcuts h3 {
 	background-image:url(../img/shortcuts-bg.png);
 	padding:8px 10px 10px 10px;
-	position:absolute;
 	width:82px;
 	height:20px;
-	position:absolute;
-	bottom:0;
-	right:0;
 	display:block;
-	font-size:120%;
+	font-size:1.2em;
+	bottom:0;
+	position:absolute;
+	right:0;
+	color:#fff
 }
-#navigation #shortcuts h3 a:hover {
-	text-decoration:none
+#navigation #shortcuts h3:hover {
+	background-image:url(../img/shortcuts-bg-on.png);
+}
+#navigation #shortcuts h3 a,
+#navigation #shortcuts h3 a:link,
+#navigation #shortcuts h3 a:visited {
+	color:#fff
+}
+#navigation #shortcuts h3 a:hover,
+#navigation #shortcuts h3 a:active{
+	text-decoration:none;
+	color:#fff
 }
 
 #navigation #shortcuts ul {
@@ -278,13 +308,13 @@ shortcuts
 	list-style-type:none;
 	padding:10px 4px;
 	position:absolute;
-	top:-10px;
+	top:30px;
 	margin:0;
 	width:138px;
 	z-index:100;
 }
 #navigation #shortcuts li {
-	font-size:13px;
+	font-size:1.1em;
 	line-height:20px;
 	padding:5px 5px 5px 10px;
 }
@@ -292,7 +322,7 @@ shortcuts
 	color: #333;
 }
 #navigation #shortcuts li a:hover {
-	color: #df6b04;
+	color: #3366cc;
 	text-decoration:none
 }
 
@@ -304,8 +334,7 @@ shortcuts
 #bodywrapper #search-bar form .text-input {
 	background-image:url(../img/search-bar-bg.png);
 	border:1px solid #e7e2de;
-	color:#404040;
-	font-size:14px;
+	color:#666666;
 	height:20px;
 	padding:4px 30px 2px 5px;
 	vertical-align:middle;
@@ -330,6 +359,7 @@ shortcuts
 #bodywrapper #content{
 	background-color:#eaeaea;
 	padding-top:20px;
+	padding-bottom:20px;
 	position:relative;
 	z-index:700;
 	width:100%
@@ -386,12 +416,12 @@ shortcuts
 #bodywrapper a,
 #bodywrapper a:link,
 #bodywrapper a:visited {
-	color:#cc3300;
+	color:#3366cc;
 	text-decoration:none;
 }
 #bodywrapper a:hover,
 #bodywrapper a:active {
-	color:#cc3300;
+	color:#3366cc;
 	text-decoration:underline;
 }
 #bodywrapper p {
@@ -423,7 +453,7 @@ shortcuts
 
 #bodywrapper h2 {
 	font-weight:normal;
-	font-size:24px;
+	font-size:1.9em;
 	padding-bottom:20px;
 	margin-bottom:10px;
 	background:transparent url(../img/hr-bg.png) repeat-x bottom left;
@@ -432,7 +462,7 @@ shortcuts
 
 #bodywrapper h3 {
 	font-weight:normal;
-	font-size:18px;
+	font-size:1.4em;
 	padding:0 0 0.5em 0;
 }
 
@@ -464,8 +494,7 @@ shortcuts
 
 	background:#E0E0E0 none repeat scroll 0 0;
 	border:1px solid #A5A5A5;
-	font-family:Arial,sans-serif;
-	font-size:13px;
+	font-size:1.1em;
 	font-style:italic;
 	line-height:18px;
 	margin-bottom:15px;
@@ -478,7 +507,50 @@ shortcuts
 	font-size:100%
 }
 #bodywrapper p.field{
-margin-bottom:0.2em
+	margin-bottom:0.2em
+}
+/******************************************************************************
+*  Images
+******************************************************************************/
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+#bodywrapper .imagefloatleft {
+	float:left;
+	margin-bottom:20px;
+	padding-right:20px;
+}
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+
+#bodywrapper .itemImage {
+	background-color:#F4F4F4;
+	border:1px solid #CCC;
+	position:relative;
+	padding:1px;
+	margin-bottom:10px;
+}
+#bodywrapper .imagefloatleft .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper .imagefloatright .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper div.itemImageRight {
+	float:right;
+}
+
+#bodywrapper .itemImage img {
+	background-color:#e1e1e1;
+	padding:9px;
+}
+#bodywrapper .itemImagewhite img{
+	background-color:#fff;
 }
 
 /******************************************************************************
@@ -486,7 +558,7 @@ margin-bottom:0.2em
 ******************************************************************************/
 #bodywrapper div.box {
 	position:relative;
-		clear:both;
+	clear:both;
 }
 
 #bodywrapper div.box h3.boxtitleh3 {
@@ -542,7 +614,7 @@ margin-bottom:0.2em
 
 }
 #bodywrapper div.box-inner p {
-	padding:0;
+	padding:0px 0px 10px 0px;
 }
 #bodywrapper .box-inner .box-inner-border {
 	border:1px solid #fff;
@@ -607,9 +679,9 @@ margin-bottom:0.2em
 	background:#010101 url(../img/h4titleblack.png) repeat-x top right;
 	border:1px solid #010101;
 	color:#FFFFFF;
-	font-size:16px;
+	font-size:1.3em;
 	margin-left:0;
-	padding:10px;
+	padding:5px;
 	text-align:center;
 	font-weight:normal;
 	clear:both;
@@ -631,43 +703,36 @@ margin-bottom:0.2em
 	color:#333;
 }
 /******************************************************************************
+* Title h3
+******************************************************************************/
+#bodywrapper h3.titleIcon {
+	color:#333;
+	font-size:1.8em;
+	padding:0 50px 15px 2px;
+	position:relative;
+}
+#bodywrapper h3.titleIcon img {
+	position:absolute;
+	right:0;
+	top:-5px;
+}
+/******************************************************************************
 * liste1 Big
 ******************************************************************************/
-.liste1 {
+.list1 {
 
 }
-#bodywrapper .liste1 .item{
+#bodywrapper .list1 .item{
 	display:block;
 	padding:40px;
 }
-#bodywrapper .imagefloatright {
-	background-color:#fff;
-	float:right;
-	margin-bottom:20px;
-	padding-left:20px;
+#bodywrapper .list1 .item .imagefloatright{
+background-color:#FFFFFF
 }
-#bodywrapper .imagefloatleft {
-	background-color:#fff;
-	float:left;
-	margin-bottom:20px;
-	padding-right:20px;
+#bodywrapper .list1 .item .imagefloatleft{
+background-color:#FFFFFF
 }
 
-#bodywrapper .itemImage {
-	background-color:#F4F4F4;
-	border:1px solid #CCC;
-	position:relative;
-	margin-bottom:20px;
-	padding:1px;
-}
-#bodywrapper div.itemImageRight {
-	float:right;
-}
-
-#bodywrapper .itemImage img {
-	background-color:#e1e1e1;
-	padding:9px;
-}
 
 #bodywrapper .iteminfo {
 	border-bottom:1px solid #CCC;
@@ -685,7 +750,6 @@ margin-bottom:0.2em
 #bodywrapper .author h4 {
 	color:#656565;
 	float:left;
-	font-size:16px;
 	line-height:22px;
 	padding-top:0;
 	text-transform:none;
@@ -702,7 +766,7 @@ margin-bottom:0.2em
 	right:40px;
 	top:10px;
 }
-#bodywrapper .liste1 div.pagination {
+#bodywrapper .list1 div.pagination {
 	border:none;
 	border-right:none;
 	padding:1em 40px;
@@ -711,12 +775,11 @@ margin-bottom:0.2em
 /******************************************************************************
 * liste2 Small
 ******************************************************************************/
-#bodywrapper .list2 {
+
+#bodywrapper ul.list2  {
 	position:relative;
-	margin-bottom:20px;
-}
-#bodywrapper .list2 ul {
 	margin:0;
+	margin-bottom:20px;
 	list-style:none;
 	border:1px solid #ccc;
 }
@@ -729,99 +792,102 @@ margin-bottom:0.2em
 	margin:0
 }
 #bodywrapper .list2 li p {
-padding:0;
+	padding:0;
 }
 #bodywrapper .list2 li.last {
 	border-bottom-color:#fff;
 }
-#bodywrapper .list2 h3 {
-	color:#333;
-	font-size:24px;
-	padding:20px 50px 15px 2px;
-	position:relative;
-}
-#bodywrapper .list2 h3 img {
-	position:absolute;
-	right:0;
-	top:15px;
-}
+
 #bodywrapper .list2 li a span {
 	display:block;
-	font-size:0.9em;
+	font-size:0.85em;
 }
 #bodywrapper .list2 li a span.fileinfo {
 	display:inline;
-	font-size:0.9em
+	font-size:0.85em
 }
 /******************************************************************************
 * liste3 Very Small
 ******************************************************************************/
-#bodywrapper .list3 {
+
+#bodywrapper ul.list3  {
+	margin:0;
 	position:relative;
 	margin-bottom:20px;
-}
-#bodywrapper .list3 ul {
-	margin:0;
 	list-style:none;
 }
 #bodywrapper .list3 li {
 	padding:10px;
 	clear:left
 }
-#bodywrapper .list3 h3 {
-	color:#333;
-	font-size:24px;
-	padding:0 50px 15px 2px;
-	position:relative;
-}
-#bodywrapper .list3 h3 img {
-	position:absolute;
-	right:0;
-	top:-5px;
-}
-
 
 #bodywrapper .list3 li a{
-	color:#666;
+
 }
 #bodywrapper .list3 li span.fileinfo {
 	display:block;
-	font-size:0.8em;
-	color:#333;
+	font-size:0.85em;
 	float:left;
 	width:50px
 }
 #bodywrapper .list3 li img {
-	float:right;
 	margin-top:3px;
 }
 #bodywrapper .list3 span.fileinfo2 {
 	display:block;
-	font-size:0.9em;
-	color:#666;
+	font-size:0.85em;
 	float:right;
 	padding-right:0.5em
 }
+
 /*Template User profile*/
-#bodywrapper div.user-profile-list ul.twoCol{
+#bodywrapper ul.twoCol{
 	float:left;
 	width:48%;
 	list-style:none;
 }
-#bodywrapper div.user-profile-list li {
+#bodywrapper ul.user-profile-list li {
 	padding:5px 5px 0px 5px;
 	clear:left
 }
-#bodywrapper .user-profile-list li span.label {
+#bodywrapper ul.user-profile-list li span.label {
 	display:block;
-	font-size:0.8em;
+	font-size:0.85em;
 	color:#666;
 	float:left;
 	text-transform:uppercase;
 	margin-right:5px;
 }
-#bodywrapper .user-profile-list{
+#bodywrapper ul.user-profile-list{
 	margin-bottom:0px;
+}
+/******************************************************************************
+* liste4 Arrow
+******************************************************************************/
+#bodywrapper ul.list4  {
+	margin:5px 0;
+	position:relative;
+	list-style:none;
+}
+#bodywrapper .list4 li {
+	background: url(../img/arrow.png) no-repeat 0 5px;
+	padding:0 0 0 12px;
+	clear:left
+}
+/******************************************************************************
+* spacial Links
+******************************************************************************/
+#bodywrapper  a.external{
+	padding:0 13px 0 0;
+	background:transparent url(../img/external.png) no-repeat scroll right center;
+}
+#bodywrapper  a.wikidef{
+	padding:0 13px 0 0;
+	background:transparent url(../img/wikidef.png) no-repeat scroll right center;
+}
+#bodywrapper  a.wikidef-new{
+	padding:0 13px 0 0;
+	background:transparent url(../img/wikidef-new.png) no-repeat scroll right center;
 }
 /******************************************************************************
 *  Pagination
@@ -837,12 +903,12 @@ padding:0;
 }
 #bodywrapper .paginationPosition {
 	float:left;
-	font-size:0.9em;
+	font-size:0.85em;
 	color:#36393d;
 }
 #bodywrapper .paginationNavigation {
 	float:right;
-	font-size:0.9em;
+	font-size:0.85em;
 
 }
 #bodywrapper .paginationNavigation a:link,
@@ -854,11 +920,11 @@ padding:0;
 }
 
 #bodywrapper .paginationNavigation a:hover {
-	background:#CC3300;
+	background:#3366cc;
 	color:#fff;
 }
 #bodywrapper .paginationNavigation .currentPage{
-	background:#CC3300;
+	background:#3366cc;
 	color:#fff;
 	padding:0.2em 0.5em;
 }
@@ -874,24 +940,29 @@ padding:0;
 ******************************************************************************/
 #bodywrapper .divButton{
 	text-align:center;
-	margin:0.5em 0;
+	margin:0 0 10px 0;
+}
+#bodywrapper .divButtonRight{
+	text-align:right;
 }
 #bodywrapper input.button {
 	margin-left:0.5em;
 }
 
 #bodywrapper input.button{
-	background:#fff url(../img/bg-button.png) repeat-x bottom left;
-	border:1px solid #CCC;
-	color:#333;
-	text-transform:uppercase;
+	background:#043b9d url(../img/bg-button.png) repeat-x top left;
+	border:1px solid #003399;
+	color:#fff;
 	text-align:center;
 	padding:2px 15px 3px 15px;
+	-moz-border-radius:	3px;
+	-webkit-border-radius: 3px;
+
 }
 #bodywrapper input.button:hover {
 	cursor: pointer;
-	background:#fff url(../img/bg-button-on.png) repeat-x top left;
-	color:#0072bc;
+	background:#3297cb url(../img/bg-button-on.png) repeat-x bottom left;
+	color:#fff;
 }
 /******************************************************************************
 *  <A> Button
@@ -908,7 +979,8 @@ padding:0;
 	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
 	/* FONT PROPERTIES */
 	text-decoration: none;
-	color:#333;
+	color:#fff;
+	margin-top: 5px;
 }
 #bodywrapper  a.aButton span {
 	/* Background left image */
@@ -920,13 +992,18 @@ padding:0;
 #bodywrapper  a.aButton:hover span{
 	text-decoration:underline;
 }
+#bodywrapper  a.aButtonRight,
+#bodywrapper  a.aButtonRight:link,
+#bodywrapper  a.aButtonRight:visited{
+	float: right;
+}
 /******************************************************************************
 *  Anchor
 ******************************************************************************/
 #bodywrapper div.bottomanchor {
 	padding:0.2em;
 	margin: 1em 0;
-	font-size:0.9em;
+	font-size:0.85em;
 }
 #bodywrapper .bottomanchor a,
 #bodywrapper .bottomanchor a:link,
@@ -943,12 +1020,21 @@ padding:0;
 	text-decoration:UNDERLINE;
 }
 /******************************************************************************
+*  Sort
+******************************************************************************/
+#bodywrapper .sort{
+	text-align:right
+}
+/******************************************************************************
 *  Thumbnails
 ******************************************************************************/
 #bodywrapper div.thumbnail {
 	float:left;
 	margin-right:20px;
-	position:relative
+}
+#bodywrapper div.thumbnailRight {
+	float:right;
+	margin-left:20px;
 }
 #bodywrapper div.thumbnail img {
 	position:relative
@@ -970,13 +1056,13 @@ padding:0;
 	border:1px solid #000
 }
 /******************************************************************************
-* teaser
+* tags
 ******************************************************************************/
-#bodywrapper .teaser {
+#bodywrapper div.box-inner p.tags {
 	margin:0;
 	padding:0;
 	color:#666;
-	font-size:0.9em;
+	font-size:0.85em;
 }
 /******************************************************************************
 * Menu simple
@@ -1003,13 +1089,13 @@ padding:0;
 	text-decoration:none;
 	padding:5px;
 	display:block;
-	color:#CC3300;
+	color:#3366CC;
 	background:none;
 	height:1%
 }
 
 #bodywrapper ul#menusimple ul.submenu a:hover{
-	background-color:#fdd087; color:#333;
+	background-color:#BBDDEE; color:#333;
 }
 
 
@@ -1058,10 +1144,10 @@ sendMailForm
 }
 
 #bodywrapper .sendMailForm textarea{
-	width:95%
+	width:90%
 }
 #bodywrapper .sendMailForm input{
-	width:95%
+	width:90%
 }
 /******************************************************************************
 AddItemForm
@@ -1093,8 +1179,361 @@ AddItemForm
 	width:auto;
 	vertical-align:bottom;
 }
-#bodywrapper .sort {
-text-align:right;
-margin-right:10px
+
+/******************************************************************************
+Task List ul
+******************************************************************************/
+#bodywrapper ul.tasks{
+
 }
-	
+#bodywrapper ul.tasks li{
+	margin-bottom:7px;
+	padding:1px;
+	clear:both;
+	overflow:hidden
+}
+#bodywrapper .tasks li:hover{
+	background-color:#f0f0f0
+}
+
+#bodywrapper li.tasksTitle{
+	background-color:#ccc;
+}
+#bodywrapper ul.tasks li.tasksTitle img{
+vertical-align:middle
+}
+
+#bodywrapper ul.tasks li.tasksTitle *{
+	font-size:0.85em;
+}
+
+#bodywrapper ul.tasks div.tasktext {
+	width:45%;
+	float:left;
+	font-size:0.85em;
+}
+
+#bodywrapper ul.tasks li span.tasktype {
+	width:10%;
+	float:left;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+	text-align:center;
+
+}
+#bodywrapper ul.tasks li span.tasktype img {
+	float:none;
+}
+#bodywrapper ul.tasks li span.taskdate {
+	float:right;
+	width:15%;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+}
+#bodywrapper ul.tasks li span.tasktags {
+	float:right;
+	width:15%;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+
+}
+#bodywrapper ul.tasks li span.taskstate {
+	float:right;
+	width:10%;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+	text-align:center;
+
+}
+
+/*edition*/
+#bodywrapper ul.tasksedition div.tasktext {
+	width:35%;
+}
+#bodywrapper ul.tasksedition li span.taskedtion {
+	float:right;
+	width:10%;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+}
+/******************************************************************************
+*  Tables
+******************************************************************************/
+#bodywrapper .table th img{
+	vertical-align: middle
+}
+#bodywrapper .table,
+#bodywrapper .table caption
+{
+    margin: auto;
+	line-height:1.9em;
+
+}
+
+#bodywrapper .table
+{
+    border-collapse: separate;
+    empty-cells: hide;
+	margin-bottom:1em;
+	font-size:0.85em;
+	border:none;
+}
+
+#bodywrapper .table caption
+{
+	font-weight:normal;
+	font-size:2em;
+	margin:0 ;
+	padding:0;
+}
+
+#bodywrapper .table th {
+    color: #333;
+	white-space:nowrap;
+	background-color:#CCCCCC;
+	padding:5px;
+}
+#bodywrapper .table td
+{
+	padding:5px;
+}
+#bodywrapper .table tr:hover{
+	background-color:#f0f0f0
+}
+#bodywrapper .table .odd td{}
+#bodywrapper .table .even td{}
+#bodywrapper .col1{}
+#bodywrapper .col2{}
+#bodywrapper .col3{}
+#bodywrapper .col4{}
+
+#bodywrapper .table td.center,
+#bodywrapper .table th.center
+{
+	text-align:center;
+}
+/******************************************************************************
+*  Visibility
+******************************************************************************/
+#bodywrapper .visibility
+{
+	display:block
+}
+#bodywrapper span.visibility
+{
+	font-weight:bold;
+	font-size:0.85em
+}
+/******************************************************************************
+*  Languages Form
+******************************************************************************/
+#bodywrapper .preferencesForm
+{
+margin:10px 0;
+}
+#bodywrapper .preferencesForm fieldset
+{
+border:none
+}
+#bodywrapper .preferencesForm legend
+{
+display:none
+}
+/******************************************************************************
+*  idTabs
+******************************************************************************/
+#bodywrapper div.idTabsContainer{
+	margin:0 ;
+}
+#bodywrapper  ul.idTabs {
+	clear:both;
+	list-style-type:none;
+	overflow:hidden;
+	background:transparent url(../img/tab-bg.png) repeat-x bottom left;
+	margin:0 0 10px 0;
+	padding:0;
+
+}
+#bodywrapper .idTabs li {
+	display:inline;
+	float:left;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .idTabs li.spacing{
+	padding-left:20px;
+}
+
+#bodywrapper .idTabs li a {
+	background:transparent url(../img/tab-left.png) no-repeat scroll 0 0;
+	color:#fff;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-left:15px;
+	text-decoration:none;
+	margin-right:2px
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	background-position:0 -29px;
+	color:#fff;
+	text-decoration:none;
+}
+
+
+#bodywrapper .idTabs li a span {
+	background:transparent url(../img/tab-right.png) no-repeat scroll 100% 0;
+	color:#cccccc;
+	cursor:pointer;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-right:15px;
+	text-decoration:none;
+
+}
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	background-position:100% -29px;
+	color:#fff;
+	text-decoration:none;
+}
+/******************************************************************************
+*  menu-tabs-home
+******************************************************************************/
+#bodywrapper div.idTabs-home{
+	margin-top:1em;
+	margin-bottom:1em
+}
+/******************************************************************************
+*  Summary
+******************************************************************************/
+#bodywrapper ul.sumary {
+	margin:10px 0;
+	line-height:130%;
+}
+#bodywrapper .sumary a,
+#bodywrapper .sumary a:link,
+#bodywrapper .sumary a:visited {
+	text-decoration:none;
+}
+#bodywrapper .sumary a:hover,
+#bodywrapper .sumary a:active {
+	text-decoration:underline;
+}
+
+#bodywrapper .sumary ul {
+	margin:0;
+	padding:0 0 0 2em;
+}
+#bodywrapper .sumary li {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+/******************************************************************************
+* WIKI Search
+******************************************************************************/
+#bodywrapper #wikisearch p{
+	margin:0;
+	padding:0;
+}
+#bodywrapper #wikisearch fieldset {
+	padding:0 ;
+	border:none;
+}
+#bodywrapper #wikisearch .search{
+	width:90%
+}
+/******************************************************************************
+WIKI Compare List ul
+******************************************************************************/
+#bodywrapper ul.wikicompare{
+
+}
+#bodywrapper ul.wikicompare li{
+	margin-bottom:7px;
+	padding:1px;
+	clear:both;
+	overflow:hidden
+}
+#bodywrapper ul.wikicompare li:hover{
+	background-color:#f0f0f0
+}
+#bodywrapper ul.wikicompare li.wikiTitle{
+	background-color:#ccc;
+}
+#bodywrapper ul.wikicompare li.wikiTitle img{
+vertical-align:middle
+}
+
+#bodywrapper ul.wikicompare li.wikiTitle *{
+	font-size:0.85em;
+}
+
+#bodywrapper ul.wikicompare div.wikitext {
+	width:35%;
+	float:left;
+	font-size:0.85em;
+}
+#bodywrapper ul.wikicompare li span.wikiselection {
+	width:10%;
+	float:left;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+	text-align:center;
+
+}
+#bodywrapper ul.wikicompare li span.wikiselection img {
+	float:none;
+}
+#bodywrapper ul.wikicompare li span.wikidate {
+	float:right;
+	width:20%;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+}
+#bodywrapper ul.wikicompare li span.wikiauthor {
+	float:right;
+	width:15%;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+
+}
+#bodywrapper ul.wikicompare li span.wikistate {
+	float:right;
+	width:15%;
+	padding:0;
+	padding:2px;
+	margin:0;
+	font-size:0.85em;
+	text-align:center;
+
+}
+/******************************************************************************
+News  Most read
+******************************************************************************/
+#bodywrapper .newsMostRead span.author,
+#bodywrapper .newsMostRead span.date {
+font-size:0.85em;
+color:#666
+}

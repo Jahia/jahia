@@ -281,6 +281,6 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public boolean isMultiple() throws RepositoryException {
-        return def.isMultiple();
+        return property.isMultiple();
     }
 }

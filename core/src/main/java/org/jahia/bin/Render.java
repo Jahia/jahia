@@ -293,6 +293,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             try {
                 newNode = session.getNode(realPath+"/"+nodeName);
+                if (!newNode.isCheckedOut()) {
+                    newNode.checkout();
+                }
             } catch (PathNotFoundException e) {
                 newNode = node.addNode(nodeName, nodeType);
             }

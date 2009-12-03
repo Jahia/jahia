@@ -571,7 +571,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (p.getType() == PropertyType.BINARY) {
                     continue;
                 }
-                if (!p.getDefinition().isMultiple()) {
+                if (!p.isMultiple()) {
                     res.put(p.getName(), p.getString());
                 } else {
                     Value[] vs = p.getValues();

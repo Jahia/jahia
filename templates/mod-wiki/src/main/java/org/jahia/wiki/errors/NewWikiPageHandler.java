@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
 import java.net.URLEncoder;
@@ -27,6 +28,9 @@ public class NewWikiPageHandler implements ErrorHandler {
 
     public boolean handle(Throwable e, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
+            if (!(e instanceof PathNotFoundException)) {
+                return false;
+            }
             String path = request.getPathInfo();
             path = path.substring(path.indexOf('/', 1));
             int index = path.indexOf('/', 1);

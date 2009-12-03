@@ -75,7 +75,7 @@
 
         <div class='grid_10'><!--start grid_10-->
 
-            <h2>Wiki Definition</h2>
+            <h2>Wiki</h2>
 
             ${wrappedContent}
             <!--stop tabContainer-->

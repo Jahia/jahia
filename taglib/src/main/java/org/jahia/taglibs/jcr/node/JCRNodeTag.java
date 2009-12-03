@@ -86,7 +86,12 @@ public class JCRNodeTag extends AbstractJahiaTag {
         if (ctx != null) {
             try {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-                JCRNodeWrapper node = service.getSessionFactory().getCurrentUserSession(workspace, locale).getNode(path);
+                JCRNodeWrapper node;
+                if (path.startsWith("/")) {
+                    node = service.getSessionFactory().getCurrentUserSession(workspace, locale).getNode(path);
+                } else {
+                    node = currentResource.getNode().getNode(path);
+                }
                 pageContext.setAttribute(var, node, scope);
             } catch (PathNotFoundException e) {
                 logger.debug("Item not found '" + path + "'", e);

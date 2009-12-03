@@ -77,7 +77,34 @@
 
             <h2>Wiki Definition</h2>
 
-            ${wrappedContent}
+            <div class="idTabsContainer"><!--start idTabsContainer-->
+                <c:choose>
+                    <c:when test="${currentResource.resolvedTemplate == 'default'}">
+                        <ul class="idTabs">
+                            <li><a class="on selected" href="${url.base}${currentNode.path}.html"><span>Article</span></a></li>
+                            <li><a class="off" href="${url.base}${currentNode.path}.contribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="off" href="${url.base}${currentNode.path}.history.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                    <c:when test="${currentResource.resolvedTemplate == 'contribute'}">
+                        <ul class="idTabs">
+                            <li><a class="off" href="${url.base}${currentNode.path}.html"><span>Article</span></a></li>
+                            <li><a class="on selected" href="${url.base}${currentNode.path}.contribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="off" href="${url.base}${currentNode.path}.history.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                    <c:when test="${currentResource.resolvedTemplate == 'history'}">
+                        <ul class="idTabs">
+                            <li><a class="off" href="${url.base}${currentNode.path}.html"><span>Article</span></a></li>
+                            <li><a class="off" href="${url.base}${currentNode.path}.contribute.html"><span>Contribute</span></a></li>
+                            <li class="spacing"><a class="on selected" href="${url.base}${currentNode.path}.history.html"><span>source Historique </span></a></li>
+                        </ul>
+                    </c:when>
+                </c:choose>
+            </div>
+            <div class="tabContainer"><!--start tabContainer-->
+                ${wrappedContent}
+            </div>
             <!--stop tabContainer-->
         </div>
         <!--stop grid_10-->

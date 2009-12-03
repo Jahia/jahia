@@ -8,15 +8,12 @@
         <property name="filters">
             <list>
                 <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter" >
-                    <property name="applyOnNodeTypes" value="jnt:wikiContent"/>
+                    <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
+                    <property name="applyOnTemplates" value="default"/>
                 </bean>
             </list>
         </property>
     </bean>
 
     <bean name="NewWikiPageHandler" class="org.jahia.wiki.errors.NewWikiPageHandler" />
-
-    <bean name="NewPageAction" class="org.jahia.wiki.action.NewPageAction" >
-        <property name="name" value="newWikiPage" />
-    </bean>
 </beans>

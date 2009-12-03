@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.Locale;
+import java.net.URLEncoder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +47,8 @@ public class NewWikiPageHandler implements ErrorHandler {
                 String newName = StringUtils.substringAfterLast(path,"/");
                 newName = StringUtils.substringBefore(newName,".");
                 String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
-                link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?link="+newName;
+
+                link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?newPageName="+URLEncoder.encode(newName, "UTF-8");
                 response.sendRedirect(link);
                 return true;
             }

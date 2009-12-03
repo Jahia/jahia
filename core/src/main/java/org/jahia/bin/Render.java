@@ -95,6 +95,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String STAY_ON_NODE = "stayOnNode";
     public static final String METHOD_TO_CALL = "methodToCall";
+    public static final String AUTO_CHECKIN = "autoCheckin";
 
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
@@ -106,6 +107,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(STAY_ON_NODE);
         reservedParameters.add(METHOD_TO_CALL);
+        reservedParameters.add(AUTO_CHECKIN);
     }
 
     private transient ServletConfig servletConfig;
@@ -205,6 +207,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         session.save();
+        if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
+            node.checkin();
+        }
         final String requestWith = req.getHeader("x-requested-with");
         if(req.getHeader("accept").contains("application/json") && requestWith !=null && requestWith.equals("XMLHttpRequest")) {
             try {
@@ -305,6 +310,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             url = ((JCRNodeWrapper) newNode).getPath();
             session.save();
+            if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
+                newNode.checkin();
+            }
         }
         resp.setStatus(HttpServletResponse.SC_CREATED);
         performRedirect(url, path, req, resp);

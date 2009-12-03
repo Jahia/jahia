@@ -28,7 +28,7 @@ public class WikiFilter extends AbstractFilter {
         Pattern p = Pattern.compile("\\[\\[([a-zA-Z0-9_]+)\\]\\]");
         Matcher m = p.matcher(out);
 
-        JCRNodeWrapper page = renderContext.getMainResource().getNode();
+        JCRNodeWrapper page = renderContext.getMainResource().getNode().getParent();
 
         StringBuffer buf = new StringBuffer(out);
 

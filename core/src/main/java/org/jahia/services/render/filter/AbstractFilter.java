@@ -60,7 +60,6 @@ public abstract class AbstractFilter implements RenderFilter {
      * evaluates to true.
      * 
      * @author Sergiy Shyrkov
-     * 
      */
     public static class AnyOfCondition implements ExecutionCondition {
 
@@ -95,6 +94,18 @@ public abstract class AbstractFilter implements RenderFilter {
          *         resource
          */
         boolean matches(RenderContext renderContext, Resource resource);
+    }
+
+    /**
+     * Evaluates to <code>true</code> if the current resource is the main resource
+     *
+     * @author Thomas Draier
+     */
+    public static class MainResourceCondition implements ExecutionCondition {
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return (renderContext.getMainResource() == resource);
+        }
     }
 
     /**
@@ -252,21 +263,6 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
-    /**
-     * Evaluates to <code>true</code> if the current resource is the main resource
-     *
-     * @author Thomas Draier
-     */
-    public static class MainResourceCondition implements ExecutionCondition {
-
-        public MainResourceCondition() {
-        }
-
-        public boolean matches(RenderContext renderContext, Resource resource) {
-            return (renderContext.getMainResource() == resource);
-        }
-    }
-
     private static final Logger logger = Logger.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
@@ -293,6 +289,11 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Adds the specified condition for this filter.
+     * 
+     * @param condition the condition to be added for this filter
+     */
     public void addCondition(ExecutionCondition condition) {
         conditions.add(condition);
     }
@@ -324,6 +325,26 @@ public abstract class AbstractFilter implements RenderFilter {
     protected abstract String execute(RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception;
 
+    /**
+     * If set to <code>true</code>, the current filter will only be executed on
+     * the main resource.
+     * 
+     * @param bool set to <code>true</code> to limit filter execution for main
+     *            resource only.
+     */
+    public void setApplyOnMainResource(boolean bool) {
+        if (bool) {
+            addCondition(new MainResourceCondition());
+        }
+    }
+
+    /**
+     * Comma-separated list of module names this filter will be executed for
+     * (all others are skipped).
+     * 
+     * @param modules comma-separated list of module names this filter will be
+     *            executed for (all others are skipped)
+     */
     public void setApplyOnModules(String modules) {
         if (modules.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
@@ -336,6 +357,13 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Comma-separated list of node type names this filter will be executed for
+     * (all others are skipped).
+     * 
+     * @param modules comma-separated list of node type names this filter will
+     *            be executed for (all others are skipped)
+     */
     public void setApplyOnNodeTypes(String nodeTypes) {
         if (nodeTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
@@ -348,6 +376,13 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Comma-separated list of template names this filter will be executed for
+     * (all others are skipped).
+     * 
+     * @param templates comma-separated list of template names this filter will
+     *            be executed for (all others are skipped)
+     */
     public void setApplyOnTemplates(String templates) {
         if (templates.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
@@ -360,6 +395,13 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Comma-separated list of template type names this filter will be executed
+     * for (all others are skipped).
+     * 
+     * @param modules comma-separated list of template type names this filter
+     *            will be executed for (all others are skipped)
+     */
     public void setApplyOnTemplateTypes(String templateTypes) {
         if (templateTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
@@ -372,12 +414,13 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
-    public void setApplyOnMainResource(boolean bool) {
-        if (bool) {
-            addCondition(new MainResourceCondition());
-        }
-    }
-
+    /**
+     * Adds specified conditions to the list of filter conditions. N.B. this
+     * operation does not reset the list of conditions, but rather appends
+     * specified list to the current one.
+     * 
+     * @param conditions list of conditions to be added for this filter
+     */
     public void setConditions(Set<ExecutionCondition> conditions) {
         this.conditions.addAll(conditions);
     }
@@ -386,6 +429,12 @@ public abstract class AbstractFilter implements RenderFilter {
         this.service = service;
     }
 
+    /**
+     * Comma-separated list of module names this filter won't be executed for.
+     * 
+     * @param modules comma-separated list of module names this filter won't be
+     *            executed for
+     */
     public void setSkipOnModules(String modules) {
         ExecutionCondition condition = null;
         if (modules.contains(",")) {
@@ -400,6 +449,13 @@ public abstract class AbstractFilter implements RenderFilter {
         addCondition(new NotCondition(condition));
     }
 
+    /**
+     * Comma-separated list of node type names this filter won't be executed
+     * for.
+     * 
+     * @param nodeTypes comma-separated list of node type names this filter
+     *            won't be executed for
+     */
     public void setSkipOnNodeTypes(String nodeTypes) {
         ExecutionCondition condition = null;
         if (nodeTypes.contains(",")) {
@@ -414,6 +470,12 @@ public abstract class AbstractFilter implements RenderFilter {
         addCondition(new NotCondition(condition));
     }
 
+    /**
+     * Comma-separated list of template names this filter won't be executed for.
+     * 
+     * @param templates comma-separated list of template names this filter won't
+     *            be executed for
+     */
     public void setSkipOnTemplates(String templates) {
         ExecutionCondition condition = null;
         if (templates.contains(",")) {
@@ -428,6 +490,13 @@ public abstract class AbstractFilter implements RenderFilter {
         addCondition(new NotCondition(condition));
     }
 
+    /**
+     * Comma-separated list of template type names this filter won't be executed
+     * for.
+     * 
+     * @param templateTypes comma-separated list of template type names this
+     *            filter won't be executed for
+     */
     public void setSkipOnTemplateTypes(String templateTypes) {
         ExecutionCondition condition = null;
         if (templateTypes.contains(",")) {

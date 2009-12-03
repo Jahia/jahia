@@ -1,64 +1,124 @@
 Rendering filters
 
-  Rendering filters are classes that can tranform the output of a module.
-  They work like standard servlet filters, except that they are executed independantly for every
+  Rendering filters are classes that can transform the output of a module.
+  They work like standard servlet filters, except that they are executed independently for every
   module inclusion. Filters can be executed on all modules, or on some specific module or nodes.
 
 * Configuration
 
-  Default filter chain is defined in the applicationContext-services.xml, in the <filters> property of the
-  <RenderService> bean.
+  Jahia supports filter configuration using Spring bean definition files.
+
+** Default filters
+
+  Default filter chain is defined in the <<<applicationContext-services.xml>>>, in the <<<filters>>> property of the
+  <<<RenderService>>> bean.
 
 -------------------------------
-      <property name="filters" >
-          <list>
-              <bean class="org.jahia.services.render.filter.AttributesFilter" />
-              <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
-                  <property name="loggingService" ref="loggingService"/>
-              </bean>
-              <bean class="org.jahia.services.render.filter.WrapperFilter" />
-              <bean class="org.jahia.services.render.filter.SkinFilter" />
-              <bean class="org.jahia.services.render.filter.OptionsFilter" />
-              <bean class="org.jahia.services.render.filter.ModuleFilter" />
-              <bean class="org.jahia.services.render.filter.TemplateScriptFilter" />
-          </list>
-      </property>
+    <bean id="RenderService" parent="proxyTemplate">
+    ...
+	      <property name="filters" >
+	          <list>
+	              <bean class="org.jahia.services.render.filter.AttributesFilter" />
+	              <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
+	                  <property name="loggingService" ref="loggingService"/>
+	              </bean>
+	              <bean class="org.jahia.services.render.filter.URLFilter" />
+	              <bean class="org.jahia.services.render.filter.WrapperFilter" />
+	              <bean class="org.jahia.services.render.filter.SkinFilter" />
+	              <bean class="org.jahia.services.render.filter.OptionsFilter" />
+	              <bean class="org.jahia.services.render.filter.ModuleFilter">
+	                  <property name="templateManagerService" ref="JahiaTemplateManagerService" />
+	              </bean>
+	              <bean class="org.jahia.services.render.filter.TemplateScriptFilter" />
+	          </list>
+	      </property>
+	...
+    </bean>
 -------------------------------
 
-  A module can define its own filter chain. (?)
+** Module filters
 
+  Any template module can define its own filters to be executed.
+  Filters are defined in a Spring bean definition file in an XML file (with any arbitrary name) in the <<<templates/\<module-name\>/META-INF/spring/>>> folder.
+  In order to define module filters, you need to create a bean definition which uses <<<org.jahia.services.render.filter.ModuleFilters>>> class
+  and provide a list of filter beans for the <<<filters>>> property.
+
+  Module filters are by default shared among all modules. If you need to limit the filter execution to only one module,
+  you have to provide a module name as a value for the <<<module>>> property.
+
+  An {example} of a filter definition for the Jahia Wiki module, located in the the <<<templates/wiki/META-INF/spring/>>> folder, is:
+  
+------------------
+    <bean name="filter" class="org.jahia.services.render.filter.ModuleFilters" >
+        <property name="module" value="Jahia Wiki" />
+        <property name="filters">
+            <list>
+                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter" >
+                    <property name="applyOnNodeTypes" value="jnt:wikiContent"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+------------------
+
+** {Conditional} execution of filters
+
+  Any filter, extending {{{org.jahia.services.render.filter.AbstractFilter}<<<org.jahia.services.render.filter.AbstractFilter>>>}}, can accept several types of conditions that
+  control filter execution. If all conditions are matched, the filter is executed. Otherwise it is bypassed and the execution
+  is continued with the next filter in the chain.
+  An {{example}} of a filter, which is only executed for nodes of type <<<jnt:wikiContent>>>, was already given above.
+  More conditions can be provided using:
+
+    * <<<applyOnMainResource>>> - the filter will be applied only on the main resource
+
+    * <<<applyOnModules>>> - comma-separated list of module names this filter will be executed for (all others are skipped)
+
+    * <<<applyOnNodeTypes>>> - comma-separated list of node type names this filter will be executed for (all others are skipped)
+
+    * <<<applyOnTemplates>>> - comma-separated list of template names this filter will be executed for (all others are skipped)
+
+    * <<<applyOnTemplateTypes>>> - comma-separated list of template type names this filter will be executed for (all others are skipped)
+
+    * <<<skipOnModules>>> - comma-separated list of module names this filter won't be executed for
+
+    * <<<skipOnNodeTypes>>> - comma-separated list of node type names this filter won't be executed for
+
+    * <<<skipOnTemplates>>> - comma-separated list of template names this filter won't be executed for
+
+    * <<<skipOnTemplateTypes>>> - comma-separated list of template type names this filter won't be executed for
+
+  More advanced configuration (using regular expressions for matching, NOT conditions or any arbitrary custom condition can be achieved by using filter's <<<conditions>>> property and providing a list of condition beans (instances of classes that implement <<<org.jahia.services.render.filter.AbstractFilter.ExecutionCondition>>>).
+  Please, consult the documentation of <<<org.jahia.services.render.filter.AbstractFilter>>> for more details.
 
 * Filter implementation
 
-  A filter is single class implementing the org.jahia.services.render.filter.RenderFilter
-  interface. An abstract class org.jahia.services.render.filter.AbstractFilter, can be used as
-  a base class for a new filter.
+  A filter is single class implementing the <<<org.jahia.services.render.filter.RenderFilter>>>
+  interface.
 
-  The interface defines mainly one method to implement :
+  The interface defines mainly one method to implement:
 
 ------------------
-  public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException, TemplateNotFoundException;
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderFilterException;
 ------------------
 
-  This method returns the final output after filtering. The chain attribute gives the possibility
+  This method returns the final output after filtering. The <<<chain>>> attribute gives the possibility
   to get the result generated by the remaining chain. This result can be used as an input for the
   filter.
 
-  If the filter needs to tranform the output of the chain, it needs to call
-  The output of the render chain is obtained by calling :
+  If the filter needs to transform the output of the chain, it needs to call:
 
 ------------------
-  String out = chain.doFilter(renderContext, resource);
+    String out = chain.doFilter(renderContext, resource);
 ------------------
 
-  So, a basic filter replacing all occurences of letter <a> by letter <b> would look like :
+  So, a basic filter, replacing all occurrences of letter <a> by letter <b>, would look like:
 
 ------------------
-      public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-                    throws IOException, RepositoryException, TemplateNotFoundException {
-          String out = chain.doFilter(renderContext, resource);
-          return out.replace("a","b");
-      }
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
+                  throws RenderFilterException {
+        String out = chain.doFilter(renderContext, resource);
+        return out.replace("a","b");
+    }
 ------------------
 
   A filter can also break the chain, by returning its own content and not calling the rest of the
@@ -66,36 +126,46 @@ Rendering filters
   but won't display the template itself :
 
 ------------------
-      public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-                    throws IOException, RepositoryException, TemplateNotFoundException {
-          return resource.getNode().getPath() + " / " + resource.getResolvedTemplate();
-      }
+    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
+                  throws RenderFilterException {
+        return resource.getNode().getPath() + " / " + resource.getResolvedTemplate();
+    }
 ------------------
 
+  An abstract class {<<<org.jahia.services.render.filter.AbstractFilter>>>} can be used as
+  a base class for a new filter, which allows to specify execution conditions for a filter.
+  In your filter extends the <<<AbstractFilter>>> your need to implement the following method:
+
+------------------
+    protected abstract String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception;
+------------------
+  
+  See {{{Conditional} Conditional execution of filters}} for more details on how to configure such filters.
 
 * Default filters
 
   Jahia provides some simple filters that can be added to the default configuration.
 
-  * Email obfuscation
+** Email obfuscation
 
-  The filter org.jahia.services.render.filter.EmailObfuscatorFilter replaces all mail adresses
-  by entity-encoded values. This protects email adresses harvesting.
+  The filter <<<org.jahia.services.render.filter.EmailObfuscatorFilter>>> replaces all mail addresses
+  by entity-encoded values. This protects email addresses harvesting.
 
-  * Regular expression replacement
+** Regular expression replacement
 
-  The filter org.jahia.services.render.filter.RegexpFilter allows to make any replacement in the
+  The filter <<<org.jahia.services.render.filter.RegexpFilter>>> allows to make any replacement in the
   output, based on regular expressions. The list of replacements need to be defined in the regexp
-  property. The following example replaces all text inside square brackets with \<em\> tag :
+  property. The following example replaces all text inside square brackets with <<<\<em\>>>> tag:
 
-------------------------------
- <bean class="org.jahia.services.render.filter.RegexpFilter" >
-    <property name="regexp">
-       <map>
-          <entry key="\[([a-zA-Z]*)\]">
-              <value><![CDATA[<em>$1</em>]]></value>
-          </entry>
-        </map>
-    </property>
- </bean>
-------------------------------
+------------------
+    <bean class="org.jahia.services.render.filter.RegexpFilter" >
+        <property name="regexp">
+            <map>
+                <entry key="\[([a-zA-Z]*)\]">
+                    <value><![CDATA[<em>$1</em>]]></value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+------------------

@@ -60,27 +60,28 @@
 
     <modules>
         <!--<module>core-templates</module>-->
+        <!--<module>mod-6.0</module>-->
         <module>mod-article</module>
+        <module>mod-contact</module>
         <module>mod-default</module>
+        <module>mod-event</module>
+        <module>mod-faq</module>
         <module>mod-forum</module>
         <module>mod-job</module>
+        <module>mod-location</module>
+        <module>mod-metrics</module>
+        <module>mod-news</module>
+        <module>mod-pages</module>
         <module>mod-people</module>
         <module>mod-press</module>
         <module>mod-publication</module>
-        <module>mod-news</module>
+        <module>mod-rating</module>
+        <module>mod-tasks</module>
+        <module>mod-test</module>
+        <module>mod-topstories</module>
+        <module>mod-wiki</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
-        <module>mod-event</module>
-        <!--<module>mod-6.0</module>-->
-        <module>mod-location</module>
-        <module>mod-faq</module>
-        <module>mod-rating</module>
-        <module>mod-topstories</module>
-        <module>mod-contact</module>
-        <module>mod-test</module>
-        <module>mod-pages</module>
-        <module>mod-metrics</module>
-        <module>mod-wiki</module>
     </modules>
 
 

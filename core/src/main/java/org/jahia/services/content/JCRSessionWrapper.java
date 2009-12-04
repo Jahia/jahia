@@ -674,7 +674,7 @@ public class JCRSessionWrapper implements Session {
      * @see VersionManager#checkout(String) for details
      */
     public void checkout(Node node) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-    	checkout(node.getPath());
+        checkout(node.getPath());
     }
 
     /**
@@ -683,7 +683,10 @@ public class JCRSessionWrapper implements Session {
      * @see VersionManager#checkout(String) for details
      */
     public void checkout(String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-    	getWorkspace().getVersionManager().checkout(absPath);
+        VersionManager versionManager = getWorkspace().getVersionManager();
+        if (!versionManager.isCheckedOut(absPath)) {
+            versionManager.checkout(absPath);
+        }
     }
 
     private class RemoveRootContentHandler implements ContentHandler {

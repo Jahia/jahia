@@ -4,5 +4,5 @@
 
 <p class="field">
     <label for="${currentNode.name}">${props.label}</label>
-    <input type="password" name="${currentNode.name}"/>
+    <input type="password" name="${currentNode.name}" value="password"/>
 </p>

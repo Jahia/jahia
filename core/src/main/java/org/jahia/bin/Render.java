@@ -297,6 +297,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     newNode.checkout();
                 }
             } catch (PathNotFoundException e) {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
                 newNode = node.addNode(nodeName, nodeType);
             }
             Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();

@@ -2,28 +2,28 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <template:addWrapper name="wikiWrapper"/>
 <div id="one"><!--start tab One-->
 
-    <div class="intro wiki">
-        Welcome to Jahia Wiki !
-
-
-    </div>
-
     <jcr:sql var="pageList"
-             sql="select * from [jnt:wikiPage] as page where isdescendantnode(page,['${currentNode.path}']) order by page.[j:lastModifiedDate]"
+             sql="select * from [jnt:wikiPage] as page where isdescendantnode(page,['${currentNode.path}']) order by page.[j:lastModifiedDate] desc"
              limit="10"/>
 
     <c:if test="${pageList.nodes.size == 0}">
         No page found, create your first wiki page !
     </c:if>
 
+
     <c:if test="${pageList.nodes.size > 0}">
-        <ul>
+        <h3 class="boxtitleh3">Last modified pages</h3>
+
+        <ul class="list4">
             <c:forEach items="${pageList.nodes}" var="page">
                 <li>
-                    <a href="${currentNode.name}/${page.name}.html">${page.name}</a>
+                    <a href="${currentNode.name}/${page.name}.html">${page.name}</a> -
+                    <em>last modified on
+                    <fmt:formatDate value="${page.properties['jcr:lastModified'].date.time}" type="both"/></em>
                 </li>
             </c:forEach>
         </ul>

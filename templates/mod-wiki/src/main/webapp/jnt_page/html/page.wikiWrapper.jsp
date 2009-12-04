@@ -42,31 +42,31 @@
                 </div>
             </div>
             <!--stop box -->
-            <div class="box">
-                <div class="boxgrey boxpadding16 boxmarginbottom16">
-                    <div class="box-inner">
-                        <div class="box-inner-border"><!--start box -->
+            <%--<div class="box">--%>
+                <%--<div class="boxgrey boxpadding16 boxmarginbottom16">--%>
+                    <%--<div class="box-inner">--%>
+                        <%--<div class="box-inner-border"><!--start box -->--%>
 
-                            <h3 class="boxtitleh3">Liste 4 </h3>
-
-
-                            <ul class="list4">
-
-                                <li><a href="#">Titre de mon lien</a></li>
-                                <li><a href="#">Titre de mon lien</a></li>
-                                <li><a href="#">Titre de mon lien</a></li>
-                                <li><a href="#">Titre de mon lien</a></li>
-                                <li><a href="#">Titre de mon lien</a></li>
-                                <li><a href="#">Titre de mon lien</a></li>
+                            <%--<h3 class="boxtitleh3">Liste 4 </h3>--%>
 
 
-                            </ul>
+                            <%--<ul class="list4">--%>
 
-                            <div class="clear"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+                                <%--<li><a href="#">Titre de mon lien</a></li>--%>
+
+
+                            <%--</ul>--%>
+
+                            <%--<div class="clear"></div>--%>
+                        <%--</div>--%>
+                    <%--</div>--%>
+                <%--</div>--%>
+            <%--</div>--%>
             <!--stop box -->
             <div class='clear'></div>
         </div>
@@ -90,26 +90,26 @@
                 <li class="menutop"><a href="#">Portails thématiques</a></li>
                 <li class="menutop"><a href="#">Index alphabétique</a></li>
             </ul>
-            <div class="box">
-                <div class="boxgrey boxpadding16 boxmarginbottom16">
-                    <div class="box-inner">
-                        <div class="box-inner-border"><!--start box -->
-                            <h3 class="boxtitleh3">Langues</h3>
+            <%--<div class="box">--%>
+                <%--<div class="boxgrey boxpadding16 boxmarginbottom16">--%>
+                    <%--<div class="box-inner">--%>
+                        <%--<div class="box-inner-border"><!--start box -->--%>
+                            <%--<h3 class="boxtitleh3">Langues</h3>--%>
 
-                            <ul class="list4">
-                                <li><a href="#">Français</a></li>
-                                <li><a href="#">Anglais</a></li>
-                                <li><a href="#">Portugais</a></li>
-                                <li><a href="#">Italien</a></li>
-                                <li><a href="#">Chinois</a></li>
-                                <li><a href="#">Indien</a></li>
-                            </ul>
+                            <%--<ul class="list4">--%>
+                                <%--<li><a href="#">Français</a></li>--%>
+                                <%--<li><a href="#">Anglais</a></li>--%>
+                                <%--<li><a href="#">Portugais</a></li>--%>
+                                <%--<li><a href="#">Italien</a></li>--%>
+                                <%--<li><a href="#">Chinois</a></li>--%>
+                                <%--<li><a href="#">Indien</a></li>--%>
+                            <%--</ul>--%>
 
-                            <div class="clear"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <%--<div class="clear"></div>--%>
+                        <%--</div>--%>
+                    <%--</div>--%>
+                <%--</div>--%>
+            <%--</div>--%>
             <!--stop box -->
             <div class='clear'></div>
         </div>

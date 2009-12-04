@@ -118,9 +118,7 @@ public class DateBean {
      * @return
      */
     public Long getNow() {
-        cal.setTime(new Date());
-        cal.setTimeZone(TimeZone.getTimeZone(TIME_ZONE));
-        return new Long(cal.getTimeInMillis());
+        return System.currentTimeMillis();
     }
 
     /**

@@ -31,13 +31,17 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
 
+import org.apache.commons.jexl.ExpressionFactory;
+import org.apache.commons.jexl.JexlHelper;
 import org.apache.jackrabbit.util.ISO8601;
+import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -49,7 +53,24 @@ import org.jahia.services.content.nodetypes.ValueImpl;
  * Time: 11:09:45 AM
  */
 public class Now implements ValueInitializer {
+    
+    private static Logger logger = Logger.getLogger(Now.class);
+    
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        return new Value[] { new ValueImpl(ISO8601.format(new GregorianCalendar()), PropertyType.DATE, false) };        
+        long offset = 0;
+        if (params.size() == 1) {
+            try {
+                offset = (Long) ExpressionFactory.createExpression(params.get(0)).evaluate(JexlHelper.createContext());
+            } catch (Exception e) {
+                logger.warn("Error evaluating now() initial value with parameter '" + params.get(0) + "'. Cause: " + e.getMessage(), e);
+            }
+        }
+        
+        Calendar time = new GregorianCalendar();
+        if (offset != 0) {
+            time.setTimeInMillis(time.getTimeInMillis() + offset);
+        }
+        
+        return new Value[] { new ValueImpl(ISO8601.format(time), PropertyType.DATE, false) };        
     }
 }

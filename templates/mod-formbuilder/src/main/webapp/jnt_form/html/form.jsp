@@ -31,6 +31,6 @@
     <h2>Responses</h2>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">
         ${response.propertiesAsString.firstname}
-        <template:module node="${response}" template="default"/>
+        <template:module node="${response}" template="default" editable="${renderContext.editMode}"/>
     </c:forEach>
 </div>

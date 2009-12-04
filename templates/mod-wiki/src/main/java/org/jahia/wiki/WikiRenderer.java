@@ -83,7 +83,7 @@ public class WikiRenderer {
      * @throws Exception
      */
     public static String renderWikiSyntaxAsXHTML(String html, SyntaxFactory syntaxFactory, String inputSyntax, String outputSyntax) throws Exception {
-        logger.error("Wiki content before processing: " + html);
+        logger.debug("Wiki content before processing: " + html);
 
         // Initialize Rendering components and allow getting instances
         EmbeddableComponentManager ecm = new EmbeddableComponentManager();
@@ -97,7 +97,7 @@ public class WikiRenderer {
         converter.convert(new StringReader(html), createInputSyntax(syntaxFactory, inputSyntax), createOutputSyntax(syntaxFactory, outputSyntax), printer);
 
         String result = printer.toString();
-        logger.error("Wiki content after processing:" + result);
+        logger.debug("Wiki content after processing:" + result);
         return printer.toString();
 
 

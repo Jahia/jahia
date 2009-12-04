@@ -311,47 +311,6 @@
         </attribute>
     </tag>
     <tag>
-        <description>action menu for a content object</description>
-        <name>actionMenu</name>
-        <tag-class>org.jahia.taglibs.uicomponents.actionmenu.ActionMenuTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>contentObjectName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>objectKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>namePostFix</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>resourceBundle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>labelKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>iconStyle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <description>Display the entire sitemap</description>
         <name>sitemap</name>
         <tag-class>org.jahia.taglibs.uicomponents.sitemap.SitemapTag</tag-class>
@@ -692,22 +651,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
-        </attribute>
-    </tag>
-
-    <tag>
-        <description>selectform Theme css. scope possible values are : "all" to authorise all users (guest also) to
-            change theme,
-            "user" to authorise only autentified users to change theme,
-            "site" to authorise only site administrators to change theme.
-        </description>
-        <name>themeSelector</name>
-        <tag-class>org.jahia.taglibs.template.theme.ThemeSelectorTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>scope</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 

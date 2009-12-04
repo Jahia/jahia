@@ -2051,6 +2051,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             ExtendedNodeType mixinType = mixin[i];
             types.add(mixinType);
         }
+
+
+        if (objectNode.isNodeType("nt:frozenNode")) {
+            types.add(NodeTypeRegistry.getInstance().getNodeType(objectNode.getProperty("jcr:frozenPrimaryType").getString()));
+        }
+
+
         for (ExtendedNodeType type : types) {
             final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
             if (definitionMap.containsKey(propertyName)) {

@@ -12,13 +12,11 @@
         <ul class="list3 wikicompare">
             <li class="wikiTitle"><span class="wikiselection">Selection</span>
 
-                <div class="wikitext">Title</div>
+                <span class="wikitext">Title</span>
                 <span class="wikidate">Date</span> <span
-                        class="wikiauthor">Author</span> <span
-                        class="wikistate">State </span></li>
+                        class="wikiauthor">Author</span></li>
             <c:forEach items="${currentNode.versionHistory.allLinearFrozenNodes}" var="version" begin="1">
                 <li>
-
                 <span class="wikiselection">
                     <input type="radio" value="${version.parent.name}" name="oldid"
                            id="w-oldid-${version.parent.name}"/>
@@ -29,8 +27,7 @@
                     <div class="wikitext"><a href="#">${version.properties['lastComment'].string} </a></div>
                     <span class="wikidate"><fmt:formatDate value="${version.properties['jcr:lastModified'].date.time}"
                                                            dateStyle="short" type="both"/></span> <span
-                        class="wikiauthor">${version.properties['jcr:lastModifiedBy'].string}</span> <span
-                        class="wikistate"><img alt="" src="${url.currentModule}/images/tick_16.png"></span>
+                        class="wikiauthor">${version.properties['jcr:lastModifiedBy'].string}</span> 
                 </li>
             </c:forEach>
 

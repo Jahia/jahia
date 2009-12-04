@@ -1537,3 +1537,63 @@ News  Most read
 font-size:0.85em;
 color:#666
 }
+/******************************************************************************
+*  Template Form
+******************************************************************************/
+#bodywrapper .Form  p{
+	clear:both;
+}
+#bodywrapper .Form {
+	margin:1em 0 0 0;
+	overflow:hidden;
+}
+#bodywrapper .formMarginLeft{
+	margin:0 0 0 25%;
+}
+#bodywrapper .formMarginLeft p{
+	overflow:hidden;
+	margin:0 1em 0 2em;
+	padding:2px;
+}
+#bodywrapper .formFloatLeft{
+	float:left;
+	padding-right:0.5em;
+}
+#bodywrapper .Form fieldset {
+	padding:0.5em;
+	border:1px solid #ccc;
+	margin:0.5em 0;
+}
+#bodywrapper .Form legend {
+	font-size:1em;
+	color:#fff;
+	padding:0 0.5em;
+	background:#003366 url(../img/contactformlegend.png) repeat-x top left;
+	border:1px solid #ccc;
+	display:inline;
+}
+#bodywrapper .Form label.left {
+	float:left;
+	width:25%;
+	margin:0 1em 0 1em;
+	padding:2px;
+	text-align:right;
+}
+#bodywrapper .Form input[type="text"],
+#bodywrapper .Form textarea{
+	width:50%;
+
+}
+#bodywrapper .Form input[type="text"]:focus,
+#bodywrapper .Form textarea:focus{
+
+}
+
+
+#bodywrapper .divButton{
+	text-align:center;
+	margin:0.5em 0;
+}
+#bodywrapper .Form input.button {
+	margin-left:0.5em;
+}

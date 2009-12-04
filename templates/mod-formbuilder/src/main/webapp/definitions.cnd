@@ -1,0 +1,13 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:formElement] > jnt:content, jmix:structuredcontent, mix:title
+ - j:type (string)
+
+[jnt:responseToForm] > jnt:content,nt:unstructured
+
+
+[jnt:form] > jnt:content, jmix:structuredcontent, mix:title
+ - j:action (string)
+ - j:intro (string)
+ + * (jnt:formElement)
+ + * (jnt:responseToForm)

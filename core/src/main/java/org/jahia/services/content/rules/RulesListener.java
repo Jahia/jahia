@@ -262,7 +262,7 @@ public class RulesListener extends DefaultEventListener {
             }
             final String finalusername = username;
             JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback() {
+                    new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                             Iterator<Event> it = events.iterator();
 
@@ -443,7 +443,7 @@ public class RulesListener extends DefaultEventListener {
 
         public void run() {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                         List<Updateable> newDelayed = new ArrayList<Updateable>();
 
@@ -459,7 +459,7 @@ public class RulesListener extends DefaultEventListener {
                                 logger.error("Node still locked, max count reached, forget pending changes");
                             }
                         }
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        return null;
                     }
                 });
             } catch (RepositoryException e) {

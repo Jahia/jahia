@@ -53,13 +53,6 @@
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create an image "{name}" of size {size}=imageService.addThumbnail(node, "{name}",{size}, drools);
 [consequence][]Extract the properties from the file=extractionService.extractProperties(node, drools);
-[consequence][]Fire {eventType} notification event for {node}=service.notify({node}, "{eventType}", drools);
-[consequence][]Fire {eventType} notification event to group {targetGroup}=service.notifyGroup(node, "{eventType}", {targetGroup}, drools);
-[consequence][]Fire {eventType} notification event to the current user=service.notify(node, "{eventType}", user.getJahiaUser(), drools);
-[consequence][]Fire {eventType} notification event to the last user that did "{action}"=service.notify(node, "{eventType}", service.getLastUserForAction(node,language,"{action}"), drools);
-[consequence][]Fire {eventType} notification event to the users having administration rights on the object=service.notify(node, "{eventType}", service.getWorkflowAdminPrincipals(node), drools);
-[consequence][]Fire {eventType} notification event to the users involved in the next step=service.notify(node, "{eventType}", service.getWorkflowNextStepPrincipals(node,language), drools);
-[consequence][]Fire {eventType} notification event to user {targetUser}=service.notifyUser(node, "{eventType}", {targetUser}, drools);
 [consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);
 [consequence][]Log {message}= logger.info({message});
@@ -84,3 +77,5 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeLater(node, "{property}",{ruleName}, drools);
 [consequence][]Create schmurtz {node}=service.createSchmurtz(node, drools);
+[consequence][]Create task "{title}" with description "{description}" for user {forUser}=service.createTask({forUser}, "{title}", "{description}", drools);
+[consequence][]Create task "{title}" with description "{description}" for members of group {group}=service.createTaskForGroupMembers({group}, "{title}", "{description}", drools);

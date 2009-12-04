@@ -340,4 +340,41 @@ public final class JCRContentUtils {
         }
         return null;
     }
+
+    /**
+     * Returns the next available name for a node, appending if needed numbers.
+     * 
+     * @param dest the destination node, where the new one will be created
+     * @param name the name of the new node
+     * @param session current JCR session
+     * @return the next available name for a node, appending if needed numbers
+     */
+    public static String findAvailableNodeName(JCRNodeWrapper dest, String name, JCRSessionWrapper session) {
+        int i = 1;
+
+        String basename = name;
+        int dot = basename.lastIndexOf('.');
+        String ext = "";
+        if (dot > 0) {
+            ext = basename.substring(dot);
+            basename = basename.substring(0, dot);
+        }
+        int und = basename.lastIndexOf('_');
+        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
+            basename = basename.substring(0, und);
+        }
+
+        do {
+            try {
+                session.getNode(dest.getPath() + "/" + name);
+                name = basename + "_" + (i++) + ext;
+            } catch (RepositoryException e) {
+                break;
+            }
+
+        } while (true);
+
+        return name;
+    }
+
 }

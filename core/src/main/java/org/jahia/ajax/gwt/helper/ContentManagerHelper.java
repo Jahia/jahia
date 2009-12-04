@@ -55,6 +55,7 @@ import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -362,33 +363,12 @@ public class ContentManagerHelper {
         }
     }
 
-    public String findAvailableName(JCRNodeWrapper dest, String name) {
-        int i = 1;
-
-        String basename = name;
-        int dot = basename.lastIndexOf('.');
-        String ext = "";
-        if (dot > 0) {
-            ext = basename.substring(dot);
-            basename = basename.substring(0, dot);
+    public String findAvailableName(JCRNodeWrapper dest, String name) throws GWTJahiaServiceException {
+        try {
+            return JCRContentUtils.findAvailableNodeName(dest, name, sessionFactory.getCurrentUserSession());
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
         }
-        int und = basename.lastIndexOf('_');
-        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
-            basename = basename.substring(0, und);
-        }
-
-        JCRNodeWrapper target = null;
-        do {
-            try {
-                target = sessionFactory.getCurrentUserSession().getNode(dest.getPath() + "/" + name);
-                name = basename + "_" + (i++) + ext;
-            } catch (RepositoryException e) {
-                break;
-            }
-
-        } while (true);
-
-        return name;
     }
 
     public void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
@@ -864,7 +844,7 @@ public class ContentManagerHelper {
         session.getWorkspace().move(sourcePath, targetPath);
     }
 
-    public void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
@@ -888,7 +868,7 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public void moveAtEnd(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public void moveAtEnd(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);

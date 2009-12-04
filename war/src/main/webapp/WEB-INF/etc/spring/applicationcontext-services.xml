@@ -399,4 +399,11 @@
         <property name="jcrTemplate" ref="jcrTemplate"/>
     </bean>
 
+    <bean id="org.jahia.services.tasks.TaskService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.tasks.TaskService">
+            	<property name="groupManager" ref="JahiaGroupManagerService"/>
+            </bean>
+        </property>
+    </bean>
 </beans>

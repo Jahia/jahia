@@ -1,10 +1,11 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:task] > jnt:content, mix:title, jmix:interactiveContent
- - priority (string, choicelist[resourceBundle]) = 'medium' analyzer='keyword' < 'veryLow', 'low', 'medium', 'high', 'veryHigh'
- - dueDate (date) = now('1000*60*60*24')
- - status (string, choicelist[resourceBundle]) = 'active' analyzer='keyword' < 'active', 'finished', 'suspended'
- - description (string, richtext) i18n
+[jnt:task] > jnt:content
+ - title (string) primary
+ - description (string)
+ - priority (string, choicelist[resourceBundle]) = 'medium' analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'
+ - dueDate (date, datepicker) = now('1000*60*60*24')
+ - state (string, choicelist[resourceBundle]) = 'active' analyzer='keyword' < 'active', 'finished', 'suspended'
 
 [jnt:tasks] > jnt:content, mix:title, jmix:interactiveContent
  orderable

@@ -12,17 +12,17 @@
     ${currentNode.propertiesAsString['j:intro']}
 </div>
 <c:if test="${not renderContext.editMode}">
-<form action="${url.base}${currentNode.path}/*" method="post">
+    <form action="${url.base}${currentNode.path}/*" method="post">
 </c:if>
-    <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
-    <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+<input type="hidden" name="nodeType" value="jnt:responseToForm"/>
+<input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
 <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
-    <input type="hidden" name="newNodeOutputFormat" value="html"/>
+<input type="hidden" name="newNodeOutputFormat" value="html"/>
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
     <template:module node="${formElement}" template="default" editable="true"/>
 </c:forEach>
 <c:if test="${not renderContext.editMode}">
-</form>
+    </form>
 </c:if>
 <c:if test="${renderContext.editMode}">
     <div style="border:darkgreen groove medium;">
@@ -34,7 +34,14 @@
 <div>
     <h2>Responses</h2>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">
-        ${response.propertiesAsString.firstname}
-        <template:module node="${response}" template="default" editable="${renderContext.editMode}"/>
+        <div>
+            <c:forEach
+                    items="${jcr:getPropertiesAsStringFromNodeNameOfThatType(response,currentNode,'jnt:formElement')}"
+                    var="entry">
+                <p>
+                    <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
+                </p>
+            </c:forEach>
+        </div>
     </c:forEach>
 </div>

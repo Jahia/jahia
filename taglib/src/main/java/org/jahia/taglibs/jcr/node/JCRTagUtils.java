@@ -45,6 +45,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.Locale;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * JCR content related utilities.
@@ -106,6 +108,18 @@ public class JCRTagUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
+    }
+
+    public static Map getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {
+        NodeIterator nodeNames = getNodes(nodeContainingNodeNames,type);
+        Map props = new LinkedHashMap();
+        while (nodeNames.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeNames.next();
+            final String name = nodeWrapper.getName();
+            final String value = nodeContainingProperties.getPropertyAsString(name);
+            props.put(name,value);
+        }
+        return props;
     }
 
 	/**

@@ -1,10 +1,23 @@
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="javax.jcr.RepositoryException" %>
 <%@ page contentType="text/html; UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addWrapper name="wikiWrapper"/>
 <div id="one"><!--start tab One-->
 
     <div class="intro wiki">
-        ${currentNode.properties.text.string}
+       <%
+           String text = "";
+       try {
+           JCRNodeWrapper node = ((JCRNodeWrapper)pageContext.findAttribute("currentNode"));
+           if(node != null && node.getProperty("text") !=null){
+               text = node.getProperty("text").getString();
+           }
+       } catch (RepositoryException e) {
+           //e.printStackTrace();
+       }
+       %>
+       <%=org.jahia.wiki.WikiRenderer.render(text)%>
 
      <%--
         <div class="box"><!--start box -->

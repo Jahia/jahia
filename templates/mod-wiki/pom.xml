@@ -51,6 +51,11 @@
             <name>Jahia's Maven Repository</name>
             <url>http://maven.jahia.org/maven2</url>
         </repository>
+        <repository>
+            <id>xwikiRepository</id>
+            <name>XWiki Maven Repository</name>
+            <url>http://maven.xwiki.org/releases</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -103,6 +108,18 @@
             <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--
+        lib are not copied in WEB-IN/lib . The dependencies are in core.
+        <dependency>
+            <groupId>org.xwiki.platform</groupId>
+            <artifactId>xwiki-core-rendering-parser-wikimodel</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xwiki.platform</groupId>
+            <artifactId>xwiki-core-component-default</artifactId>
+            <version>2.0.4</version>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>
@@ -116,18 +133,19 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <archive>
                         <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                            <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <root-folder>wiki</root-folder>
                         </manifestEntries>
-                    </archive>¡
+                    </archive>
+                    ¡
                 </configuration>
             </plugin>
         </plugins>

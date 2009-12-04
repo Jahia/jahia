@@ -774,6 +774,12 @@
         <dependency>
           <groupId>org.jsecurity</groupId>
           <artifactId>jsecurity</artifactId>
+          <exclusions>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+           </exclusions>
           <version>0.9.0</version>
         </dependency>
 

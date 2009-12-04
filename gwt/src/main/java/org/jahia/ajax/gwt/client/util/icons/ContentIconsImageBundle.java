@@ -126,6 +126,9 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("icon-contentlist.png")
     public AbstractImagePrototype contentlist();
 
+    @Resource("icon-formContent.png")
+    public AbstractImagePrototype formcontent();
+
     @ImageBundle.Resource("jnt_video.png")
     public AbstractImagePrototype jntVideo();
 

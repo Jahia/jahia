@@ -103,6 +103,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     public static final String CONTENTLIST = "icon-contentlist";
 
+    public static final String FORMCONTENT = "icon-formcontent";
+
 
     public static final String DEFAULT_NODE = "default_node";
     public static final String FOLDER_CLOSE = "folder_close";
@@ -322,6 +324,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.structured();
             } else if (ext.equalsIgnoreCase(CONTENTLIST)) {
                 return CONTENT_ICONS.contentlist();
+            }   else if (ext.equalsIgnoreCase(FORMCONTENT)) {
+                return CONTENT_ICONS.formcontent();
             }
         }
         return CONTENT_ICONS.file();

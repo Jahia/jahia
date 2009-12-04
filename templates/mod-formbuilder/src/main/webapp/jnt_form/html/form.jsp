@@ -11,6 +11,8 @@
 <div class="intro">
     ${currentNode.propertiesAsString['j:intro']}
 </div>
+
+<div class="form">
 <c:if test="${not renderContext.editMode}">
     <form action="${url.base}${currentNode.path}/*" method="post">
 </c:if>
@@ -24,6 +26,7 @@
 <c:if test="${not renderContext.editMode}">
     </form>
 </c:if>
+    </div>
 <c:if test="${renderContext.editMode}">
     <div style="border:darkorange solid medium; margin:5px; background:#888888;">
         <span>Add your new form elements here</span>
@@ -31,6 +34,9 @@
     </div>
 </c:if>
 
+
+
+     <br/><br/>
 <div>
     <h2>Responses</h2>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">

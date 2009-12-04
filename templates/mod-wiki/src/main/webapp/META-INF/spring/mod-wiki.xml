@@ -9,7 +9,7 @@
             <list>
                 <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
                     <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
-                    <property name="inputSyntax" value="mediawiki/1.0"/>
+                    <property name="inputSyntax" value="xwiki/2.0"/>
                     <property name="outputSyntax" value="xhtml/1.0"/>
                     <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
                     <property name="applyOnTemplates" value="syntax"/>

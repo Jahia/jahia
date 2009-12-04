@@ -1,12 +1,21 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:formElement] > jnt:content, jmix:structuredcontent, mix:title
- - j:type (string)
+[jmix:formContent] > jmix:content mixin
+
+[jnt:formElement] > jnt:content
 
 [jnt:responseToForm] > jnt:content,nt:unstructured
 
+[jnt:inputText] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ - size (long) = 30 autocreated
+ - defaultValue (string)
 
-[jnt:form] > jnt:content, jmix:structuredcontent, mix:title
+ [jnt:submitButton] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+
+
+[jnt:form] > jnt:content, jmix:formContent, mix:title
  - j:action (string)
  - j:intro (string)
  + * (jnt:formElement)

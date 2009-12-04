@@ -12,19 +12,25 @@
     ${currentNode.propertiesAsString['j:intro']}
 </div>
 <form action="${url.base}${currentNode.path}/*" method="post">
-    <input type="hidden" name="nodeType" value="jnt:post"/>
+    <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
     <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
     <input type="hidden" name="newNodeOutputFormat" value="html"/>
-  <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement'}" var="formElement">
-      <template:module node="${formElement}" template="default"/>
-  </c:forEach>
+    <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
+        <template:module node="${formElement}" template="default" editable="true"/>
+    </c:forEach>
 </form>
-<template:module autoCreateType="jnt:formElement" path="${currentNode.path}"/>
+<c:if test="${renderContext.editMode}">
+    <div style="border:darkgreen groove medium;">
+        <span>Add your new form elements here</span>
+        <template:module path="*"/>
+    </div>
+</c:if>
 
 <div>
     <h2>Responses</h2>
-    <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm'}" var="response">
-      <template:module node="${response}" template="default"/>
-  </c:forEach>
+    <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">
+        ${response.propertiesAsString.firstname}
+        <template:module node="${response}" template="default"/>
+    </c:forEach>
 </div>

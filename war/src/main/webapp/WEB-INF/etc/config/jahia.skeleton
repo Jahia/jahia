@@ -219,7 +219,7 @@ jahiaFileUploadMaxSize                                  =  104857600
 # Set to -1 to deactivate changes detection completely.
 # Note, if "developmentMode" option is set to "true", this parameter
 # is ignored and the observer is started with the interval of 5 seconds. 
-templates.observer.interval                            =   60000
+templates.observer.interval                            =   5000
 
 ######################################################################
 ### WebApps Deployment  ##############################################

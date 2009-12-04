@@ -35,10 +35,16 @@
     - label (string) mandatory
   - value (string) mandatory
 
- [jnt:submitButton] > jnt:formElement,  jmix:formContent
+[jnt:submitButton] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ 
+[jnt:resetButton] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
 
+[jnt:birthdate] > jnt:formElement,  jmix:formContent
 
+[jnt:adress] > jnt:formElement,  jmix:formContent
+ 
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable
  - j:action (string)

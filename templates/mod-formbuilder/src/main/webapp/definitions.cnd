@@ -28,7 +28,8 @@
   - value (string) mandatory
 
  [jnt:selectField] > jnt:formElement,  jmix:formContent
-  - option (string) mandatory
+ - label (string)
+ - option (string) mandatory
 
  [jnt:radiobuttonField] > jnt:formElement,  jmix:formContent
     - label (string) mandatory

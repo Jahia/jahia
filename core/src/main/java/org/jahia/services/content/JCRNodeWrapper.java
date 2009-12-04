@@ -723,10 +723,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JCRNodeWrapper addNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException;
 
     /**
-     * {@inheritDoc}
+     * @see Node#addNode(String, String)
      * @return The wrapped node that was added. 
      */
-    JCRNodeWrapper addNode(String s, String s1) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException;
+    JCRNodeWrapper addNode(String relPath, String primaryNodeTypeName) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException;
 
     /**
      * Return the <code>JCRPlaceholderNode</code> based on the current node

@@ -66,7 +66,7 @@
         <module>mod-default</module>
         <module>mod-event</module>
         <module>mod-faq</module>
-        <module>mod-form</module>
+        <module>mod-formbuilder</module>
         <module>mod-forum</module>
         <module>mod-job</module>
         <module>mod-location</module>

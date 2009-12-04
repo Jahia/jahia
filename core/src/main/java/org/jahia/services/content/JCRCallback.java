@@ -51,7 +51,7 @@ public interface JCRCallback<T> {
      * Allows for returning a result object created within the
      * callback, i.e. a domain object or a collection of domain
      * objects. A thrown {@link RuntimeException} is treated as an
-     * application exeception; it is propagated to the caller of the
+     * application exception; it is propagated to the caller of the
      * template.
      * 
      * @param session

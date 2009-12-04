@@ -25,7 +25,7 @@
     </form>
 </c:if>
 <c:if test="${renderContext.editMode}">
-    <div style="border:darkgreen groove medium;">
+    <div style="border:darkorange solid medium; margin:5px; background:#888888;">
         <span>Add your new form elements here</span>
         <template:module path="*"/>
     </div>

@@ -11,6 +11,29 @@
  - size (long) = 30 autocreated
  - defaultValue (string)
 
+ [jnt:inputMultiline] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ - cols (long) = 20 autocreated
+ - rows (long) = 6 autocreated
+ - defaultValue (string)
+
+ [jnt:passwordField] > jnt:formElement,  jmix:formContent
+ - label (string)
+
+ [jnt:fieldset] > jmix:content mixin
+ - legend (string)
+
+ [jnt:checkboxField] > jnt:formElement,  jmix:formContent
+  - label (string) mandatory
+  - value (string) mandatory
+
+ [jnt:selectField] > jnt:formElement,  jmix:formContent
+  - option (string) mandatory
+
+ [jnt:radiobuttonField] > jnt:formElement,  jmix:formContent
+    - label (string) mandatory
+  - value (string) mandatory
+
  [jnt:submitButton] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
 

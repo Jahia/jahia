@@ -126,7 +126,6 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("icon-contentlist.png")
     public AbstractImagePrototype contentlist();
 
-
     @ImageBundle.Resource("jnt_video.png")
     public AbstractImagePrototype jntVideo();
 
@@ -165,6 +164,27 @@ public interface ContentIconsImageBundle extends ImageBundle {
 
     @Resource("jnt_form.png")
     public AbstractImagePrototype jntForm();
+
+    @Resource("jnt_fieldset.png")
+    public AbstractImagePrototype jntFieldset();
+
+    @Resource("jnt_inputText.png")
+    public AbstractImagePrototype jntInputText();
+
+    @Resource("jnt_radiobuttonField.png")
+    public AbstractImagePrototype jntRadiobuttonField();
+
+    @Resource("jnt_passwordField.png")
+    public AbstractImagePrototype jntPasswordField();
+
+    @Resource("jnt_checkboxField.png")
+    public AbstractImagePrototype jntCheckboxField();
+
+    @Resource("jnt_Button.png")
+    public AbstractImagePrototype jntButton();
+
+    @Resource("jnt_selectField.png")
+    public AbstractImagePrototype jntSelectField();
 
     @Resource("jnt_mail.png")
     public AbstractImagePrototype jntMail();

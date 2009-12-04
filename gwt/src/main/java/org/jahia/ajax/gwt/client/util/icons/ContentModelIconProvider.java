@@ -134,6 +134,14 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String PERCENT = "percent";
     public static final String PLUSROUND = "plusround";
     public static final String MINUSROUND = "minusround";
+    public static final String JNT_FIELDSET = "jnt:fieldset";
+    public static final String JNT_INPUT_TEXT = "jnt:inputText";
+    public static final String JNT_INPUT_MULTIPLE = "jnt:inputMultiple";
+    public static final String JNT_RADIOBUTTON_FIELD = "jnt:radiobuttonField";
+    public static final String JNT_PASSWORD_FIELD = "jnt:passwordField";
+    public static final String JNT_CHECKBOX_FIELD = "jnt:checkboxField";
+    public static final String JNT_SUBMIT_BUTTON = "jnt:submitButton";
+    public static final String JNT_SELECT_FIELD = "jnt:selectField";
 
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
@@ -239,6 +247,22 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntPeople();
             } else if (type.equalsIgnoreCase(PERCENT)) {
                 return CONTENT_ICONS.percent();
+            } else if (type.equalsIgnoreCase(JNT_FIELDSET)) {
+                return CONTENT_ICONS.jntFieldset();
+            } else if (type.equalsIgnoreCase(JNT_INPUT_TEXT)) {
+                return CONTENT_ICONS.jntInputText();
+            } else if (type.equalsIgnoreCase(JNT_RADIOBUTTON_FIELD)) {
+                return CONTENT_ICONS.jntRadiobuttonField();
+            } else if (type.equalsIgnoreCase(JNT_PASSWORD_FIELD)) {
+                return CONTENT_ICONS.jntPasswordField();
+            } else if (type.equalsIgnoreCase(JNT_CHECKBOX_FIELD)) {
+                return CONTENT_ICONS.jntCheckboxField();
+            } else if (type.equalsIgnoreCase(JNT_SUBMIT_BUTTON)) {
+                return CONTENT_ICONS.jntButton();
+            } else if (type.equalsIgnoreCase(JNT_SELECT_FIELD)) {
+                return CONTENT_ICONS.jntSelectField();
+            } else if (type.equalsIgnoreCase(JNT_INPUT_MULTIPLE)) {
+                return CONTENT_ICONS.jntInputText();
             }
         }
         if (ext != null) {

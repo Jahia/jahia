@@ -11,15 +11,19 @@
 <div class="intro">
     ${currentNode.propertiesAsString['j:intro']}
 </div>
+<c:if test="${not renderContext.editMode}">
 <form action="${url.base}${currentNode.path}/*" method="post">
+</c:if>
     <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+<%-- Define the output format for the newly created node by default html or by stayOnNode--%>
     <input type="hidden" name="newNodeOutputFormat" value="html"/>
-    <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
-        <template:module node="${formElement}" template="default" editable="true"/>
-    </c:forEach>
+<c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
+    <template:module node="${formElement}" template="default" editable="true"/>
+</c:forEach>
+<c:if test="${not renderContext.editMode}">
 </form>
+</c:if>
 <c:if test="${renderContext.editMode}">
     <div style="border:darkgreen groove medium;">
         <span>Add your new form elements here</span>

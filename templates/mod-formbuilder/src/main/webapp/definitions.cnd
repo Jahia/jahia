@@ -16,6 +16,7 @@
 
 
 [jnt:form] > jnt:content, jmix:formContent, mix:title
+ orderable
  - j:action (string)
  - j:intro (string)
  + * (jnt:formElement)

@@ -32,7 +32,7 @@
 
     <div>
         <form name="wikiForm"/>
-        Create a new page : <input id="link" name="link" onchange="form.action='${currentNode.name}/'+form.elements.link.value"> <input type="submit"/>
+        Create a new page : <input id="link" name="link" onchange="form.action='${currentNode.name}/'+form.elements.link.value+'.html'"> <input type="submit"/>
         </form>
     </div>
 </div>

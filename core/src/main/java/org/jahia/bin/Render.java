@@ -352,7 +352,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if(url!=null) {
             String requestedURL = req.getRequestURL().toString();
             renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
-                                                                                           "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
+                    "UTF-8").replace("%2F","/").replace("+","%20"))) + url + "." + outputFormat;
         }
         String stayOnPage = req.getParameter(STAY_ON_NODE);
         if(stayOnPage!=null && "".equals(stayOnPage.trim())) {

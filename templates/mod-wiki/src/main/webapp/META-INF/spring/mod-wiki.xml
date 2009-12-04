@@ -3,20 +3,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <!--<bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
+    <bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
         <property name="module" value="Jahia Wiki"/>
         <property name="filters">
             <list>
-                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiRenderer">
+                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
                     <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
                     <property name="inputSyntax" value="mediawiki/1.0"/>
                     <property name="outputSyntax" value="xhtml/1.0"/>
                     <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
-                    <property name="applyOnTemplates" value="default"/>
+                    <property name="applyOnTemplates" value="syntax"/>
                 </bean>
             </list>
         </property>
-    </bean>-->
+    </bean>
     <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>
     <bean name="NewWikiPageHandler" class="org.jahia.wiki.errors.NewWikiPageHandler"/>
 </beans>

@@ -7,10 +7,7 @@ import org.xwiki.rendering.renderer.printer.WikiPrinter;
 import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
 import org.xwiki.rendering.parser.ParseException;
 import org.xwiki.component.embed.EmbeddableComponentManager;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.RenderChain;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+
 
 import java.io.StringReader; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -52,28 +49,6 @@ import java.io.StringReader; /**
 public class WikiRenderer {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(WikiRenderer.class);
 
-    // ToDo : Convert into filter
-    private final static SyntaxFactory syntaxFactory = new org.xwiki.rendering.internal.parser.DefaultSyntaxFactory();
-    private final static String inputSyntax = "mediawiki/1.0";
-    private final static String outputSyntax = "xhtml/1.0";
-
-
-    /*public void setSyntaxFactory(SyntaxFactory syntaxFactory) {
-        this.syntaxFactory = syntaxFactory;
-    }
-
-    public void setInputSyntax(String inputSyntax) {
-        this.inputSyntax = inputSyntax;
-    }
-
-    public void setOutputSyntax(String outputSyntax) {
-        this.outputSyntax = outputSyntax;
-    }*/
-
-    public static String render(String input) throws Exception {
-        return renderWikiSyntaxAsXHTML(input, syntaxFactory, inputSyntax, outputSyntax);
-
-    }
 
     /**
      * Render wiki content as html

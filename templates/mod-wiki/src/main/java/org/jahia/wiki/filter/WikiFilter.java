@@ -6,10 +6,19 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.wiki.WikiRenderer;
+import org.xwiki.rendering.syntax.SyntaxFactory;
+import org.xwiki.rendering.syntax.Syntax;
+import org.xwiki.rendering.converter.Converter;
+import org.xwiki.rendering.renderer.printer.WikiPrinter;
+import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
+import org.xwiki.rendering.parser.ParseException;
+import org.xwiki.component.embed.EmbeddableComponentManager;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.io.StringReader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,38 +28,27 @@ import java.util.regex.Matcher;
  * To change this template use File | Settings | File Templates.
  */
 public class WikiFilter extends AbstractFilter {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(WikiFilter.class);
 
-    
+    private SyntaxFactory syntaxFactory;
+    private String inputSyntax;
+    private String outputSyntax;
+
+
+    public void setSyntaxFactory(SyntaxFactory syntaxFactory) {
+        this.syntaxFactory = syntaxFactory;
+    }
+
+    public void setInputSyntax(String inputSyntax) {
+        this.inputSyntax = inputSyntax;
+    }
+
+    public void setOutputSyntax(String outputSyntax) {
+        this.outputSyntax = outputSyntax;
+    }
 
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String out = chain.doFilter(renderContext, resource);
-
-        Pattern p = Pattern.compile("\\[\\[([a-zA-Z0-9_]+)\\]\\]");
-        Matcher m = p.matcher(out);
-
-        JCRNodeWrapper page = renderContext.getMainResource().getNode().getParent();
-
-        StringBuffer buf = new StringBuffer(out);
-
-        int offset = 0;
-
-        while (m.find()) {
-            String value = m.group(1);
-            String replacement;
-            m.start();
-            m.end();
-            if (page.hasNode(value)) {
-                replacement = "<a class=\"wikidef\" href=\""+ value + ".html\">" + value + "</a>";
-            } else {
-                replacement = "<a class=\"wikidef-new\" href=\""+ value + ".html\"> create " + value + "</a>";
-            }
-
-            buf.replace(m.start() + offset, m.end() + offset, replacement);
-            offset = offset + replacement.length() - (m.end() - m.start());
-            System.out.println("--"+value);
-        }
-
-        return buf.toString();
-
+        return WikiRenderer.renderWikiSyntaxAsXHTML(chain.doFilter(renderContext, resource),syntaxFactory,inputSyntax,outputSyntax);
     }
+
 }

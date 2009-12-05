@@ -517,6 +517,9 @@ public class ExtendedNodeType implements NodeType {
     void setNodeDefinition(String name, ExtendedNodeDefinition p) {
         if (name.equals("*")) {
             StringBuffer s = new StringBuffer("");
+            if (p.getRequiredPrimaryTypeNames() == null) {
+                logger.error("Required primary type names is null for extended node definition " + p);
+            }
             for (String s1 : p.getRequiredPrimaryTypeNames()) {
                 s.append(s1).append(" ");
             }

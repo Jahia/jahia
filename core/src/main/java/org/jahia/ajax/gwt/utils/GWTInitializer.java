@@ -193,7 +193,7 @@ public class GWTInitializer {
         buf.append("\n</script>\n");
 
         // add custom ck config
-        buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");
+        // buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");
 
 
         return buf.toString();

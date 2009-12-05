@@ -6,6 +6,9 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="960.css,userProfile.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="/gwt/resources/ckeditor/ckeditor.js,ckeditor_init.js,jquery.jeditable.ckeditor.js" />
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js" />
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
@@ -15,7 +18,74 @@
 <fmt:formatDate value="${now}" pattern="yyyy" var="currentYear"/>
 </c:if>
 <script type="text/javascript">
+    $(document).ready(function() {
+        $(".edit").editable(function (value, settings) {
+                var submitId = $(this).attr('id');
+                var data = {};
+                data[submitId] = value;
+                data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}",
+                       data,
+                        function(result){
+                    // $("#personDisplay2").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                    // $("#personDisplay1").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
+                    // $("#emailDisplay").html(result.j_email);
+                }, "json");
+                return(value);
+        }, {
+                type    : 'text'
+            tooltip : 'Click to edit'
+        });
+        $(".visibilityEdit").editable(function (value, settings) {
+                var submitId = $(this).attr('id');
+                var data = {};
+                data[submitId] = value;
+                data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, null, "json");
+                if (value == "true")
+                    return "Public"; else
+                    return "Private";
+            },{
+                type    : 'select',
+                data   : "{'true':'Public','false':'Private'}"
+            tooltip : 'Click to edit'
+        });
+
+        $(".imageEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id');
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, function(result){
+                }, "json");
+                return(value);
+        }, {
+            type : 'ajaxupload',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+
+    });
+</script>
+
+<script type="text/javascript">
             $(document).ready(function() {
+
+
+
+                $(".j_emailPublicEdit").editable(function (value, settings) {
+                        $.post("${url.base}${currentNode.path}", {'j:emailPublic': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (value == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    },{
+                        type    : 'text',
+                        submit  : 'OK'
+                });
+                /*
                 $(".j_emailPublicEdit").editInPlace({
                     show_buttons: true,
                     field_type: "select",
@@ -27,13 +97,14 @@
                             return "Non Public";
                     }
                 });
+                */
             });
         </script>
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
 <div class="container container_16"> <!--start container_16-->
 <div class='grid_4'><!--start grid_4-->
-<div class="image">
+<div class="image imageEdit">
 		<div class="itemImage itemImageRight"><a href="#"><img alt="" src="img-text/user.gif"/></a></div>
 </div>
 
@@ -48,7 +119,7 @@
                     <li><span class="label">Age : </span> ${currentYear - birthYear} ans</li>
                     <li><span class="label">Sexe : </span> ${fields['j:gender']}</li>
 
-                    <li><span class="label">Email Perso: </span> <span id="emailDisplay">${fields['j:email']}</span> <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
+                    <li><span class="label">Email Perso: </span> <span id="j:email" class="edit">${fields['j:email']}</span> <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
                 Public
             </c:if>
             <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">
@@ -185,6 +256,20 @@
                     <h3 class="boxtitleh3">About Me</h3>
                         <script type="text/javascript">
             $(document).ready(function() {
+                $(".j_aboutEdit").editable(function (value, settings) {
+                        $.post("${url.base}${currentNode.path}",
+                               {'j:about': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
+                        }, "json");
+                        return(value);
+                }, {
+                    type : 'ckeditor',
+                    onblur : 'ignore',
+                    submit : 'OK',
+                    cancel : 'Cancel',
+                    tooltip : 'Click to edit',
+                    id : 'aboutMe'
+                });
+                /*
                 $(".j_aboutEdit").editInPlace({
                     show_buttons: true,
                     field_type: "textarea",
@@ -196,8 +281,19 @@
                         return(html);
                     }
                 });
+                */
             });
             $(document).ready(function() {
+                $(".j_aboutPublicEdit").editable(function (value, settings) {
+                        $.post("${url.base}${currentNode.path}", {'j:aboutPublic': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
+                        if (value == "true")
+                            return "Public"; else
+                            return "Non Public";
+                    },{
+                        type    : 'text',
+                        submit  : 'OK'
+                });
+                /*
                 $(".j_aboutPublicEdit").editInPlace({
                     show_buttons: true,
                     field_type: "select",
@@ -209,6 +305,7 @@
                             return "Non Public";
                     }
                 });
+                */
             });
         </script>
                         <div class="j_aboutEdit">${fields['j:about']}</div>

@@ -211,6 +211,10 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         return repository.getDescriptorValues(key);
     }
 
+    public JackrabbitRepository getRepository() {
+        return repository;
+    }
+
     /**
      * Delegated to the underlying repository instance.
      */

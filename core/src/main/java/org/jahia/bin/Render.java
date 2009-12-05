@@ -272,13 +272,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         String url = null;
+        Node newNode;
         if (node != null) {
             String nodeType = req.getParameter(NODE_TYPE);
             if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
                 return;
             }
-            Node newNode;
             String nodeName = req.getParameter(NODE_NAME);
             if(!"*".equals(lastPath)) {
                 nodeName = lastPath;
@@ -319,9 +319,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
                 newNode.checkin();
             }
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            final String requestWith = req.getHeader("x-requested-with");
+            if(req.getHeader("accept").contains("application/json") && requestWith !=null && requestWith.equals("XMLHttpRequest")) {
+                try {
+                    serializeNodeToJSON(resp, (JCRNodeWrapper) newNode);
+                } catch (JSONException e) {
+                    logger.error(e.getMessage(),e);
+                }
+            } else {
+                performRedirect(url, path, req, resp);
+            }
         }
-        resp.setStatus(HttpServletResponse.SC_CREATED);
-        performRedirect(url, path, req, resp);
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {

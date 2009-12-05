@@ -49,12 +49,16 @@ Rendering filters
   An {example} of a filter definition for the Jahia Wiki module, located in the the <<<templates/wiki/META-INF/spring/>>> folder, is:
   
 ------------------
-    <bean name="filter" class="org.jahia.services.render.filter.ModuleFilters" >
-        <property name="module" value="Jahia Wiki" />
+<bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
+        <property name="module" value="Jahia Wiki"/>
         <property name="filters">
             <list>
-                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter" >
-                    <property name="applyOnNodeTypes" value="jnt:wikiContent"/>
+                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
+                    <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
+                    <property name="inputSyntax" value="xwiki/2.0"/>
+                    <property name="outputSyntax" value="xhtml/1.0"/>
+                    <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
+                    <property name="applyOnTemplates" value="syntax"/>
                 </bean>
             </list>
         </property>

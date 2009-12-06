@@ -20,7 +20,7 @@
  [jnt:passwordField] > jnt:formElement,  jmix:formContent
  - label (string)
 
- [jnt:fieldset] > jmix:content mixin
+ [jnt:fieldset] > jnt:content mixin
  - legend (string)
 
  [jnt:checkboxField] > jnt:formElement,  jmix:formContent

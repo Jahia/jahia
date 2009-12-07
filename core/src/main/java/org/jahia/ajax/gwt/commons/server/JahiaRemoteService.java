@@ -173,7 +173,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     }
 
     /**
-     * Get current local
+     * Get current locale
      *
      * @return
      */
@@ -181,9 +181,19 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE);
         return locale;
     }
+    
+    /**
+     * Get current UI locale
+     *
+     * @return
+     */
+    protected Locale getUILocale() {
+        Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
+        return locale;
+    }
 
     protected String getLocaleJahiaAdminResource(String label) {
-        Locale l = getLocale();
+        Locale l = getUILocale();
         try {
             return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
@@ -202,7 +212,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      * @return a string empty if resource is non existent
      */
     protected String getLocaleJahiaEnginesResource(String label) {
-        Locale l = getLocale();
+        Locale l = getUILocale();
         try {
             return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
@@ -222,9 +232,9 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      */
     public String getLocaleMessageResource(EngineMessage message) {
         return message.getValues() == null ? JahiaResourceBundle
-                .getMessageResource(message.getKey(), getLocale())
+                .getMessageResource(message.getKey(), getUILocale())
                 : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
-                getLocale()), message.getValues());
+                getUILocale()), message.getValues());
     }
 
     /**
@@ -234,7 +244,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      * @return
      */
     public String getLocaleMessageResource(String key) {
-        return JahiaResourceBundle.getMessageResource(key, getLocale());
+        return JahiaResourceBundle.getMessageResource(key, getUILocale());
     }
 
     /**
@@ -309,9 +319,9 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         if (key == null || key.length() == 0) {
             return key;
         }
-        String value = new JahiaResourceBundle(paramBean.getLocale(), paramBean.getSite().getTemplatePackageName()).get(key, null);
+        String value = new JahiaResourceBundle(paramBean.getUILocale(), paramBean.getSite().getTemplatePackageName()).get(key, null);
         if (value == null || value.length() == 0) {
-            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getLocale());
+            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getUILocale());
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Resources value: " + value);
@@ -337,7 +347,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      * @return
      */
     protected String getTemplateRessource(String label, Locale l) {
-        return new JahiaResourceBundle(getLocale(), retrieveParamBean()
+        return new JahiaResourceBundle(getUILocale(), retrieveParamBean()
                 .getSite().getTemplatePackageName()).getString(label, label);
     }
 

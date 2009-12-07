@@ -38,6 +38,8 @@
 
 package org.jahia.params;
 
+import java.util.Locale;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,5 +90,6 @@ public final class AdminParamBean extends ParamBean {
         setOpMode(EDIT);
         // init Param Bean locales
         this.getLocale();
+        resolveUILocale();
     }
 }

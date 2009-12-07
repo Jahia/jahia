@@ -100,7 +100,7 @@ public class ContentDefinitionHelper {
     private GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType, String realNodeType) {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
-        Locale loc = context.getLocale();
+        Locale loc = context.getUILocale();
         String label = nodeType.getLabel(loc);
         gwt.setLabel(label);
 
@@ -182,13 +182,13 @@ public class ContentDefinitionHelper {
                     item = prop;
                 }
                 item.setAutoCreated(def.isAutoCreated());
-                item.setLabel(def.getLabel(context.getLocale()));
+                item.setLabel(def.getLabel(context.getUILocale()));
                 item.setMandatory(def.isMandatory());
                 item.setHidden(def.isHidden());
                 item.setName(def.getName());
                 item.setProtected(def.isProtected());
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
-                item.setDeclaringNodeTypeLabel(def.getDeclaringNodeType().getLabel(context.getLocale()));
+                item.setDeclaringNodeTypeLabel(def.getDeclaringNodeType().getLabel(context.getUILocale()));
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
                 if (def.isContentItem()) {

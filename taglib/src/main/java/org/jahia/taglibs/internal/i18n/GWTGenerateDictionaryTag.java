@@ -89,7 +89,7 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
      */
     private String getAdminMessage(String resourceName, JahiaData jData, Locale currentLocale) {
         if (jData != null) {
-            return JahiaResourceBundle.getJahiaInternalResource(resourceName, jData.getProcessingContext().getLocale());
+            return JahiaResourceBundle.getJahiaInternalResource(resourceName, jData.getProcessingContext().getUILocale());
         } else {
             // for any reason the jData wasn't loaded correctly
             return JahiaResourceBundle.getJahiaInternalResource(resourceName, currentLocale);

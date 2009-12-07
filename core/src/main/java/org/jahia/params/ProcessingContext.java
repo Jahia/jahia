@@ -131,6 +131,7 @@ import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageMapping;
 import org.jahia.services.sites.SiteLanguageSettings;
@@ -226,6 +227,7 @@ public class ProcessingContext {
     public static final String SESSION_JAHIA_RUNNING_MODE = "org.jahia.bin.jahiarunningmode";
     public static final String SESSION_JAHIA_ENGINEMAP = "jahia_session_engineMap";
     public static final String SESSION_LOCALE = "org.jahia.services.multilang.currentlocale";
+    public static final String SESSION_UI_LOCALE = "org.jahia.services.multilang.uilocale";
     public static final String SESSION_BACKUP = "org.jahia.session.backup";
     public static final String SESSION_LOCALE_ENGINE = "org.jahia.services.multilang.currentlocaleforengine";
 
@@ -241,6 +243,7 @@ public class ProcessingContext {
     protected JahiaUser theUser = null;
     protected String userAgent = "";
     protected Locale currentLocale = null;
+    protected Locale uiLocale = null;    
     // a list of Locale objects that contains the current user preferences
     protected List<Locale> localeList = null;
     // private int jahiaID = -1; // FIXME_MULTISITE Hollis: jahiaID = siteID redondant info
@@ -3160,22 +3163,20 @@ public class ProcessingContext {
             }
             getSessionState().setAttribute(SESSION_LOCALE, newLocale);
         }
-        if (getSessionState().getAttribute(SESSION_LOCALE) != null) {
-            setCurrentLocale((Locale) getSessionState().getAttribute(
-                    SESSION_LOCALE));
-        } else {
+        if (getSessionState().getAttribute(SESSION_LOCALE) == null) {
             // it's not in the session, let's try to determine what it should
             // be...
             setCurrentLocale(null);
             setLocaleList(null);
             getLocale();
-            getSessionState().setAttribute(SESSION_LOCALE, getCurrentLocale());
         }
 
         // CHECK LOCALE INTEGRITY
         setCurrentLocale((Locale) getLocales().get(1)); // 0=shared, 1=resolved locale
         getSessionState().setAttribute(SESSION_LOCALE, getCurrentLocale());
 
+        resolveUILocale();
+       
         setEntryLoadRequest(new EntryLoadRequest(
                 EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, getLocales()));
         // compute version info
@@ -3189,6 +3190,15 @@ public class ProcessingContext {
                         getLocales(), true));
             }
         }
+    }
+    
+    protected void resolveUILocale() throws JahiaException {
+        Locale locale = UserPreferencesHelper.getPreferredLocale(getUser(), getSite());
+        if (locale == null) {
+            locale = getCurrentLocale();
+        }
+        setUILocale(locale);
+        getSessionState().setAttribute(SESSION_UI_LOCALE, getUILocale());        
     }
 
     public boolean canEditCurrentPage() {
@@ -3767,5 +3777,13 @@ public class ProcessingContext {
      */
     public String composePageUrl() throws JahiaException {
         return composePageUrl(getPageID());
+    }
+
+    public Locale getUILocale() {
+        return uiLocale;
+    }
+
+    public void setUILocale(Locale uiLocale) {
+        this.uiLocale = uiLocale;
     }
 }

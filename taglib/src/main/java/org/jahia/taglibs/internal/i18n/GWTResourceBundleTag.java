@@ -55,7 +55,7 @@ public class GWTResourceBundleTag extends GWTMessageTag {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         ProcessingContext ctx = getProcessingContext();
 
-        Locale currentLocale = ctx != null ? ctx.getLocale() : null;
+        Locale currentLocale = ctx != null ? ctx.getUILocale() : null;
         if (currentLocale == null) {
             HttpSession session = pageContext.getSession();
             if (session != null) {

@@ -203,15 +203,21 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     protected String getJahiaInternalResourceValue(String key) {
+        return getJahiaInternalResourceValue(key, true);
+    }
+    
+    protected String getJahiaInternalResourceValue(String key, boolean useUILocale) {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
         Locale currentLocale = request.getLocale();
         HttpSession session = pageContext.getSession();
         if (session != null) {
-            if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                currentLocale = (Locale) session.getAttribute(ProcessingContext.
-                        SESSION_LOCALE);
+            if (session.getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
+                            : ProcessingContext.SESSION_LOCALE) != null) {
+                currentLocale = (Locale) session
+                        .getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
+                                : ProcessingContext.SESSION_LOCALE);
             }
         }
 
@@ -220,7 +226,10 @@ public class AbstractJahiaTag extends BodyTagSupport {
         try {
 
             if (jData != null) {
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key, jData.getProcessingContext().getLocale());
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key,
+                        useUILocale ? jData.getProcessingContext()
+                                .getUILocale() : jData.getProcessingContext()
+                                .getLocale());
             } else {
                 // for any reason the jData wasn't loaded correctly
                 resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);

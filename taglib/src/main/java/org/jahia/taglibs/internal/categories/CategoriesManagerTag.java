@@ -87,7 +87,7 @@ public class CategoriesManagerTag extends AbstractJahiaTag {
             final boolean hasRootCategoryAccess = Category.getCategoriesRoot(currentUser) != null;
             if (!hasRootCategoryAccess) {
 
-                out.print(getJahiaInternalResourceValue("org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"));
+                out.print(getJahiaInternalResourceValue("org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied", false));
             } else {
                 final String importActionUrl = JahiaAdministration.composeActionURL(request, response, "categories", "&sub=import");
                 final String exportUrl = jParams.composeSiteUrl(jParams.getSite()) + "/engineName/export/categories.xml?exportformat=cats";
@@ -159,7 +159,7 @@ public class CategoriesManagerTag extends AbstractJahiaTag {
      * @param gwtKey
      */
     private void addGWTInternalMessage(String resourceName, String gwtKey) {
-        addGwtDictionaryMessage(gwtKey, getJahiaInternalResourceValue(resourceName));
+        addGwtDictionaryMessage(gwtKey, getJahiaInternalResourceValue(resourceName, false));
     }
 
 

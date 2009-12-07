@@ -15,7 +15,7 @@
  * Revision: $Id$
  *
  */
- 
+
 $.editable.addInputType('ajaxupload', {
     /* create input element */
     element : function(settings) {
@@ -36,10 +36,10 @@ $.editable.addInputType('ajaxupload', {
                 url: settings.target,
                 secureuri:false,
                 fileElementId: 'upload',
-                dataType: 'html',
+                dataType: 'json',
                 success: function (data, status) {
-                    $(original).html(data);
-                    original.editing = false;
+                    if(settings.callback)
+                    settings.callback(data, status);
                 },
                 error: function (data, status, e) {
                     alert(e);

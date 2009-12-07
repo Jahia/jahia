@@ -32,10 +32,10 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.bin.Action;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -49,9 +49,11 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.tools.files.FileUpload;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.context.ServletConfigAware;
@@ -67,8 +69,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -230,16 +232,30 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
-        final Map<String, String> stringMap = node.getPropertiesAsString();
-        Map<String,String > map = new HashMap<String, String>(stringMap.size());
-        for (Map.Entry<String, String> stringStringEntry : stringMap.entrySet()) {
-            map.put(stringStringEntry.getKey().replace(":","_"),stringStringEntry.getValue());
+        final PropertyIterator stringMap = node.getProperties();
+        Map<String,String > map = new HashMap<String, String>();
+        while (stringMap.hasNext()) {
+            JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
+            final int type = propertyWrapper.getType();
+            final String name = propertyWrapper.getName().replace(":", "_");
+            if(type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
+                if(!propertyWrapper.isMultiple()){
+                    map.put(name,((JCRNodeWrapper)propertyWrapper.getNode()).getUrl());
+                }
+            } else {
+                if(!propertyWrapper.isMultiple()){
+                    map.put(name,propertyWrapper.getValue().getString());
+                }
+            }
         }
         JSONObject nodeJSON = new JSONObject(map);
         nodeJSON.write(resp.getWriter());
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws Exception {
+        if (checkForUploadedFiles(resp, workspace, locale)) {
+            return;
+        }
         if (path.endsWith(".do")) {
             Resource resource = resolveResource(workspace, locale, path);
             renderContext.setMainResource(resource);
@@ -340,7 +356,38 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                        new JSONObject(req.getParameterMap()).toString());
     }
 
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+    private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace, Locale locale)
+            throws RepositoryException, IOException {
+        final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
+        final FileUpload fileUpload = paramBean.getFileUpload();
+        if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0 && fileUpload.getParameterMap().size()==0) {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+            final JCRNodeWrapper uuid = session.getNodeByUUID(((JCRUser) paramBean.getUser()).getNodeUuid());
+            final JCRNodeWrapper privateFiles = uuid.getNode("files");
+            final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+            List<String> uuids = new ArrayList<String>();
+            for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                final JCRNodeWrapper wrapper = privateFiles.uploadFile(itemEntry.getValue().getName(),
+                                                                       itemEntry.getValue().getInputStream(),
+                                                                       itemEntry.getValue().getContentType());
+                uuids.add(wrapper.getIdentifier());
+            }
+            session.save();
+            try {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                Map map = new LinkedHashMap();
+                map.put("uuids", uuids);
+                JSONObject nodeJSON = new JSONObject(map);
+                nodeJSON.write(resp.getWriter());
+                return true;
+            } catch (JSONException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return false;
+    }
+
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         Node node = session.getNode(path);
         Node parent = node.getParent();

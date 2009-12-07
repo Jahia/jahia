@@ -19,14 +19,14 @@
 <!-- twoCol clear -->
 <ul class="list3 user-profile-list">
     <c:forTokens
-            items="j:firstName,j:lastName,j:email,j:organization,j:function,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
+            items="j:firstName,j:lastName,j:organization,j:function,j:phoneNumber,j:faxNumber,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
             delims="," var="key">
         <li>
             <span class="label"><fmt:message key='jnt_user.${fn:replace(key,":","_")}'/></span>
 
-            <div class="edit" id="${key}"><c:if test="${empty fields[key]}">Click here to edit</c:if><c:if test="${!empty fields[key]}">${fields[key]}</c:if></div>
+            <div class="edit" id="${fn:replace(key,":","_")}"><c:if test="${empty fields[key]}">Click here to edit</c:if><c:if test="${!empty fields[key]}">${fields[key]}</c:if></div>
             <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="${key}Public">
+            <span class="visibilityEdit" id="${fn:replace(key,":","_")}Public">
             <c:if test="${fields[pubKey] eq 'true'}">Public</c:if>
             <c:if test="${fields[pubKey] eq 'false' or empty fields[pubKey]}">Private</c:if>
             </span>
@@ -42,24 +42,12 @@
                 <jsp:useBean id="now" class="java.util.Date"/>
                 <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
             </c:if>
-            <div class="dateEdit" id="j:birthDate">${displayBirthDate}</div>
-        </li>
-        <li>
-            <span class="label"><fmt:message key="j_gender"/></span>
-            <div class="genderEdit" id="j:gender">${fields['j:gender']}</div>
-            <span class="visibilityEdit j_genderPublicEdit" id="j:genderPublic">
-            <c:if test="${fields['j:genderPublic'] eq 'true'}">
-                Public
-            </c:if>
-            <c:if test="${fields['j:genderPublic'] eq 'false' or empty fields['j:genderPublic']}">
-                Non Public
-            </c:if>
-            </span>
-        </li>
+            <div class="dateEdit" id="j_birthDate">${displayBirthDate}</div>
+        </li>        
         <li>
             <span class="label"><fmt:message key="j_title"/></span>
-            <div class="edit" id="j:title">${fields['j:title']}</div>
-            <span class="visibilityEdit j_titlePublicEdit" id="j:titlePublic">
+            <div class="edit" id="j_title">${fields['j:title']}</div>
+            <span class="visibilityEdit j_titlePublicEdit" id="j_titlePublic">
             <c:if test="${fields['j:titlePublic'] eq 'true'}">
                 Public
             </c:if>

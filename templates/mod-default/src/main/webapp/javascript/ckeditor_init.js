@@ -19,7 +19,7 @@ var ck = {
 
 /*
 $(document).ready(function() {
-  $.each(['id_body', 'id_content'], function(index, element) {
+  $.each(['j_about'], function(index, element) {
     if($('#' + element).length > 0) {
       $('label[for="' + element + '"]').hide();
       CKEDITOR.replace(element, ck.config);

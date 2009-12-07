@@ -41,8 +41,8 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.templates</groupId>
-    <artifactId>mod-wiki</artifactId>
-    <name>Jahia Wiki</name>
+    <artifactId>mod-blog</artifactId>
+    <name>Jahia Blog</name>
     <packaging>war</packaging>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>
@@ -50,11 +50,6 @@
             <id>jahiaRepository</id>
             <name>Jahia's Maven Repository</name>
             <url>http://maven.jahia.org/maven2</url>
-        </repository>
-        <repository>
-            <id>xwikiRepository</id>
-            <name>XWiki Maven Repository</name>
-            <url>http://maven.xwiki.org/releases</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -142,7 +137,8 @@
                             <Specification-Version>${project.version}</Specification-Version>
                             <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <root-folder>wiki</root-folder>
+                            <root-folder>blog</root-folder>
+                            <depends>Default Jahia Templates,Jahia Forum</depends>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -13,21 +13,31 @@ global Service service
 global Logger logger
 ###############################################################################
 
-rule "A welcome task for the new user"
-   when
-       A new node is created
-		- the node has the type jnt:user
-   then
-       Log "Creating welcome task for new user: " + node.getName()
-       Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
-end
+#rule "A welcome task for the new user"
+#   when
+#       A new node is created
+#		- the node has the type jnt:user
+#   then
+#       Log "Creating welcome task for new user: " + node.getName()
+#       Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
+#end
 
-rule "A notification about new group member"
-   when
-       A new node is created
-		- the node has the type jnt:member
-       The node has a parent
-   then
-       Log "Notifying members of the group '" + parent.getParent().getName() + "' about new member '" + node.getName()
-       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getName()
+#rule "A notification about new group member"
+#   when
+#       A new node is created
+#		- the node has the type jnt:member
+#       The node has a parent
+#   then
+#       Log "Notifying members of the group '" + parent.getParent().getName() + "' about new member '" + node.getName()
+#       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getName()
+#end
+
+rule "A task has been created"
+    when
+        A new node is created
+        - the node has the type jnt:task
+        The node has a property assignee
+    then
+        Set the property state of the node with the value "active"
+        Assign permissions "rw-" on the node to the user property.getNode().getName()
 end

@@ -1,87 +1,50 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-                <table width="100%" class="table tableTasks " summary="Mes taches en cour en table">
-                    <caption>
-                        My tasks
-                    </caption>
-                    <colgroup>
-                        <col span="1" width="10%" class="col1"/>
-                        <col span="1" width="50%" class="col2"/>
-                        <col span="1" width="10%" class="col3"/>
-                        <col span="1" width="10%" class="col4"/>
-                        <col span="1" width="15%" class="col5"/>
-                        <col span="1" width="15%" class="col6"/>
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="center" id="Type" scope="col">Type <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
-                                                                                                     href="#"> <img
-                                src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-                        <th id="Title" scope="col">Title <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png"
-                                alt="up"/></a><a
-                                title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
-                                                                 alt="down"/></a></th>
-                        <th class="center" id="State" scope="col">State <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
-                                                                                                     href="#"> <img
-                                src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-                        <th class="center" id="Priority" scope="col">Priority <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
-                                                                                                     href="#"> <img
-                                src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-                        <th id="Tags" scope="col">Tags <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png"
-                                alt="up"/></a><a
-                                title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
-                                                                 alt="down"/></a></th>
-                        <th id="Date" scope="col">Due Date <a href="#" title="sort up"><img
-                                src="${url.currentModule}/images/sort-arrow-up.png"
-                                alt="up"/></a><a
-                                title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
-                                                                 alt="down"/></a></th>
-                    </tr>
-                    </thead>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="Form taskForm"><!--start Form -->
 
-                    <tbody>
-                    <c:forEach items="${jcr:getNodes(currentNode,'jnt:task')}" var="task"
-                               begin="1" varStatus="status">
-                        <c:choose>
-                            <c:when test="${status.count % 2 == 0}">
-                                <tr class="odd">
-                            </c:when>
-                            <c:otherwise>
-                                <tr class="even">
-                            </c:otherwise>
-                        </c:choose>
-                        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/images/flag_16.png"/>
-                        </td>
-                        <td headers="Title"><a href="${url.base}${task.path}.html">${task.properties.title.string}</a></td>
-                        <td class="center" headers="State"><img alt=""
-                                                                src="${url.currentModule}/images/right_16.png"/>${currentNode.properties.status.string}
-                        </td>
-                        <td class="center" headers="Priority">${currentNode.properties.priority.string}</td>
-                        <td headers="Tags"></td>
-                        <td headers="Date"><fmt:formatDate value="${currentNode.properties['dueDate'].date.time}"
-                                                           dateStyle="short" type="date"/></td>
-                        </tr>
+
+
+            <form method="post" action="${url.base}${currentNode.path}/*">
+                <input type="hidden" name="nodeType" value="jnt:task">
+                <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}">
+              <fieldset><legend>NEW TASK</legend>
+
+
+                <p><label for="task_title" class="left">Title:</label>
+                <input type="text" name="title" id="task_title" class="field" value="" tabindex="16" /></p>
+
+                <p><label for="task_description" class="left">Description:</label>
+                <input type="text" name="description" id="task_description" class="field" value="" tabindex="17" /></p>
+
+                <p><label for="task_priority" class="left">Priority:</label>
+                  <select name="priority" id="task_priority" class="combo" tabindex="21" >
+                     <option value="very_low"> Very low </option>
+                     <option value="low"> Low </option>
+                     <option value="medium"> Medium </option>
+                     <option value="high"> High </option>
+                     <option value="very_high"> Very high </option></select></p>
+
+               <p><label for="task_dueDate" class="left">Due date:</label>
+                  <%--<input type="text" name="dueDate" id="task_dueDate" class="field" value="" tabindex="17" /></p>--%>
+
+                  <p><label for="task_assignee" class="left">Assignee:</label>
+
+                      <jcr:sql sql="select * from [jnt:user] as user" var="users" />
+                    <select name="assignee" id="task_assignee" class="combo" tabindex="21" >
+
+                    <c:forEach items="${users.nodes}" var="user">
+                        <c:if test="${user.name != 'guest'}">
+                        <option value="${user.identifier}"> ${user.name} </option>
+                        </c:if>
                     </c:forEach>
-                    </tbody>
-                </table>
-                <div class="pagination"><!--start pagination-->
-                    <div class="paginationPosition"><span>Page 2 of 2 - 450 results</span></div>
-                    <div class="paginationNavigation"><a href="#" class="previousLink">Previous</a> <span><a href="#"
-                                                                                                             class="paginationPageUrl">1</a></span>
-                        <span><a href="#" class="paginationPageUrl">2</a></span> <span><a href="#"
-                                                                                          class="paginationPageUrl">3</a></span>
-                        <span><a href="#" class="paginationPageUrl">4</a></span> <span><a href="#"
-                                                                                          class="paginationPageUrl">5</a></span>
-                        <span class="currentPage">6</span> <a href="#" class="nextLink">Next</a></div>
-                    <div class="clear"></div>
-                </div>
-                <!--stop pagination-->
+                    </select>
+                  </p>
+              </fieldset>
 
-                <template:module node="${currentNode}" forcedTemplate="newTask" />
+              <div class="divButton"><input type="submit" id="submit" class="button" value="Send message" tabindex="28" /><input type="reset" name="reset" id="reset" class="button" value="Reset message" tabindex="29"/>
+              </div>
+            </form>
+          </div>
+<div class='clear'></div>
+
+

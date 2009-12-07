@@ -42,6 +42,7 @@
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
 [consequence][]Assign permissions "{perms}" on the {node} to a group matching that property=service.setPermissions({node},"g:" + propertyValue + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the current user=service.setPermissions({node},"u:" + user.getName() + ":{perms}", drools);
+[consequence][]Assign permissions "{perms}" on the {node} to the user {user}=service.setPermissions({node},"u:" + {user} + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the group {group}=service.setPermissions({node},"g:" + {group} + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to this group=service.setPermissions({node},"g:" + groupName + ":{perms}", drools);
 [consequence][]Assign permissions on the {node} from the property value=service.setPermissions({node},propertyValue, drools);

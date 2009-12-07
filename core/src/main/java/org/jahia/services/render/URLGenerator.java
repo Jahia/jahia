@@ -106,7 +106,11 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        return base + resource.getNode().getPath() +".html";
+        if (resource.getForcedTemplate() != null) {
+            return base + resource.getNode().getPath() + "." + resource.getForcedTemplate() + ".html";
+        } else {
+            return base + resource.getNode().getPath() +".html";
+        }
     }
 
     public Map<String,String> getLanguages() {

@@ -769,4 +769,23 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Init pager
+        </description>
+        <name>initPager</name>
+        <tag-class>org.jahia.taglibs.template.pager.InitPagerTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Number of elements per page</description>
+            <name>pageSize</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Total number of elements</description>
+            <name>totalSize</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

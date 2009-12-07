@@ -34,19 +34,17 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
+import org.jahia.registries.ServicesRegistry;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.File;
 import java.util.Set;
-import java.util.SortedSet;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,33 +71,43 @@ public class AddResourcesTag extends BodyTagSupport {
     public int doEndTag() throws JspException {
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        String path = pageContext.getServletContext().getRealPath(templatesPackage.getRootFolderPath());
-        addResources(renderContext, templatesPackage, path, type, resources);
+        addResources(renderContext, templatesPackage, type, resources);
         nodetype = null;
         node = null;
         return super.doEndTag();
     }
 
-    private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String path, String type,
+    private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
                               String resources) {
         final Set<String> links = renderContext.getExternalLinks(type);
         String[] strings = resources.split(",");
+
+        List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
+        packages.add(aPackage);
+        for (String s : aPackage.getDepends()) {
+            packages.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(s));
+        }
+
         for (String resource : strings) {
-            if (resource.startsWith("/")) {
+            if (resource.startsWith("/") || resource.startsWith("http://")) {
                 renderContext.addExternalLink(type, resource);
             } else {
-                File f = new File(path + "/" + type + "/" + resource);
-                if (f.exists()) {
-                    boolean found = false;
-                    if (links != null) {
-                        for (String link : links) {
-                            if (link.endsWith(f.getName())) {
-                                found = true;
+                for (JahiaTemplatesPackage pack : packages){
+                    String path = pageContext.getServletContext().getRealPath(pack.getRootFolderPath());
+                    File f = new File(path + "/" + type + "/" + resource);
+                    if (f.exists()) {
+                        boolean found = false;
+                        if (links != null) {
+                            for (String link : links) {
+                                if (link.endsWith(f.getName())) {
+                                    found = true;
+                                }
                             }
                         }
-                    }
-                    if (!found) {
-                        renderContext.addExternalLink(type,renderContext.getRequest().getContextPath() + aPackage.getRootFolderPath() + "/" + type + "/" + f.getName());
+                        if (!found) {
+                            renderContext.addExternalLink(type,renderContext.getRequest().getContextPath() + pack.getRootFolderPath() + "/" + type + "/" + f.getName());
+                            break;
+                        }
                     }
                 }
             }

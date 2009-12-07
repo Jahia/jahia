@@ -304,9 +304,16 @@ public class PropertyWrapper implements Updateable {
         return r;
     }
 
-    public Object getValue() throws RepositoryException {
+    public Object getValues() throws RepositoryException {
         if (property != null) {
             return property.getValues();
+        }
+        return null;
+    }
+
+    public Object getValue() throws RepositoryException {
+        if (property != null) {
+            return property.getValue();
         }
         return null;
     }

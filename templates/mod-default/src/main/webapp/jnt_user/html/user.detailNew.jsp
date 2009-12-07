@@ -26,44 +26,12 @@
 
             <div class="edit" id="${key}"><c:if test="${empty fields[key]}">Click here to edit</c:if><c:if test="${!empty fields[key]}">${fields[key]}</c:if></div>
             <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibility" id="${key}Public">
+            <span class="visibilityEdit" id="${key}Public">
             <c:if test="${fields[pubKey] eq 'true'}">Public</c:if>
             <c:if test="${fields[pubKey] eq 'false' or empty fields[pubKey]}">Private</c:if>
             </span>
         </li>
     </c:forTokens>
-    <script type="text/javascript">
-            $(document).ready(function() {
-                $(".j_birthDateEdit").editable(function (value, settings) {
-                    if(value.match("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]")) {
-                       var split = value.split("/");
-                        var birth = new Date();
-                        birth.setFullYear(split[2],split[1],split[0]);
-                        var month = "";
-                        if(birth.getMonth()<10) {
-                            month = "0"+birth.getMonth();
-                        } else month = birth.getMonth();
-                        value = birth.getFullYear()+'-'+month+'-'+birth.getDate()+'T00:00:00';
-                    $.post("${url.base}${currentNode.path}", {'j:birthDate': value, methodToCall:"put"}, function(result){
-                        //todo update age
-                    }, "json");
-                    return(html);
-                    } return "error date must be day/month/year";
-                }, {
-                        type    : 'text',
-                        submit  : 'OK'
-                });
-                $(".j_birthDatePublicEdit").editable(function (value, settings) {
-                        $.post("${url.base}${currentNode.path}", {'j:birthDatePublic': value, methodToCall:"put"}, null, "json");
-                        if (value == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    },{
-                        type    : 'text',
-                        submit  : 'OK'
-                });
-            });
-        </script>
         <li>
             <span class="label"><fmt:message key="j_birthDate"/></span>
             <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
@@ -74,43 +42,12 @@
                 <jsp:useBean id="now" class="java.util.Date"/>
                 <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
             </c:if>
-            <div class="j_birthDateEdit">${displayBirthDate}</div>
+            <div class="dateEdit" id="j:birthDate">${displayBirthDate}</div>
         </li>
-    <script type="text/javascript">
-        /*
-            $(document).ready(function() {
-                $(".j_genderEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "male,female,other",
-                    callback: function(original_element, html, original) {
-                        var value = html;
-                        $.post("${url.base}${currentNode.path}", {'j:gender': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
-                            //todo update age
-                        }, "json");
-                        return(html);
-                    }
-                });
-            });
-            $(document).ready(function() {
-                $(".j_genderPublicEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "true,false",
-                    callback: function(original_element, html, original) {
-                        $.post("${url.base}${currentNode.path}", {'j:genderPublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (html == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    }
-                });
-            });
-            */
-        </script>
         <li>
             <span class="label"><fmt:message key="j_gender"/></span>
-            <div class="j_genderEdit">${fields['j:gender']}</div>
-            <span class="visibility j_genderPublicEdit">
+            <div class="genderEdit" id="j:gender">${fields['j:gender']}</div>
+            <span class="visibilityEdit j_genderPublicEdit" id="j:genderPublic">
             <c:if test="${fields['j:genderPublic'] eq 'true'}">
                 Public
             </c:if>
@@ -119,42 +56,10 @@
             </c:if>
             </span>
         </li>
-    <script type="text/javascript">
-        /*
-            $(document).ready(function() {
-                $(".j_titleEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "mister,master,professor,doctor,miss,madam",
-                    callback: function(original_element, html, original) {
-                        var value = html;
-                        $.post("${url.base}${currentNode.path}", {'j:title': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
-                            $("#personDisplay2").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
-                            $("#personDisplay1").html(result.j_title+" "+result.j_firstName+" "+result.j_lastName);
-                        }, "json");
-                        return(html);
-                    }
-                });
-            });
-            $(document).ready(function() {
-                $(".j_genderPublicEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "true,false",
-                    callback: function(original_element, html, original) {
-                        $.post("${url.base}${currentNode.path}", {'j:titlePublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (html == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    }
-                });
-            });
-         */
-        </script>
         <li>
             <span class="label"><fmt:message key="j_title"/></span>
-            <div class="j_titleEdit">${fields['j:title']}</div>
-            <span class="visibility j_titlePublicEdit">
+            <div class="edit" id="j:title">${fields['j:title']}</div>
+            <span class="visibilityEdit j_titlePublicEdit" id="j:titlePublic">
             <c:if test="${fields['j:titlePublic'] eq 'true'}">
                 Public
             </c:if>

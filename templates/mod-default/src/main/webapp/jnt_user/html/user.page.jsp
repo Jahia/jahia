@@ -6,9 +6,11 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="960.css,userProfile.css"/>
+<template:addResources type="css" resources="datepicker.css" />
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="/gwt/resources/ckeditor/ckeditor.js,ckeditor_init.js,jquery.jeditable.ckeditor.js" />
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js" />
+<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js" />
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
@@ -33,8 +35,11 @@
                 }, "json");
                 return(value);
         }, {
-                type    : 'text'
-            tooltip : 'Click to edit'
+                type    : 'text',
+                onblur : 'ignore',
+                submit : 'OK',
+                cancel : 'Cancel',
+                tooltip : 'Click to edit'
         });
         $(".visibilityEdit").editable(function (value, settings) {
                 var submitId = $(this).attr('id');
@@ -47,8 +52,11 @@
                     return "Private";
             },{
                 type    : 'select',
-                data   : "{'true':'Public','false':'Private'}"
-            tooltip : 'Click to edit'
+                data   : "{'true':'Public','false':'Private'}",
+                onblur : 'ignore',
+                submit : 'OK',
+                cancel : 'Cancel',
+                tooltip : 'Click to edit'
         });
 
         $(".imageEdit").editable(function (value, settings) {
@@ -67,39 +75,58 @@
             tooltip : 'Click to edit'
         });
 
+        $(".ckeditorEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id');
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, function(result){
+                }, "json");
+                return(value);
+        }, {
+            type : 'ckeditor',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+        $(".dateEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id');
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, function(result){
+                }, "json");
+                return(value);
+        }, {
+            type : 'datepicker',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+        $(".genderEdit").editable(function (value, settings) {
+                var submitId = $(this).attr('id');
+                var data = {};
+                data[submitId] = value;
+                data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, null, "json");
+                if (value == "male")
+                    return "Male"; else
+                    return "Female";
+            },{
+                type    : 'select',
+                data   : "{'male':'Male','female':'Female'}",
+                onblur : 'ignore',
+                submit : 'OK',
+                cancel : 'Cancel',
+                tooltip : 'Click to edit'
+        });
 
     });
 </script>
-
-<script type="text/javascript">
-            $(document).ready(function() {
-
-
-
-                $(".j_emailPublicEdit").editable(function (value, settings) {
-                        $.post("${url.base}${currentNode.path}", {'j:emailPublic': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (value == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    },{
-                        type    : 'text',
-                        submit  : 'OK'
-                });
-                /*
-                $(".j_emailPublicEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "true,false",
-                    callback: function(original_element, html, original) {
-                        $.post("${url.base}${currentNode.path}", {"j:emailPublic": html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (html == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    }
-                });
-                */
-            });
-        </script>
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
 <div class="container container_16"> <!--start container_16-->
@@ -117,9 +144,9 @@
                     <div class="list3 user-profile-list">
                     <ul class="list3 user-profile-list">
                     <li><span class="label">Age : </span> ${currentYear - birthYear} ans</li>
-                    <li><span class="label">Sexe : </span> ${fields['j:gender']}</li>
+                    <li><span class="label">Sexe : </span> <span class="genderEdit" id="j:gender">${fields['j:gender']}</span></li>
 
-                    <li><span class="label">Email Perso: </span> <span id="j:email" class="edit">${fields['j:email']}</span> <span class="visibility j_emailPublicEdit"><c:if test="${fields['j:emailPublic'] eq 'true'}">
+                    <li><span class="label">Email Perso: </span> <span id="j:email" class="edit">${fields['j:email']}</span> <span class="visibilityEdit" id="j:emailPublic"><c:if test="${fields['j:emailPublic'] eq 'true'}">
                 Public
             </c:if>
             <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">
@@ -254,62 +281,8 @@
                     <div class="box-inner-border"><!--start box -->
 
                     <h3 class="boxtitleh3">About Me</h3>
-                        <script type="text/javascript">
-            $(document).ready(function() {
-                $(".j_aboutEdit").editable(function (value, settings) {
-                        $.post("${url.base}${currentNode.path}",
-                               {'j:about': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, function(result){
-                        }, "json");
-                        return(value);
-                }, {
-                    type : 'ckeditor',
-                    onblur : 'ignore',
-                    submit : 'OK',
-                    cancel : 'Cancel',
-                    tooltip : 'Click to edit',
-                    id : 'aboutMe'
-                });
-                /*
-                $(".j_aboutEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "textarea",
-                    textarea_rows: "40",
-                    textarea_cols: "60",
-                    callback: function(original_element, html, original) {
-                        var value = html;
-                        $.post("${url.base}${currentNode.path}", {'j:about': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        return(html);
-                    }
-                });
-                */
-            });
-            $(document).ready(function() {
-                $(".j_aboutPublicEdit").editable(function (value, settings) {
-                        $.post("${url.base}${currentNode.path}", {'j:aboutPublic': value, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (value == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    },{
-                        type    : 'text',
-                        submit  : 'OK'
-                });
-                /*
-                $(".j_aboutPublicEdit").editInPlace({
-                    show_buttons: true,
-                    field_type: "select",
-                    select_options: "true,false",
-                    callback: function(original_element, html, original) {
-                        $.post("${url.base}${currentNode.path}", {'j:aboutPublic': html, stayOnNode:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"}, null, "json");
-                        if (html == "true")
-                            return "Public"; else
-                            return "Non Public";
-                    }
-                });
-                */
-            });
-        </script>
-                        <div class="j_aboutEdit">${fields['j:about']}</div>
-            <span class="visibility j_aboutPublicEdit">
+                        <div class="ckeditorEdit j_aboutEdit" id="j:about">${fields['j:about']}</div>
+            <span class="visibilityEdit" id="j:aboutPublic">
             <c:if test="${fields['j:aboutPublic'] eq 'true'}">
                 Public
             </c:if>

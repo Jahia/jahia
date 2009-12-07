@@ -48,7 +48,7 @@ public class WikiFilter extends AbstractFilter {
     }
 
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        return WikiRenderer.renderWikiSyntaxAsXHTML(chain.doFilter(renderContext, resource),syntaxFactory,inputSyntax,outputSyntax);
+        return WikiRenderer.renderWikiSyntaxAsXHTML(renderContext,chain.doFilter(renderContext, resource),syntaxFactory,inputSyntax,outputSyntax);
     }
 
 }

@@ -1,15 +1,27 @@
 package org.jahia.wiki;
 
 import org.xwiki.rendering.syntax.SyntaxFactory;
-import org.xwiki.rendering.syntax.Syntax;
-import org.xwiki.rendering.converter.Converter;
 import org.xwiki.rendering.renderer.printer.WikiPrinter;
 import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
-import org.xwiki.rendering.parser.ParseException;
+import org.xwiki.rendering.renderer.LinkLabelGenerator;
+import org.xwiki.rendering.renderer.BlockRenderer;
+import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
+import org.xwiki.rendering.parser.Parser;
+import org.xwiki.rendering.block.XDOM;
+import org.xwiki.rendering.block.LinkBlock;
+import org.xwiki.rendering.transformation.TransformationManager;
+import org.xwiki.rendering.listener.Link;
+import org.xwiki.rendering.listener.LinkType;
 import org.xwiki.component.embed.EmbeddableComponentManager;
+import org.xwiki.component.descriptor.ComponentDescriptor;
+import org.xwiki.component.descriptor.DefaultComponentDescriptor;
+import org.xwiki.component.manager.ComponentManager;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.content.JCRNodeWrapper;
 
 
-import java.io.StringReader; /**
+import java.io.StringReader;
+import java.util.List; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -48,7 +60,31 @@ import java.io.StringReader; /**
  */
 public class WikiRenderer {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(WikiRenderer.class);
+    private static EmbeddableComponentManager componentManager;
 
+
+    /**
+     * Get componentManager. If null, created a new one
+     *
+     * @param classLoader
+     * @return
+     */
+    private static ComponentManager getComponentManager(ClassLoader classLoader) throws Exception {
+        if (componentManager == null) {
+            componentManager = new EmbeddableComponentManager();
+            componentManager.initialize(classLoader);
+            // register use our linkRenderer as link renderer
+            DefaultComponentDescriptor<XHTMLLinkRenderer> componentDescriptor = new DefaultComponentDescriptor<XHTMLLinkRenderer>();
+            componentDescriptor.setRole(XHTMLLinkRenderer.class);
+            componentDescriptor.setImplementation(CustomXHTMLLinkRenderer.class);
+            componentDescriptor.setRoleHint("default");
+            componentManager.registerComponent(componentDescriptor);
+
+
+        }
+        return componentManager;
+
+    }
 
     /**
      * Render wiki content as html
@@ -57,19 +93,29 @@ public class WikiRenderer {
      * @return
      * @throws Exception
      */
-    public static String renderWikiSyntaxAsXHTML(String html, SyntaxFactory syntaxFactory, String inputSyntax, String outputSyntax) throws Exception {
+    public static String renderWikiSyntaxAsXHTML(RenderContext renderContext, String html, SyntaxFactory syntaxFactory, String inputSyntax, String outputSyntax) throws Exception {
         logger.debug("Wiki content before processing: " + html);
-
         // Initialize Rendering components and allow getting instances
-        EmbeddableComponentManager ecm = new EmbeddableComponentManager();
-        ecm.initialize(syntaxFactory.getClass().getClassLoader());
+        ComponentManager componentManager = getComponentManager(syntaxFactory.getClass().getClassLoader());
 
-        // Use a the Converter component to convert between one syntax to another.
-        Converter converter = ecm.lookup(Converter.class);
+        // update the renderContext
+        CustomXHTMLLinkRenderer linkRenderer = (CustomXHTMLLinkRenderer) componentManager.lookup(XHTMLLinkRenderer.class);
+        linkRenderer.setRenderContext(renderContext);
 
-        // Convert input in Wiki Syntax into Output. The result is stored in the printer.
+        // add .html if there is no extention
+        Parser parser = componentManager.lookup(Parser.class, inputSyntax);
+        XDOM xdom = parser.parse(new StringReader(html));
+
+
+        // Execute transformations (for example this executes the Macros which are implemented as Transformations).
+        TransformationManager txManager = componentManager.lookup(TransformationManager.class);
+        txManager.performTransformations(xdom, parser.getSyntax());
+
+        // Generate XWiki 2.0 Syntax as output for example
         WikiPrinter printer = new DefaultWikiPrinter();
-        converter.convert(new StringReader(html), createInputSyntax(syntaxFactory, inputSyntax), createOutputSyntax(syntaxFactory, outputSyntax), printer);
+        BlockRenderer renderer = componentManager.lookup(BlockRenderer.class, outputSyntax);
+        renderer.render(xdom, printer);
+
 
         String result = printer.toString();
         logger.debug("Wiki content after processing:" + result);
@@ -78,48 +124,5 @@ public class WikiRenderer {
 
     }
 
-    /**
-     * Create InputSyntax
-     *
-     * @param syntax
-     * @return
-     */
-    private static Syntax createInputSyntax(SyntaxFactory syntaxFactory, String syntax) {
-        Syntax inputSyntax;
-        if (syntax == null) {
-            inputSyntax = Syntax.XHTML_1_0;
-        } else {
-            try {
-                inputSyntax = syntaxFactory.createSyntaxFromIdString(syntax);
-            } catch (ParseException e) {
-                logger.error(e, e);
-                inputSyntax = Syntax.XHTML_1_0;
-            }
-        }
-        logger.debug("Input syntax: " + inputSyntax.toIdString());
-        return inputSyntax;
-    }
-
-    /**
-     * Create output syntax
-     *
-     * @param syntax
-     * @return
-     */
-    private static Syntax createOutputSyntax(SyntaxFactory syntaxFactory, String syntax) {
-        Syntax outputSyntax;
-        if (syntax == null) {
-            outputSyntax = Syntax.MEDIAWIKI_1_0;
-        } else {
-            try {
-                outputSyntax = syntaxFactory.createSyntaxFromIdString(syntax);
-            } catch (ParseException e) {
-                logger.error(e, e);
-                outputSyntax = Syntax.MEDIAWIKI_1_0;
-            }
-        }
-        logger.debug("Output syntax: " + outputSyntax.toIdString());
-        return outputSyntax;
-    }
 
 }

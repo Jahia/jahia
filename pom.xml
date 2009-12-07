@@ -256,7 +256,7 @@
     <module>templates</module>
     <module>prepackagedSites</module>
     <module>war</module>
-    <!--<module>ear</module>-->
+    <module>ear</module>
   </modules>
 
     <distributionManagement>

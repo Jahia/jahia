@@ -295,7 +295,7 @@ class TemplatePackageRegistry {
             	}
             }
             if (!sourcePack.isDefault()) {
-            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.default");
+            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");
             }
         }
         

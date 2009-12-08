@@ -36,20 +36,20 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaSessionExpirationException;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.SiteLanguageSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -182,6 +182,9 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
             params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
             params.put(JahiaGWTParameters.COMPARE_URL, null);
+            addLanguageSwitcherLinks(processingContext,params,url);
+
+
         } else {
             if (jData != null && jData.gui() != null) {
             }
@@ -197,6 +200,29 @@ public class GWTInitializer {
 
 
         return buf.toString();
+    }
+
+    /**
+     * Add lnaguage switcher link into page
+     * @param processingContext
+     * @param params
+     * @param urlGenerator
+     */
+    public static void addLanguageSwitcherLinks(ProcessingContext processingContext, Map<String, String> params, URLGenerator urlGenerator) {
+        try {
+            final JahiaSite currentSite = processingContext.getSite();
+            final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
+            logger.error("found " + languageSettings.size() + "");
+            if (languageSettings != null && languageSettings.size() > 0) {
+                for (SiteLanguageSettings lang : languageSettings) {
+                    params.put(lang.getCode(), urlGenerator.getLanguages().get(lang.getCode()));
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error("JahiaException: Error while creating change site link", e);
+        } catch (Exception e) {
+            logger.error("Error while creating change site link", e);
+        }
     }
 
 

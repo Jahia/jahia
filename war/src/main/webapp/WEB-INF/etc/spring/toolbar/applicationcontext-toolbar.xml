@@ -113,10 +113,8 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <!--
-                ToDo : activate LanguageSwitcher
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-                <ref bean="org.jahia.toolbar.item.Separator"/>-->
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.NewAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
@@ -638,12 +636,10 @@
     <!-- language switcher -->
     <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
-        <property name="items">
-            <list>
-                <bean id="org.jahia.toolbar.item.LanguageSwitcher" class="org.jahia.services.toolbar.bean.Item"/>
-            </list>
-        </property>
+        <property name="itemsResolver" ref="languageItemsResolver"/>
     </bean>
+
+    <bean id="languageItemsResolver" class="org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver"/>
 
     <!-- subscriptions -->
     <bean id="org.jahia.toolbar.itemsgroup.Subscriptions" class="org.jahia.services.toolbar.bean.ItemsGroup">

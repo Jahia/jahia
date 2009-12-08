@@ -73,7 +73,7 @@ public class WikiRenderer {
         if (componentManager == null) {
             componentManager = new EmbeddableComponentManager();
             componentManager.initialize(classLoader);
-            // register use our linkRenderer as link renderer
+            // register use our linkRenderer as  default link renderer
             DefaultComponentDescriptor<XHTMLLinkRenderer> componentDescriptor = new DefaultComponentDescriptor<XHTMLLinkRenderer>();
             componentDescriptor.setRole(XHTMLLinkRenderer.class);
             componentDescriptor.setImplementation(CustomXHTMLLinkRenderer.class);

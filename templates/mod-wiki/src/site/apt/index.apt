@@ -1,0 +1,116 @@
+
+Jahia Wiki module
+
+  The Jahia Wiki  as for goals to allow you to create Wiki pages and contents in your site.
+
+* What is a Wiki - Wikipedia definition?
+
+  A wiki  is a website that allows the easy creation and editing of any number of interlinked web pages via a web browser using a simplified markup language.
+
+
+* How is it integrated into Jahia ?
+
+  The wiki feature is jahia module that defines a set of nodes representing a wiki page and a wiki content
+
+-------------------------------------
+[jnt:wikiContent] > jnt:content
+ - text (string, richtext) i18n
+
+[jnt:wikiPage] > jnt:content, mix:title
+ - lastComment (string)
+ - text (string, richtext) i18n
+-------------------------------------
+
+ and a set of jsps allowing diplaying and creating new wiki pages.
+
+ The wiki content can be written thanks to a simplified markup language.
+
+
+* How the markup language is interpreted?
+
+  It's handled that to a RenderFilter that wrappes the framework XWiki (http://www.xwiki.org/).
+
+* How XWiki is intergrated into Jahia?
+
+ The jars of xwiki are already available into Jahia. To handle internLink ([[a sub page]] syntax), a custom XHMLLinker has been implemented. Basically, it checks if a pages is available or not. Depending on that, a "create" or a "view" page link is displayed.
+ This LinkRenderer works like the XHTMLLinkrenderer classes provided by default by Xwiki and gives access to jahia object like the RenderContext.
+
+-------------------------------------
+
+public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable {
+...
+    public RenderContext getRenderContext() {
+        return renderContext;
+    }
+
+    public void setRenderContext(RenderContext renderContext) {
+        this.renderContext = renderContext;
+    }
+...
+}
+-------------------------------------
+
+
+* What's the default markup language?
+
+ The default markup language is xwiki/2.0 (http://platform.xwiki.org/xwiki/bin/view/Main/XWikiSyntax or http://wiki.easybeans.ow2.org/xwiki/bin/view/Doc/XWikiSyntax)
+
+* How do I change the markup language ?
+
+ It's correspond to the property inputSyntax defined in mod-wiki.xml file :
+
+-------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
+        <property name="module" value="Jahia Wiki"/>
+        <property name="filters">
+            <list>
+                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
+                    <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
+                    <property name="inputSyntax" value="xwiki/2.0"/>
+                    <property name="outputSyntax" value="xhtml/1.0"/>
+                    <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
+                    <property name="applyOnTemplates" value="syntax"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>
+    <bean name="NewWikiPageHandler" class="org.jahia.wiki.errors.NewWikiPageHandler"/>
+</beans>
+-------------------------------------
+
+ Supported markup are the ones supported by xwiki:
+  
+     * XWiki Syntax 1.0 (xwiki/1.0)
+
+     * XWiki Syntax 2.0 (xwiki/2.0)
+
+     * Confluence Syntax (confluence/1.0)
+     
+     * JSPWiki Syntax (jspwiki/1.0)
+
+     * TWiki Syntax (twiki/1.0)
+
+     * Media Wiki Syntax (mediawiki/1.0) ---> Wikipedia
+
+     * Creole 1.0 Syntax (creole/1.0)
+
+     * XHTML and HTML Syntaxes (xhtml/1.0 and html/4.01)
+
+     * Plain Text (plain/1.0)
+
+* Where can I found documentation about Xwiki?
+
+   http://code.xwiki.org/xwiki/bin/view/Modules/RenderingModule
+
+* What is the version of xwiki ?
+
+  2.0.4
+
+
+

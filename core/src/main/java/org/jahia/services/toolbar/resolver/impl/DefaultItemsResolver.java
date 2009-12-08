@@ -26,6 +26,7 @@ public abstract class DefaultItemsResolver implements ItemsResolver {
      * @param pid
      * @return
      * @throws org.jahia.exceptions.JahiaException
+     *
      */
     protected Item createRedirectItem(JahiaData jahiaData, String itemTitle, Integer pid) {
         try {
@@ -76,6 +77,32 @@ public abstract class DefaultItemsResolver implements ItemsResolver {
         return null;
     }
 
+    protected Item createJsRedirectItem(String itemTitle, String jsParamName) throws JahiaException {
+        // to do resolve the node url
+        if (jsParamName == null) {
+            jsParamName = "http://www.jahia.org";
+        }
+        String title = itemTitle;
+
+
+        // create the toolitem
+        Item item = new Item();
+        item.setTitle(title);
+        item.setActionItem(new RedirectWindowActionItem());
+        item.setDisplayTitle(true);
+
+        // add url property
+        Property property = new Property();
+        property.setName("js.url");
+        property.setValue(jsParamName);
+        item.addProperty(property);
+
+
+
+
+        return item;
+
+    }
 
 
 }

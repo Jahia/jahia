@@ -116,7 +116,7 @@ public class FormJahiaModule extends JahiaModule {
                                     captchaValue = (String) captchaField.getValue();
                                     if (captchaValue == null) captchaValue = "";
                                 }
-                                JahiaContentManagementService.App.getInstance().createNode(target, "node" + System.currentTimeMillis(), nodeType, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
+                                JahiaContentManagementService.App.getInstance().createNode(target, "node" + System.currentTimeMillis(), nodeType, null, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         if (caught.getMessage().equals("Invalid captcha")) {
                                             String captchaUrl = captcha + "?" + System.currentTimeMillis();

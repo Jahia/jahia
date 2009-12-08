@@ -59,7 +59,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams,
                                                      ExtendedPropertyDefinition declaringPropertyDefinition,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         if (jParams == null) {
             return new ArrayList<ChoiceListValue>();
         }
@@ -77,17 +77,11 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 return new ArrayList<ChoiceListValue>();
             }
         } else {
-            try {
-                final ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(realNodeType);
-                nodeTypeList = new ArrayList<String>();
-                nodeTypeList.add(realNodeType);
-                final ExtendedNodeType[] subtypes = nodeType.getMixinSubtypes();
-                for (ExtendedNodeType subtype : subtypes) {
-                    nodeTypeList.add(subtype.getName());
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                return new ArrayList<ChoiceListValue>();
+            nodeTypeList = new ArrayList<String>();
+            nodeTypeList.add(realNodeType.getName());
+            final ExtendedNodeType[] subtypes = realNodeType.getMixinSubtypes();
+            for (ExtendedNodeType subtype : subtypes) {
+                nodeTypeList.add(subtype.getName());
             }
         }
 
@@ -133,7 +127,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                                 SortedSet<Template> commonTemplateSortedSet = new TreeSet<Template>();
                                 for (Template template : templateSortedSet) {
                                     for (Template template1 : templates) {
-                                        if(template1.getKey().equals(template.getKey())) {
+                                        if (template1.getKey().equals(template.getKey())) {
                                             commonTemplateSortedSet.add(template);
                                         }
                                     }
@@ -154,9 +148,18 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Template template : templates) {
-            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith(
-                    "skins.") && !template.getKey().startsWith("debug.") && !template.getKey().contains("hidden.")) {
-                vs.add(new ChoiceListValue(template.getKey(), new HashMap<String, Object>(), new ValueImpl(
+            if (!"false".equals(template.getProperties().getProperty("visible")) && !template.getKey().startsWith("wrapper.")
+                    && !template.getKey().startsWith("skins.")
+                    && !template.getKey().startsWith("debug.")
+                    && !template.getKey().contains("hidden.")
+                    && (!"siteLayout".equals(template.getModule().getModuleType()) || template.getModule().getName().equals(jParams.getSite().getTemplatePackageName()))
+            ) {
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                Properties properties = template.getProperties();
+                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                    map.put(entry.getKey().toString(), entry.getValue());
+                }
+                vs.add(new ChoiceListValue(template.getKey(), map, new ValueImpl(
                         template.getKey(), PropertyType.STRING, false)));
             }
         }

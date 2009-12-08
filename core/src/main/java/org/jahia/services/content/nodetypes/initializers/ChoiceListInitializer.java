@@ -34,6 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import java.util.List;
 
@@ -45,6 +46,6 @@ import java.util.List;
  *        Created : 17 nov. 2009
  */
 public interface ChoiceListInitializer {
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd, String param,
-                                                     String realNodeType, List<ChoiceListValue> values);
+    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param,
+                                                     List<ChoiceListValue> values);
 }

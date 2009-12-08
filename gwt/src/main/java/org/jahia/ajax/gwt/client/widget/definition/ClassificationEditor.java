@@ -396,7 +396,7 @@ public class ClassificationEditor extends LayoutContainer {
                 async.getNode(s + "/" + name.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {
 
-                        async.createNode(s, name.getRawValue(), "jnt:tag", new ArrayList<GWTJahiaNodeProperty>(), null,
+                        async.createNode(s, name.getRawValue(), "jnt:tag", null, new ArrayList<GWTJahiaNodeProperty>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         com.google.gwt.user.client.Window.alert(

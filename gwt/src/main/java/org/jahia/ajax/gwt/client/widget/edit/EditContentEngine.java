@@ -723,8 +723,28 @@ public class EditContentEngine extends Window {
             if(nodeName.equals("Automatically Created (you can type your name here if you want)")) {
                 nodeName = targetName;
             }
+
+            List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+            List<String> mixin = new ArrayList<String>();
+            if (propertiesEditor != null) {
+                props.addAll(propertiesEditor.getProperties());
+                mixin.addAll(propertiesEditor.getAddedTypes());
+            }
+            if (layoutEditor != null) {
+                props.addAll(layoutEditor.getProperties());
+                mixin.addAll(layoutEditor.getAddedTypes());
+            }
+            if (metadataEditor != null) {
+                props.addAll(metadataEditor.getProperties());
+                mixin.addAll(metadataEditor.getAddedTypes());
+            }
+            if (optionsEditor != null) {
+                props.addAll(optionsEditor.getProperties());
+                mixin.addAll(optionsEditor.getAddedTypes());
+            }
+
             if (createInParentAndMoveBefore) {
-                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<Object>() {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<Object>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);
@@ -737,7 +757,7 @@ public class EditContentEngine extends Window {
                     }
                 });
             } else {
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);

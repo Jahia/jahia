@@ -67,8 +67,8 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
     private boolean showProtected = true;
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams,
-            ExtendedPropertyDefinition declaringPropertyDefinition, String param, String realNodeType,
-            List<ChoiceListValue> values) {
+                                                     ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param,
+                                                     List<ChoiceListValue> values) {
         if (jParams == null) {
             return Collections.emptyList();
         }
@@ -83,8 +83,7 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
                 // TODO get the child nodes, their types and declared properties
                 propertyDefs = getCommonChildNodeDefinitions(node);
             } else {
-                propertyDefs = NodeTypeRegistry.getInstance().getNodeType(realNodeType)
-                        .getPropertyDefinitions();
+                propertyDefs = realNodeType.getPropertyDefinitions();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

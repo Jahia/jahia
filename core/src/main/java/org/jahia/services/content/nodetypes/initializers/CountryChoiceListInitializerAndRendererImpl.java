@@ -35,6 +35,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
@@ -53,7 +54,7 @@ import java.util.*;
 public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         String[] iso = Locale.getISOCountries();
         List<ChoiceListValue> l = new ArrayList<ChoiceListValue>(iso.length);
         for (String anIso : iso) {

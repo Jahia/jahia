@@ -377,6 +377,8 @@
 
 [jmix:pageMixin] mixin
 
+[jmix:templateMixin] mixin
+
 //---------------------------------------------------------
 // Pages, content lists, schmurtzs
 //---------------------------------------------------------

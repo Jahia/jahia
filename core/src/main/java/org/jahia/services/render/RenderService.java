@@ -34,28 +34,30 @@ package org.jahia.services.render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
-import org.jahia.services.render.filter.RenderFilter;
-import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.filter.TemplateScriptFilter;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.RenderFilter;
+import org.jahia.services.render.filter.RenderServiceAware;
+import org.jahia.services.render.filter.TemplateScriptFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Service to render node
- *  
- * @author toto
  *
+ * @author toto
  */
 public class RenderService extends JahiaService {
-    
+
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             return bean;
@@ -68,12 +70,12 @@ public class RenderService extends JahiaService {
             return bean;
         }
     }
-    
+
     private static volatile RenderService instance;
-    
+
     public static RenderService getInstance() {
         if (instance == null) {
-            synchronized(RenderService.class) {
+            synchronized (RenderService.class) {
                 if (instance == null) {
                     instance = new RenderService();
                 }
@@ -116,7 +118,7 @@ public class RenderService extends JahiaService {
      * Render a specific resource and returns it as a StringBuffer.
      *
      * @param resource Resource to display
-     * @param context The render context
+     * @param context  The render context
      * @return The rendered result
      * @throws RenderException in case of rendering issues
      */
@@ -125,16 +127,14 @@ public class RenderService extends JahiaService {
             return "loop";
         }
 
-            RenderChain renderChain = new RenderChain();
-            renderChain.addFilters(filters);
-
-            renderChain.addFilter(new TemplateScriptFilter());
+        RenderChain renderChain = new RenderChain();
+        renderChain.addFilters(filters);
 
         String output = renderChain.doFilter(context, resource);
 
         ServletRequest request = context.getRequest();
         if (request.getAttribute("currentResource") != null) {
-            ((Resource)request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
+            ((Resource) request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
         }
 
         return output;
@@ -143,7 +143,7 @@ public class RenderService extends JahiaService {
     /**
      * This resolves the executable script from the resource object. This should be able to find the proper script
      * depending of the template / template type. Currently resolves only simple RequestDispatcherScript.
-     *
+     * <p/>
      * If template cannot be resolved, fall back on default template
      *
      * @param resource The resource to display
@@ -154,7 +154,7 @@ public class RenderService extends JahiaService {
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            Script s = scriptResolver.resolveScript(resource,  context);
+            Script s = scriptResolver.resolveScript(resource, context);
             if (s != null) {
                 return s;
             }
@@ -165,7 +165,7 @@ public class RenderService extends JahiaService {
 
     public boolean hasTemplate(ExtendedNodeType nt, String key) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasTemplate(nt,key)) {
+            if (scriptResolver.hasTemplate(nt, key)) {
                 return true;
             }
         }

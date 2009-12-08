@@ -133,9 +133,11 @@
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
+                                                                <c:if test="${tmplPack.moduleType == 'siteLayout'}">
                                                                 <option value="<c:out value='${tmplPack.name}'/>"
                                                                         <c:if test="${tmplPack.name == selectedTmplSet}">selected="selected"</c:if>>
                                                                     <c:out value="${tmplPack.name}"/></option>
+                                                                </c:if>
                                                             </c:forEach>
                                                         </select>
                                                     </td>

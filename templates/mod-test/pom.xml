@@ -146,7 +146,8 @@
 	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
 	                        <package-name>${project.name}</package-name>
 	                        <root-folder>test</root-folder>
-                            <depends>Default Jahia Templates</depends>	                        
+	                        <module-type>siteLayout</module-type>
+                            <depends>Default Jahia Templates</depends>
 	                    </manifestEntries>
 	                </archive>
                 </configuration>

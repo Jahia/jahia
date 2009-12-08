@@ -37,6 +37,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.Value;
 import java.io.File;
@@ -53,7 +54,7 @@ import java.util.List;
 public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         if (values != null && values.size() > 0) {
             String templatePackageName = context.getSite().getTemplatePackageName();
             JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(

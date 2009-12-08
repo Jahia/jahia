@@ -126,6 +126,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <root-folder>pages</root-folder>
+                            <module-type>siteLayout</module-type>
                         </manifestEntries>
                     </archive>
                 </configuration>

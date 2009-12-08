@@ -177,7 +177,7 @@ public class MashupHelper {
                 parentNode.checkout();
             }
 
-            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
+            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties());
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();

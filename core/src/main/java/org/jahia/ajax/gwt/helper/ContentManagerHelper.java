@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -43,12 +42,9 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.captcha.CaptchaService;
-import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.XMLFormatDetectionHandler;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
@@ -56,9 +52,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.*;
 
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -184,7 +177,7 @@ public class ContentManagerHelper {
     }
 
     public void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {
-        createNode(parentPath, name, "jnt:folder", new ArrayList<GWTJahiaNodeProperty>(), context);
+        createNode(parentPath, name, "jnt:folder", null, new ArrayList<GWTJahiaNodeProperty>(), context);
     }
 
     private boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes, String username) {
@@ -441,7 +434,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         try {
             parentNode = sessionFactory.getCurrentUserSession(null, context.getLocale()).getNode(parentPath);
@@ -459,7 +452,7 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
         }
 
-        JCRNodeWrapper childNode = addNode(parentNode, name, nodeType, props);
+        JCRNodeWrapper childNode = addNode(parentNode, name, nodeType, mixin, props);
         try {
             parentNode.save();
         } catch (RepositoryException e) {
@@ -469,7 +462,7 @@ public class ContentManagerHelper {
         return navigation.getGWTJahiaNode(childNode, true);
     }
 
-    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
+    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         if (!parentNode.hasPermission(JCRNodeWrapper.WRITE)) {
             throw new GWTJahiaServiceException(new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
@@ -480,6 +473,11 @@ public class ContentManagerHelper {
                     parentNode.checkout();
                 }
                 childNode = parentNode.addNode(name, nodeType);
+                if (mixin != null) {
+                    for (String m : mixin) {
+                        childNode.addMixin(m);
+                    }
+                }
                 properties.setProperties(childNode, props);
             } catch (Exception e) {
                 logger.error("Exception", e);
@@ -492,7 +490,7 @@ public class ContentManagerHelper {
         return childNode;
     }
 
-    public GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
+    public GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         try {
             sessionFactory.getCurrentUserSession().getNode(parentPath + "/" + name);
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");

@@ -39,6 +39,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
@@ -64,7 +65,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
     }
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (param != null) {
             String[] s = param.split(";");

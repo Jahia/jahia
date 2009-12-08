@@ -101,7 +101,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getProperties(String path, AsyncCallback<GWTJahiaGetPropertiesResult> async);
 
-    void createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
 
     void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
@@ -165,7 +165,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
 
-    void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
+    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
 
     void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
 

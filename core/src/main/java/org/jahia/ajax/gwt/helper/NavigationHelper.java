@@ -485,7 +485,7 @@ public class NavigationHelper {
                     root = getNode("/schmurtzs/"+ s, workspace, jParams);
                 } catch (GWTJahiaServiceException e) {
                     if(forceCreate) {
-                        contentManager.createNode("/schmurtzs", s,"jnt:schmurtzsFolder",new ArrayList<GWTJahiaNodeProperty>(), jParams);
+                        contentManager.createNode("/schmurtzs", s,"jnt:schmurtzsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
                         root = getNode("/schmurtzs/"+ s, workspace, jParams);
                     }
                 }

@@ -99,6 +99,8 @@ public class JahiaTemplatesPackage {
 
     private String rootFolderPath;
 
+    private String moduleType;
+
     private String resourceBundleName;
 
     private List<String> definitionsFile = new LinkedList<String>();
@@ -396,6 +398,15 @@ public class JahiaTemplatesPackage {
      */
     public String getRootFolderPath() {
         return rootFolderPath;
+    }
+
+
+    public String getModuleType() {
+        return moduleType;
+    }
+
+    public void setModuleType(String moduleType) {
+        this.moduleType = moduleType;
     }
 
     /**

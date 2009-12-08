@@ -285,16 +285,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return result;
     }
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         if (captcha != null && !contentManager.checkCaptcha(context, captcha)) {
             throw new GWTJahiaServiceException("Invalid captcha");
         }
 
         if (captcha != null) {
-            return contentManager.unsecureCreateNode(parentPath, name, nodeType, props);
+            return contentManager.unsecureCreateNode(parentPath, name, nodeType, mixin, props);
         } else {
-            return contentManager.createNode(parentPath, name, nodeType, props, context);
+            return contentManager.createNode(parentPath, name, nodeType, mixin, props, context);
         }
     }
 
@@ -557,10 +557,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.pasteReferencesOnTopOf(pathsToCopy, destinationPath, true);
     }
 
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
-        final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, properties, context);
+        final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, context);
         try {
             contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
         } catch (RepositoryException e) {

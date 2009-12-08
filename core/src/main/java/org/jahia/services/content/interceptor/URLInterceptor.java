@@ -125,7 +125,9 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             for (StartTag startTag : tags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute attribute = attributes.get(tagAttrPair[1]);
-                newRefs.putAll(replaceRefsByPlaceholders(document, attribute, refs));
+                if (attribute != null && !StringUtils.isEmpty(attribute.getValue())) {
+                    newRefs.putAll(replaceRefsByPlaceholders(document, attribute, refs));
+                }
             }
         }
         String result = document.toString();
@@ -196,7 +198,9 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             for (StartTag startTag : tags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute attribute = attributes.get(tagAttrPair[1]);
-                replacePlaceholdersByRefs(document, attribute, refs);
+                if (attribute != null && !StringUtils.isEmpty(attribute.getValue())) {
+                    replacePlaceholdersByRefs(document, attribute, refs);
+                }
             }
         }
         String result = document.toString();

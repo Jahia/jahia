@@ -57,7 +57,7 @@ import java.util.SortedSet;
 public class SkinsChoiceListInitializerImpl implements ChoiceListInitializer {
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition epd,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         if (jParams == null) {
             return new ArrayList<ChoiceListValue>();
         }

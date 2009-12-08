@@ -37,6 +37,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 
@@ -55,7 +56,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
     private transient static Logger logger = Logger.getLogger(CountryFlagChoiceListInitializerAndRendererImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         if (values != null) {
             for (ChoiceListValue value : values) {
                 try {

@@ -119,7 +119,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException;
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException;
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
@@ -183,7 +183,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
 
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException;
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException;
 
     public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException;
 

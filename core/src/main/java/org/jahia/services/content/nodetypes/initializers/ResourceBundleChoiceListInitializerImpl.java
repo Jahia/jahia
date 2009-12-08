@@ -36,6 +36,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -58,7 +59,7 @@ import java.util.Map;
 public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer,  ChoiceListRenderer {
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     String param, String realNodeType, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
         String templatePackageName = context.getSite().getTemplatePackageName();
 
         JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getLocale(),

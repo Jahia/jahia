@@ -26,7 +26,7 @@
     <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
 </c:if>
 <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
-
+<jcr:propertyInitializers node="${currentNode}" name="j:gender" var="genderInit"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $(".edit").editable(function (value, settings) {
@@ -156,7 +156,7 @@
                 return "Female";
         }, {
             type    : 'select',
-            data   : "{'male':'Male','female':'Female'}",
+            data   : "{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}",
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',

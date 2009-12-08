@@ -1,3 +1,7 @@
+<%@ page import="org.jahia.bin.Jahia" %>
+<%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.preferences.JahiaPreferencesService" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -272,31 +276,42 @@
                     <h3 class="boxtitleh3">Preferences</h3>
 
                     <div class="preferencesForm"><!--start preferencesForm -->
-
-                        <form method="post" action="#">
+                        <jcr:preference name="preferredLanguage" var="prefLangNode" defaultValue="${renderContext.request.locale}"/>
                             <fieldset>
                                 <legend>Preferences Form</legend>
-                                <p><label for="languages" class="left">Modifier la langue par default:</label>
-
-                                    <select name="languages" id="languages" class="combo" tabindex="9">
-                                        <option value="choose"> Langue par default</option>
-                                        <option value="langue1" selected="selected">Langue 1</option>
-                                        <option value="langue2">Langue 2</option>
-                                        <option value="langue3">Langue 3</option>
-                                    </select>
-
-                                </p>
+                                <p><label class="left"><fmt:message
+                                        key="jnt_user.preference.preferredLanguage"/></label>
+                                    <script type="text/javascript">
+                                        $(document).ready(function() {
+                                            $(".prefEdit").editable(function (value, settings) {
+                                                var submitId = $(this).attr('id').replace("_", ":");
+                                                var data = {};
+                                                data[submitId] = value;
+                                                data['methodToCall'] = 'put';
+                                                $.post("${url.base}${prefLangNode.path}", data, null, "json");
+                                                if (value == "en")
+                                                    return "English"; else if (value == "de")
+                                                    return "Deutsch"; else if (value == "fr")
+                                                        return "French";
+                                            }, {
+                                                type    : 'select',
+                                                data   : "{'en':'English','fr':'French','de':'Deutsch'}",
+                                                onblur : 'ignore',
+                                                submit : 'OK',
+                                                cancel : 'Cancel',
+                                                tooltip : 'Click to edit'
+                                            });
+                                        });
+                                    </script>
+                                <div class="prefEdit" id="j_prefValue">
+                                    <c:choose>
+                                        <c:when test="${prefLangNode.prefValue eq 'en'}">English</c:when>
+                                        <c:when test="${prefLangNode.prefValue eq 'de'}">Deustch</c:when>
+                                        <c:when test="${prefLangNode.prefValue eq 'fr'}">French</c:when>
+                                    </c:choose>
+                                </div>
                             </fieldset>
-                        </form>
                     </div>
-                    <!--stop preferencesForm -->
-                    <div class="divButton">
-                        <a class="aButton" href="#"><span>Sauvegarder</span></a>
-                        <a class="aButton" href="#"><span>Annuler</span></a>
-
-                        <div class="clear"></div>
-                    </div>
-
                     <!--stop sendMailForm -->
 
                     <div class="clear"></div>

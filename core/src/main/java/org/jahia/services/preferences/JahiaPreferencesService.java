@@ -242,6 +242,19 @@ public class JahiaPreferencesService extends JahiaService {
         return null;
     }
 
+    public JCRNodeWrapper getGenericPreferenceNode(String key, Principal principal) {
+        try {
+
+            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(principal, JahiaPreferencesQueryHelper.getSimpleSQL(key));
+            if (preference != null) {
+                return preference.getNode();
+            }
+        } catch (JahiaPreferenceProviderException e) {
+            logger.error("Preference provider was not found.", e);
+        }
+        return null;
+    }
+
     /**
      * Return the value associated with the given key using the generic preference provider.
      *

@@ -84,6 +84,6 @@ public class JCRPreferenceTag extends AbstractJahiaTag {
             value = service.getGenericPreferenceNode(name, Jahia.getThreadParamBean().getUser());
         }
         pageContext.setAttribute(var, value);
-        return SKIP_BODY;
+        return EVAL_PAGE;
     }
 }

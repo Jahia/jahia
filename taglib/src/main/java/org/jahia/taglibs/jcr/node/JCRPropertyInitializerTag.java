@@ -95,8 +95,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                     for (Map.Entry<String, String> entry : map.entrySet()) {
                         if (initializers.containsKey(entry.getKey())) {
                             listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                    Jahia.getThreadParamBean(), definition, entry.getValue(),
-                                    node.getPrimaryNodeTypeName(), listValues);
+                                    Jahia.getThreadParamBean(), definition, node.getPrimaryNodeType(), entry.getValue(), listValues);
                         }
                     }
                     if(listValues!=null) {

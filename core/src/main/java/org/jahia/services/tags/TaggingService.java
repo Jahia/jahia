@@ -241,35 +241,39 @@ public class TaggingService {
 
 		boolean applied = false;
 		boolean doSessionCommit = false;
-		JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
-		if (tagNode == null && createTagIfNotExists) {
-			tagNode = createTag(tag, siteKey, session);
-			doSessionCommit = true;
-		}
-		if (tagNode != null) {
-			Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
-			Value[] values = null;
-			boolean exists = false;
-			if (node.hasProperty(TAGS)) {
-				values = node.getProperty(TAGS).getValues();
-				for (Value existingValue : values) {
-					if (tagNode.getIdentifier().equals(existingValue.getString())) {
-						exists = true;
-						break;
-					}
-				}
-			}
-			if (!exists) {
-				newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
-				session.checkout(node);
-				node.setProperty(TAGS, newValues);
-				applied = true;
-				doSessionCommit = true;
-			}
-			if (doSessionCommit) {
-				session.save();
-			}
-		}
+        String[] tags = tag.split(",");
+        for (String t : tags) {
+            t = t.trim();
+            JCRNodeWrapper tagNode = getTag(t, siteKey, session);
+            if (tagNode == null && createTagIfNotExists) {
+                tagNode = createTag(t, siteKey, session);
+                doSessionCommit = true;
+            }
+            if (tagNode != null) {
+                Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
+                Value[] values = null;
+                boolean exists = false;
+                if (node.hasProperty(TAGS)) {
+                    values = node.getProperty(TAGS).getValues();
+                    for (Value existingValue : values) {
+                        if (tagNode.getIdentifier().equals(existingValue.getString())) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                if (!exists) {
+                    newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
+                    session.checkout(node);
+                    node.setProperty(TAGS, newValues);
+                    applied = true;
+                    doSessionCommit = true;
+                }
+                if (doSessionCommit) {
+                    session.save();
+                }
+            }
+        }
 		return applied;
 	}
 

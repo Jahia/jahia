@@ -1,6 +1,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<template:addWrapper name="wikiWrapper"/>
+<template:addWrapper name="wrapper.wiki"/>
 <div id="two"><!--start tab two-->
     <form action="${currentNode.name}" method="post">
         <input type="hidden" name="autoCheckin" value="true">

@@ -3,7 +3,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<template:addWrapper name="wikiWrapper"/>
+<template:addWrapper name="wrapper.wiki"/>
 <div id="one"><!--start tab One-->
 
     <jcr:sql var="pageList"

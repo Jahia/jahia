@@ -1,7 +1,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<template:addWrapper name="wikiWrapper"/>
+<template:addWrapper name="wrapper.wiki"/>
     <div class="box">
         <div class="boxgrey boxpadding16 boxmarginbottom16">
             <div class="box-inner">

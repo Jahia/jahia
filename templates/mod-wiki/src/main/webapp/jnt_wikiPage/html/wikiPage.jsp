@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addWrapper name="wikiWrapper"/>
+<template:addWrapper name="wrapper.wiki"/>
 <div id="one"><!--start tab One-->
 
     <div class="intro wiki">

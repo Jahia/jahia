@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<template:addWrapper name="wikiWrapper"/>
+<template:addWrapper name="wrapper.wiki"/>
 
 <div id="three"><!--start tab two-->
     <c:if test="${not empty param['diff'] and not empty param['oldid']}">

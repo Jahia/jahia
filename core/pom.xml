@@ -1108,27 +1108,7 @@
             <version>2.0.4</version>
         </dependency>
 
-        <!-- Chemistry dependencies -->
-        <dependency>
-            <groupId>org.apache.chemistry</groupId>
-            <artifactId>chemistry-atompub-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.chemistry</groupId>
-            <artifactId>chemistry-jcr</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.chemistry</groupId>
-            <artifactId>chemistry-atompub-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.chemistry</groupId>
-            <artifactId>chemistry-atompub-server</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+
 
     </dependencies>
     <build>

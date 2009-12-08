@@ -749,6 +749,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_existant_admin.jsp");
         } catch (JahiaException je) {
+            logger.error("Error while displaying existing administrator selection UI", je);
             displayList(request, response, session);
         }
 
@@ -1034,6 +1035,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 delete(site, jParams.getUser(), true);
                 sMgr.removeSite(site);
             } catch (Exception t) {
+                logger.error("Error while cleaning site", t);
             }
 
             logger.error("Error while adding site", ex);
@@ -1306,6 +1308,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_edit.jsp");
         } catch (Exception e) {
+            logger.error("Error while dislaying site edition UI", e);
             // redirect to list...
             String jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.processingError.label",
                     jParams.getLocale());
@@ -1416,7 +1419,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_create_display_values.jsp");
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error("Error while displaying new site values",e);
             // redirect to list...
             String jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.processingError.label",
                     jParams.getLocale());
@@ -1537,6 +1540,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 displayEdit(request, response, session);
             }
         } catch (JahiaException ex) {
+            logger.warn("Error while processing site edition", ex);
             warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
                     jParams.getLocale());
             request.setAttribute("warningMsg", warningMsg);
@@ -1611,6 +1615,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_delete.jsp");
         } catch (Exception e) {
+            logger.error("Error while display site delete UI", e);
             // redirect to list...
             String jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg..processingError.label",
                     jParams.getLocale());
@@ -1655,7 +1660,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             displayList(request, response, session);
         } catch (JahiaException ex) {
-            logger.error(ex.getMessage(), ex);
+            logger.error("Error while processing site deletion", ex);
             String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
                     jParams.getLocale());
             request.setAttribute("warningMsg", warningMsg);
@@ -1747,7 +1752,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             displayList(request, response, session);
         } catch (JahiaException ex) {
-            logger.error(ex.getMessage(), ex);
+            logger.error("Error while deleting multiple sites", ex);
             String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
                     jParams.getLocale());
             request.setAttribute("warningMsg", warningMsg);
@@ -2017,7 +2022,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         importInfos.put("siteKeyExists", Boolean.valueOf(ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) importInfos.get("sitekey")) != null || "".equals(importInfos.get("sitekey"))));
                         importInfos.put("siteServerNameExists", Boolean.valueOf(ServicesRegistry.getInstance().getJahiaSitesService().getSite((String) importInfos.get("siteservername")) != null || "".equals(importInfos.get("siteservername"))));
                     } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
+                        logger.error("Error while preparing site import", e);
                     }
                 }
             } else {
@@ -2065,7 +2070,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         }
                     }
                 } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
+                    logger.error("Error while processing file import", e);
                 }
             } else {
                 infos.put("siteKeyExists", Boolean.FALSE);

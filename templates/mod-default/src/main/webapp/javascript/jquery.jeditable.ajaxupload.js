@@ -38,6 +38,7 @@ $.editable.addInputType('ajaxupload', {
                 fileElementId: 'upload',
                 dataType: 'json',
                 success: function (data, status) {
+                    original.editing = false;                    
                     if(settings.callback)
                     settings.callback(data, status);
                 },

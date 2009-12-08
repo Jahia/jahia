@@ -1,326 +1,326 @@
 /*Filemanager*/
 .gwt-toolbar-icon-resize {
-    background-image: url( ../images/resize.png ) !important;
+    background-image: url(../images/resize.png) !important;
 }
 
 .gwt-toolbar-icon-crop {
-    background-image: url( ../images/crop.png ) !important;
+    background-image: url(../images/crop.png) !important;
 }
 
 .gwt-toolbar-icon-rotate {
-    background-image: url( ../images/rotate.png ) !important;
+    background-image: url(../images/rotate.png) !important;
 }
 
 .gwt-toolbar-icon-tableview {
-    background-image: url( ../images/table.png ) !important;
+    background-image: url(../images/table.png) !important;
 }
 
 .gwt-toolbar-icon-treetableview {
-    background-image: url( ../images/treetable.png ) !important;
+    background-image: url(../images/treetable.png) !important;
 }
 
 .gwt-toolbar-icon-iconview {
-    background-image: url( ../images/icons.png ) !important;
+    background-image: url(../images/icons.png) !important;
 }
 
-.gwt-toolbar-icon-iconview-detailed{
-     background-image: url( ../images/treetable.png ) !important;   
+.gwt-toolbar-icon-iconview-detailed {
+    background-image: url(../images/treetable.png) !important;
 }
 
 .gwt-toolbar-icon-templateview {
-     background-image: url( ../images/template.png ) !important;   
+    background-image: url(../images/template.png) !important;
 }
 
 .gwt-toolbar-icon-addFile {
-    background-image: url( ../images/add-file.png ) !important;
+    background-image: url(../images/add-file.png) !important;
 }
 
 .gwt-toolbar-icon-addContent {
-    background-image: url( ../images/add_content.png) !important;
+    background-image: url(../images/add_content.png) !important;
 }
 
 .gwt-toolbar-icon-addContentList {
-    background-image: url( ../images/add_content_list.png) !important;
+    background-image: url(../images/add_content_list.png) !important;
 }
 
 .gwt-toolbar-icon-newfolder {
-    background-image: url( ../images/newfolder.png ) !important;
+    background-image: url(../images/newfolder.png) !important;
 }
 
 .gwt-toolbar-icon-newcontent {
-    background-image: url( ../images/add_content.png ) !important;
+    background-image: url(../images/add_content.png) !important;
 }
 
 .gwt-toolbar-icon-editcontent {
-    background-image: url( ../images/edit.png) !important;
+    background-image: url(../images/edit.png) !important;
 }
 
 .gwt-toolbar-icon-publish {
-    background-image: url( ../images/publish.png) !important;
+    background-image: url(../images/publish.png) !important;
 }
 
 .gwt-toolbar-icon-unpublish {
-    background-image: url( ../images/unpublish.png) !important;    
+    background-image: url(../images/unpublish.png) !important;
 }
 
 .gwt-toolbar-icon-newpage {
-    background-image: url( ../images/page_add.png ) !important;
+    background-image: url(../images/page_add.png) !important;
 }
 
-.gwt-toolbar-icon-viewpublishstatus{
-    background-image: url( ../images/viewStatus.png ) !important;  
+.gwt-toolbar-icon-viewpublishstatus {
+    background-image: url(../images/viewStatus.png) !important;
 }
 
 .gwt-toolbar-icon-newmashup {
-    background-image: url( ../images/application_add.png ) !important;
+    background-image: url(../images/application_add.png) !important;
 }
 
 .gwt-toolbar-icon-newcategory {
-    background-image: url( ../images/add-file.png ) !important;
+    background-image: url(../images/add-file.png) !important;
 }
 
 .gwt-toolbar-icon-newrssmashup {
-    background-image: url( ../images/rss.gif ) !important;
+    background-image: url(../images/rss.gif) !important;
 }
 
 .gwt-toolbar-icon-newgooglegadgetmashup {
-    background-image: url( ../images/google_gadget.png ) !important;
+    background-image: url(../images/google_gadget.png) !important;
 }
 
 .gwt-toolbar-icon-remove {
-    background-image: url( ../images/remove.png ) !important;
+    background-image: url(../images/remove.png) !important;
 }
 
 .gwt-toolbar-icon-refresh {
-    background-image: url( ../images/refresh.png ) !important;
+    background-image: url(../images/refresh.png) !important;
 }
 
 .gwt-toolbar-icon-copy {
-    background-image: url( ../images/copy.png ) !important;
+    background-image: url(../images/copy.png) !important;
 }
 
 .gwt-toolbar-icon-cut {
-    background-image: url( ../images/cut.png ) !important;
+    background-image: url(../images/cut.png) !important;
 }
 
 .gwt-toolbar-icon-paste {
-    background-image: url( ../images/paste.png ) !important;
+    background-image: url(../images/paste.png) !important;
 }
 
 .gwt-toolbar-icon-pasteref {
-    background-image: url( ../images/pasteref.png ) !important;
+    background-image: url(../images/pasteref.png) !important;
 }
 
 .gwt-toolbar-icon-download {
-    background-image: url( ../images/download.png ) !important;
+    background-image: url(../images/download.png) !important;
 }
 
 .gwt-toolbar-icon-preview {
-    background-image: url( ../images/preview.png ) !important;
+    background-image: url(../images/preview.png) !important;
 }
 
 .gwt-toolbar-icon-webfolder {
-    background-image: url( ../images/webfolder.png ) !important;
+    background-image: url(../images/webfolder.png) !important;
 }
 
 .gwt-toolbar-icon-upload {
-    background-image: url( ../images/upload.png ) !important;
+    background-image: url(../images/upload.png) !important;
 }
 
 .gwt-toolbar-icon-mount {
-    background-image: url( ../images/mount.png ) !important;
+    background-image: url(../images/mount.png) !important;
 }
 
 .gwt-toolbar-icon-unmount {
-    background-image: url( ../images/unmount.png ) !important;
+    background-image: url(../images/unmount.png) !important;
 }
 
 .gwt-toolbar-icon-rename {
-    background-image: url( ../images/rename.png ) !important;
+    background-image: url(../images/rename.png) !important;
 }
 
 .gwt-toolbar-icon-zip {
-    background-image: url( ../images/zip.png ) !important;
+    background-image: url(../images/zip.png) !important;
 }
 
 .gwt-toolbar-icon-unzip {
-    background-image: url( ../images/unzip.png ) !important;
+    background-image: url(../images/unzip.png) !important;
 }
 
 .gwt-toolbar-icon-lock {
-    background-image: url( ../images/lock.png ) !important;
+    background-image: url(../images/lock.png) !important;
 }
 
 .gwt-toolbar-icon-unlock {
-    background-image: url( ../images/unlock.png ) !important;
+    background-image: url(../images/unlock.png) !important;
 }
 
 .gwt-toolbar-icon-import {
-    background-image: url( ../images/import.png ) !important;
+    background-image: url(../images/import.png) !important;
 }
 
 .gwt-toolbar-icon-export {
-    background-image: url( ../images/export.png ) !important;
+    background-image: url(../images/export.png) !important;
 }
 
 .gwt-toolbar-icon-resize-bw {
-    background-image: url( ../images/disabled/resize.png ) !important;
+    background-image: url(../images/disabled/resize.png) !important;
 }
 
 .gwt-toolbar-icon-crop-bw {
-    background-image: url( ../images/disabled/crop.png ) !important;
+    background-image: url(../images/disabled/crop.png) !important;
 }
 
 .gwt-toolbar-icon-rotate-bw {
-    background-image: url( ../images/disabled/rotate.png ) !important;
+    background-image: url(../images/disabled/rotate.png) !important;
 }
 
 .gwt-toolbar-icon-newfolder-bw {
-    background-image: url( ../images/disabled/newfolder.png ) !important;
+    background-image: url(../images/disabled/newfolder.png) !important;
 }
 
 .gwt-toolbar-icon-newcontent-bw {
-    background-image: url( ../images/disabled/add-file.png ) !important;
+    background-image: url(../images/disabled/add-file.png) !important;
 }
 
 .gwt-toolbar-icon-newmashup-bw {
-    background-image: url( ../images/disabled/application_add.png ) !important;
+    background-image: url(../images/disabled/application_add.png) !important;
 }
 
 .gwt-toolbar-icon-newrssmashup-bw {
-    background-image: url( ../images/disabled/rss.gif ) !important;
+    background-image: url(../images/disabled/rss.gif) !important;
 }
 
 .gwt-toolbar-icon-newgooglegadgetmashup-bw {
-    background-image: url( ../images/disabled/google_gadget.png ) !important;
+    background-image: url(../images/disabled/google_gadget.png) !important;
 }
 
 .gwt-toolbar-icon-remove-bw {
-    background-image: url( ../images/disabled/remove.png ) !important;
+    background-image: url(../images/disabled/remove.png) !important;
 }
 
 .gwt-toolbar-icon-refresh-bw {
-    background-image: url( ../images/disabled/refresh.png ) !important;
+    background-image: url(../images/disabled/refresh.png) !important;
 }
 
 .gwt-toolbar-icon-copy-bw {
-    background-image: url( ../images/disabled/copy.png ) !important;
+    background-image: url(../images/disabled/copy.png) !important;
 }
 
 .gwt-toolbar-icon-cut-bw {
-    background-image: url( ../images/disabled/cut.png ) !important;
+    background-image: url(../images/disabled/cut.png) !important;
 }
 
 .gwt-toolbar-icon-paste-bw {
-    background-image: url( ../images/disabled/paste.png ) !important;
+    background-image: url(../images/disabled/paste.png) !important;
 }
 
 .gwt-toolbar-icon-pasteref-bw {
-    background-image: url( ../images/disabled/pasteref.png ) !important;
+    background-image: url(../images/disabled/pasteref.png) !important;
 }
 
 .gwt-toolbar-icon-download-bw {
-    background-image: url( ../images/disabled/download.png ) !important;
+    background-image: url(../images/disabled/download.png) !important;
 }
 
 .gwt-toolbar-icon-preview-bw {
-    background-image: url( ../images/disabled/preview.png ) !important;
+    background-image: url(../images/disabled/preview.png) !important;
 }
 
 .gwt-toolbar-icon-webfolder-bw {
-    background-image: url( ../images/disabled/webfolder.png ) !important;
+    background-image: url(../images/disabled/webfolder.png) !important;
 }
 
 .gwt-toolbar-icon-upload-bw {
-    background-image: url( ../images/disabled/upload.png ) !important;
+    background-image: url(../images/disabled/upload.png) !important;
 }
 
 .gwt-toolbar-icon-mount-bw {
-    background-image: url( ../images/disabled/mount.png ) !important;
+    background-image: url(../images/disabled/mount.png) !important;
 }
 
 .gwt-toolbar-icon-unmount-bw {
-    background-image: url( ../images/disabled/unmount.png ) !important;
+    background-image: url(../images/disabled/unmount.png) !important;
 }
 
 .gwt-toolbar-icon-rename-bw {
-    background-image: url( ../images/disabled/rename.png ) !important;
+    background-image: url(../images/disabled/rename.png) !important;
 }
 
 .gwt-toolbar-icon-zip-bw {
-    background-image: url( ../images/disabled/zip.png ) !important;
+    background-image: url(../images/disabled/zip.png) !important;
 }
 
 .gwt-toolbar-icon-unzip-bw {
-    background-image: url( ../images/disabled/unzip.png ) !important;
+    background-image: url(../images/disabled/unzip.png) !important;
 }
 
 .gwt-toolbar-icon-lock-bw {
-    background-image: url( ../images/disabled/lock.png ) !important;
+    background-image: url(../images/disabled/lock.png) !important;
 }
 
 .gwt-toolbar-icon-unlock-bw {
-    background-image: url( ../images/disabled/unlock.png ) !important;
+    background-image: url(../images/disabled/unlock.png) !important;
 }
 
 .gwt-toolbar-icon-import-bw {
-    background-image: url( ../images/disabled/import.png ) !important;
+    background-image: url(../images/disabled/import.png) !important;
 }
 
 .gwt-toolbar-icon-export-bw {
-    background-image: url( ../images/disabled/export.png ) !important;
+    background-image: url(../images/disabled/export.png) !important;
 }
 
 .gwt-toolbar-icon-myRepository {
-    background-image: url( ../images/home.png ) !important;
+    background-image: url(../images/home.png) !important;
 }
 
 .gwt-toolbar-icon-usersRepository {
-    background-image: url( ../images/users.png ) !important;
+    background-image: url(../images/users.png) !important;
 }
 
 .gwt-toolbar-icon-myMashupRepository {
-    background-image: url( ../images/home.png ) !important;
+    background-image: url(../images/home.png) !important;
 }
 
 .gwt-toolbar-icon-savedSearch {
-    background-image: url( ../images/search.png ) !important;
+    background-image: url(../images/search.png) !important;
 }
 
 .gwt-toolbar-icon-myExternalRepository {
-    background-image: url( ../images/ext-repository.png ) !important;
+    background-image: url(../images/ext-repository.png) !important;
 }
 
 .gwt-toolbar-icon-sharedRepository {
-    background-image: url( ../images/shared-repository.png ) !important;
+    background-image: url(../images/shared-repository.png) !important;
 }
 
 .gwt-toolbar-icon-sharedMashupRepository {
-    background-image: url( ../images/shared-repository.png ) !important;
+    background-image: url(../images/shared-repository.png) !important;
 }
 
 .gwt-toolbar-icon-websiteRepository {
-    background-image: url( ../images/site-repository.png ) !important;
+    background-image: url(../images/site-repository.png) !important;
 }
 
 .gwt-toolbar-icon-websiteMashupRepository {
-    background-image: url( ../images/site-repository.png ) !important;
+    background-image: url(../images/site-repository.png) !important;
 }
 
 .gwt-toolbar-icon-mashupRepository {
-    background-image: url( ../images/portlet-repository.png ) !important;
+    background-image: url(../images/portlet-repository.png) !important;
 }
 
 .gwt-toolbar-icon-globalRepository {
-    background-image: url( ../images/repository.png ) !important;
+    background-image: url(../images/repository.png) !important;
 }
 
 .gwt-toolbar-icon-saveAsSchmurtz {
-    background-image: url( ../images/disk_blue.png ) !important;
+    background-image: url(../images/disk_blue.png) !important;
 }
 
 fm-globalMashupRepository {
-    background-image: url( ../images/repository.png ) !important;
+    background-image: url(../images/repository.png) !important;
 }
 
 .gwt-toolbar-icon-previewPane {
@@ -332,7 +332,7 @@ fm-globalMashupRepository {
 }
 
 .gwt-toolbar-icon-bottom-margin {
-    margin-bottom: 5px ;
+    margin-bottom: 5px;
 }
 
 .gwt-toolbar-icon-label {
@@ -369,7 +369,7 @@ fm-globalMashupRepository {
 
 #images-view .x-view-over {
     border: 1px solid #dddddd;
-    background: #efefef url( ../images/default/grid/row-over.gif ) repeat-x left top;
+    background: #efefef url(../images/default/grid/row-over.gif) repeat-x left top;
 }
 
 #images-view .x-view-selected {
@@ -383,7 +383,7 @@ fm-globalMashupRepository {
 
 #images-view .loading-indicator {
     font-size: 11px;
-    background-image: url( ../images/default/grid/loading.gif );
+    background-image: url(../images/default/grid/loading.gif);
     background-repeat: no-repeat;
     background-position: left;
     padding-left: 20px;
@@ -392,23 +392,23 @@ fm-globalMashupRepository {
 
 /*common*/
 .gwt-icons-add {
-    background-image: url( ../images/icons/tick.png ) !important;
+    background-image: url(../images/icons/tick.png) !important;
 }
 
 .gwt-icons-delete {
-    background-image: url( ../images/icons/remove.png ) !important;
+    background-image: url(../images/icons/remove.png) !important;
 }
 
 .gwt-icons-restore {
-    background-image: url( ../images/actions/restore.png ) !important;
+    background-image: url(../images/actions/restore.png) !important;
 }
 
 .gwt-icons-save {
-    background-image: url( ../images/icons/tick.png) !important;
+    background-image: url(../images/icons/tick.png) !important;
 }
 
 .gwt-icons-cancel {
-    background-image: url( ../images/icons/cancel.png) !important;
+    background-image: url(../images/icons/cancel.png) !important;
 }
 
 /*filemanagement*/
@@ -433,97 +433,95 @@ fm-globalMashupRepository {
 }
 
 .um-user {
-    background: url( ../images/user/user1.png ) no-repeat 0 0 !important;
+    background: url(../images/user/user1.png) no-repeat 0 0 !important;
 }
 
 .um-group {
-    background: url( ../images/user/users2.png ) no-repeat 0 0 !important;
+    background: url(../images/user/users2.png) no-repeat 0 0 !important;
 }
 
 .um-adduser {
-    background: url( ../images/user/user1.png ) no-repeat 0 0 !important;
+    background: url(../images/user/user1.png) no-repeat 0 0 !important;
 }
 
 .um-addgroup {
-    background: url( ../images/user/users2.png ) no-repeat 0 0 !important;
+    background: url(../images/user/users2.png) no-repeat 0 0 !important;
 }
 
 #images-view div {
     border: 0;
 }
 
-
 .gwt-pdisplay-filter-up {
-    background: url( ../images/icons/funnel_up.png ) no-repeat 0 0 !important;
+    background: url(../images/icons/funnel_up.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-filter-down {
-    background: url( ../images/icons/funnel_down.png ) no-repeat 0 0 !important;
+    background: url(../images/icons/funnel_down.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-info {
-    background: url( ../images/info/about.png ) no-repeat 0 0 !important;
+    background: url(../images/info/about.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-error {
-    background: url( ../images/info/errors.gif ) no-repeat 0 0 !important;
+    background: url(../images/info/errors.gif) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-warning {
-    background: url( ../images/info/warning.png ) no-repeat 0 0 !important;
+    background: url(../images/info/warning.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-refresh {
-    background: url( ../images/info/refresh.png ) no-repeat 0 0 !important;
+    background: url(../images/info/refresh.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-delete {
-    background: url( ../images/icons/delete.png ) no-repeat 0 0 !important;
+    background: url(../images/icons/delete.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-icons-preferences {
-    background: url( ../images/icons/preferences.png ) no-repeat 0 0 !important;
+    background: url(../images/icons/preferences.png) no-repeat 0 0 !important;
 }
 
 .gwt-pdisplay-table-row-status-successful {
     color: green;
     padding: 2px 21px;
-    background: url( ../images/info/successful.png ) no-repeat;
+    background: url(../images/info/successful.png) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-warning {
     color: orange;
     padding: 2px 21px;
-    background: url( ../images/info/warning.png ) no-repeat;
+    background: url(../images/info/warning.png) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-partial {
     color: orange;
     padding: 2px 21px;
-    background: url( ../images/info/warning.png ) no-repeat;
+    background: url(../images/info/warning.png) no-repeat;
 }
-
 
 .gwt-pdisplay-table-row-status-error {
     color: red;
     padding: 2px 21px;
-    background: url( ../images/info/errors.gif ) no-repeat;
+    background: url(../images/info/errors.gif) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-failed {
     color: red;
     padding: 2px 21px;
-    background: url( ../images/info/errors.gif ) no-repeat;
+    background: url(../images/info/errors.gif) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-executing {
     padding: 2px 21px;
-    background: url( ../images/info/wait.gif ) no-repeat;
+    background: url(../images/info/wait.gif) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-pooled {
     padding: 2px 21px;
-    background: url( ../images/timebasedpublishing/green_clock.png ) no-repeat;
+    background: url(../images/timebasedpublishing/green_clock.png) no-repeat;
 }
 
 .gwt-pdisplay-table-row-status-interrupted {
@@ -536,7 +534,7 @@ fm-globalMashupRepository {
 
 /* Page picker */
 .icon-page {
-    background: url( ../images/page.gif ) center center no-repeat;
+    background: url(../images/page.gif) center center no-repeat;
 }
 
 .normal {
@@ -549,11 +547,11 @@ fm-globalMashupRepository {
 }
 
 .gwt-pagepicker-icon-locked {
-    background: url( ../images/icons/lock.png ) !important;
+    background: url(../images/icons/lock.png) !important;
 }
 
 .gwt-pagepicker-icon-inpath {
-    background-image: url( ../images/remove.png ) !important;
+    background-image: url(../images/remove.png) !important;
 }
 
 /* Workflow */
@@ -568,88 +566,88 @@ fm-globalMashupRepository {
 }
 
 .wf-selection {
-    background-image: url( ../images/icons/selection.png ) !important;
+    background-image: url(../images/icons/selection.png) !important;
 }
 
 .wf-selection-select {
-    background-image: url( ../images/icons/select.png ) !important;
+    background-image: url(../images/icons/select.png) !important;
 }
 
 .wf-selection-deselect {
-    background-image: url( ../images/icons/deselect.png ) !important;
+    background-image: url(../images/icons/deselect.png) !important;
 }
 
 .wf-add {
-    background-image: url( ../../../css/images/andromeda/icons/add2.png ) !important;
+    background-image: url(../images/andromeda/icons/add2.png) !important;
 }
 
 .wf-remove {
-    background-image: url( ../images/icons/remove.png ) !important;
+    background-image: url(../images/icons/remove.png) !important;
 }
 
 .wf-action {
-    background-image: url( ../images/icons/action.png ) !important;
+    background-image: url(../images/icons/action.png) !important;
 }
 
 .wf-action-notify {
-    background-image: url( ../images/icons/notify.png ) !important;
+    background-image: url(../images/icons/notify.png) !important;
 }
 
 .wf-action-publish {
-    background-image: url( ../images/icons/publish.png ) !important;
+    background-image: url(../images/icons/publish.png) !important;
 }
 
 .wf-action-first_validate {
-    background-image: url( ../images/icons/validate.png ) !important;
+    background-image: url(../images/icons/validate.png) !important;
 }
 
 .wf-action-second_validate {
-    background-image: url( ../images/icons/validate.png ) !important;
+    background-image: url(../images/icons/validate.png) !important;
 }
 
 .wf-action-rollback_to_previous_step {
-    background-image: url( ../images/icons/gear_stop.png ) !important;
+    background-image: url(../images/icons/gear_stop.png) !important;
 }
 
 .wf-action-rollback_to_author {
-    background-image: url( ../images/icons/gear_forbidden.png ) !important;
+    background-image: url(../images/icons/gear_forbidden.png) !important;
 }
 
 .wf-action-unlock, .wf-action-lock {
-    background-image: url( ../images/icons/gear_pause.png ) !important;
+    background-image: url(../images/icons/gear_pause.png) !important;
 }
 
 .wf-button_ok {
-    background-image: url( ../../../css/images/andromeda/icons/accept.png ) !important;
+    background-image: url(../images/andromeda/icons/accept.png) !important;
 }
 
 .wf-button_cancel {
-    background-image: url( ../../../css/images/andromeda/icons/cancel.png ) !important;
+    background-image: url(../images/andromeda/icons/cancel.png) !important;
 }
 
 .wf-button_info {
-    background-image: url( ../../../css/images/andromeda/icons/briefcase_view.png ) !important;
+    background-image: url(../images/andromeda/icons/briefcase_view.png) !important;
 }
 
 .wf-preview {
-    background-image: url( ../images/min/preview.png ) !important;
+    background-image: url(../images/min/preview.png) !important;
 }
 
 .wf-compare {
-    background-image: url( ../images/min/compare.png ) !important;
+    background-image: url(../images/min/compare.png) !important;
 }
 
 /* content object icons */
 .icon-ContentPage {
-    background: url( ../images/icons/document.gif ) center center no-repeat;
+    background: url(../images/icons/document.gif) center center no-repeat;
 }
 
 .icon-ContentContainerList {
-    background: url( ../images/icons/containerlist.png ) center center no-repeat;
+    background: url(../images/icons/containerlist.png) center center no-repeat;
 }
 
 .icon-ContentContainer {
-    background: url( ../images/icons/container.png ) center center no-repeat;
+    background: url(../images/icons/container.png) center center no-repeat;
 }
 
 /* misc */
@@ -675,23 +673,23 @@ fm-globalMashupRepository {
 }
 
 .validation-2 {
-    background: url( ../images/icons/warning.png ) center center no-repeat;
+    background: url(../images/icons/warning.png) center center no-repeat;
 }
 
 .validation-s-2 {
-    background: url( ../images/icons/warning12.png ) center center no-repeat;
+    background: url(../images/icons/warning12.png) center center no-repeat;
 }
 
 .validation-0 {
-    background: url( ../images/icons/error.png ) center center no-repeat;
+    background: url(../images/icons/error.png) center center no-repeat;
 }
 
 .validation-s-0 {
-    background: url( ../images/icons/error12.png ) center center no-repeat;
+    background: url(../images/icons/error12.png) center center no-repeat;
 }
 
 .validation-3 {
-    background: url( ../images/icons/lock.png ) center center no-repeat;
+    background: url(../images/icons/lock.png) center center no-repeat;
 }
 
 /* checkbox space */
@@ -708,107 +706,107 @@ fm-globalMashupRepository {
 
 /* workflow icons */
 .workflow-000 {
-    background: url( ../images/workflow/000.png ) center center no-repeat;
+    background: url(../images/workflow/000.png) center center no-repeat;
 }
 
 .workflow-110 {
-    background: url( ../images/workflow/110.png ) center center no-repeat;
+    background: url(../images/workflow/110.png) center center no-repeat;
 }
 
 .workflow-111 {
-    background: url( ../images/workflow/111.png ) center center no-repeat;
+    background: url(../images/workflow/111.png) center center no-repeat;
 }
 
 .workflow-120 {
-    background: url( ../images/workflow/120.png ) center center no-repeat;
+    background: url(../images/workflow/120.png) center center no-repeat;
 }
 
 .workflow-121 {
-    background: url( ../images/workflow/121.png ) center center no-repeat;
+    background: url(../images/workflow/121.png) center center no-repeat;
 }
 
 .workflow-130 {
-    background: url( ../images/workflow/130.png ) center center no-repeat;
+    background: url(../images/workflow/130.png) center center no-repeat;
 }
 
 .workflow-210 {
-    background: url( ../images/workflow/210.png ) center center no-repeat;
+    background: url(../images/workflow/210.png) center center no-repeat;
 }
 
 .workflow-211 {
-    background: url( ../images/workflow/211.png ) center center no-repeat;
+    background: url(../images/workflow/211.png) center center no-repeat;
 }
 
 .workflow-220 {
-    background: url( ../images/workflow/220.png ) center center no-repeat;
+    background: url(../images/workflow/220.png) center center no-repeat;
 }
 
 .workflow-221 {
-    background: url( ../images/workflow/221.png ) center center no-repeat;
+    background: url(../images/workflow/221.png) center center no-repeat;
 }
 
 .workflow-230 {
-    background: url( ../images/workflow/230.png ) center center no-repeat;
+    background: url(../images/workflow/230.png) center center no-repeat;
 }
 
 .workflow-231 {
-    background: url( ../images/workflow/231.png ) center center no-repeat;
+    background: url(../images/workflow/231.png) center center no-repeat;
 }
 
 .workflow-240 {
-    background: url( ../images/workflow/240.png ) center center no-repeat;
+    background: url(../images/workflow/240.png) center center no-repeat;
 }
 
 .workflow-241 {
-    background: url( ../images/workflow/241.png ) center center no-repeat;
+    background: url(../images/workflow/241.png) center center no-repeat;
 }
 
 .workflow-250 {
-    background: url( ../images/workflow/250.png ) center center no-repeat;
+    background: url(../images/workflow/250.png) center center no-repeat;
 }
 
 .workflow-251 {
-    background: url( ../images/workflow/251.png ) center center no-repeat;
+    background: url(../images/workflow/251.png) center center no-repeat;
 }
 
 .workflow-511 {
-    background: url( ../images/workflow/511.png ) center center no-repeat;
+    background: url(../images/workflow/511.png) center center no-repeat;
 }
 
 .workflow-521 {
-    background: url( ../images/workflow/521.png ) center center no-repeat;
+    background: url(../images/workflow/521.png) center center no-repeat;
 }
 
 .workflow-600 {
-    background: url( ../images/workflow/600.png ) center center no-repeat;
+    background: url(../images/workflow/600.png) center center no-repeat;
 }
 
 .workflow-620 {
-    background: url( ../images/workflow/620.png ) center center no-repeat;
+    background: url(../images/workflow/620.png) center center no-repeat;
 }
 
 .workflow-630 {
-    background: url( ../images/workflow/630.png ) center center no-repeat;
+    background: url(../images/workflow/630.png) center center no-repeat;
 }
 
 .workflow-640 {
-    background: url( ../images/workflow/640.png ) center center no-repeat;
+    background: url(../images/workflow/640.png) center center no-repeat;
 }
 
 .workflow-650 {
-    background: url( ../images/workflow/650.png ) center center no-repeat;
+    background: url(../images/workflow/650.png) center center no-repeat;
 }
 
 .workflow-910 {
-    background: url( ../images/workflow/910.png ) center center no-repeat;
+    background: url(../images/workflow/910.png) center center no-repeat;
 }
 
 .workflow-920 {
-    background: url( ../images/workflow/920.png ) center center no-repeat;
+    background: url(../images/workflow/920.png) center center no-repeat;
 }
 
 .workflow-930 {
-    background: url( ../images/workflow/930.png ) center center no-repeat;
+    background: url(../images/workflow/930.png) center center no-repeat;
 }
 
 /* version comparison */
@@ -830,7 +828,7 @@ fm-globalMashupRepository {
 
 /* version comparison title assert */
 .gwt-versionComparison-titleAssert {
-    background: url( ../images/mainitembg.gif ) repeat-x scroll 0 -39px;
+    background: url(../images/mainitembg.gif) repeat-x scroll 0 -39px;
 
     display: block;
     font-size: 13px;
@@ -925,67 +923,67 @@ html>body .gwt-versionComparison-versionsPanel {
 }
 
 .gwt-versionComparison-fieldLabel-application_type_big {
-    background: url( ../images/icons/application_type_big.gif ) no-repeat;
+    background: url(../images/icons/application_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-big_type_big {
-    background: url( ../images/icons/big_type_big.gif ) no-repeat;
+    background: url(../images/icons/big_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-Boolean_type_big {
-    background: url( ../images/icons/Boolean_type_big.gif ) no-repeat;
+    background: url(../images/icons/Boolean_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-category_type_big {
-    background: url( ../images/icons/category_type_big.gif ) no-repeat;
+    background: url(../images/icons/category_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-colors_big {
-    background: url( ../images/icons/colors_big.gif ) no-repeat;
+    background: url(../images/icons/colors_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-date_type_big {
-    background: url( ../images/icons/date_type_big.gif ) no-repeat;
+    background: url(../images/icons/date_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-file_type_big {
-    background: url( ../images/icons/file_type_big.gif ) no-repeat;
+    background: url(../images/icons/file_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-Number_type_big {
-    background: url( ../images/icons/Number_type_big.gif ) no-repeat;
+    background: url(../images/icons/Number_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-page_type_big {
-    background: url( ../images/icons/page_type_big.gif ) no-repeat;
+    background: url(../images/icons/page_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-small_shared_type_big {
-    background: url( ../images/icons/small_shared_type_big.gif ) no-repeat;
+    background: url(../images/icons/small_shared_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
 
 .gwt-versionComparison-fieldLabel-small_type_big {
-    background: url( ../images/icons/small_type_big.gif ) no-repeat;
+    background: url(../images/icons/small_type_big.gif) no-repeat;
     height: 24px;
     padding-left: 27px;
 }
@@ -1003,12 +1001,12 @@ html>body .gwt-versionComparison-versionsPanel {
 
 /*categories picker*/
 .gwt-categoriespiker-icon-select {
-    background-image: url( ../images/document_into.png ) !important;
+    background-image: url(../images/document_into.png) !important;
 }
 
 /* date field */
 .jahia-date-field {
-    
+
 }
 
 /* misc */
@@ -1017,76 +1015,76 @@ html>body .gwt-versionComparison-versionsPanel {
 }
 
 .gxt-button-select {
-    background-image: url( ../images/icons/select.png ) !important;
+    background-image: url(../images/icons/select.png) !important;
 }
 
 .gxt-button-clear {
-    background-image: url( ../images/icons/deselect.png ) !important;
+    background-image: url(../images/icons/deselect.png) !important;
 }
 
 /* file types */
 .icon-doc {
-    background-image: url( ../images/icons/icon-doc.png );
+    background-image: url(../images/icons/icon-doc.png);
 }
 
 .icon-exe {
-    background-image: url( ../images/icons/icon-exe.png );
+    background-image: url(../images/icons/icon-exe.png);
 }
 
 .icon-file {
-    background-image: url( ../images/icons/icon-file.png );
+    background-image: url(../images/icons/icon-file.png);
 }
 
 .icon-dir {
-    background-image: url( ../images/icons/icon-dir.png );
+    background-image: url(../images/icons/icon-dir.png);
 }
 
 .icon-html {
-    background-image: url( ../images/icons/icon-html.png );
+    background-image: url(../images/icons/icon-html.png);
 }
 
 .icon-img {
-    background-image: url( ../images/icons/icon-img.png );
+    background-image: url(../images/icons/icon-img.png);
 }
 
 .icon-pdf {
-    background-image: url( ../images/icons/icon-pdf.png );
+    background-image: url(../images/icons/icon-pdf.png);
 }
 
 .icon-ppt {
-    background-image: url( ../images/icons/icon-ppt.png );
+    background-image: url(../images/icons/icon-ppt.png);
 }
 
 .icon-rar {
-    background-image: url( ../images/icons/icon-rar.png );
+    background-image: url(../images/icons/icon-rar.png);
 }
 
 .icon-sound {
-    background-image: url( ../images/icons/icon-sound.png );
+    background-image: url(../images/icons/icon-sound.png);
 }
 
 .icon-txt {
-    background-image: url( ../images/icons/icon-txt.png );
+    background-image: url(../images/icons/icon-txt.png);
 }
 
 .icon-video {
-    background-image: url( ../images/icons/icon-video.png );
+    background-image: url(../images/icons/icon-video.png);
 }
 
 .icon-xls {
-    background-image: url( ../images/icons/icon-xls.png );
+    background-image: url(../images/icons/icon-xls.png);
 }
 
 .icon-zip {
-    background-image: url( ../images/icons/icon-zip.png );
+    background-image: url(../images/icons/icon-zip.png);
 }
 
 .icon-mashup {
-    background-image: url( ../images/icons/application_type.gif );
+    background-image: url(../images/icons/application_type.gif);
 }
 
 .gwt-icon-newapp {
-    background-image: url( ../images/application_add.png );
+    background-image: url(../images/application_add.png);
 }
 
 .ext-ux-wiz-Header {
@@ -1118,7 +1116,9 @@ html>body .gwt-versionComparison-versionsPanel {
 }
 
 .directory-entry {
-   clear:both;display:block; width:900px;
+    clear: both;
+    display: block;
+    width: 900px;
 }
 
 .gadget {
@@ -1130,788 +1130,1048 @@ html>body .gwt-versionComparison-versionsPanel {
 .gadget a img {
     margin-bottom: 5px;
 }
+
 /* Flags */
 .language-code-display {
-    margin:0.2em;
-    background-color:#eaeaea;
+    margin: 0.2em;
+    background-color: #eaeaea;
     border: 1px solid #ccc;
-    padding:0 0.2em;
-    text-transform:uppercase
-}
-.flag_ar {
-    background-image: url( ../../../css/images/flags/ar_on.png ) !important;
-}
-.flag_be {
-    background-image: url( ../../../css/images/flags/be_on.png ) !important;
-}
-.flag_bg {
-    background-image: url( ../../../css/images/flags/bg_on.png ) !important;
-}
-.flag_ca {
-    background-image: url( ../../../css/images/flags/ca_on.png ) !important;
-}
-.flag_ch {
-    background-image: url( ../../../css/images/flags/ch_on.png ) !important;
-}
-.flag_cs {
-    background-image: url( ../../../css/images/flags/cs_on.png ) !important;
-}
-.flag_da {
-    background-image: url( ../../../css/images/flags/da_on.png ) !important;
-}
-.flag_de {
-    background-image: url( ../../../css/images/flags/de_on.png ) !important;
-}
-.flag_el {
-    background-image: url( ../../../css/images/flags/el_on.png ) !important;
-}
-.flag_en {
-    background-image: url( ../../../css/images/flags/en_on.png ) !important;
-}
-.flag_es {
-    background-image: url( ../../../css/images/flags/es_on.png ) !important;
-}
-.flag_et {
-    background-image: url( ../../../css/images/flags/et_on.png ) !important;
-}
-.flag_fi {
-    background-image: url( ../../../css/images/flags/fi_on.png ) !important;
-}
-.flag_fr {
-    background-image: url( ../../../css/images/flags/fr_on.png ) !important;
-}
-.flag_hi {
-    background-image: url( ../../../css/images/flags/hi_on.png ) !important;
-}
-.flag_hr {
-    background-image: url( ../../../css/images/flags/hr_on.png ) !important;
-}
-.flag_hu {
-    background-image: url( ../../../css/images/flags/hu_on.png ) !important;
-}
-.flag_is {
-    background-image: url( ../../../css/images/flags/is_on.png ) !important;
-}
-.flag_it {
-    background-image: url( ../../../css/images/flags/it_on.png ) !important;
-}
-.flag_iw {
-    background-image: url( ../../../css/images/flags/iw_on.png ) !important;
-}
-.flag_ja {
-    background-image: url( ../../../css/images/flags/ja_on.png ) !important;
-}
-.flag_ko {
-    background-image: url( ../../../css/images/flags/ko_on.png ) !important;
-}
-.flag_lt {
-    background-image: url( ../../../css/images/flags/lt_on.png ) !important;
-}
-.flag_lv {
-    background-image: url( ../../../css/images/flags/lv_on.png ) !important;
-}
-.flag_mk {
-    background-image: url( ../../../css/images/flags/mk_on.png ) !important;
-}
-.flag_nl {
-    background-image: url( ../../../css/images/flags/nl_on.png ) !important;
-}
-.flag_no {
-    background-image: url( ../../../css/images/flags/no_on.png ) !important;
-}
-.flag_pl {
-    background-image: url( ../../../css/images/flags/pl_on.png ) !important;
-}
-.flag_pt {
-    background-image: url( ../../../css/images/flags/pt_on.png ) !important;
-}
-.flag_ro {
-    background-image: url( ../../../css/images/flags/ro_on.png ) !important;
-}
-.flag_ru {
-    background-image: url( ../../../css/images/flags/ru_on.png ) !important;
-}
-.flag_sk {
-    background-image: url( ../../../css/images/flags/sk_on.png ) !important;
-}
-.flag_sl {
-    background-image: url( ../../../css/images/flags/sl_on.png ) !important;
-}
-.flag_sq {
-    background-image: url( ../../../css/images/flags/sq_on.png ) !important;
-}
-.flag_sr {
-    background-image: url( ../../../css/images/flags/sr_on.png ) !important;
-}
-.flag_sv {
-    background-image: url( ../../../css/images/flags/sv_on.png ) !important;
-}
-.flag_th {
-    background-image: url( ../../../css/images/flags/th_on.png ) !important;
-}
-.flag_tr {
-    background-image: url( ../../../css/images/flags/tr_on.png ) !important;
-}
-.flag_uk {
-    background-image: url( ../../../css/images/flags/uk_on.png ) !important;
-}
-.flag_us {
-    background-image: url( ../../../css/images/flags/us_on.png ) !important;
-}
-.flag_zh {
-    background-image: url( ../../../css/images/flags/zh_on.png ) !important;
-}
-.flag_japan {
-background-image: url(../../../css/images/flags/plain/flag_japan.png) !important;
-}
-.flag_peru {
-background-image: url(../../../css/images/flags/plain/flag_peru.png) !important;
-}
-.flag_japan {
-background-image: url(../../../css/images/flags/plain/flag_japan.png) !important;
-}
-.flag_panama {
-background-image: url(../../../css/images/flags/plain/flag_panama.png) !important;
-}
-.flag_bosnia_and_herzegovina {
-background-image: url(../../../css/images/flags/plain/flag_bosnia_and_herzegovina.png) !important;
-}
-.flag_guatemala {
-background-image: url(../../../css/images/flags/plain/flag_guatemala.png) !important;
-}
-.flag_united_arab_emirates {
-background-image: url(../../../css/images/flags/plain/flag_united_arab_emirates.png) !important;
-}
-.flag_norway {
-background-image: url(../../../css/images/flags/plain/flag_norway.png) !important;
-}
-.flag_albania {
-background-image: url(../../../css/images/flags/plain/flag_albania.png) !important;
-}
-.flag_iraq {
-background-image: url(../../../css/images/flags/plain/flag_iraq.png) !important;
-}
-.flag_yemen {
-background-image: url(../../../css/images/flags/plain/flag_yemen.png) !important;
-}
-.flag_portugal {
-background-image: url(../../../css/images/flags/plain/flag_portugal.png) !important;
-}
-.flag_cyprus {
-background-image: url(../../../css/images/flags/plain/flag_cyprus.png) !important;
-}
-.flag_qatar {
-background-image: url(../../../css/images/flags/plain/flag_qatar.png) !important;
-}
-.flag_macedonia {
-background-image: url(../../../css/images/flags/plain/flag_macedonia.png) !important;
-}
-.flag_switzerland {
-background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_united_states {
-background-image: url(../../../css/images/flags/plain/flag_united_states.png) !important;
-}
-.flag_finland {
-background-image: url(../../../css/images/flags/plain/flag_finland.png) !important;
-}
-.flag_malta {
-background-image: url(../../../css/images/flags/plain/flag_malta.png) !important;
-}
-.flag_slovenia {
-background-image: url(../../../css/images/flags/plain/flag_slovenia.png) !important;
-}
-.flag_slovakia {
-background-image: url(../../../css/images/flags/plain/flag_slovakia.png) !important;
-}
-.flag_turkey {
-background-image: url(../../../css/images/flags/plain/flag_turkey.png) !important;
-}
-.flag_saudi_arabia {
-background-image: url(../../../css/images/flags/plain/flag_saudi_arabia.png) !important;
-}
-.flag_united_kingdom {
-background-image: url(../../../css/images/flags/plain/flag_united_kingdom.png) !important;
-}
-.flag_serbia_and_montenegro {
-background-image: url(../../../css/images/flags/plain/flag_serbia_and_montenegro.png) !important;
-}
-.flag_new_zealand {
-background-image: url(../../../css/images/flags/plain/flag_new_zealand.png) !important;
-}
-.flag_norway {
-background-image: url(../../../css/images/flags/plain/flag_norway.png) !important;
-}
-.flag_lithuania {
-background-image: url(../../../css/images/flags/plain/flag_lithuania.png) !important;
-}
-.flag_nicaragua {
-background-image: url(../../../css/images/flags/plain/flag_nicaragua.png) !important;
-}
-.flag_ireland {
-background-image: url(../../../css/images/flags/plain/flag_ireland.png) !important;
-}
-.flag_belgium {
-background-image: url(../../../css/images/flags/plain/flag_belgium.png) !important;
-}
-.flag_spain {
-background-image: url(../../../css/images/flags/plain/flag_spain.png) !important;
-}
-.flag_lebanon {
-background-image: url(../../../css/images/flags/plain/flag_lebanon.png) !important;
-}
-.flag_canada {
-background-image: url(../../../css/images/flags/plain/flag_canada.png) !important;
-}
-.flag_estonia {
-background-image: url(../../../css/images/flags/plain/flag_estonia.png) !important;
-}
-.flag_kuwait {
-background-image: url(../../../css/images/flags/plain/flag_kuwait.png) !important;
-}
-.flag_serbia {
-background-image: url(../../../css/images/flags/plain/flag_serbia.png) !important;
-}
-.flag_united_states {
-background-image: url(../../../css/images/flags/plain/flag_united_states.png) !important;
-}
-.flag_mexico {
-background-image: url(../../../css/images/flags/plain/flag_mexico.png) !important;
-}
-.flag_sudan {
-background-image: url(../../../css/images/flags/plain/flag_sudan.png) !important;
-}
-.flag_indonesia {
-background-image: url(../../../css/images/flags/plain/flag_indonesia.png) !important;
-}
-.flag_uruguay {
-background-image: url(../../../css/images/flags/plain/flag_uruguay.png) !important;
-}
-.flag_latvia {
-background-image: url(../../../css/images/flags/plain/flag_latvia.png) !important;
-}
-.flag_brazil {
-background-image: url(../../../css/images/flags/plain/flag_brazil.png) !important;
-}
-.flag_syria {
-background-image: url(../../../css/images/flags/plain/flag_syria.png) !important;
-}
-.flag_dominican_republic {
-background-image: url(../../../css/images/flags/plain/flag_dominican_republic.png) !important;
-}
-.flag_switzerland {
-background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_india {
-background-image: url(../../../css/images/flags/plain/flag_india.png) !important;
-}
-.flag_venezuela {
-background-image: url(../../../css/images/flags/plain/flag_venezuela.png) !important;
-}
-.flag_bahrain {
-background-image: url(../../../css/images/flags/plain/flag_bahrain.png) !important;
-}
-.flag_philippines {
-background-image: url(../../../css/images/flags/plain/flag_philippines.png) !important;
-}
-.flag_tunisia {
-background-image: url(../../../css/images/flags/plain/flag_tunisia.png) !important;
-}
-.flag_austria {
-background-image: url(../../../css/images/flags/plain/flag_austria.png) !important;
-}
-.flag_netherlands {
-background-image: url(../../../css/images/flags/plain/flag_netherlands.png) !important;
-}
-.flag_ecuador {
-background-image: url(../../../css/images/flags/plain/flag_ecuador.png) !important;
-}
-.flag_taiwan {
-background-image: url(../../../css/images/flags/plain/flag_taiwan.png) !important;
-}
-.flag_jordan {
-background-image: url(../../../css/images/flags/plain/flag_jordan.png) !important;
-}
-.flag_iceland {
-background-image: url(../../../css/images/flags/plain/flag_iceland.png) !important;
-}
-.flag_colombia {
-background-image: url(../../../css/images/flags/plain/flag_colombia.png) !important;
-}
-.flag_costa_rica {
-background-image: url(../../../css/images/flags/plain/flag_costa_rica.png) !important;
-}
-.flag_chile {
-background-image: url(../../../css/images/flags/plain/flag_chile.png) !important;
-}
-.flag_egypt {
-background-image: url(../../../css/images/flags/plain/flag_egypt.png) !important;
-}
-.flag_south_africa {
-background-image: url(../../../css/images/flags/plain/flag_south_africa.png) !important;
-}
-.flag_thailand {
-background-image: url(../../../css/images/flags/plain/flag_thailand.png) !important;
-}
-.flag_greece {
-background-image: url(../../../css/images/flags/plain/flag_greece.png) !important;
-}
-.flag_italy {
-background-image: url(../../../css/images/flags/plain/flag_italy.png) !important;
-}
-.flag_hungary {
-background-image: url(../../../css/images/flags/plain/flag_hungary.png) !important;
-}
-.flag_ireland {
-background-image: url(../../../css/images/flags/plain/flag_ireland.png) !important;
-}
-.flag_ukraine {
-background-image: url(../../../css/images/flags/plain/flag_ukraine.png) !important;
-}
-.flag_poland {
-background-image: url(../../../css/images/flags/plain/flag_poland.png) !important;
-}
-.flag_luxembourg {
-background-image: url(../../../css/images/flags/plain/flag_luxembourg.png) !important;
-}
-.flag_belgium {
-background-image: url(../../../css/images/flags/plain/flag_belgium.png) !important;
-}
-.flag_india {
-background-image: url(../../../css/images/flags/plain/flag_india.png) !important;
-}
-.flag_spain {
-background-image: url(../../../css/images/flags/plain/flag_spain.png) !important;
-}
-.flag_morocco {
-background-image: url(../../../css/images/flags/plain/flag_morocco.png) !important;
-}
-.flag_bolivia {
-background-image: url(../../../css/images/flags/plain/flag_bolivia.png) !important;
-}
-.flag_australia {
-background-image: url(../../../css/images/flags/plain/flag_australia.png) !important;
-}
-.flag_singapore {
-background-image: url(../../../css/images/flags/plain/flag_singapore.png) !important;
-}
-.flag_el_salvador {
-background-image: url(../../../css/images/flags/plain/flag_el_salvador.png) !important;
-}
-.flag_russia {
-background-image: url(../../../css/images/flags/plain/flag_russia.png) !important;
-}
-.flag_south_korea {
-background-image: url(../../../css/images/flags/plain/flag_south_korea.png) !important;
-}
-.flag_algeria {
-background-image: url(../../../css/images/flags/plain/flag_algeria.png) !important;
-}
-.flag_vietnam {
-background-image: url(../../../css/images/flags/plain/flag_vietnam.png) !important;
-}
-.flag_montenegro {
-background-image: url(../../../css/images/flags/plain/flag_montenegro.png) !important;
-}
-.flag_libya {
-background-image: url(../../../css/images/flags/plain/flag_libya.png) !important;
-}
-.flag_china {
-background-image: url(../../../css/images/flags/plain/flag_china.png) !important;
-}
-.flag_belarus {
-background-image: url(../../../css/images/flags/plain/flag_belarus.png) !important;
-}
-.flag_hong_kong {
-background-image: url(../../../css/images/flags/plain/flag_hong_kong.png) !important;
-}
-.flag_israel {
-background-image: url(../../../css/images/flags/plain/flag_israel.png) !important;
-}
-.flag_bulgaria {
-background-image: url(../../../css/images/flags/plain/flag_bulgaria.png) !important;
-}
-.flag_malta {
-background-image: url(../../../css/images/flags/plain/flag_malta.png) !important;
-}
-.flag_paraguay {
-background-image: url(../../../css/images/flags/plain/flag_paraguay.png) !important;
-}
-.flag_france {
-background-image: url(../../../css/images/flags/plain/flag_france.png) !important;
-}
-.flag_czech_republic {
-background-image: url(../../../css/images/flags/plain/flag_czech_republic.png) !important;
-}
-.flag_switzerland {
-background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_romania {
-background-image: url(../../../css/images/flags/plain/flag_romania.png) !important;
-}
-.flag_puerto_rico {
-background-image: url(../../../css/images/flags/plain/flag_puerto_rico.png) !important;
-}
-.flag_canada {
-background-image: url(../../../css/images/flags/plain/flag_canada.png) !important;
-}
-.flag_germany {
-background-image: url(../../../css/images/flags/plain/flag_germany.png) !important;
-}
-.flag_luxembourg {
-background-image: url(../../../css/images/flags/plain/flag_luxembourg.png) !important;
-}
-.flag_argentina {
-background-image: url(../../../css/images/flags/plain/flag_argentina.png) !important;
-}
-.flag_malaysia {
-background-image: url(../../../css/images/flags/plain/flag_malaysia.png) !important;
-}
-.flag_croatia {
-background-image: url(../../../css/images/flags/plain/flag_croatia.png) !important;
-}
-.flag_singapore {
-background-image: url(../../../css/images/flags/plain/flag_singapore.png) !important;
-}
-.flag_oman {
-background-image: url(../../../css/images/flags/plain/flag_oman.png) !important;
-}
-.flag_thailand {
-background-image: url(../../../css/images/flags/plain/flag_thailand.png) !important;
-}
-.flag_sweden {
-background-image: url(../../../css/images/flags/plain/flag_sweden.png) !important;
-}
-.flag_denmark {
-background-image: url(../../../css/images/flags/plain/flag_denmark.png) !important;
-}
-.flag_honduras {
-background-image: url(../../../css/images/flags/plain/flag_honduras.png) !important;
-}
-.flag_ja_JP {
-	background-image: url(../../../css/images/flags/plain/flag_japan.png) !important;
-}
-.flag_es_PE {
-	background-image: url(../../../css/images/flags/plain/flag_peru.png) !important;
-}
-.flag_ja_JP_JP {
-	background-image: url(../../../css/images/flags/plain/flag_japan.png) !important;
-}
-.flag_es_PA {
-	background-image: url(../../../css/images/flags/plain/flag_panama.png) !important;
-}
-.flag_sr_BA {
-	background-image: url(../../../css/images/flags/plain/flag_bosnia_and_herzegovina.png) !important;
-}
-.flag_es_GT {
-	background-image: url(../../../css/images/flags/plain/flag_guatemala.png) !important;
-}
-.flag_ar_AE {
-	background-image: url(../../../css/images/flags/plain/flag_united_arab_emirates.png) !important;
-}
-.flag_no_NO {
-	background-image: url(../../../css/images/flags/plain/flag_norway.png) !important;
-}
-.flag_sq_AL {
-	background-image: url(../../../css/images/flags/plain/flag_albania.png) !important;
-}
-.flag_ar_IQ {
-	background-image: url(../../../css/images/flags/plain/flag_iraq.png) !important;
-}
-.flag_ar_YE {
-	background-image: url(../../../css/images/flags/plain/flag_yemen.png) !important;
-}
-.flag_pt_PT {
-	background-image: url(../../../css/images/flags/plain/flag_portugal.png) !important;
-}
-.flag_el_CY {
-	background-image: url(../../../css/images/flags/plain/flag_cyprus.png) !important;
-}
-.flag_ar_QA {
-	background-image: url(../../../css/images/flags/plain/flag_qatar.png) !important;
-}
-.flag_mk_MK {
-	background-image: url(../../../css/images/flags/plain/flag_macedonia.png) !important;
-}
-.flag_de_CH {
-	background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_en_US {
-	background-image: url(../../../css/images/flags/plain/flag_united_states.png) !important;
-}
-.flag_fi_FI {
-	background-image: url(../../../css/images/flags/plain/flag_finland.png) !important;
-}
-.flag_en_MT {
-	background-image: url(../../../css/images/flags/plain/flag_malta.png) !important;
-}
-.flag_sl_SI {
-	background-image: url(../../../css/images/flags/plain/flag_slovenia.png) !important;
-}
-.flag_sk_SK {
-	background-image: url(../../../css/images/flags/plain/flag_slovakia.png) !important;
-}
-.flag_tr_TR {
-	background-image: url(../../../css/images/flags/plain/flag_turkey.png) !important;
-}
-.flag_ar_SA {
-	background-image: url(../../../css/images/flags/plain/flag_saudi_arabia.png) !important;
-}
-.flag_en_GB {
-	background-image: url(../../../css/images/flags/plain/flag_united_kingdom.png) !important;
-}
-.flag_sr_CS {
-	background-image: url(../../../css/images/flags/plain/flag_serbia_and_montenegro.png) !important;
-}
-.flag_en_NZ {
-	background-image: url(../../../css/images/flags/plain/flag_new_zealand.png) !important;
-}
-.flag_no_NO_NY {
-	background-image: url(../../../css/images/flags/plain/flag_norway.png) !important;
-}
-.flag_lt_LT {
-	background-image: url(../../../css/images/flags/plain/flag_lithuania.png) !important;
-}
-.flag_es_NI {
-	background-image: url(../../../css/images/flags/plain/flag_nicaragua.png) !important;
-}
-.flag_ga_IE {
-	background-image: url(../../../css/images/flags/plain/flag_ireland.png) !important;
-}
-.flag_fr_BE {
-	background-image: url(../../../css/images/flags/plain/flag_belgium.png) !important;
-}
-.flag_es_ES {
-	background-image: url(../../../css/images/flags/plain/flag_spain.png) !important;
-}
-.flag_ar_LB {
-	background-image: url(../../../css/images/flags/plain/flag_lebanon.png) !important;
-}
-.flag_fr_CA {
-	background-image: url(../../../css/images/flags/plain/flag_canada.png) !important;
-}
-.flag_et_EE {
-	background-image: url(../../../css/images/flags/plain/flag_estonia.png) !important;
-}
-.flag_ar_KW {
-	background-image: url(../../../css/images/flags/plain/flag_kuwait.png) !important;
-}
-.flag_sr_RS {
-	background-image: url(../../../css/images/flags/plain/flag_serbia.png) !important;
-}
-.flag_es_US {
-	background-image: url(../../../css/images/flags/plain/flag_united_states.png) !important;
-}
-.flag_es_MX {
-	background-image: url(../../../css/images/flags/plain/flag_mexico.png) !important;
-}
-.flag_ar_SD {
-	background-image: url(../../../css/images/flags/plain/flag_sudan.png) !important;
-}
-.flag_in_ID {
-	background-image: url(../../../css/images/flags/plain/flag_indonesia.png) !important;
-}
-.flag_es_UY {
-	background-image: url(../../../css/images/flags/plain/flag_uruguay.png) !important;
-}
-.flag_lv_LV {
-	background-image: url(../../../css/images/flags/plain/flag_latvia.png) !important;
-}
-.flag_pt_BR {
-	background-image: url(../../../css/images/flags/plain/flag_brazil.png) !important;
-}
-.flag_ar_SY {
-	background-image: url(../../../css/images/flags/plain/flag_syria.png) !important;
-}
-.flag_es_DO {
-	background-image: url(../../../css/images/flags/plain/flag_dominican_republic.png) !important;
-}
-.flag_fr_CH {
-	background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_hi_IN {
-	background-image: url(../../../css/images/flags/plain/flag_india.png) !important;
-}
-.flag_es_VE {
-	background-image: url(../../../css/images/flags/plain/flag_venezuela.png) !important;
-}
-.flag_ar_BH {
-	background-image: url(../../../css/images/flags/plain/flag_bahrain.png) !important;
-}
-.flag_en_PH {
-	background-image: url(../../../css/images/flags/plain/flag_philippines.png) !important;
-}
-.flag_ar_TN {
-	background-image: url(../../../css/images/flags/plain/flag_tunisia.png) !important;
-}
-.flag_de_AT {
-	background-image: url(../../../css/images/flags/plain/flag_austria.png) !important;
-}
-.flag_nl_NL {
-	background-image: url(../../../css/images/flags/plain/flag_netherlands.png) !important;
-}
-.flag_es_EC {
-	background-image: url(../../../css/images/flags/plain/flag_ecuador.png) !important;
-}
-.flag_zh_TW {
-	background-image: url(../../../css/images/flags/plain/flag_taiwan.png) !important;
-}
-.flag_ar_JO {
-	background-image: url(../../../css/images/flags/plain/flag_jordan.png) !important;
-}
-.flag_is_IS {
-	background-image: url(../../../css/images/flags/plain/flag_iceland.png) !important;
-}
-.flag_es_CO {
-	background-image: url(../../../css/images/flags/plain/flag_colombia.png) !important;
-}
-.flag_es_CR {
-	background-image: url(../../../css/images/flags/plain/flag_costa_rica.png) !important;
-}
-.flag_es_CL {
-	background-image: url(../../../css/images/flags/plain/flag_chile.png) !important;
-}
-.flag_ar_EG {
-	background-image: url(../../../css/images/flags/plain/flag_egypt.png) !important;
-}
-.flag_en_ZA {
-	background-image: url(../../../css/images/flags/plain/flag_south_africa.png) !important;
-}
-.flag_th_TH {
-	background-image: url(../../../css/images/flags/plain/flag_thailand.png) !important;
-}
-.flag_el_GR {
-	background-image: url(../../../css/images/flags/plain/flag_greece.png) !important;
-}
-.flag_it_IT {
-	background-image: url(../../../css/images/flags/plain/flag_italy.png) !important;
-}
-.flag_hu_HU {
-	background-image: url(../../../css/images/flags/plain/flag_hungary.png) !important;
-}
-.flag_en_IE {
-	background-image: url(../../../css/images/flags/plain/flag_ireland.png) !important;
-}
-.flag_uk_UA {
-	background-image: url(../../../css/images/flags/plain/flag_ukraine.png) !important;
-}
-.flag_pl_PL {
-	background-image: url(../../../css/images/flags/plain/flag_poland.png) !important;
-}
-.flag_fr_LU {
-	background-image: url(../../../css/images/flags/plain/flag_luxembourg.png) !important;
-}
-.flag_nl_BE {
-	background-image: url(../../../css/images/flags/plain/flag_belgium.png) !important;
-}
-.flag_en_IN {
-	background-image: url(../../../css/images/flags/plain/flag_india.png) !important;
-}
-.flag_ca_ES {
-	background-image: url(../../../css/images/flags/plain/flag_spain.png) !important;
-}
-.flag_ar_MA {
-	background-image: url(../../../css/images/flags/plain/flag_morocco.png) !important;
-}
-.flag_es_BO {
-	background-image: url(../../../css/images/flags/plain/flag_bolivia.png) !important;
-}
-.flag_en_AU {
-	background-image: url(../../../css/images/flags/plain/flag_australia.png) !important;
-}
-.flag_zh_SG {
-	background-image: url(../../../css/images/flags/plain/flag_singapore.png) !important;
-}
-.flag_es_SV {
-	background-image: url(../../../css/images/flags/plain/flag_el_salvador.png) !important;
-}
-.flag_ru_RU {
-	background-image: url(../../../css/images/flags/plain/flag_russia.png) !important;
-}
-.flag_ko_KR {
-	background-image: url(../../../css/images/flags/plain/flag_south_korea.png) !important;
-}
-.flag_ar_DZ {
-	background-image: url(../../../css/images/flags/plain/flag_algeria.png) !important;
-}
-.flag_vi_VN {
-	background-image: url(../../../css/images/flags/plain/flag_vietnam.png) !important;
-}
-.flag_sr_ME {
-	background-image: url(../../../css/images/flags/plain/flag_montenegro.png) !important;
-}
-.flag_ar_LY {
-	background-image: url(../../../css/images/flags/plain/flag_libya.png) !important;
-}
-.flag_zh_CN {
-	background-image: url(../../../css/images/flags/plain/flag_china.png) !important;
-}
-.flag_be_BY {
-	background-image: url(../../../css/images/flags/plain/flag_belarus.png) !important;
-}
-.flag_zh_HK {
-	background-image: url(../../../css/images/flags/plain/flag_hong_kong.png) !important;
-}
-.flag_iw_IL {
-	background-image: url(../../../css/images/flags/plain/flag_israel.png) !important;
-}
-.flag_bg_BG {
-	background-image: url(../../../css/images/flags/plain/flag_bulgaria.png) !important;
-}
-.flag_mt_MT {
-	background-image: url(../../../css/images/flags/plain/flag_malta.png) !important;
-}
-.flag_es_PY {
-	background-image: url(../../../css/images/flags/plain/flag_paraguay.png) !important;
-}
-.flag_fr_FR {
-	background-image: url(../../../css/images/flags/plain/flag_france.png) !important;
-}
-.flag_cs_CZ {
-	background-image: url(../../../css/images/flags/plain/flag_czech_republic.png) !important;
-}
-.flag_it_CH {
-	background-image: url(../../../css/images/flags/plain/flag_switzerland.png) !important;
-}
-.flag_ro_RO {
-	background-image: url(../../../css/images/flags/plain/flag_romania.png) !important;
-}
-.flag_es_PR {
-	background-image: url(../../../css/images/flags/plain/flag_puerto_rico.png) !important;
-}
-.flag_en_CA {
-	background-image: url(../../../css/images/flags/plain/flag_canada.png) !important;
-}
-.flag_de_DE {
-	background-image: url(../../../css/images/flags/plain/flag_germany.png) !important;
-}
-.flag_de_LU {
-	background-image: url(../../../css/images/flags/plain/flag_luxembourg.png) !important;
-}
-.flag_es_AR {
-	background-image: url(../../../css/images/flags/plain/flag_argentina.png) !important;
-}
-.flag_ms_MY {
-	background-image: url(../../../css/images/flags/plain/flag_malaysia.png) !important;
-}
-.flag_hr_HR {
-	background-image: url(../../../css/images/flags/plain/flag_croatia.png) !important;
-}
-.flag_en_SG {
-	background-image: url(../../../css/images/flags/plain/flag_singapore.png) !important;
-}
-.flag_ar_OM {
-	background-image: url(../../../css/images/flags/plain/flag_oman.png) !important;
-}
-.flag_th_TH_TH {
-	background-image: url(../../../css/images/flags/plain/flag_thailand.png) !important;
-}
-.flag_sv_SE {
-	background-image: url(../../../css/images/flags/plain/flag_sweden.png) !important;
-}
-.flag_da_DK {
-	background-image: url(../../../css/images/flags/plain/flag_denmark.png) !important;
-}
-.flag_es_HN {
-	background-image: url(../../../css/images/flags/plain/flag_honduras.png) !important;
+    padding: 0 0.2em;
+    text-transform: uppercase
+}
+
+.gwt-toolbar-icon-lang-ar {
+    background-image: url(../images/flags/ar_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-be {
+    background-image: url(../images/flags/be_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bg {
+    background-image: url(../images/flags/bg_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ca {
+    background-image: url(../images/flags/ca_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ch {
+    background-image: url(../images/flags/ch_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-cs {
+    background-image: url(../images/flags/cs_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-da {
+    background-image: url(../images/flags/da_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-de {
+    background-image: url(../images/flags/de_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-el {
+    background-image: url(../images/flags/el_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en {
+    background-image: url(../images/flags/en_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es {
+    background-image: url(../images/flags/es_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-et {
+    background-image: url(../images/flags/et_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fi {
+    background-image: url(../images/flags/fi_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr {
+    background-image: url(../images/flags/fr_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hi {
+    background-image: url(../images/flags/hi_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hr {
+    background-image: url(../images/flags/hr_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hu {
+    background-image: url(../images/flags/hu_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-is {
+    background-image: url(../images/flags/is_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-it {
+    background-image: url(../images/flags/it_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-iw {
+    background-image: url(../images/flags/iw_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ja {
+    background-image: url(../images/flags/ja_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ko {
+    background-image: url(../images/flags/ko_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lt {
+    background-image: url(../images/flags/lt_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lv {
+    background-image: url(../images/flags/lv_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-mk {
+    background-image: url(../images/flags/mk_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-nl {
+    background-image: url(../images/flags/nl_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-no {
+    background-image: url(../images/flags/no_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-pl {
+    background-image: url(../images/flags/pl_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-pt {
+    background-image: url(../images/flags/pt_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ro {
+    background-image: url(../images/flags/ro_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ru {
+    background-image: url(..//images/flags/ru_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sk {
+    background-image: url(../images/flags/sk_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sl {
+    background-image: url(../images/flags/sl_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sq {
+    background-image: url(../images/flags/sq_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sr {
+    background-image: url(../images/flags/sr_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sv {
+    background-image: url(../images/flags/sv_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-th {
+    background-image: url(../images/flags/th_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-tr {
+    background-image: url(../images/flags/tr_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-uk {
+    background-image: url(../images/flags/uk_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-us {
+    background-image: url(../images/flags/us_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-zh {
+    background-image: url(../images/flags/zh_on.png) !important;
+}
+
+.gwt-toolbar-icon-lang-japan {
+    background-image: url(../images/flags/plain/flag_japan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-peru {
+    background-image: url(../images/flags/plain/flag_peru.png) !important;
+}
+
+.gwt-toolbar-icon-lang-japan {
+    background-image: url(../images/flags/plain/flag_japan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-panama {
+    background-image: url(../images/flags/plain/flag_panama.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bosnia_and_herzegovina {
+    background-image: url(../images/flags/plain/flag_bosnia_and_herzegovina.png) !important;
+}
+
+.gwt-toolbar-icon-lang-guatemala {
+    background-image: url(../images/flags/plain/flag_guatemala.png) !important;
+}
+
+.gwt-toolbar-icon-lang-united_arab_emirates {
+    background-image: url(../images/flags/plain/flag_united_arab_emirates.png) !important;
+}
+
+.gwt-toolbar-icon-lang-norway {
+    background-image: url(../images/flags/plain/flag_norway.png) !important;
+}
+
+.gwt-toolbar-icon-lang-albania {
+    background-image: url(../images/flags/plain/flag_albania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-iraq {
+    background-image: url(../images/flags/plain/flag_iraq.png) !important;
+}
+
+.gwt-toolbar-icon-lang-yemen {
+    background-image: url(../images/flags/plain/flag_yemen.png) !important;
+}
+
+.gwt-toolbar-icon-lang-portugal {
+    background-image: url(../images/flags/plain/flag_portugal.png) !important;
+}
+
+.gwt-toolbar-icon-lang-cyprus {
+    background-image: url(../images/flags/plain/flag_cyprus.png) !important;
+}
+
+.gwt-toolbar-icon-lang-qatar {
+    background-image: url(../images/flags/plain/flag_qatar.png) !important;
+}
+
+.gwt-toolbar-icon-lang-macedonia {
+    background-image: url(../images/flags/plain/flag_macedonia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-switzerland {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-united_states {
+    background-image: url(../images/flags/plain/flag_united_states.png) !important;
+}
+
+.gwt-toolbar-icon-lang-finland {
+    background-image: url(../images/flags/plain/flag_finland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-malta {
+    background-image: url(../images/flags/plain/flag_malta.png) !important;
+}
+
+.gwt-toolbar-icon-lang-slovenia {
+    background-image: url(../images/flags/plain/flag_slovenia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-slovakia {
+    background-image: url(../images/flags/plain/flag_slovakia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-turkey {
+    background-image: url(../images/flags/plain/flag_turkey.png) !important;
+}
+
+.gwt-toolbar-icon-lang-saudi_arabia {
+    background-image: url(../images/flags/plain/flag_saudi_arabia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-united_kingdom {
+    background-image: url(../images/flags/plain/flag_united_kingdom.png) !important;
+}
+
+.gwt-toolbar-icon-lang-serbia_and_montenegro {
+    background-image: url(../images/flags/plain/flag_serbia_and_montenegro.png) !important;
+}
+
+.gwt-toolbar-icon-lang-new_zealand {
+    background-image: url(../images/flags/plain/flag_new_zealand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-norway {
+    background-image: url(../images/flags/plain/flag_norway.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lithuania {
+    background-image: url(../images/flags/plain/flag_lithuania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-nicaragua {
+    background-image: url(../images/flags/plain/flag_nicaragua.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ireland {
+    background-image: url(../images/flags/plain/flag_ireland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-belgium {
+    background-image: url(../images/flags/plain/flag_belgium.png) !important;
+}
+
+.gwt-toolbar-icon-lang-spain {
+    background-image: url(../images/flags/plain/flag_spain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lebanon {
+    background-image: url(../images/flags/plain/flag_lebanon.png) !important;
+}
+
+.gwt-toolbar-icon-lang-canada {
+    background-image: url(../images/flags/plain/flag_canada.png) !important;
+}
+
+.gwt-toolbar-icon-lang-estonia {
+    background-image: url(../images/flags/plain/flag_estonia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-kuwait {
+    background-image: url(../images/flags/plain/flag_kuwait.png) !important;
+}
+
+.gwt-toolbar-icon-lang-serbia {
+    background-image: url(../images/flags/plain/flag_serbia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-united_states {
+    background-image: url(../images/flags/plain/flag_united_states.png) !important;
+}
+
+.gwt-toolbar-icon-lang-mexico {
+    background-image: url(../images/flags/plain/flag_tant;
+}
+
+.gwt-toolbar-icon-lang-sudan {
+    background-image: url(../images/flags/plain/flag_sudan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-indonesia {
+    background-image: url(../images/flags/plain/flag_indonesia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-uruguay {
+    background-image: url(../images/flags/plain/flag_uruguay.png) !important;
+}
+
+.gwt-toolbar-icon-lang-latvia {
+    background-image: url(../images/flags/plain/flag_latvia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-brazil {
+    background-image: url(../images/flags/plain/flag_brazil.png) !important;
+}
+
+.gwt-toolbar-icon-lang-syria {
+    background-image: url(../images/flags/plain/flag_syria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-dominican_republic {
+    background-image: url(../images/flags/plain/flag_dominican_republic.png) !important;
+}
+
+.gwt-toolbar-icon-lang-switzerland {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-india {
+    background-image: url(../images/flags/plain/flag_india.png) !important;
+}
+
+.gwt-toolbar-icon-lang-venezuela {
+    background-image: url(../images/flags/plain/flag_venezuela.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bahrain {
+    background-image: url(../images/flags/plain/flag_bahrain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-philippines {
+    background-image: url(../images/flags/plain/flag_philippines.png) !important;
+}
+
+.gwt-toolbar-icon-lang-tunisia {
+    background-image: url(../images/flags/plain/flag_tunisia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-austria {
+    background-image: url(../images/flags/plain/flag_austria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-netherlands {
+    background-image: url(../images/flags/plain/flag_netherlands.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ecuador {
+    background-image: url(../images/flags/plain/flag_ecuador.png) !important;
+}
+
+.gwt-toolbar-icon-lang-taiwan {
+    background-image: url(../images/flags/plain/flag_tant) !important;
+}
+
+.gwt-toolbar-icon-lang-jordan {
+    background-image: url(../images/flags/plain/flag_jordan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-iceland {
+    background-image: url(../images/flags/plain/flag_iceland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-colombia {
+    background-image: url(../images/flags/plain/flag_colombia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-costa_rica {
+    background-image: url(../images/flags/plain/flag_costa_rica.png) !important;
+}
+
+.gwt-toolbar-icon-lang-chile {
+    background-image: url(../images/flags/plain/flag_chile.png) !important;
+}
+
+.gwt-toolbar-icon-lang-egypt {
+    background-image: url(../images/flags/plain/flag_egypt.png) !important;
+}
+
+.gwt-toolbar-icon-lang-south_africa {
+    background-image: url(../images/flags/plain/flag_south_africa.png) !important;
+}
+
+.gwt-toolbar-icon-lang-thailand {
+    background-image: url(../images/flags/plain/flag_thailand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-greece {
+    background-image: url(../images/flags/plain/flag_tant) !important;
+}
+
+.gwt-toolbar-icon-lang-italy {
+    background-image: url(../images/flags/plain/flag_italy.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hungary {
+    background-image: url(../images/flags/plain/flag_hungary.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ireland {
+    background-image: url(../images/flags/plain/flag_ireland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ukraine {
+    background-image: url(../images/flags/plain/flag_ukraine.png) !important;
+}
+
+.gwt-toolbar-icon-lang-poland {
+    background-image: url(../images/flags/plain/flag_poland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-luxembourg {
+    background-image: url(../images/flags/plain/flag_luxembourg.png) !important;
+}
+
+.gwt-toolbar-icon-lang-belgium {
+    background-image: url(../images/flags/plain/flag_belgium.png) !important;
+}
+
+.gwt-toolbar-icon-lang-india {
+    background-image: url(../images/flags/plain/flag_ant) !important;
+}
+
+.gwt-toolbar-icon-lang-spain {
+    background-image: url(../images/flags/plain/flag_spain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-morocco {
+    background-image: url(../images/flags/plain/flag_morocco.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bolivia {
+    background-image: url(../images/flags/plain/flag_bolivia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-australia {
+    background-image: url(../images/flags/plain/flag_australia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-singapore {
+    background-image: url(../images/flags/plain/flag_singapore.png) !important;
+}
+
+.gwt-toolbar-icon-lang-el_salvador {
+    background-image: url(../images/flags/plain/flag_el_salvador.png) !important;
+}
+
+.gwt-toolbar-icon-lang-russia {
+    background-image: url(../images/flags/plain/flag_russia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-south_korea {
+    background-image: url(../images/flags/plain/flag_south_korea.png) !important;
+}
+
+.gwt-toolbar-icon-lang-algeria {
+    background-image: url(../images/flags/plain/flag_algeria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-vietnam {
+    background-image: url(../images/flags/plain/flag_vietnam.png) !important;
+}
+
+.gwt-toolbar-icon-lang-montenegro {
+    background-image: url(../images/flags/plain/flag_montenegro.png) !important;
+}
+
+.gwt-toolbar-icon-lang-libya {
+    background-image: url(../images/flags/plain/flag_libya.png) !important;
+}
+
+.gwt-toolbar-icon-lang-china {
+    background-image: url(../images/flags/plain/flag_china.png) !important;
+}
+
+.gwt-toolbar-icon-lang-belarus {
+    background-image: url(../images/flags/plain/flag_belarus.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hong_kong {
+    background-image: url(../images/flags/plain/flag_hong_kong.png) !important;
+}
+
+.gwt-toolbar-icon-lang-israel {
+    background-image: url(../images/flags/plain/flag_israel.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bulgaria {
+    background-image: url(../images/flags/plain/flag_bulgaria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-malta {
+    background-image: url(../images/flags/plain/flag_malta.png) !important;
+}
+
+.gwt-toolbar-icon-lang-paraguay {
+    background-image: url(../images/flags/plain/flag_paraguay.png) !important;
+}
+
+.gwt-toolbar-icon-lang-france {
+    background-image: url(../images/flags/plain/flag_france.png) !important;
+}
+
+.gwt-toolbar-icon-lang-czech_republic {
+    background-image: url(../images/flags/plain/flag_czech_republic.png) !important;
+}
+
+.gwt-toolbar-icon-lang-switzerland {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-romania {
+    background-image: url(../images/flags/plain/flag_romania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-puerto_rico {
+    background-image: url(../images/flags/plain/flag_puerto_rico.png) !important;
+}
+
+.gwt-toolbar-icon-lang-canada {
+    background-image: url(../images/flags/plain/flag_canada.png) !important;
+}
+
+.gwt-toolbar-icon-lang-germany {
+    background-image: url(../images/flags/plain/flag_germany.png) !important;
+}
+
+.gwt-toolbar-icon-lang-luxembourg {
+    background-image: url(../images/flags/plain/flag_luxembourg.png) !important;
+}
+
+.gwt-toolbar-icon-lang-argentina {
+    background-image: url(../images/flags/plain/flag_argentina.png) !important;
+}
+
+.gwt-toolbar-icon-lang-malaysia {
+    background-image: url(../images/flags/plain/flag_malaysia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-croatia {
+    background-image: url(../images/flags/plain/flag_croatia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-singapore {
+    background-image: url(../images/flags/plain/flag_singapore.png) !important;
+}
+
+.gwt-toolbar-icon-lang-oman {
+    background-image: url(../images/flags/plain/flag_oman.png) !important;
+}
+
+.gwt-toolbar-icon-lang-thailand {
+    background-image: url(../images/flags/plain/flag_thailand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sweden {
+    background-image: url(../images/flags/plain/flag_sweden.png) !important;
+}
+
+.gwt-toolbar-icon-lang-denmark {
+    background-image: url(../images/flags/plain/flag_denmark.png) !important;
+}
+
+.gwt-toolbar-icon-lang-honduras {
+    background-image: url(../images/flags/plain/flag_honduras.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ja_JP {
+    background-image: url(../images/flags/plain/flag_japan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_PE {
+    background-image: url(../images/flags/plain/flag_peru.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ja_JP_JP {
+    background-image: url(../images/flags/plain/flag_japan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_PA {
+    background-image: url(../images/flags/plain/flag_panama.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sr_BA {
+    background-image: url(../images/flags/plain/flag_bosnia_and_herzegovina.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_GT {
+    background-image: url(../images/flags/plain/flag_guatemala.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_AE {
+    background-image: url(../images/flags/plain/flag_united_arab_emirates.png) !important;
+}
+
+.gwt-toolbar-icon-lang-no_NO {
+    background-image: url(../images/flags/plain/flag_norway.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sq_AL {
+    background-image: url(../images/flags/plain/flag_albania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_IQ {
+    background-image: url(../images/flags/plain/flag_iraq.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_YE {
+    background-image: url(../images/flags/plain/flag_yemen.png) !important;
+}
+
+.gwt-toolbar-icon-lang-pt_PT {
+    background-image: url(../images/flags/plain/flag_portugal.png) !important;
+}
+
+.gwt-toolbar-icon-lang-el_CY {
+    background-image: url(../images/flags/plain/flag_cyprus.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_QA {
+    background-image: url(../images/flags/plain/flag_qatar.png) !important;
+}
+
+.gwt-toolbar-icon-lang-mk_MK {
+    background-image: url(../images/flags/plain/flag_macedonia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-de_CH {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_US {
+    background-image: url(../images/flags/plain/flag_united_states.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fi_FI {
+    background-image: url(../images/flags/plain/flag_finland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_MT {
+    background-image: url(../images/flags/plain/flag_malta.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sl_SI {
+    background-image: url(../images/flags/plain/flag_slovenia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sk_SK {
+    background-image: url(../images/flags/plain/flag_slovakia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-tr_TR {
+    background-image: url(../images/flags/plain/flag_turkey.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_SA {
+    background-image: url(../images/flags/plain/flag_saudi_arabia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_GB {
+    background-image: url(../images/flags/plain/flag_united_kingdom.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sr_CS {
+    background-image: url(../images/flags/plain/flag_serbia_and_montenegro.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_NZ {
+    background-image: url(../images/flags/plain/flag_new_zealand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-no_NO_NY {
+    background-image: url(../images/flags/plain/flag_norway.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lt_LT {
+    background-image: url(../images/flags/plain/flag_lithuania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_NI {
+    background-image: url(../images/flags/plain/flag_nicaragua.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ga_IE {
+    background-image: url(../images/flags/plain/flag_ireland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr_BE {
+    background-image: url(../images/flags/plain/flag_belgium.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_ES {
+    background-image: url(../images/flags/plain/flag_spain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_LB {
+    background-image: url(../images/flags/plain/flag_lebanon.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr_CA {
+    background-image: url(../images/flags/plain/flag_canada.png) !important;
+}
+
+.gwt-toolbar-icon-lang-et_EE {
+    background-image: url(../images/flags/plain/flag_estonia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_KW {
+    background-image: url(../images/flags/plain/flag_kuwait.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sr_RS {
+    background-image: url(../images/flags/plain/flag_serbia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_US {
+    background-image: url(../images/flags/plain/flag_united_states.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_MX {
+    background-image: url(../images/flags/plain/flag_mexico.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_SD {
+    background-image: url(../images/flags/plain/flag_sudan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-in_ID {
+    background-image: url(../images/flags/plain/flag_indonesia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_UY {
+    background-image: url(../images/flags/plain/flag_uruguay.png) !important;
+}
+
+.gwt-toolbar-icon-lang-lv_LV {
+    background-image: url(../images/flags/plain/flag_latvia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-pt_BR {
+    background-image: url(../images/flags/plain/flag_brazil.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_SY {
+    background-image: url(../images/flags/plain/flag_syria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_DO {
+    background-image: url(../images/flags/plain/flag_dominican_republic.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr_CH {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hi_IN {
+    background-image: url(../images/flags/plain/flag_india.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_VE {
+    background-image: url(../images/flags/plain/flag_venezuela.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_BH {
+    background-image: url(../images/flags/plain/flag_bahrain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_PH {
+    background-image: url(../images/flags/plain/flag_philippines.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_TN {
+    background-image: url(../images/flags/plain/flag_tunisia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-de_AT {
+    background-image: url(../images/flags/plain/flag_austria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-nl_NL {
+    background-image: url(../images/flags/plain/flag_netherlands.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_EC {
+    background-image: url(../images/flags/plain/flag_ecuador.png) !important;
+}
+
+.gwt-toolbar-icon-lang-zh_TW {
+    background-image: url(../images/flags/plain/flag_taiwan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_JO {
+    background-image: url(../images/flags/plain/flag_jordan.png) !important;
+}
+
+.gwt-toolbar-icon-lang-is_IS {
+    background-image: url(../images/flags/plain/flag_iceland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_CO {
+    background-image: url(../images/flags/plain/flag_colombia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_CR {
+    background-image: url(../images/flags/plain/flag_costa_rica.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_CL {
+    background-image: url(../images/flags/plain/flag_chile.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_EG {
+    background-image: url(../images/flags/plain/flag_egypt.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_ZA {
+    background-image: url(../images/flags/plain/flag_south_africa.png) !important;
+}
+
+.gwt-toolbar-icon-lang-th_TH {
+    background-image: url(../images/flags/plain/flag_thailand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-el_GR {
+    background-image: url(../images/flags/plain/flag_greece.png) !important;
+}
+
+.gwt-toolbar-icon-lang-it_IT {
+    background-image: url(../images/flags/plain/flag_italy.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hu_HU {
+    background-image: url(../images/flags/plain/flag_hungary.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_IE {
+    background-image: url(../images/flags/plain/flag_ireland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-uk_UA {
+    background-image: url(../images/flags/plain/flag_ukraine.png) !important;
+}
+
+.gwt-toolbar-icon-lang-pl_PL {
+    background-image: url(../images/flags/plain/flag_poland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr_LU {
+    background-image: url(../images/flags/plain/flag_luxembourg.png) !important;
+}
+
+.gwt-toolbar-icon-lang-nl_BE {
+    background-image: url(../images/flags/plain/flag_belgium.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_IN {
+    background-image: url(../images/flags/plain/flag_india.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ca_ES {
+    background-image: url(../images/flags/plain/flag_spain.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_MA {
+    background-image: url(../images/flags/plain/flag_morocco.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_BO {
+    background-image: url(../images/flags/plain/flag_bolivia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_AU {
+    background-image: url(../images/flags/plain/flag_australia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-zh_SG {
+    background-image: url(../images/flags/plain/flag_singapore.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_SV {
+    background-image: url(../images/flags/plain/flag_el_salvador.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ru_RU {
+    background-image: url(../images/flags/plain/flag_russia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ko_KR {
+    background-image: url(../images/flags/plain/flag_south_korea.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_DZ {
+    background-image: url(../images/flags/plain/flag_algeria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-vi_VN {
+    background-image: url(../images/flags/plain/flag_vietnam.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sr_ME {
+    background-image: url(../images/flags/plain/flag_montenegro.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_LY {
+    background-image: url(../images/flags/plain/flag_libya.png) !important;
+}
+
+.gwt-toolbar-icon-lang-zh_CN {
+    background-image: url(../images/flags/plain/flag_china.png) !important;
+}
+
+.gwt-toolbar-icon-lang-be_BY {
+    background-image: url(../images/flags/plain/flag_belarus.png) !important;
+}
+
+.gwt-toolbar-icon-lang-zh_HK {
+    background-image: url(../images/flags/plain/flag_hong_kong.png) !important;
+}
+
+.gwt-toolbar-icon-lang-iw_IL {
+    background-image: url(../images/flags/plain/flag_israel.png) !important;
+}
+
+.gwt-toolbar-icon-lang-bg_BG {
+    background-image: url(../images/flags/plain/flag_bulgaria.png) !important;
+}
+
+.gwt-toolbar-icon-lang-mt_MT {
+    background-image: url(../images/flags/plain/flag_malta.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_PY {
+    background-image: url(../images/flags/plain/flag_paraguay.png) !important;
+}
+
+.gwt-toolbar-icon-lang-fr_FR {
+    background-image: url(../images/flags/plain/flag_france.png) !important;
+}
+
+.gwt-toolbar-icon-lang-cs_CZ {
+    background-image: url(../images/flags/plain/flag_czech_republic.png) !important;
+}
+
+.gwt-toolbar-icon-lang-it_CH {
+    background-image: url(../images/flags/plain/flag_switzerland.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ro_RO {
+    background-image: url(../images/flags/plain/flag_romania.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_PR {
+    background-image: url(../images/flags/plain/flag_puerto_rico.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_CA {
+    background-image: url(../images/flags/plain/flag_canada.png) !important;
+}
+
+.gwt-toolbar-icon-lang-de_DE {
+    background-image: url(../images/flags/plain/flag_germany.png) !important;
+}
+
+.gwt-toolbar-icon-lang-de_LU {
+    background-image: url(../images/flags/plain/flag_luxembourg.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_AR {
+    background-image: url(../images/flags/plain/flag_argentina.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ms_MY {
+    background-image: url(../images/flags/plain/flag_malaysia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-hr_HR {
+    background-image: url(../images/flags/plain/flag_croatia.png) !important;
+}
+
+.gwt-toolbar-icon-lang-en_SG {
+    background-image: url(../images/flags/plain/flag_singapore.png) !important;
+}
+
+.gwt-toolbar-icon-lang-ar_OM {
+    background-image: url(../images/flags/plain/flag_oman.png) !important;
+}
+
+.gwt-toolbar-icon-lang-th_TH_TH {
+    background-image: url(../images/flags/plain/flag_thailand.png) !important;
+}
+
+.gwt-toolbar-icon-lang-sv_SE {
+    background-image: url(../images/flags/plain/flag_sweden.png) !important;
+}
+
+.gwt-toolbar-icon-lang-da_DK {
+    background-image: url(../images/flags/plain/flag_denmark.png) !important;
+}
+
+.gwt-toolbar-icon-lang-es_HN {
+    background-image: url(../images/flags/plain/flag_honduras.png) !important;
 }

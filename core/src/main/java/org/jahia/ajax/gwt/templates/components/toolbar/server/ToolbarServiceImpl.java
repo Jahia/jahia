@@ -53,6 +53,8 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.toolbar.bean.*;
+import org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup;
+import org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
@@ -60,6 +62,7 @@ import org.jahia.content.ContentPageKey;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -236,6 +239,14 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 itemsGroup.addItem(item);
                 itemsGroup.setLayout("button-label");
                 itemsGroup.setVisibility(item.getVisibility());
+            }
+
+            // case of Language switcher
+            if(itemsGroup instanceof LanguageSwitcherItemsGroup){
+               String langCode = LanguageCodeConverters.localeToLanguageTag(paramBean.getCurrentLocale());
+               itemsGroup.setTitle(langCode);
+               itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
+               itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
             }
 
             // add only itemsgroup that the user can view

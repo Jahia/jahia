@@ -63,8 +63,8 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
                     Item item = createJsRedirectItem(lang.getCode(), lang.getCode());
                     // add to itemsgroup
                     if (item != null) {
-                        String minIconStyle = "gwt-toolbar-icon-lang-"+lang.getCode();
-                        String maxIconStyle = "gwt-toolbar-icon-lang-"+lang.getCode();
+                        String minIconStyle = getLangIconStyle(lang.getCode());
+                        String maxIconStyle = getLangIconStyle(lang.getCode());
                         item.setMediumIconStyle(maxIconStyle);
                         item.setMinIconStyle(minIconStyle);
 
@@ -87,5 +87,15 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
             logger.error("Error while creating change site link", e);
         }
         return items;
+    }
+
+    /**
+     * Get icon style depending and the selected language
+     *
+     * @param langCode
+     * @return
+     */
+    public static String getLangIconStyle(String langCode) {
+        return "gwt-toolbar-icon-lang-" + langCode;
     }
 }

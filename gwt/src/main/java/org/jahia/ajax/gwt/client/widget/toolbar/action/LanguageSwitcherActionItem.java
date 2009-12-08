@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * Date: 27 nov. 2008
  * Time: 11:35:12
  */
-public class LanguageSwitcherActionItem implements ActionItem {
+public class LanguageSwitcherActionItem extends RedirectWindowActionItem {
 
 
     public Component getTextToolitem() {
@@ -70,32 +70,5 @@ public class LanguageSwitcherActionItem implements ActionItem {
             }
         }).init(item);
         return item ;
-    }
-
-    public Item createMenuItem () {
-        return null;
-    }
-
-    public void setEnabled(boolean enabled) {
-
-    }
-
-    public Item getMenuItem() {
-        return null;
-    }
-
-    public MenuItem getContextMenuItem() {
-        return null;
-    }
-
-    public GWTJahiaToolbarItem getGwtToolbarItem() {
-        return null;
-    }
-
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
-    }
-
-    public void handleNewLinkerSelection() {
-
     }
 }

@@ -634,8 +634,8 @@
     </bean>
 
     <!-- language switcher -->
-    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
+    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup">
+        <property name="layout" value="menu"/>
         <property name="itemsResolver" ref="languageItemsResolver"/>
     </bean>
 

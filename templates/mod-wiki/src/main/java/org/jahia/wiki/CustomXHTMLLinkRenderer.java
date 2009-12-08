@@ -230,7 +230,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
             } else {
 
                 // modified in order to be compatible with jahia
-                aAttributes.put(HREF, getParentPage().getName() + "/"+link.getReference() + ".html");
+                aAttributes.put(HREF, link.getReference() + ".html");
             }
         }
 
@@ -304,13 +304,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
             if (link.getType() == LinkType.DOCUMENT) {
                 getXHTMLWikiPrinter().printXML(this.linkLabelGenerator.generate(link));
             } else {
-                // jahia cutomization
-                if (!pageExist(link)) {
-                    // check if there is an extension or not
-                    getXHTMLWikiPrinter().printXML("Create " + link.getReference());
-                } else {
-                    getXHTMLWikiPrinter().printXML(link.getReference());
-                }
+                getXHTMLWikiPrinter().printXML(link.getReference());
 
             }
             getXHTMLWikiPrinter().printXMLEndElement(SPAN);

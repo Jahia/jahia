@@ -110,7 +110,7 @@ public class ActionToolbar extends ToolBar {
                     else {
                         toolItem = actionItem.getMenuItem();
                         if (toolItem != null) {
-                            if (gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)) {
+                            if (gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)) {
                                 toolItem.setEnabled(false);
                             }
                             menu.add(toolItem);

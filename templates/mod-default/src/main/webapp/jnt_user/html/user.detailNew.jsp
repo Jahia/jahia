@@ -39,7 +39,7 @@
         <span class="label"><fmt:message key="jnt_user.j_birthDate"/></span>
         <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
         <c:if test="${not empty birthDate}">
-            <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="displayBirthDate"/>
+            <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
         </c:if>
         <c:if test="${empty birthDate}">
             <jsp:useBean id="now" class="java.util.Date"/>

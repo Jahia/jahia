@@ -31,6 +31,7 @@
  */
  package org.jahia.params.valves;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -135,7 +136,7 @@ public class CookieAuthValveImpl implements Valve {
                                           cookieUserKey);
                     // now let's save the same identifier in the cookie.
                     authCookie.setValue(cookieUserKey);
-                    authCookie.setPath(processingContext.getContextPath());
+                    authCookie.setPath(StringUtils.isNotEmpty(processingContext.getContextPath()) ? processingContext.getContextPath() : "/");
                     authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
                     HttpServletResponse realResponse = ((ParamBean)processingContext).getRealResponse();
                     realResponse.addCookie(authCookie);

@@ -2,8 +2,7 @@ package org.jahia.bin;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.context.ServletConfigAware;
-import org.jahia.data.events.JahiaEvent;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.params.ParamBean;
 import org.jahia.params.valves.CookieAuthConfig;
@@ -14,11 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Cookie;
 
 /**
- * Created by IntelliJ IDEA.
+ * Logout controller.
  * User: toto
  * Date: Nov 17, 2009
  * Time: 1:47:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Logout extends HttpServlet implements Controller {
 
@@ -51,7 +49,7 @@ public class Logout extends HttpServlet implements Controller {
         JahiaUser curUser = jParams.getUser();
         String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
         Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-        authCookie.setPath(jParams.getContextPath());
+        authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
         authCookie.setMaxAge(0); // means we want it deleted now !
         jParams.getRealResponse().addCookie(authCookie);
         curUser.removeProperty(cookieAuthConfig.getUserPropertyName());

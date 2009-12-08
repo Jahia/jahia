@@ -38,6 +38,7 @@ import java.util.Properties;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.JahiaData;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.engines.JahiaEngine;
@@ -173,7 +174,7 @@ public class Logout_Engine implements JahiaEngine {
             JahiaUser curUser = jParams.getUser();
             String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
             Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-            authCookie.setPath(jParams.getContextPath());
+            authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
             authCookie.setMaxAge(0); // means we want it deleted now !
             bean.getRealResponse().addCookie(authCookie);
             curUser.removeProperty(cookieAuthConfig.getUserPropertyName());

@@ -1,0 +1,6 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:blogContent] > jnt:content, mix:title, jmix:tagged, jmix:comments
+ - text (string, richtext) i18n
+
+

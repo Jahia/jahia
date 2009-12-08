@@ -151,7 +151,7 @@
         </form>
     </li>
 </ul>
-
+<%--
 <div class="clear"></div>
 <!-- twoCol clear -->
 
@@ -171,4 +171,4 @@
 
         </fieldset>
     </form>
-</div>
+</div>--%>

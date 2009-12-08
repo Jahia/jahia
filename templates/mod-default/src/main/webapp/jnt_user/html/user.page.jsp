@@ -173,61 +173,33 @@
 
                     <div class="list3 user-profile-list">
                         <ul class="list3 user-profile-list">
-                            <li><span class="label">Age : </span> ${currentYear - birthYear} ans</li>
-                            <li><span class="label">Sexe : </span> <span class="genderEdit"
-                                                                         id="j_gender">${fields['j:gender']}</span>
+                            <li><span class="label"><fmt:message
+                                    key="jnt_user.profile.age"/> : </span> ${currentYear - birthYear} ans
+                            </li>
+                            <li><span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span> <span
+                                    class="genderEdit"
+                                    id="j_gender">${fields['j:gender']}</span>
                                 <span class="visibilityEdit j_genderPublicEdit" id="j_genderPublic">
             <c:if test="${fields['j:genderPublic'] eq 'true'}">
-                Public
+                <fmt:message key="jnt_user.profile.public"/>
             </c:if>
             <c:if test="${fields['j:genderPublic'] eq 'false' or empty fields['j:genderPublic']}">
-                Non Public
+                <fmt:message key="jnt_user.profile.nonpublic"/>
             </c:if>
             </span>
                             </li>
 
-                            <li><span class="label">Email Perso: </span> <span id="j_email"
-                                                                               class="edit">${fields['j:email']}</span> <span
-                                    class="visibilityEdit" id="j_emailPublic"><c:if
-                                    test="${fields['j:emailPublic'] eq 'true'}">
-                                Public
-                            </c:if>
+                            <li><span class="label"><fmt:message key="jnt_user.j_email"/> : </span> <span id="j_email"
+                                                                                                          class="edit">${fields['j:email']}</span><br/>
+                                <span class="visibilityEdit" id="j_emailPublic">
+                                <c:if test="${fields['j:emailPublic'] eq 'true'}">
+                                    <fmt:message key="jnt_user.profile.public"/>
+                                </c:if>
             <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">
-                Non Public
+                <fmt:message key="jnt_user.profile.nonpublic"/>
             </c:if></span></li>
                         </ul>
                     </div>
-                    <div class="AddItemForm">
-                        <!--start AddItemForm -->
-                        <form method="post" action="#">
-
-                            <fieldset>
-                                <legend>AddItemForm</legend>
-                                <p class="field">
-                                    <label for="label">Label :</label>
-
-                                    <input type="text" name="label" id="label" class="AddItemFormLabel" value="Label"
-                                           tabindex="9"/><span> : </span>
-                                    <label for="value">Value :</label>
-
-                                    <input type="text" name="value" id="value" class="AddItemFormValue" value="Value"
-                                           tabindex="10"/>
-                                    <input class="png gobutton" type="image" src="img/more.png" alt="Sidentifier"
-                                           tabindex="11"/>
-                                </p>
-
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="divButton">
-                        <a class="aButton" href="#"><span>Sauvegarder</span></a>
-
-                        <a class="aButton" href="#"><span>Annuler</span></a>
-
-                        <div class="clear"></div>
-                    </div>
-                    <!--stop sendMailForm -->
-
                     <div class="clear"></div>
                 </div>
             </div>
@@ -338,15 +310,15 @@
             <div class="box-inner">
                 <div class="box-inner-border"><!--start box -->
 
-                    <h3 class="boxtitleh3">About Me</h3>
+                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.j_about"/></h3>
 
                     <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
             <span class="visibilityEdit" id="j:aboutPublic">
             <c:if test="${fields['j:aboutPublic'] eq 'true'}">
-                Public
+                <fmt:message key="jnt_user.profile.public"/>
             </c:if>
             <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
-                Non Public
+                <fmt:message key="jnt_user.profile.nonpublic"/>
             </c:if>
             </span>
 
@@ -386,25 +358,23 @@
           </div>
   </div>--%><!--stop box -->
 
-    <h3 class="titleIcon"><a href="#">Groupes<img title="" alt="" src="img-text/groups.png"/></a></h3>
+    <h3 class="titleIcon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
+                                                                                       src="${url.currentModule}/images/groups.png"/></a>
+    </h3>
     <ul class="list2 group-list">
-        <li>
-            <div class="thumbnail">
-                <a href="#"><img src="img-text/group.png" alt="group" border="0"/></a>
+        <c:forEach items="${jcr:getUserMembership(currentNode)}" var="group" varStatus="status">
+            <li <c:if test="${status.last}">class="last"</c:if>>
+                <div class="thumbnail">
+                    <a href="#"><img src="${url.currentModule}/images/group-icon.png" alt="group" border="0"/></a>
 
-            </div>
-            <h4><a href="#">Nom de mon Groupe</a></h4>
+                </div>
+                <h4>
+                    <a href="${url.base}${group.value.properties['j:fullpath']}.html">${group.value.groupname}(${fn:length(group.value.members)})</a>
+                </h4>
 
-            <div class='clear'></div>
-        </li>
-        <li class="last">
-            <div class="thumbnail">
-                <a href="#">
-                    <img src="img-text/group.png" alt="group" border="0"/> </a></div>
-            <h4><a href="#">Nom de mon Groupe</a></h4>
-
-            <div class='clear'></div>
-        </li>
+                <div class='clear'></div>
+            </li>
+        </c:forEach>
     </ul>
 
 

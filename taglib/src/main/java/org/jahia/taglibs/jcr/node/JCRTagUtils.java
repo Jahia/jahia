@@ -34,9 +34,13 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.ItemNotFoundException;
@@ -44,9 +48,10 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
 /**
  * JCR content related utilities.
@@ -151,4 +156,18 @@ public class JCRTagUtils {
 		}
 		return matchingParent;
 	}
+
+    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
+        Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();
+        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                user.getName());
+        final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        final List<String> userMembership = managerService.getUserMembership(
+                jahiaUser);
+        for (String groupName : userMembership) {
+            final JahiaGroup group = managerService.lookupGroup(groupName);
+            map.put(groupName,group);
+        }
+        return map;
+    }
 }

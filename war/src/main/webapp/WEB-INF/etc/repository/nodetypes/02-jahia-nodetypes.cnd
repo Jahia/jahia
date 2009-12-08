@@ -197,10 +197,14 @@
  - j:defaultAddress (weakreference) < jnt:address
  + * (jnt:address)
 
-[jnt:telephoneNumber] > nt:base, jmix:hierarchyNode
-- j:numberType (string,choicelist[resourceBundle]) < home,mobile,work,principal,homefax,workfax,bip,other
+[jnt:phoneNumber] > nt:base, jmix:hierarchyNode
+- j:numberType (string)
 - j:number (string)
 - j:numberIsPublic (boolean)=true
+
+[jnt:phoneNumbers]  > nt:base, jmix:collection
+ - j:defaultPhone (weakreference) < jnt:phoneNumber
+ + * (jnt:phoneNumber)
 
 [jnt:user] > jnt:folder
  - j:password (string)
@@ -235,7 +239,7 @@
  - j:picturePublic (boolean)=true
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
- + j:telephoneNumbers (jnt:telephoneNumber) = jnt:telephoneNumber multiple 
+ + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
 
 [jmix:groupsFolder] mixin
  - j:groupsFolderConfig (string)

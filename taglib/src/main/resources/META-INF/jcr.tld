@@ -360,13 +360,22 @@
         </example>
     </function>
     <function>
-        <description>Returns map of sting key,string value using for key the node name of nodes of the type given as an
+        <description>Returns map of string key,string value using for key the node name of nodes of the type given as an
             argument found in the second argument node, and the value will be the matching property found in the first argument node</description>
         <name>getPropertiesAsStringFromNodeNameOfThatType</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.util.Map getPropertiesAsStringFromNodeNameOfThatType(org.jahia.services.content.JCRNodeWrapper,org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
         <example>
             ${jcr:getPropertiesAsStringFromNodeNameOfThatType(responseNode,currentNode,'jnt:formContent')}
+        </example>
+    </function>
+    <function>
+        <description>Returns map of string groupName,JahiaGroup value</description>
+        <name>getUserMembership</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.util.Map getUserMembership(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>
+            ${jcr:getUserMembership(currentNode)}
         </example>
     </function>
 </taglib>

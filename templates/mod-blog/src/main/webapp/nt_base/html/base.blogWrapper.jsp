@@ -103,47 +103,41 @@
     <div class="clear"></div>
 </div>
 <!--stop aboutMeListItem -->
-
-<div class="archives">
     <h3>Archives</h3>
-    <h4>2009</h4>
-    <ul>
-        <li><a title="" href="base.blogWrapper.jsp#">novembre</a>(1)</li>
+<div class="archives">
+<jcr:sql var="blogList"
+             sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${renderContext.siteNode.path}']) order by blogContent.[j:lastModifiedDate] desc"/>
+<c:set var="oldMonth" value=""/>
+<c:set var="oldYear" value=""/>
+<c:set var="count" value="0"/>
 
-    </ul>
-    <h4>2007</h4>
-    <ul>
-        <li><a title="" href="base.blogWrapper.jsp#">avril</a>(11)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">mars</a>(5)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">février</a>(1)</li>
-
-    </ul>
-    <h4>2006</h4>
-    <ul>
-        <li><a title="" href="base.blogWrapper.jsp#">août</a>(1)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">mars</a>(1)</li>
-    </ul>
-
-    <h4>2005</h4>
-    <ul>
-        <li><a title="" href="base.blogWrapper.jsp#">octobre</a>(1)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">septembre</a>(1)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">août</a>(2)</li>
-
-    </ul>
-    <h4>2004</h4>
-    <ul>
-        <li><a title="" href="base.blogWrapper.jsp#">septembre</a>(1)</li>
-        <li><a title="" href="base.blogWrapper.jsp#">août</a>(1)</li>
-    </ul>
-
+<c:forEach items="${blogList.nodes}" var="entry" varStatus="status">
+    <c:set var="count" value="${count + 1}"/>
+   <fmt:formatDate value="${entry.properties['jcr:created'].date.time}" pattern="yyyy" var="currentYear"/>
+   <c:if test="${oldYear != currentYear}">
+        <c:if test="${oldYear != ''}">
+            </ul>
+        </c:if>
+       <h4>${currentYear}</h4>
+       <ul>
+   </c:if>
+    <c:set var="oldYear" value="${currentYear}"/>
+    <fmt:formatDate value="${entry.properties['jcr:created'].date.time}" pattern="MMMM" var="currentMonth"/>
+    <c:if test="${currentMonth != oldMonth && oldMonth != ''}">
+            <li>${oldMonth} (${count})</li>
+            <c:set var="count" value="0"/>
+    </c:if>
+    <c:set var="oldMonth" value="${currentMonth}"/>
+</c:forEach>
+       <li>${oldMonth} (${count})</li>
+       </ul>
 </div>
 
 <%--todo: call jnt:tagCloud from mod default instead of duplicate the code--%>
 <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
 <jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
 <div class="tags">
-<h3><c:if test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}" var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>
+<h3>Tags</h3>
 <jcr:sql var="tags" sql="select * from [jnt:tag] as sel where ischildnode(sel,['${tagsRoot.path}']) order by sel.[j:nodename]"/>
 <c:set var="totalUsages" value="0"/>
 <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>

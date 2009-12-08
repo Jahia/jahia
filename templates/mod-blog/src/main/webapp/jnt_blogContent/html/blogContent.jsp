@@ -12,12 +12,12 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
 <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
-<fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
+<fmt:formatDate value="${created.time}" type="date" pattern="MM" var="userCreatedMonth"/>
 <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
 <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
 
 <p class="post-info"><fmt:message key="by"/> <a href="#"></a>
-    - <fmt:formatDate value="${userCreated.time}" type="date" dateStyle="medium"/>
+    - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
     <a href="#"><fmt:message key="category"/></a>
 </p>
 <ul class="post-tags">

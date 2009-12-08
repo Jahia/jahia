@@ -17,7 +17,7 @@
     <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
-    <h2 class="post-title"><input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/></h2>
+    <h2 class="post-title"><input type="text" value="" name="jcr:title"/></h2>
 
     <p class="post-info"><fmt:message key="by"/> <a href="#"></a>
         - <fmt:formatDate value="${userCreated.time}" type="date" dateStyle="medium"/>
@@ -45,6 +45,10 @@
                     tabindex="16"
                     value="<fmt:message key='save'/>"
                     onclick="
+                        if (document.blogPost.elements['jcr:title'].value == '') {
+                            alert('you must fill the title ');
+                            return false;
+                        }
                         document.blogPost.action = '${currentNode.name}/'+document.blogPost.elements['jcr:title'].value.replace(' ','');
                         document.blogPost.submit();
                     "

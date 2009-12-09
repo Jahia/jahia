@@ -18,11 +18,11 @@
 
 <p>
     <c:forEach items="${currentList}" var="child" varStatus="status">
-        <c:if test="${not empty child.properties['j:node'].node}">
+        <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
             <%--<a class="zoom" rel="group" title="${child.properties['j:node'].node.name}" href="#item${status.count}">--%>
 
-            <a class="zoom" rel="group" title="${child.properties['j:node'].node.name}" href="${url.files}${child.properties['j:node'].node.path}">
-                <img src="${url.context}/repository/default${child.properties['j:node'].node.path}/thumbnail" alt="">
+            <a class="zoom" rel="group" title="${child.name}" href="${url.files}${child.path}">
+                <img src="${url.context}/repository/default${child.path}/thumbnail" alt="">
             </a>
 
             <%--<div style="display:none" id="item${status.count}">--%>

@@ -568,16 +568,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
-                if (!"true".equals(req.getParameter("ajaxcall"))) {
-                    if (renderContext.isEditMode()) {
-                        renderContext.setIncludeSubModules(false);
-                    }
-                    resource.pushWrapper("wrapper.fullpage");
-                    resource.pushWrapper("wrapper.bodywrapper");
-                } else {
-                    renderContext.getModuleParams().put("forcedRenderOptions", "none");
-                    renderContext.getModuleParams().put("forcedSkin", "none");
+                if (renderContext.isEditMode()) {
+                    renderContext.setIncludeSubModules(false);
                 }
+                resource.pushWrapper("wrapper.fullpage");
+                resource.pushWrapper("wrapper.bodywrapper");
 
                 long lastModified = getLastModified(resource, renderContext);
 

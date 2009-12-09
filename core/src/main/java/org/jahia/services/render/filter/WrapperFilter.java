@@ -19,7 +19,9 @@ public class WrapperFilter extends AbstractFilter {
     public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
         String output = chain.doFilter(renderContext, resource);
-
+        if (renderContext.getRequest().getParameter("ajaxcall") != null) {
+            return output;
+        }
         JCRNodeWrapper node = resource.getNode();
         while (resource.hasWrapper()) {
             String wrapper = resource.popWrapper();

@@ -104,6 +104,25 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
      * Plain Text (plain/1.0)
 
+* How do I generate a table of content?
+
+-------------------------------------
+  {{toc /}}
+-------------------------------------
+
+
+* How do I generate a decorated table of content (TOC)?
+
+-------------------------------------
+  {{box cssClass="sumary box-inner box-inner-border" title="===Content==="}}{{toc start=2}}{{/box}}
+-------------------------------------
+
+
+* Where can I found more documentation about TOC?
+
+  http://code.xwiki.org/xwiki/bin/view/Macros/TocMacro20
+
+
 * Where can I found documentation about Xwiki?
 
    http://code.xwiki.org/xwiki/bin/view/Modules/RenderingModule

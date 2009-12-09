@@ -11,6 +11,13 @@
             	<item name="Hide templates" href="usage.html#Hide"/>
             	<item name="Tagging" href="usage.html#Tagging"/>
             </item>
+            <item name="User Profile" href="profile.html">
+                <item name="Edit Simple Text" href="profile.html#Simple"/>
+                <item name="Edit Rich Text" href="profile.html#Rich"/>
+                <item name="Edit Date" href="profile.html#Date"/>
+                <item name="Edit DropDown" href="profile.html#DropDown"/>
+                <item name="Ajax Upload" href="profile.html#Upload"/>
+            </item>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

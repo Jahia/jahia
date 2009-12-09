@@ -7,3 +7,7 @@ Jahia Default Module
 	* Usage
 
 	  General instructions on how to use features and components in the Jahia Default Module can be found on the {{{usage.html}usage page}}.
+
+	* User Profile
+
+	  General instructions on how to develop in line editable pages is available in {{{profile.html}user profile page}}.  

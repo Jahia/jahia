@@ -92,16 +92,6 @@
             $.post('${url.base}${currentNode.path}', datas, function(result) {
                 var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '" width="60" height="60"/></div>');
                 $("#portrait").html(input);
-                $(".imageEdit").editable('${url.base}${currentNode.path}', {
-                    type : 'ajaxupload',
-                    onblur : 'ignore',
-                    submit : 'OK',
-                    cancel : 'Cancel',
-                    tooltip : 'Click to edit',
-                    callback : function (data, status) {
-                        uploadedImageCallback(data, status);
-                    }
-                });
             }, "json");
         }
 
@@ -216,7 +206,7 @@
                     <div class="list3 user-profile-list">
                         <ul class="list3 user-profile-list">
                             <li><span class="label"><fmt:message
-                                    key="jnt_user.profile.age"/> : </span> ${currentYear - birthYear} ans
+                                    key="jnt_user.profile.age"/> : </span> ${currentYear - birthYear} <fmt:message key="jnt_user.profile.years"/>
                             </li>
                             <li><span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span> <span
                                     class="genderEdit"
@@ -317,7 +307,7 @@
                         <jcr:preference name="preferredLanguage" var="prefLangNode"
                                         defaultValue="${renderContext.request.locale}"/>
                         <fieldset>
-                            <legend>Preferences Form</legend>
+                            <legend><fmt:message key="jnt_user.profile.preferences.form.name"/></legend>
                             <p><label class="left"><fmt:message
                                     key="jnt_user.preference.preferredLanguage"/></label>
                                 <script type="text/javascript">

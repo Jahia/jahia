@@ -1,0 +1,237 @@
+Usage of User Profile
+
+  When the user access to his own profile, in live mode he could edit all his information directly from the page
+  without going to edit mode engines or content manager.
+
+  This module mainly use {{{http://jquery.com/}JQuery}} and {{{http://www.appelsiini.net/projects/jeditable}JEditable}}.
+
+  This is a good entry point to have example of how to use in line edition for editing small properties in live mode.
+
+  In this documentation we will show how to make edition of text,richtext,date,file,dropdown properties.
+
+  For each of those type of data we use the same principle a javascript function applied to a class that allow
+  the edition of the content when the user click on it.
+
+* {Simple} Text
+
+  Here the javascript example of how to edit a simple text :
+
+-----------------------------------------------
+<script type="text/javascript">
+$(document).ready(function() {
+        $(".edit").editable(function (value, settings) {
+            var submitId = $(this).attr('id').replace("_", ":");
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+            $.post("${url.base}${currentNode.path}", data, function(result) {
+                $("#personDisplay").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
+            }, "json");
+            return(value);
+        }, {
+            type    : 'text',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+    });
+</script>
+-----------------------------------------------
+
+  In this javascript function we create a data map for handling our form data, we pass a 'methodToCall' parameter to Jahia
+  to use a put method instead of a post. For the name of the properties to update we get it form the id of the html object
+  associated with this edition. When the post i submitted we get the updated node as json data and we update some specific content on the page.
+
+  Now the html code associated :
+
+-----------------------------------------------
+<span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
+<span id="j_email" class="edit">${fields['j:email']}</span>
+-----------------------------------------------
+
+* {Rich} Text
+
+  For rich text it work the same way, only the type of the editable will change :
+
+-----------------------------------------------
+<script type="text/javascript">
+$(document).ready(function() {
+     $(".ckeditorEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id').replace("_", ":");
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+            $.post("${url.base}${currentNode.path}", data, null, "json");
+            return(value);
+        }, {
+            type : 'ckeditor',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+    });
+</script>
+-----------------------------------------------
+
+  Now the html for using this ckeditor in line edition :
+
+-----------------------------------------------
+<div class="ckeditorEdit" id="j_about">${fields['j:about']}</div>
+-----------------------------------------------
+
+* {Date} Picker
+
+  For date we will use a {{{http://www.eyecon.ro/datepicker/}date picker plugin for jquery}}. Here how we use it for Jahia.
+
+-----------------------------------------------
+<jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
+<c:if test="${not empty birthDate}">
+    <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
+</c:if>
+<fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
+<script type="text/javascript">
+$(document).ready(function() {
+     $(".dateEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id').replace("_", ":");
+            var data = {};
+            if (value.match("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]")) {
+                var split = value.split("/");
+                var birth = new Date();
+                birth.setFullYear(split[2], split[1], split[0]);
+                var month = "";
+                if (birth.getMonth() < 10) {
+                    month = "0" + birth.getMonth();
+                } else month = birth.getMonth();
+                data[submitId] = birth.getFullYear() + '-' + month + '-' + birth.getDate() + 'T00:00:00';
+                data['methodToCall'] = 'put';
+                $.post("${url.base}${currentNode.path}", data, null, "json");
+            }
+            return(value);
+        }, {
+            type : 'datepicker',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit',
+            datepicker : {
+                flat: true,
+                date: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                format: 'd/m/Y',
+                view: 'years',
+                current: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                calendars: 1,
+                starts: 1     }
+        });
+     });
+</script>
+-----------------------------------------------
+
+  In this case the internal format for date is day/month/year, when submitting we convert that to an ISO8601
+  for updating date in Jahia (This is the internal format of the JCR).
+
+  HTML usage example :
+
+-----------------------------------------------
+<jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
+<c:if test="${not empty birthDate}">
+    <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+</c:if>
+<c:if test="${empty birthDate}">
+   <jsp:useBean id="now" class="java.util.Date"/>
+   <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+</c:if>
+<div class="dateEdit" id="j_birthDate">${displayBirthDate}</div>
+------------------------------------------------
+
+* {DropDown} List
+
+  We will now see how to use the choicelist initializer mechanism to allow creation of custom static drop down list
+  (as opposed to dynamic one that will load data from the server on demand)
+
+------------------------------------------------
+<jcr:propertyInitializers node="${currentNode}" name="j:title" var="titleInit"/>
+<script type="text/javascript">
+    var titleMap = "{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}";
+$(document).ready(function() {
+    $(".titleEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id').replace("_", ":");
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+            $.post("${url.base}${currentNode.path}", data, null, "json");
+            return eval("values="+titleMap)[value];
+        }, {
+            type    : 'select',
+            data   : titleMap,
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+    });
+</script>
+------------------------------------------------
+
+  The tag <<<\<jcr:propertyInitializers/\>>>> store the list of ChoiceListValue object associated with the property to he specifed var.
+  We iterate ober the list to create a javascript map that will be used for initializing our data for the dropdown list.
+
+  HTML usage example :
+
+------------------------------------------------
+<div class="titleEdit" id="j_title">
+    <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle"/>
+</div>
+------------------------------------------------  
+
+* Ajax {Upload}
+  
+  Now we will see how to upload a file in live mode using ajax requests.
+
+  This is a two phase submit, first we upload the selected file to the user files folder, then we get back the id
+  of the file and we associate it to the property we want. Here the code doing that :
+
+-------------------------------------------------
+<script type="text/javascript">
+$(document).ready(function() {
+        $(".imageEdit").editable('${url.base}${currentNode.path}', {
+            type : 'ajaxupload',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit',
+            callback : function (data, status) {
+                uploadedImageCallback(data, status);
+            }
+        });
+
+        function uploadedImageCallback(data, status) {
+            var datas = {};
+            datas['j:picture'] = data.uuids[0];
+            datas['methodToCall'] = 'put';
+            $.post('${url.base}${currentNode.path}', datas, function(result) {
+                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '" width="60" height="60"/></div>');
+                $("#portrait").html(input);                
+            }, "json");
+        }
+    });
+</script>
+-------------------------------------------------
+
+  We see that the ajaxupload editable allow to define a callback with the data from the result of the post.
+  We use those datas (list of uuids) to associate the newly created file with our profile <<<j:picture>>> property.
+  Once associated ine the json for the <<<j:picture>>> property we have the url associated instead of the uuid of the
+  reference.
+
+  HTML usage example :
+
+-------------------------------------------------
+<div class="image imageEdit" id="portrait">
+    <div class="itemImage itemImageRight"><jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
+        <c:if test="${not empty picture}">
+            <img src="${picture.node.url}" alt="${person}" width="60" height="60"/>
+        </c:if>
+    </div>
+</div>
+-------------------------------------------------

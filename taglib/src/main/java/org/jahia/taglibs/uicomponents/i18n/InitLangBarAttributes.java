@@ -35,9 +35,11 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.comparator.LanguageCodesComparator;
 import org.jahia.utils.comparator.LanguageSettingsComparator;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -101,11 +103,9 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
                 orderedLangs.addAll(languageSettings);
                 for (final SiteLanguageSettings settings : orderedLangs) {
                     final String languageCode = settings.getCode();
-                    if (isCurrentLangPublished(jData, languageCode)) {
-                        // Only add the language in Live mode if the current page has an active verison in live mode for that language
-                        continue;
+                    if (isCurrentLangAllowed(jData, languageCode)) {
+                        currentCodes.add(languageCode);
                     }
-                    currentCodes.add(languageCode);
                 }
 
             } else {
@@ -116,12 +116,10 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
                 for (final Object lang : languageSettings) {
                     final SiteLanguageSettings settings = (SiteLanguageSettings) lang;
                     final String languageCode = settings.getCode();
-
-                    if (!isCurrentLangPublished(jData,languageCode)) {
-                        // Only add the language in Live mode if the current page has an active verison in live mode for that language
-                        continue;
+                    // Only add the language in Live/Preview mode if the current page has an active verison in live mode for that language                                        
+                    if (isCurrentLangAllowed(jData, languageCode)) {
+                        codes.add(languageCode);
                     }
-                    codes.add(languageCode);
                 }
                 orderedLangs.addAll(codes);
                 for (String code : orderedLangs) {
@@ -141,12 +139,32 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
     /**
      * Return true if the current node is published in the specified languageCode
+     *
      * @param jData
      * @param languageCode
      * @return
      */
-    private boolean isCurrentLangPublished(JahiaData jData, String languageCode) {
-        return jData.gui().isNormalMode() && true;
+    private boolean isCurrentLangAllowed(JahiaData jData, String languageCode) {
+        if (jData.gui().isNormalMode()) {
+            JCRNodeWrapper node = (JCRNodeWrapper) jData.getProcessingContext().getAttribute("currentNode");
+            if (node != null) {
+                try {
+                    return node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode)) != null;
+                }catch(javax.jcr.RepositoryException e){
+                    logger.debug("lang["+languageCode+"] not published" );
+                    return false;
+                }
+
+                catch (Exception e) {
+                    logger.error(e,e);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        // not in live or preview mode
+        return true;
     }
 
     protected List<String> toListOfTokens(final String value, final String separator) {

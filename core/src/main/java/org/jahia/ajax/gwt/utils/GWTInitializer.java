@@ -212,7 +212,6 @@ public class GWTInitializer {
         try {
             final JahiaSite currentSite = processingContext.getSite();
             final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
-            logger.error("found " + languageSettings.size() + "");
             if (languageSettings != null && languageSettings.size() > 0) {
                 for (SiteLanguageSettings lang : languageSettings) {
                     params.put(lang.getCode(), urlGenerator.getLanguages().get(lang.getCode()));

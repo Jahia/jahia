@@ -700,6 +700,18 @@
         </attribute>
     </tag>
     <tag>
+        <description>Get the list of profile extensions</description>
+        <name>profileExtensions</name>
+        <tag-class>org.jahia.taglibs.template.users.ProfileExtensionsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of variable where to store the list</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Includes an option as a module into the page. The nodetype of the option to render is defined by nodetype attribute.
             The node to display is determined by node attribute. template attribute determine the way the node is rendered.
         </description>

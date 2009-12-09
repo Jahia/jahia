@@ -4,6 +4,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<template:addWrapper name="wrapper.dashboard"/>
+
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 
 <form name="myform" method="post">

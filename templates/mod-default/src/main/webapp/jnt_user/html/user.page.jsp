@@ -5,6 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
+<template:addWrapper name="wrapper.dashboard"/>
 <template:addResources type="css" resources="960.css,userProfile.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>

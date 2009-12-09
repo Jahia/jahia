@@ -242,7 +242,8 @@ public class TaggingService {
 		boolean applied = false;
 		boolean doSessionCommit = false;
         String[] tags = tag.split(",");
-        for (String t : tags) {
+        // todo : find another way to avoid blank tags to be add
+        for (String t : tags) if (! t.equals("")) {
             t = t.trim();
             JCRNodeWrapper tagNode = getTag(t, siteKey, session);
             if (tagNode == null && createTagIfNotExists) {

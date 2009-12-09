@@ -240,7 +240,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             final String name = propertyWrapper.getName().replace(":", "_");
             if(type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if(!propertyWrapper.isMultiple()){
-                    map.put(name,((JCRNodeWrapper)propertyWrapper.getNode()).getUrl());
+                    map.put(name,((JCRNodeWrapper)propertyWrapper.getNode()).getWebdavUrl());
                 }
             } else {
                 if(!propertyWrapper.isMultiple()){

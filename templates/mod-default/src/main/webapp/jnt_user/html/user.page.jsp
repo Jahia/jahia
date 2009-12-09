@@ -112,7 +112,7 @@
             datas['j:picture'] = data.uuids[0];
             datas['methodToCall'] = 'put';
             $.post('${url.base}${currentNode.path}', datas, function(result) {
-                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '" width="60" height="60"/></div>');
+                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '/avatar_120" width="60" height="60"/></div>');
                 $("#portrait").html(input);
             }, "json");
         }
@@ -213,9 +213,12 @@
     <div class="image imageEdit" id="portrait">
         <div class="itemImage itemImageRight"><jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
             <c:if test="${not empty picture}">
-                <img src="${picture.node.url}" alt="${person}" width="60"
-                     height="60"/>
-            </c:if></div>
+                <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${person}"/>
+            </c:if>
+            <c:if test="${empty picture}">
+                <span>Upload your picture</span>
+            </c:if>
+        </div>
     </div>
 
     <div class="box"><!--start box -->

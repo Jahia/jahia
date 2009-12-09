@@ -7,10 +7,12 @@ import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.comparator.LanguageSettingsComparator;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale; /**
+import java.util.Locale;
+import java.util.TreeSet; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -57,9 +59,10 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
             final JahiaSite currentSite = jahiaData.getProcessingContext().getSite();
             final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
             final Locale selectedLang = jahiaData.getProcessingContext().getLocale();
-            logger.error("found " + languageSettings.size() + "");
             if (languageSettings != null && languageSettings.size() > 0) {
-                for (SiteLanguageSettings lang : languageSettings) {
+                final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(new LanguageSettingsComparator());
+                orderedLangs.addAll(languageSettings);
+                for (SiteLanguageSettings lang : orderedLangs) {
                     Item item = createJsRedirectItem(lang.getCode(), lang.getCode());
                     // add to itemsgroup
                     if (item != null) {

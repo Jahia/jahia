@@ -27,15 +27,14 @@
                <p><label for="task_dueDate" class="left">Due date:</label>
                   <%--<input type="text" name="dueDate" id="task_dueDate" class="field" value="" tabindex="17" /></p>--%>
 
+                   <jcr:propertyInitializers nodeType="jnt:task" name="assignee" var="users"/>
+
                   <p><label for="task_assignee" class="left">Assignee:</label>
 
-                      <jcr:sql sql="select * from [jnt:user] as user" var="users" />
                     <select name="assignee" id="task_assignee" class="combo" tabindex="21" >
 
-                    <c:forEach items="${users.nodes}" var="user">
-                        <c:if test="${user.name != 'guest'}">
-                        <option value="${user.identifier}"> ${user.name} </option>
-                        </c:if>
+                    <c:forEach items="${users}" var="user">
+                        <option value="${user.value.string}"> ${user.displayName} </option>
                     </c:forEach>
                     </select>
                   </p>

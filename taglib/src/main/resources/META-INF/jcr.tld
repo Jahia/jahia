@@ -339,9 +339,16 @@
         <attribute>
             <description>The node on which you want to find the property</description>
             <name>node</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <description>The nodetype on which you want to find the property</description>
+            <name>nodeType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description>The name of the property you want to find in the node</description>

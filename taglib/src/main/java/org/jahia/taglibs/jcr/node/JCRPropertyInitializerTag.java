@@ -36,7 +36,9 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
@@ -44,6 +46,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import javax.validation.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +59,16 @@ import java.util.Map;
 public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     private transient static Logger logger = Logger.getLogger(JCRPropertyInitializerTag.class);
     private JCRNodeWrapper node;
+    private String nodeType;
     private String name;
     private String var;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
     /**
@@ -84,9 +92,15 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
-        if (node != null) {
-            try {
-                final List<ExtendedItemDefinition> extendedItemDefinitionList = node.getPrimaryNodeType().getItems();
+        try {
+            ExtendedNodeType type = null;
+            if (node != null) {
+                type = node.getPrimaryNodeType();
+            } else if (nodeType != null) {
+                type = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+            }
+            if (type != null) {
+                final List<ExtendedItemDefinition> extendedItemDefinitionList = type.getItems();
                 for (ExtendedItemDefinition definition : extendedItemDefinitionList) {
                     if (definition.getName().equals(name)) {
                         final Map<String, String> map = definition.getSelectorOptions();
@@ -97,7 +111,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
                                             Jahia.getThreadParamBean(), (ExtendedPropertyDefinition) definition,
-                                            node.getPrimaryNodeType(), entry.getValue(), listValues);
+                                            type, entry.getValue(), listValues);
                                 }
                             }
                             if (listValues != null) {
@@ -107,9 +121,9 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                     }
                 }
 
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         return EVAL_PAGE;
     }

@@ -2,7 +2,7 @@
 
 [jnt:task] > jnt:content
  - title (string) primary
- - assignee (weakreference) < jnt:user
+ - assignee (weakreference, choicelist[users]) < jnt:user
  - description (string)
  - priority (string, choicelist[resourceBundle]) = 'medium' analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'
  - dueDate (date, datepicker) = now('1000*60*60*24')

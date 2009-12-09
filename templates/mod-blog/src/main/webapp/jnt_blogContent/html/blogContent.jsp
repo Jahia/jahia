@@ -13,6 +13,7 @@
 <template:addResources type="css" resources="blog.css"/>
 <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
 <fmt:formatDate value="${created.time}" type="date" pattern="MM" var="userCreatedMonth"/>
+
 <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
 <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
 
@@ -28,7 +29,7 @@
 </ul>
 <div class="post-content">
     <p>
-    <c:out value="${text.string}"/>
+        ${text.string}
     </p>
 </div>
 <jcr:sql var="numberOfPostsQuery"

@@ -35,7 +35,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
@@ -86,22 +86,27 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         if (node != null) {
             try {
-                final JCRPropertyWrapper jcrPropertyWrapper = node.getProperty(name);
-                ExtendedPropertyDefinition definition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
-                final Map<String, String> map = definition.getSelectorOptions();
-                if (map.size() > 0) {
-                    final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
-                    List<ChoiceListValue> listValues = null;
-                    for (Map.Entry<String, String> entry : map.entrySet()) {
-                        if (initializers.containsKey(entry.getKey())) {
-                            listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                    Jahia.getThreadParamBean(), definition, node.getPrimaryNodeType(), entry.getValue(), listValues);
+                final List<ExtendedItemDefinition> extendedItemDefinitionList = node.getPrimaryNodeType().getItems();
+                for (ExtendedItemDefinition definition : extendedItemDefinitionList) {
+                    if (definition.getName().equals(name)) {
+                        final Map<String, String> map = definition.getSelectorOptions();
+                        if (map.size() > 0) {
+                            final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
+                            List<ChoiceListValue> listValues = null;
+                            for (Map.Entry<String, String> entry : map.entrySet()) {
+                                if (initializers.containsKey(entry.getKey())) {
+                                    listValues = initializers.get(entry.getKey()).getChoiceListValues(
+                                            Jahia.getThreadParamBean(), (ExtendedPropertyDefinition) definition,
+                                            node.getPrimaryNodeType(), entry.getValue(), listValues);
+                                }
+                            }
+                            if (listValues != null) {
+                                pageContext.setAttribute(var, listValues);
+                            }
                         }
                     }
-                    if(listValues!=null) {
-                        pageContext.setAttribute(var,listValues);
-                    }
                 }
+
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

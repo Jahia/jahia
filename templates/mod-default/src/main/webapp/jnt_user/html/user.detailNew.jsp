@@ -9,7 +9,8 @@
 
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
-<c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
+<c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 
 <c:set var="userProperties" property="propertyName" value="${fn:escapeXml(fields['j:function'])}"/>
 

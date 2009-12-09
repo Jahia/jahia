@@ -16,7 +16,8 @@
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
-<c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
+<c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
     <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>

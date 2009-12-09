@@ -54,7 +54,7 @@
                 <fmt:message key='youAreHere'/>:
               </span>
               <ui:currentPagePath cssClassName="breadcrumbs"/>
-              <ui:langBar display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
+              <ui:langBar display="horizontal" linkDisplay="flag" />
             </div>
           </div>
         </div>

@@ -4,7 +4,38 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <template:addResources type="css" resources="blog.css"/>
+<%--Filters Settings--%>
+<%--add category Filter--%>
+<c:if test="${! empty param.addTag}">
+    <c:choose>
+    <c:when test="${empty tagFilter}">
+        <c:set scope="session" var="tagFilter" value="${param.addTag}"/>
+    </c:when>
+    <c:otherwise>
+        <c:set scope="session" var="tagFilter" value="${tagFilter}$$$${param.addTag}"/>
+    </c:otherwise>
+    </c:choose>
+</c:if>
+<%--remove category Filter--%>
+<c:if test="${!empty param.removeTag}">
+    <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
+    <c:set var="tagstmp" value=""/>
+    <c:forEach var="tag" items="${tagsMap}">
+        <c:if test="${!tag eq param.removeTag}">
+            <c:choose>
+            <c:when test="${empty tagstmp}">
+                <c:set var="tagstmp" value="${tag}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="tagstmp" value="${tagstmp}$$$${tag}"/>
+            </c:otherwise>
+            </c:choose>
+        </c:if>
+    </c:forEach>
+    <c:set var="tagFilter" value="${tagstmp}" scope="session"/>
+</c:if>
 <div class='grid_10'><!--start grid_10-->
 
     <div class="box"><!--start box -->
@@ -122,7 +153,16 @@
 		<ul>
 			<c:forEach items="${filteredTags}" var="tag">
 				<c:set var="tagCount" value="${tag.value.references.size}"/>
-				<li><a class="tag${functions:round(10 * tagCount / totalUsages)}0" title="${tag.value.name} (${tagCount} / ${totalUsages})">${tag.value.name}</a></li>
+				<li><a
+                        class="tag${functions:round(10 * tagCount / totalUsages)}0"
+                        title="${tag.value.name} (${tagCount} / ${totalUsages})"
+                        <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+                            href="${url.base}${currentResource.node.parent.path}.html?addTag=${tag.value.name}"
+                        </c:if>
+                        <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+                           href="${url.current}?addTag=${tag.value.name}"
+                        </c:if>
+                        >${tag.value.name}</a></li>
 			</c:forEach>
 		</ul>
 </c:if>
@@ -131,23 +171,25 @@
 </c:if>
 </div>
 
+<c:if test="${!empty tagFilter}">
 <div class="filterList">
-    <h3>Filtres de liste</h3>
-    <ul>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 1<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 2<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 3<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 4<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
+<h3><fmt:message key="currentFilters"/> </h3>
 
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 5<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 6<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-        <li><a href="base.blogWrapper.jsp#" title="delete">Filtre 7<img src="${url.currentModule}/images/delete.png" alt="delete"/></a></li>
-    </ul>
-    <div class="clear"></div>
-    <p class="filterListDeleteAll"><a title="#" href="base.blogWrapper.jsp#">Tout supprimer</a></p>
+<c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
+
+<ul>
+    <c:forEach var="tag" items="${tagsMap}">
+	<li><a href="${url.current}?removeTag=${tag}" title="delete">${tag}
+        <img src="${url.currentModule}/images/delete.png" alt="delete" />
+    </a></li>
+    </c:forEach>
+</ul>
 
     <div class="clear"></div>
+<p class="filterListDeleteAll"><a title="#" href="#"><fmt:message key="currentFilters.deleteAll"/></a></p>
+<div class="clear"></div>
 </div>
+</c:if>
 
 <div class="clear"></div>
 </div>

@@ -24,7 +24,7 @@
                      <option value="high"> High </option>
                      <option value="very_high"> Very high </option></select></p>
 
-               <p><label for="task_dueDate" class="left">Due date:</label>
+               <%--<p><label for="task_dueDate" class="left">Due date:</label>--%>
                   <%--<input type="text" name="dueDate" id="task_dueDate" class="field" value="" tabindex="17" /></p>--%>
 
                    <jcr:propertyInitializers nodeType="jnt:task" name="assignee" var="users"/>
@@ -40,7 +40,7 @@
                   </p>
               </fieldset>
 
-              <div class="divButton"><input type="submit" id="submit" class="button" value="Send message" tabindex="28" /><input type="reset" name="reset" id="reset" class="button" value="Reset message" tabindex="29"/>
+              <div class="divButton"><input type="submit" id="submit" class="button" value="Create task" tabindex="28" />
               </div>
             </form>
           </div>

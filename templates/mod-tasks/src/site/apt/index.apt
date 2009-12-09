@@ -1,0 +1,41 @@
+Jahia Tasks Module
+
+* Goals Overview
+
+  This module add the possibility to create tasks for users. Tasks can be created through a form or by rules,
+  triggered by the system.
+
+  A task list is available for the user to check what he needs to do.
+
+  Every task is assigned a default workflow - a task goes from "active" to "cancelled" or "finished", and can be
+  "suspended"
+
+* View the user task list
+
+  The task list of a user is viewable with a specific template of the user, tasklist. It can be viewed as a profile
+  extension, in the user profile page.
+
+* Creating a new task
+
+** Using the tasks component
+
+  The components "Tasks" from interactive component displays a simple form that can be used to create and assign task
+  to a user.
+
+[./images/taskForm.jpg]
+
+** Using the rules
+
+  A task can be created by using the "Create task" consequence in a rule file - for example, the following rule create
+  a new task when a new user is created :
+
+--------------------------------
+rule "A welcome task for the new user"
+   when
+       A new node is created
+		- the node has the type jnt:user
+   then
+       Log "Creating welcome task for new user: " + node.getName()
+       Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
+end
+--------------------------------

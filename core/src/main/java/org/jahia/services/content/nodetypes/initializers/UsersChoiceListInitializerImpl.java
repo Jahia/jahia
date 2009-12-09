@@ -42,10 +42,10 @@ public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {
 
                 String name = "";
                 if (node.hasProperty("j:firstName")) {
-                    name += node.getProperty("j:firstName") + " ";
+                    name += node.getProperty("j:firstName").getString() + " ";
                 }
                 if (node.hasProperty("j:lastName")) {
-                    name += node.getProperty("j:lastName");
+                    name += node.getProperty("j:lastName").getString();
                 }
                 name = name.trim();
                 if (name.equals("")) {

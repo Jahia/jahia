@@ -28,7 +28,7 @@
     </ul>
     <div class="post-resume">
         <p>
-            <c:out value="${fn:substring(text.string,0,40)}"/>
+            ${fn:substring(text.string,0,200)}
         </p>
     </div>
     <p class="read-more"><a title="#" href="${url.current}">Lire la suite ...</a></p>

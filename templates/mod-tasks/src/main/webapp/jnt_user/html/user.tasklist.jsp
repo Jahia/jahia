@@ -28,7 +28,7 @@
 
     <table width="100%" class="table tableTasks " summary="Mes taches en cour en table">
         <caption>
-            My tasks
+            <fmt:message key='jnt_task.myTasks'/>
         </caption>
         <colgroup>
             <col span="1" width="10%" class="col1"/>
@@ -40,24 +40,24 @@
         </colgroup>
         <thead>
         <tr>
-            <th class="center" id="Type" scope="col">Type <a href="#" title="sort up"><img
+            <th class="center" id="Type" scope="col"><fmt:message key="jnt_task.type"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
                                                                                          href="#"> <img
                     src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-            <th id="Title" scope="col">Title <a href="#" title="sort up"><img
+            <th id="Title" scope="col"><fmt:message key="jnt_task.title"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png"
                     alt="up"/></a><a
                     title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
                                                      alt="down"/></a></th>
-            <th class="center" id="State" scope="col">State <a href="#" title="sort up"><img
+            <th class="center" id="State" scope="col"><fmt:message key="jnt_task.state"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
                                                                                          href="#"> <img
                     src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-            <th class="center" id="Priority" scope="col">Priority <a href="#" title="sort up"><img
+            <th class="center" id="Priority" scope="col"><fmt:message key="jnt_task.priority"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
                                                                                          href="#"> <img
                     src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-            <th id="Date" scope="col">Due Date <a href="#" title="sort up"><img
+            <th id="Date" scope="col"><fmt:message key="jnt_task.dueDate"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png"
                     alt="up"/></a><a
                     title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
@@ -92,9 +92,9 @@
                     <c:when test="${task.properties.state.string == 'active'}">
                         <span><img alt="" src="${url.currentModule}/images/right_16.png"/></span>
                         <span>
-                            <a href="javascript:send('${task.path}','suspended')">Suspended</a>&nbsp;
-                            <a href="javascript:send('${task.path}','cancelled')">Cancel</a>&nbsp;
-                            <a href="javascript:send('${task.path}','finished')">Complete</a>
+                            <a href="javascript:send('${task.path}','suspended')"><fmt:message key="jnt_task.suspended"/></a>&nbsp;
+                            <a href="javascript:send('${task.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
+                            <a href="javascript:send('${task.path}','finished')"><fmt:message key="jnt_task.complete"/></a>
                         </span>
                     </c:when>
                     <c:when test="${task.properties.state.string == 'finished'}">
@@ -103,16 +103,16 @@
                     <c:when test="${task.properties.state.string == 'suspended'}">
                         <span><img alt="" src="${url.currentModule}/images/bubble_16.png"/></span>
                         <span>
-                            <a href="javascript:send('${task.path}','cancelled')">Cancel</a>&nbsp;
-                            <a href="javascript:send('${task.path}','active')">Continue</a>
+                            <a href="javascript:send('${task.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
+                            <a href="javascript:send('${task.path}','active')"><fmt:message key="jnt_task.continue"/></a>
                         </span>
                     </c:when>
-                    <c:when test="${task.properties.state.string == 'cancelled'}">
+                    <c:when test="${task.properties.state.string == '<fmt:message key='jnt_task.canceled'/>'}">
                         <img alt="" src="${url.currentModule}/images/warning_16.png"/>
                     </c:when>
                 </c:choose>
             </td>
-            <td headers="Date"><fmt:formatDate value="${currentNode.properties['dueDate'].date.time}"
+            <td headers="Date"><fmt:formatDate value="${currentNode.properties['<fmt:message key='jnt_task.dueDate'/>'].date.time}"
                                                dateStyle="short" type="date"/></td>
             </tr>
         </c:forEach>

@@ -514,23 +514,7 @@
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Declares a new (custom) link display configuration for language links</description>
-        <name>declareLanguageLinkDisplay</name>
-        <tag-class>org.jahia.taglibs.uicomponents.i18n.DeclareLanguageLinkDisplayTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>displayFile</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
+    
     <tag>
         <description>Displays an image flag corresponding to a language code</description>
         <name>displayLanguageFlag</name>

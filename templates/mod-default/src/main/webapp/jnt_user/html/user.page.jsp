@@ -40,8 +40,10 @@
             data[submitId] = value;
             data['methodToCall'] = 'put';
             $.post("${url.base}${currentNode.path}", data, function(result) {
-                $("#personDisplay2").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
-                $("#personDisplay1").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
+                var j_title = result.j_title;
+                j_title = eval("datas="+titleMap)[j_title];
+                $("#personDisplay2").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
+                $("#personDisplay1").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
                 $("#emailDisplay").html(result.j_email);
             }, "json");
             return(value);
@@ -172,8 +174,10 @@
             data[submitId] = value;
             data['methodToCall'] = 'put';
             $.post("${url.base}${currentNode.path}", data, function(result) {
-                $("#personDisplay2").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
-                $("#personDisplay1").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
+                var j_title = result.j_title;
+                j_title = eval("datas="+titleMap)[j_title];
+                $("#personDisplay2").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
+                $("#personDisplay1").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
                 $("#emailDisplay").html(result.j_email);
             }, "json");
             return eval("values="+titleMap)[value];
@@ -214,7 +218,7 @@
                             </li>
                             <li><span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span> <span
                                     class="genderEdit"
-                                    id="j_gender">${fields['j:gender']}</span>
+                                    id="j_gender"><jcr:nodePropertyRenderer node="${currentNode}" name="j:gender" renderer="resourceBundle"/></span>
                                 <span class="visibilityEdit j_genderPublicEdit" id="j_genderPublic">
             <c:if test="${fields['j:genderPublic'] eq 'true'}">
                 <fmt:message key="jnt_user.profile.public"/>

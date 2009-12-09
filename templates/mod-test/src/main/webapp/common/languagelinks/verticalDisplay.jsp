@@ -40,9 +40,7 @@
                                                              redirectCssClassName="${requestScope.redirectCssClassName}"/>
                     </c:otherwise>
                 </c:choose>
-                <c:if test="${requestScope.displayLanguageState == true}">
-                    <ui:displayLanguageState languageCode="${langCode}"/>
-                </c:if>
+              
             </li>
         </c:forEach>
     </ul>

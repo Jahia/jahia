@@ -40,7 +40,5 @@
             </option>
         </c:forEach>
     </select>
-    <c:if test="${requestScope.displayLanguageState == true}">
-        <ui:displayLanguageState languageCode="${currentLang}"/>
-    </c:if>
+    
 </div>

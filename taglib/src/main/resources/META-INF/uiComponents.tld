@@ -568,23 +568,7 @@
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Displays an image corresponding to a language state of the current page or a given object
-        </description>
-        <name>displayLanguageState</name>
-        <tag-class>org.jahia.taglibs.uicomponents.i18n.DisplayLanguageStateTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>objectKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>languageCode</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+
 
     <tag>
         <description>Tag returns an random image from specified path</description>

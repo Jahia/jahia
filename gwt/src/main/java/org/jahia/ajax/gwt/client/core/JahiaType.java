@@ -39,7 +39,6 @@ package org.jahia.ajax.gwt.client.core;
  */
 public class JahiaType {
 
-    public final static String ACTION_MENU = "actionmenu";
     public final static String CALENDAR = "calendar";
     public final static String DATE_FIELD = "dateField";
     public final static String FORM = "form";

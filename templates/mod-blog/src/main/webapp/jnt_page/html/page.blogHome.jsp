@@ -3,15 +3,18 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<template:addWrapper name="blogWrapper"/>
 <div id="one"><!--start tab One-->
-        <form name="blogForm" method="post" action="${currentNode.name}/"/>
+    <form name="blogForm" method="post" action="${currentNode.name}/"/>
+    <p>
         Create a new blog :
+    </p>
+    <p>
         <input type="text" name="jcr:title" value=""/>
+    </p>
         <input type="hidden" name="j:template" value="blog"/>
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:page">
-        <p class="c_button">
+    <p class="c_button">
             <input
                     class="button"
                     type="button"

@@ -14,14 +14,14 @@
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/ckeditor/ckeditor.js,ckeditor_init.js"/>
 <script type="text/javascript">
-   $(document).ready(function() {
-  $.each(['editContent'], function(index, element) {
-    if($('#' + element).length > 0) {
-      $('label[for="' + element + '"]').hide();
-      CKEDITOR.replace(element, ck.config);
-    }
-});
-   });
+    $(document).ready(function() {
+        $.each(['editContent'], function(index, element) {
+            if ($('#' + element).length > 0) {
+                $('label[for="' + element + '"]').hide();
+                CKEDITOR.replace(element, ck.config);
+            }
+        });
+    });
 </script>
 <form method="post" action="${currentNode.name}/" name="blogPost">
     <input type="hidden" name="autoCheckin" value="true">
@@ -43,8 +43,8 @@
     </ul>
     <div class="post-content">
         <p>
-     <textarea name="text" rows="10" cols="80"  id="editContent">
-     </textarea>
+            <textarea name="text" rows="10" cols="80" id="editContent">
+            </textarea>
             <fmt:message key="tag.this.article"/>:&nbsp;
             <input type="text" name="j:newTag" value=""/>
 
@@ -63,7 +63,7 @@
                         document.blogPost.action = '${currentNode.name}/'+document.blogPost.elements['jcr:title'].value.replace(' ','');
                         document.blogPost.submit();
                     "
-            />
+                    />
         </p>
     </div>
     <p class="post-info-links">

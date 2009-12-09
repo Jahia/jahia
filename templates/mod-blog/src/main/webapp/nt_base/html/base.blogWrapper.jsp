@@ -61,52 +61,21 @@
         </fieldset>
     </form>
 </div>
-
-
-<div class="aboutMeListItem"><!--start aboutMeListItem -->
-    <h3>A propos de moi</h3>
-
-    <div class="aboutMePhoto">
-        <img src="${url.currentModule}/images/user.png" alt="photo"/></div>
-    <div class="aboutMeBody"><!--start aboutMeBody -->
-        <h5>Prenom Nom</h5>
-
-        <p class="aboutMeAge">Age : 35ans</p>
-
-        <div class="clear"></div>
-
-    </div>
-    <!--stop aboutMeBody -->
-    <p class="aboutMeResume">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor dapibus nibh. Proin
-        viverra arcu eget lorem.Maecenas ligula ligula, tristique in, venenatis posuere...</p>
-
-    <div class="aboutMeAction">
-        <a class="aboutMeMore" href="javascript:;" onclick="ShowHideLayer(1);" title="title">En savoir plus...</a>
-    </div>
-    <div id="box1" class="collapsible"><!--start collapsible -->
-        <h3>Titre de niveau 2 (h3)</h3>
-
-        <p> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut ut ligula. Pellentesque rhoncus. Sed erat orci,
-            tincidunt et, ultrices sed, posuere ut, lectus. In volutpat. Donec malesuada tellus in ante. Nullam erat
-            leo, aliquet sit amet, convallis sit amet, euismod vel, urna. Aliquam pulvinar. Fusce lacus nibh, vulputate
-            sed, condimentum ut, viverra ac, sem. Sed vitae diam. Nullam blandit. In adipiscing massa nec ligula. Nullam
-            leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam erat
-            leo, aliquet sit amet, convallis sit amet, euismod vel, urna. Aliquam pulvinar. Fusce lacus nibh, vulputate
-            sed, condimentum ut, viverra ac, sem. Sed vitae diam. Nullam blandit. In adipiscing massa nec ligula. Nullam
-            leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam erat
-            leo, aliquet sit amet, convallis sit amet, euismod vel, urna. Aliquam pulvinar. Fusce lacus nibh, vulputate
-            sed, condimentum ut, viverra ac, sem. Sed vitae diam. Nullam blandit. In adipiscing massa nec ligula. Nullam
-            leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-    </div>
-    <!--stop collapsible -->
-
-    <div class="clear"></div>
-</div>
+<jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
+    <template:module path="/users/${createdBy.string}"/>
 <!--stop aboutMeListItem -->
     <h3>Archives</h3>
 <div class="archives">
-<jcr:sql var="blogList"
-             sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${renderContext.siteNode.path}']) order by blogContent.[j:lastModifiedDate] desc"/>
+    <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+        <jcr:sql var="blogList"
+                 sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${currentNode.parent.path}']) order by blogContent.[j:lastModifiedDate] desc"/>
+    </c:if>
+    <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+        <jcr:sql var="blogList"
+                 sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${currentNode.path}']) order by blogContent.[j:lastModifiedDate] desc"/>
+    </c:if>
+
+
 <c:set var="oldMonth" value=""/>
 <c:set var="oldYear" value=""/>
 <c:set var="count" value="0"/>

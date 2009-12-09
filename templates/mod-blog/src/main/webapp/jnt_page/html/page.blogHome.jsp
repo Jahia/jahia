@@ -7,7 +7,7 @@
 <div id="one"><!--start tab One-->
 
     <jcr:sql var="blogList"
-             sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(page,['${currentNode.path}']) order by page.[j:lastModifiedDate] desc"
+             sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${currentNode.path}']) order by blogContent.[j:lastModifiedDate] desc"
              limit="10"/>
 
     <c:if test="${blogList.nodes.size == 0}">

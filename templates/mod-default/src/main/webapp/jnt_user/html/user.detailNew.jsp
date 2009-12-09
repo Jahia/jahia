@@ -10,7 +10,21 @@
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
-<c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:firstName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
+    <c:set var="person" value=""/>
+</c:if>
 
 <c:set var="userProperties" property="propertyName" value="${fn:escapeXml(fields['j:function'])}"/>
 
@@ -51,7 +65,8 @@
     <li>
         <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
-        <div class="titleEdit" id="j_title"><jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle"/></div>
+        <div class="titleEdit" id="j_title"><jcr:nodePropertyRenderer node="${currentNode}" name="j:title"
+                                                                      renderer="resourceBundle"/></div>
             <span class="visibilityEdit j_titlePublicEdit" id="j_titlePublic">
             <c:if test="${fields['j:titlePublic'] eq 'true'}">
                 <fmt:message key="jnt_user.profile.public"/>
@@ -64,15 +79,18 @@
 </ul>
 
 <%-- Phone Numbers--%>
-<ul class="list3 user-profile-list twoCol">
+<ul class="list3 user-profile-list twoCol" id="phonesList">
     <jcr:node var="phones" path="${currentNode.path}/j:phones"/>
     <script type="text/javascript">
         function newPhone() {
             var data = {};
             data['j:number'] = $("#newPhoneNumber")[0].value;
-            data['j:numberType'] =$("#newPhoneType")[0].value;
+            data['j:numberType'] = $("#newPhoneType")[0].value;
             data['nodeType'] = "jnt:phoneNumber";
-            $.post("${url.base}${phones.path}/*", data, null, "json");
+            $.post("${url.base}${phones.path}/*", data, function (result) {
+                var input = $('<li><span class="label">' + result.j_numberType + ' : </span><div>' + result.j_number + '</div></li>');
+                $("#phonesList").append(input);
+            }, "json");
         }
     </script>
     <c:forEach items="${phones.children}" var="phone" varStatus="status">
@@ -94,19 +112,18 @@
                 });
             });
         </script>
-        <li><span
-                class="label">${phone.propertiesAsString['j:numberType']} : </span>
+        <li><span class="label">${phone.propertiesAsString['j:numberType']} : </span>
 
             <div class="phoneNumber${status.index}" id="j_number">${phone.propertiesAsString['j:number']}</div>
         </li>
     </c:forEach>
-    <li>
-        <form action="" id="newPhone">
-            <input type="text" id="newPhoneNumber" size="20" value="Phone Number"/>
-            <input type="text" id="newPhoneType" size="20" value="Phone Type"/>
-            <button type="button" onclick="newPhone();">Add</button>
-        </form>
-    </li>
+</ul>
+<form action="" id="newPhone">
+    <input type="text" id="newPhoneNumber" size="20" value="Phone Number"/>
+    <input type="text" id="newPhoneType" size="20" value="Phone Type"/>
+    <button type="button" onclick="newPhone();">Add</button>
+</form>
+<ul class="list3 user-profile-list twoCol" id="addressesList">
     <jcr:node var="addresses" path="${currentNode.path}/j:addresses"/>
     <script type="text/javascript">
         function addNewAddress() {
@@ -115,7 +132,10 @@
             data['j:zipcode'] = $("#newZipCode")[0].value;
             data['j:town'] = $("#newTown")[0].value;
             data['nodeType'] = "jnt:address";
-            $.post("${url.base}${addresses.path}/*", data, null, "json");
+            $.post("${url.base}${addresses.path}/*", data, function (result) {
+                var input = $('<li><span class="label"><div>' + result.j_street + '</div><div>' + result.j_zipcode + '</div><div>' + result.j_town + '</div></span></li>');
+                $("#addressesList").append(input);
+            }, "json");
         }
     </script>
     <c:forEach items="${addresses.children}" var="address" varStatus="status">
@@ -138,20 +158,19 @@
             });
         </script>
         <li><span
-                class="label"><div class="address${status.index}" id="j_street">${address.propertiesAsString['j:street']}</div>
+                class="label"><div class="address${status.index}"
+                                   id="j_street">${address.propertiesAsString['j:street']}</div>
             <div class="address${status.index}" id="j_zipcode">${address.propertiesAsString['j:zipcode']}</div>
             <div class="address${status.index}" id="j_town">${address.propertiesAsString['j:town']}</div>
             <jcr:nodePropertyRenderer node="${address}" name="j:country" renderer="country"/></span></li>
     </c:forEach>
-    <li>
-        <form action="" id="newAddress">
-            <input type="text" id="newStreet" size="20" value="Street"/>
-            <input type="text" id="newZipCode" size="20" value="Zipcode"/>
-            <input type="text" id="newTown" size="20" value="Town"/>
-            <button type="button" onclick="addNewAddress();">Add</button>
-        </form>
-    </li>
 </ul>
+<form action="" id="newAddress">
+    <input type="text" id="newStreet" size="20" value="Street"/>
+    <input type="text" id="newZipCode" size="20" value="Zipcode"/>
+    <input type="text" id="newTown" size="20" value="Town"/>
+    <button type="button" onclick="addNewAddress();">Add</button>
+</form>
 <%--
 <div class="clear"></div>
 <!-- twoCol clear -->

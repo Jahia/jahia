@@ -18,7 +18,21 @@
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
+<c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
 <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
+<c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
+<c:set var="person" value="${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
+<c:set var="person" value="${fields['j:firstName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
+<c:set var="person" value=""/>
+</c:if>
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
     <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>
@@ -42,10 +56,18 @@
             data[submitId] = value;
             data['methodToCall'] = 'put';
             $.post("${url.base}${currentNode.path}", data, function(result) {
-                var j_title = result.j_title;
-                j_title = eval("datas="+titleMap)[j_title];
-                $("#personDisplay2").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
-                $("#personDisplay1").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
+                var j_title = "";
+                if(result && typeof result.j_title != 'undefined')
+                j_title = eval("datas="+titleMap)[result.j_title];
+                var j_firstname = "";
+                if(result && typeof result.j_firstName != 'undefined')
+                j_firstname = result.j_firstName;
+                var j_lastname = "";
+                if(result && typeof result.j_lastName != 'undefined')
+                j_lastname = result.j_lastName;
+                $("#personDisplay2").html(j_title + " " + j_firstname + " " + j_lastname);
+                $("#personDisplay1").html(j_title + " " + j_firstname + " " + j_lastname);
+                if(result && result.j_email != 'undefined')
                 $("#emailDisplay").html(result.j_email);
             }, "json");
             return(value);

@@ -7,7 +7,6 @@
 <%@ attribute name="redirectToHomePageStyle" required="false" rtexprvalue="true" %>
 <%@ attribute name="order" required="false" rtexprvalue="true" %>
 <%@ attribute name="activeLanguagesOnly" required="false" rtexprvalue="true" %>
-<%@ attribute name="displayLanguageState" required="false" rtexprvalue="true" %>
 <%@ attribute name="cssClassName" required="false" rtexprvalue="true" %>
 <%@ attribute name="redirectCssClassName" required="false" rtexprvalue="true" %>
 <%@ attribute name="rootPage" type="org.jahia.services.content.JCRNodeWrapper" required="false" rtexprvalue="true" %>
@@ -41,9 +40,7 @@
                     </option>
                 </c:forEach>
             </select>
-            <c:if test="${requestScope.displayLanguageState == true}">
-                <ui:displayLanguageState languageCode="${currentLang}"/>
-            </c:if>
+
         </div>
     </c:if>
 
@@ -70,9 +67,7 @@
                                                               redirectCssClassName="${redirectCssClassName}"/>
                             </c:otherwise>
                         </c:choose>
-                        <c:if test="${displayLanguageState == true}">
-                            <ui:displayLanguageState languageCode="${langCode}"/>
-                        </c:if>
+
                     </li>
                 </c:forEach>
             </ul>
@@ -102,9 +97,7 @@
                                                               redirectCssClassName="${redirectCssClassName}"/>
                             </c:otherwise>
                         </c:choose>
-                        <c:if test="${displayLanguageState == true}">
-                            <ui:displayLanguageState languageCode="${langCode}"/>
-                        </c:if>
+
                     </li>
                 </c:forEach>
             </ul>

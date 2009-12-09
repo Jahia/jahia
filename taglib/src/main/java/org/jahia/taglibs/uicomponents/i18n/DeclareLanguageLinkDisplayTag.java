@@ -57,20 +57,20 @@ public class DeclareLanguageLinkDisplayTag extends AbstractJahiaTag {
     public int doStartTag() throws JspTagException {
         if (name.length() > 0 && displayFile.length() > 0) {
             final ServletRequest request = pageContext.getRequest();
-            if (LanguageSwitchTag.DISPLAY_TYPE_BEANS.containsKey(name)) {
+            if (InitLangBarAttributes.DISPLAY_TYPE_BEANS.containsKey(name)) {
                 throw new JspTagException("Please use a different value for the 'name' attribute. The value '" +
                         name + "' is a reserved value");
             }
 
             Map<String, LanguageLinkDisplayBean> customTypes = (Map<String, LanguageLinkDisplayBean>)
-                    request.getAttribute(LanguageSwitchTag.CUSTOM_DISPLAY_TYPE_BEANS);
+                    request.getAttribute(InitLangBarAttributes.CUSTOM_DISPLAY_TYPE_BEANS);
 
             if (customTypes == null) {
                 customTypes = new HashMap<String, LanguageLinkDisplayBean>();
             }
 
             customTypes.put(name, new LanguageLinkDisplayBean(name, displayFile));
-            request.setAttribute(LanguageSwitchTag.CUSTOM_DISPLAY_TYPE_BEANS, customTypes);
+            request.setAttribute(InitLangBarAttributes.CUSTOM_DISPLAY_TYPE_BEANS, customTypes);
         } else {
             throw new JspTagException("Both 'name' and 'displayFile' attributes must have a length > 0");
         }

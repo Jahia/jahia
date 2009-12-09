@@ -43,61 +43,55 @@
 <h2>Testing all language switching links possibilities</h2>
 
 <h3>horizontal display with flags</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="flag"/>
+<ui:langBar display="horizontal" linkDisplay="flag"/>
 
 
 <h3>horizontal display with nameCurrentLocale</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="nameCurrentLocale"/>
 
 
 <h3>horizontal display with nameInLocale</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="nameInLocale"/>
+<ui:langBar display="horizontal" linkDisplay="nameInLocale"/>
 
 
 <h3>horizontal display with letter</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="letter"/>
+<ui:langBar display="horizontal" linkDisplay="letter"/>
 
 
 <h3>horizontal display with doubleLetter</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="doubleLetter"/>
+<ui:langBar display="horizontal" linkDisplay="doubleLetter"/>
 
 
 <h3>horizontal display with languageCode</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="languageCode"/>
+<ui:langBar display="horizontal" linkDisplay="languageCode"/>
 
 
 <hr/>
 <!--------------------------------------------------------------------------------------------->
 
 <h3>horizontal display with flags and state</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="flag"
-                                               displayLanguageState="true"/>
+<ui:langBar display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
 
 
 <h3>horizontal display with nameCurrentLocale and state</h3>
-<ui:languageSwitchingLinks display="horizontal"
-                                               linkDisplay="nameCurrentLocale"
-                                               displayLanguageState="true"/>
+<ui:langBar display="horizontal" linkDisplay="nameCurrentLocale" displayLanguageState="true"/>
 
 
 <h3>horizontal display with nameInLocale and state</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="nameInLocale"
-                                               displayLanguageState="true"/>
+<ui:langBar display="horizontal" linkDisplay="nameInLocale" displayLanguageState="true"/>
 
 
 <h3>horizontal display with letter and state</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="letter"
-                                               displayLanguageState="true"/>
+<ui:langBar display="horizontal" linkDisplay="letter" displayLanguageState="true"/>
 
 
 <h3>horizontal display with doubleLetter and state</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="doubleLetter"
-                                               displayLanguageState="true"/>
+<ui:langBar display="horizontal" linkDisplay="doubleLetter" displayLanguageState="true"/>
 
 
 <h3>horizontal display with languageCode and state</h3>
-<ui:languageSwitchingLinks display="horizontal" linkDisplay="languageCode"
+<ui:langBar display="horizontal" linkDisplay="languageCode"
                                                displayLanguageState="true"/>
 
 
@@ -105,61 +99,60 @@
 <!--------------------------------------------------------------------------------------------->
 
 <h3>vertical display with flags</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="flag"/>
+<ui:langBar display="vertical" linkDisplay="flag"/>
 
 
 <h3>vertical display with nameCurrentLocale</h3>
-<ui:languageSwitchingLinks display="vertical"
-                                               linkDisplay="nameCurrentLocale"/>
+<ui:langBar display="vertical" linkDisplay="nameCurrentLocale"/>
 
 
 <h3>vertical display with nameInLocale</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="nameInLocale"/>
+<ui:langBar display="vertical" linkDisplay="nameInLocale"/>
 
 
 <h3>vertical display with letter</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="letter"/>
+<ui:langBar display="vertical" linkDisplay="letter"/>
 
 
 <h3>vertical display with doubleLetter</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="doubleLetter"/>
+<ui:langBar display="vertical" linkDisplay="doubleLetter"/>
 
 
 <h3>vertical display with languageCode</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="languageCode"/>
+<ui:langBar display="vertical" linkDisplay="languageCode"/>
 
 
 <hr/>
 <!--------------------------------------------------------------------------------------------->
 
 <h3>vertical display with flags and state</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="flag"
+<ui:langBar display="vertical" linkDisplay="flag"
                                                displayLanguageState="true"/>
 
 
 <h3>vertical display with nameCurrentLocale and state</h3>
-<ui:languageSwitchingLinks display="vertical"
+<ui:langBar display="vertical"
                                                linkDisplay="nameCurrentLocale"
                                                displayLanguageState="true"/>
 
 
 <h3>vertical display with nameInLocale and state</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="nameInLocale"
+<ui:langBar display="vertical" linkDisplay="nameInLocale"
                                                displayLanguageState="true"/>
 
 
 <h3>vertical display with letter and state</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="letter"
+<ui:langBar display="vertical" linkDisplay="letter"
                                                displayLanguageState="true"/>
 
 
 <h3>vertical display with doubleLetter and state</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="doubleLetter"
+<ui:langBar display="vertical" linkDisplay="doubleLetter"
                                                displayLanguageState="true"/>
 
 
 <h3>vertical display with languageCode and state</h3>
-<ui:languageSwitchingLinks display="vertical" linkDisplay="languageCode"
+<ui:langBar display="vertical" linkDisplay="languageCode"
                                                displayLanguageState="true"/>
 
 
@@ -167,103 +160,103 @@
 <!--------------------------------------------------------------------------------------------->
 
 <h3>comboBox display with flags (actually displays the language code)</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="flag"/>
+<ui:langBar display="comboBox" linkDisplay="flag"/>
 
 
 <h3>comboBox display with nameCurrentLocale</h3>
-<ui:languageSwitchingLinks display="comboBox"
+<ui:langBar display="comboBox"
                                                linkDisplay="nameCurrentLocale"/>
 
 
 <h3>comboBox display with nameInLocale</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="nameInLocale"/>
+<ui:langBar display="comboBox" linkDisplay="nameInLocale"/>
 
 
 <h3>comboBox display with letter</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="letter"/>
+<ui:langBar display="comboBox" linkDisplay="letter"/>
 
 
 <h3>comboBox display with doubleLetter</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="doubleLetter"/>
+<ui:langBar display="comboBox" linkDisplay="doubleLetter"/>
 
 
 <h3>comboBox display with languageCode</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="languageCode"/>
+<ui:langBar display="comboBox" linkDisplay="languageCode"/>
 
 
 <hr/>
 <!--------------------------------------------------------------------------------------------->
 
 <h3>comboBox display with flags (actually displays the language code) and state</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="flag"
+<ui:langBar display="comboBox" linkDisplay="flag"
                                                displayLanguageState="true"/>
 
 
 <h3>comboBox display with nameCurrentLocale and state</h3>
-<ui:languageSwitchingLinks display="comboBox"
+<ui:langBar display="comboBox"
                                                linkDisplay="nameCurrentLocale"
                                                displayLanguageState="true"/>
 
 
 <h3>comboBox display with nameInLocale and state</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="nameInLocale"
+<ui:langBar display="comboBox" linkDisplay="nameInLocale"
                                                displayLanguageState="true"/>
 
 
 <h3>comboBox display with letter and state</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="letter"
+<ui:langBar display="comboBox" linkDisplay="letter"
                                                displayLanguageState="true"/>
 
 
 <h3>comboBox display with doubleLetter and state</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="doubleLetter"
+<ui:langBar display="comboBox" linkDisplay="doubleLetter"
                                                displayLanguageState="true"/>
 
 
 <h3>comboBox display with languageCode and state</h3>
-<ui:languageSwitchingLinks display="comboBox" linkDisplay="languageCode"
+<ui:langBar display="comboBox" linkDisplay="languageCode"
                                                displayLanguageState="true"/>
 
 
 <hr/>
 <!--------------------------------------------------------------------------------------------->
 <h3>horizontal display with flags, states and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="flag"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
 
 
 <h3>horizontal display with nameCurrentLocale, state and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="nameCurrentLocale"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
 
 
 <h3>horizontal display with nameInLocale, state and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="nameInLocale"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
 
 
 <h3>horizontal display with letter, state and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="letter"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
 
 
 <h3>horizontal display with doubleLetter, state and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="doubleLetter"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
 
 
 <h3>horizontal display with languageCode, state and redirect to home page</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="languageCode"
                                                displayLanguageState="true"
                                                onLanguageSwitch="goToHomePage"/>
@@ -271,7 +264,7 @@
 <hr/>
 <!--------------------------------------------------------------------------------------------->
 <h3>horizontal display with flags, states and redirect to home page and order by language code (en, es, fr, it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="flag"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"
@@ -280,7 +273,7 @@
 
 <h3>horizontal display with nameCurrentLocale, state and redirect to home page and order by language code (en, es, fr,
     it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="nameCurrentLocale"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"
@@ -289,7 +282,7 @@
 
 <h3>horizontal display with nameInLocale, state and redirect to home page and order by language code (en, es, fr,
     it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="nameInLocale"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"
@@ -297,7 +290,7 @@
 
 
 <h3>horizontal display with letter, state and redirect to home page and order by language code (en, es, fr, it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="letter"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"
@@ -306,7 +299,7 @@
 
 <h3>horizontal display with doubleLetter, state and redirect to home page and order by language code (en, es, fr,
     it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="doubleLetter"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"
@@ -315,7 +308,7 @@
 
 <h3>horizontal display with languageCode, state and redirect to home page and order by language code (en, es, fr,
     it)</h3>
-<ui:languageSwitchingLinks display="horizontal"
+<ui:langBar display="horizontal"
                                                linkDisplay="languageCode"
                                                displayLanguageState="true"
                                                order="en, es, fr, it"

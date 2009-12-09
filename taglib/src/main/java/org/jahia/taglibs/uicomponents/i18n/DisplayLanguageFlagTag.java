@@ -36,6 +36,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
@@ -55,6 +56,8 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     private String redirectCssClassName;
     private String title;
     private String titleKey;
+    private JCRNodeWrapper rootPage;
+
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
@@ -76,6 +79,10 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         this.titleKey = titleKey;
     }
 
+    public void setRootPage(JCRNodeWrapper rootPage) {
+        this.rootPage = rootPage;
+    }
+
     public int doStartTag() throws JspTagException {
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
@@ -83,12 +90,12 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         final StringBuffer buff = new StringBuffer();
 
         final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, jParams);
-        final boolean isRedirectToHomePageActivated = LanguageSwitchTag.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
+        final boolean isRedirectToHomePageActivated = InitLangBarAttributes.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
 
         if (!isCurrentBrowsingLanguage) {
             if (isRedirectToHomePageActivated) {
                 if (redirectCssClassName == null || redirectCssClassName.length() == 0) {
-                    redirectCssClassName = LanguageSwitchTag.REDIRECT_DEFAULT_STYLE;
+                    redirectCssClassName = InitLangBarAttributes.REDIRECT_DEFAULT_STYLE;
                 }
                 buff.append("<div class='");
                 buff.append(redirectCssClassName);
@@ -98,11 +105,11 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             try {
                 final String link;
                 if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 ||
-                        LanguageSwitchTag.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
-                    link = jData.gui().drawPageLanguageSwitch(languageCode);
+                        InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
+                    link = generateCurrentNodeLangSwitchLink(jData,languageCode);
 
                 } else if (isRedirectToHomePageActivated) {
-                    link = jData.gui().drawPageLanguageSwitch(languageCode, jParams.getSite().getHomePageID());
+                    link = generateNodeLangSwitchLink(jData,languageCode,rootPage);
 
                 } else {
                     throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);

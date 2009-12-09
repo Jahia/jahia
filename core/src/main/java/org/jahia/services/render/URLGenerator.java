@@ -50,14 +50,14 @@ public class URLGenerator {
      */
     protected void initURL() {
         if (context.isEditMode()) {
-            base = context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
+            base = context.getRequest().getContextPath() + Edit.getEditServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         } else {
-            base = context.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
+            base = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         }
 
-        live = context.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+ Constants.LIVE_WORKSPACE +"/"+resource.getLocale();
-        edit = context.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+resource.getLocale();
-        preview = context.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+resource.getLocale();
+        live = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        edit = context.getRequest().getContextPath() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        preview = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
 
         final String resourcePath = context.getMainResource().getNode().getPath();
 
@@ -75,7 +75,7 @@ public class URLGenerator {
     }
 
     public String getBase() {
-        return base;  
+        return base;
     }
 
     public String getLive() {
@@ -93,7 +93,7 @@ public class URLGenerator {
     public String getUserProfile() {
         if (userProfile == null) {
             if (!context.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
+                List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null, context.getUser());
                 String userHomePath = userFolders.iterator().next().getPath();
                 userProfile = base + userHomePath + ".html";
             }
@@ -102,29 +102,35 @@ public class URLGenerator {
     }
 
     public String getCurrentModule() {
-        return context.getRequest().getContextPath()+"/templates/"+((Script)context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
+        return context.getRequest().getContextPath() + "/templates/" + ((Script) context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
     }
 
     public String getCurrent() {
         if (resource.getForcedTemplate() != null) {
             return base + resource.getNode().getPath() + "." + resource.getForcedTemplate() + ".html";
         } else {
-            return base + resource.getNode().getPath() +".html";
+            return base + resource.getNode().getPath() + ".html";
         }
     }
 
-    public Map<String,String> getLanguages() {
+    public Map<String, String> getLanguages() {
         return LazyMap.decorate(new HashMap(), new Transformer() {
             public Object transform(Object lang) {
-                return context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+lang+ resource.getNode().getPath() +".html";
+                String servletPath;
+                if (context.isEditMode()) {
+                    servletPath = Edit.getEditServletPath();
+                } else {
+                    servletPath = Render.getRenderServletPath();
+                }
+                return context.getRequest().getContextPath() + servletPath + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
             }
         });
     }
 
-    public Map<String,String> getTemplates() {
+    public Map<String, String> getTemplates() {
         return LazyMap.decorate(new HashMap(), new Transformer() {
             public Object transform(Object template) {
-                return base + resource.getNode().getPath() +"."+template+".html";
+                return base + resource.getNode().getPath() + "." + template + ".html";
             }
         });
     }

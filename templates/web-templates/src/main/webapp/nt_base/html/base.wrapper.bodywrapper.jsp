@@ -42,7 +42,7 @@
         <div id="toplinks">
 
             <div id="languages">
-                <%--<ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>--%>
+                <ui:langBar display="horizontal" linkDisplay="flag" displayLanguageState="true" rootPage="${rootPage}"/>
             </div>
 
             <div id="topshortcuts">

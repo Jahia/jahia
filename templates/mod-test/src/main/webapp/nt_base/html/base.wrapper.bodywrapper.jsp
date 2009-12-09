@@ -54,7 +54,7 @@
                     </c:forTokens>
                 </span>
                 <!--stop pagepath-->                     
-                <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
+                <ui:langBar display="horizontal" linkDisplay="flag" displayLanguageState="true" rootPage="${rootPage}"/>
                 <template:include page="common/breadcrumbs.jsp" cache="false"/>
             </div>
         </div>

@@ -43,6 +43,11 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.URLGenerator;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -427,6 +432,47 @@ public class AbstractJahiaTag extends BodyTagSupport {
     public void release() {
         resetState();
         super.release();
+    }
+
+    /**
+     * Generate langSwichingLink
+     * @param jData
+     * @return
+     * @throws JahiaException
+     */
+    public String generateCurrentNodeLangSwitchLink(JahiaData jData, String langCode) throws JahiaException {
+        if (jData.getProcessingContext().getAttribute("renderContext") != null) {
+            URLGenerator url = (URLGenerator) jData.getProcessingContext().getAttribute("url");
+            return url.getLanguages().get(langCode);
+        } else {
+            logger.error("Unable to get lang["+langCode+"] link for current resource");
+            return "";
+        }
+
+    }
+
+    /**
+     * Get language switcher that redirect to the home page
+     * @param jData
+     * @return
+     * @throws JahiaException
+     */
+    public String generateNodeLangSwitchLink(JahiaData jData,String langCode, JCRNodeWrapper node) throws JahiaException {
+        if(node == null){
+            logger.warn("Home page node not specified. Language link will target current node.");
+            return generateCurrentNodeLangSwitchLink(jData,langCode);
+        }
+
+        if (jData.getProcessingContext().getAttribute("renderContext") != null) {
+            RenderContext context = (RenderContext)jData.getProcessingContext().getAttribute("renderContext");
+            Resource resource = new Resource(node,"html",null,null);
+            URLGenerator url = new URLGenerator(context,resource, JCRStoreService.getInstance());
+            return url.getLanguages().get(langCode);
+        } else {
+            logger.error("Unable to get lang["+langCode+"] link for home page");
+            return "";
+        }
+
     }
 
 }

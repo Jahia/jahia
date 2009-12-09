@@ -416,29 +416,9 @@
     </tag>
     <tag>
         <description>Generates links in order to be able to switch languages when browsing the site</description>
-        <name>languageSwitchingLinks</name>
-        <tag-class>org.jahia.taglibs.uicomponents.i18n.LanguageSwitchTag</tag-class>
+        <name>initLangBarAttributes</name>
+        <tag-class>org.jahia.taglibs.uicomponents.i18n.InitLangBarAttributes</tag-class>
         <body-content>empty</body-content>
-        <attribute>
-            <name>display</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>linkDisplay</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>onLanguageSwitch</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>redirectToHomePageStyle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
         <attribute>
             <name>order</name>
             <required>false</required>
@@ -450,18 +430,8 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
-        <attribute>
-            <name>displayLanguageState</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
+
     <tag>
         <description>Generates a full Link in order to switch languages</description>
         <name>displayLanguageSwitchLink</name>
@@ -537,6 +507,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>rootPage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
     </tag>
     <tag>
         <description>Declares a new (custom) link display configuration for language links</description>
@@ -584,6 +560,12 @@
             <name>titleKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>rootPage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
     </tag>
     <tag>
@@ -828,5 +810,9 @@
     <tag-file>
         <name>loginRedirectChoice</name>
         <path>/META-INF/tags/login/loginRedirectChoice.tag</path>
-    </tag-file>    
+    </tag-file>
+    <tag-file>
+        <name>langBar</name>
+        <path>/META-INF/tags/lang/langBar.tag</path>
+    </tag-file>
 </taglib>

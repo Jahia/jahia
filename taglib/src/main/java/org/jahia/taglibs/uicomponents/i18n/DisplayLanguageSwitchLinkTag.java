@@ -39,6 +39,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -63,7 +64,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
     private String languageCode;
     private String linkKind;
-    /** 
+    /**
      * @deprecated use {@link #urlValueID} instead
      */
     private String urlValueID;
@@ -73,6 +74,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
     private String redirectCssClassName;
     private String title;
     private String titleKey;
+    private JCRNodeWrapper rootPage;
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
@@ -86,6 +88,10 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         this.display = display;
     }
 
+    public void setRootPage(JCRNodeWrapper rootPage) {
+        this.rootPage = rootPage;
+    }
+
     /**
      * @deprecated use {@link #setUrlVar(String)} instead
      */
@@ -93,12 +99,12 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         if (logger.isDebugEnabled()) {
             logger.debug("The urlValueID attribute is deprecated for tag "
                     + StringUtils.substringAfterLast(this.getClass().getName(),
-                            ".") + ". Please, use urlVar attribute instead.",
+                    ".") + ". Please, use urlVar attribute instead.",
                     new JspException());
         } else {
             logger.info("The urlValueID attribute is deprecated for tag "
                     + StringUtils.substringAfterLast(this.getClass().getName(),
-                            ".") + ". Please, use urlVar attribute instead.");
+                    ".") + ". Please, use urlVar attribute instead.");
         }
         this.urlValueID = urlValueID;
     }
@@ -126,12 +132,12 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
             final StringBuilder buff = new StringBuilder();
 
             final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, jParams);
-            final boolean isRedirectToHomePageActivated = LanguageSwitchTag.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
+            final boolean isRedirectToHomePageActivated = InitLangBarAttributes.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
 
             if (!isCurrentBrowsingLanguage) {
                 if (isRedirectToHomePageActivated) {
                     if (redirectCssClassName == null || redirectCssClassName.length() == 0) {
-                        redirectCssClassName = LanguageSwitchTag.REDIRECT_DEFAULT_STYLE;
+                        redirectCssClassName = InitLangBarAttributes.REDIRECT_DEFAULT_STYLE;
                     }
                     buff.append("<div class='");
                     buff.append(redirectCssClassName);
@@ -141,11 +147,11 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                 try {
                     final String link;
                     if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 ||
-                            LanguageSwitchTag.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
-                        link = jData.gui().drawPageLanguageSwitch(languageCode);
+                            InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
+                        link = generateCurrentNodeLangSwitchLink(jData,languageCode);
 
                     } else if (isRedirectToHomePageActivated) {
-                        link = jData.gui().drawPageLanguageSwitch(languageCode, jParams.getSite().getHomePageID());
+                        link = generateNodeLangSwitchLink(jData,languageCode,rootPage);
 
                     } else {
                         throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
@@ -174,7 +180,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                 if (urlVar != null) pageContext.removeAttribute(urlVar, PageContext.PAGE_SCOPE);
             }
 
-            String attributeValue = null; 
+            String attributeValue = null;
             if (linkKind == null || linkKind.length() == 0 || LANGUAGE_CODE.equals(linkKind) ||
                     FLAG.equals(linkKind)) {
                 attributeValue = languageCode;
@@ -207,7 +213,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
             } else if (ISOLOCALECOUNTRY_CODE.equals(linkKind)) {
                 final Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
                 StringBuilder value = new StringBuilder(locale.getLanguage().toUpperCase());
-                if(locale.getCountry()!=null && locale.getCountry().length() != 0) {
+                if (locale.getCountry() != null && locale.getCountry().length() != 0) {
                     value.append("(").append(locale.getCountry()).append(")");
                 }
                 attributeValue = value.toString();
@@ -241,6 +247,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         return SKIP_BODY;
     }
 
+
     public String getIsoLocaleCountryCode() {
         return ISOLOCALECOUNTRY_CODE;
     }
@@ -265,7 +272,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         resetState();
         return EVAL_PAGE;
     }
-    
+
     @Override
     protected void resetState() {
         super.resetState();

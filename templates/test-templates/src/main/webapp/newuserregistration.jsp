@@ -64,7 +64,7 @@ DIV#errors li { color : #B42C29; }
                     <a name="pagetop"></a>
                     <span class="breadcrumbs"><fmt:message key='youAreHere'/>:</span>
                     <ui:currentPagePath cssClassName="breadcrumbs"/>
-                    <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
+                    <ui:langBar display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
                 </div>
             </div>
         </div>

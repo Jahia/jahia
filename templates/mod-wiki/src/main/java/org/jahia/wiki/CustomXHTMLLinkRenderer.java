@@ -328,18 +328,10 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
      */
     private boolean pageExist(Link link) {
         try {
-            return getParentPage().hasNode(link.getReference());
+            return renderContext.getMainResource().getNode().getParent().hasNode(link.getReference());
         } catch (RepositoryException e) {
             return false;
         }
-    }
-
-    /**
-     * Get parent page
-     * @return
-     */
-    private JCRNodeWrapper getParentPage() {
-       return renderContext.getMainResource().getNode();
     }
 }
 

@@ -111,6 +111,7 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
         if(langCode == null){
             return "";
         }
+        langCode = langCode.replace("-","_"); 
         Locale currentLocale = LanguageCodeConverters.getLocaleFromCode(langCode);
         return currentLocale.getDisplayName(currentLocale);
 

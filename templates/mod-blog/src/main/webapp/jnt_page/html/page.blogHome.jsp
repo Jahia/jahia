@@ -5,34 +5,29 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <template:addWrapper name="blogWrapper"/>
 <div id="one"><!--start tab One-->
+        <form name="blogForm" method="post" action="${currentNode.name}/"/>
+        Create a new blog :
+        <input type="text" name="jcr:title" value=""/>
+        <input type="hidden" name="j:template" value="blog"/>
+        <input type="hidden" name="autoCheckin" value="true">
+        <input type="hidden" name="nodeType" value="jnt:page">
+        <p class="c_button">
+            <input
+                    class="button"
+                    type="button"
+                    tabindex="16"
+                    value="<fmt:message key='save'/>"
+                    onclick="
+                        if (document.blogForm.elements['jcr:title'].value == '') {
+                            alert('you must fill the title ');
+                            return false;
+                        }
+                        document.blogForm.action = '${currentNode.name}/'+document.blogForm.elements['jcr:title'].value.replace(' ','');
+                        document.blogForm.submit();
+                    "
+            />
+        </p>
 
-    <jcr:sql var="blogList"
-             sql="select * from [jnt:blogContent] as blogContent where isdescendantnode(blogContent,['${currentNode.path}']) order by blogContent.[j:lastModifiedDate] desc"
-             limit="10"/>
-
-    <c:if test="${blogList.nodes.size == 0}">
-        <template:module node="${currentNode}" template="edit" autoCreateType="jnt:contentList"/>
-    </c:if>
-
-
-    <c:if test="${blogList.nodes.size > 0}">
-        <h3 class="boxtitleh3"><fmt:message key="last.post"/></h3>
-        <ul class="list4">
-            <c:forEach items="${pageList.nodes}" var="page">
-                <li>
-                    <a href="${currentNode.name}/${page.name}.html">${page.name}</a> -
-                    <em>last modified on
-                    <fmt:formatDate value="${page.properties['jcr:lastModified'].date.time}" type="both"/></em>
-                </li>
-            </c:forEach>
-        </ul>
-
-    </c:if>
-
-    <div>
-        <form name="wikiForm"/>
-        Create a new page : <input id="link" name="link" onchange="form.action='${currentNode.name}/'+form.elements.link.value+'.html'"> <input type="submit"/>
         </form>
-    </div>
 </div>
 <!--stop grid_10-->

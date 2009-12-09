@@ -244,7 +244,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             // case of Language switcher
             if(itemsGroup instanceof LanguageSwitcherItemsGroup){
                String langCode = LanguageCodeConverters.localeToLanguageTag(paramBean.getCurrentLocale());
-               itemsGroup.setTitle(langCode);
+               itemsGroup.setTitle(LanguageItemsResolver.getDisplayName(langCode));
                itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
                itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
             }

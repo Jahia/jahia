@@ -63,7 +63,7 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
                 final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(new LanguageSettingsComparator());
                 orderedLangs.addAll(languageSettings);
                 for (SiteLanguageSettings lang : orderedLangs) {
-                    Item item = createJsRedirectItem(lang.getCode(), lang.getCode());
+                    Item item = createJsRedirectItem(getDisplayName(lang.getCode()), lang.getCode());
                     // add to itemsgroup
                     if (item != null) {
                         String minIconStyle = getLangIconStyle(lang.getCode());
@@ -100,5 +100,19 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
      */
     public static String getLangIconStyle(String langCode) {
         return "gwt-toolbar-icon-lang-" + langCode;
+    }
+
+    /**
+     * Get displa name
+     * @param langCode
+     * @return
+     */
+    public static String getDisplayName(String langCode){
+        if(langCode == null){
+            return "";
+        }
+        Locale currentLocale = LanguageCodeConverters.getLocaleFromCode(langCode);
+        return currentLocale.getDisplayName(currentLocale);
+
     }
 }

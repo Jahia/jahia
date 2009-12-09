@@ -1422,25 +1422,25 @@ display:none
 /******************************************************************************
 *  Summary
 ******************************************************************************/
-#bodywrapper ul.sumary {
+#bodywrapper ul.summary {
 	margin:10px 0;
 	line-height:130%;
 }
-#bodywrapper .sumary a,
-#bodywrapper .sumary a:link,
-#bodywrapper .sumary a:visited {
+#bodywrapper .summary a,
+#bodywrapper .summary a:link,
+#bodywrapper .summary a:visited {
 	text-decoration:none;
 }
-#bodywrapper .sumary a:hover,
-#bodywrapper .sumary a:active {
+#bodywrapper .summary a:hover,
+#bodywrapper .summary a:active {
 	text-decoration:underline;
 }
 
-#bodywrapper .sumary ul {
+#bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
 }
-#bodywrapper .sumary li {
+#bodywrapper .summary li {
 	margin:0;
 	padding:0;
 	list-style:none;

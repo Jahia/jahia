@@ -1,7 +1,7 @@
 
 Jahia Wiki module
 
-  The Jahia Wiki  as for goals to allow you to create Wiki pages and contents in your site.
+  The Jahia Wiki has for goals to allow you to create Wiki pages and contents in your site.
 
 * What is a Wiki - Wikipedia definition?
 
@@ -10,12 +10,9 @@ Jahia Wiki module
 
 * How is it integrated into Jahia ?
 
-  The wiki feature is jahia module that defines a set of nodes representing a wiki page and a wiki content
+  The wiki feature is a jahia module that defines a set of nodes representing a wiki page
 
 -------------------------------------
-[jnt:wikiContent] > jnt:content
- - text (string, richtext) i18n
-
 [jnt:wikiPage] > jnt:content, mix:title
  - lastComment (string)
  - text (string, richtext) i18n
@@ -28,7 +25,7 @@ Jahia Wiki module
 
 * How the markup language is interpreted?
 
-  It's handled that to a RenderFilter that wrappes the framework XWiki (http://www.xwiki.org/).
+  It's handled by a RenderFilter that wraps the framework XWiki (http://www.xwiki.org/).
 
 * How XWiki is intergrated into Jahia?
 
@@ -57,7 +54,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
 * How do I change the markup language ?
 
- It's correspond to the property inputSyntax defined in mod-wiki.xml file :
+ It corresponds to the property inputSyntax defined in mod-wiki.xml file :
 
 -------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
@@ -114,7 +111,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 * How do I generate a decorated table of content (TOC)?
 
 -------------------------------------
-  {{box cssClass="sumary box-inner box-inner-border" title="===Content==="}}{{toc start=2}}{{/box}}
+  {{box cssClass="summary box-inner box-inner-border" title="===Content==="}}{{toc start=2}}{{/box}}
 -------------------------------------
 
 

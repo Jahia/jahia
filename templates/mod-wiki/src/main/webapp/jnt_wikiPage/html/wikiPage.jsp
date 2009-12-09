@@ -13,7 +13,7 @@
 
                     <div class="box-inner-border">
                         <h3 class="boxtitleh3"><a href="#">Sommaire</a></h3>
-                        <ul class="sumary wiki">
+                        <ul class="summary wiki">
                             <li class="toclevel-1 tocsection-1"><a href="#Fonctionnement_technique"><span
                                     class="tocnumber">1</span> <span class="toctext">Fonctionnement technique</span></a>
                                 <ul>

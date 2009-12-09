@@ -50,7 +50,7 @@
     <li>
         <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
-        <div class="edit" id="j_title">${fields['j:title']}</div>
+        <div class="titleEdit" id="j_title">${fields['j:title']}</div>
             <span class="visibilityEdit j_titlePublicEdit" id="j_titlePublic">
             <c:if test="${fields['j:titlePublic'] eq 'true'}">
                 <fmt:message key="jnt_user.profile.public"/>

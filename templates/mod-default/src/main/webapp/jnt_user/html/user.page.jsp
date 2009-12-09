@@ -27,7 +27,12 @@
 </c:if>
 <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 <jcr:propertyInitializers node="${currentNode}" name="j:gender" var="genderInit"/>
+<jcr:propertyInitializers node="${currentNode}" name="j:title" var="titleInit"/>
 <script type="text/javascript">
+
+    var genderMap = "{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}";
+    var titleMap = "{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}";
+
     $(document).ready(function() {
         $(".edit").editable(function (value, settings) {
             var submitId = $(this).attr('id').replace("_", ":");
@@ -55,10 +60,10 @@
             $.post("${url.base}${currentNode.path}", data, null, "json");
             if (value == "true")
                 return "Public"; else
-                return "Private";
+                return "Non Public";
         }, {
             type    : 'select',
-            data   : "{'true':'Public','false':'Private'}",
+            data   : "{'true':'Public','false':'Non Public'}",
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
@@ -151,12 +156,30 @@
             data[submitId] = value;
             data['methodToCall'] = 'put';
             $.post("${url.base}${currentNode.path}", data, null, "json");
-            if (value == "male")
-                return "Male"; else
-                return "Female";
+            return eval("values="+genderMap)[value];
         }, {
             type    : 'select',
-            data   : "{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}",
+            data   : genderMap,
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+        $(".titleEdit").editable(function (value, settings) {
+            var submitId = $(this).attr('id').replace("_", ":");
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+            $.post("${url.base}${currentNode.path}", data, function(result) {
+                $("#personDisplay2").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
+                $("#personDisplay1").html(result.j_title + " " + result.j_firstName + " " + result.j_lastName);
+                $("#emailDisplay").html(result.j_email);
+            }, "json");
+            return eval("values="+titleMap)[value];
+        }, {
+            type    : 'select',
+            data   : titleMap,
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',

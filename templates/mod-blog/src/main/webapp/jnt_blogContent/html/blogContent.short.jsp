@@ -31,17 +31,17 @@
             ${fn:substring(text.string,0,200)}
         </p>
     </div>
-    <p class="read-more"><a title="#" href="${url.current}">Lire la suite ...</a></p>
+    <p class="read-more"><a title="#" href="${url.current}"><fmt:message key="jnt_blog.readPost"/></a></p>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <p class="post-info-links">
     <c:if test="${numberOfPosts == 0}">
-        <a class="comment_count" href="${url.current}#comments">no comment</a>
+        <a class="comment_count" href="${url.current}#comments">0 <fmt:message key="comments"/></a>
     </c:if>
     <c:if test="${numberOfPosts > 0}">
-        <a class="comment_count" href="${url.current}#comments">${numberOfPosts} comments</a>
+        <a class="comment_count" href="${url.current}#comments">${numberOfPosts} <fmt:message key="comments"/></a>
     </c:if>
-        <a class="ping_count" href="#">aucun rétrolien</a>
+        <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
 </p>
 <!--stop post-->

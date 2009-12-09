@@ -45,7 +45,7 @@
         <p>
             <textarea name="text" rows="10" cols="80" id="editContent">
             </textarea>
-            <fmt:message key="tag.this.article"/>:&nbsp;
+            <fmt:message key="jnt_blog.tagThisBlogPost"/>:&nbsp;
             <input type="text" name="j:newTag" value=""/>
 
         </p>
@@ -67,8 +67,8 @@
         </p>
     </div>
     <p class="post-info-links">
-        <a class="comment_count" href="#">aucun commentaire</a>
-        <a class="ping_count" href="#">aucun rétrolien</a>
+        <a class="comment_count" href="#"><fmt:message key="jnt_blog.noComment"/></a>
+        <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
     </p>
 </form>
 

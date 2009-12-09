@@ -6,7 +6,7 @@
 <div id="one"><!--start tab One-->
     <form name="blogForm" method="post" action="${currentNode.name}/"/>
     <p>
-        Create a new blog :
+        <fmt:message key="jnt_blog.createNewBlog"/> :
     </p>
     <p>
         <input type="text" name="jcr:title" value=""/>

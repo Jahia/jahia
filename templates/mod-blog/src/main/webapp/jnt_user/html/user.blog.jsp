@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
@@ -18,7 +19,7 @@
 <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 
 <div class="aboutMeListItem"><!--start aboutMeListItem -->
-    <h3>A propos de moi</h3>
+    <h3><fmt:message key="jnt_blog.aboutMe"/></h3>
 
     <div class="aboutMePhoto">
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
@@ -39,7 +40,8 @@
     <p class="aboutMeResume">${fields['j:about']}</p>
 
     <div class="aboutMeAction">
-        <a class="aboutMeMore" href="${url.base}${currentNode.path}.html" title="title">En savoir plus...</a>
+        <a class="aboutMeMore" href="${url.base}${currentNode.path}.html" title="title"><fmt:message
+                                    key="jnt_blog.readPost"/></a>
     </div>
     <div class="clear"></div>
 </div>

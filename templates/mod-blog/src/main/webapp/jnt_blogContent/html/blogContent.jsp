@@ -38,12 +38,12 @@
 <p class="post-info-links">
     <a href="${url.base}${currentResource.node.path}.edit.html"><fmt:message key="edit"/></a>
     <c:if test="${numberOfPosts == 0}">
-        <a class="comment_count" href="${url.current}#comments">no comment</a>
+        <a class="comment_count" href="${url.current}#comments">0 <fmt:message key="comments"/></a>
     </c:if>
     <c:if test="${numberOfPosts > 0}">
-        <a class="comment_count" href="${url.current}#comments">${numberOfPosts} comments</a>
+        <a class="comment_count" href="${url.current}#comments">${numberOfPosts} <fmt:message key="comments"/></a>
     </c:if>
-        <a class="ping_count" href="#">aucun rétrolien</a>
+        <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
 </p>
 <a name="comments"/>
 <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>

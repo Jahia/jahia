@@ -81,7 +81,7 @@
 </div>
 
 <div id="search">
-    <h3><label for="search">Rechercher</label></h3>
+    <h3><label for="search"><fmt:message key="search"/> </label></h3>
 
     <form method="get" action="base.blogWrapper.jsp#">
         <fieldset>

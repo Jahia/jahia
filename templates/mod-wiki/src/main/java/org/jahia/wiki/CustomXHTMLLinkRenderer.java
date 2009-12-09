@@ -231,6 +231,11 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
                 // modified in order to be compatible with jahia
                 aAttributes.put(HREF, link.getReference() + ".html");
+                if(pageExist(link)){
+                    aAttributes.put(CLASS, "wikidef");
+                }else{
+                   aAttributes.put(CLASS, "wikidef-new"); 
+                }
             }
         }
 

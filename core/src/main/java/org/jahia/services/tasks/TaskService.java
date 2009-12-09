@@ -31,24 +31,20 @@
  */
 package org.jahia.services.tasks;
 
+import org.apache.log4j.Logger;
 import static org.jahia.api.Constants.JAHIANT_TASK;
 import static org.jahia.api.Constants.JAHIANT_TASKS;
-
-import java.security.Principal;
-import java.util.Calendar;
-import java.util.Set;
+import org.jahia.services.content.*;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-
-import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
+import java.security.Principal;
+import java.util.Calendar;
+import java.util.Set;
 
 /**
  * Task management service.
@@ -67,6 +63,8 @@ public class TaskService {
     }
 
     private JahiaGroupManagerService groupManager;
+
+    private JahiaUserManagerService userManager;
 
     /**
      * Creates a task for the specified user.
@@ -114,6 +112,7 @@ public class TaskService {
             taskNode.setProperty("dueDate", calendar);
         }
         taskNode.setProperty("state", task.getState().toString().toLowerCase());
+        taskNode.setProperty("assignee",((JCRUser)userManager.lookupUser(forUser)).getNodeUuid());
     }
 
     /**
@@ -178,5 +177,9 @@ public class TaskService {
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
         this.groupManager = groupManager;
+    }
+
+    public void setUserManager(JahiaUserManagerService userManager) {
+        this.userManager = userManager;
     }
 }

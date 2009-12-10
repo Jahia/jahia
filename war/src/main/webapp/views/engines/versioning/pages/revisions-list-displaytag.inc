@@ -49,7 +49,7 @@
   String tableId = "versions_id";
   // Date
   String titleDateHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_DATE+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleDate = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.date",jData.getProcessingContext().getLocale())+"(Preview)";
+  String titleDate = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.date",jData.getProcessingContext().getUILocale())+"(Preview)";
   //String titleDate = "<a href=\""+titleDateHref+"\">"+titleDateLabel+"</a>";
 
   //state
@@ -57,12 +57,12 @@
 
   //Object title
   String titleObjectHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_TITLE+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleObject = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectTitle",jData.getProcessingContext().getLocale());
+  String titleObject = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectTitle",jData.getProcessingContext().getUILocale());
   //String titleObject = "<a href=\""+titleObjectHref+"\">"+titleObjectLabel+"</a>";
 
   //Object Type
   String titleObjectTypeHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_OBJECT+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleObjectType = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectType",jData.getProcessingContext().getLocale());
+  String titleObjectType = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectType",jData.getProcessingContext().getUILocale());
   //String titleObjectType = "<a href=\""+titleObjectTypeHref+"\">"+titleObjectTypeLabel+"</a>";
 
   //Description
@@ -100,7 +100,7 @@
   if ( revisionEntrySet != null ){
   // compute date
   final java.util.Date d = new java.util.Date(revisionEntrySet.getVersionID() * 1000L);
-  final String dateStr = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.LONG, java.text.DateFormat.MEDIUM, jParams.getLocale()).format(d);
+  final String dateStr = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.LONG, java.text.DateFormat.MEDIUM, jParams.getUILocale()).format(d);
   ContentPage currentPage = pageContent;
   final ContentObject revContentObject = (ContentObject) JahiaObject.getInstance(revisionEntrySet.getObjectKey());
   if (revContentObject instanceof ContentPage) {

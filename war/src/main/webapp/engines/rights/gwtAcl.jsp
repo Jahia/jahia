@@ -88,7 +88,7 @@
     }
 
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <div class="dex-TabPanelBottom">
   <div class="tabContent">
     <%@ include file="../menu.inc" %>
@@ -129,7 +129,7 @@
               <select name="aclfieldname" onchange="handleActionChanges('<%=theScreen%>','&aclfieldname='+this.options[this.options.selectedIndex].value)">
                 <% for (int i = 0; i < fields.size(); i++) { String name = ((JahiaFieldDefinition) fields.get(i)).getName(); %>
                   <option value="<%=name%>" <% if (aclFieldName.equals(name)) { %> selected="selected" <% } %>>
-                    <%=((JahiaFieldDefinition)fields.get(i)).getTitle(jParams.getLocale())%>
+                    <%=((JahiaFieldDefinition)fields.get(i)).getTitle(jParams.getUILocale())%>
                   </option>
                 <% } %>
               </select>

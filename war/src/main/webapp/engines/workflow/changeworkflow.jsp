@@ -86,7 +86,7 @@
     final Integer inheritedMode = (Integer) engineMap.get("inheritedMode");
 
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <!-- Begin changeworkflow.jsp -->
 <script type="text/javascript" src="<%= theURL%>../javascript/selectbox.js"></script>
 <script type="text/javascript">

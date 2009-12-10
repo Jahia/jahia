@@ -157,37 +157,37 @@ function viewCronHelp() {
       var form = document.mainForm;
       if(!form.targetSite.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.targetSite",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.sitename.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.sitename",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.username.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.username",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.password.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.password",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.cron.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.cron",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.profile.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.profile",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       if(!form.alias.value.match(regexp)) {
           alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.alias",
-                  jParams.getLocale()))%>");
+                  jParams.getUILocale()))%>");
           return false;
       }
       return true;

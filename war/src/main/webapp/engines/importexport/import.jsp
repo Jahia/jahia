@@ -50,7 +50,7 @@
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <script type="text/javascript">
     document.mainForm.enctype = "multipart/form-data";
     document.mainForm.encoding = "multipart/form-data";

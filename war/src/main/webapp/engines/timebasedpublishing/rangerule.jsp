@@ -51,7 +51,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
     boolean inherited = false;
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");

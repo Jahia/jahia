@@ -59,7 +59,7 @@ if (userAgent != null) {
 }
 
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <div class="dex-TabPanelBottom">
   <div class="tabContent">
     <%@ include file="../tools.inc" %>

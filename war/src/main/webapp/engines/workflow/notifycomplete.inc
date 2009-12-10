@@ -185,7 +185,7 @@ function checkAllBoxes(language) {
                 }
                 // -------------------------------------------------------------
                 // Write page title --------------------------------------------
-                String pageTitle = treeJahiaSiteMap.getPageTitle(i, jParams.getLocale().toString());
+                String pageTitle = treeJahiaSiteMap.getPageTitle(i, jParams.getUILocale().toString());
                 boolean isPageMarkedForDeletion = contentPage.isMarkedForDelete();
 
                 String style = "white-space: nowrap;";

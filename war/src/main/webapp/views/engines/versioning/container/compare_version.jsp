@@ -118,9 +118,9 @@
 
   String datas = containerCompareBean.toJSON(jParams);
 
-  String addedLegend = HunkTextDiffVisitor.getAddedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.added", jParams.getLocale(),"added"));
-  String deletedLegend = HunkTextDiffVisitor.getDeletedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.deleted", jParams.getLocale(),"deleted"));
-  String updatedLegend = HunkTextDiffVisitor.getChangedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.changed", jParams.getLocale(),"changed"));
+  String addedLegend = HunkTextDiffVisitor.getAddedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.added", jParams.getUILocale(),"added"));
+  String deletedLegend = HunkTextDiffVisitor.getDeletedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.deleted", jParams.getUILocale(),"deleted"));
+  String updatedLegend = HunkTextDiffVisitor.getChangedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.changed", jParams.getUILocale(),"changed"));
 
 %>
 <script language="JavaScript">

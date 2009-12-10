@@ -45,11 +45,11 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%!
 public String getAdminResource(String messageKey, HttpServletRequest request) {
     ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
-    return JahiaResourceBundle.getJahiaInternalResource(messageKey, jParams.getLocale());    
+    return JahiaResourceBundle.getJahiaInternalResource(messageKey, jParams.getUILocale());    
 }
 %>
 

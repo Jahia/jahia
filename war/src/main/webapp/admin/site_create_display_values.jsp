@@ -239,7 +239,7 @@
             <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>&nbsp;
         </td>
         <td class="lastCol">
-            &nbsp;<%=selectedLocale.getDisplayName(jParams.getLocale())%>
+            &nbsp;<%=selectedLocale.getDisplayName(jParams.getUILocale())%>
             <input type="hidden" name="languageList" value="<%=selectedLocale%>"/>
         </td>
     </tr>

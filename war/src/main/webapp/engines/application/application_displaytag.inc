@@ -40,7 +40,7 @@
 <%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <script type="text/javascript">
   // OpenJahiaScrollableWindow
   function OpenJahiaScrollableWindow(url, name, width, height) {
@@ -76,9 +76,9 @@
 </script>
 <%
 //get resource bundle
-String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext().getLocale());
-String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext().getLocale());
-String defaultDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext().getLocale());
+String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext().getUILocale());
+String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext().getUILocale());
+String defaultDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext().getUILocale());
 
 // portlet data
 List definitions = theTempoApplicationBean.getEntryPointDefinitions();
@@ -115,7 +115,7 @@ String paramOrderValue = request.getParameter(paramOrder);
           appID = "" + definition.getApplicationID();
           uniqueID = appID + "::" + definitionName;
           if (isPortlet) {
-              description = definition.getDescription(jParams.getLocale());
+              description = definition.getDescription(jParams.getUILocale());
           }
       }
 

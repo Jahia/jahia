@@ -202,7 +202,7 @@
       <%
       // Restore specific
       final int restoreVersionID = (int) (pagesVersViewHelper.getRestoreDateCalendar().getDateLong().longValue() / 1000);
-      final String title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.pages.PageProperties_Engine.pageTitle.label", jParams.getLocale());
+      final String title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.pages.PageProperties_Engine.pageTitle.label", jParams.getUILocale());
       final String entryPoint = jParams.getContentPage().getObjectKey().toString();
       %>
     </div>

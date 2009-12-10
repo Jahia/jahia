@@ -172,7 +172,7 @@ if (elh != null) {
     jParams.setCurrentLocale(elh.getCurrentLocale());
 }
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=jParams.getLocale()%>" lang="<%=jParams.getLocale()%>">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>

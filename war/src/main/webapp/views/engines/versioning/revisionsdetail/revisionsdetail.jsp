@@ -65,7 +65,7 @@
       (List)request.getAttribute("flatRevisionsList");
 
   java.util.Date d = new java.util.Date(revisionEntrySet.getVersionID()*1000L);
-  String dateStr = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.LONG,java.text.DateFormat.MEDIUM,jParams.getLocale()).format(d);
+  String dateStr = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.LONG,java.text.DateFormat.MEDIUM,jParams.getUILocale()).format(d);
 
 
   //----------------------------------------------------------------------------------------------------------

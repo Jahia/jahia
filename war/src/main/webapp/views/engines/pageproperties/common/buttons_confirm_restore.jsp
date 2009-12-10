@@ -42,7 +42,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="confirmRestoreNav" class="java.lang.String" scope="request"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
 final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
 Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");

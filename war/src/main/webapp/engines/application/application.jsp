@@ -44,7 +44,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String warningMsg = (String) request.getAttribute("Template_Engine.warningMsg");
@@ -220,7 +220,7 @@
                                 String existingMapping = (String) (alreadyExistingMapping.get(name) != null ? alreadyExistingMapping.get(name) : "");
                                 %>
                                 <tr>
-                                  <td title="<%=attribute.getDescription(jParams.getLocale())%>">
+                                  <td title="<%=attribute.getDescription(jParams.getUILocale())%>">
                                     <%=name%>
                                   </td>
                                   <td>

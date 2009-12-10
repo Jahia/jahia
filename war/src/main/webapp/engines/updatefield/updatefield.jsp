@@ -40,7 +40,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%!
     private static String getIconClassName(final int type, final boolean small) {
         final String className;
@@ -173,7 +173,7 @@
     <div class="content">
         <div id="editor">
             <h4 class="<%=getIconClassName(theField.getType(), false)%>"><fmt:message key="org.jahia.engines.updatefiled.UpdateField_Engine.fieldName.label"/>:
-                <%=theField.getDefinition().getTitle(jParams.getLocale())%>
+                <%=theField.getDefinition().getTitle(jParams.getUILocale())%>
             </h4>
             <%
                 boolean applyChangeToAllLang = (request.getParameter("apply_change_to_all_lang_" + theField.getID()) != null);

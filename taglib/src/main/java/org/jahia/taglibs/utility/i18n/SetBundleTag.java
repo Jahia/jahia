@@ -59,6 +59,7 @@ public class SetBundleTag extends TagSupport {
     private String basename;
     private String var;
     private int scope;
+    private boolean useUiLocale = false;
 
     public SetBundleTag() {
         super();
@@ -67,6 +68,7 @@ public class SetBundleTag extends TagSupport {
 
     private void init() {
         basename = null;
+        useUiLocale = false;
         scope = PageContext.PAGE_SCOPE;
     }
 
@@ -78,7 +80,7 @@ public class SetBundleTag extends TagSupport {
             Locale locale = null;
             try {
                 context = Utils.getProcessingContext(pageContext, true);
-                locale = context != null ? context.getLocale() : pageContext.getRequest().getLocale();
+                locale = context != null ? (useUiLocale ? context.getUILocale() : context.getLocale()) : pageContext.getRequest().getLocale();
             } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
                 locale = pageContext.getRequest().getLocale();
@@ -109,5 +111,9 @@ public class SetBundleTag extends TagSupport {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+    
+    public void setUseUILocale(String useUILocale) {
+        this.useUiLocale = Boolean.parseBoolean(useUILocale);
     }
 }

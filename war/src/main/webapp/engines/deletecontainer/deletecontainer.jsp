@@ -58,7 +58,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
 final Logger logger = Logger.getLogger("deletecontainer.jsp") ;
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -129,7 +129,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                           try { %>
                             <tr>
                               <th width="150">
-                                <%=aField.getDefinition().getTitle(jParams.getLocale())%>
+                                <%=aField.getDefinition().getTitle(jParams.getUILocale())%>
                               </th>
                               <% if (fieldType < 5) { // smalltext, bigtext, undefined %>
                                 <td>

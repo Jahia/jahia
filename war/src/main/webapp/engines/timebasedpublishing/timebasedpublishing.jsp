@@ -69,7 +69,7 @@ if (currentRuleDef != null) {
 
 final String labelResourceName = "org.jahia.engines.timebasedpublishing.timebpstatus." + jahiaObjectDelegate.getTimeBPState() + ".label";
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <!-- Begin timebasepublishing.jsp -->
 <div class="dex-TabPanelBottom">
   <div class="tabContent">

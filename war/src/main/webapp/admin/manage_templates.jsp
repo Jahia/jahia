@@ -161,7 +161,7 @@ ProcessingContext jParams = jData.getProcessingContext(); %>
                       String url = jData.gui().html().drawUpdateTemplateLauncher(templ);
                       if ( url.equals("") ){
                       url = "alert('" +
-                      JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.templates.ManageTemplates.noRightToEdit.label", jParams.getLocale())) +
+                      JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.templates.ManageTemplates.noRightToEdit.label", jParams.getUILocale())) +
                       "')";
                       } %>
                       <option value="<%=templ.getID()%>"><%=templ.getName() %></option>
@@ -178,7 +178,7 @@ ProcessingContext jParams = jData.getProcessingContext(); %>
                                           String url = jData.gui().html().drawUpdateTemplateLauncher(templ);
                                           if ( url.equals("") ){
                                               url = "alert('" +
-                                                  JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.templates.ManageTemplates.noRightToEdit.label", jParams.getLocale())) +
+                                                  JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.templates.ManageTemplates.noRightToEdit.label", jParams.getUILocale())) +
                                                     "')";
                                           }
                         

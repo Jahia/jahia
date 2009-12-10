@@ -47,7 +47,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final JahiaContainerList theContainerList = (JahiaContainerList) engineMap.get("theContainerList");
@@ -228,7 +228,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
         element.options[index] = null;
       }
     } else {
-      alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alertSelectValue.label", jParams.getLocale()))%>");
+      alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alertSelectValue.label", jParams.getUILocale()))%>");
     }
   }
 //-->

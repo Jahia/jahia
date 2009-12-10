@@ -306,9 +306,9 @@
         <select name='<%=ManageUsers.USER_PROPERTY_PREFIX + "preferredLanguage"%>'
                 <% if (iReadOnly) {%>disabled="disabled"<% } %>>
             <%
-                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
+                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getUILocale())) {%>
             <option value="<%=theLocale %>"
-                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getLocale()) %>
+                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getUILocale()) %>
             </option>
             <% } %>
         </select>

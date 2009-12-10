@@ -48,7 +48,7 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/>
 <c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
 <%
@@ -94,7 +94,7 @@
                 badName += "- " + usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }
             alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.users.ManageGroups.alertUsersGroupAlreadyMember.label",
-          jParams.getLocale()))%>" + badName);
+          jParams.getUILocale()))%>" + badName);
             index = 0;
         }
     }

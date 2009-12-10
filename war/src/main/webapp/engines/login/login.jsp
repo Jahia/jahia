@@ -41,7 +41,7 @@
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="engineTitle" class="java.lang.String" scope="request"/>
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
 Boolean cookieAuthActivated = (Boolean) request.getAttribute("cookieAuthActivated");
 if (cookieAuthActivated == null) {

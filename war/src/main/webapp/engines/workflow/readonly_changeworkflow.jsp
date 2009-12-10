@@ -86,7 +86,7 @@
     final Integer inheritedMode = (Integer) engineMap.get("inheritedMode");
 
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <!-- Begin readonly_changeworkflow.jsp -->
 
 <div class="dex-TabPanelBottom">

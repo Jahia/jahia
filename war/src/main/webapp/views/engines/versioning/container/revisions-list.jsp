@@ -120,7 +120,7 @@ function handleRevisionSelect(theInput){
 function handleCompare(){
   if (containerCompareHandler._count < 2 ){
     alert('<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.atLeastTwoRevisionsMustBeSelected",
-            jParams.getLocale(), "At least two revisions must be selected"))%>');
+            jParams.getUILocale(), "At least two revisions must be selected"))%>');
     return;
   }
   var actionURL = '<%=actionURL%>&engineview=<%=engineView%>&method=containerVersionCompare';
@@ -277,14 +277,14 @@ function handleRevisionDetails(version1){
           count++;
           RevisionEntrySet revEntrySet = (RevisionEntrySet) pageContext.getAttribute("listItem");
         %>
-        <display:column sortProperty="versionID" title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.version", jParams.getLocale(),"Version")%>' sortable="true">
+        <display:column sortProperty="versionID" title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.version", jParams.getUILocale(),"Version")%>' sortable="true">
           <input id="<%=revEntrySet.toString()%>" class="input" type="checkbox" name="revisionEntrySet" value="<%=revEntrySet.toString()%>" onClick="handleRevisionSelect(this);" <%if ( selectedRevsList.contains(revEntrySet.toString()) ){%>checked<%}%> /> <% if ( false && count>1 ){%><a href="javascript:handleRevisionDetails('<%=revEntrySet.toString()%>')"><%=RevisionEntrySet.getVersionNumber(revEntrySet, jParams, jParams.getLocale())%></a><% } else { %><span class="aStyle"><%=RevisionEntrySet.getVersionNumber(revEntrySet,jParams, jParams.getLocale())%></span><% } %>
         </display:column>
-        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.date", jParams.getLocale(),"Date")%>' sortable="true" sortProperty="versionID" comparator="<%= comparator %>">
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.date", jParams.getUILocale(),"Date")%>' sortable="true" sortProperty="versionID" comparator="<%= comparator %>">
           <%= fromCalHandler.getDateFormatter().format(revEntrySet.getVersionID() * 1000L) %>
         </display:column>
-        <display:column property="lastContributor" title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.lastContributor", jParams.getLocale(),"Last contributor")%>' sortable="true" comparator="<%= comparator %>"/>
-        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.operations", jParams.getLocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
+        <display:column property="lastContributor" title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.lastContributor", jParams.getUILocale(),"Last contributor")%>' sortable="true" comparator="<%= comparator %>"/>
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.operations", jParams.getUILocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
           <%if ( revEntrySet.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){%>
             <a href="javascript:sendForm('showConfirmContainerUndoStaging');"><fmt:message key="org.jahia.engines.version.undoStaging"/></a>
           <%} else if ( allowRestoreOperation && count > 1){%>

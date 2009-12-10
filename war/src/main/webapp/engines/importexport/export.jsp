@@ -49,7 +49,7 @@ if (elh != null) {
     jParams.setCurrentLocale(elh.getCurrentLocale());
 }
 %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <script type="text/javascript">
   var myWin = null;
   function doExport() {

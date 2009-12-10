@@ -46,7 +46,7 @@
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <% // http files path. %>
@@ -232,9 +232,9 @@
         %>
         <select name='<%=ManageUsers.USER_PROPERTY_PREFIX + "preferredLanguage"%>'>
             <%
-                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
+                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getUILocale())) {%>
             <option value="<%=theLocale %>"
-                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getLocale()) %>
+                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getUILocale()) %>
             </option>
             <% } %>
         </select>

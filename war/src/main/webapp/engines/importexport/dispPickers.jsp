@@ -55,7 +55,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%!
 
     /**
@@ -508,7 +508,7 @@
                         %>
                         <tr style="background-color:<%=color%>" onMouseOver="this.style.backgroundColor='#FFFFEE'"
                             onMouseOut="this.style.backgroundColor='<%=color%>'">
-                            <td><%=info%></td><td><%=printFriendlyDate(lastpublishingdate,jParams.getLocale(), enginebundle)%></td>
+                            <td><%=info%></td><td><%=printFriendlyDate(lastpublishingdate,jParams.getUILocale(), enginebundle)%></td>
                         </tr>
                         <%
                                 count++;

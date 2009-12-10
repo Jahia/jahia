@@ -71,7 +71,7 @@
             </div>
         </div>
         --%>
-        <div class="bottomanchor"><!--start anchor--><a href="wikiPage.jsp#bodywrapper">Page Top </a>
+        <div class="bottomanchor"><!--start anchor--><a href="wikiPage.jsp#bodywrapper"><fmt:message key="pageTop"/></a>
 
             <div class="clear"></div>
         </div>

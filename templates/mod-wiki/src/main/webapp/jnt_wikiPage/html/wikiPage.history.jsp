@@ -8,10 +8,10 @@
             <div class="box-inner">
                 <div class="box-inner-border"><!--start box -->
                     <form name="diff" method="get" action="${currentNode.name}.compare.html">
-                        <h4 class="title titlegrey">Comparaison des versions (table)</h4>
+                        <h4 class="title titlegrey"><fmt:message key="jnt_wiki.pageHistoryTitle"/></h4>
                         <table width="100%" class="table tableTasks " summary="Mes taches en cour en table">
                             <caption class=" hidden">
-                                Comparaison des versions (table)
+                                <fmt:message key="jnt_wiki.pageHistoryTitle"/>
                             </caption>
                             <colgroup>
                                 <col span="1" width="10%" class="col1"/>
@@ -21,10 +21,10 @@
                             </colgroup>
                             <thead>
                             <tr>
-                                <th class="center" id="Selection" scope="col">Selection</th>
-                                <th id="Title" scope="col">Title</th>
-                                <th id="Author" scope="col">Author</th>
-                                <th id="Date" scope="col">Date</th>
+                                <th class="center" id="Selection" scope="col"><fmt:message key="jnt_wiki.label.select"/></th>
+                                <th id="Title" scope="col"><fmt:message key="jnt_wiki.label.title"/></th>
+                                <th id="Author" scope="col"><fmt:message key="jnt_wiki.label.author"/></th>
+                                <th id="Date" scope="col"><fmt:message key="jnt_wiki.label.date"/></th>
                             </tr>
                             </thead>
 
@@ -61,7 +61,7 @@
                         </table>
 
                         <div class="divButton">
-                            <a class="aButton" href="javascript:document.forms['diff'].submit()"><span>Comparer les versions sélectionnées</span></a>
+                            <a class="aButton" href="javascript:document.forms['diff'].submit()"><span><fmt:message key="jnt_wiki.buttonLabel.compare"/></span></a>
 
                             <div class="clear"></div>
                         </div>
@@ -69,12 +69,12 @@
 
                         <div class="pagination"><!--start pagination-->
 
-                            <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${nodes.size -1 } results</span>
+                            <div class="paginationPosition"><span><fmt:message key="page"/> ${currentPage} <fmt:message key="of"/> ${nbPages} - ${nodes.size -1 } <fmt:message key="results"/></span>
                             </div>
                             <div class="paginationNavigation">
                                 <c:if test="${currentPage>1}">
                                     <a class="previousLink"
-                                       href="javascript:replace('${currentNode.UUID}-history','${url.current}?ajaxcall=true&begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')">Previous</a>
+                                       href="javascript:replace('${currentNode.UUID}-history','${url.current}?ajaxcall=true&begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')"><fmt:message key="previous"/></a>
                                 </c:if>
                                 <c:forEach begin="1" end="${nbPages}" var="i">
                                     <c:if test="${i != currentPage}">
@@ -88,7 +88,7 @@
 
                                 <c:if test="${currentPage<nbPages}">
                                     <a class="nextLink"
-                                       href="javascript:replace('${currentNode.UUID}-history','${url.current}?ajaxcall=true&begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')">Next</a>
+                                       href="javascript:replace('${currentNode.UUID}-history','${url.current}?ajaxcall=true&begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')"><fmt:message key="next"/></a>
                                 </c:if>
                             </div>
 

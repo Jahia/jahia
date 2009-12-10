@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <div id="content"><!--start content-->
@@ -10,7 +11,7 @@
 
                     <div class="box-inner">
                         <div class="box-inner-border"><!--start box -->
-                            <h3 class="boxtitleh3">Rechercher sur le Wiki</h3>
+                            <h3 class="boxtitleh3"><fmt:message key="jnt_wiki.searchWiki"/></h3>
 
                             <div id="wikisearch">
                                 <form method="get" action="#">
@@ -22,7 +23,7 @@
                                         </p>
 
                                         <div class="divButton">
-                                            <a class="aButton" href="#"><span>Rechercher</span></a>
+                                            <a class="aButton" href="#"><span><fmt:message key="search"/> </span></a>
 
                                             <div class="clear"></div>
                                         </div>
@@ -30,7 +31,7 @@
                                 </form>
                                 <ul class="list4">
                                     <li>
-                                        <a href="#">Recherche avancée</a>
+                                        <a href="#"><fmt:message key="jnt_wiki.advancedSearch"/> </a>
                                     </li>
 
                                 </ul>
@@ -75,7 +76,7 @@
 
         <div class='grid_10'><!--start grid_10-->
 
-            <h2>Wiki</h2>
+            <h2><fmt:message key="jnt_wiki.wikiName"/> </h2>
 
             ${wrappedContent}
             <!--stop tabContainer-->
@@ -86,9 +87,9 @@
             <h4 class="title titlegrey">Navigation</h4>
 
             <ul id="menusimple">
-                <li class="menutop"><a href="#">Accueil</a></li>
-                <li class="menutop"><a href="#">Portails thématiques</a></li>
-                <li class="menutop"><a href="#">Index alphabétique</a></li>
+                <li class="menutop"><a href="#">Wiki home</a></li>
+                <li class="menutop"><a href="#">All wikis</a></li>
+                <li class="menutop"><a href="#">Index</a></li>
             </ul>
             <%--<div class="box">--%>
                 <%--<div class="boxgrey boxpadding16 boxmarginbottom16">--%>

@@ -318,6 +318,59 @@
                             </dependency>
                         </dependencies>
                     </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.groovy.maven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.6</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.5.0</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>Generate Jasper Reports</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
+                                        <db-login>${jahia.configure.databaseUsername}</db-login>
+                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
+                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
+                                        <jasperreport>allTestPlanReport</jasperreport>
+                                    </properties>
+                                    <source>${pom.basedir}/src/main/scripts/groovy/generateJasperReports.groovy</source>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Import JMeter Metrology Data</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
+                                        <db-login>${jahia.configure.databaseUsername}</db-login>
+                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
+                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
+                                        <db-clean>true</db-clean>
+                                        <results-path>${jahia.test.jmeter.path}/bin/results</results-path>
+                                    </properties>
+                                    <source>${pom.basedir}/src/main/scripts/groovy/parseJMeterFiles.groovy</source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>

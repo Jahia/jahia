@@ -10,7 +10,17 @@
 <template:addWrapper name="blogWrapper"/>
 <div class="post" id="${currentNode.UUID}-blogContents">
 <c:if test="${currentNode.nodes.size > 0}">
-    <h3><fmt:message key="jnt_blog.lastestBlogPosts"/></h1>
+
+				<div class="addArticle"><!--start preferences-->
+				<h3><a class="addArticle"
+				<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+					href="${url.base}${currentResource.node.parent.path}.blogEdit.html"
+				</c:if>
+				<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+					href="${url.base}${currentResource.node.path}.blogEdit.html"
+				</c:if>
+				> <fmt:message key="jnt_blog.addNew"/></a></h3>
+			</div>
     <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}"/>
 
     <c:forEach items="${currentNode.nodes}" var="child" begin="${begin}" end="${end}">

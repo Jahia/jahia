@@ -69,16 +69,7 @@
 <div class="boxgrey boxpadding16 boxmarginbottom16">
 <div class="box-inner">
 <div class="box-inner-border"><!--start box -->
-<div class="addArticle"><!--start preferences-->
-    <h3><a class="addArticle"
-    <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
-        href="${url.base}${currentResource.node.parent.path}.blogEdit.html"
-    </c:if>
-    <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
-        href="${url.base}${currentResource.node.path}.blogEdit.html"
-    </c:if>
-    > <fmt:message key="jnt_blog.addNew"/></a></h3>
-</div>
+
 
 <div id="search">
     <h3><label for="search"><fmt:message key="search"/> </label></h3>

@@ -6,9 +6,7 @@
 
  <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
-        <div class="spacer">
-            <div class="box box-fixed-height">
-                <a href="${currentNode.properties.link.string}" alt="<jcr:nodeProperty node='${currentNode}" name="jcr:title"/>'><img src="${image.node.url}" class="floatleft" alt="${title.string}"/></a>
-            </div>
-        <div class="clear"> </div>
-        </div>
+<div class="teaser">
+    <a href=""><img src="${image.node.url}" class="floatleft" alt="image"/></a>
+</div>
+<div class="clear"> </div>

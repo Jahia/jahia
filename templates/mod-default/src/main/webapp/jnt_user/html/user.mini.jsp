@@ -28,6 +28,6 @@
             <c:if test="${not empty country}">
             <img src="${url.base}/../../../css/images/flags/plain/flag_${fn:toLowerCase(country.string)}.png"/>
         </c:if>
-            <a href=mailto:${email}">${firstname}&nbsp;${lastname}&nbsp;(${currentNode.name})</a></p>
+            <a href=mailto:${email}>${firstname}&nbsp;${lastname}</a> (${currentNode.name})</p>
     </div>
 </div>

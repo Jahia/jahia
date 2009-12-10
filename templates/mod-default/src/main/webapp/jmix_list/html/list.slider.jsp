@@ -27,8 +27,19 @@
 
 				<img src="${url.context}/repository/default${child.path}/thumbnail" alt=""><br/>
 					<h3>${child.name}</h3>
+					<p>A nice image, this text has to be replaced by metadata decription or another descriptive field if another type of content than images. ${currentNode.properties.abstract.string} </p>
+                </div>
+        </c:if>
 
-					<p>${currentNode.properties.abstract.string} </p>
+
+	<c:if test="${jcr:isNodeType(child, 'jnt:news')}">
+                <div class="item">
+				 <jcr:nodeProperty node="${child}" name="image" var="newsImage"/>
+
+					<img src="${newsImage.node.url}"/><br/>
+					<h3><fmt:formatDate value="${child.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/><c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>: <jcr:nodeProperty node="${child}" name="jcr:title"/></h3>
+					<p>${child.properties.desc.string}</p>
+
                 </div>
         </c:if>
     </c:forEach>

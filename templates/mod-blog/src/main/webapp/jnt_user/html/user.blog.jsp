@@ -7,7 +7,21 @@
 
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
-<c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:lastName']}"/>
+</c:if>
+<c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
+    <c:set var="person" value="${fields['j:firstName']}"/>
+</c:if>
+<c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
+    <c:set var="person" value=""/>
+</c:if>
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
     <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>

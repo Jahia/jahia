@@ -45,6 +45,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesService;
+import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -271,8 +272,7 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user, int siteId) {
-        String propValue = user != null ? user.getProperty("preferredLanguage")
-                : null;
+        String propValue = getPreference("preferredLanguage", user);
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
     
@@ -306,8 +306,7 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user, JahiaSite site) {
-        String propValue = user != null ? user.getProperty("preferredLanguage")
-                : null;
+        String propValue = getPreference("preferredLanguage", user);
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
     
@@ -350,5 +349,19 @@ public final class UserPreferencesHelper {
             }
         }
         return locale;
+    }
+    
+    private static String getPreference(String prefName, JahiaUser user) {
+        String prefValue = null;
+        GenericJahiaPreference preferenceNode = ((GenericJahiaPreference) getPrefsService()
+                .getGenericPreferenceNode(prefName, user));
+        if (preferenceNode != null) {
+            try {
+                prefValue = preferenceNode.getPrefValue();
+            } catch (Exception e) {
+                logger.debug("Preference \"" + prefName + "\"not retrieved", e);
+            }
+        }
+        return prefValue;
     }
 }

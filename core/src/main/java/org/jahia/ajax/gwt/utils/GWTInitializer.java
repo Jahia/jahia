@@ -92,7 +92,7 @@ public class GWTInitializer {
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session, ProcessingContext processingContext) {
         StringBuilder buf = new StringBuilder();
-        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_UI_LOCALE);
         if (locale == null) {
             locale = Locale.ENGLISH;
         }

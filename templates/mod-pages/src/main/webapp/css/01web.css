@@ -1446,17 +1446,17 @@ display:none
 	list-style:none;
 }
 /******************************************************************************
-* WIKI Search
+* WIKI Search and create
 ******************************************************************************/
-#bodywrapper #wikisearch p{
+#bodywrapper #wikisearch p, #bodywrapper #wikicreate p{
 	margin:0;
 	padding:0;
 }
-#bodywrapper #wikisearch fieldset {
+#bodywrapper #wikisearch fieldset, #bodywrapper #wikicreate fieldset{
 	padding:0 ;
 	border:none;
 }
-#bodywrapper #wikisearch .search{
+#bodywrapper #wikisearch .search, #bodywrapper #wikicreate .create{
 	width:90%
 }
 /******************************************************************************

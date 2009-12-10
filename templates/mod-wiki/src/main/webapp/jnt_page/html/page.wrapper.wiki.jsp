@@ -87,7 +87,7 @@
             <h4 class="title titlegrey">Navigation</h4>
 
             <ul id="menusimple">
-                <li class="menutop"><a href="#">Wiki home</a></li>
+                <li class="menutop"><a href="${url.base}${currentNode.path}.html">Wiki home</a></li>
                 <li class="menutop"><a href="#">All wikis</a></li>
                 <li class="menutop"><a href="#">Index</a></li>
             </ul>

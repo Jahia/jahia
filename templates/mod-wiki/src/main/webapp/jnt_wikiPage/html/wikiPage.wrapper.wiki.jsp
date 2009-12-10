@@ -42,6 +42,34 @@
                     </div>
                 </div>
             </div>
+             <!--stop box -->
+            <div class="box">
+                <div class="boxgrey boxpadding16 boxmarginbottom16">
+                    <div class="box-inner">
+                        <div class="box-inner-border"><!--start box -->
+
+                            <h3 class="boxtitleh3"><fmt:message key="jnt_wiki.createPage"/></h3>
+                            <div id="wikicreate">
+                                <form id="wikiFormCreate" name="wikiFormCreate">
+                                    <fieldset>
+                                        <p class="field">
+                                            <input id="link" name="link" onchange="this.form.action=this.form.elements.link.value+'.html'">
+
+                                        </p>
+
+                                        <div class="divButton">
+                                            <a class="aButton" href="javascript:document.wikiFormCreate.submit();"><span><fmt:message key="create"/></span></a>
+
+                                            <div class="clear"></div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!--stop box -->
             <div class="box">
                 <div class="boxgrey boxpadding16 boxmarginbottom16">
@@ -128,7 +156,7 @@
             <h4 class="title titlegrey">Navigation</h4>
 
             <ul id="menusimple">
-                <li class="menutop"><a href="#">Home</a></li>
+                <li class="menutop"><a href="${url.base}${currentNode.parent.path}.html">Wiki Home</a></li>
                 <li class="menutop"><a href="#">All wikis</a></li>
                 <li class="menutop"><a href="#">Index of pages</a></li>
             </ul>

@@ -54,7 +54,7 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
             getResource("pd_type_timebasepublishing")};
     public static final String[] TYPE_OPTIONS_VALUES = {"workflow", "import", "production", "copypaste", "timebasedpublishing"};
     public static final String[] STATUS_OPTIONS_NAMES = {
-            getResource("pd_status_wainting"),
+            getResource("pd_status_waiting"),
             getResource("pd_status_executing"),
             getResource("pd_status_failed"),
             getResource("pd_status_partial"),

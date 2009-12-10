@@ -44,6 +44,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
@@ -78,7 +80,7 @@ public class ProcessJobTopBar extends TopBar {
         });
 
         // refresh button
-        deleteItem = new Button("Delete waiting job");
+        deleteItem = new Button(Messages.getNotEmptyResource("pd_button_deletewaitingjob","Delete waiting job"));
         deleteItem.setEnabled(false);
         deleteItem.setIconStyle("gwt-pdisplay-icons-delete");
         deleteItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -96,12 +98,12 @@ public class ProcessJobTopBar extends TopBar {
         });
         // preference
         Button prefItem = new Button();
-        prefItem.setText("Preferences");
+        prefItem.setText(Messages.getNotEmptyResource("pd_button_preferences","Preferences"));
         prefItem.setIconStyle("gwt-pdisplay-icons-preferences");
         prefItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 final Window preferenceWindow = new Window();
-                preferenceWindow.setHeading("Preferences");
+                preferenceWindow.setHeading(Messages.getNotEmptyResource("pd_button_preferences","Preferences"));
                 preferenceWindow.setBodyBorder(false);
                 preferenceWindow.setInsetBorder(false);
                 preferenceWindow.setWidth(550);
@@ -205,7 +207,7 @@ public class ProcessJobTopBar extends TopBar {
                                     getLinker().refreshTable();
                                 } else {
                                     infoItem.setIconStyle("gwt-pdisplay-icons-warning");
-                                    infoItem.setToolTip("Need refresh");
+                                    infoItem.setToolTip(Messages.getNotEmptyResource("pd_tooltip_needrefresh","Need refresh"));
                                     infoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                         public void componentSelected(ButtonEvent event) {
                                             getLinker().refreshTable();
@@ -247,13 +249,13 @@ public class ProcessJobTopBar extends TopBar {
 
         // refesh
         final CheckBox autoRefreshField = new CheckBox();
-        autoRefreshField.setFieldLabel("Auto refresh");
+        autoRefreshField.setFieldLabel(Messages.getNotEmptyResource("pd_prefs_autorefresh","Auto refresh"));
         autoRefreshField.setValue(getGWTJahiaProcessJobPreference().isAutoRefresh());
         panel.add(autoRefreshField);
 
         // max job
         final NumberField maxJobNumberField = new NumberField();
-        maxJobNumberField.setFieldLabel("Max. jobs");
+        maxJobNumberField.setFieldLabel(Messages.getNotEmptyResource("pd_prefs_maxjobs","Max. jobs"));
         maxJobNumberField.setValue(getGWTJahiaProcessJobPreference().getMaxJobs());
         maxJobNumberField.setAllowBlank(false);
         maxJobNumberField.setAllowNegative(false);
@@ -261,14 +263,14 @@ public class ProcessJobTopBar extends TopBar {
 
         // jobs per page
         final NumberField jobPerPageNumber = new NumberField();
-        jobPerPageNumber.setFieldLabel("Jobs per page");
+        jobPerPageNumber.setFieldLabel(Messages.getNotEmptyResource("pd_prefs_jobsperpage","Jobs per page"));
         jobPerPageNumber.setValue(getGWTJahiaProcessJobPreference().getJobsPerPage());
         jobPerPageNumber.setAllowBlank(false);
         jobPerPageNumber.setAllowNegative(false);
         panel.add(jobPerPageNumber);
 
 
-        final Button saveButton = new Button("Save");
+        final Button saveButton = new Button(Messages.getNotEmptyResource("save", "Save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 Log.debug(" save pdisplay pref.");

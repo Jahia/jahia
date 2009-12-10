@@ -138,7 +138,7 @@ public class ProcessJobGrid extends TopRightComponent {
         view.setGroupRenderer(new GridGroupRenderer() {
             public String render(GroupColumnData data) {
                 String f = m_columnModel.getColumnById(data.field).getHeader();
-                return f + ": " + data.group + " (" + data.models.size()+")";
+                return f + ": " + Messages.getNotEmptyResource("pd_status_" + data.group, data.group) + " (" + data.models.size()+")";
             }
         });
         grid.setView(view);
@@ -265,7 +265,7 @@ public class ProcessJobGrid extends TopRightComponent {
             public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore, Grid<GWTJahiaProcessJob> g) {
 
                 String rowStyle = "gwt-pdisplay-table-row-status-" + gwtJahiaProcessJob.getJobStatus();
-                return "<span class='" + rowStyle + "'>" + gwtJahiaProcessJob.getJobStatus() + "</span>";
+                return "<span class='" + rowStyle + "'>" + Messages.getNotEmptyResource("pd_status_" + gwtJahiaProcessJob.getJobStatus(),gwtJahiaProcessJob.getJobStatus()) + "</span>";
             }
 
 

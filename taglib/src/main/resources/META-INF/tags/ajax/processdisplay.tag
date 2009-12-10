@@ -97,8 +97,8 @@
                             aliasResourceName="pd_status_failed"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.partial"
                             aliasResourceName="pd_status_partial"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.wainting"
-                            aliasResourceName="pd_status_wainting"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.waiting"
+                            aliasResourceName="pd_status_waiting"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.pooled"
                             aliasResourceName="pd_status_pooled"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.column.created"
@@ -153,5 +153,17 @@
                             aliasResourceName="pd_tab_error"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.alert.jobdeleted"
                             aliasResourceName="pd_alert_jobdeleted"/>
-
-
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.prefs.autorefresh"
+                            aliasResourceName="pd_prefs_autorefresh"/>                            
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.prefs.jobsperpage"
+                            aliasResourceName="pd_prefs_jobsperpage"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.prefs.maxjobs"
+                            aliasResourceName="pd_prefs_maxjobs"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.tooltip.needrefresh"
+                            aliasResourceName="pd_tooltip_needrefresh"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.button.preferences"
+                            aliasResourceName="pd_button_preferences"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.button.deletewaitingjob"
+                            aliasResourceName="pd_button_deletewaitingjob"/>   
+<internal:gwtResourceBundle resourceName="org.jahia.admin.save.label"
+                            aliasResourceName="save"/>                                                        

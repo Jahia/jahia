@@ -100,7 +100,7 @@ public class TaskService {
         JCRNodeWrapper taskNode = tasksNode.addNode(JCRContentUtils.findAvailableNodeName(tasksNode, "task", session),
                 JAHIANT_TASK);
         if (task.getTitle() != null) {
-            taskNode.setProperty("title", task.getTitle());
+            taskNode.setProperty("jcr:title", task.getTitle());
         }
         if (task.getDescription() != null) {
             taskNode.setProperty("description", task.getDescription());

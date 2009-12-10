@@ -1,4 +1,4 @@
-Title: ${currentNode.properties.title.string}<br/>
+Title: ${currentNode.properties['jcr:title'].string}<br/>
 Description : ${currentNode.properties.description.string}<br/>
 Priority : ${currentNode.properties.priority.string}<br/>
 Status : ${currentNode.properties.state.string}<br/>

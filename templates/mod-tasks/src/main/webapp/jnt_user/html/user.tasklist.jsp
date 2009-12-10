@@ -44,7 +44,7 @@
                     src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a title="sort down"
                                                                                          href="#"> <img
                     src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-            <th id="Title" scope="col"><fmt:message key="jnt_task.title"/> <a href="#" title="sort up"><img
+            <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/> <a href="#" title="sort up"><img
                     src="${url.currentModule}/images/sort-arrow-up.png"
                     alt="up"/></a><a
                     title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png"
@@ -83,7 +83,7 @@
             </c:choose>
             <td class="center" headers="Type"><img alt="" src="${url.currentModule}/images/flag_16.png"/>
             </td>
-            <td headers="Title"><a href="${url.base}${task.path}.html">${task.properties.title.string}</a></td>
+            <td headers="Title"><a href="${url.base}${task.path}.html">${task.properties['jcr:title'].string}</a></td>
             <td class="center" headers="Priority">
                     ${currentNode.properties.priority.string}
             </td>
@@ -107,12 +107,12 @@
                             <a href="javascript:send('${task.path}','active')"><fmt:message key="jnt_task.continue"/></a>
                         </span>
                     </c:when>
-                    <c:when test="${task.properties.state.string == '<fmt:message key='jnt_task.canceled'/>'}">
+                    <c:when test="${task.properties.state.string == 'canceled'}">
                         <img alt="" src="${url.currentModule}/images/warning_16.png"/>
                     </c:when>
                 </c:choose>
             </td>
-            <td headers="Date"><fmt:formatDate value="${currentNode.properties['<fmt:message key='jnt_task.dueDate'/>'].date.time}"
+            <td headers="Date"><fmt:formatDate value="${currentNode.properties['dueDate'].date.time}"
                                                dateStyle="short" type="date"/></td>
             </tr>
         </c:forEach>

@@ -71,10 +71,14 @@ public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
                         path = rootFolderPath + "/" + epd.getName() + "s/" + value + ".png";
                     }
                 }
+                String contextPath = context.getContextPath();
+                if (contextPath.equals("/")) {
+                    contextPath = "";
+                }
                 if (path != null) {
-                    bean.addProperty("image", context.getContextPath() + path);
+                    bean.addProperty("image", contextPath + path);
                 } else {
-                    bean.addProperty("image", context.getContextPath() + "/css/blank.gif");
+                    bean.addProperty("image", contextPath + "/css/blank.gif");
                 }
             }
             return values;

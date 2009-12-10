@@ -1,7 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:task] > jnt:content
- - title (string) primary
+[jnt:task] > jnt:content, mix:title
  - assignee (weakreference, choicelist[users]) < jnt:user
  - description (string)
  - priority (string, choicelist[resourceBundle]) = 'medium' analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'

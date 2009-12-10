@@ -41,7 +41,7 @@
 
     <div class="aboutMeAction">
         <a class="aboutMeMore" href="${url.base}${currentNode.path}.html" title="title"><fmt:message
-                                    key="jnt_blog.readPost"/></a>
+                                    key="jnt_blog.userProfile"/></a>
     </div>
     <div class="clear"></div>
 </div>

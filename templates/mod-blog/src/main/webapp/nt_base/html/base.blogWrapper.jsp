@@ -77,7 +77,7 @@
     <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
         href="${url.base}${currentResource.node.path}.blogEdit.html"
     </c:if>
-    > Add an article</a></h3>
+    > <fmt:message key="jnt_blog.addNew"/></a></h3>
 </div>
 
 <div id="search">

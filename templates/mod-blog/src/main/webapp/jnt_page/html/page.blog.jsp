@@ -10,7 +10,7 @@
 <template:addWrapper name="blogWrapper"/>
 <div class="post" id="${currentNode.UUID}-blogContents">
 <c:if test="${currentNode.nodes.size > 0}">
-    List of entries :
+    <h3><fmt:message key="jnt_blog.lastestBlogPosts"/></h1>
     <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}"/>
 
     <c:forEach items="${currentNode.nodes}" var="child" begin="${begin}" end="${end}">

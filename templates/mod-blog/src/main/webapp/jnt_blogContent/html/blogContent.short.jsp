@@ -16,9 +16,10 @@
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.current}"><c:out value="${title.string}"/></a></h2>
 
-    <p class="post-info"><fmt:message key="by"/> <a href="#"></a>
+    <p class="post-info"><fmt:message key="by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
+<a href="#"><c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/></a>
         - <fmt:formatDate value="${userCreated.time}" type="date" dateStyle="medium"/>
-        <a href="#"><fmt:message key="category"/></a>
+       <!-- <a href="#"><fmt:message key="category"/></a>    -->
     </p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
@@ -28,7 +29,7 @@
     </ul>
     <div class="post-resume">
         <p>
-            ${fn:substring(text.string,0,200)}
+            ${fn:substring(text.string,0,1200)}
         </p>
     </div>
     <p class="read-more"><a title="#" href="${url.current}"><fmt:message key="jnt_blog.readPost"/></a></p>

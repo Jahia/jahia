@@ -642,6 +642,7 @@ public class EditContentEngine extends Window {
                 list.addAll(layoutEditor.getProperties());
                 node.getNodeTypes().removeAll(layoutEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(layoutEditor.getAddedTypes());
+                node.getNodeTypes().addAll(layoutEditor.getTemplateTypes());
             }
             if (metadataEditor != null) {
                 list.addAll(metadataEditor.getProperties());
@@ -733,6 +734,7 @@ public class EditContentEngine extends Window {
             if (layoutEditor != null) {
                 props.addAll(layoutEditor.getProperties());
                 mixin.addAll(layoutEditor.getAddedTypes());
+                mixin.addAll(layoutEditor.getTemplateTypes());
             }
             if (metadataEditor != null) {
                 props.addAll(metadataEditor.getProperties());

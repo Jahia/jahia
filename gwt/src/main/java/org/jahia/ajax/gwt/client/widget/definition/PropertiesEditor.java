@@ -67,6 +67,7 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> addedTypes = new HashSet<String>();
     private Set<String> removedTypes = new HashSet<String>();
     private ComboBox<GWTJahiaValueDisplayBean> templateField;
+    private Set<String> templateTypes = new HashSet<String>();
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
@@ -261,9 +262,11 @@ public class PropertiesEditor extends FormPanel {
 
     private void setTemplate(FormPanel form) {
         String addMixin = templateField.getValue().get("addMixin");
+        templateTypes.clear();
         if (addMixin != null && mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
                 if (mix.getName().equals(addMixin)) {
+                    templateTypes.add(mix.getName());
                     addItems(form, mix, mix.getItems(), false, false);
                 }
             }
@@ -289,6 +292,9 @@ public class PropertiesEditor extends FormPanel {
         if (mixin != null) {
             for (GWTJahiaNodeType type : mixin) {
                 if (addedTypes.contains(type.getName())) {
+                    l.add(type);
+                }
+                if (templateTypes.contains(type.getName())) {
                     l.add(type);
                 }
                 if (removedTypes.contains(type.getName())) {
@@ -327,6 +333,10 @@ public class PropertiesEditor extends FormPanel {
 
     public Set<String> getRemovedTypes() {
         return removedTypes;
+    }
+
+    public Set<String> getTemplateTypes() {
+        return templateTypes;
     }
 
     /**

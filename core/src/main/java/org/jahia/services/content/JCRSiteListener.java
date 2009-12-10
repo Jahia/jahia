@@ -35,10 +35,10 @@ import org.apache.log4j.Logger;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
 
 import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +60,22 @@ public class JCRSiteListener extends JahiaEventListener {
         }
     }
 
-    public void siteDeleted(JahiaEvent je) {
+    public void siteDeleted(final JahiaEvent je) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper sites = session.getNode("/sites");
+                    if (!sites.isCheckedOut()) {
+                        sites.checkout();
+                    }
+                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
+                    site.remove();
+                    session.save();
+                    return null;                    
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

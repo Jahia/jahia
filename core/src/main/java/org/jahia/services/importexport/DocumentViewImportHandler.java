@@ -137,7 +137,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt)) {
                 decodedQName = jParams.getSiteKey();
                 String newpath;
-                JCRNodeWrapper siteFolder = JCRStoreService.getInstance().getSiteFolders(jParams.getSiteKey(), jParams.getUser()).get(0);
+                JCRNodeWrapper siteFolder = JCRStoreService.getInstance().getSiteFolders(jParams.getSiteKey()).get(0);
                 newpath = siteFolder.getPath();
                 pathMapping.put(path + "/", newpath + "/");
                 path = newpath;

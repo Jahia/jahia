@@ -756,7 +756,7 @@ public class JCRStoreProvider {
         return results;
     }
 
-    public List<JCRNodeWrapper> getSiteFolders(String site, JahiaUser user) throws RepositoryException {
+    public List<JCRNodeWrapper> getSiteFolders(String site) throws RepositoryException {
         site = ISO9075.encode(encodeInternalName(site));
         String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 

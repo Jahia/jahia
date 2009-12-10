@@ -60,7 +60,6 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.security.license.*;
 import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -1831,7 +1830,7 @@ public class ManageSites extends AbstractAdministrationModule {
         sMgr.removeSite(site);
 
         if (deleteFiles) {
-            List<JCRNodeWrapper> list = JCRStoreService.getInstance().getSiteFolders(site.getSiteKey(), theUser);
+            List<JCRNodeWrapper> list = JCRStoreService.getInstance().getSiteFolders(site.getSiteKey());
             for (JCRNodeWrapper jcrNodeWrapper : list) {
                 try {
                     jcrNodeWrapper.remove();

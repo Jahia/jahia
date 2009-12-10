@@ -191,11 +191,11 @@ public class JCRStoreService extends JahiaService  {
         return r;
     }
 
-    public List<JCRNodeWrapper> getSiteFolders(String site, JahiaUser user) {
+    public List<JCRNodeWrapper> getSiteFolders(String site) {
         List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
         for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
             try {
-                r.addAll(storeProvider.getSiteFolders(site, user));
+                r.addAll(storeProvider.getSiteFolders(site));
             } catch (RepositoryException e) {
                 logger.warn("Error when querying repository", e);
             }

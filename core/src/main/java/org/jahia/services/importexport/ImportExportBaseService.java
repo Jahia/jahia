@@ -297,7 +297,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
         exportSitePermissions(dw, jParams.getSite());
         dw.flush();
-        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>(jcrStoreService.getSiteFolders(jParams.getSiteKey(), jParams.getUser()));
+        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>(jcrStoreService.getSiteFolders(jParams.getSiteKey()));
         exportFiles(files, zout, new HashSet<String>());
         zout.finish();
     }
@@ -716,7 +716,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } else {
             // No repository descriptor - prepare to import files directly
             pathMapping = new HashMap<String, String>();
-            List<JCRNodeWrapper> sitesFolder = jcrStoreService.getSiteFolders(jParams.getSiteKey(), jParams.getUser());
+            List<JCRNodeWrapper> sitesFolder = jcrStoreService.getSiteFolders(jParams.getSiteKey());
             if (!sitesFolder.isEmpty()) {
                 pathMapping.put("/", sitesFolder.iterator().next().getPath() + "/");
             } else {
@@ -783,7 +783,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         for (Map.Entry<String, Long> entry : sizes.entrySet()) {
             if (entry.getKey().startsWith("export_")) {
                 // Old import
-                JCRNodeWrapper siteFolder = jcrStoreService.getSiteFolders(jParams.getSiteKey(), jParams.getUser()).get(0);
+                JCRNodeWrapper siteFolder = jcrStoreService.getSiteFolders(jParams.getSiteKey()).get(0);
 
                 zis = new NoCloseZipInputStream(new FileInputStream(file));
 

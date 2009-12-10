@@ -43,12 +43,15 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * This object contains most of the request context, including object such as
@@ -91,5 +94,10 @@ public final class AdminParamBean extends ParamBean {
         // init Param Bean locales
         this.getLocale();
         resolveUILocale();
+        Config.set(request, Config.FMT_LOCALE, getUILocale());
+        // init localization context
+        Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
+                new LocalizationContext(new JahiaResourceBundle(getUILocale(), getSite()
+                        .getTemplatePackageName()), getUILocale()));            
     }
 }

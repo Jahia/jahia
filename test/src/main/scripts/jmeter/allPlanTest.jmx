@@ -214,7 +214,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+            <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -324,7 +324,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -347,7 +347,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}cms/edit/default/en/content/sites/ACME/home/forum.html</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/content/sites/ACME/home/forum.html</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -416,7 +416,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -468,7 +468,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -520,7 +520,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -573,7 +573,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -602,7 +602,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">true</boolProp>

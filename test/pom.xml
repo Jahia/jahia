@@ -81,7 +81,7 @@
         </profile>
 
         <profile>
-            <id>testJahia</id>
+            <id>startJahia</id>
             <build>
                 <resources>
                     <resource>
@@ -97,13 +97,6 @@
                         <groupId>org.jahia.server</groupId>
                         <artifactId>maven-jahia-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>run-test</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
                             <execution>
                                 <id>configure</id>
                                 <phase>pre-integration-test</phase>
@@ -135,8 +128,6 @@
                                 <configuration>
                                     <tasks>
                                         <echo message="Starting tomcat"/>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                              toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
                                         <delete>
                                             <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*"/>
                                         </delete>
@@ -175,6 +166,33 @@
                                 </goals>
                             </execution>
 
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>testJahia</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>run-test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -259,12 +277,13 @@
                                         <echo message="Starting jmeter tests"/>
                                         <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
                                               dir="${jahia.test.jmeter.path}/bin">
-                                            <arg line="-n -t testPlan/allPlanTest.jmx -Jloginpath=${jahia.test.jmeter.loginpath} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
+                                            <arg line="-n -t testPlan/allPlanTest.jmx -Jloginpath=${jahia.test.jmeter.loginpath} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.deploy.war.contextPath}  -Jloops=${jahia.test.jmeter.loops}"/>
                                         </exec>
-                                      <!--  <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
+                                        <echo message="${jahia.test.jmeter.path}/bin/jmeter"/>
+                                        <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
                                               dir="${jahia.test.jmeter.path}/bin">
-                                            <arg line="-n -t testPlan/createusers/createUsers.jmx -Jrootusername=${jahia.configure.databaseUsername} -Jrootpwd={jahia.configure.databasePassword} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
-                                        </exec>-->
+                                            <arg line="-n -t testPlan/createusers/createUsers.jmx -Jrootusername=root -Jrootpwd=${jahia.configure.jahiaRootPassword} -Jcontext=${jahia.deploy.war.contextPath} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
+                                        </exec>
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -298,59 +317,6 @@
                                 <version>1.5.6</version>
                             </dependency>
                         </dependencies>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.groovy.maven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>mysql</groupId>
-                                <artifactId>mysql-connector-java</artifactId>
-                                <version>5.1.6</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>jasperreports</groupId>
-                                <artifactId>jasperreports</artifactId>
-                                <version>3.5.0</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>Generate Jasper Reports</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <properties>
-                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
-                                        <db-login>${jahia.configure.databaseUsername}</db-login>
-                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
-                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
-                                        <jasperreport>allTestPlanReport</jasperreport>
-                                    </properties>
-                                    <source>${pom.basedir}/src/main/scripts/groovy/generateJasperReports.groovy</source>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Import JMeter Metrology Data</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <properties>
-                                        <db-ip>${jahia.test.jmeter.dbip}</db-ip>
-                                        <db-login>${jahia.configure.databaseUsername}</db-login>
-                                        <db-pwd>${jahia.configure.databasePassword}</db-pwd>
-                                        <db-name>${jahia.test.jmeter.dbname}</db-name>
-                                        <db-clean>true</db-clean>
-                                        <results-path>${jahia.test.jmeter.path}/bin/results</results-path>
-                                    </properties>
-                                    <source>${pom.basedir}/src/main/scripts/groovy/parseJMeterFiles.groovy</source>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

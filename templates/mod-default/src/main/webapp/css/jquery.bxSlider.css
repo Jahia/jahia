@@ -1,0 +1,84 @@
+/* @override
+	http://localhost:8888/bxslider_dev/styles.css
+	http://localhost:8888/bxslider_dev/styles/styles.css
+*/
+
+
+/*---------------------------- MAIN ---------------------------*/
+
+div.wrap {
+	border: solid #ccc 1px;
+	margin: 20px 0 0 32px;
+	padding: 12px;
+}
+
+div.wrap.one {
+	width:479px;
+}
+
+div.wrap.two {
+	width:869px;
+}
+
+div.wrap.three {
+	width:307px;
+}
+
+div.wrap.four {
+	width:500px;
+}
+
+/*---------------------------- EXAMPLE 1 ---------------------------*/
+
+div.item {
+	width: 479px;
+	border: 1px solid #ccc ;
+}
+
+div.item img {
+	float: left;
+	padding-right: 12px;
+}
+
+div.item h3 {
+	float: left;
+	font-size: 2em;
+	font-weight: normal;
+	padding-bottom: 7px;
+}
+
+div.item p {
+	float: left;
+	width: 324px;
+	color: #666;
+	font: 1.2em/17px Arial, sans-serif;
+}
+
+
+
+
+/*---------------------------- EXAMPLE 2 ---------------------------*/
+
+ul#example2 {
+	list-style: none;
+	font-size: 2em;
+	font-family: Arial, sans-serif;
+}
+
+/*---------------------------- EXAMPLE 3 ---------------------------*/
+
+div.example3_container a.slider_prev, div.example3_container a.slider_next {
+	font:  1.2em Arial, sans-serif;
+	color: #ccc;
+	margin-top: 10px;
+}
+
+/*---------------------------- EXAMPLE 4 ---------------------------*/
+
+div.example4_container p {
+	font-size:  2.4em;
+	color: #;
+	margin-top: 10px;
+}
+
+

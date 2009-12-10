@@ -102,6 +102,6 @@
 
 [jnt:banner] > jnt:content, mix:title, jmix:structuredContent
  - background (weakreference, file[mime='image/*'])
- - cast (string)
+ - cast (string, richtext)
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no

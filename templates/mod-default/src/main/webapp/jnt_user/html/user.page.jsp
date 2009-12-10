@@ -86,10 +86,10 @@
             $.post("${url.base}${currentNode.path}", data, null, "json");
             if (value == "true")
                 return "Public"; else
-                return "Non Public";
+                return "Private";
         }, {
             type    : 'select',
-            data   : "{'true':'Public','false':'Non Public'}",
+            data   : "{'true':'Public','false':'Private'}",
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
@@ -216,7 +216,7 @@
                 <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${person}"/>
             </c:if>
             <c:if test="${empty picture}">
-                <span>Upload your picture</span>
+                <span><fmt:message key="jnt_user.profile.uploadPicture"/></span>
             </c:if>
         </div>
     </div>
@@ -263,7 +263,147 @@
         </div>
     </div>
     <!--stop box -->
+        <div class="box"><!--start box -->
+        <div class="boxshadow boxpadding16 boxmarginbottom16">
+            <div class="box-inner">
 
+                <div class="box-inner-border">
+                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.yourPreferences"/></h3>
+
+                    <div class="preferencesForm"><!--start preferencesForm -->
+                        <jcr:preference name="preferredLanguage" var="prefLangNode"
+                                        defaultValue="${renderContext.request.locale}"/>
+                        <fieldset>
+                            <legend><fmt:message key="jnt_user.profile.preferences.form.name"/></legend>
+
+                                <script type="text/javascript">
+                                    $(document).ready(function() {
+                                        $(".prefEdit").editable(function (value, settings) {
+                                            var submitId = $(this).attr('id').replace("_", ":");
+                                            var data = {};
+                                            data[submitId] = value;
+                                            data['methodToCall'] = 'put';
+                                            $.post("${url.base}${prefLangNode.path}", data, null, "json");
+                                            if (value == "en")
+                                                return "English"; else if (value == "de")
+                                                return "Deutsch"; else if (value == "fr")
+                                                    return "French";
+                                        }, {
+                                            type    : 'select',
+                                            data   : "{'en':'English','fr':'French','de':'Deutsch'}",
+                                            onblur : 'ignore',
+                                            submit : 'OK',
+                                            cancel : 'Cancel',
+                                            tooltip : 'Click to edit'
+                                        });
+                                    });
+                                </script>
+                            <label class="left"><fmt:message
+                                    key="jnt_user.preference.preferredLanguage"/></label>
+                            <div class="prefEdit" id="j_prefValue">
+                                <c:choose>
+                                    <c:when test="${prefLangNode.prefValue eq 'en'}">English</c:when>
+                                    <c:when test="${prefLangNode.prefValue eq 'de'}">Deustch</c:when>
+                                    <c:when test="${prefLangNode.prefValue eq 'fr'}">French</c:when>
+                                </c:choose>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!--stop sendMailForm -->
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='clear'></div>
+</div>
+<!--stop grid_4-->
+
+
+<div class='grid_8'><!--start grid_8-->
+
+    <div class="box"><!--start box -->
+        <div class="arrow-white-shadow-left"></div>
+        <div class="boxshadow boxpadding16 boxmarginbottom16">
+            <div class="box-inner">
+                <div class="box-inner-border">
+                    <template:module node="${currentNode}" template="detailNew"/>
+                    <!--stop box -->
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--stop box -->
+
+    <div class="box">
+        <div class="boxpadding16 boxmarginbottom16">
+            <div class="box-inner">
+                <div class="box-inner-border"><!--start box -->
+
+                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.j_about"/></h3>
+
+                    <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
+            <span class="visibilityEdit" id="j:aboutPublic">
+            <c:if test="${fields['j:aboutPublic'] eq 'true'}">
+                <fmt:message key="jnt_user.profile.public"/>
+            </c:if>
+            <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
+                <fmt:message key="jnt_user.profile.nonpublic"/>
+            </c:if>
+            </span>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--stop box -->
+
+
+</div>
+<!--stop grid_8-->
+<div class='grid_4'><!--start grid_4-->
+    <%--<div class="box">
+              <div class="boxshadow boxgrey boxpadding16 boxmarginbottom16">
+
+                  <div class="box-inner">
+                      <div class="box-inner-border"><!--start box -->
+
+              <div class="thumbnail">
+                <a href="#"><img src="img-text/rss.png" alt="" border="0"/></a>
+              <div class='clear'></div></div>
+              <h3 class="boxtitleh3"><a href="#">Follow me</a></h3>
+              <p>dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra</p>
+                          <div class="clear"></div>
+
+                    </div>
+              </div>
+          </div>
+  </div>--%><!--stop box -->
+
+    <h3 class="titleIcon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
+                                                                                       src="${url.currentModule}/images/groups.png"/></a>
+    </h3>
+    <ul class="list2 group-list">
+        <c:forEach items="${jcr:getUserMembership(currentNode)}" var="group" varStatus="status">
+            <li <c:if test="${status.last}">class="last"</c:if>>
+                <div class="thumbnail">
+                    <a href="#"><img src="${url.currentModule}/images/group-icon.png" alt="group" border="0"/></a>
+
+                </div>
+                <h4>
+                    <a href="${url.base}${group.value.properties['j:fullpath']}.html">${group.value.groupname}(${fn:length(group.value.members)})</a>
+                </h4>
+
+                <div class='clear'></div>
+            </li>
+        </c:forEach>
+    </ul>
+
+    <!--stop box -->
     <%--
 
             <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
@@ -301,153 +441,8 @@
 
 
     <!--stop box -->
-    <div class='clear'></div>
-</div>
-<!--stop grid_4-->
 
 
-<div class='grid_8'><!--start grid_8-->
-
-    <div class="box"><!--start box -->
-        <div class="arrow-white-shadow-left"></div>
-        <div class="boxshadow boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border">
-                    <template:module node="${currentNode}" template="detailNew"/>
-                    <!--stop box -->
-                    <div class="clear"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--stop box -->
-    <div class="box"><!--start box -->
-        <div class="boxshadow boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-
-                <div class="box-inner-border">
-                    <h3 class="boxtitleh3">Preferences</h3>
-
-                    <div class="preferencesForm"><!--start preferencesForm -->
-                        <jcr:preference name="preferredLanguage" var="prefLangNode"
-                                        defaultValue="${renderContext.request.locale}"/>
-                        <fieldset>
-                            <legend><fmt:message key="jnt_user.profile.preferences.form.name"/></legend>
-                            <p><label class="left"><fmt:message
-                                    key="jnt_user.preference.preferredLanguage"/></label>
-                                <script type="text/javascript">
-                                    $(document).ready(function() {
-                                        $(".prefEdit").editable(function (value, settings) {
-                                            var submitId = $(this).attr('id').replace("_", ":");
-                                            var data = {};
-                                            data[submitId] = value;
-                                            data['methodToCall'] = 'put';
-                                            $.post("${url.base}${prefLangNode.path}", data, null, "json");
-                                            if (value == "en")
-                                                return "English"; else if (value == "de")
-                                                return "Deutsch"; else if (value == "fr")
-                                                    return "French";
-                                        }, {
-                                            type    : 'select',
-                                            data   : "{'en':'English','fr':'French','de':'Deutsch'}",
-                                            onblur : 'ignore',
-                                            submit : 'OK',
-                                            cancel : 'Cancel',
-                                            tooltip : 'Click to edit'
-                                        });
-                                    });
-                                </script>
-                            <div class="prefEdit" id="j_prefValue">
-                                <c:choose>
-                                    <c:when test="${prefLangNode.prefValue eq 'en'}">English</c:when>
-                                    <c:when test="${prefLangNode.prefValue eq 'de'}">Deustch</c:when>
-                                    <c:when test="${prefLangNode.prefValue eq 'fr'}">French</c:when>
-                                </c:choose>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <!--stop sendMailForm -->
-
-                    <div class="clear"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--stop box -->
-    <div class="box">
-        <div class="boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border"><!--start box -->
-
-                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.j_about"/></h3>
-
-                    <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
-            <span class="visibilityEdit" id="j:aboutPublic">
-            <c:if test="${fields['j:aboutPublic'] eq 'true'}">
-                <fmt:message key="jnt_user.profile.public"/>
-            </c:if>
-            <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
-                <fmt:message key="jnt_user.profile.nonpublic"/>
-            </c:if>
-            </span>
-
-                    <div class="clear"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--stop box -->
-
-
-</div>
-<!--stop grid_8-->
-<div class='grid_4'><!--start grid_4-->
-    <%--<div class="box">
-              <div class="boxshadow boxgrey boxpadding16 boxmarginbottom16">
-
-                  <div class="box-inner">
-                      <div class="box-inner-border"><!--start box -->
-
-
-
-
-
-
-
-              <div class="thumbnail">
-                <a href="#"><img src="img-text/rss.png" alt="" border="0"/></a>
-              <div class='clear'></div></div>
-              <h3 class="boxtitleh3"><a href="#">Follow me</a></h3>
-              <p>dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra</p>
-
-                          <div class="clear"></div>
-
-                    </div>
-              </div>
-          </div>
-  </div>--%><!--stop box -->
-
-    <h3 class="titleIcon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
-                                                                                       src="${url.currentModule}/images/groups.png"/></a>
-    </h3>
-    <ul class="list2 group-list">
-        <c:forEach items="${jcr:getUserMembership(currentNode)}" var="group" varStatus="status">
-            <li <c:if test="${status.last}">class="last"</c:if>>
-                <div class="thumbnail">
-                    <a href="#"><img src="${url.currentModule}/images/group-icon.png" alt="group" border="0"/></a>
-
-                </div>
-                <h4>
-                    <a href="${url.base}${group.value.properties['j:fullpath']}.html">${group.value.groupname}(${fn:length(group.value.members)})</a>
-                </h4>
-
-                <div class='clear'></div>
-            </li>
-        </c:forEach>
-    </ul>
-
-
-    <!--stop box -->
     <%--<div class="box">
         <div class="boxpadding16 boxmarginbottom16">
             <div class="box-inner">

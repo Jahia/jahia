@@ -1,1 +1,76 @@
-Jahia Crazy Jane
+Jahia Test Package
+
+* Executing a test
+
+ Jahia can execute JUnit test inside tomcat's context. Tests need to be deployed into Jahia, and can be executed
+ through maven.
+
+ First you need to modify your settings.xml file in order to point to your Jahia instance :
+
+--------------------
+<jahia.test.url>http://localhost:8080/jahia</jahia.test.url>
+--------------------
+
+ Then execute maven with the testJahia profile enabled :
+
+--------------------
+ mvn -P testJahia install
+--------------------
+
+ If you want to execute a single test, you can use the test system parameter with the class name of the test to
+ execute. For example :
+
+--------------------
+ mvn -P testJahia -Dtest=org.jahia.services.content.ContentTest install
+--------------------
+
+ will execute one single test, ContentTest. 
+
+* Jmeter test
+
+ You can execute JMeter test on your running tomcat
+
+ If your on windows this will run only under CYGWIN
+
+ First you need to define where your jmeter is installed on your platform inside your settings.xml :
+
+---------------------------
+<jahia.test.jmeter.path>/usr/local/java/jakarta-jmeter-2.3.4</jahia.test.jmeter.path>
+---------------------------
+
+ And add database information :
+
+---------------------------
+<jahia.test.jmeter.dbip>localhost</jahia.test.jmeter.dbip>
+<jahia.test.jmeter.dbname>jmeter</jahia.test.jmeter.dbname>
+---------------------------
+
+ Password and username of jahia database will be used (?)
+
+ You also need to add some parameters for jmeter :
+
+---------------------------
+<jahia.test.jmeter.loops>3</jahia.test.jmeter.loops>
+<jahia.test.jmeter.threads>1</jahia.test.jmeter.threads>
+---------------------------
+
+ The maven script take care of copying all the files found inside src/main/scripts/jmeter to your jmeter installation
+ under jmeter_path/bin/testPlan
+
+ The groovy scripts expect to find the jmeter results inside jmeter_path/bin/results.
+
+ The default behavior is to import the ACME site demo inside your jahia
+
+ Ask jahia the sitemap of the site
+
+ Copy the sitemap to jmeter_path/bin/testPlan/pageurls.txt
+
+ And then start jmeter.
+
+ To execute the jmeter test just run : mvn -P jmeterTest install
+
+* Execute tests in automated environment
+
+ A profile startJahia is defined to help execution of tests automatically. This profile will configure jahia, start
+ tomcat, execute test tasks, then stops jahia and delete it. This need to be combined with other profiles / tasks
+ (testJahia, jmeterTest) .

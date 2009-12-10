@@ -139,7 +139,7 @@ public class URLInterceptorTest extends TestCase {
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {
-        JCRNodeWrapper n = localizedSession.getNode("/content/shared/testContent");
+        JCRNodeWrapper n = localizedSession.getNode("/shared/testContent");
         n.setProperty("body", value);
         assertEquals("Not the same value after get",value, n.getProperty("body").getString());
     }

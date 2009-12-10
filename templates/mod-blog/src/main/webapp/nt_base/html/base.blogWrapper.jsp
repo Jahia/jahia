@@ -84,7 +84,7 @@
     </form>
 </div>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
-    <template:module path="/users/${createdBy.string}" forcedTemplate="blog"/>
+    <template:module path="/users/${createdBy.string}" forcedTemplate="blog" editable="false"/>
 <!--stop aboutMeListItem -->
     <h3>Archives</h3>
 <div class="archives">

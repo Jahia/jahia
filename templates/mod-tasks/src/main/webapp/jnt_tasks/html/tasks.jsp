@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="Form taskForm"><!--start Form -->
@@ -11,26 +12,26 @@
         <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}">
         <fieldset>
             <legend>
-                <fmt message key="jnt_task.newTask"/>
+                <fmt:message key="jnt_task.newTask"/>
             </legend>
 
 
             <p>
                 <label for="task_title" class="left">
-                    <fmt message key="mix_title.jcr_title"/>
+                    <fmt:message key="mix_title.jcr_title"/>
                 </label>
                 <input type="text" name="jcr:title" id="task_title" class="field" value="" tabindex="16"/></p>
 
             <p>
                 <label for="task_description" class="left">
-                    <fmt message key="jnt_task.description"/>
+                    <fmt:message key="jnt_task.description"/>
                     :</label>
                 <input type="text" name="description" id="task_description" class="field" value="" tabindex="17"/>
             </p>
 
             <p>
                 <label for="task_priority" class="left">
-                    <fmt message key="jnt_task.priority"/>
+                    <fmt:message key="jnt_task.priority"/>
                     :</label>
                 <select name="priority" id="task_priority" class="combo" tabindex="21">
                     <c:forEach items="${priorities}" var="priority">
@@ -44,7 +45,7 @@
 
             <p>
                 <label for="task_assignee" class="left">
-                    <fmt message key="jnt_task.assignee"/>
+                    <fmt:message key="jnt_task.assignee"/>
                     :</label>
 
                 <select name="assignee" id="task_assignee" class="combo" tabindex="21">

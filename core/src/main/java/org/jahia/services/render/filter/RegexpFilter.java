@@ -1,9 +1,14 @@
 package org.jahia.services.render.filter;
 
+import net.htmlparser.jericho.*;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import javax.jcr.NodeIterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -27,6 +32,7 @@ import java.util.regex.Pattern;
  */
 public class RegexpFilter extends AbstractFilter {
     private Map<Pattern, String> regexp;
+    private boolean contentOnly;
 
     public void setRegexp(Map<String, String> regexp) {
         if (!regexp.isEmpty()) {
@@ -38,6 +44,10 @@ public class RegexpFilter extends AbstractFilter {
         }
     }
 
+    public void setContentOnly(boolean contentOnly) {
+        this.contentOnly = contentOnly;
+    }
+
     public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         String out = chain.doFilter(renderContext, resource);
 
@@ -45,10 +55,30 @@ public class RegexpFilter extends AbstractFilter {
             return out;
         }
 
-        for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {
-            out = replacement.getKey().matcher(out).replaceAll(replacement.getValue());
-        }
+        if (!contentOnly) {
+            for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {
+                out = replacement.getKey().matcher(out).replaceAll(replacement.getValue());
+            }
+            return out;
+        } else {
+            StringBuffer buffer = new StringBuffer(out);
+            Source source = new Source(out);
+            List<Tag> tags = source.getAllTags();
+            int offset = 0;
+            for (Tag tag : tags) {
+                int begin = tag.getEnd() + offset;
+                int end = tag.getNextTag() != null ? tag.getNextTag().getBegin() + offset : out.length() + offset - 1;
 
-        return out;
+                String repl = buffer.substring(begin, end);
+                for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {
+                     repl = replacement.getKey().matcher(repl).replaceAll(replacement.getValue());
+                }
+
+                buffer.replace(begin, end, repl);
+                offset += repl.length() - (end-begin);
+            }
+            return buffer.toString();
+        }
     }
+
 }

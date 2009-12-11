@@ -6,6 +6,47 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <template:addResources type="css" resources="blog.css"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
+<%--add category Filter--%>
+<c:if test="${! empty param.addTag}">
+    <c:choose>
+    <c:when test="${empty tagFilter}">
+        <c:set scope="session" var="tagFilter" value="${param.addTag}"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="addTagR" value="$$$${param.addTag}"/>
+        <c:set var="addTagL" value="${param.addTag}$$$"/>
+        <c:set var="addTagL" value="${param.addTag}$$$"/>
+        <c:if test="${!(fn:contains(tagFilter,addTagR) || fn:contains(tagFilter,addTagL))}">
+            <c:set scope="session" var="tagFilter" value="${tagFilter}$$$${param.addTag}"/>
+        </c:if>
+    </c:otherwise>
+    </c:choose>
+</c:if>
+<c:set var="param.addTag" value=""/>
+
+<%--remove category Filter--%>
+<c:if test="${!empty param.removeTag}">
+    <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
+    <c:set var="tagstmp" value=""/>
+    <c:forEach var="tag" items="${tagsMap}">
+
+        <c:if test="${!(tag == param.removeTag)}">
+            <c:choose>
+            <c:when test="${tagstmp == ''}">
+                <c:set var="tagstmp" value="${tag}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="tagstmp" value="${tagstmp}$$$${tag}"/>
+            </c:otherwise>
+            </c:choose>
+        </c:if>
+    </c:forEach>
+    <c:set var="tagFilter" value="${tagstmp}" scope="session"/>
+</c:if>
+
+<c:if test="${param.removeAllTags == 'true'}">
+    <c:set var="tagFilter" value="" scope="session"/>    
+</c:if>
 
 <template:addWrapper name="blogWrapper"/>
 <div class="post" id="${currentNode.UUID}-blogContents">
@@ -23,13 +64,29 @@
     <c:if test="${currentNode.nodes.size > 0}">
 
     <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}"/>
-
-    <c:forEach items="${currentNode.nodes}" var="child" begin="${begin}" end="${end}">
+    <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
+    <c:set var="queryContraint" value="isdescendantnode(blogContent,['${currentNode.path}'])"/>
+    <c:forEach var="tag" items="${tagsMap}">
+        <jcr:node var="tagNode" path="${renderContext.siteNode.path}/tags/${tag}"/>
+        <c:set var="queryContraint" value="${queryContraint} and blogContent.[j:tags] = '${tagNode.UUID}'"/>
+    </c:forEach>
+    <c:if test="${!empty param.textSearch}">
+        <c:set var="queryContraint" value="${queryContraint} and contains(blogContent.*, '${param.textSearch}') "/>        
+    </c:if>
+    <%--// Apply filters--%>
+        <jcr:sql var="blogList"
+                 sql="
+                    select * from [jnt:blogContent] as blogContent
+                    where
+                    ${queryContraint}
+                    order by blogContent.[j:lastModifiedDate] desc
+         "/>
+    <c:forEach items="${blogList.nodes}" var="child" begin="${begin}" end="${end}">
         <template:module node="${child}" template="short"/>
     </c:forEach>
     <div class="pagination"><!--start pagination-->
         <c:set var="nodesList" value="${jcr:getNodes(currentNode,'jnt:blogContent')}"/>
-        <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${nodesList.size} results</span>
+        <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${blogList.nodes.size} results</span>
         </div>
         <div class="paginationNavigation">
             <c:if test="${currentPage>1}">

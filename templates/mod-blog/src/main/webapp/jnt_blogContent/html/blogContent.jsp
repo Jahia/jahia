@@ -15,20 +15,28 @@
 
 <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
 <fmt:formatDate value="${created.time}" type="date" pattern="MM" var="userCreatedMonth"/>
+<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+    <c:set var="blogHome" value="${url.base}${currentResource.node.parent.path}.html"/>
+</c:if>
+<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+    <c:set var="blogHome" value="${url.current}"/>
+</c:if>
+
 <div class="post">
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
 
-    <p class="post-info"><fmt:message key="by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
-        <a href="#"><c:set var="person"
-                           value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/></a>
+    <p class="post-info"><fmt:message key="by"/>
+        <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
+        <c:set var="fields" value="${contentUser.propertiesAsString}"/>
+        <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
         - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
-        <!-- <a href="#"><fmt:message key="category"/></a>  -->
+        <!-- <a href="#"></a>  -->
     </p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-            <li>${tag.node.name}</li>
+            <li><a href="${blogHome}?addTag=${tag.node.name}">${tag.node.name}</a></li>
         </c:forEach>
     </ul>
     <div class="post-content">

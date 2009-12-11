@@ -31,8 +31,8 @@
         <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
         <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
         <h2 class="post-title"><input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/></h2>
-        <p class="post-info"><fmt:message key="by"/> <a href="#"></a>
-            - <fmt:formatDate value="${userCreated.time}" type="date" dateStyle="medium"/>
+        <p class="post-info"><fmt:message key="by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+            - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
             <a href="#"><fmt:message key="category"/></a>
         </p>
         <ul class="post-tags">

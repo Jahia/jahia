@@ -7,35 +7,7 @@
 
 <template:addResources type="css" resources="blog.css"/>
 <%--Filters Settings--%>
-<%--add category Filter--%>
-<c:if test="${! empty param.addTag}">
-    <c:choose>
-    <c:when test="${empty tagFilter}">
-        <c:set scope="session" var="tagFilter" value="${param.addTag}"/>
-    </c:when>
-    <c:otherwise>
-        <c:set scope="session" var="tagFilter" value="${tagFilter}$$$${param.addTag}"/>
-    </c:otherwise>
-    </c:choose>
-</c:if>
-<%--remove category Filter--%>
-<c:if test="${!empty param.removeTag}">
-    <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
-    <c:set var="tagstmp" value=""/>
-    <c:forEach var="tag" items="${tagsMap}">
-        <c:if test="${!tag eq param.removeTag}">
-            <c:choose>
-            <c:when test="${empty tagstmp}">
-                <c:set var="tagstmp" value="${tag}"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="tagstmp" value="${tagstmp}$$$${tag}"/>
-            </c:otherwise>
-            </c:choose>
-        </c:if>
-    </c:forEach>
-    <c:set var="tagFilter" value="${tagstmp}" scope="session"/>
-</c:if>
+
 <div class='grid_10'><!--start grid_10-->
 
     <div class="box"><!--start box -->
@@ -70,14 +42,20 @@
 <div class="box-inner">
 <div class="box-inner-border"><!--start box -->
 
+    <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+        <c:set var="blogHome" value="${url.base}${currentResource.node.parent.path}.html"/>
+    </c:if>
+    <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+        <c:set var="blogHome" value="${url.current}"/>
+    </c:if>
 
 <div id="search">
     <h3><label for="search"><fmt:message key="search"/> </label></h3>
 
-    <form method="get" action="base.blogWrapper.jsp#">
+    <form method="get" action="${blogHome}">
         <fieldset>
             <p>
-                <input type="text" value="" name="search" class="search" tabindex="4"/>
+                <input type="text" value="${param.textSearch}" name="textSearch" class="search" tabindex="4"/>
                 <input type="submit" value="GO" class="gobutton" tabindex="5"/>
             </p>
         </fieldset>
@@ -147,12 +125,7 @@
 				<li><a
                         class="tag${functions:round(10 * tagCount / totalUsages)}0"
                         title="${tag.value.name} (${tagCount} / ${totalUsages})"
-                        <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
-                            href="${url.base}${currentResource.node.parent.path}.html?addTag=${tag.value.name}"
-                        </c:if>
-                        <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
-                           href="${url.current}?addTag=${tag.value.name}"
-                        </c:if>
+                        href="${blogHome}?addTag=${tag.value.name}"
                         >${tag.value.name}</a></li>
 			</c:forEach>
 		</ul>
@@ -177,7 +150,7 @@
 </ul>
 
     <div class="clear"></div>
-<p class="filterListDeleteAll"><a title="#" href="#"><fmt:message key="currentFilters.deleteAll"/></a></p>
+<p class="filterListDeleteAll"><a title="#" href="${blogHome}?removeAllTags=true"><fmt:message key="currentFilters.deleteAll"/></a></p>
 <div class="clear"></div>
 </div>
 </c:if>

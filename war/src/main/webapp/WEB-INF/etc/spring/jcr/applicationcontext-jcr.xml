@@ -159,6 +159,7 @@
     <bean id="imageInitializer" class="org.jahia.services.content.nodetypes.initializers.ImageChoiceListInitializerImpl"/>
     <bean id="templatesInitializer" class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="skinsInitializer" class="org.jahia.services.content.nodetypes.initializers.SkinsChoiceListInitializerImpl"/>
+    <bean id="usersInitializer" class="org.jahia.services.content.nodetypes.initializers.UsersChoiceListInitializerImpl"/>
     <bean id="moduleImageInitializer" class="org.jahia.services.content.nodetypes.initializers.ModuleImageChoiceListInitializerImpl"/>
     <bean id="nodesInitializer" class="org.jahia.services.content.nodetypes.initializers.NodesChoiceListInitializerImpl">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
@@ -185,6 +186,7 @@
                 <entry key="image" value-ref="imageInitializer"/>
                 <entry key="templates" value-ref="templatesInitializer"/>
                 <entry key="skins" value-ref="skinsInitializer"/>
+                <entry key="users" value-ref="usersInitializer"/>
                 <entry key="nodes" value-ref="nodesInitializer"/>
                 <entry key="script" value-ref="scriptInitializer"/>
                 <entry key="flag" value-ref="countryFlagInitializer"/>                

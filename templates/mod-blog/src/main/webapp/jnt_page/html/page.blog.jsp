@@ -66,10 +66,12 @@
     <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}"/>
     <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
     <c:set var="queryContraint" value="isdescendantnode(blogContent,['${currentNode.path}'])"/>
-    <c:forEach var="tag" items="${tagsMap}">
-        <jcr:node var="tagNode" path="${renderContext.siteNode.path}/tags/${tag}"/>
-        <c:set var="queryContraint" value="${queryContraint} and blogContent.[j:tags] = '${tagNode.UUID}'"/>
-    </c:forEach>
+    <c:if test="${!empty(tagFilter)}">
+        <c:forEach var="tag" items="${tagsMap}">
+            <jcr:node var="tagNode" path="${renderContext.siteNode.path}/tags/${tag}"/>
+            <c:set var="queryContraint" value="${queryContraint} and blogContent.[j:tags] = '${tagNode.UUID}'"/>
+        </c:forEach>
+    </c:if>    
     <c:if test="${!empty param.textSearch}">
         <c:set var="queryContraint" value="${queryContraint} and contains(blogContent.*, '${param.textSearch}') "/>        
     </c:if>

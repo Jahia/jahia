@@ -7,8 +7,7 @@
 /*---------------------------- MAIN ---------------------------*/
 
 div.wrap {
-	border: solid #ccc 1px;
-	margin: 20px 0 0 32px;
+
 	padding: 12px;
 }
 
@@ -32,7 +31,6 @@ div.wrap.four {
 
 div.item {
 	width: 479px;
-	border: 1px solid #ccc ;
 }
 
 div.item img {

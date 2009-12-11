@@ -13,7 +13,7 @@
     <utility:textDiff oldText="${oldid.frozenNode.properties['text'].string}" newText="${diff.frozenNode.properties['text'].string}"/>
     </c:if>
     <c:if test="${empty param['diff'] or empty param['oldid']}">
-    Please select two versions to compare
+    <fmt:message key="jnt_wiki.selectTwoVersions"/>
     </c:if>
 </div>
 <!--stop tabtwo-->

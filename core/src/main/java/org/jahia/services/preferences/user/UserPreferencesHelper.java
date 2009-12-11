@@ -353,13 +353,16 @@ public final class UserPreferencesHelper {
     
     private static String getPreference(String prefName, JahiaUser user) {
         String prefValue = null;
-        GenericJahiaPreference preferenceNode = ((GenericJahiaPreference) getPrefsService()
-                .getGenericPreferenceNode(prefName, user));
-        if (preferenceNode != null) {
-            try {
-                prefValue = preferenceNode.getPrefValue();
-            } catch (Exception e) {
-                logger.debug("Preference \"" + prefName + "\"not retrieved", e);
+        if (user != null) {
+            GenericJahiaPreference preferenceNode = ((GenericJahiaPreference) getPrefsService()
+                    .getGenericPreferenceNode(prefName, user));
+            if (preferenceNode != null) {
+                try {
+                    prefValue = preferenceNode.getPrefValue();
+                } catch (Exception e) {
+                    logger.debug(
+                            "Preference \"" + prefName + "\"not retrieved", e);
+                }
             }
         }
         return prefValue;

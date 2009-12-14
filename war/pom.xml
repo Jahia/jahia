@@ -15,9 +15,15 @@
     </properties>
     <pluginRepositories>
         <pluginRepository>
-            <id>gwt-maven</id>
-            <url>http://maven.jahia.org/maven2</url>
-        </pluginRepository>
+         <id>CodehausSnapshots</id>
+         <url>http://snapshots.repository.codehaus.org/</url>
+         <snapshots>
+           <enabled>true</enabled>
+         </snapshots>
+         <releases>
+           <enabled>false</enabled>
+         </releases>
+       </pluginRepository>
     </pluginRepositories>
     <repositories>
         <repository>

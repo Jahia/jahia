@@ -849,6 +849,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (RepositoryException e) {
             Node t = objectNode.addNode("j:translation", "jnt:translation");
             t.setProperty("jcr:language", locale.toString());
+            PropertyIterator pi = objectNode.getProperties();
+            while (pi.hasNext()) {
+                Property property = (Property) pi.next();
+                if (!property.getDefinition().isProtected()) {
+                    if (property.isMultiple()) {
+                        t.setProperty(property.getName(), property.getValues());
+                    } else {
+                        t.setProperty(property.getName(), property.getValue());
+                    }
+                }
+            }
+
             return t;
         }
     }
@@ -965,7 +977,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, value);
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
@@ -981,7 +993,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, value);
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), value, type), session, provider, getApplicablePropertyDefinition(name), name);
@@ -997,9 +1009,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        for (int i = 0; i < values.length; i++) {
-            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, values[i]);
-        }
+
+        values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
+
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), values), session, provider, getApplicablePropertyDefinition(name), name);
@@ -1015,9 +1027,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        for (int i = 0; i < values.length; i++) {
-            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, epd, values[i]);
-        }
+
+        values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
+
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name + "_" + locale.toString(), values, type), session, provider, getApplicablePropertyDefinition(name), name);

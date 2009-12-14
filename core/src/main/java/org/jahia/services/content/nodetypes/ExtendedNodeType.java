@@ -503,7 +503,11 @@ public class ExtendedNodeType implements NodeType {
 
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {
         if (name.equals("*")) {
-            unstructuredProperties.put(p.getRequiredType(), p);
+            if (p.isMultiple()) {
+                unstructuredProperties.put(256 + p.getRequiredType(), p);
+            } else {
+                unstructuredProperties.put(p.getRequiredType(), p);
+            }
         } else {
             properties.put(name, p);
         }

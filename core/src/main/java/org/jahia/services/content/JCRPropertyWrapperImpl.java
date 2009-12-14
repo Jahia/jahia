@@ -78,14 +78,12 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, def, value);
+        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, name, def, value);
         property.setValue(value);
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        for (int i = 0; i < values.length; i++) {
-            values[i] = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, def, values[i]);
-        }
+        values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(node, name, def, values);
         property.setValue(values);
     }
 
@@ -146,7 +144,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
-        Value[] values = property.getValues();
+        Value[] values = JCRStoreService.getInstance().getInterceptorChain().afterGetValues(this, property.getValues());
+
         Value[] wrappedValues = new Value[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];

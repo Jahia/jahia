@@ -39,21 +39,32 @@ public interface PropertyInterceptor {
      * Returns the value to set - or null if no property need to be set, but without sending an error.
      *
      * @param node
-     *@param definition
-     * @param originalValue Original value  @return Value to set, or null
-     * @throws ValueFormatException
+     *@param name
+     * @param definition
+     * @param originalValue Original value  @return Value to set, or null   @throws ValueFormatException
      * @throws VersionException
      * @throws LockException
      * @throws ConstraintViolationException
      */
-    Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException ;
+    Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException ;
 
-//    /**
-//     * Called before getting the value -
-//     * @param property
-//     * @return
-//     */
-//    Value beforeGetValue(JCRPropertyWrapper property);
+    /**
+     * Called before setting the value on the property. Can throw an exception if the value is not valid, and transform
+     * the value into another value.
+     *
+     * The interceptor can also directly operate on the property before the property is effectively set.
+     *
+     * Returns the value to set - or null if no property need to be set, but without sending an error.
+     *
+     * @param node
+     *@param name
+     * @param definition
+     * @param originalValues Original value  @return Value to set, or null   @throws ValueFormatException
+     * @throws VersionException
+     * @throws LockException
+     * @throws ConstraintViolationException
+     */
+    Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException ;
 
     /**
      * Called after getting the value. Stored value is passed to the interceptor and can be transformed.
@@ -63,6 +74,15 @@ public interface PropertyInterceptor {
      * @return
      */
     Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException;
+
+    /**
+     * Called after getting the value. Stored value is passed to the interceptor and can be transformed.
+     *
+     * @param property
+     * @param storedValues
+     * @return
+     */
+    Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues) throws ValueFormatException, RepositoryException;
 
 
 

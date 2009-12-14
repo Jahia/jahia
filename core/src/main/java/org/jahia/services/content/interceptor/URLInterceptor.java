@@ -13,7 +13,6 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -89,27 +88,27 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
      * contained in the value.
      *
      * @param node
-     * @param definition
-     * @param originalValue Original value  @return Value to set, or null
-     * @return
+     * @param name
+     *@param definition
+     * @param originalValue Original value  @return Value to set, or null   @return
      * @throws ValueFormatException
      * @throws VersionException
      * @throws LockException
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    public Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
         Map<String, Long> refs = new HashMap<String, Long>();
 
-        logger.debug("Intercept setValue for "+node.getPath()+"/"+definition.getName());
+        logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
 
         if (node.isNodeType("jmix:referencesInField")) {
             NodeIterator ni = node.getNodes("j:referenceInField");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
-                if (definition.getName().equals(ref.getProperty("j:fieldName").getString())) {
+                if (name.equals(ref.getProperty("j:fieldName").getString())) {
                     refs.put(ref.getProperty("j:reference").getString(), ref.getProperty("j:id").getLong());
                 }
             }
@@ -140,7 +139,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             NodeIterator ni = node.getNodes("j:referenceInField");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
-                if (definition.getName().equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
+                if (name.equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
                     ref.remove();
                 }
             }
@@ -148,7 +147,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
                     JCRNodeWrapper ref = node.addNode("j:referenceInField", "jnt:referenceInField");
-                    ref.setProperty("j:fieldName",definition.getName());
+                    ref.setProperty("j:fieldName",name);
                     ref.setProperty("j:id", entry.getValue());
                     ref.setProperty("j:reference", entry.getKey());
                 }
@@ -160,6 +159,34 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             return node.getSession().getValueFactory().createValue(result);
         }
         return originalValue;
+    }
+
+    /**
+     * Called before setting the value on the property. Can throw an exception if the value is not valid, and transform
+     * the value into another value.
+     * <p/>
+     * The interceptor can also directly operate on the property before the property is effectively set.
+     * <p/>
+     * Returns the value to set - or null if no property need to be set, but without sending an error.
+     *
+     * @param node
+     * @param name
+     * @param definition
+     * @param originalValues Original value  @return Value to set, or null   @throws ValueFormatException
+     * @throws javax.jcr.version.VersionException
+     *
+     * @throws javax.jcr.lock.LockException
+     * @throws javax.jcr.nodetype.ConstraintViolationException
+     *
+     */
+    public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Value[] res = new Value[originalValues.length];
+
+        for (int i = 0; i < originalValues.length; i++) {
+            Value originalValue = originalValues[i];
+            res[i] = beforeSetValue(node, name, definition, originalValue);
+        }
+        return res;
     }
 
     /**
@@ -209,6 +236,23 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
             return property.getSession().getValueFactory().createValue(result);
         }
         return storedValue;
+    }
+
+    /**
+     * Called after getting the value. Stored value is passed to the interceptor and can be transformed.
+     *
+     * @param property
+     * @param storedValues
+     * @return
+     */
+    public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues) throws ValueFormatException, RepositoryException {
+        Value[] res = new Value[storedValues.length];
+
+        for (int i = 0; i < storedValues.length; i++) {
+            Value storedValue = storedValues[i];
+            res[i] = afterGetValue(property, storedValue);
+        }
+        return res;
     }
 
     Map<String, Long> replaceRefsByPlaceholders(final OutputDocument document, final Attribute attr, final Map<String, Long> oldRefs) throws RepositoryException {

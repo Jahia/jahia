@@ -123,7 +123,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.2-SNAPSHOT</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <force>true</force>

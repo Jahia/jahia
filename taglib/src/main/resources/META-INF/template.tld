@@ -800,4 +800,54 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <description>Define an area for containing sub modules.
+        </description>
+        <name>area</name>
+        <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Relative or absolute path to the node to include</description>
+            <name>path</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <name>templateType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
+            <name>template</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
+            <name>forcedTemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
+            <name>editable</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Space separated list of allowed node types. If the node does not match any node type, it won't be displayed. Edit mode will forbid drop of any incompatible node.</description>
+            <name>nodeTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of the exported pageContext variable to hold the value specified in the action.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

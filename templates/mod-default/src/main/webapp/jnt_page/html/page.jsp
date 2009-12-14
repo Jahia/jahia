@@ -39,7 +39,7 @@
 <div id="pageData">
     <div id="wrapper">
         <div class="spacer">
-            <template:module path="maincontent" autoCreateType="jnt:contentList" />
+            <template:area path="maincontent"/>
         </div>
     </div>
     <div class="clear"></div>

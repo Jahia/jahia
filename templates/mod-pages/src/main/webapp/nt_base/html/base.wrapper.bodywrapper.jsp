@@ -105,7 +105,7 @@
           <span><a href="http://www.jahia.org/forum">COMMUNITY FORUMS</a></span>
           <span><a href="http://www.jahia.com/jahia/Jahia/Home/services/annual_developer_subscription">COMMERCIAL SUPPORT</a></span>
       </p>
-                <template:module path="${rootPage.path}/footer" autoCreateType="jnt:contentList"/>
+                <template:area path="${rootPage.path}/footer"/>
             </div>
 
             <div class='clear'></div>

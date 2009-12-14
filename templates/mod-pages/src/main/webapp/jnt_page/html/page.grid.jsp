@@ -66,7 +66,7 @@
             <div class="boxshadow boxpadding40 boxmarginbottom16">
                 <div class="box-inner">
                     <div class="box-inner-border">
-                        <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
+                        <template:area path="${col.key}"/>
                         <div class='clear'></div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
 
         <c:otherwise>
             <div class='grid_${col.value}'><!--start grid_${col.value}-->
-                <template:module path="${col.key}" autoCreateType="jnt:contentList"/>
+                <template:area path="${col.key}"/>
                 <div class='clear'></div>
             </div><!--stop grid_${col.value}-->
         </c:otherwise>

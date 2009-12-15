@@ -643,8 +643,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                      + request.getCharacterEncoding());
         }
 
-        copySessionCookieToRootContext(request, response);
-
         HttpSession session = request.getSession(false);
         if (session == null || !request.isRequestedSessionIdValid()) {
             // Session could be false because of new user, or missing JSESSIONID
@@ -884,48 +882,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         }
         return jParams;
     }
-
-    /**
-     * Helper method to copy JSESSION cookies from a non null context to a root
-     * context. Warning this MIGHT disrupt normal functioning of the servlet
-     * container.
-     * @param request the request object containing the cookies to read
-     * @param response the response object in which to copy the session cookie
-     * to the root context.
-     */
-    public static void copySessionCookieToRootContext (final HttpServletRequest request,
-                                                       final HttpServletResponse response) {
-
-        final Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                final Cookie curCookie = cookies[i];
-                if ("JSESSIONID".equals(curCookie.getName())) {
-                    String curPath = curCookie.getPath();
-                    if ( (curPath != null) && (! ("".equals(curPath)))) {
-                        // we found a session cookie that has a non null path,
-                        // let's copy it to a null path.
-                        logger.debug(
-                            "Copying non-root context cookie to root context");
-                        Cookie rootCookie = (Cookie) curCookie.clone();
-                        rootCookie.setPath("");
-                        response.addCookie(rootCookie);
-                    }
-                }
-                if (logger.isDebugEnabled()){
-                    logger.debug("Cookie domain=[" + curCookie.getDomain() +
-                            "] path=[" + curCookie.getPath() +
-                            "] name=[" + curCookie.getName() +
-                            "] value=[" + curCookie.getValue() + "]");
-                }
-            }
-        } else {
-            logger.debug("No cookies found.");
-        }
-    }
-
-    /* static accessors...
-     */
 
     public static String getServletPath () {
         return jahiaServletPath;

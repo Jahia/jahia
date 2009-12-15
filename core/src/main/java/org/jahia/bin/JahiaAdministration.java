@@ -191,8 +191,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     request.getQueryString() + "'] --");
         }
 
-        Jahia.copySessionCookieToRootContext(request, response);
-
         if (jSettings != null) {
             if (jSettings.isUtf8Encoding()) {
                 // bad browser, doesn't send character encoding :(

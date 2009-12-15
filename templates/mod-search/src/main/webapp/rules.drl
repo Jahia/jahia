@@ -1,0 +1,15 @@
+###############################################################################
+package org.jahia.modules.search.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+###############################################################################
+

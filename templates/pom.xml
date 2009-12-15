@@ -78,6 +78,7 @@
         <module>mod-press</module>
         <module>mod-publication</module>
         <module>mod-rating</module>
+        <module>mod-search</module>
         <module>mod-tasks</module>
         <module>mod-test</module>
         <module>mod-topstories</module>

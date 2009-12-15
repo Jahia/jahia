@@ -1,0 +1,3 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:simpleSearchForm] > jnt:content, mix:title, jmix:interactiveContent

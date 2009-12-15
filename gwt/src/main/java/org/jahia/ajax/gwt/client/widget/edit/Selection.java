@@ -68,7 +68,13 @@ public class Selection extends LayoutContainer {
             bottom.setStyleAttribute("border-bottom", "1px solid rgb(12, 150, 243)");
             left.setStyleAttribute("border-left", "1px solid rgb(12, 150, 243)");
             right.setStyleAttribute("border-right", "1px solid rgb(12, 150, 243)");
-        } else {
+        } else if (module instanceof AreaModule) {
+            top.setStyleAttribute("border-top", "1px solid rgb(0,250,0)");
+            bottom.setStyleAttribute("border-bottom", "1px solid rgb(0,250,0)");
+            left.setStyleAttribute("border-left", "1px solid rgb(0,250,0)");
+            right.setStyleAttribute("border-right", "1px solid rgb(0,250,0)");
+        }
+        else {
             top.setStyleAttribute("border-top", "1px solid red");
             bottom.setStyleAttribute("border-bottom", "1px solid red");
             left.setStyleAttribute("border-left", "1px solid red");

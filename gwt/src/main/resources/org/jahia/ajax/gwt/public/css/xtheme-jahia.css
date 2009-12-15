@@ -32,6 +32,19 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 	vertical-align: middle;
 }
 
+.x-panel-header-areamodule {
+    background:transparent url(../images/jahiapanel.gif) repeat-x scroll left top !important;
+    color: #00cc00 !important;
+    font-size: 9px;
+    font-weight: normal;
+    border-bottom: 1px solid rgb(183, 203, 216);
+    border-right: 1px solid rgb(183, 203, 216);
+    height: 16px !important;
+    line-height:16px;
+	padding: 2px 2px 0 2px;
+	vertical-align: middle;
+}
+
 .x-panel-body-listmodule {
     border-bottom-style: dashed !important;
     border-left-style: dashed !important;

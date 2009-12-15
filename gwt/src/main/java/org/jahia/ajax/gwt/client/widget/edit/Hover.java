@@ -79,7 +79,7 @@ public class Hover {
         }
 
         if (max == module.getDepth()) {
-            if (module instanceof ListModule) {
+            if (module instanceof AreaModule) {
                 b.setBlue();
             } else {
                 b.setRed();
@@ -87,7 +87,11 @@ public class Hover {
             module.setSelectable(true);
             module.setDraggable(true);
         } else {
-            b.setGrey();
+            if (module instanceof AreaModule) {
+                b.setPink();
+            } else {
+                b.setGrey();
+            }
             module.setSelectable(false);
             module.setDraggable(false);
         }
@@ -95,7 +99,7 @@ public class Hover {
             Hover.Box value = moduleBoxEntry.getValue();
             Module key = moduleBoxEntry.getKey();
             if (key.getDepth() == max) {
-                if (key instanceof ListModule) {
+                if (key instanceof AreaModule) {
                     value.setBlue();
                 } else {
                     value.setRed();
@@ -103,7 +107,11 @@ public class Hover {
                 key.setSelectable(true);
                 key.setDraggable(true);
             } else {
-                value.setGrey();
+                if (module instanceof AreaModule) {
+                    b.setPink();
+                } else {
+                    b.setGrey();
+                }
                 key.setSelectable(false);
                 key.setDraggable(false);
             }
@@ -183,6 +191,13 @@ public class Hover {
             bottom.setStyleAttribute("border-bottom", "1px dashed rgb(12, 150, 243)");
             left.setStyleAttribute("border-left", "1px dashed rgb(12, 150, 243)");
             right.setStyleAttribute("border-right", "1px dashed rgb(12, 150, 243)");
+        }
+
+        private void setPink() {
+            top.setStyleAttribute("border-top", "1px solid rgb(0,250,0)");
+            bottom.setStyleAttribute("border-bottom", "1px solid rgb(0,250,0)");
+            left.setStyleAttribute("border-left", "1px solid rgb(0,250,0)");
+            right.setStyleAttribute("border-right", "1px solid rgb(0,250,0)");
         }
 
 //        public void setName(String name) {

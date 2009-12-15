@@ -52,7 +52,10 @@ public class ModuleHelper {
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
-                if (type.equals("list")) {
+                if (type.equals("area")) {
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, m);
+                }
+                else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, m);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, m);

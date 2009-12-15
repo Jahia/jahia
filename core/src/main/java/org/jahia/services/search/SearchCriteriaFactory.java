@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.engines.search;
+package org.jahia.services.search;
 
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
@@ -50,12 +50,6 @@ import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.log4j.Logger;
-import org.jahia.engines.search.SearchCriteria.DateValue;
-import org.jahia.engines.search.SearchCriteria.DocumentProperty;
-import org.jahia.engines.search.SearchCriteria.DocumentPropertyDescriptor;
-import org.jahia.engines.search.SearchCriteria.HierarchicalValue;
-import org.jahia.engines.search.SearchCriteria.SearchMode;
-import org.jahia.engines.search.SearchCriteria.Term;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
@@ -63,6 +57,12 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.search.SearchCriteria.DateValue;
+import org.jahia.services.search.SearchCriteria.DocumentProperty;
+import org.jahia.services.search.SearchCriteria.DocumentPropertyDescriptor;
+import org.jahia.services.search.SearchCriteria.HierarchicalValue;
+import org.jahia.services.search.SearchCriteria.SearchMode;
+import org.jahia.services.search.SearchCriteria.Term;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -76,7 +76,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  */
 public class SearchCriteriaFactory {
 
-    private static final String ATTR_QUERY_PARAMS = org.jahia.engines.search.SearchCriteria.class
+    private static final String ATTR_QUERY_PARAMS = SearchCriteria.class
             .getName();
 
     private static final ConvertUtilsBean CONVERTER_UTILS_BEAN = new ConvertUtilsBean();

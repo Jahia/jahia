@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.engines.search;
+package org.jahia.services.search;
 
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -45,8 +45,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.beans.LookupBaseBean;
-import org.jahia.data.search.JahiaSearchHitInterface;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.FileUtils;
 
@@ -124,10 +122,9 @@ public class FileHit extends AbstractHit {
      * @param processingContext
      *            current processing context object
      */
-    public FileHit(JahiaSearchHitInterface searchHit,
-            ProcessingContext processingContext) {
-        super(searchHit);
-        this.node = (JCRNodeWrapper) searchHit.getObject();
+    public FileHit(Object resource) {
+        super(resource);
+        this.node = (JCRNodeWrapper) resource;
         this.propertiesFacade = new LookupBaseBean<String, String>() {
             private Map<String, String> properties;
 
@@ -234,23 +231,6 @@ public class FileHit extends AbstractHit {
     public int getSizeKb() {
         int sizeInKb = (int) (getContentLength() / 1000f);
         return sizeInKb > 0 ? sizeInKb : 1;
-    }
-
-    public String getSummary() {
-        String summary = searchHit.getTeaser();
-
-        if (summary == null || summary.length() == 0) {
-            summary = getContent();
-            if (summary != null) {
-                if (summary.length() > 175) {
-                    return summary.substring(0, 175);
-                }
-                return summary;
-            } else {
-                summary = node.getName();
-            }
-        }
-        return summary;
     }
 
     /**

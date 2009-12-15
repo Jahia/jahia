@@ -63,6 +63,7 @@ import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.services.search.SearchService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -486,6 +487,10 @@ public class ServicesRegistry {
     public SubscriptionService getSubscriptionService() {
         return (SubscriptionService) getService("SubscriptionService");
     }
+    
+    public SearchService getSearchService() {
+        return (SearchService) getService("SearchService");
+    }    
 
     /**
      * Default constructor, creates a new <code>ServiceRegistry</code> instance.

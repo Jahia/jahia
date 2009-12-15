@@ -38,11 +38,12 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
-import org.jahia.engines.search.Hit;
-import org.jahia.engines.search.SearchCriteria;
-import org.jahia.engines.search.SearchCriteriaFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.search.Hit;
+import org.jahia.services.search.SearchCriteria;
+import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
@@ -95,7 +96,8 @@ public class ResultsTag extends AbstractJahiaTag {
         if (null == criteria) {
             return SKIP_BODY;
         }
-        //TODO implement new: hits = Search_Engine.search(criteria, ctx);
+        hits = ServicesRegistry.getInstance().getSearchService().search(
+                criteria).getResults();
         count = hits.size();
 
         pageContext.setAttribute(var, hits);

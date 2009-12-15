@@ -408,4 +408,11 @@
             </bean>
         </property>
     </bean>
+    
+    <bean id="SearchService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
+            </bean>
+        </property>
+    </bean>            
 </beans>

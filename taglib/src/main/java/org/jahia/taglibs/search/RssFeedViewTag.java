@@ -42,11 +42,10 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.beans.JahiaBean;
-import org.jahia.engines.search.Hit;
-import org.jahia.engines.search.SearchCriteriaFactory;
-import org.jahia.engines.search.SearchCriteria.SearchMode;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.search.Hit;
+import org.jahia.services.search.SearchCriteriaFactory;
+import org.jahia.services.search.SearchCriteria.SearchMode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 

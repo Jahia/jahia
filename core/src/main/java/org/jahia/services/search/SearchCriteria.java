@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.engines.search;
+package org.jahia.services.search;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -47,7 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jahia.engines.search.SearchCriteria.Term.MatchType;
+import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.engines.calendar.CalendarHandler;
 
 /**

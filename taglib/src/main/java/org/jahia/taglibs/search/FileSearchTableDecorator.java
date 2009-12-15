@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.time.FastDateFormat;
 import org.displaytag.decorator.TableDecorator;
-import org.jahia.engines.search.FileHit;
+import org.jahia.services.search.FileHit;
 import org.jahia.engines.calendar.CalendarHandler;
 
 /**

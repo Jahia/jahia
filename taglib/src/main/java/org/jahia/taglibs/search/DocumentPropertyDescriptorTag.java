@@ -36,8 +36,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.jahia.engines.search.SearchCriteriaFactory;
-import org.jahia.engines.search.SearchCriteria.DocumentPropertyDescriptor;
+import org.jahia.services.search.SearchCriteriaFactory;
+import org.jahia.services.search.SearchCriteria.DocumentPropertyDescriptor;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 

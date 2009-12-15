@@ -45,8 +45,7 @@ import java.io.Writer;
 import java.io.FileWriter;
 
 import org.jahia.params.ParamBean;
-import org.jahia.data.search.JahiaSearchResult;
-import org.jahia.data.search.JahiaSearchHit;
+import org.jahia.services.search.SearchResponse;
 import org.jahia.engines.calendar.CalendarHandler;
 
 /**
@@ -68,7 +67,7 @@ public class FeedWriter {
 
     public void write(String feedType,
                       ParamBean jParams,
-                      JahiaSearchResult searchResult,
+                      SearchResponse searchResult,
                       String searchString,
                       Writer writer){
         try {
@@ -92,20 +91,20 @@ public class FeedWriter {
             feed.setDescription("Jahia CMS Search Result Feed");
             List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
-            for ( JahiaSearchHit hit : searchResult.results() ){
-                try {
+//            for ( JahiaSearchHit hit : searchResult.results() ){
+//                try {
 // TODO: Implement new OpenSearch result fetching
 //                     SyndEntry entry = searchService.getSyndEntry(hit,jParams,serverURL);
 //                    if (entry != null){
 //                        entries.add(entry);
 //                    }
-                } catch ( Exception e ){
-                    logger.warn(
-                            "Exception occured creating SyndEntry from hit "
-                                    + hit.getURL() + ". Cause: "
-                                    + e.getMessage(), e);
-                }
-            }
+//                } catch ( Exception e ){
+//                    logger.warn(
+//                            "Exception occured creating SyndEntry from hit "
+//                                    + hit.getURL() + ". Cause: "
+//                                    + e.getMessage(), e);
+//                }
+//            }
             feed.setEntries(entries);
             SyndFeedOutput output = new SyndFeedOutput();
             output.output(feed,writer);
@@ -122,12 +121,12 @@ public class FeedWriter {
      * @param searchResult
      * @param searchString
      */
-    private void setFeedModules(SyndFeed feed, JahiaSearchResult searchResult, String searchString) {
+    private void setFeedModules(SyndFeed feed, SearchResponse searchResult, String searchString) {
 
         OpenSearchModuleImpl osm = new OpenSearchModuleImpl();
 
         osm.setStartIndex(1);
-        osm.setTotalResults(searchResult.results().size());
+        osm.setTotalResults(searchResult.getResults().size());
         osm.setItemsPerPage(50);
 
         Link link = new Link();

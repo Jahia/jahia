@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.engines.search;
+package org.jahia.services.search;
 
 import java.util.Date;
 
@@ -110,7 +110,7 @@ public interface Hit {
      * 
      * @return the short description, abstract or excerpt of the hit's content
      */
-    String getSummary();
+    String getExcerpt();
 
     /**
      * Returns the file text content.

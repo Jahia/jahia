@@ -38,7 +38,7 @@ import java.util.List;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 
-import org.jahia.engines.search.Hit;
+import org.jahia.services.search.Hit;
 
 /**
  * Iterator over search results.

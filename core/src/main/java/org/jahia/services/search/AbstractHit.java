@@ -29,9 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.engines.search;
-
-import org.jahia.data.search.JahiaSearchHitInterface;
+package org.jahia.services.search;
 
 /**
  * File and folder search result item, used as a view object in JSP templates.
@@ -40,7 +38,9 @@ import org.jahia.data.search.JahiaSearchHitInterface;
  */
 public abstract class AbstractHit implements Hit {
 
-    protected JahiaSearchHitInterface searchHit;
+    protected Object resource;
+    private float score;
+    private String excerpt;
 
     /**
      * Initializes an instance of this class.
@@ -48,13 +48,13 @@ public abstract class AbstractHit implements Hit {
      * @param searchHit
      *            search result item to be wrapped
      */
-    public AbstractHit(JahiaSearchHitInterface searchHit) {
+    public AbstractHit(Object resource) {
         super();
-        this.searchHit = searchHit;
+        this.resource = resource;
     }
 
     public Object getRawHit() {
-        return searchHit.getObject();
+        return resource;
     }
 
     public Hit getReferencedHit() {
@@ -62,7 +62,7 @@ public abstract class AbstractHit implements Hit {
     }    
     
     public float getScore() {
-        return searchHit.getScore();
+        return score;
     }
 
     public boolean isTypeContainer() {
@@ -83,5 +83,17 @@ public abstract class AbstractHit implements Hit {
 
     public boolean isTypePage() {
         return getType() == Type.PAGE;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
     }
 }

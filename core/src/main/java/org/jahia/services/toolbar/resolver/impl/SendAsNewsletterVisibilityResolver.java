@@ -31,10 +31,9 @@
  */
 package org.jahia.services.toolbar.resolver.impl;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
-
-import common.Logger;
 
 /**
  * Shows/hides the "Send as Newsletter" button depending on whether current page

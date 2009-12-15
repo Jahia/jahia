@@ -1,0 +1,59 @@
+Area Management
+
+* What is an Area ?
+
+  An area is a static (as in hardcoded) content list that the user cannot move or remove in edit mode. This area can
+  contains any type of objects inside it including content lists that are draggable.
+
+* How to define an area ?
+
+  An area is defined by a tag <<<\<tempalte:area\>>>>. This tag take a path as argument (in case you want to have
+  an absolute area pass an absolute path) that is relative to the current node.
+
+  As an example we will see that in the grid template for pages we use the area tag to define the places where the user
+  will enter its content.
+
+------------------------------------
+<c:forEach items="${colMap}" var="col" varStatus="count">
+    <c:choose>
+        <c:when test="${col.value > 8}">
+            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+                <div class="box">
+                    <div class="boxshadow boxpadding40 boxmarginbottom16">
+                        <div class="box-inner">
+                            <div class="box-inner-border">
+                                <template:area path="${col.key}"/>
+                                <div class='clear'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--stop grid_${col.value}-->
+        </c:when>
+
+        <c:otherwise>
+            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+                <template:area path="${col.key}"/>
+                <div class='clear'></div>
+            </div>
+            <!--stop grid_${col.value}-->
+        </c:otherwise>
+    </c:choose>
+</c:forEach>                 
+------------------------------------
+
+  This will render a page like that in edit mode :
+
+[./images/areas_empty.png]
+
+  In this picture you see 3 areas for columns content and one absolute area for the footer. I cannot move the 3 areas,
+  they are defined by the template but I can drag and drop content from one to another.
+
+* Sub areas
+
+  User can dynamically define sub areas inside an area by dropping a content list in an area and then add content to
+  this sub area. The content in sub area could be manage as a whole by drag and dropping the sub area directly or as
+  a simple piece of content by moving it from one area to another one or sub area.
+
+[./images/area_filled.png]  

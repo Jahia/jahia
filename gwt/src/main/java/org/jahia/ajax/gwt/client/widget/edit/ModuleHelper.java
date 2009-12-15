@@ -53,7 +53,7 @@ public class ModuleHelper {
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, m);
                 }
                 else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, m);

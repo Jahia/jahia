@@ -253,7 +253,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	            }
 	            if (node != null) {
 	                // add externalLinks
-
+                    if(nodeTypes==null) {
+                        Integer level = (Integer) pageContext.getAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
+                        Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                        if(level!= null && currentLevel!= null && currentLevel == level+1)
+                            nodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction",PageContext.REQUEST_SCOPE);
+                    }
 	                if (node.getPath().endsWith("/*")) {
 	                    if (renderContext.isEditMode() && editable) {
 	                        printModuleStart("placeholder", node.getPath(), null, null);
@@ -262,7 +267,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
 	                    return EVAL_PAGE;
 	                }
-	                if (nodeTypes != null) {
+	                if (nodeTypes != null && !"".equals(nodeTypes.trim())) {
 	                    StringTokenizer st = new StringTokenizer(nodeTypes, " ");
 	                    boolean found = false;
 	                    Node displayedNode = node;

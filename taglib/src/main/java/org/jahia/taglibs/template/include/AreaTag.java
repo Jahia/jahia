@@ -194,33 +194,7 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 	                    }
 
 	                    return EVAL_PAGE;
-	                }
-	                if (nodeTypes != null) {
-	                    StringTokenizer st = new StringTokenizer(nodeTypes, " ");
-	                    boolean found = false;
-	                    Node displayedNode = node;
-	                    try {
-	                        if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
-	                            displayedNode = node.getProperty("j:node").getNode();
-	                        }
-	                        while (st.hasMoreTokens()) {
-	                            String tok = st.nextToken();
-	                            try {
-	                                if (displayedNode.isNodeType(tok)) {
-	                                    found = true;
-	                                    break;
-	                                }
-	                            } catch (RepositoryException e) {
-	                                logger.error("Cannot test on "+tok,e);
-	                            }
-	                        }
-	                    } catch (RepositoryException e) {
-	                        logger.error(e,e);
-	                    }
-	                    if (!found) {
-	                        return EVAL_PAGE;
-	                    }
-	                }
+	                }	                
 
                     Resource resource = new Resource(node, templateType, template, forcedTemplate);
 
@@ -239,14 +213,27 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
                                 }
 
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
-	                                @Override
+                                    @Override
+                                    public boolean isNodeType(String s) throws RepositoryException {
+                                        return nodeTypes == null ? super.isNodeType(s): nodeTypes.contains(s);
+                                    }
+
+                                    @Override
 	                                public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
 	                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
 	                                    return new EditablePropertyWrapper(p);
 	                                }
 	                            };
 	                            resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
+                                if(nodeTypes!=null) {
+                                    pageContext.setAttribute("areaNodeTypesRestriction",nodeTypes,PageContext.REQUEST_SCOPE);
+                                    pageContext.setAttribute("areaNodeTypesRestrictionLevel",pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE),PageContext.REQUEST_SCOPE);
+                                }
 	                            render(renderContext, resource);
+                                if(nodeTypes!=null) {
+                                    pageContext.removeAttribute("areaNodeTypesRestriction",PageContext.REQUEST_SCOPE);
+                                    pageContext.removeAttribute("areaNodeTypesRestrictionLevel",PageContext.REQUEST_SCOPE);
+                                }
 	                            printModuleEnd();
 	                        }
 	                    } catch (RepositoryException e) {

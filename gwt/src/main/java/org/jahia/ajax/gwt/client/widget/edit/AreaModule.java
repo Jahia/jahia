@@ -1,7 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -31,14 +33,16 @@ public class AreaModule extends ContentPanel implements Module {
     private boolean isDraggable = true;
     private int depth;
     private boolean selectable;
+    private String nodeTypes;
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo, MainModule mainModule) {
+    public AreaModule(String id, String path, String s, String template, String scriptInfo,String nodeTypes, MainModule mainModule) {
 //        super(new FitLayout());
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
+        this.nodeTypes = nodeTypes;
 //        setCollapsible(false);
 //        setBodyStyleName("pad-text");
         if (path.contains("/")) {
@@ -59,7 +63,8 @@ public class AreaModule extends ContentPanel implements Module {
     public void onParsed() {
 //        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
 
-
+        DropTarget target = new AreaModuleDropTarget(this);
+        target.addDNDListener(mainModule.getEditLinker().getDndListener());
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
@@ -149,4 +154,21 @@ public class AreaModule extends ContentPanel implements Module {
         return isDraggable;
     }
 
+    private class AreaModuleDropTarget extends ModuleDropTarget {
+        public AreaModuleDropTarget(AreaModule areaModule) {
+            super(areaModule);
+        }
+
+        @Override
+        protected void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
+            if (getModule().getNode().isWriteable()) {
+                boolean allowed = checkNodeType(e, nodeTypes);
+                e.getStatus().setStatus(allowed);
+                e.setCancelled(false);
+            } else {
+                e.getStatus().setStatus(false);
+            }
+        }
+    }
 }

@@ -163,7 +163,7 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 	                    if (!path.startsWith("/")) {
 	                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
 	                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
-	                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+	                            node = nodeWrapper.getNode(path);
 	                        } else if (!path.equals("*") && renderContext.isEditMode()) {
 	                            node = nodeWrapper.addNode(path, "jnt:contentList");
 	                            currentResource.getNode().getSession().save();
@@ -230,16 +230,12 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 	                            // no placeholder at all for links
 	                            render(renderContext, resource);
 	                        } else {
-	                            String type = "existingNode";
-	                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-	                                type = "list";
-	                            }
                                 Script script = null;
                                 try {
                                     script = RenderService.getInstance().resolveScript(resource, renderContext);
-                                    printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                                    printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
                                 } catch (TemplateNotFoundException e) {
-                                    printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                                    printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), "Script not found");
                                 }
 
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {

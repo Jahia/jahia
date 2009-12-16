@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -74,7 +75,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 .getString();
                         JCRNodeWrapper node = session.getNode(path);
                         if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                            node = node.getParent();
+                            try {
+                                node = node.getParent();
+                            } catch (ItemNotFoundException e) {
+                                node = null;
+                            }
                         }
                         AbstractHit searchHit = buildHit(row, node);
 

@@ -5,4 +5,4 @@
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home" />
 <template:area path="sideMenu" />
 
-<template:area path="columnB_box" template="default" areaType="jnt:contentList" />
+<template:area path="columnB_box" template="default"  />

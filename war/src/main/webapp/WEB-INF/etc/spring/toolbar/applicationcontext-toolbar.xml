@@ -111,7 +111,9 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
+                <!-- 
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
+                -->
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -421,40 +423,6 @@
         </property>
     </bean>
 
-    <!-- SwitchinkMode:  buttons -->
-    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="titleKey" value="toolbar.itemgroups.switchingmode"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
-                <property name="inputResolver" value="all"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.Live"/>
-                <ref bean="org.jahia.toolbar.item.Preview"/>
-                <ref bean="org.jahia.toolbar.item.Compare"/>
-                <ref bean="org.jahia.toolbar.item.Edit"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="org.jahia.toolbar.itemsgroup.View" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu-checkbox"/>
-        <property name="titleKey" value="toolbar.view"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.acldiff"/>
-                <ref bean="org.jahia.toolbar.item.timebasepublishing"/>
-                <ref bean="org.jahia.toolbar.item.integrity"/>
-                <ref bean="org.jahia.toolbar.item.inlineediting"/>
-            </list>
-        </property>
-    </bean>
-
     <!-- items that are visible only during the edit mode context-->
     <bean id="org.jahia.toolbar.itemsgroup.Notification" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
@@ -659,11 +627,13 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Live"/>
+                <ref bean="org.jahia.toolbar.item.Preview"/>
                 <!-- <ref bean="org.jahia.toolbar.item.Edit"/> -->
             </list>
         </property>
     </bean>
 
+    <!-- 
     <bean id="org.jahia.toolbar.itemsgroup.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="titleKey" value="operationMode.preview"/>
@@ -672,14 +642,13 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Preview"/>
-                <!--
                 ToDo : <ref bean="org.jahia.toolbar.item.TimeBasedPreview"/>
                 ToDo : <ref bean="org.jahia.toolbar.item.CompareLive"/>
                 ToDo : <ref bean="org.jahia.toolbar.item.CompareVersion"/>
-                -->
             </list>
         </property>
     </bean>
+    -->
     <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
             <property name="layout" value="menu"/>
             <property name="titleKey" value="NewAction.label"/>

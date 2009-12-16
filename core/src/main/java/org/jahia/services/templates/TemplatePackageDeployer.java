@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
 import org.jahia.utils.zip.PathFilter;
@@ -129,6 +130,8 @@ class TemplatePackageDeployer {
             }
             
             if (changed) {
+                // flush resource bundle cache
+                JahiaTemplatesRBLoader.clearCache();
                 // reload the Spring application context for modules
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();

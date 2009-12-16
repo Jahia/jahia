@@ -1,13 +1,13 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
 import org.slf4j.profiler.Profiler;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * TemplateScriptFilter
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class TemplateScriptFilter extends AbstractFilter {
 
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderException, RepositoryException {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
         if (profiler != null) {
             profiler.start("render template "+resource.getResolvedTemplate());

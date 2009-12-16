@@ -4,8 +4,6 @@ import org.jahia.services.render.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-
 /**
  * WrapperFilter
  *
@@ -34,10 +32,10 @@ public class WrapperFilter extends AbstractFilter {
                 } else {
                     logger.warn("Cannot get wrapper "+wrapper);
                 }
-            } catch (IOException e) {
-                logger.error("Cannot execute wrapper "+wrapper,e);
             } catch (TemplateNotFoundException e) {
                 logger.debug("Cannot find wrapper "+wrapper,e);
+            } catch (RenderException e) {
+                logger.error("Cannot execute wrapper "+wrapper,e);
             }
         }
         return output;

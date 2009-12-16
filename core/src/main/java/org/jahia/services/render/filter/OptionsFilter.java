@@ -6,7 +6,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,10 +60,10 @@ public class OptionsFilter extends AbstractFilter {
                     } else {
                         output = output + script.execute();
                     }
-                } catch (IOException e) {
-                    logger.error("Cannot execute wrapper " + wrapper, e);
                 } catch (TemplateNotFoundException e) {
                     logger.debug("Cannot find wrapper " + wrapper, e);
+                } catch (RenderException e) {
+                    logger.error("Cannot execute wrapper " + wrapper, e);
                 }
             }
         }

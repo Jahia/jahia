@@ -37,7 +37,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -86,7 +85,7 @@ public class OptionTag extends BodyTagSupport {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new JspException(e);
-        } catch (TemplateNotFoundException e) {
+        } catch (RenderException e) {
             logger.error(e.getMessage(), e);
             throw new JspException(e);
         } catch (IOException e) {

@@ -31,10 +31,6 @@
  */
 package org.jahia.services.render;
 
-import org.jahia.data.templates.JahiaTemplatesPackage;
-
-import java.io.IOException;
-
 /**
  * A template script, used to render a resource
  *
@@ -44,9 +40,9 @@ public interface Script {
     /**
      * Execute the script and return the result as a string
      * @return the rendered resource
-     * @throws IOException
+     * @throws RenderException
      */
-    public String execute() throws IOException ;
+    public String execute() throws RenderException ;
 
     /**
      * Return template information associated to this script

@@ -44,16 +44,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
-<c:set var="display" value="${h:default(display, true)}"/>
-<c:set var="appearance" value="${h:default(appearance, 'select')}"/>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${functions:default(display, true)}"/>
+<c:set var="appearance" value="${functions:default(appearance, 'select')}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
 <c:set var="termIndex" value="${searchTermMatchIndexes[formId]}"/>
 <c:set var="key" value="src_terms[${termIndex}].match"/>
 <c:set target="${attributes}" property="name" value="${key}"/>
-<c:set var="value" value="${h:default(param[key], value)}"/>
+<c:set var="value" value="${functions:default(param[key], value)}"/>
 <c:if test="${display}">
-    <c:set var="selectionOptions" value="${h:default(selectionOptions, 'all_words,exact_phrase,any_word,without_words,as_is')}"/>
+    <c:set var="selectionOptions" value="${functions:default(selectionOptions, 'all_words,exact_phrase,any_word,without_words,as_is')}"/>
     <c:if test="${appearance == 'radio'}">
         <div class="matchTypes">
         <c:forTokens items="${selectionOptions}" delims="," var="option" varStatus="status">    
@@ -62,7 +62,7 @@
         </div>
     </c:if>
     <c:if test="${appearance != 'radio'}">
-    <select ${h:attributes(attributes)}>
+    <select ${functions:attributes(attributes)}>
         <c:forTokens items="${selectionOptions}" delims="," var="option">    
             <option value="${option}" ${value == option ? 'selected="selected"' : ''}><fmt:message key="searchForm.term.match.${option}"/></option>
         </c:forTokens>

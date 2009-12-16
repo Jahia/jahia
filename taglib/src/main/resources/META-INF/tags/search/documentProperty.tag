@@ -50,15 +50,15 @@
               description="For category properties. The include children initial value." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${documentType}).${name}.value"/>
-<c:set var="value" value="${h:default(param[propName], value)}"/>
+<c:set var="value" value="${functions:default(param[propName], value)}"/>
 <s:documentPropertyDescriptor documentType="${documentType}" name="${name}">
     <c:if test="${display}">
         <c:set target="${attributes}" property="name" value="${propName}"/>
@@ -69,11 +69,11 @@
                 <c:if test="${value == 'true'}">
                     <c:set target="${attributes}" property="checked" value="checked"/>
                 </c:if>
-                <input ${h:attributes(attributes)}/>
+                <input ${functions:attributes(attributes)}/>
             </c:when>
             <c:when test="${descriptor.type == 'TEXT'}">
                 <c:if test="${descriptor.constrained}">
-                    <select ${h:attributes(attributes)}>
+                    <select ${functions:attributes(attributes)}>
                         <option value=""><fmt:message key="searchForm.any"/></option>
                         <c:forEach items="${descriptor.allowedValues}" var="allowedValue">
                             <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>${fn:escapeXml(allowedValue)}</option>
@@ -82,24 +82,24 @@
                 </c:if>
                 <c:if test="${!descriptor.constrained}">
                     <c:set var="propName" value="src_properties(${documentType}).${name}.match"/>
-                    <c:set var="match" value="${h:default(param[propName], match)}"/>
+                    <c:set var="match" value="${functions:default(param[propName], match)}"/>
                     <select name="src_properties(${documentType}).${name}.match">
                         <option value="any_word" ${'any_word' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.any_word"/></option>
                         <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.all_words"/></option>
                         <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.exact_phrase"/></option>
                         <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.without_words"/></option>
                     </select>
-                    <input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+                    <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 </c:if>
             </c:when>
             <c:when test="${descriptor.type == 'CATEGORY'}">
                 <c:set var="propName" value="src_properties(${documentType}).${name}.categoryValue.value"/>
                 <c:set target="${attributes}" property="name" value="${propName}"/>
-                <c:set target="${attributes}" property="id" value="${h:default(attributes.id, propName)}"/>
-                <c:set var="value" value="${h:default(param[propName], value)}"/>
+                <c:set target="${attributes}" property="id" value="${functions:default(attributes.id, propName)}"/>
+                <c:set var="value" value="${functions:default(param[propName], value)}"/>
                 <c:set var="categoryRoot"
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : 'root'}"/>
-                <input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+                <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 <ui:categorySelector fieldId="${attributes.id}"
                                      fieldIdIncludeChildren="src_properties(${documentType}).${name}.categoryValue.includeChildren"
                                      root="${categoryRoot}"/>

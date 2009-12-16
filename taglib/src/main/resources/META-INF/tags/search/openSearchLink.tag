@@ -43,12 +43,12 @@
               description="Human-readable text description of the search engine." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<c:set var="searchFor" value="${h:default(fn:toLowerCase(searchFor), 'pages')}"/>
-<c:set var="format" value="${h:default(fn:toLowerCase(format), 'html')}"/>
+<c:set var="searchFor" value="${functions:default(fn:toLowerCase(searchFor), 'pages')}"/>
+<c:set var="format" value="${functions:default(fn:toLowerCase(format), 'html')}"/>
 <%
 if (!"pages".equals(jspContext.getAttribute("searchFor")) && !"files".equals(jspContext.getAttribute("searchFor"))) {
     throw new IllegalArgumentException("Unsupported search type '" + jspContext.getAttribute("searchFor") + "' for the OpenSearch provider. Supported types are 'pages' and 'files'.");

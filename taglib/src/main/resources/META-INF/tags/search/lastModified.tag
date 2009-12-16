@@ -45,15 +45,15 @@
               description="Initial value for date to in case of the range date type." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="name" value="src_lastModified"/>
 <c:set var="valueParamName" value="${attributes.name}.type"/>
-<c:set var="value" value="${h:default(param[valueParamName], value)}"/>
+<c:set var="value" value="${functions:default(param[valueParamName], value)}"/>
 <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
     <c:set var="org.apache.jsp.tag.web.search.dateTag.included" value="true" scope="request"/>
     <script type="text/javascript">
@@ -75,7 +75,7 @@
 </c:if>
 <c:if test="${display}">
     <c:set target="${attributes}" property="name" value="src_lastModified.type"/>
-    <select ${h:attributes(attributes)} onchange="searchDateTypeToggle(this);">
+    <select ${functions:attributes(attributes)} onchange="searchDateTypeToggle(this);">
     <c:set target="${attributes}" property="name" value="src_lastModified"/>
         <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.anytime"/></option>
         <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.today"/></option>
@@ -89,10 +89,10 @@
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
             <fmt:message key="searchForm.date.from"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], from)}"/>
+            <ui:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], from)}"/>
             <c:set var="valueParamName" value="${attributes.name}.to"/>
             <fmt:message key="searchForm.date.to"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], to)}"/>
+            <ui:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], to)}"/>
     </div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

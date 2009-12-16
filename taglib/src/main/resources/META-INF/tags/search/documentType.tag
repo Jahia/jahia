@@ -35,7 +35,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@ tag body-content="empty" description="Renders document type selection control with all node types available." %>
@@ -46,10 +46,10 @@
         %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 
-<c:set var="value" value="${h:default(param.src_documentType, value)}"/>
-<c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="value" value="${functions:default(param.src_documentType, value)}"/>
+<c:set var="display" value="${functions:default(display, true)}"/>
 <c:if test="${display}">
-    <select ${h:attributes(attributes)} name="src_documentType">
+    <select ${functions:attributes(attributes)} name="src_documentType">
         <option value=""><fmt:message key="searchForm.any"/></option>
         <jcr:nodeType name="${jcr.nt_file}" var="type"/>
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type)}</option>

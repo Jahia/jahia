@@ -45,18 +45,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
-<c:set var="display" value="${h:default(display, true)}"/>
-<c:set var="appearance" value="${h:default(appearance, 'checkbox')}"/>
-<c:set var="value" value="${h:default(value, 'content')}"/>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<c:set var="display" value="${functions:default(display, true)}"/>
+<c:set var="appearance" value="${functions:default(appearance, 'checkbox')}"/>
+<c:set var="value" value="${functions:default(value, 'content')}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
 <c:set var="termIndex" value="${searchTermFieldIndexes[formId]}"/>
-<c:set var="selectionOptions" value="${h:default(selectionOptions, 'content,metadata')}"/>
+<c:set var="selectionOptions" value="${functions:default(selectionOptions, 'content,metadata')}"/>
 <c:if test="${display}">
     <c:if test="${appearance == 'select'}">
         <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>
         <c:set target="${attributes}" property="name" value="${key}"/>
-        <select ${h:attributes(attributes)}>
+        <select ${functions:attributes(attributes)}>
             <c:forTokens items="${selectionOptions}" delims="," var="field">
                 <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>
                 <c:set var="fieldSelected" value="}"/>
@@ -68,7 +68,7 @@
         <div class="searchFields"><fmt:message key="searchForm.term.searchIn"/>
     <c:forTokens items="${selectionOptions}" delims="," var="field">
         <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
-        <c:set var="fieldSelected" value="${h:default(param[key], fn:contains(value, field))}"/>
+        <c:set var="fieldSelected" value="${functions:default(param[key], fn:contains(value, field))}"/>
         <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fn:escapeXml(fieldSelected)}"/>
         <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><fmt:message key="searchForm.term.searchIn.${field}"/></label></span>
     </c:forTokens>

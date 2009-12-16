@@ -42,18 +42,18 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
-<c:set var="display" value="${h:default(display, true)}"/>
-<c:set var="value" value="${h:default(param['src_itemsPerPage'], h:default(value, '10'))}"/>
-<c:set var="options" value="${h:default(options, '5,10,20,30,50,100')}"/>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${functions:default(display, true)}"/>
+<c:set var="value" value="${functions:default(param['src_itemsPerPage'], functions:default(value, '10'))}"/>
+<c:set var="options" value="${functions:default(options, '5,10,20,30,50,100')}"/>
 <c:set target="${attributes}" property="name" value="src_itemsPerPage"/>
 <c:if test="${display}">
-    <select ${h:attributes(attributes)} name="src_itemsPerPage">
+    <select ${functions:attributes(attributes)} name="src_itemsPerPage">
         <c:forTokens items="${options}" delims="," var="opt">
             <option value="${opt}" ${opt == value ? 'selected="selected"' : ''}>${opt}</option>
         </c:forTokens>
     </select>
 </c:if>
 <c:if test="${!display}">
-    <input type="hidden" ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+    <input type="hidden" ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 </c:if>

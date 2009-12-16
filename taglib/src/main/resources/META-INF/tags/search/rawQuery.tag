@@ -40,9 +40,9 @@
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value for this field." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
-<c:set var="display" value="${h:default(display, true)}"/>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_rawQuery"/>
-<c:set var="value" value="${h:default(param['src_rawQuery'], value)}"/>
-<input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+<c:set var="value" value="${functions:default(param['src_rawQuery'], value)}"/>
+<input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>

@@ -48,24 +48,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
 
-<c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
 <c:set var="termIndex" value="${searchTermIndexes[formId]}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set var="key" value="src_terms[${termIndex}].term"/>
 <c:set target="${attributes}" property="name" value="${key}"/>
-<c:set var="value" value="${h:default(param[key], value)}"/>
+<c:set var="value" value="${functions:default(param[key], value)}"/>
 <c:set var="key" value="src_terms[${termIndex}].fields"/>
-<c:set var="searchIn" value="${h:default(param[key], searchIn)}"/>
-<c:set var="searchInAllowSelection" value="${h:default(searchInAllowSelection, false)}"/>
-<c:set var="searchInSelectionOptions" value="${h:default(searchInSelectionOptions, 'content,metadata')}"/>
-<input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+<c:set var="searchIn" value="${functions:default(param[key], searchIn)}"/>
+<c:set var="searchInAllowSelection" value="${functions:default(searchInAllowSelection, false)}"/>
+<c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'content,metadata')}"/>
+<input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${not empty match && match != 'as_is'}">
     <c:set var="key" value="src_terms[${termIndex}].match"/>
-    <input type="hidden" name="${key}" value="${fn:escapeXml(h:default(param[key], match))}"/>
+    <input type="hidden" name="${key}" value="${fn:escapeXml(functions:default(param[key], match))}"/>
 </c:if>
 <c:if test="${searchInAllowSelection || not empty searchIn}">
     <s:termFields value="${searchIn}" selectionOptions="${searchInSelectionOptions}" display="${searchInAllowSelection}"/>

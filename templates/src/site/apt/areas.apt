@@ -57,3 +57,8 @@ Area Management
   a simple piece of content by moving it from one area to another one or sub area.
 
 [./images/area_filled.png]  
+
+* Area type
+
+  By default an area will be a list of type jnt:contentList . If another list type is needed, the attribute areaType
+  can be specified with the required node type name.

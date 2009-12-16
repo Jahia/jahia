@@ -138,7 +138,7 @@
             </description>
             <param-name>noCacheResources</param-name>
             <!-- Disable cache for JSPs and '.nocache.' GWT resources -->
-            <param-value>(.*/Jahia(/.*)?|.*/render/live/.*|.*/render/default/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</param-value>
+            <param-value>(.*/Jahia(/.*)?|.*/cms/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</param-value>
         </init-param>
     </filter>
 

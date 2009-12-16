@@ -23,7 +23,7 @@
          <releases>
            <enabled>false</enabled>
          </releases>
-       </pluginRepository>
+        </pluginRepository>
     </pluginRepositories>
     <repositories>
         <repository>
@@ -454,6 +454,13 @@
         <dependency>
             <groupId>org.jahia.templates</groupId>
             <artifactId>mod-tasks</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>mod-search</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>

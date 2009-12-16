@@ -388,6 +388,7 @@ public class Service {
             ZipEntry z;
             ZipInputStream zis2 = new ZipInputStream(new FileInputStream(i));
             boolean isSite = false;
+            boolean isLegacySite = false;
             while ((z = zis2.getNextEntry()) != null) {
                 if ("site.properties".equals(z.getName())) {
                     Properties p = new Properties();
@@ -397,13 +398,14 @@ public class Service {
                     importInfos.put("templates", importInfos.containsKey("templatePackageName") ? importInfos.get(
                             "templatePackageName") : "");
                     importInfos.put("oldsitekey", importInfos.get("sitekey"));
-                } else if (z.getName().startsWith("export_")) {
                     isSite = true;
+                } else if (z.getName().startsWith("export_")) {
+                    isLegacySite = true;
                 }
             }
             importInfos.put("isSite", Boolean.valueOf(isSite));
             // todo import ga parameters
-            if (isSite) {
+            if (isSite || isLegacySite) {
                 importInfos.put("type", "site");
                 if (!importInfos.containsKey("sitekey")) {
                     importInfos.put("sitekey", "");

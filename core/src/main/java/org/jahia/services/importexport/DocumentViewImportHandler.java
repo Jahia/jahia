@@ -137,10 +137,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt)) {
                 decodedQName = jParams.getSiteKey();
                 String newpath;
-                JCRNodeWrapper siteFolder = JCRStoreService.getInstance().getSiteFolders(jParams.getSiteKey()).get(0);
-                newpath = siteFolder.getPath();
-                pathMapping.put(path + "/", newpath + "/");
-                path = newpath;
+                final List<JCRNodeWrapper> nodeWrappers = JCRStoreService.getInstance().getSiteFolders(
+                        jParams.getSiteKey());
+                if(nodeWrappers!=null && !nodeWrappers.isEmpty()) {
+                    JCRNodeWrapper siteFolder = nodeWrappers.get(0);
+                    newpath = siteFolder.getPath();
+                    pathMapping.put(path + "/", newpath + "/");
+                    path = newpath;
+                } else {
+                    // Workaround for auto import at least test that the path exist
+                    try {
+                        session.getNode(path);
+                    } catch (RepositoryException e) {
+                        logger.error("Error during auto import the site "+path+" does not exist",e);
+                    }
+                }
             }
             if ("jnt:importDropBox".equals(pt)) {
                 ignorePath = path;

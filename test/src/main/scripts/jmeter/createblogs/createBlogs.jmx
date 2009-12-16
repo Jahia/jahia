@@ -19,7 +19,7 @@
           </elementProp>
           <elementProp name="LOGINPATH" elementType="Argument">
             <stringProp name="Argument.name">LOGINPATH</stringProp>
-            <stringProp name="Argument.value">${__P(loginpath,/Jahia)}</stringProp>
+            <stringProp name="Argument.value">${__P(loginpath,/cms/login)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="lang" elementType="Argument">
@@ -134,13 +134,6 @@
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">password</stringProp>
                   <stringProp name="Argument.value">${password}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
-                <elementProp name="loginChoice" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">loginChoice</stringProp>
-                  <stringProp name="Argument.value">1</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>

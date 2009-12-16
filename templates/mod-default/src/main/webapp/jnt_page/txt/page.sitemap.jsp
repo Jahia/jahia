@@ -6,6 +6,5 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 ${url.current}
 <c:forEach items="${jcr:getNodes(currentNode, 'jnt:page')}" var="child">
-<template:module node="${child}" forcedTemplate="sitemap" editable="false" />
+<template:module node="${child}" template="sitemap" editable="false" />
 </c:forEach>
-

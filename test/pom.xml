@@ -249,12 +249,12 @@
                                 <configuration>
                                     <tasks>
                                         <echo message="Deploy ACME Demo Web Site"/>
-                                        <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates.zip"
+                                        <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates65.zip"
                                               toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
                                         <sleep seconds="90"/>
                                         <echo message="Get the sitemap"/>
-                                        <get src="${jahia.test.jmeter.sitemap.url}/cms/render/default/en/sites/ACME/home.sitemap.txt"
-                                             dest="${project.build.directory}/rawpageurls.txt" ignoreerrors="true"/>
+                                        <get src="${jahia.test.jmeter.sitemap.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on"
+                                             dest="${project.build.directory}/rawpageurls.txt" ignoreerrors="true" username="${jahia.test.jmeter.username}" password="${jahia.test.jmeter.password}"/>
                                         <available file="${project.build.directory}/rawpageurls.txt"
                                                    property="sitemap.present"/>
                                         <exec executable="sort" dir="${project.build.directory}"
@@ -271,24 +271,25 @@
                                         <copy toDir="${jahia.test.jmeter.path}/bin/testPlan">
                                             <fileset dir="${pom.basedir}/src/main/scripts/jmeter/"/>
                                         </copy>
-                                        <copy file="${project.build.directory}/pageurls.txt"
-                                              toDir="${jahia.test.jmeter.path}/bin/testPlan"/>
-                                        <delete dir="${jahia.test.jmeter.path}/bin/results"/>
-                                        <echo message="Starting jmeter tests"/>
-                                        <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
-                                              dir="${jahia.test.jmeter.path}/bin">
-                                            <arg line="-n -t testPlan/allPlanTest.jmx -Jloginpath=${jahia.test.jmeter.loginpath} -Jcontext=${jahia.test.jmeter.context} -Jthreads=${jahia.deploy.war.contextPath}  -Jloops=${jahia.test.jmeter.loops}"/>
-                                        </exec>
-                                        <echo message="${jahia.test.jmeter.path}/bin/jmeter"/>
-                                        <exec executable="${jahia.test.jmeter.path}/bin/jmeter"
-                                              dir="${jahia.test.jmeter.path}/bin">
-                                            <arg line="-n -t testPlan/createusers/createUsers.jmx -Jrootusername=root -Jrootpwd=${jahia.configure.jahiaRootPassword} -Jcontext=${jahia.deploy.war.contextPath} -Jthreads=${jahia.test.jmeter.threads}  -Jloops=${jahia.test.jmeter.loops}"/>
-                                        </exec>
+                                        <copy file="${project.build.directory}/pageurls.txt" toDir="${jahia.test.jmeter.path}/bin/testPlan"/>                                       
                                     </tasks>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
+                            </execution>
+                            <execution>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <copy toDir="${pom.basedir}/target/jmeterResults/">
+                                            <fileset dir="${jahia.test.jmeter.path}/bin/results"/>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -364,9 +365,29 @@
                                         <db-pwd>${jahia.configure.databasePassword}</db-pwd>
                                         <db-name>${jahia.test.jmeter.dbname}</db-name>
                                         <db-clean>true</db-clean>
-                                        <results-path>${jahia.test.jmeter.path}/bin/results</results-path>
+                                        <results-path>${pom.basedir}/results</results-path>
                                     </properties>
                                     <source>${pom.basedir}/src/main/scripts/groovy/parseJMeterFiles.groovy</source>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Execute JMeter Tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <path>${jahia.test.jmeter.path}</path>
+                                        <loginPath>${jahia.test.jmeter.loginpath}</loginPath>
+                                        <context>${jahia.test.jmeter.context}</context>
+                                        <threads>${jahia.test.jmeter.threads}</threads>
+                                        <loops>${jahia.test.jmeter.loops}</loops>
+                                        <rootLogin>${jahia.test.jmeter.username}</rootLogin>
+                                        <rootPassword>${jahia.test.jmeter.password}</rootPassword>
+                                        <testsPath>${jahia.test.jmeter.path}/bin/testPlan</testsPath>
+                                    </properties>
+                                    <source>${pom.basedir}/src/main/scripts/groovy/executeJMeterTests.groovy</source>
                                 </configuration>
                             </execution>
                         </executions>

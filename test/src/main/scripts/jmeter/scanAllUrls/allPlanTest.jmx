@@ -19,7 +19,7 @@
           </elementProp>
           <elementProp name="LOGINPATH" elementType="Argument">
             <stringProp name="Argument.name">LOGINPATH</stringProp>
-            <stringProp name="Argument.value">${__P(loginpath,/jahia/Jahia)}</stringProp>
+            <stringProp name="Argument.value">${__P(loginpath,/jahia/cms/login)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="lang" elementType="Argument">
@@ -29,7 +29,7 @@
           </elementProp>
           <elementProp name="CONTEXT" elementType="Argument">
             <stringProp name="Argument.name">CONTEXT</stringProp>
-            <stringProp name="Argument.value">${__P(context,/jahia/)}</stringProp>
+            <stringProp name="Argument.value">${__P(context,/jahia)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="THREADS" elementType="Argument">
@@ -77,19 +77,26 @@
           <boolProp name="CookieManager.clearEachIteration">true</boolProp>
         </CookieManager>
         <hashTree/>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data users Config" enabled="true">
+          <stringProp name="filename">users.txt</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames">username,password</stringProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <boolProp name="stopThread">false</boolProp>
+          <stringProp name="shareMode">All threads</stringProp>
+        </CSVDataSet>
+        <hashTree/>
         <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="Paramètres utilisateur" enabled="true">
           <collectionProp name="UserParameters.names">
-            <stringProp name="-265713450">username</stringProp>
-            <stringProp name="3556308">temp</stringProp>
             <stringProp name="1589752427">jobsSearchKeyword</stringProp>
             <stringProp name="-1546153922">globalSearchKeyword</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-1776277953">
-              <stringProp name="190086157">${_StringFromFile(testPlan/usersacme.txt)}</stringProp>
-              <stringProp name="-1870105697">${__split(${username},username,@)}</stringProp>
-              <stringProp name="-277355658">${_StringFromFile(testPlan/jobsSearchKeyword.txt)}</stringProp>
-              <stringProp name="-1404766775">${_StringFromFile(testPlan/globalSearchKeyword.txt)}</stringProp>
+            <collectionProp name="-481812713">
+              <stringProp name="-277355658">${_StringFromFile(testPlan/scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
+              <stringProp name="-1404766775">${_StringFromFile(testPlan/scanAllUrls/globalSearchKeyword.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -131,13 +138,6 @@
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">password</stringProp>
                   <stringProp name="Argument.value">${password}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
-                <elementProp name="loginChoice" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">loginChoice</stringProp>
-                  <stringProp name="Argument.value">1</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -214,7 +214,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+            <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -264,13 +264,6 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
                   </elementProp>
-                  <elementProp name="j:template" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">full</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">j:template</stringProp>
-                  </elementProp>
                   <elementProp name="jcr:title" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
                     <stringProp name="Argument.value">forum</stringProp>
@@ -286,7 +279,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${context}cms/render/default/en/content/sites/ACME/home/*</stringProp>
+              <stringProp name="HTTPSampler.path">${context}/cms/render/default/en/sites/ACME/home/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -299,7 +292,7 @@
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
             <hashTree/>
-            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create List" enabled="true">
+            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create List" enabled="false">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                 <collectionProp name="Arguments.arguments">
                   <elementProp name="nodeName" elementType="HTTPArgument">
@@ -324,7 +317,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -347,7 +340,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/content/sites/ACME/home/forum.html</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/ACME/home/forum.html</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -387,13 +380,6 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
                   </elementProp>
-                  <elementProp name="jcr:title" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">Board Index</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">jcr:title</stringProp>
-                  </elementProp>
                   <elementProp name="boardSubject" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
                     <stringProp name="Argument.value">JMeter Performance Tests</stringProp>
@@ -416,7 +402,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -446,13 +432,6 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
                   </elementProp>
-                  <elementProp name="jcr:title" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">Topic</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">jcr:title</stringProp>
-                  </elementProp>
                   <elementProp name="topicSubject" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
                     <stringProp name="Argument.value">JMeter Performance Tests Topic</stringProp>
@@ -468,7 +447,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/boardindex/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -498,13 +477,6 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">nodeType</stringProp>
                   </elementProp>
-                  <elementProp name="jcr:title" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">Thread</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">jcr:title</stringProp>
-                  </elementProp>
                   <elementProp name="threadSubject" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
                     <stringProp name="Argument.value">JMeter Performance Tests Thread</stringProp>
@@ -520,7 +492,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/boardindex/topic/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -573,7 +545,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/boardindex/topic/thread/*</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -602,7 +574,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/content/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/ACME/home/forum/maincontent/boardindex/topic/thread.html</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">true</boolProp>

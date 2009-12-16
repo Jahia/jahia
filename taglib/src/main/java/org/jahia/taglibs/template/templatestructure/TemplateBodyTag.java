@@ -546,6 +546,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("em_contentlist", getJahiaInternalResourceValue("org.jahia.jcr.edit.contentlist.label"));
         addGwtDictionaryMessage("em_savetemplate", getJahiaInternalResourceValue("org.jahia.jcr.edit.savetemplate.label"));
         addGwtDictionaryMessage("em_content", getJahiaInternalResourceValue("org.jahia.jcr.edit.content.label"));
+        addGwtDictionaryMessage("em_area", getJahiaInternalResourceValue("org.jahia.jcr.edit.area.label"));
 
         addGwtDictionaryMessage("publication_currentStatus", getJahiaInternalResourceValue("org.jahia.jcr.publication.currentStatus"));
         addGwtDictionaryMessage("publication_path", getJahiaInternalResourceValue("org.jahia.jcr.publication.path"));

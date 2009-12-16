@@ -83,6 +83,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
 
     private static final String J_PRIVILEGES = "j:privileges";
+    
+    private transient Map<String, String> propertiesAsString;
 
     protected JCRNodeWrapperImpl(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
@@ -562,32 +564,36 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        Map<String, String> res = new HashMap<String, String>();
-
-        PropertyIterator pi = getProperties();
-        if (pi != null) {
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (p.getType() == PropertyType.BINARY) {
-                    continue;
-                }
-                if (!p.isMultiple()) {
-                    res.put(p.getName(), p.getString());
-                } else {
-                    Value[] vs = p.getValues();
-                    StringBuffer b = new StringBuffer();
-                    for (int i = 0; i < vs.length; i++) {
-                        Value v = vs[i];
-                        b.append(v.getString());
-                        if (i + 1 < vs.length) {
-                            b.append(" ");
-                        }
+        if (propertiesAsString == null) {
+            Map<String, String> res = new HashMap<String, String>();
+    
+            PropertyIterator pi = getProperties();
+            if (pi != null) {
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (p.getType() == PropertyType.BINARY) {
+                        continue;
                     }
-                    res.put(p.getName(), b.toString());
+                    if (!p.isMultiple()) {
+                        res.put(p.getName(), p.getString());
+                    } else {
+                        Value[] vs = p.getValues();
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < vs.length; i++) {
+                            Value v = vs[i];
+                            b.append(v.getString());
+                            if (i + 1 < vs.length) {
+                                b.append(" ");
+                            }
+                        }
+                        res.put(p.getName(), b.toString());
+                    }
                 }
             }
+            propertiesAsString = res;
         }
-        return res;
+        
+        return propertiesAsString;
     }
 
     /**

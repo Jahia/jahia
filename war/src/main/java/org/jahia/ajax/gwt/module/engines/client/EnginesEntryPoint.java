@@ -31,21 +31,19 @@
  */
 package org.jahia.ajax.gwt.module.engines.client;
 
-
-
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.widget.calendar.DatePickerManager;
-
-import com.google.gwt.core.client.EntryPoint;
 
 /**
  * Entry point class for GWT integration into Jahia engines.
  * 
  * @author Sergiy Shyrkov
  */
-public class EnginesEntryPoint implements EntryPoint {
+public class EnginesEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         new DatePickerManager();
     }

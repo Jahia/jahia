@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.module.usergroup.client;
 
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
@@ -48,11 +49,12 @@ import java.util.List;
  * Time: 4:07:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UserGroupSelectEntryPoint {
+public class UserGroupSelectEntryPoint extends CommonEntryPoint {
 
     private static UserGroupSelect userGroupSelect;
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         initJavaScriptApi();
     }

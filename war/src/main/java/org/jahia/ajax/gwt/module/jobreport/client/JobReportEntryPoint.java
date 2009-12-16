@@ -31,9 +31,9 @@
  */
 package org.jahia.ajax.gwt.module.jobreport.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.process.JobReport;
 
 /**
@@ -43,13 +43,12 @@ import org.jahia.ajax.gwt.client.widget.process.JobReport;
  * Time: 11:51:40 AM
  * To change this template use File | Settings | File Templates.
  */
-public class JobReportEntryPoint implements EntryPoint {
+public class JobReportEntryPoint extends CommonEntryPoint {
 
     public static final String ID = "jobreport";
 
-
-
     public void onModuleLoad() {
+        super.onModuleLoad();
         // init panel
         RootPanel jahiaTypePanel = RootPanel.get(ID);
 

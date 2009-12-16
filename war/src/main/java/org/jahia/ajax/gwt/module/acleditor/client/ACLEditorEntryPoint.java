@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.module.acleditor.client;
 
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
@@ -48,7 +49,7 @@ import com.allen_sauer.gwt.log.client.Log;
  * User: toto
  * Date: Nov 26, 2008 - 7:55:04 PM
  */
-public class ACLEditorEntryPoint {
+public class ACLEditorEntryPoint extends CommonEntryPoint {
     private static final String ACLEDITOR_ID = "gwtacleditor" ;
 
     private static int aclId;
@@ -59,6 +60,7 @@ public class ACLEditorEntryPoint {
     private static AclEditor aclEditor;
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         initJavaScriptApi();
         final RootPanel panel = RootPanel.get(ACLEDITOR_ID);

@@ -31,8 +31,8 @@
  */
 package org.jahia.ajax.gwt.module.definition.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.util.definition.Resources;
 import org.jahia.ajax.gwt.client.widget.definition.ContentDefinition;
 
@@ -42,9 +42,10 @@ import org.jahia.ajax.gwt.client.widget.definition.ContentDefinition;
  * @author rfelden
  * @version 10 juil. 2008 - 16:58:16
  */
-public class ContentDefinitionEntryPoint implements EntryPoint {
+public class ContentDefinitionEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         RootPanel panel = RootPanel.get(Resources.CONTENTDEFINITION_ID) ;
         if (panel != null) {
             panel.add(new ContentDefinition()) ;

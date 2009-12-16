@@ -34,16 +34,15 @@ package org.jahia.ajax.gwt.configwizard.client;
 import org.jahia.ajax.gwt.client.core.JavaScriptApi;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
-import com.google.gwt.core.client.EntryPoint;
-
 /**
  * Entry point class for the GWT integration into Jahia configuration wizard.
  * 
  * @author Sergiy Shyrkov
  */
-public class ConfigWizardEntryPoint implements EntryPoint {
+public class ConfigWizardEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         JavaScriptApi.init();
         WorkInProgress.init();
     }

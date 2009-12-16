@@ -31,9 +31,9 @@
  */
 package org.jahia.ajax.gwt.module.contentmanager.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.util.DOMUtil;
@@ -44,9 +44,10 @@ import org.jahia.ajax.gwt.client.util.DOMUtil;
  * @author rfelden
  * @version 10 juil. 2008 - 16:58:16
  */
-public class ContentManagerEntryPoint implements EntryPoint {
+public class ContentManagerEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
             boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");

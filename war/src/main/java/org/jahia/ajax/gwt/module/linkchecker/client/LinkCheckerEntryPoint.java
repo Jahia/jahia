@@ -31,8 +31,8 @@
  */
 package org.jahia.ajax.gwt.module.linkchecker.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.linkchecker.LinkChecker;
 
 /**
@@ -40,9 +40,10 @@ import org.jahia.ajax.gwt.client.widget.linkchecker.LinkChecker;
  * Date: 11 juin 2009
  * Time: 12:00:04
  */
-public class LinkCheckerEntryPoint implements EntryPoint {
+public class LinkCheckerEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         RootPanel panel = RootPanel.get("linkchecker") ;
         if (panel != null) {
             panel.add(new LinkChecker());

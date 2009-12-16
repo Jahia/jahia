@@ -31,12 +31,10 @@
  */
 package org.jahia.ajax.gwt.module.pdisplay.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.process.ProcessDisplayPanel;
 import org.jahia.ajax.gwt.client.messages.Messages;
-//import org.jahia.ajax.gwt.templates.commons.client.util.DOMUtil;
-
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,10 +43,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * Time: 13:32:02
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessDisplayEntryPoint implements EntryPoint {
-    public static final String ID = "pdisplay";
+public class ProcessDisplayEntryPoint extends CommonEntryPoint {
+    public static final String ID= "pdisplay";
 
     public void onModuleLoad() {
+        super.onModuleLoad();
+        
         // init panel
         RootPanel jahiaTypePanel = RootPanel.get(ID);
 

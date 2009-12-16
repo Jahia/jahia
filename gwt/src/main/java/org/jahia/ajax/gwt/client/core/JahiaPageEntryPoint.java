@@ -38,12 +38,9 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Element;
 
 
@@ -53,13 +50,15 @@ import com.google.gwt.user.client.Element;
  * Date: 11 juil. 2007
  * Time: 09:57:56
  */
-public abstract class JahiaPageEntryPoint implements EntryPoint {
+public abstract class JahiaPageEntryPoint extends CommonEntryPoint {
     private JahiaModuleProvider customJahiaModuleProvider;
     private static DockPanel dockPanel = new DockPanel();
 
     public static JahiaPageEntryPoint instance;
 
     public void onModuleLoad() {
+        super.onModuleLoad();
+
         // init javascript api
         JavaScriptApi.init();
 

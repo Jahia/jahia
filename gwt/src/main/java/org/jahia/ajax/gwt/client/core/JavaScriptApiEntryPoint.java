@@ -31,15 +31,14 @@
  */
 package org.jahia.ajax.gwt.client.core;
 
-import com.google.gwt.core.client.EntryPoint;
-
 /**
  * User: ktlili
  * Date: 30 sept. 2008
  * Time: 10:15:02
  */
-public class JavaScriptApiEntryPoint implements EntryPoint {
+public class JavaScriptApiEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {
+        super.onModuleLoad();
         JavaScriptApi.init();
         OnLoadHandler.init();
     }

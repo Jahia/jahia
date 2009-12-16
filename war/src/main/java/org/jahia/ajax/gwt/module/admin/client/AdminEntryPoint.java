@@ -31,20 +31,21 @@
  */
 package org.jahia.ajax.gwt.module.admin.client;
 
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.util.acleditor.AclNameEditor;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.EntryPoint;
 
 /**
  * Entry point class for GWT integration into Jahia Administration.
  * 
  * @author Sergiy Shyrkov
  */
-public class AdminEntryPoint implements EntryPoint {
+public class AdminEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
         exposeFunctions();

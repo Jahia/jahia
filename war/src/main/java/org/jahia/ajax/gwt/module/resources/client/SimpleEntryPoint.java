@@ -31,17 +31,17 @@
  */
 package org.jahia.ajax.gwt.module.resources.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.extjs.gxt.ui.client.GXT;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 
 /**
  * User: ktlili
  * Date: 27 oct. 2008
  * Time: 18:15:27
  */
-public class SimpleEntryPoint implements EntryPoint {
+public class SimpleEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        super.onModuleLoad();
         GXT.init();
     }
 }

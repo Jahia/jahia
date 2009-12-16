@@ -1,0 +1,68 @@
+
+How to setup development in various IDEs
+
+* JetBrains Intellij IDEA 9.0
+
+ After upgrading to gwt-2.0, hosted mode wil be replaced by development mode. As usual, gwt needs to be downloaded and
+gwt facets reconfigured to use gwt 2.0. The new "development mode" allows to execute your gwt debug in any browser ,
+instead of the old "hosted " mode. Make sure you also review all your dependencies to make sure you are no longer
+referencing older GWT versions, as this will cause compilation issues. Also, if when setting up the facets, make sure
+you "Fix" all the GWT-user references and output path. You can do this by clicking on the "Fix" button until everything
+is fixed. If it gives you a choice between creating an artifact and including one, simply select "Create Artifact" and
+then click "Ok" or "Apply" to solve the issue.
+
+[./images/gwtfacets_projectstructure.png] IDEA 9 Project Structure opened on GWT facets
+
+ By default it embeds a jetty server to execute the webapp - but we don't want to do this, and this can be easily
+disabled by adding the -noserver option to your gwt debug session ( in intellij, it's in the "shell parameter"
+line of the gwt debug configuration - should be similar for eclipse).
+
+[./images/gwt_runtimeconfiguration.png] IDEA 9 Project Structure opened on GWT facets
+
+ You also now need to to select one module to debug - you can choose for all but this will take time to compile
+everytime you open a debug session.
+
+ It's also quite important to put a full working jahia url here, in "html to open", like
+http://localhost:8080/jahia/cms/edit/default/en/sites/ACME/home.html . Actually not so important, but it will add
+parameters to the url to tells the javascript that it needs to run in debug mode.
+
+ A debug session should be able to start now - Once the development mode is open , click on "launch default browser" -
+if you are redirected to a login page, you'll loose the magic parameter - you can add it manually by adding at the
+end of the url : ?gwt.codesvr=127.0.0.1:9997 . The first time, it will ask for downloading the GWT debug plugin.
+
+Development mode crash issue under Mac OS X
+
+ At the time of this writing, there is a serious crash issue of development mode in GWT 2.0 with GXT under Mac OS X.
+When loading a module, it simply crashes. A workaround has been found in a Google group :
+{{http://groups.google.com/group/google-web-toolkit/browse_thread/thread/9438f21418286c96/014e79a734391277?#014e79a734391277}}
+
+ Here is an example of integrating this fix for the Edit mode module :
+
+----------------------------------------
+public class EditEntryPoint {           
+    public void onModuleLoad() {
+        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
+           problem is fixed.
+         */
+        @SuppressWarnings("unused")
+        Layout junk = new AnchorLayout();
+        /* End of GWT hack */
+
+        RootPanel panel = RootPanel.get("editmode") ;
+        if (panel != null) {
+            panel.add(new EditPanelViewport(DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"),
+                    DOM.getElementAttribute(panel.getElement(), "locale"))) ;
+        }
+    }
+}
+----------------------------------------
+
+ Note the two lines :
+
+----------------------------------------
+        @SuppressWarnings("unused")
+        Layout junk = new AnchorLayout();
+----------------------------------------
+
+ The second line is there to force the loading of the GXT classes and it seems that that makes it work under Mac OS ! So
+you need to do this for all the modules you wish to use development mode with under Mac OS X.

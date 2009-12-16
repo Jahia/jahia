@@ -1092,6 +1092,8 @@
             <artifactId>json</artifactId>
             <version>1.5-20090211</version>
         </dependency>
+
+        <!-- XWiki dependencies -->
         <dependency>
             <groupId>org.xwiki.platform</groupId>
             <artifactId>xwiki-core-rendering-parser-wikimodel</artifactId>
@@ -1112,7 +1114,20 @@
             <artifactId>xwiki-core-rendering-macro-box</artifactId>
             <version>2.0.4</version>
         </dependency>
+        <!-- End of XWiki dependencies -->
 
+        <!-- Chemistry dependencies -->
+        <dependency>
+            <groupId>org.apache.chemistry</groupId>
+            <artifactId>chemistry-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.chemistry</groupId>
+            <artifactId>chemistry-jcr</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- End of Chemistry dependencies -->
 
 
     </dependencies>

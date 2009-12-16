@@ -121,6 +121,8 @@ public class TextExtractionListener extends DefaultEventListener {
                                 schedulerServ.scheduleJobNow(jobDetail);
                             }
                         }
+                    } catch (PathNotFoundException e) {
+                        logger.debug(e.getMessage(), e);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }

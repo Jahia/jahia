@@ -252,6 +252,7 @@ rule "Create schmurtz"
     when
         A new node is created
              - it has the type jnt:schmurtz
+        The node has a property j:targetReference
     then
         Log "Creating schmurtz node: " + node.getPath()
         Create schmurtz node

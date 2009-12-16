@@ -573,14 +573,12 @@ public class Service {
                 new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        String targetNode = node.getNode().getProperty(
-                                "j:targetReference").getNode().getPath();
+                        String targetNode = node.getNode().getProperty("j:targetReference").getNode().getPath();
                         session.checkout(node.getNode());
-                        session.getWorkspace().copy(targetNode,
-                                node.getPath() + "/j:target");
-                        logger.info("Schmurtz is created with the name '"
-                                + node.getName() + "' for target node "
-                                + targetNode);
+                        node.getNode().getProperty("j:targetReference").remove();
+                        session.save();
+                        session.getWorkspace().copy(targetNode, node.getPath() + "/j:target");
+                        logger.info("Schmurtz is created with the name '" + node.getName() + "' for target node " + targetNode);
                         return true;
                     }
                 });

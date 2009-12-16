@@ -882,7 +882,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     return new JCRPropertyWrapperImpl(this, getI18N(locale).getProperty(name + "_" + locale.toString()), session, provider, getApplicablePropertyDefinition(name), name);
                 } catch (ItemNotFoundException e) {
-                    throw new PathNotFoundException(name);
+                    return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
                 }
             }
         }

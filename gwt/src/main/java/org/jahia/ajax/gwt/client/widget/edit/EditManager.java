@@ -38,6 +38,7 @@ public class EditManager extends ContentPanel {
         toolbar =  new ActionToolbarLayoutContainer("editmode");
         toolbar.init();
         toolbar.setStyleAttribute("z-index", "999");
+        toolbar.setStyleAttribute("position", "relative");
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.NONE);

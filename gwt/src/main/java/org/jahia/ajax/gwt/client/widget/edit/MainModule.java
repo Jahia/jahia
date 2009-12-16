@@ -43,7 +43,8 @@ public class MainModule extends ContentPanel implements Module {
 
         this.path = path;
         this.template = template;
-
+        getHeader().setStyleAttribute("z-index","999");
+        getHeader().setStyleAttribute("position","relative");
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 

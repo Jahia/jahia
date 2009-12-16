@@ -1,19 +1,13 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +48,17 @@ public class Hover {
 
     public void setMainModule(final MainModule m) {
         this.mainModule = m;
+        m.addScrollListener(new ScrollListener() {
+            @Override
+            public void widgetScrolled(ComponentEvent ce) {
+                for (Map.Entry<Module, Box> boxEntry : boxes.entrySet()) {
+                    LayoutContainer ctn = boxEntry.getKey().getContainer();
+                    boxEntry.getValue().setPosition(ctn.getAbsoluteLeft(), ctn.getAbsoluteTop(),ctn.getWidth(), ctn.getHeight());
+                    super.widgetScrolled(ce);
+                }
+            }
+        });
+
     }
 
     private boolean hidden = true;
@@ -79,19 +84,11 @@ public class Hover {
         }
 
         if (max == module.getDepth()) {
-            if (module instanceof AreaModule) {
-                b.setBlue();
-            } else {
-                b.setRed();
-            }
+            setStyle(module, b);
             module.setSelectable(true);
             module.setDraggable(true);
         } else {
-            if (module instanceof AreaModule) {
-                b.setPink();
-            } else {
-                b.setGrey();
-            }
+            setSecondaryStyle(module, b);
             module.setSelectable(false);
             module.setDraggable(false);
         }
@@ -99,19 +96,11 @@ public class Hover {
             Hover.Box value = moduleBoxEntry.getValue();
             Module key = moduleBoxEntry.getKey();
             if (key.getDepth() == max) {
-                if (key instanceof AreaModule) {
-                    value.setBlue();
-                } else {
-                    value.setRed();
-                }
+                setStyle(key, value);
                 key.setSelectable(true);
                 key.setDraggable(true);
             } else {
-                if (module instanceof AreaModule) {
-                    b.setPink();
-                } else {
-                    b.setGrey();
-                }
+                setSecondaryStyle(key, value);
                 key.setSelectable(false);
                 key.setDraggable(false);
             }
@@ -139,6 +128,26 @@ public class Hover {
             box.hide();
         }
         boxes.clear();
+    }
+
+    private void setStyle(Module module, Box value) {
+        if (module instanceof ListModule) {
+            value.setStyle("list");
+        } else if (module instanceof AreaModule) {
+            value.setStyle("area");
+        } else {
+            value.setStyle("simple");
+        }
+    }
+
+    private void setSecondaryStyle(Module module, Box value) {
+        if (module instanceof ListModule) {
+            value.setStyle("list-secondary");
+        } else if (module instanceof AreaModule) {
+            value.setStyle("area-secondary");
+        } else {
+            value.setStyle("simple-secondary");
+        }
     }
 
     class Box extends LayoutContainer {
@@ -172,32 +181,11 @@ public class Hover {
             hide();
         }
 
-        private void setRed() {
-            top.setStyleAttribute("border-top", "1px dashed red");
-            bottom.setStyleAttribute("border-bottom", "1px dashed red");
-            left.setStyleAttribute("border-left", "1px dashed red");
-            right.setStyleAttribute("border-right", "1px dashed red");
-        }
-
-        private void setGrey() {
-            top.setStyleAttribute("border-top", "1px dashed rgb(183, 203, 216)");
-            bottom.setStyleAttribute("border-bottom", "1px dashed rgb(183, 203, 216)");
-            left.setStyleAttribute("border-left", "1px dashed rgb(183, 203, 216)");
-            right.setStyleAttribute("border-right", "1px dashed rgb(183, 203, 216)");
-        }
-
-        private void setBlue() {
-            top.setStyleAttribute("border-top", "1px dashed rgb(12, 150, 243)");
-            bottom.setStyleAttribute("border-bottom", "1px dashed rgb(12, 150, 243)");
-            left.setStyleAttribute("border-left", "1px dashed rgb(12, 150, 243)");
-            right.setStyleAttribute("border-right", "1px dashed rgb(12, 150, 243)");
-        }
-
-        private void setPink() {
-            top.setStyleAttribute("border-top", "1px solid rgb(0,250,0)");
-            bottom.setStyleAttribute("border-bottom", "1px solid rgb(0,250,0)");
-            left.setStyleAttribute("border-left", "1px solid rgb(0,250,0)");
-            right.setStyleAttribute("border-right", "1px solid rgb(0,250,0)");
+        private void setStyle(String key) {
+            top.setStyleName("hover-top-"+key);
+            bottom.setStyleName("hover-bottom-"+key);
+            left.setStyleName("hover-left-"+key);
+            right.setStyleName("hover-right-"+key);
         }
 
 //        public void setName(String name) {

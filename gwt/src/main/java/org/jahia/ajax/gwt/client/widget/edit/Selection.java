@@ -1,15 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
-import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.google.gwt.user.client.ui.HTML;
+import com.extjs.gxt.ui.client.event.ScrollListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.Event;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +45,7 @@ public class Selection extends LayoutContainer {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
                 if (currentContainer != null) {
-                    setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(),currentContainer.getWidth(), currentContainer.getHeight());
+                    setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(), currentContainer.getHeight());
                     super.widgetScrolled(ce);
                 }
             }
@@ -64,21 +59,20 @@ public class Selection extends LayoutContainer {
 //        left.setBorders(true);
 //        right.setBorders(true);
         if (module instanceof ListModule) {
-            top.setStyleAttribute("border-top", "1px solid rgb(12, 150, 243)");
-            bottom.setStyleAttribute("border-bottom", "1px solid rgb(12, 150, 243)");
-            left.setStyleAttribute("border-left", "1px solid rgb(12, 150, 243)");
-            right.setStyleAttribute("border-right", "1px solid rgb(12, 150, 243)");
+            top.setStyleName("selection-top-list");
+            bottom.setStyleName("selection-bottom-list");
+            left.setStyleName("selection-left-list");
+            right.setStyleName("selection-right-list");
         } else if (module instanceof AreaModule) {
-            top.setStyleAttribute("border-top", "1px solid rgb(0,250,0)");
-            bottom.setStyleAttribute("border-bottom", "1px solid rgb(0,250,0)");
-            left.setStyleAttribute("border-left", "1px solid rgb(0,250,0)");
-            right.setStyleAttribute("border-right", "1px solid rgb(0,250,0)");
-        }
-        else {
-            top.setStyleAttribute("border-top", "1px solid red");
-            bottom.setStyleAttribute("border-bottom", "1px solid red");
-            left.setStyleAttribute("border-left", "1px solid red");
-            right.setStyleAttribute("border-right", "1px solid red");
+            top.setStyleName("selection-top-area");
+            bottom.setStyleName("selection-bottom-area");
+            left.setStyleName("selection-left-area");
+            right.setStyleName("selection-right-area");
+        } else {
+            top.setStyleName("selection-top-simple");
+            bottom.setStyleName("selection-bottom-simple");
+            left.setStyleName("selection-left-simple");
+            right.setStyleName("selection-right-simple");
         }
         top.setStyleAttribute("z-index", "995");
         bottom.setStyleAttribute("z-index", "995");
@@ -87,15 +81,15 @@ public class Selection extends LayoutContainer {
         show();
     }
 
-    public void setPosition(int x,int y, int w, int h) {
+    public void setPosition(int x, int y, int w, int h) {
         top.setPosition(x, y);
-        top.setSize(w,0);
-        bottom.setPosition(x, y+h);
-        bottom.setSize(w,0);
+        top.setSize(w, 0);
+        bottom.setPosition(x, y + h);
+        bottom.setSize(w, 0);
         left.setPosition(x, y);
-        left.setSize(0,h);
-        right.setPosition(x+w, y);
-        right.setSize(0,h);
+        left.setSize(0, h);
+        right.setPosition(x + w, y);
+        right.setSize(0, h);
     }
 
     private boolean hidden = true;
@@ -118,13 +112,13 @@ public class Selection extends LayoutContainer {
 
         onShow();
 
-        setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(),currentContainer.getWidth(), currentContainer.getHeight());
+        setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(), currentContainer.getHeight());
     }
 
     @Override
-      public void hide() {
+    public void hide() {
         if (hidden) {
-          return;
+            return;
         }
         hidden = true;
 
@@ -133,6 +127,6 @@ public class Selection extends LayoutContainer {
         RootPanel.get().remove(bottom);
         RootPanel.get().remove(left);
         RootPanel.get().remove(right);
-      }
+    }
 
 }

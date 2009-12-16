@@ -11,14 +11,6 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
 /** styles added for list module in order to make them as nice as jahia6 **/
 
-.x-panel-listmodule {
-    border: 1px dashed rgb(183, 203, 216) !important;
-}
-
-.x-panel-listmodule:hover {
-    border: 1px dashed red !important;
-}
-
 .x-panel-header-listmodule {
     background:transparent url(../images/jahiapanel.gif) repeat-x scroll left top !important;
     color: rgb(64, 150, 238) !important;
@@ -45,10 +37,113 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 	vertical-align: middle;
 }
 
-.x-panel-body-listmodule {
-    border-bottom-style: dashed !important;
-    border-left-style: dashed !important;
-    border-right-style: dashed !important;
+.selection-top-list {
+    border-top: 1px solid rgb(12, 150, 243);
+}
+.selection-bottom-list {
+    border-bottom: 1px solid rgb(12, 150, 243);
+}
+.selection-left-list {
+    border-left: 1px solid rgb(12, 150, 243);
+}
+.selection-right-list {
+    border-right: 1px solid rgb(12, 150, 243);
+}
+.selection-top-simple {
+    border-top: 1px solid red;
+}
+.selection-bottom-simple {
+    border-bottom: 1px solid red;
+}
+.selection-left-simple {
+    border-left: 1px solid red;
+}
+.selection-right-simple {
+    border-right: 1px solid red;
+}
+.selection-top-area {
+    border-top: 1px solid rgb(0,250,0);
+}
+.selection-bottom-area {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.selection-left-area {
+    border-left: 1px solid rgb(0,250,0);
+}
+.selection-right-area {
+    border-right: 1px solid rgb(0,250,0);
+}
+.hover-top-list {
+    border-top: 1px dashed rgb(12, 150, 243);
+}
+.hover-bottom-list {
+    border-bottom: 1px dashed rgb(12, 150, 243);
+}
+.hover-left-list {
+    border-left: 1px dashed rgb(12, 150, 243);
+}
+.hover-right-list {
+    border-right: 1px dashed rgb(12, 150, 243);
+}
+.hover-top-simple {
+    border-top: 1px dashed red;
+}
+.hover-bottom-simple {
+    border-bottom: 1px dashed red;
+}
+.hover-left-simple {
+    border-left: 1px dashed red;
+}
+.hover-right-simple {
+    border-right: 1px dashed red;
+}
+.hover-top-area {
+    border-top: 1px solid rgb(0,250,0);
+}
+.hover-bottom-area {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.hover-left-area {
+    border-left: 1px solid rgb(0,250,0);
+}
+.hover-right-area {
+    border-right: 1px solid rgb(0,250,0);
+}
+.hover-top-list-secondary {
+    border-top: 1px dashed rgb(183, 203, 216);
+}
+.hover-bottom-list-secondary {
+    border-bottom: 1px dashed rgb(183, 203, 216);
+}
+.hover-left-list-secondary {
+    border-left: 1px dashed rgb(183, 203, 216);
+}
+.hover-right-list-secondary {
+    border-right: 1px dashed rgb(183, 203, 216);
+}
+.hover-top-simple-secondary {
+    border-top: 1px dashed rgb(183, 203, 216);
+}
+.hover-bottom-simple-secondary {
+    border-bottom: 1px dashed rgb(183, 203, 216);
+}
+.hover-left-simple-secondary {
+    border-left: 1px dashed rgb(183, 203, 216);
+}
+.hover-right-simple-secondary {
+    border-right: 1px dashed rgb(183, 203, 216);
+}
+.hover-top-area-secondary {
+    border-top: 1px solid rgb(0,250,0);
+}
+.hover-bottom-area-secondary {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.hover-left-area-secondary {
+    border-left: 1px solid rgb(0,250,0);
+}
+.hover-right-area-secondary {
+    border-right: 1px solid rgb(0,250,0);
 }
 
 /****************************************************************************/

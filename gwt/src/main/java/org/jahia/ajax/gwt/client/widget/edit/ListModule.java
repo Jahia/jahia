@@ -39,14 +39,11 @@ public class ListModule extends ContentPanel implements Module {
     private boolean selectable;
 
     public ListModule(String id, String path, String s, String template, String scriptInfo, MainModule mainModule) {
-//        super(new FitLayout());
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
-//        setCollapsible(false);
-//        setBodyStyleName("pad-text");
         if (path.contains("/")) {
             setHeading(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
         } else {
@@ -54,10 +51,7 @@ public class ListModule extends ContentPanel implements Module {
         }
         setBorders(false);
         setBodyBorder(false);
-//        setScrollMode(Style.Scroll.AUTO);
-//        setStyleName("x-panel-listmodule");
         getHeader().addStyleName("x-panel-header-listmodule");
-//        setBodyStyleName("x-panel-body-listmodule");
         html = new HTML(s);
         add(html);
     }

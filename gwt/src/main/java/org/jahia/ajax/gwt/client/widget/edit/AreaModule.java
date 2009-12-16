@@ -36,26 +36,20 @@ public class AreaModule extends ContentPanel implements Module {
     private String nodeTypes;
 
     public AreaModule(String id, String path, String s, String template, String scriptInfo,String nodeTypes, MainModule mainModule) {
-//        super(new FitLayout());
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
         this.nodeTypes = nodeTypes;
-//        setCollapsible(false);
-//        setBodyStyleName("pad-text");
         if (path.contains("/")) {
-            setHeading(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            setHeading(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
         } else {
-            setHeading(Messages.getResource("em_content")+" : "+ path);
+            setHeading(Messages.getResource("em_area")+" : "+ path);
         }
         setBorders(false);
         setBodyBorder(false);
-//        setScrollMode(Style.Scroll.AUTO);
-//        setStyleName("x-panel-listmodule");
         getHeader().addStyleName("x-panel-header-areamodule");
-//        setBodyStyleName("x-panel-body-listmodule");
         html = new HTML(s);
         add(html);
     }

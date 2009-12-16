@@ -8,6 +8,25 @@ public class SearchServiceImpl extends SearchService {
     
     private static JahiaJCRSearchProvider searchProvider = new JahiaJCRSearchProvider(); 
 
+    /**
+     * The unique instance of this service *
+     */
+    protected static SearchServiceImpl theObject;    
+    
+    /**
+     * Returns the unique instance of this service.
+     */
+    public static SearchServiceImpl getInstance() {
+        if (theObject == null) {
+            synchronized (SearchServiceImpl.class) {
+                if (theObject == null) {
+                    theObject = new SearchServiceImpl();
+                }                
+            }
+        }
+        return theObject;
+    }    
+    
     @Override
     public SearchResponse search(SearchCriteria criteria) {
         // @TODO add logic to pick the right search provider

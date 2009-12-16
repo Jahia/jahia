@@ -1,4 +1,4 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<template:module path="introduction" template="default"/>
-<template:module path="events" autoCreateType="web_templates:eventsContainerList" />
+<template:area path="introduction" template="default"/>
+<template:area path="events" areaType="web_templates:eventsContainerList" />

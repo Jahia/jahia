@@ -90,12 +90,12 @@
             <div id="pageHeader">
                 <div id="logotop">
                     <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
-                    <template:module path="${rootPage.path}/logo"/>
+                    <template:area path="${rootPage.path}/logo"/>
                 </div>
                 <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
 
 
-                <template:module path="${rootPage.path}/topMenu" />
+                <template:area path="${rootPage.path}/topMenu" />
             </div>
 
             ${wrappedContent}
@@ -104,8 +104,7 @@
                 <c:if test="${ !empty param.footerNav}">
                     <div id="footerPart1"><!--start footerPart1-->
                         <div class="columns5">
-                            <jcr:node var="bottomLinks" path="${rootPage.path}/bottomLinks"/>
-                            <template:module node="${bottomLinks}"/>
+                            <template:area path="${rootPage.path}/bottomLinks"/>
                             <div class="clear"></div>
                         </div>
                     </div>
@@ -124,8 +123,7 @@
                         <!--start column-item -->
                         <div class="column-item1">
                             <div class="spacer">
-                                <jcr:node var="logoFooter" path="${rootPage.path}/logoFooter"/>
-                                <template:module node="${logoFooter}"/>
+                                <template:area path="${rootPage.path}/logoFooter"/>
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -140,8 +138,7 @@
                                 <!--start copyright-->
                                 <div id="copyright">
                                     <p>
-                                        <jcr:node var="footer" path="${rootPage.path}/footerContainerList"/>
-                                        <template:module node="${footer}"/>
+                                        <template:area path="${rootPage.path}/footerContainerList"/>
                                     </p>
                                 </div>
                                 <!--stop copyright-->

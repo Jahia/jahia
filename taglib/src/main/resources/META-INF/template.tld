@@ -806,11 +806,11 @@
         </description>
         <name>area</name>
         <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <description>Relative or absolute path to the node to include</description>
             <name>path</name>
-            <required>false</required>
+            <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -840,6 +840,12 @@
         <attribute>
             <description>Space separated list of allowed node types. If the node does not match any node type, it won't be displayed. Edit mode will forbid drop of any incompatible node.</description>
             <name>nodeTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Content type .</description>
+            <name>areaType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

@@ -3,6 +3,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home" />
-<template:module path="sideMenu" />
+<template:area path="sideMenu" />
 
-<template:module path="columnB_box" template="default" autoCreateType="jnt:contentList" />
+<template:area path="columnB_box" template="default" areaType="jnt:contentList" />

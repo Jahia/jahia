@@ -1,5 +1,5 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<template:module path="introduction" template="default"/>
-<template:module path="job" template="default" autoCreateType="web_templates:jobContainerList"/>
+<template:area path="introduction" template="default"/>
+<template:area path="job" template="default" areaType="web_templates:jobContainerList"/>

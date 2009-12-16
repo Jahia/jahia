@@ -83,7 +83,7 @@
                 </form>
             </div>
         </div>
-        <template:module path="jobAnswers" autoCreateType="web_templates:answerJobContainerList"/>
+        <template:area path="jobAnswers" areaType="web_templates:answerJobContainerList"/>
         
     </div>
 </div>

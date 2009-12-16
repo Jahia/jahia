@@ -41,7 +41,7 @@
     <div id="topheader"><!--start topheader-->
         <div class="container container_16">
             <div class="grid_16">
-                <div class="logotop"><a href="#"><template:module path="${rootPage.path}/logo" nodeTypes="jnt:image"/></a></div>
+                <div class="logotop"><a href="#"><template:area path="${rootPage.path}/logo"/></a></div>
             </div>
         </div>
         <div class="clear"></div>

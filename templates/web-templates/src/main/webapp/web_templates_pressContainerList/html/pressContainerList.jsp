@@ -69,8 +69,7 @@
     <ul class="pressRealeseList"><!--start pressRealeses List -->
         <c:forEach items="${results.nodes}" var="node">
             <li class="pressRealeseItem">
-                <template:module node="${node}" template="${currentResource.resolvedTemplate}"
-                                 nodeTypes="web_templates:pressContainer"/>
+                <template:module node="${node}" template="${currentResource.resolvedTemplate}" />
             </li>
         </c:forEach>
     </ul>

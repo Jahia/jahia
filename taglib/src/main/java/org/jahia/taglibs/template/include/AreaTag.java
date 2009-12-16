@@ -34,12 +34,8 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.apache.tools.ant.util.ReaderInputStream;
-import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
-import org.jahia.data.beans.ContentBean;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.render.*;
@@ -57,7 +53,6 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.*;
@@ -72,11 +67,9 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
 
-	private static Logger logger = Logger.getLogger(AreaTag.class);
+    private static Logger logger = Logger.getLogger(AreaTag.class);
 
     private String path;
-
-    private JCRNodeWrapper node;
 
     private String template;
 
@@ -85,6 +78,8 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
     private boolean editable = true;
 
     private String nodeTypes;
+
+    private String areaType = "jnt:contentList";
 
     private String forcedTemplate = null;
 
@@ -98,10 +93,6 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
         this.path = path;
     }
 
-    public void setNode(JCRNodeWrapper node) {
-        this.node = node;
-    }
-
     public void setTemplate(String template) {
         this.template = template;
     }
@@ -112,6 +103,10 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     public void setNodeTypes(String nodeTypes) {
         this.nodeTypes = nodeTypes;
+    }
+
+    public void setAreaType(String areaType) {
+        this.areaType = areaType;
     }
 
     public void setEditable(boolean editable) {
@@ -128,8 +123,8 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     @Override
     public int doStartTag() throws JspException {
-		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-		pageContext.setAttribute("org.jahia.modules.level", level != null ? level + 1 : 2, PageContext.REQUEST_SCOPE);
+        Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("org.jahia.modules.level", level != null ? level + 1 : 2, PageContext.REQUEST_SCOPE);
         return super.doStartTag();
     }
 
@@ -148,113 +143,99 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
             buffer = new StringBuffer();
 
-            try {
-	            String charset = pageContext.getResponse().getCharacterEncoding();
-	            for (Map.Entry<String, String> param : parameters.entrySet()) {
-	            	renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
-	            }
-
-	            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-	            if (currentResource != null) {
-	                templateType = currentResource.getTemplateType();
-	            }
-	            if (path != null && currentResource != null) {
-	                try {
-	                    if (!path.startsWith("/")) {
-	                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
-	                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
-	                            node = nodeWrapper.getNode(path);
-	                        } else if (!path.equals("*") && renderContext.isEditMode()) {
-	                            node = nodeWrapper.addNode(path, "jnt:contentList");
-	                            currentResource.getNode().getSession().save();
-	                        }
-	                    } else if (path.startsWith("/")) {
-                            JCRSessionWrapper session = currentResource.getNode().getSession();
-                            try {
-	                            node = (JCRNodeWrapper) session.getItem(path);
-                            } catch (PathNotFoundException e) {
-                                if (renderContext.isEditMode()) {
-                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
-                                    node = parent.addNode(StringUtils.substringAfterLast(path,"/"), "jnt:contentList");
-                                    session.save();
-                                }
-                            }
-                        }
-	                } catch (RepositoryException e) {
-	                    logger.error(e.getMessage(), e);
-	                }
-	            }
-	            if (node != null) {
-	                // add externalLinks
-
-	                if (node.getPath().endsWith("/*")) {
-	                    if (renderContext.isEditMode() && editable) {
-	                        printModuleStart("placeholder", node.getPath(), null, null);
-	                        printModuleEnd();
-	                    }
-
-	                    return EVAL_PAGE;
-	                }	                
-
-                    Resource resource = new Resource(node, templateType, template, forcedTemplate);
-
-	                if (renderContext.isEditMode() && editable) {
-	                    try {
-	                        if (node.isNodeType("jmix:link")) {
-	                            // no placeholder at all for links
-	                            render(renderContext, resource);
-	                        } else {
-                                Script script = null;
-                                try {
-                                    script = RenderService.getInstance().resolveScript(resource, renderContext);
-                                    printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
-                                } catch (TemplateNotFoundException e) {
-                                    printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), "Script not found");
-                                }
-
-	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
-                                    @Override
-                                    public boolean isNodeType(String s) throws RepositoryException {
-                                        return nodeTypes == null ? super.isNodeType(s): nodeTypes.contains(s);
-                                    }
-
-                                    @Override
-	                                public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-	                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
-	                                    return new EditablePropertyWrapper(p);
-	                                }
-	                            };
-	                            resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
-                                if(nodeTypes!=null) {
-                                    pageContext.setAttribute("areaNodeTypesRestriction",nodeTypes,PageContext.REQUEST_SCOPE);
-                                    pageContext.setAttribute("areaNodeTypesRestrictionLevel",pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE),PageContext.REQUEST_SCOPE);
-                                }
-	                            render(renderContext, resource);
-                                if(nodeTypes!=null) {
-                                    pageContext.removeAttribute("areaNodeTypesRestriction",PageContext.REQUEST_SCOPE);
-                                    pageContext.removeAttribute("areaNodeTypesRestrictionLevel",PageContext.REQUEST_SCOPE);
-                                }
-	                            printModuleEnd();
-	                        }
-	                    } catch (RepositoryException e) {
-	                        logger.error(e.getMessage(), e);
-	                    }
-	                } else {
-	                    render(renderContext, resource);
-	                }
-	            }
-            } finally {
-            	renderContext.getModuleParams().clear();
-            	renderContext.getModuleParams().putAll(oldParams);
+            String charset = pageContext.getResponse().getCharacterEncoding();
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
             }
+
+            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+            if (currentResource != null) {
+                templateType = currentResource.getTemplateType();
+            }
+            JCRNodeWrapper node = null;
+
+            if (!path.startsWith("/")) {
+                JCRNodeWrapper nodeWrapper = currentResource.getNode();
+                if (!path.equals("*") && nodeWrapper.hasNode(path)) {
+                    node = nodeWrapper.getNode(path);
+                } else if (!path.equals("*") && renderContext.isEditMode()) {
+                    node = nodeWrapper.addNode(path, areaType);
+                    currentResource.getNode().getSession().save();
+                }
+            } else if (path.startsWith("/")) {
+                JCRSessionWrapper session = currentResource.getNode().getSession();
+                try {
+                    node = (JCRNodeWrapper) session.getItem(path);
+                } catch (PathNotFoundException e) {
+                    if (renderContext.isEditMode()) {
+                        JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+                        node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
+                        session.save();
+                    }
+                }
+            }
+            if (node != null) {
+                if (node.getPath().endsWith("/*")) {
+                    if (renderContext.isEditMode() && editable) {
+                        printModuleStart("placeholder", node.getPath(), null, null);
+                        printModuleEnd();
+                    }
+
+                    return EVAL_PAGE;
+                }
+
+                Resource resource = new Resource(node, templateType, template, forcedTemplate);
+
+                if (renderContext.isEditMode() && editable) {
+                    if (node.isNodeType("jmix:link")) {
+                        // no placeholder at all for links
+                        render(renderContext, resource);
+                    } else {
+                        Script script = null;
+                        try {
+                            script = RenderService.getInstance().resolveScript(resource, renderContext);
+                            printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                        } catch (TemplateNotFoundException e) {
+                            printModuleStart("area", node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                        }
+
+                        JCRNodeWrapper w = new JCRNodeDecorator(node) {
+                            @Override
+                            public boolean isNodeType(String s) throws RepositoryException {
+                                return nodeTypes == null ? super.isNodeType(s) : nodeTypes.contains(s);
+                            }
+
+                            @Override
+                            public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
+                                JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
+                                return new EditablePropertyWrapper(p);
+                            }
+                        };
+                        resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
+                        if (nodeTypes != null) {
+                            pageContext.setAttribute("areaNodeTypesRestriction", nodeTypes, PageContext.REQUEST_SCOPE);
+                            pageContext.setAttribute("areaNodeTypesRestrictionLevel", pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE), PageContext.REQUEST_SCOPE);
+                        }
+                        render(renderContext, resource);
+                        if (nodeTypes != null) {
+                            pageContext.removeAttribute("areaNodeTypesRestriction", PageContext.REQUEST_SCOPE);
+                            pageContext.removeAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
+                        }
+                        printModuleEnd();
+                    }
+                } else {
+                    render(renderContext, resource);
+                }
+            }
+        } catch (RepositoryException ex) {
+            throw new JspException(ex);
         } catch (IOException ex) {
             throw new JspException(ex);
         } finally {
             if (var != null) {
-                pageContext.setAttribute(var,buffer);
+                pageContext.setAttribute(var, buffer);
             }
             path = null;
-            node = null;
             template = null;
             forcedTemplate = null;
             editable = true;
@@ -263,11 +244,12 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
             var = null;
             buffer = null;
             parameters.clear();
+            areaType = "jnt:contentList";
 
-    		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-    		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
-
+            Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1, PageContext.REQUEST_SCOPE);
         }
+
         return EVAL_PAGE;
     }
 
@@ -292,7 +274,7 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     }
 
-    private void printModuleEnd()  throws IOException {
+    private void printModuleEnd() throws IOException {
         buffer.append("</div>");
         if (var == null) {
             pageContext.getOut().print(buffer);
@@ -321,8 +303,8 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     }
 
-	public void addParameter(String name, String value) {
-		parameters.put(name, value);
+    public void addParameter(String name, String value) {
+        parameters.put(name, value);
     }
 
     /**

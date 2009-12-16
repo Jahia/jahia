@@ -1,2 +1,2 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:module path="columnB_box" autoCreateType="jnt:contentList"/>
+<template:area path="columnB_box" areaType="jnt:contentList"/>

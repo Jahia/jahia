@@ -92,8 +92,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private String templateWrapper = null;
 
-    private String autoCreateType = null;
-
     private String var = null;
 
     private StringBuffer buffer = new StringBuffer();
@@ -140,10 +138,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setTemplateWrapper(String templateWrapper) {
         this.templateWrapper = templateWrapper;
-    }
-
-    public void setAutoCreateType(String autoCreateType) {
-        this.autoCreateType = autoCreateType;
     }
 
     public void setVar(String var) {
@@ -204,9 +198,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
 	                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
 	                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
-	                        } else if (!path.equals("*") && renderContext.isEditMode() && autoCreateType != null) {
-	                            node = nodeWrapper.addNode(path, autoCreateType);
-	                            nodeWrapper.save();
 	                        } else if (!path.equals("*") && renderContext.isEditMode() && importString != null) {
                                 Session session = nodeWrapper.getSession();
                                 session.importXML(nodeWrapper.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
@@ -225,11 +216,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             try {
 	                            node = (JCRNodeWrapper) session.getItem(path);
                             } catch (PathNotFoundException e) {
-                                if (renderContext.isEditMode() && autoCreateType != null) {
-                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
-                                    node = parent.addNode(StringUtils.substringAfterLast(path,"/"), autoCreateType);
-                                    session.save();
-                                } else if (renderContext.isEditMode() && importString != null) {
+                                //todo remove auto-import
+                                if (renderContext.isEditMode() && importString != null) {
                                     JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
                                     session.importXML(parent.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                     session.save();
@@ -351,7 +339,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             editable = true;
             templateType = "html";
             nodeTypes = null;
-            autoCreateType = null;
             var = null;
             buffer = null;
             importString = null;

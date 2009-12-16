@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -36,6 +37,7 @@ import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.DocumentProperty;
+import org.jahia.services.search.SearchCriteria.SearchMode;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
@@ -71,34 +73,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         String path = row.getValue(JcrConstants.JCR_PATH)
                                 .getString();
                         JCRNodeWrapper node = session.getNode(path);
-                        AbstractHit searchHit = null;
-                        if (node.isFile()) {
-                            FileHit fileHit = new FileHit(node);
-                            searchHit = fileHit;
-                        } else {
-                            PageHit pageHit = new PageHit(node);
-                            JCRNodeWrapper pageNode = node;
-                            while (pageNode != null
-                                    && !pageNode
-                                            .isNodeType(Constants.JAHIANT_PAGE)) {
-                                pageNode = pageNode.getParent();
-                            }
-                            if (pageNode != null) {
-                                pageHit.setPage(pageNode);
-                            }
-                            searchHit = pageHit;
+                        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                            node = node.getParent();
                         }
-
-                        searchHit.setScore((float) (row.getValue(
-                                JcrConstants.JCR_SCORE).getDouble() / 1000.));
-
-                        // this is Jackrabbit specific, so if other implementations
-                        // throw exceptions, we have to do a check here
-                        Value excerpt = row
-                                .getValue("rep:excerpt(jcr:content)");
-                        if (excerpt != null) {
-                            searchHit.setExcerpt(excerpt.getString());
-                        }
+                        AbstractHit searchHit = buildHit(row, node);
 
                         results.add(searchHit);
                     } catch (Exception e) {
@@ -112,6 +90,38 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         }
 
         return response;
+    }
+    
+    private AbstractHit buildHit(Row row, JCRNodeWrapper node) throws RepositoryException {
+        AbstractHit searchHit = null;
+        if (node.isFile()) {
+            FileHit fileHit = new FileHit(node);
+            searchHit = fileHit;
+        } else {
+            PageHit pageHit = new PageHit(node);
+            JCRNodeWrapper pageNode = node;
+            while (pageNode != null
+                    && !pageNode
+                            .isNodeType(Constants.JAHIANT_PAGE)) {
+                pageNode = pageNode.getParent();
+            }
+            if (pageNode != null) {
+                pageHit.setPage(pageNode);
+            }
+            searchHit = pageHit;
+        }
+
+        searchHit.setScore((float) (row.getValue(
+                JcrConstants.JCR_SCORE).getDouble() / 1000.));
+
+        // this is Jackrabbit specific, so if other implementations
+        // throw exceptions, we have to do a check here
+        Value excerpt = row
+                .getValue("rep:excerpt(.)");
+        if (excerpt != null) {
+            searchHit.setExcerpt(excerpt.getString());
+        }
+        return searchHit;
     }
 
     private String buildXpathQuery(SearchCriteria params) {
@@ -145,10 +155,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             }
             query.append(jcrPath.toString()).append("element(").append(
                     lastFolder).append(",").append(
-                    getNodeType(params.getDocumentType())).append(")");
+                    getNodeType(params)).append(")");
         } else {
             query.append("//element(*,").append(
-                    getNodeType(params.getDocumentType())).append(")");
+                    getNodeType(params)).append(")");
         }
 
         query = appendConstraints(params, query);
@@ -159,9 +169,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return xpathQuery;
     }
 
-    private String getNodeType(String docType) {
-        return docType != null && docType.length() > 0 ? docType
-                : "nt:hierarchyNode";
+    private String getNodeType(SearchCriteria params) {
+        return StringUtils.isEmpty(params.getDocumentType()) ? (params
+                .getMode().equals(SearchMode.FILES) ? "nt:hierarchyNode"
+                : "nt:base") : params.getDocumentType();
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
@@ -388,31 +399,35 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
-
-                if (searchFields.isContent()) {
+                if (params.getMode().equals(SearchMode.FILES)) {
+                    if (searchFields.isContent()) {
+                        addConstraint(textSearchConstraints, "or",
+                                "jcr:contains(jcr:content, " + searchExpression
+                                        + ")");
+                    }
+                    if (searchFields.isDescription()) {
+                        addConstraint(textSearchConstraints, "or",
+                                "jcr:contains(@jcr:description, "
+                                        + searchExpression + ")");
+                    }
+                    if (searchFields.isDocumentTitle()) {
+                        addConstraint(textSearchConstraints, "or",
+                                "jcr:contains(@jcr:title, " + searchExpression
+                                        + ")");
+                    }
+                    if (searchFields.isKeywords()) {
+                        addConstraint(textSearchConstraints, "or",
+                                "jcr:contains(@j:keywords, " + searchExpression
+                                        + ")");
+                    }
+                    if (searchFields.isFilename()) {
+                        addConstraint(textSearchConstraints, "or",
+                                "jcr:contains(@j:filename, " + searchExpression
+                                        + ")");
+                    }
+                } else {
                     addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(jcr:content, " + searchExpression
-                                    + ")");
-                }
-                if (searchFields.isDescription()) {
-                    addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(@jcr:description, "
-                                    + searchExpression + ")");
-                }
-                if (searchFields.isDocumentTitle()) {
-                    addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(@jcr:title, " + searchExpression
-                                    + ")");
-                }
-                if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(@j:keywords, " + searchExpression
-                                    + ")");
-                }
-                if (searchFields.isFilename()) {
-                    addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(@j:filename, " + searchExpression
-                                    + ")");
+                            "jcr:contains(., " + searchExpression + ")");
                 }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("

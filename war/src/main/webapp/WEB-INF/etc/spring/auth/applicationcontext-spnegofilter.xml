@@ -4,23 +4,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
-  <bean name="spnegoProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    <property name="properties">
-      <props>
-        <!-- Use this parameter to deactivate SPNEGO authentication. If
-             SPNEGO authentication is activated, you will only be able
-             to log on using this method, or by using Basic authentication
-             if the enableBasic parameter is set to true.
-        -->
-        <prop key="http.skipAuthentification">true</prop>
-        <!-- This parameter controls whether the detected BASIC authentication passed
-             over to the filter will be used to do an SMB login. Set this to true if
-             you want to use BASIC authentication to login on your domain controller,
-             and set to false if you want Jahia to handle the basic authentication.
-        -->              
-        <prop key="http.useBasic">true</prop>
-      </props>
-  	</property>
+  <bean id="SpnegoHttpFilter" class="org.jahia.bin.filters.spnego.SpnegoHttpFilter">
+  	<property name="enabled" value="${spnegoFilter.enabled}"/>
+    <!-- Use this parameter to deactivate SPNEGO authentication. If
+         SPNEGO authentication is activated, you will only be able
+         to log on using this method, or by using Basic authentication
+         if the useBasic parameter is set to true.
+    -->
+    <property name="skipAuthentication" value="true"/>
+    <!-- This parameter controls whether the detected BASIC authentication passed
+         over to the filter will be used to do an SMB login. Set this to true if
+         you want to use BASIC authentication to login on your domain controller,
+         and set to false if you want Jahia to handle the basic authentication.
+    -->              
+    <property name="useBasic" value="true"/>
   </bean>
          
 </beans>

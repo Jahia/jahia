@@ -325,6 +325,20 @@ pageGenerationWaitTimeOnStartup                        = 10000
 suggestedRetryTimeAfterTimeoutOnStartup                = 15
 
 ######################################################################
+### NTLM Authentication config #######################################
+######################################################################
+# Enable the NtlmHttpFilter and adjust its configuration in the
+# applicationcontext-ntlmfilter.xml file
+ntlmFilter.enabled                                     = false
+
+######################################################################
+### SPNEGO Authentication config #####################################
+######################################################################
+# Enable the SpnegoHttpFilter and adjust its configuration in the
+# applicationcontext-spnegofilter.xml file
+spnegoFilter.enabled                                   = false
+
+######################################################################
 ### CAS Authentication config ########################################
 ######################################################################
 # You can configure here the CAS authentication sub-system. First

@@ -44,8 +44,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Servlet filter for setting proper cache control response headers, based on
@@ -53,10 +53,9 @@ import org.apache.log4j.Logger;
  * 
  * @author Sergiy Shyrkov
  */
-public class ResponseCacheControlFilter implements Filter {
+public class ResponseCacheControlFilter implements Filter, InitializingBean {
 
-    private static final Logger logger = Logger
-            .getLogger(ResponseCacheControlFilter.class);
+    private static final Logger logger = Logger.getLogger(ResponseCacheControlFilter.class);
 
     private Pattern cachedResources;
 
@@ -68,40 +67,41 @@ public class ResponseCacheControlFilter implements Filter {
 
     private Pattern noCacheResources;
 
+    private boolean enabled;
+
     public void destroy() {
         // do nothing
     }
 
-    public void doFilter(ServletRequest servletRequest,
-            ServletResponse servletResponse, FilterChain filterChain)
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        String uri = request.getRequestURI();
-        // logger.info("Resource requested: " + uri);
-        if (noCacheResources.matcher(uri).matches()) {
-            setNoCacheHeaders(response);
+        if (enabled) {
+            HttpServletRequest request = (HttpServletRequest) servletRequest;
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            String uri = request.getRequestURI();
             if (logger.isDebugEnabled()) {
-                logger.debug("Disabling cache for '" + uri + "'");
+                 logger.debug("Resource requested: " + uri);
             }
-        } else if (neverExpires > 0
-                && foreverCachedResources.matcher(uri).matches()) {
-            setCacheHeaders(neverExpires, response);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Long-term caching enabled for '" + uri + "'");
-            }
-        } else if (expires > 0 && cachedResources.matcher(uri).matches()) {
-            setCacheHeaders(expires, response);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Caching enabled for '" + uri + "'");
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger
-                        .debug("URI '"
-                                + uri
-                                + "' does not match any pattern or expires valueas are set to '0'");
+            if (noCacheResources.matcher(uri).matches()) {
+                setNoCacheHeaders(response);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Disabling cache for '" + uri + "'");
+                }
+            } else if (neverExpires > 0 && foreverCachedResources.matcher(uri).matches()) {
+                setCacheHeaders(neverExpires, response);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Long-term caching enabled for '" + uri + "'");
+                }
+            } else if (expires > 0 && cachedResources.matcher(uri).matches()) {
+                setCacheHeaders(expires, response);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Caching enabled for '" + uri + "'");
+                }
+            } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("URI '" + uri + "' does not match any pattern or expires values are set to '0'");
+                }
             }
         }
 
@@ -109,42 +109,58 @@ public class ResponseCacheControlFilter implements Filter {
     }
 
     public void init(FilterConfig config) throws ServletException {
-        expires = NumberUtils.toLong(config.getInitParameter("Expires"), 0);
-        neverExpires = NumberUtils.toLong(config
-                .getInitParameter("Never-Expires"), 0);
-
-        String pattern = config.getInitParameter("cachedResources");
-        cachedResources = StringUtils.isNotBlank(pattern) ? Pattern
-                .compile(pattern.trim()) : null;
-
-        pattern = config.getInitParameter("foreverCachedResources");
-        foreverCachedResources = StringUtils.isNotBlank(pattern) ? Pattern
-                .compile(pattern.trim()) : null;
-
-        pattern = config.getInitParameter("noCacheResources");
-        noCacheResources = StringUtils.isNotBlank(pattern) ? Pattern
-                .compile(pattern.trim()) : null;
-
-        logger.info("Filter started using following configuration: "
-                + "expires=" + expires + " ms, neverExpires=" + neverExpires
-                + " ms, cachedResources=" + cachedResources.pattern()
-                + ", foreverCachedResources="
-                + foreverCachedResources.pattern() + ", noCacheResources="
-                + noCacheResources.pattern());
+        // do nothing
     }
 
     private void setCacheHeaders(long expires, HttpServletResponse response) {
         response.setHeader("Cache-Control", "public, max-age=" + expires);
-        response.setDateHeader("Expires", System.currentTimeMillis() + expires
-                * 1000L);
+        response.setDateHeader("Expires", System.currentTimeMillis() + expires * 1000L);
     }
 
     public static void setNoCacheHeaders(HttpServletResponse response) {
-        /*response
-                .setHeader("Cache-Control",
-                        "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");*/
-        response.setHeader("Pragma", "no-cache"); 
-        //response.setDateHeader("Expires", 295075800000L);
+        /*
+         * response .setHeader("Cache-Control",
+         * "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
+         */
+        response.setHeader("Pragma", "no-cache");
+        // response.setDateHeader("Expires", 295075800000L);
+    }
+
+    public void setCachedResources(String cachedResources) {
+        this.cachedResources = StringUtils.isNotBlank(cachedResources) ? Pattern.compile(cachedResources.trim()) : null;
+    }
+
+    public void setExpires(long expires) {
+        this.expires = expires;
+    }
+
+    public void setForeverCachedResources(String foreverCachedResources) {
+        this.foreverCachedResources = StringUtils.isNotBlank(foreverCachedResources) ? Pattern
+                .compile(foreverCachedResources.trim()) : null;
+    }
+
+    public void setNeverExpires(long neverExpires) {
+        this.neverExpires = neverExpires;
+    }
+
+    public void setNoCacheResources(String noCacheResources) {
+        this.noCacheResources = StringUtils.isNotBlank(noCacheResources) ? Pattern.compile(noCacheResources.trim())
+                : null;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (enabled) {
+            logger.info("ResponseCacheControlFilter started using following configuration: " + "expires=" + expires
+                    + " ms, neverExpires=" + neverExpires + " ms, cachedResources=" + cachedResources.pattern()
+                    + ", foreverCachedResources=" + foreverCachedResources.pattern() + ", noCacheResources="
+                    + noCacheResources.pattern());
+        } else {
+            logger.info("ResponseCacheControlFilter is disabled");
+        }
     }
 
 }

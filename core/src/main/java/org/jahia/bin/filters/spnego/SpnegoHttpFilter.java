@@ -47,7 +47,6 @@ package org.jahia.bin.filters.spnego;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Properties;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -62,7 +61,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.security.spnego.SpnegoAuthenticator;
 
 /**
@@ -80,8 +78,10 @@ public class SpnegoHttpFilter implements Filter {
 
     public static final String SSOAUTHENTICATOR_KEY = "SSOAuthenticator";
     
-    private boolean skipAuthentification;
+    private boolean skipAuthentication;
     private boolean useBasic;    
+    
+    private boolean enabled;
     
     /**
      * {@inheritDoc}
@@ -95,46 +95,44 @@ public class SpnegoHttpFilter implements Filter {
      */
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-
-        HttpServletResponse resp = (HttpServletResponse) response;
-        HttpServletRequest req = (HttpServletRequest) request;
-        Principal principal = null;
-        if ((principal = authenticate(req, resp)) == null) {
-            if (!skipAuthentification || resp.isCommitted()) {
-                if (!resp.isCommitted()) {
-                    if (useBasic) {
-                        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                    } else {
-                        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                                "SPNEGO could not authenticate and authentication is configured to not be skipped");
+        
+        if (!enabled) {
+            chain.doFilter(request, response);
+        } else {
+            HttpServletResponse resp = (HttpServletResponse) response;
+            HttpServletRequest req = (HttpServletRequest) request;
+            Principal principal = null;
+            if ((principal = authenticate(req, resp)) == null) {
+                if (!skipAuthentication || resp.isCommitted()) {
+                    if (!resp.isCommitted()) {
+                        if (useBasic) {
+                            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                        } else {
+                            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                                    "SPNEGO could not authenticate and authentication is configured to not be skipped");
+                        }
                     }
+                    return;
                 }
-                return;
             }
+    
+            Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
+            if (isBasicBool == null) {
+                isBasicBool = Boolean.FALSE;
+            }
+            boolean useSpnegoRequest = principal != null
+                    && !(isBasicBool.booleanValue() && !useBasic) ? true : false;
+    
+            chain.doFilter(useSpnegoRequest ? new SpnegoHttpServletRequest(req,
+                principal) : req, response);
         }
-
-        Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
-        if (isBasicBool == null) {
-            isBasicBool = Boolean.FALSE;
-        }
-        boolean useSpnegoRequest = principal != null
-                && !(isBasicBool.booleanValue() && !useBasic) ? true : false;
-
-        chain.doFilter(useSpnegoRequest ? new SpnegoHttpServletRequest(req,
-            principal) : req, response);
     }
 
     /**
      * {@inheritDoc}
      */
     public void init(FilterConfig filterConfig) throws ServletException {
-        Properties spnegoConfig = (Properties) SpringContextSingleton
-                .getInstance().getContext().getBean("spnegoProperties");
-        skipAuthentification = Boolean.valueOf(
-                spnegoConfig.getProperty("http.skipAuthentification"))
-                .booleanValue();
-        useBasic = Boolean.valueOf(spnegoConfig.getProperty("http.useBasic"))
-                .booleanValue();        
+        // do nothing
     }
 
     /**
@@ -277,6 +275,18 @@ public class SpnegoHttpFilter implements Filter {
         return this.principal;
       }
       
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setSkipAuthentication(boolean skipAuthentication) {
+        this.skipAuthentication = skipAuthentication;
+    }
+
+    public void setUseBasic(boolean useBasic) {
+        this.useBasic = useBasic;
     }
     
   }

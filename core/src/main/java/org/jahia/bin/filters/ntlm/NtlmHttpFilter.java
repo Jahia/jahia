@@ -74,11 +74,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * This servlet Filter can be used to negotiate password hashes with
@@ -93,7 +92,7 @@ import java.util.Properties;
  * in the original.
  */
 
-public class NtlmHttpFilter implements Filter {
+public class NtlmHttpFilter implements Filter, InitializingBean {
 
     private static LogStream log = LogStream.getInstance();
 
@@ -105,88 +104,58 @@ public class NtlmHttpFilter implements Filter {
     private boolean insecureBasic;
     private String realm;
     private boolean skipAuthentification;
+    
+    private boolean enabled;
+    
+    private Map<String, String> properties;
 
     public void init( FilterConfig filterConfig ) throws ServletException {
-        int level;
-
-        /* Set jcifs properties we know we want; soTimeout and cachePolicy to 10min.
-         */
-        Config.setProperty( "jcifs.smb.client.soTimeout", "300000" );
-        Config.setProperty( "jcifs.netbios.cachePolicy", "1200" );
-        for (Map.Entry<Object, Object> property : ((Properties) SpringContextSingleton
-                .getInstance().getContext().getBean("jcifsProperties"))
-                .entrySet()) {
-            Config.setProperty((String) property.getKey(), (String) property
-                    .getValue());
-        }
-        defaultDomain = Config.getProperty("jcifs.smb.client.domain");
-        domainController = Config.getProperty( "jcifs.http.domainController" );
-        if( domainController == null ) {
-            domainController = defaultDomain;
-            loadBalance = Config.getBoolean( "jcifs.http.loadBalance", true );
-        }
-        enableBasic = Boolean.valueOf(
-                Config.getProperty("jcifs.http.enableBasic")).booleanValue();
-        useBasic = Boolean.valueOf(
-                Config.getProperty("jcifs.http.useBasic")).booleanValue();
-        insecureBasic = Boolean.valueOf(
-                Config.getProperty("jcifs.http.insecureBasic")).booleanValue();
-        realm = Config.getProperty("jcifs.http.basicRealm");
-        if (realm == null) realm = "jCIFS";
-
-        skipAuthentification = Boolean.valueOf(
-                Config.getProperty("jcifs.http.skipAuthentification")).booleanValue();
-
-        if(( level = Config.getInt( "jcifs.util.loglevel", -1 )) != -1 ) {
-            LogStream.setLevel( level );
-        }
-        if( LogStream.level > 2 ) {
-            try {
-                Config.store( log, "JCIFS PROPERTIES" );
-            } catch( IOException ioe ) {
-            }
-        }
+        // do nothing
     }
 
     public void destroy() {
+        // do nothing
     }
 
     /**
      * This method simply calls <tt>negotiate( req, resp, false )</tt>
      * and then <tt>chain.doFilter</tt>. You can override and call
-     * negotiate manually to achive a variety of different behavior.
+     * negotiate manually to achieve a variety of different behavior.
      */
     public void doFilter( ServletRequest request,
                 ServletResponse response,
                 FilterChain chain ) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse resp = (HttpServletResponse)response;
-        NtlmPasswordAuthentication ntlm;
-
-        if ((ntlm = negotiate( req, resp, skipAuthentification )) == null) {
-            if (!skipAuthentification) {
-                return;
-            }
-        }
-
-        Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
-        if (isBasicBool == null) {
-            isBasicBool = Boolean.FALSE;
-        }
-        boolean useNtlmRequest = false;
-        if (ntlm != null) {
-            useNtlmRequest = true;
-        }
-        if (isBasicBool.booleanValue() && !useBasic) {
-            useNtlmRequest = false;
-        }
-
-        if (useNtlmRequest) {
-            req.setAttribute("ntlmPrincipal", ntlm);
-            req.setAttribute("ntlmAuthType", "NTLM");
-            chain.doFilter( req, response );
+        
+        if (!enabled) {
+            chain.doFilter(request, response);
         } else {
-            chain.doFilter(req, response);
+            HttpServletRequest req = (HttpServletRequest)request;
+            HttpServletResponse resp = (HttpServletResponse)response;
+            NtlmPasswordAuthentication ntlm;
+        
+            if ((ntlm = negotiate( req, resp, skipAuthentification )) == null) {
+                if (!skipAuthentification) {
+                    return;
+                }
+            }
+        
+            Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
+            if (isBasicBool == null) {
+                isBasicBool = Boolean.FALSE;
+            }
+            boolean useNtlmRequest = false;
+            if (ntlm != null) {
+                useNtlmRequest = true;
+            }
+            if (isBasicBool.booleanValue() && !useBasic) {
+                useNtlmRequest = false;
+            }
+        
+            if (useNtlmRequest) {
+                req.setAttribute("ntlmPrincipal", ntlm);
+                req.setAttribute("ntlmAuthType", "NTLM");
+            }
+            chain.doFilter(request, response);
         }
     }
 
@@ -318,5 +287,52 @@ public class NtlmHttpFilter implements Filter {
     }
     public FilterConfig getFilterConfig() {
         return null;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (!enabled) {
+            return;
+        }
+        
+        int level;
+
+        for (Map.Entry<String, String> property : properties.entrySet()) {
+            Config.setProperty(property.getKey(), property.getValue());
+        }
+        defaultDomain = Config.getProperty("jcifs.smb.client.domain");
+        domainController = Config.getProperty( "jcifs.http.domainController" );
+        if( domainController == null ) {
+            domainController = defaultDomain;
+            loadBalance = Config.getBoolean( "jcifs.http.loadBalance", true );
+        }
+        enableBasic = Boolean.valueOf(
+                Config.getProperty("jcifs.http.enableBasic")).booleanValue();
+        useBasic = Boolean.valueOf(
+                Config.getProperty("jcifs.http.useBasic")).booleanValue();
+        insecureBasic = Boolean.valueOf(
+                Config.getProperty("jcifs.http.insecureBasic")).booleanValue();
+        realm = Config.getProperty("jcifs.http.basicRealm");
+        if (realm == null) realm = "jCIFS";
+
+        skipAuthentification = Boolean.valueOf(
+                Config.getProperty("jcifs.http.skipAuthentification")).booleanValue();
+
+        if(( level = Config.getInt( "jcifs.util.loglevel", -1 )) != -1 ) {
+            LogStream.setLevel( level );
+        }
+        if( LogStream.level > 2 ) {
+            try {
+                Config.store( log, "JCIFS PROPERTIES" );
+            } catch( IOException ioe ) {
+            }
+        }
     }
 }

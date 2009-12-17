@@ -112,7 +112,7 @@
 
 [jmix:hierarchyNode] > mix:referenceable mixin
  - j:nodename (string) protected hidden
- - j:fullpath (string) protected hidden
+ - j:fullpath (string) protected hidden nofulltext
 
 [jmix:collection] mixin
 

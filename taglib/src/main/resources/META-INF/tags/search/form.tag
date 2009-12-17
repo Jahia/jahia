@@ -33,8 +33,6 @@
 --%>
 <%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the search controls." %>
 <%@ tag dynamic-attributes="attributes"%>
-<%@ attribute name="searchFor" required="false" type="java.lang.String"
-              description="Specifies the search mode: pages or files. [pages]" %>
 <%@ attribute name="resultsPage" required="false" type="java.lang.String"
               description="You can set the target JSP template to be used after form submit. By default the JSP page is used, which is configured in the search-results element of the template deployment descriptor (templates.xml) for the current template set. The special keyword - this - can be used to identify the current page (the page will be preserved after form submit)." %>
 <jsp:useBean id="searchTermIndexes" class="java.util.HashMap" scope="request"/>
@@ -57,7 +55,6 @@
     <s:resultsPageUrl var="resultsPage"/>
 </c:if>
 <form ${functions:attributes(attributes)}>
-    <input type="hidden" name="src_mode" value="${fn:escapeXml(searchFor)}"/>
     <c:if test="${not empty resultsPage && resultsPage != 'this'}">
         <input type="hidden" name="template" value="${fn:escapeXml(resultsPage)}"/>
     </c:if>

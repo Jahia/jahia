@@ -130,7 +130,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     propertyNameBuilder.append(":");
                 }
                 propertyNameBuilder.append(propertyName.getLocalName());
-                propDef = nodeType.getPropertyDefinition(propertyNameBuilder
+                propDef = nodeType.getPropertyDefinitionsAsMap().get(propertyNameBuilder
                         .toString());
             } catch (RepositoryException e) {
                 logger.debug(e.getMessage(), e);

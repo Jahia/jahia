@@ -31,37 +31,28 @@
  */
 package org.jahia.taglibs.utility;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 
 /**
- * Simple tag in order to allow the template developper to output some information without having to wirte scriptlet
- * code in his/her jsp files.
+ * Simple tag in order to allow the template developer to output some information without having to write scriptlet
+ * code in his/her JSP files.
  *
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
 public class LoggerTag extends AbstractJahiaTag {
 
-    public static final String LOGGER_NAME = "jsp.jahia.templates.Logger";
-    private static final transient Logger logger = Logger.getLogger(LOGGER_NAME);
+    private static final transient Logger logger = Logger.getLogger("jsp.jahia.templates.Logger");
 
     private String level;
     private String value;
 
-    public String getLevel() {
-        return level;
-    }
-
     public void setLevel(String level) {
         this.level = level;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public void setValue(final String value) {
@@ -69,28 +60,9 @@ public class LoggerTag extends AbstractJahiaTag {
     }
 
     public int doStartTag() throws JspException {
-        final String lowerCaseLevel = level.toLowerCase();
-
-        if (lowerCaseLevel.equals("debug")) {
-            logger.debug(value);
-
-        } else if (lowerCaseLevel.equals("info")) {
-            logger.info(value);
-
-        } else if (lowerCaseLevel.equals("warn")) {
-            logger.warn(value);
-
-        } else if (lowerCaseLevel.equals("error")) {
-            logger.error(value);
-
-        } else if (lowerCaseLevel.equals("fatal")) {
-            logger.fatal(value);
-
-        } else {
-            throw new JspTagException("Unknown value for attribute 'level' : " +
-                    level + ". Allowed values are 'debug', 'info', 'warn', 'error' and 'fatal'");
-        }
-
+        
+        logger.log(Level.toLevel(level), value);
+        
         return SKIP_BODY;
     }
 

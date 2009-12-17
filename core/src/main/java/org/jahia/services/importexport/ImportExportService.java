@@ -100,9 +100,7 @@ public interface ImportExportService {
 
     void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, RepositoryException, IOException, SAXException;
 
-    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException;
-
-    void exportZip(JCRNodeWrapper node, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException;
+    void exportZip(JCRNodeWrapper node, OutputStream out) throws JahiaException, RepositoryException, SAXException, IOException;
 
     // Import
 

@@ -32,8 +32,13 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.NodeImpl;
+import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.impl.common.ReaderInputStream;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -41,6 +46,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -51,6 +57,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -110,6 +117,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
         this.archive = archive;
         this.fileList = fileList;
+        this.siteKey = siteKey;
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
@@ -179,7 +187,36 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
                         nodes.peek().addMixin("jmix:accessControlled");
                     }
-                    child = nodes.peek().addNode(decodedQName, pt);
+
+                    String uuid = atts.getValue("jcr:uuid");
+                    if (uuid != null && uuid.length() > 0) {
+                        switch (uuidBehavior) {
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
+                                try {
+                                    session.getNodeByUUID(uuid);
+                                    throw new ItemExistsException(uuid);
+                                } catch (ItemNotFoundException e) {
+                                }
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                //todo implement uuid behaviour cases
+
+                                if (nodes.peek().getRealNode() instanceof NodeImpl) {
+                                    Name name = NameFactoryImpl.getInstance().create(namespaceURI,decodedLocalName);
+                                    org.jahia.services.content.nodetypes.Name jahiaName = NodeTypeRegistry.getInstance().getNodeType(pt).getNameObject();                                   
+                                    Name typeName = NameFactoryImpl.getInstance().create(jahiaName.getUri(), jahiaName.getLocalName());
+                                    ((NodeImpl)nodes.peek().getRealNode()).addNode(name, typeName, NodeId.valueOf(uuid));
+                                    child = session.getNode(path);
+                                    break;
+                                }
+                            default:
+                                child = nodes.peek().addNode(decodedQName, pt);
+                        }
+                    } else {
+                        child = nodes.peek().addNode(decodedQName, pt);
+                    }
+
+
 
                     addMixins(child, atts);
 
@@ -252,18 +289,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 // nodeType = attrValue; // ?
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
             } else if (attrName.equals(Constants.JCR_UUID)) {
-                switch (uuidBehavior) {
-                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
-                        try {
-                            session.getNodeByUUID(attrValue);
-                            throw new ItemExistsException(attrValue);
-                        } catch (ItemNotFoundException e) {
-                        }
-                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
-                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
-                        //todo implement uuid behaviour cases
-                        break;
-                }
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {

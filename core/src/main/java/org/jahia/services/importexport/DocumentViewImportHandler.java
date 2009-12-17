@@ -46,10 +46,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,7 +63,7 @@ import java.util.*;
 public class DocumentViewImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(DocumentViewImportHandler.class);
 
-    private ProcessingContext jParams;
+    private String siteKey;
 
     private File archive;
     private NoCloseZipInputStream zis;
@@ -86,14 +83,24 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private int error = 0;
 
+    private boolean noRoot = false;
+    private int uuidBehavior = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
+
     private JCRSessionWrapper session;
 
-    public DocumentViewImportHandler(JCRSessionWrapper session, File archive, List<String> fileList, ProcessingContext jParams) throws IOException {
-        this.jParams = jParams;
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
+        this(session, rootPath, null,null,siteKey);
+    }
+
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList, String siteKey) throws IOException {
         JCRNodeWrapper node = null;
         try {
             this.session = session;
-            node = (JCRNodeWrapper) session.getRootNode();
+            if (rootPath == null) {
+                node = (JCRNodeWrapper) session.getRootNode();
+            } else {
+                node = (JCRNodeWrapper) session.getNode(rootPath);
+            }
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new IOException();
@@ -115,7 +122,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         String decodedQName = qName.replace(localName, decodedLocalName);
         pathes.push(pathes.peek() + "/" + decodedQName);
 
-        if (pathes.size() <= 2) {
+        if (noRoot && pathes.size() <= 2) {
             return;
         }
 
@@ -134,11 +141,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
 
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
-            if (Constants.JAHIANT_VIRTUALSITE.equals(pt)) {
-                decodedQName = jParams.getSiteKey();
+            if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
+                decodedQName = siteKey;
                 String newpath;
-                final List<JCRNodeWrapper> nodeWrappers = JCRStoreService.getInstance().getSiteFolders(
-                        jParams.getSiteKey());
+                final List<JCRNodeWrapper> nodeWrappers = JCRStoreService.getInstance().getSiteFolders(siteKey);
                 if(nodeWrappers!=null && !nodeWrappers.isEmpty()) {
                     JCRNodeWrapper siteFolder = nodeWrappers.get(0);
                     newpath = siteFolder.getPath();
@@ -246,6 +252,18 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 // nodeType = attrValue; // ?
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
             } else if (attrName.equals(Constants.JCR_UUID)) {
+                switch (uuidBehavior) {
+                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
+                        try {
+                            session.getNodeByUUID(attrValue);
+                            throw new ItemExistsException(attrValue);
+                        } catch (ItemNotFoundException e) {
+                        }
+                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
+                    case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                        //todo implement uuid behaviour cases
+                        break;
+                }
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
@@ -302,6 +320,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     private boolean findContent() throws IOException {
+        if (archive == null) {
+            return false;
+        }
         if (zis == null) {
             zis = new NoCloseZipInputStream(new FileInputStream(archive));
             nextEntry = zis.getNextEntry();
@@ -379,5 +400,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setReferences(Map<String, List<String>> references) {
         this.references = references;
+    }
+
+    public void setNoRoot(boolean noRoot) {
+        this.noRoot = noRoot;
+    }
+
+    public void setUuidBehavior(int uuidBehavior) {
+        this.uuidBehavior = uuidBehavior;
     }
 }

@@ -31,18 +31,16 @@
  */
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.commons.xml.DocumentViewExporter;
 import org.apache.jackrabbit.commons.xml.Exporter;
-import org.apache.jackrabbit.commons.xml.ParsingContentHandler;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.DocumentViewExporter;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -53,6 +51,8 @@ import javax.jcr.retention.RetentionManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionManager;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -288,36 +288,39 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, VersionException, InvalidSerializedDataException, LockException, RepositoryException {
-        JCRNodeWrapper node = getNode(path);
-        JCRStoreProvider jcrStoreProvider = node.getProvider();
-        String mp = jcrStoreProvider.getMountPoint();
-        if (mp.equals("/")) {
-            mp = "";
-        }
-        getProviderSession(jcrStoreProvider).importXML(path.substring(mp.length()), inputStream, uuidBehavior);
+        importXML(path, inputStream, uuidBehavior, false);
     }
 
-    public void importXMLWithoutRoot(String path, InputStream inputStream, int uuidBehavior) throws IOException, InvalidSerializedDataException, RepositoryException {
-        JCRNodeWrapper node = getNode(path);
-        JCRStoreProvider jcrStoreProvider = node.getProvider();
-        String mp = jcrStoreProvider.getMountPoint();
-        if (mp.equals("/")) {
-            mp = "";
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot) throws IOException, InvalidSerializedDataException, RepositoryException {
+        JCRNodeWrapper node = null;
+        node = getNode(path);
+        try {
+            if (!node.isCheckedOut()) {
+                checkout(node);
+            }
+        } catch (UnsupportedRepositoryOperationException ex) {
+            // versioning not supported
         }
 
+        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(this, path, null);
+        documentViewImportHandler.setNoRoot(noRoot);
+        documentViewImportHandler.setUuidBehavior(uuidBehavior);
         try {
-            ContentHandler handler = getProviderSession(jcrStoreProvider).getImportContentHandler(path.substring(mp.length()), uuidBehavior);
-            ContentHandler w = new RemoveRootContentHandler(handler);
-            new ParsingContentHandler(w).parse(inputStream);
-        } catch (SAXException e) {
-            Throwable exception = e.getException();
-            if (exception instanceof RepositoryException) {
-                throw (RepositoryException) exception;
-            } else if (exception instanceof IOException) {
-                throw (IOException) exception;
-            } else {
-                throw new InvalidSerializedDataException("XML parse error", e);
-            }
+            SAXParserFactory factory;
+
+            factory = new SAXParserFactoryImpl();
+
+            factory.setNamespaceAware(true);
+            factory.setValidating(false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+            SAXParser parser = factory.newSAXParser();
+
+            parser.parse(inputStream, documentViewImportHandler);
+        } catch (SAXParseException e) {
+            logger.error("Cannot import - File is not a valid XML", e);
+        } catch (Exception e) {
+            logger.error("Cannot import", e);
         }
     }
 
@@ -460,8 +463,14 @@ public class JCRSessionWrapper implements Session {
             String path, ContentHandler handler,
             boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
-        export(path, new DocumentViewExporter(
-                this, handler, !noRecurse, !skipBinary));
+        DocumentViewExporter exporter =  new DocumentViewExporter(this, handler, skipBinary, noRecurse);
+        Item item = getItem(path);
+        if (item.isNode()) {
+            exporter.export((JCRNodeWrapper) item);
+        } else {
+            throw new PathNotFoundException(
+                    "XML export is not defined for properties: " + path);
+        }
     }
 
     /**
@@ -480,8 +489,16 @@ public class JCRSessionWrapper implements Session {
             String path, ContentHandler handler,
             boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
-        export(path, new SystemViewExporter(
-                this, handler, !noRecurse, !skipBinary));
+
+        //todo implement our own system view .. ?
+        SystemViewExporter exporter =  new SystemViewExporter(this, handler, !noRecurse, !skipBinary);
+        Item item = getItem(path);
+        if (item.isNode()) {
+            exporter.export((JCRNodeWrapper) item);
+        } else {
+            throw new PathNotFoundException(
+                    "XML export is not defined for properties: " + path);
+        }
     }
 
     /**
@@ -545,25 +562,6 @@ public class JCRSessionWrapper implements Session {
                 throw new RepositoryException(
                         "Error serializing system view XML", e);
             }
-        }
-    }
-
-    /**
-     * Exports content at the given path using the given exporter.
-     *
-     * @param path     of the node to be exported
-     * @param exporter document or system view exporter
-     * @throws SAXException        if the SAX event handler failed
-     * @throws RepositoryException if another error occurs
-     */
-    private synchronized void export(String path, Exporter exporter)
-            throws PathNotFoundException, SAXException, RepositoryException {
-        Item item = getItem(path);
-        if (item.isNode()) {
-            exporter.export((Node) item);
-        } else {
-            throw new PathNotFoundException(
-                    "XML export is not defined for properties: " + path);
         }
     }
 
@@ -688,80 +686,4 @@ public class JCRSessionWrapper implements Session {
             versionManager.checkout(absPath);
         }
     }
-
-    private class RemoveRootContentHandler implements ContentHandler {
-        private Map<String,String> mapping = new HashMap<String,String>();
-        private ContentHandler handler;
-        private int level = 0;
-
-        private RemoveRootContentHandler(ContentHandler handler) {
-            this.handler = handler;
-        }
-
-        public void setDocumentLocator(Locator locator) {
-            handler.setDocumentLocator(locator);
-        }
-
-        public void startDocument() throws SAXException {
-            handler.startDocument();
-        }
-
-        public void endDocument() throws SAXException {
-            handler.endDocument();
-        }
-
-        public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            if (level <= 1) {
-                mapping.put(prefix, uri);
-            } else {
-                handler.startPrefixMapping(prefix, uri);
-            }
-        }
-
-        public void endPrefixMapping(String prefix) throws SAXException {
-            handler.endPrefixMapping(prefix);
-        }
-
-        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-            if (level++ > 0) {
-                if (level == 2) {
-                    for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
-                        handler.startPrefixMapping(entry.getKey(), entry.getValue());
-                    }
-                    for (Map.Entry<String, String> entry : mapping.entrySet()) {
-                        handler.startPrefixMapping(entry.getKey(), entry.getValue());
-                    }
-                }
-                handler.startElement(uri, localName, qName, atts);
-            }
-        }
-
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            if (--level > 0) {
-                handler.endElement(uri, localName, qName);
-            }
-        }
-
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            if (level > 1) {
-                handler.characters(ch, start, length);
-            }
-        }
-
-        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-            if (level > 1) {
-                handler.ignorableWhitespace(ch, start, length);
-            }
-        }
-
-        public void processingInstruction(String target, String data) throws SAXException {
-            handler.processingInstruction(target, data);
-        }
-
-        public void skippedEntity(String name) throws SAXException {
-            handler.skippedEntity(name);
-        }
-    }
-
-
 }

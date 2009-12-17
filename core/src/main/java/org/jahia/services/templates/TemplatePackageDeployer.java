@@ -293,7 +293,7 @@ class TemplatePackageDeployer {
             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
             logger.info("... importing " + imp + " into " + targetPath);
             try {
-                importExportService.importXml(targetPath, new FileInputStream(new File(pack.getFilePath(), imp)));
+                importExportService.importXML(targetPath, new FileInputStream(new File(pack.getFilePath(), imp)));
             } catch (Exception e) {
                 logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
                         + ". Cause: " + e.getMessage(), e);

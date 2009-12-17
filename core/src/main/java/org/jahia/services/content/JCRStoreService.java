@@ -163,10 +163,6 @@ public class JCRStoreService extends JahiaService  {
         provider.deployExternalUser(username, providerName);
     }
 
-    public void export(String path, ContentHandler ch, JahiaUser user) {
-        sessionFactory.getProvider(path).export(path, ch, user);
-    }
-
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) {
         List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
         for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {

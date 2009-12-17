@@ -383,7 +383,7 @@ public class JCRStoreProvider {
 
                     stream = new FileInputStream(
                             org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
-                    session.importXMLWithoutRoot("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+                    session.importXML("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW,true);
                     Node userNode = (Node) session.getItem("/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {
@@ -630,7 +630,7 @@ public class JCRStoreProvider {
                             session.getWorkspace().getVersionManager().checkout(f.getPath());
                             f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
                             if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                                session.importXMLWithoutRoot(f.getPath()+"/"+site.getSiteKey(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                session.importXML(f.getPath()+"/"+site.getSiteKey(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                             }
 
                             Node siteNode = f.getNode(site.getSiteKey());
@@ -686,7 +686,7 @@ public class JCRStoreProvider {
                                     session.getWorkspace().getVersionManager().checkout(f.getPath());
                                     Node userNode = f.addNode(username, Constants.JAHIANT_USER);
                                     if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        session.importXMLWithoutRoot(f.getPath()+"/"+username, new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                        session.importXML(f.getPath()+"/"+username, new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                                     }
 
                                     userNode.setProperty(JCRUser.J_EXTERNAL,true);
@@ -807,20 +807,6 @@ public class JCRStoreProvider {
         return true;
     }
     
-    public void export(String path, ContentHandler ch, JahiaUser user) {
-        exportDocumentView(path, ch, user, true);
-    }
-
-    public void exportDocumentView(String path, ContentHandler ch, JahiaUser user, boolean noRecurse) {
-        try {
-            getCurrentUserSession().exportDocumentView(path, ch, true, noRecurse);
-        } catch (SAXException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
     private void dump (Node n) throws RepositoryException {
         System.out.println(n.getPath());
         PropertyIterator pit=n.getProperties();

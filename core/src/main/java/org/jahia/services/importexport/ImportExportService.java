@@ -122,7 +122,7 @@ public interface ImportExportService {
      * @throws JahiaException
      *             in case of errors during categories import
      */
-    void importXml(String parentNodePath, InputStream content) throws IOException, RepositoryException,
+    void importXML(String parentNodePath, InputStream content) throws IOException, RepositoryException,
             JahiaException;
 
     void importZip(JCRNodeWrapper file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;

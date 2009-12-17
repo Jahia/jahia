@@ -32,7 +32,6 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.admin.permissions.ManageSitePermissions;
@@ -108,7 +107,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
 
-    private List<String> excluded = Arrays.asList("jcr:predecessors", "jcr:created", "j:originWS", "jcr:lastModified", "jcr:createdBy", "j:nodename", "jcr:versionHistory", "jcr:lastModifiedBy", "jcr:baseVersion", "jcr:isCheckedOut");
 
     private JahiaSitesService sitesService;
     private JahiaUserManagerService userManagerService;
@@ -258,10 +256,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
         exportServerPermissions(dw);
 
+        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
+
         // export shared files -->
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         try {
-            JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
             files.add(session.getNode("/"));
         } catch (RepositoryException e) {
             e.printStackTrace();
@@ -273,7 +272,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);
         try {
-            exportFiles(files, zzout, tti);
+            exportNodes(session, files, zzout, tti);
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -298,11 +297,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportSitePermissions(dw, jParams.getSite());
         dw.flush();
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>(jcrStoreService.getSiteFolders(jParams.getSiteKey()));
-        exportFiles(files, zout, new HashSet<String>());
+        exportNodes(jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>());
         zout.finish();
     }
 
-    private void exportFiles(Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore) throws SAXException, IOException, RepositoryException {
+    private void exportNodes(JCRSessionWrapper session, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore) throws SAXException, IOException, RepositoryException {
         TreeSet<JCRNodeWrapper> sorted = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
@@ -312,7 +311,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
-        exportNodesInfo(dw, sorted, typesToIgnore);
+
+        DocumentViewExporter exporter = new DocumentViewExporter(session, dw, true, false);
+        typesToIgnore.add("rep:system");
+        exporter.setTypesToIgnore(typesToIgnore);
+        exporter.export((JCRNodeWrapper) session.getRootNode(), sorted);
         dw.flush();
         exportNodesBinary(sorted, zout, typesToIgnore);
     }
@@ -353,130 +356,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (child instanceof JCRNodeWrapper) {
                     exportNodeBinary((JCRNodeWrapper) child, zout, typesToIgnore, buffer);
                 }
-            }
-        }
-    }
-
-    private void exportNodesInfo(ContentHandler ch, SortedSet<JCRNodeWrapper> files, Set<String> typesToIgnore) throws SAXException, RepositoryException {
-        ch.startDocument();
-        AttributesImpl attr = new AttributesImpl();
-
-        Map<String, String> prefixes = new HashMap<String, String>();
-        prefixes.put(Constants.NT_PREF, Constants.NT_NS);
-        prefixes.put(Constants.JCR_PREF, Constants.JCR_NS);
-        prefixes.put(Constants.MIX_PREF, Constants.MIX_NS);
-        prefixes.put(Constants.JAHIANT_PREF, Constants.JAHIANT_NS);
-        prefixes.put(Constants.JAHIA_PREF, Constants.JAHIA_NS);
-        prefixes.put(Constants.JAHIAMIX_PREF, Constants.JAHIAMIX_NS);
-
-        for (Iterator<String> iterator = prefixes.keySet().iterator(); iterator.hasNext();) {
-            String prefix = iterator.next();
-            String uri = prefixes.get(prefix);
-            attr.addAttribute(NS_URI, prefix, "xmlns:" + prefix, CDATA, uri);
-            ch.startPrefixMapping(prefix, uri);
-            ch.endPrefixMapping(prefix);
-        }
-
-        ch.startElement("", "content", "content", attr);
-
-        Stack<String> stack = new Stack<String>();
-        stack.push("/");
-        for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
-            JCRNodeWrapper node = iterator.next();
-            exportNodeInfo(node, ch, stack, prefixes, typesToIgnore);
-        }
-        while (!stack.isEmpty()) {
-            String end = stack.pop();
-            String name = end.substring(end.lastIndexOf('/') + 1);
-            String encodedName = ISO9075.encode(name);
-            ch.endElement("", encodedName, encodedName);
-        }
-
-        ch.endDocument();
-    }
-
-    private void exportNodeInfo(JCRNodeWrapper node, ContentHandler ch, Stack<String> stack, Map<String, String> prefixes, Set<String> typesToIgnore) throws SAXException, RepositoryException {
-        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-
-            String path = "";
-            Node current = node;
-            while (!current.getPath().equals("/")) {
-                path = "/" + current.getName() + path;
-                current = current.getParent();
-            }
-
-            if (!path.equals("/")) {
-
-                String parentpath = path.substring(0, path.lastIndexOf('/'));
-
-                while (!parentpath.startsWith(stack.peek())) {
-                    String end = stack.pop();
-                    String name = end.substring(end.lastIndexOf('/') + 1);
-                    String encodedName = ISO9075.encode(name);
-                    ch.endElement("", encodedName, encodedName);
-                }
-                while (!stack.peek().equals(parentpath)) {
-                    String name = parentpath.substring(stack.peek().length() + 1);
-                    if (name.contains("/")) {
-                        name = name.substring(0, name.indexOf('/'));
-                    }
-                    String encodedName = ISO9075.encode(name);
-                    String currentpath = stack.peek() + "/" + name;
-                    String pt = jcrStoreService.getSessionFactory().getCurrentUserSession().getNode(currentpath).getPrimaryNodeTypeName();
-                    AttributesImpl atts = new AttributesImpl();
-                    atts.addAttribute(Constants.JCR_NS, "primaryType", "jcr:primaryType", CDATA, pt);
-                    ch.startElement("", encodedName, encodedName, atts);
-                    stack.push(currentpath);
-                }
-
-                AttributesImpl attrs = new AttributesImpl();
-                PropertyIterator propsIterator = node.getProperties();
-                while (propsIterator.hasNext()) {
-                    JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();
-                    if (property.getType() != PropertyType.BINARY && !excluded.contains(property.getName())) {
-                        String key = property.getName();
-                        String prefix = null;
-                        String localname = key;
-                        if (key.indexOf(':') > -1) {
-                            prefix = key.substring(0, key.indexOf(':'));
-                            localname = key.substring(key.indexOf(':') + 1);
-                        }
-
-                        String attrName = ISO9075.encode(localname);
-
-                        String value;
-                        if (!property.getDefinition().isMultiple()) {
-                            value = property.getString();
-                        } else {
-                            Value[] vs = property.getValues();
-                            StringBuffer b = new StringBuffer();
-                            for (int i = 0; i < vs.length; i++) {
-                                Value v = vs[i];
-                                b.append(v.getString());
-                                if (i + 1 < vs.length) {
-                                    b.append(" ");
-                                }
-                            }
-                            value = b.toString();
-                        }
-
-                        if (prefix == null) {
-                            attrs.addAttribute("", localname, attrName, CDATA, value);
-                        } else {
-                            attrs.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
-                        }
-                    }
-
-                }
-
-                String encodedName = ISO9075.encode(node.getName());
-                ch.startElement("", encodedName, encodedName, attrs);
-                stack.push(path);
-            }
-            List<JCRNodeWrapper> l = node.getChildren();
-            for (Iterator<JCRNodeWrapper> iterator = l.iterator(); iterator.hasNext();) {
-                JCRNodeWrapper c = iterator.next();
-                exportNodeInfo(c, ch, stack, prefixes, typesToIgnore);
             }
         }
     }
@@ -700,11 +579,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (zipentry == null) break;
                 String name = zipentry.getName();
                 if (name.equals(REPOSITORY_XML)) {
-                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, file, fileList, jParams);
+                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, jParams.getSiteKey());
 
                     documentViewImportHandler.setUuidMapping(uuidMapping);
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setPathMapping(pathMapping);
+                    documentViewImportHandler.setNoRoot(true);
 
                     handleImport(zis, documentViewImportHandler);
 
@@ -1130,8 +1010,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             parser.parse(is, h);
         } catch (SAXParseException e) {
             logger.error("Cannot import - File is not a valid XML", e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Cannot import", e);
         }
     }
@@ -1155,7 +1034,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return handler.getType();
     }
 
-    public void importXml(final String parentNodePath, InputStream content) throws IOException, RepositoryException, JahiaException {
+    public void importXML(final String parentNodePath, InputStream content) throws IOException, RepositoryException, JahiaException {
         File tempFile = null;
 
         try {
@@ -1170,13 +1049,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             switch (format) {
                 case XMLFormatDetectionHandler.JCR_DOCVIEW: {
                     if (JcrSessionFilter.getCurrentUser() != null) {
-                        importXml(parentNodePath, tempFile, jcrStoreService.getSessionFactory().getCurrentUserSession());
+                        jcrStoreService.getSessionFactory().getCurrentUserSession().importXML(parentNodePath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                     } else {
                         final File contentFile = tempFile;
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 try {
-                                    importXml(parentNodePath, contentFile, session);
+                                    session.importXML(parentNodePath, new FileInputStream(contentFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                 } catch (IOException e) {
                                     throw new RepositoryException(e);
                                 }
@@ -1201,28 +1080,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (tempFile != null) {
                 tempFile.delete();
             }
-        }
-        
-    }
-
-    private void importXml(String parentNodePath, File content, JCRSessionWrapper session)
-            throws RepositoryException, IOException {
-        JCRNodeWrapper node = null;
-        try {
-            node = session.getNode(parentNodePath);
-        } catch (PathNotFoundException e) {
-            logger.warn("Specified path for the import '" + parentNodePath
-                    + "' is not found. Skipping import.");
-        }
-        if (node != null) {
-            try {
-                session.checkout(node);
-            } catch (UnsupportedRepositoryOperationException ex) {
-                // versioning not supported
-            }
-            session.importXML(parentNodePath, new FileInputStream(content),
-                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-            session.save();
         }
     }
 

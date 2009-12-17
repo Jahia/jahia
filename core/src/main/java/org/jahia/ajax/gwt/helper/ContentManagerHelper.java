@@ -829,7 +829,7 @@ public class ContentManagerHelper {
             if ("application/zip".equals(item.contentType)) {
 
             } else if ("application/xml".equals(item.contentType) || "text/xml".equals(item.contentType)) {
-                importExport.importXml(parentPath, item.file);
+                importExport.importXML(parentPath, item.file);
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);

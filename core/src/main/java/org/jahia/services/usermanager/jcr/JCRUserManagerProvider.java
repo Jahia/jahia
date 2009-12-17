@@ -119,10 +119,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
                         try {
-                            jcrSessionWrapper.importXMLWithoutRoot(parentNodeWrapper.getPath() + "/" + name, new FileInputStream(
+                            jcrSessionWrapper.importXML(parentNodeWrapper.getPath() + "/" + name, new FileInputStream(
                                     org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + parentNodeWrapper.getProperty(
                                             "j:usersFolderSkeleton").getString()),
-                                                      ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                                      ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                         } catch (IOException e) {
                             throw new RepositoryException("Could not create user due to some import issues", e);
                         }

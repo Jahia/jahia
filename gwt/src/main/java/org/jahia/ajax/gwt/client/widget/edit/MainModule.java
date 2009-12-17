@@ -31,16 +31,17 @@ public class MainModule extends ContentPanel implements Module {
     private String path;
     private String template;
     private boolean selectable = true;
-
+    private String originalHtml;
     private EditLinker editLinker;
 
     Map<Element, Module> m;
 
-    public MainModule(final String path, final String template) {
+    public MainModule(final String html, final String path, final String template) {
         super(new FlowLayout());
         setHeading("Page : "+path);
         setScrollMode(Style.Scroll.AUTO);
 
+        this.originalHtml = html;
         this.path = path;
         this.template = template;
         getHeader().setStyleAttribute("z-index","999");
@@ -52,7 +53,7 @@ public class MainModule extends ContentPanel implements Module {
 
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
-        refresh();
+        display(originalHtml);
 
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
@@ -89,13 +90,7 @@ public class MainModule extends ContentPanel implements Module {
                 removeAll();
                 Selection.getInstance().hide();
                 Hover.getInstance().removeAll();
-                html = new HTML(result);
-                add(html);
-
-                ModuleHelper.initAllModules(MainModule.this, html);
-                ModuleHelper.buildTree(MainModule.this);
-                parse();
-                layout();
+                display(result);
 
                 setVScrollPosition(i);
                 List<String> list = new ArrayList<String>(1);
@@ -107,6 +102,16 @@ public class MainModule extends ContentPanel implements Module {
             }
         });
 
+    }
+
+    private void display(String result) {
+        html = new HTML(result);
+        add(html);
+
+        ModuleHelper.initAllModules(this, html);
+        ModuleHelper.buildTree(this);
+        parse();
+        layout();
     }
 
     @Override

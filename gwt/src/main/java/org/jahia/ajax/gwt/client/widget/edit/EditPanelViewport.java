@@ -45,14 +45,14 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  */
 public class EditPanelViewport extends Viewport {
 
-        public EditPanelViewport(String path, String template, String locale) {
+        public EditPanelViewport(String html, String path, String template, String locale) {
             super() ;
             setLayout(new FitLayout());
-            createUI(path,template,locale);
+            createUI(html, path,template,locale);
         }
 
-        public void createUI(String path, String template, String locale) {
-            EditManager layout = new EditManager(path,template,locale) ;
+        public void createUI(String html, String path, String template, String locale) {
+            EditManager layout = new EditManager(html, path,template,locale) ;
 
             // layout is the main widget contained in the viewport
             add(layout) ;

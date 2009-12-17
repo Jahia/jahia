@@ -23,7 +23,7 @@ public class EditManager extends ContentPanel {
     private EditLinker editLinker;
     private BorderLayout borderLayout ;
 
-    public EditManager(String path, String template, String locale) {
+    public EditManager(String html, String path, String template, String locale) {
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);
@@ -42,7 +42,7 @@ public class EditManager extends ContentPanel {
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.NONE);
-        add(mainModule = new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(mainModule = new MainModule(html, path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar);
         editLinker.setLocale(locale);

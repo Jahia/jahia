@@ -568,9 +568,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
-                if (renderContext.isEditMode()) {
-                    renderContext.setIncludeSubModules(false);
-                }
                 resource.pushWrapper("wrapper.fullpage");
                 resource.pushWrapper("wrapper.bodywrapper");
 

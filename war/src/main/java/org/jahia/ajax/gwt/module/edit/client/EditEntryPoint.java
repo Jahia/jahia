@@ -21,7 +21,7 @@ public class EditEntryPoint extends CommonEntryPoint {
         super.onModuleLoad();
         RootPanel panel = RootPanel.get("editmode") ;
         if (panel != null) {
-            panel.add(new EditPanelViewport(DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"), 
+            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"), 
                     DOM.getElementAttribute(panel.getElement(), "locale"))) ;
         }
     }

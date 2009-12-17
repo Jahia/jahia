@@ -281,10 +281,12 @@ function sendForm(){
                                             <% if (tpls != null)
                                                 for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
                                                     JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
+                                                    if ("siteLayout".equals(pack.getModuleType())) {
                                             %>
                                             <option value="<%=pack.getName()%>"<% if (pack.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=pack.getName() %></option>
 
                                             <%
+                                                        }
                                                     } %>
                                         </select>
                                     </td>

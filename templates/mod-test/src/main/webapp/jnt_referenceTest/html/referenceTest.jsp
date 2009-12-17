@@ -11,7 +11,7 @@
 <h2>News containing ${searchTerm} (search only in current language)</h2>
 
 <jcr:sql var="newsList"
-         sql="select news.* from [web_templates:newsContainer] as news inner join [jnt:translation] as translation on ischildnode(translation, news) where translation.[jcr:language] = '${currentResource.locale}' and contains(news.*, '${searchTerm}') or contains(translation.*, '${searchTerm}') order by news.[newsDate] desc"
+         sql="select news.* from [jnt:news] as news inner join [jnt:translation] as translation on ischildnode(translation, news) where translation.[jcr:language] = '${currentResource.locale}' and contains(news.*, '${searchTerm}') or contains(translation.*, '${searchTerm}') order by news.[newsDate] desc"
          limit="10"/>
 
 <c:if test="${newsList.nodes.size == 0}">
@@ -28,7 +28,7 @@
 <h2>Press releases containing ${searchTerm} (search in all languages not including file search)</h2>
 
 <jcr:sql var="pressList"
-         sql="select press.* from [web_templates:pressContainer] as press inner join [jnt:translation] as translation on ischildnode(translation, press) where contains(press.*, '${searchTerm}') or contains(translation.*, '${searchTerm}') order by press.[date] desc"
+         sql="select press.* from [jnt:press] as press inner join [jnt:translation] as translation on ischildnode(translation, press) where contains(press.*, '${searchTerm}') or contains(translation.*, '${searchTerm}') order by press.[date] desc"
          limit="10"/>
 
 <c:if test="${pressList.nodes.size == 0}">
@@ -45,7 +45,7 @@
 <h2>Reference search: Press release only searching '' ${searchTerm} in attached files (English only)</h2>
 	
 <jcr:sql var="pressList"
-         sql="select press.* from [web_templates:pressContainer] as press inner join [jnt:translation] as translation on ischildnode(translation, press) inner join [nt:file] as file on translation.pdfVersion_en = file.[jcr:uuid] inner join [nt:resource] as filecontent on ischildnode(filecontent, file) where contains(filecontent.*, '${searchTerm}') order by press.[date] desc"
+         sql="select press.* from [jnt:press] as press inner join [jnt:translation] as translation on ischildnode(translation, press) inner join [nt:file] as file on translation.pdfVersion_en = file.[jcr:uuid] inner join [nt:resource] as filecontent on ischildnode(filecontent, file) where contains(filecontent.*, '${searchTerm}') order by press.[date] desc"
          limit="10"/>         
 
 <c:if test="${pressList.nodes.size == 0}">

@@ -11,11 +11,4 @@
 
 [jnt:advancedSearchForm] > jnt:content, mix:title, jmix:searchFormContent
 
-//[jnt:searchFormElement] > jnt:content, mix:title, jmix:searchFormContent
-
-//[jnt:searchTerm] > jnt:searchFormElement
-
-//[jnt:searchForm] > jnt:content, mix:title, jmix:searchFormContent
-// orderable
-// - method (string, choicelist) = 'get' < 'get','post' 
-// + * (jnt:searchFormElement)
+[jnt:searchResults] > jnt:content, mix:title, jmix:searchFormContent

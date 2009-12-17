@@ -6,8 +6,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search" %>
 
-<c:set var="props" value="${currentNode.propertiesAsString}"
-<s:form method="${props.method}" id="${props.id}" css="${props.css}" style="${props.style}">
+<c:set var="props" value="${currentNode.propertiesAsString}"/>
+<s:form method="${props.method}">
 <div class="form">
 	<c:forEach items="${jcr:getNodes(currentNode,'jnt:searchFormElement')}" var="formElement">
 	    <template:module node="${formElement}" template="default" editable="true"/>

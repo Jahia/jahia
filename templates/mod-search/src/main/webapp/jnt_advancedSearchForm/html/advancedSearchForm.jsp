@@ -10,7 +10,7 @@
 </c:if>
 
 <div>
-    <s:form name="advancedSearchForm" class="advancedSearchForm">
+    <s:form name="advancedSearchForm" class="advancedSearchForm" method="get">
         <fieldset>
             <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
             <label for="term"><fmt:message key="search"/></label>&nbsp;<s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>&nbsp;<s:term id="term"/><br/>

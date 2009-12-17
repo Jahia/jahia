@@ -155,9 +155,17 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>1.7.1</version>
+            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-gwt</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
     </dependencies>
     <build>
         <finalName>config</finalName>
@@ -165,7 +173,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.1</version>
+                <version>1.2-SNAPSHOT</version>
                 <configuration>
                     <localWorkers>5</localWorkers>
                     <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>

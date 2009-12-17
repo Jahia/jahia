@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.configwizard.client;
 
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JavaScriptApi;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 

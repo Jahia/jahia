@@ -465,13 +465,35 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private void addLanguageConstraints(SearchCriteria params,
             StringBuilder constraints) {
-
+        StringBuilder languageSearchConstraints = new StringBuilder(256);
         if (!params.getLanguages().isEmpty()) {
             for (String languageCode : params.getLanguages().getValues()) {
                 if (languageCode != null && languageCode.length() != 0) {
-                    // TODO impement language code constraint
+                    addConstraint(languageSearchConstraints, "or",
+                            "@jcr:language = "
+                                    + stringToJCRSearchExp(languageCode.trim()));
                 }
             }
+        } else {
+            try {
+                JCRStoreService jcrService = ServicesRegistry.getInstance()
+                        .getJCRStoreService();
+                JCRSessionWrapper session = jcrService.getSessionFactory()
+                        .getCurrentUserSession();
+                if (session.getLocale() != null) {
+                    addConstraint(languageSearchConstraints, "or",
+                            "@jcr:language = "
+                                    + stringToJCRSearchExp(session.getLocale()
+                                            .toString()));
+                }
+            } catch (RepositoryException e) {
+            }
+        }
+        if (languageSearchConstraints.length() > 0) {
+            addConstraint(languageSearchConstraints, "or",
+                    "not(@jcr:language)");            
+            addConstraint(constraints, "and", "(" + languageSearchConstraints
+                    .toString()+ ")");
         }
     }
 

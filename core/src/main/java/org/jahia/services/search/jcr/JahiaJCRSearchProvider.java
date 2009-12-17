@@ -108,7 +108,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             while (pageNode != null
                     && !pageNode
                             .isNodeType(Constants.JAHIANT_PAGE)) {
-                pageNode = pageNode.getParent();
+                try {
+                    pageNode = pageNode.getParent();
+                } catch (ItemNotFoundException e) {
+                    // we have reached the root node
+                    pageNode = null;
+                }
             }
             if (pageNode != null) {
                 pageHit.setPage(pageNode);
@@ -161,14 +166,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             query.append(jcrPath.toString()).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
-        } else if (params.getSites() != null && !params.getSites().isEmpty()) {
+        } else if (!params.getSites().isEmpty()) {
             query.append("/jcr:root/sites/");
-            if (params.getSites().size() == 1) {
-                query.append(params.getSites().get(0));
+            if (params.getSites().getValues().length == 1) {
+                query.append(params.getSites().getValue());
             } else {
                 query.append("*[");
                 int i = 0;
-                for (String site : params.getSites()) {
+                for (String site : params.getSites().getValues()) {
                     if (i > 0) {
                         query.append(" or ");
                     }

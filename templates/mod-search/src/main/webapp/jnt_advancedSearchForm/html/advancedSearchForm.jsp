@@ -25,8 +25,9 @@
         </fieldset>
         <fieldset>
             <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title"/></legend>
-        	<label for="language">!!!Language</label><s:language id="language"/><br/>
-        	<label for="resultsPerPage">!!!Results per page</label><s:itemsPerPage id="resultsPerPage"/><br/>
+        	<label for="site"><fmt:message key="search.advancedSearch.criteria.miscellanea.site"/></label><s:site id="site"/><br/>
+        	<label for="language"><fmt:message key="search.advancedSearch.criteria.miscellanea.language"/></label><s:language id="language"/><br/>
+        	<label for="resultsPerPage"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage"/></label><s:itemsPerPage id="resultsPerPage"/><br/>
         </fieldset>
         <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit'/>"/>
     </s:form>

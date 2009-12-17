@@ -245,6 +245,10 @@
         <path>/META-INF/tags/search/resultTable.tag</path>
     </tag-file>
     <tag-file>
+        <name>site</name>
+        <path>/META-INF/tags/search/site.tag</path>
+    </tag-file>
+    <tag-file>
         <name>term</name>
         <path>/META-INF/tags/search/term.tag</path>
     </tag-file>

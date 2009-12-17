@@ -34,7 +34,6 @@ package org.jahia.services.search;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,6 +55,7 @@ import org.jahia.engines.calendar.CalendarHandler;
  * 
  * @author Sergiy Shyrkov
  */
+@SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
 
     private static final long serialVersionUID = 4633533116047727827L;
@@ -424,7 +424,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Represents a selactable value (file location, category etc.) that is a
-     * part of the hierachical structure.
+     * part of the hierarchical structure.
      * 
      * @author Sergiy Shyrkov
      */
@@ -444,8 +444,7 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
-     * Represents a selactable value (file location, category etc.) that is a
-     * part of the hierachical structure.
+     * Represents a multiple value holder.
      * 
      * @author Sergiy Shyrkov
      */
@@ -743,7 +742,7 @@ public class SearchCriteria implements Serializable {
 
     private String rawQuery;
 
-    private List<String> sites = new ArrayList<String>();
+    private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
 
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
             new Factory() {
@@ -846,7 +845,7 @@ public class SearchCriteria implements Serializable {
         return rawQuery;
     }
 
-    public List<String> getSites() {
+    public CommaSeparatedMultipleValue getSites() {
         return sites;
     }
 
@@ -949,13 +948,13 @@ public class SearchCriteria implements Serializable {
         this.rawQuery = rawQuery;
     }
 
-    public void setSites(List<String> sites) {
+    public void setSites(CommaSeparatedMultipleValue sites) {
         this.sites = sites;
     }
 
     /**
      * Simplified method for setting the search term. This method resets all
-     * text searches, creates a new one with the providede termm, default match
+     * text searches, creates a new one with the provided term, default match
      * type and all search fields.<br>
      * 
      * @param term
@@ -985,7 +984,7 @@ public class SearchCriteria implements Serializable {
                         this.getFileLocation()).append("properties",
                         listToString(this.getPropertiesAll())).append("terms",
                         listToString(this.getTerms())).append("itemsPerPage",
-                        this.getItemsPerPage()).append("site", listToString(this.getSites()))
+                        this.getItemsPerPage()).append("sites", this.getSites())
                 .append("languages", this.getLanguages()).toString();
     }
 

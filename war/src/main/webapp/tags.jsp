@@ -66,6 +66,7 @@
 <s:rawQuery/>
 <s:resultsPageUrl var=""/>
 <s:resultTable/>
+<s:site/>
 <s:termFields/>
 <s:termMatch/>
 <s:term/>

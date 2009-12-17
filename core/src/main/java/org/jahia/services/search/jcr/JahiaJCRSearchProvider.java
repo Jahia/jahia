@@ -161,6 +161,28 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             query.append(jcrPath.toString()).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
+        } else if (params.getSites() != null && !params.getSites().isEmpty()) {
+            query.append("/jcr:root/sites/");
+            if (params.getSites().size() == 1) {
+                query.append(params.getSites().get(0));
+            } else {
+                query.append("*[");
+                int i = 0;
+                for (String site : params.getSites()) {
+                    if (i > 0) {
+                        query.append(" or ");
+                    }
+                    query.append("fn:name() = '");
+                    query.append(site);
+                    query.append("'");
+                    i++;
+                }
+                query.append("]");
+            }
+            query.append(params.getModeAutodetect().equals(SearchMode.FILES) ? "/files"
+                    : "/home");
+            query.append("//element(*,").append(getNodeType(params))
+                    .append(")");
         } else {
             query.append("//element(*,").append(
                     getNodeType(params)).append(")");
@@ -173,10 +195,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         return xpathQuery;
     }
-
+    
     private String getNodeType(SearchCriteria params) {
         return StringUtils.isEmpty(params.getDocumentType()) ? (params
-                .getMode().equals(SearchMode.FILES) ? "nt:hierarchyNode"
+                .getModeAutodetect().equals(SearchMode.FILES) ? "nt:hierarchyNode"
                 : "nt:base") : params.getDocumentType();
     }
 
@@ -404,12 +426,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
-                if (params.getMode().equals(SearchMode.FILES)) {
-                    if (searchFields.isContent()) {
-                        addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(jcr:content, " + searchExpression
-                                        + ")");
-                    }
+                if (searchFields.isContent()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains("
+                            + (params.getModeAutodetect().equals(
+                                    SearchMode.FILES) ? "jcr:content" : ".")
+                            + ", " + searchExpression + ")");
+                }
+                if (params.getModeAutodetect().equals(SearchMode.FILES)
+                        || !searchFields.isContent()) {
                     if (searchFields.isDescription()) {
                         addConstraint(textSearchConstraints, "or",
                                 "jcr:contains(@jcr:description, "
@@ -430,9 +454,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 "jcr:contains(@j:filename, " + searchExpression
                                         + ")");
                     }
-                } else {
-                    addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(., " + searchExpression + ")");
                 }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("

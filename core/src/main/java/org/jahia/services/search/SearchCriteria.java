@@ -34,6 +34,7 @@ package org.jahia.services.search;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -742,7 +743,7 @@ public class SearchCriteria implements Serializable {
 
     private String rawQuery;
 
-    private String site;
+    private List<String> sites = new ArrayList<String>();
 
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
             new Factory() {
@@ -845,8 +846,8 @@ public class SearchCriteria implements Serializable {
         return rawQuery;
     }
 
-    public String getSite() {
-        return site;
+    public List<String> getSites() {
+        return sites;
     }
 
     public List<Term> getTerms() {
@@ -948,8 +949,8 @@ public class SearchCriteria implements Serializable {
         this.rawQuery = rawQuery;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setSites(List<String> sites) {
+        this.sites = sites;
     }
 
     /**
@@ -984,7 +985,7 @@ public class SearchCriteria implements Serializable {
                         this.getFileLocation()).append("properties",
                         listToString(this.getPropertiesAll())).append("terms",
                         listToString(this.getTerms())).append("itemsPerPage",
-                        this.getItemsPerPage()).append("site", this.getSite())
+                        this.getItemsPerPage()).append("site", listToString(this.getSites()))
                 .append("languages", this.getLanguages()).toString();
     }
 

@@ -54,12 +54,12 @@ import java.util.Locale;
 /**
  * Tag implementation for exposing a result of SQL-2 JCR query into the template scope.
  */
-@SuppressWarnings("serial")
 public class JCRSQLTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 4183406665401018247L;
     private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
-    private String sql;
+    private String statement;
     private long limit;
 
     public int doEndTag() {
@@ -71,7 +71,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
         try {
             final ProcessingContext ctx = getProcessingContext();
             if (ctx != null) {
-                pageContext.setAttribute(var, findQueryResultBySQL(ctx.getUser(), sql), scope);
+                pageContext.setAttribute(var, findQueryResult(ctx.getUser(), statement), scope);
             } else {
                 logger.error("ProcessingContext instance is null.");
             }
@@ -84,19 +84,19 @@ public class JCRSQLTag extends AbstractJahiaTag {
     }
 
     /**
-     * Find Node iterator by principal and SQL-2 expression.
+     * Find Node iterator by principal and query expression.
      *
      * @param p
      *            the principal
      * @param query
-     *            a JCR_SQL2 expression to perform the query
+     *            a query expression to perform the query
      * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
      */
-    private QueryResult findQueryResultBySQL(Principal p, String query) {
+    private QueryResult findQueryResult(Principal p, String query) {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
-            logger.debug("Find node by sql2[ " + query + " ]");
+            logger.debug("Find node by " + getQueryLanguage() + "[ " + query + " ]");
         }
         if (p instanceof JahiaGroup) {
             logger.warn("method not implemented for JahiaGroup");
@@ -113,12 +113,12 @@ public class JCRSQLTag extends AbstractJahiaTag {
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
 
                 if (queryManager != null) {
-                    Query q = queryManager.createQuery(query, Query.JCR_SQL2);
+                    Query q = queryManager.createQuery(query, getQueryLanguage());
                     if (limit > 0) { q.setLimit(limit);}
                     // execute query
                     queryResult = q.execute();
                     if (logger.isDebugEnabled()) {
-                        logger.debug("SQL2[" + query + "] --> found [" + queryResult + "] values.");
+                        logger.debug(getQueryLanguage() + "[" + query + "] --> found [" + queryResult + "] values.");
                     }
                 }
             } catch (javax.jcr.PathNotFoundException e) {
@@ -139,7 +139,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
     protected void resetState() {
         super.resetState();
         scope = PageContext.PAGE_SCOPE;
-        sql = null;
+        statement = null;
         var = null;
     }
 
@@ -151,11 +151,20 @@ public class JCRSQLTag extends AbstractJahiaTag {
         this.var = var;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setStatement(String sql) {
+        this.statement = sql;
     }
 
     public void setLimit(long limit) {
         this.limit = limit;
+    }
+    
+    /**
+     * Returns the type of the query language.
+     * 
+     * @return the type of the query language
+     */
+    protected String getQueryLanguage() {
+        return Query.JCR_SQL2;
     }
 }

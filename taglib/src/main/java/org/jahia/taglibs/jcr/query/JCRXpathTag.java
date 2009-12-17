@@ -49,4 +49,13 @@ public class JCRXpathTag extends JCRSQLTag {
         return Query.XPATH;
     }
 
+    /**
+     * Sets the XPath statement to use for the query.
+     * 
+     * @param xpath the XPath statement to use for the query
+     */
+    public void setXpath(String xpath) {
+        super.setStatement(xpath);
+    }
+
 }

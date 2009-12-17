@@ -151,8 +151,12 @@ public class JCRSQLTag extends AbstractJahiaTag {
         this.var = var;
     }
 
-    public void setStatement(String sql) {
-        this.statement = sql;
+    protected void setStatement(String statement) {
+        this.statement = statement;
+    }
+
+    public void setSql(String sql) {
+        setStatement(sql);
     }
 
     public void setLimit(long limit) {

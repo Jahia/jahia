@@ -96,6 +96,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String LOCK = "lock";
 
     public static final String QUERY = "icon-query";
+    
+    private static final String SEARCH = "icon-searchformcontent";
 
     public static final String INTERACTIVE = "icon-interactive";
 
@@ -144,6 +146,9 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String JNT_CHECKBOX_FIELD = "jnt:checkboxField";
     public static final String JNT_SUBMIT_BUTTON = "jnt:submitButton";
     public static final String JNT_SELECT_FIELD = "jnt:selectField";
+    public static final String JNT_SIMPLE_SEARCH_FORM = "jnt:simpleSearchForm";
+    public static final String JNT_ADVANCED_SEARCH_FORM = "jnt:advancedSearchForm";
+    public static final String JNT_SEARCH_RESULTS = "jnt:searchResults";
 
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
@@ -215,7 +220,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntVideo();
             } else if (type.equalsIgnoreCase(JNT_TEXT)) {
                 return CONTENT_ICONS.jntText();
-            } else if (type.equalsIgnoreCase(JNT_FORM)) {
+            } else if (type.equalsIgnoreCase(JNT_FORM) || type.equals(JNT_SIMPLE_SEARCH_FORM) || type.equals(JNT_ADVANCED_SEARCH_FORM)) {
                 return CONTENT_ICONS.jntForm();
             } else if (type.equalsIgnoreCase(JNT_IMAGE)) {
                 return CONTENT_ICONS.jntImage();
@@ -265,6 +270,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntSelectField();
             } else if (type.equalsIgnoreCase(JNT_INPUT_MULTIPLE)) {
                 return CONTENT_ICONS.jntInputText();
+            } else if (type.equals(JNT_SEARCH_RESULTS)) {
+                return CONTENT_ICONS.list();
             }
         }
         if (ext != null) {
@@ -316,7 +323,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.zip();
             } else if (ext.equalsIgnoreCase(LOCK)) {
                 return CONTENT_ICONS.lock();
-            } else if (ext.equalsIgnoreCase(QUERY)) {
+            } else if (ext.equalsIgnoreCase(QUERY) || ext.equalsIgnoreCase(SEARCH)) {
                 return CONTENT_ICONS.query();
             } else if (ext.equalsIgnoreCase(INTERACTIVE)) {
                 return CONTENT_ICONS.interactive();

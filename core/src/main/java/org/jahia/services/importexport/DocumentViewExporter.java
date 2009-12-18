@@ -62,29 +62,11 @@ public class DocumentViewExporter {
         set.add(node);
         export(node, set);
     }
-    
+
     public void export(JCRNodeWrapper rootNode, SortedSet<JCRNodeWrapper> files) throws SAXException, RepositoryException {
         this.rootNode = rootNode;
 
         ch.startDocument();
-        AttributesImpl attr = new AttributesImpl();
-
-        for (Iterator<String> iterator = prefixes.keySet().iterator(); iterator.hasNext();) {
-            String prefix = iterator.next();
-            String uri = prefixes.get(prefix);
-            attr.addAttribute(NS_URI, prefix, "xmlns:" + prefix, CDATA, uri);
-            ch.startPrefixMapping(prefix, uri);
-            ch.endPrefixMapping(prefix);
-        }
-
-        startElement(rootNode.getName(), attr);
-
-        if (rootNode.getPath().equals("/")) {
-            stack.push("");
-        } else {
-            stack.push(rootNode.getPath());
-        }
-
 
         for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
             JCRNodeWrapper node = iterator.next();
@@ -117,7 +99,7 @@ public class DocumentViewExporter {
 
                 String parentpath = path.substring(0, path.lastIndexOf('/'));
 
-                while (!parentpath.startsWith(stack.peek())) {
+                while (!stack.isEmpty() && !parentpath.startsWith(stack.peek())) {
                     String end = stack.pop();
                     if (stack.isEmpty()) {
                         throw new RepositoryException("Node not in path");
@@ -126,7 +108,19 @@ public class DocumentViewExporter {
                     String encodedName = ISO9075.encode(name);
                     endElement(encodedName);
                 }
-                while (!stack.peek().equals(parentpath)) {
+                if (stack.isEmpty() && !node.getPath().equals(rootNode.getPath())) {
+                    String name = rootNode.getName();
+                    String encodedName = ISO9075.encode(name);
+                    AttributesImpl atts = new AttributesImpl();
+                    startElement(encodedName, atts);
+                    if (rootNode.getPath().equals("/")) {
+                        stack.push("");
+                    } else {
+                        stack.push(rootNode.getPath());
+                    }
+                }
+
+                while (!stack.isEmpty() && !stack.peek().equals(parentpath)) {
                     String peek = stack.peek();
                     String name = parentpath.substring(peek.length() + 1);
                     if (name.contains("/")) {
@@ -140,51 +134,55 @@ public class DocumentViewExporter {
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }
-
-                AttributesImpl attrs = new AttributesImpl();
-                PropertyIterator propsIterator = node.getProperties();
-                while (propsIterator.hasNext()) {
-                    JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();
-                    if (property.getType() != PropertyType.BINARY && !excluded.contains(property.getName())) {
-                        String key = property.getName();
-                        String prefix = null;
-                        String localname = key;
-                        if (key.indexOf(':') > -1) {
-                            prefix = key.substring(0, key.indexOf(':'));
-                            localname = key.substring(key.indexOf(':') + 1);
-                        }
-
-                        String attrName = ISO9075.encode(localname);
-
-                        String value;
-                        if (!property.isMultiple()) {
-                            value = property.getString();
-                        } else {
-                            Value[] vs = property.getValues();
-                            StringBuffer b = new StringBuffer();
-                            for (int i = 0; i < vs.length; i++) {
-                                Value v = vs[i];
-                                b.append(v.getString());
-                                if (i + 1 < vs.length) {
-                                    b.append(" ");
-                                }
-                            }
-                            value = b.toString();
-                        }
-
-                        if (prefix == null) {
-                            attrs.addAttribute("", localname, attrName, CDATA, value);
-                        } else {
-                            attrs.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
-                        }
+            }
+            AttributesImpl atts = new AttributesImpl();
+            PropertyIterator propsIterator = node.getProperties();
+            while (propsIterator.hasNext()) {
+                JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();
+                if (property.getType() != PropertyType.BINARY && !excluded.contains(property.getName())) {
+                    String key = property.getName();
+                    String prefix = null;
+                    String localname = key;
+                    if (key.indexOf(':') > -1) {
+                        prefix = key.substring(0, key.indexOf(':'));
+                        localname = key.substring(key.indexOf(':') + 1);
                     }
 
+                    String attrName = ISO9075.encode(localname);
+
+                    String value;
+                    if (!property.isMultiple()) {
+                        value = property.getString();
+                    } else {
+                        Value[] vs = property.getValues();
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < vs.length; i++) {
+                            Value v = vs[i];
+                            b.append(v.getString());
+                            if (i + 1 < vs.length) {
+                                b.append(" ");
+                            }
+                        }
+                        value = b.toString();
+                    }
+
+                    if (prefix == null) {
+                        atts.addAttribute("", localname, attrName, CDATA, value);
+                    } else {
+                        atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                    }
                 }
 
-                String encodedName = ISO9075.encode(node.getName());
-                startElement(encodedName, attrs);
+            }
+
+            String encodedName = ISO9075.encode(node.getName());
+            startElement(encodedName, atts);
+            if (path.equals("/")) {
+                stack.push("");
+            } else {
                 stack.push(path);
             }
+
             if (!noRecurse) {
                 NodeIterator ni = node.getNodes();
                 while (ni.hasNext()) {
@@ -195,14 +193,25 @@ public class DocumentViewExporter {
         }
     }
 
-    private void startElement(String qualifiedName, AttributesImpl attr) throws SAXException {
+    private void startElement(String qualifiedName, AttributesImpl atts) throws SAXException {
         if (qualifiedName.equals("")) {
             qualifiedName = "content";
         }
-        ch.startElement("", qualifiedName, qualifiedName, attr);
+
+        if (stack.isEmpty()) {
+            for (Iterator<String> iterator = prefixes.keySet().iterator(); iterator.hasNext();) {
+                String prefix = iterator.next();
+                String uri = prefixes.get(prefix);
+                atts.addAttribute(NS_URI, prefix, "xmlns:" + prefix, CDATA, uri);
+                ch.startPrefixMapping(prefix, uri);
+                ch.endPrefixMapping(prefix);
+            }
+        }
+
+        ch.startElement("", qualifiedName, qualifiedName, atts);
     }
 
-    private void endElement(String qualifiedName) throws SAXException{
+    private void endElement(String qualifiedName) throws SAXException {
         if (qualifiedName.equals("")) {
             qualifiedName = "content";
         }

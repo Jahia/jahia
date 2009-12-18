@@ -497,7 +497,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getExportUrl(String path) throws GWTJahiaServiceException {
-        return retrieveParamBean().composeSiteUrl() + "/engineName/export" + path + ".xml?path=" + path + "&exportformat=jcr";
+        return retrieveParamBean().composeSiteUrl() + "/engineName/export" + path + ".xml?path=" + path;
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {

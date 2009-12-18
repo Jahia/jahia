@@ -927,9 +927,17 @@ public class ContentActions {
     }
 
     public static void importContent(final Linker linker) {
-        final GWTJahiaNode selectedNode = linker.getMainNode();
-        if (selectedNode != null) {
-            new ContentImport(linker, selectedNode).show();
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            GWTJahiaNode selectedNode = selectedItems.get(0);
+            if (selectedNode != null) {
+                new ContentImport(linker, selectedNode).show();
+            }
+        } else {
+            GWTJahiaNode selectedNode = linker.getMainNode();
+            if (selectedNode != null) {
+                new ContentImport(linker, selectedNode).show();
+            }
         }
     }
 

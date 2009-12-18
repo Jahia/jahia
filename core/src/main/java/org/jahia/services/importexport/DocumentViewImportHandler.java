@@ -91,6 +91,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private int error = 0;
 
     private boolean noRoot = false;
+    private boolean resolveReferenceAtEnd = true;
+
     private int uuidBehavior = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
 
     private JCRSessionWrapper session;
@@ -401,6 +403,14 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
             zis = null;
         }
+
+        if (resolveReferenceAtEnd) {
+            try {
+                ReferencesHelper.resolveCrossReferences(session, uuidMapping, references);
+            } catch (RepositoryException e) {
+                throw new SAXException(e);
+            }
+        }
     }
 
     public Map<String, String> getUuidMapping() {
@@ -433,5 +443,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setUuidBehavior(int uuidBehavior) {
         this.uuidBehavior = uuidBehavior;
+    }
+
+    public void setResolveReferenceAtEnd(boolean resolveReferenceAtEnd) {
+        this.resolveReferenceAtEnd = resolveReferenceAtEnd;
     }
 }

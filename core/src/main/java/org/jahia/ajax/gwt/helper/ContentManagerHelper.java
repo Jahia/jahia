@@ -52,6 +52,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 
+import java.io.FileInputStream;
 import java.util.*;
 
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -651,7 +652,7 @@ public class ContentManagerHelper {
                         throw new GWTJahiaServiceException("file exists");
                     }
                 default:
-                    parent.uploadFile(newName, GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                    parent.uploadFile(newName, GWTFileManagerUploadServlet.getItem(tmpName).fileStream, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
                     break;
             }
             parent.save();
@@ -827,9 +828,10 @@ public class ContentManagerHelper {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
             if ("application/zip".equals(item.contentType)) {
-
+                importExport.importZip(parentPath, item.file);
+                item.file.delete();
             } else if ("application/xml".equals(item.contentType) || "text/xml".equals(item.contentType)) {
-                importExport.importXML(parentPath, item.file);
+                importExport.importXML(parentPath, item.fileStream);
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);

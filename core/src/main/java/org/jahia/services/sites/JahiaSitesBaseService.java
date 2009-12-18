@@ -41,7 +41,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
@@ -605,7 +604,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } else {
                     try {
-                        ServicesRegistry.getInstance().getImportExportService().importZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams);
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams.getSite());
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }

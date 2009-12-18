@@ -31,6 +31,7 @@
  */
 package org.jahia.services.importexport;
 
+import org.apache.commons.io.IOUtils;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
@@ -43,6 +44,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +88,11 @@ public class ImportJob extends BackgroundJob {
         ExtendedImportResult result = new ExtendedImportResult();
 
         if (f != null) {
-            ServicesRegistry.getInstance().getImportExportService().importZip(f, actions, result, context);
+            File file = File.createTempFile("import", "zip");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            IOUtils.copy(f.getFileContent().downloadFile(), fileOutputStream);
+            fileOutputStream.close();
+            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, context.getSite());
 
 //            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
 //                if (result.getErrors().isEmpty()) {

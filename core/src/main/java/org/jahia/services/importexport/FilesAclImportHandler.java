@@ -36,6 +36,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.Attributes;
@@ -55,10 +56,10 @@ import java.util.StringTokenizer;
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(FilesAclImportHandler.class);
 
-    private ProcessingContext jParams;
+    private JahiaSite site;
 
-    public FilesAclImportHandler(ProcessingContext jParams) {
-        this.jParams = jParams;
+    public FilesAclImportHandler(JahiaSite site) {
+        this.site = site;
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -82,7 +83,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                             JahiaUser user = ServicesRegistry
                                     .getInstance()
                                     .getJahiaSiteUserManagerService()
-                                    .getMember(jParams.getSiteID(),
+                                    .getMember(site.getID(),
                                             userName);
                             if (user != null) {
                                 value = "/users/" + user.getUsername();
@@ -91,7 +92,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                             JahiaGroup group = ServicesRegistry
                                     .getInstance()
                                     .getJahiaGroupManagerService()
-                                    .lookupGroup(jParams.getSiteID(),
+                                    .lookupGroup(site.getID(),
                                             userName);
                             if (group != null) {
                                 value = "+/groups/"

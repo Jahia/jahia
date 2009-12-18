@@ -43,6 +43,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
@@ -181,11 +182,18 @@ public class ExportEngine implements JahiaEngine {
                     outputStream.close();
                 }
                 return;
-            } else if ("jcr".equals(processingContext.getParameter("exportformat"))) {
+            } else if ("doc".equals(processingContext.getParameter("exportformat"))) {
                 resp.setContentType("text/xml");
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                 Node node = session.getNode(processingContext.getParameter("path"));
                 session.exportDocumentView(node.getPath(), outputStream, true, false);
+                outputStream.close();
+                return;
+            } else if ("zip".equals(processingContext.getParameter("exportformat"))) {
+                resp.setContentType("application/zip");
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+                JCRNodeWrapper node = session.getNode(processingContext.getParameter("path"));
+                ie.exportZip(node, outputStream);
                 outputStream.close();
                 return;
             }

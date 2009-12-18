@@ -466,7 +466,7 @@ public class Service {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importZip(file,new ArrayList<ImportAction>(), null, ctx);
+                    ImportExportBaseService.getInstance().importSiteZip(file,new ArrayList<ImportAction>(), null, ctx.getSite());
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }

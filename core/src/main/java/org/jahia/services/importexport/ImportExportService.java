@@ -98,8 +98,30 @@ public interface ImportExportService {
 
     void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, RepositoryException, SAXException, IOException;
 
+    /**
+     * Export complete sites
+     *
+     * @param outputStream
+     * @param params
+     * @param processingContext
+     * @param sites
+     * @throws JahiaException
+     * @throws RepositoryException
+     * @throws IOException
+     * @throws SAXException
+     */
     void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, RepositoryException, IOException, SAXException;
 
+    /**
+     * Export JCR content along with binaries into a zip
+     *
+     * @param node node to export
+     * @param out outputstream
+     * @throws JahiaException
+     * @throws RepositoryException
+     * @throws SAXException
+     * @throws IOException
+     */
     void exportZip(JCRNodeWrapper node, OutputStream out) throws JahiaException, RepositoryException, SAXException, IOException;
 
     // Import
@@ -123,9 +145,32 @@ public interface ImportExportService {
     void importXML(String parentNodePath, InputStream content) throws IOException, RepositoryException,
             JahiaException;
 
-    void importZip(JCRNodeWrapper file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
+    /**
+     * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
+     * importXML(String, InputStream) method. Binary content will be  
+     *
+     * @param parentNodePath
+     * @param file
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws JahiaException
+     */
+    void importZip(String parentNodePath, File file) throws IOException, RepositoryException,
+            JahiaException;
 
-    void importZip(File file, List<ImportAction> actions, ExtendedImportResult result, final ProcessingContext jParams) throws RepositoryException, IOException;
+    /**
+     * Import a full site zip into a newly created site.
+     *
+     * zip file can contain all kind of legacy jahia import files or jcr import format.
+     *
+     * @param file Zip file
+     * @param actions Empty list where to store the executed import action
+     * @param result Empty result that will be filled with import result
+     * @param site The new site where to import
+     * @throws RepositoryException
+     * @throws IOException
+     */
+    void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site) throws RepositoryException, IOException;
 
     void importCategories(Category rootCategory, InputStream is);
 

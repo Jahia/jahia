@@ -2117,7 +2117,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 if (request.getParameter(file.getName() + "selected") != null) {
                     if (infos.get("type").equals("files")) {
                         try {
-                            ImportExportBaseService.getInstance().importZip(file, new ArrayList<ImportAction>(), null, jParams);
+                            ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, jParams.getSite());
                         } catch (RepositoryException e) {
                             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                         }

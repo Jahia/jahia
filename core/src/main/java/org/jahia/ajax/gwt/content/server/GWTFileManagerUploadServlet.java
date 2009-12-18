@@ -244,12 +244,14 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     public static class Item {
         public String contentType;
         public long length;
-        public FileInputStream file;
+        public File file;
+        public FileInputStream fileStream;
 
         Item(String contentType, long length, final File file) throws FileNotFoundException {
             this.contentType = contentType;
             this.length = length;
-            this.file = new FileInputStream(file) {
+            this.file = file;
+            this.fileStream = new FileInputStream(file) {
                 @Override
                 public void close() throws IOException {
                     super.close();

@@ -42,6 +42,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -103,7 +104,7 @@ public class VersioningHelper {
                     node.save();
                 }
                 node.checkout();
-                node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).fileStream, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
                 node.save();
                 node.checkpoint();
 

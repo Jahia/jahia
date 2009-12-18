@@ -53,6 +53,7 @@ import org.jahia.services.content.nodetypes.*;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
+import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -299,7 +300,7 @@ public class PropertiesHelper {
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
                                             content.setProperty(Constants.JCR_MIMETYPE, i.contentType);
-                                            content.setProperty(Constants.JCR_DATA, i.file);
+                                            content.setProperty(Constants.JCR_DATA, i.fileStream);
                                             content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                         }
                                     } catch (Throwable e) {

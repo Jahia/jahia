@@ -12,6 +12,14 @@ Crazy Jane - Jahia Templates - Schmurtz
 
   Yes as soon as you have created a content from an already created Schmurtz, the local copy is yours and you can modify it in the way you want.
 
+* Can I modify a schmurtz
+
+  Yes, it is possible, but you must go through the Content Manager to acess the schmurtz that were saved in a specific folder tree
+
+* If I change a schmurtz, does all the content created using that schmurtz will be also updated
+
+No, the schmurtz act as a "master", but each copy is independant and therefore, modifications to the original schmurtz is not propagated
+
 * Can I bundle already configured Schmurtz with my modules ?
 
   Yes

@@ -61,7 +61,6 @@ import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.DocumentProperty;
 import org.jahia.services.search.SearchCriteria.DocumentPropertyDescriptor;
 import org.jahia.services.search.SearchCriteria.HierarchicalValue;
-import org.jahia.services.search.SearchCriteria.SearchMode;
 import org.jahia.services.search.SearchCriteria.Term;
 
 import com.thoughtworks.xstream.XStream;
@@ -113,7 +112,6 @@ public class SearchCriteriaFactory {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
                 DocumentProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
-        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, SearchMode.class);
     }
 
     public static SearchCriteria deserialize(String serializedSearch) {

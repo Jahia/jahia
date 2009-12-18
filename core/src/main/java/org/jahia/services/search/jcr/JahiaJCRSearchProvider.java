@@ -1,3 +1,34 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.services.search.jcr;
 
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
@@ -29,6 +60,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
@@ -38,18 +70,34 @@ import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.DocumentProperty;
-import org.jahia.services.search.SearchCriteria.SearchMode;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.JahiaTools;
 
+/**
+ * This is the default search provider used by Jahia and used the index created by Jahia's main
+ * repository, which is based on Apache Jackrabbit. The search request is also done on mounted 
+ * external repositories.
+ * 
+ * For now the search criteria is converted to XPATH queries, which is despite of the deprecation
+ * still the most stable and performance means to use search in Jackrabbit.
+ * 
+ * For future versions we may change to either SQL-2 or directly the QueryObejctModel specified
+ * in JSR-283.
+ *
+ * @author Benjamin Papez
+ *
+ */
 public class JahiaJCRSearchProvider implements SearchProvider {
 
     private static Logger logger = Logger
             .getLogger(JahiaJCRSearchProvider.class);
 
+    /* (non-Javadoc)
+     * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria)
+     */
     public SearchResponse search(SearchCriteria criteria) {
         String xpathQuery = buildXpathQuery(criteria);
 
@@ -121,15 +169,19 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             searchHit = pageHit;
         }
 
-        searchHit.setScore((float) (row.getValue(
-                JcrConstants.JCR_SCORE).getDouble() / 1000.));
+        try {
+            searchHit.setScore((float) (row.getValue(
+                    JcrConstants.JCR_SCORE).getDouble() / 1000.));
 
-        // this is Jackrabbit specific, so if other implementations
-        // throw exceptions, we have to do a check here
-        Value excerpt = row
-                .getValue("rep:excerpt(.)");
-        if (excerpt != null) {
-            searchHit.setExcerpt(excerpt.getString());
+            // this is Jackrabbit specific, so if other implementations
+            // throw exceptions, we have to do a check here            
+            Value excerpt = row
+                    .getValue("rep:excerpt(.)");
+            if (excerpt != null) {
+                searchHit.setExcerpt(excerpt.getString());
+            }
+        } catch (Exception e) {
+            logger.debug("Search details cannot be retrieved", e);
         }
         return searchHit;
     }
@@ -184,8 +236,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
                 query.append("]");
             }
-            query.append(params.getModeAutodetect().equals(SearchMode.FILES) ? "/files"
-                    : "/home");
+            query.append("/home");
             query.append("//element(*,").append(getNodeType(params))
                     .append(")");
         } else {
@@ -202,9 +253,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
     
     private String getNodeType(SearchCriteria params) {
-        return StringUtils.isEmpty(params.getDocumentType()) ? (params
-                .getModeAutodetect().equals(SearchMode.FILES) ? "nt:hierarchyNode"
-                : "nt:base") : params.getDocumentType();
+        return StringUtils.isEmpty(params.getDocumentType()) ? 
+                "nt:base" : params.getDocumentType();
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
@@ -431,14 +481,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
+                boolean isFileSearch = false;
+                try {
+                    isFileSearch = NodeTypeRegistry.getInstance().getNodeType(getNodeType(params)).isNodeType(Constants.NT_HIERARCHYNODE);
+                } catch (Exception e) {
+                    logger.warn("Node type not found", e);
+                }
                 if (searchFields.isContent()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains("
-                            + (params.getModeAutodetect().equals(
-                                    SearchMode.FILES) ? "jcr:content" : ".")
+                            + (isFileSearch ? "jcr:content" : ".")
                             + ", " + searchExpression + ")");
                 }
-                if (params.getModeAutodetect().equals(SearchMode.FILES)
-                        || !searchFields.isContent()) {
+                if (isFileSearch || !searchFields.isContent()) {
                     if (searchFields.isDescription()) {
                         addConstraint(textSearchConstraints, "or",
                                 "jcr:contains(@jcr:description, "

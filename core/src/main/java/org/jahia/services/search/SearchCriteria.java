@@ -484,10 +484,6 @@ public class SearchCriteria implements Serializable {
         }
     }
 
-    public enum SearchMode {
-        AUTODETECT, FILES, PAGES;
-    }
-
     /**
      * Single text serch criterion with a search text and match type.
      * 
@@ -522,18 +518,15 @@ public class SearchCriteria implements Serializable {
 
             private boolean metadata;
 
-            public boolean areAllSelected(SearchMode mode) {
+            public boolean areAllSelected(boolean isFileSearch) {
                 boolean allSelected = false;
-                if (SearchMode.FILES.equals(mode)) {
+                if (isFileSearch) {
                     allSelected = isContent() && isDescription()
                             && isDocumentTitle() && isFilename()
                             && isKeywords();
-                } else if (SearchMode.PAGES.equals(mode)) {
-                    allSelected = isContent() && isMetadata();
                 } else {
-                    throw new IllegalArgumentException("Search mode '" + mode
-                            + "' is not supported");
-                }
+                    allSelected = isContent() && isMetadata();
+                } 
 
                 return allSelected;
             }
@@ -722,8 +715,6 @@ public class SearchCriteria implements Serializable {
 
     private String lastModifiedBy;
 
-    private SearchMode mode = SearchMode.AUTODETECT;
-
     private HierarchicalValue pagePath = new HierarchicalValue();
 
     private Map<String /* documentType */, Map<String /* propertyName */, DocumentProperty>> properties = LazyMap
@@ -792,32 +783,6 @@ public class SearchCriteria implements Serializable {
 
     public String getLastModifiedBy() {
         return lastModifiedBy;
-    }
-
-    public SearchMode getMode() {
-        return mode;
-    }
-
-    public SearchMode getModeAutodetect() {
-
-        SearchMode resolvedMode = getMode();
-
-        if (getMode() == SearchMode.AUTODETECT) {
-            boolean fileSearch = StringUtils.isNotEmpty(getDocumentType())
-                    || StringUtils.isNotEmpty(getFileType())
-                    || !getFileLocation().isEmpty();
-            if (!fileSearch && !getProperties().isEmpty()) {
-                for (DocumentProperty property : getPropertiesAll()) {
-                    if (!property.isEmpty()) {
-                        fileSearch = true;
-                        break;
-                    }
-                }
-            }
-            resolvedMode = fileSearch ? SearchMode.FILES : SearchMode.PAGES;
-        }
-
-        return resolvedMode;
     }
 
     public HierarchicalValue getPagePath() {
@@ -931,10 +896,6 @@ public class SearchCriteria implements Serializable {
         this.lastModifiedBy = lastEditor;
     }
 
-    public void setMode(SearchMode mode) {
-        this.mode = mode;
-    }
-
     public void setPagePath(HierarchicalValue pagePath) {
         this.pagePath = pagePath;
     }
@@ -973,13 +934,13 @@ public class SearchCriteria implements Serializable {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, TO_STRING_STYLE).append("mode",
-                this.getMode()).append("rawQuery", this.getRawQuery()).append(
-                "createdby", this.getCreatedBy()).append("created",
-                this.getCreated()).append("lastModifiedBy",
-                this.getLastModifiedBy()).append("lastModified",
-                this.getLastModified()).append("pagePath", this.getPagePath())
-                .append("fileType", this.getFileType()).append("documentType",
+        return new ToStringBuilder(this, TO_STRING_STYLE).append("rawQuery",
+                this.getRawQuery()).append("createdby", this.getCreatedBy())
+                .append("created", this.getCreated()).append("lastModifiedBy",
+                        this.getLastModifiedBy()).append("lastModified",
+                        this.getLastModified()).append("pagePath",
+                        this.getPagePath()).append("fileType",
+                        this.getFileType()).append("documentType",
                         this.getDocumentType()).append("fileLocation",
                         this.getFileLocation()).append("properties",
                         listToString(this.getPropertiesAll())).append("terms",

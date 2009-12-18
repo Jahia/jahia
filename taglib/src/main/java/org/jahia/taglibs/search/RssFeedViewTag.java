@@ -40,12 +40,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.params.ParamBean;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteriaFactory;
-import org.jahia.services.search.SearchCriteria.SearchMode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -214,8 +216,18 @@ public class RssFeedViewTag extends AbstractJahiaTag {
     }
 
     private boolean isFileSearchMode() {
-        return SearchMode.FILES == SearchCriteriaFactory.getInstance(
-                getProcessingContext()).getMode();
+        boolean isFileSearch = false;
+        try {
+            String documentType = SearchCriteriaFactory.getInstance(
+                    getProcessingContext()).getDocumentType();
+            if (!StringUtils.isEmpty(documentType)) {
+                isFileSearch = NodeTypeRegistry.getInstance().getNodeType(
+                        documentType).isNodeType(Constants.NT_HIERARCHYNODE);
+            }
+        } catch (Exception e) {
+            logger.warn("Node type not found", e);
+        }
+        return isFileSearch;
     }
 
     @Override

@@ -123,7 +123,7 @@
 [mix:created]
   mixin
   - jcr:created (DATE) autocreated protected
-  - jcr:createdBy (STRING) autocreated protected
+  - jcr:createdBy (STRING) autocreated protected nofulltext
 
 /**
  * This mixin node type can be used to provide standardized modification
@@ -145,7 +145,7 @@
 [mix:lastModified]
   mixin
   - jcr:lastModified (DATE) autocreated
-  - jcr:lastModifiedBy (STRING) autocreated
+  - jcr:lastModifiedBy (STRING) autocreated nofulltext
 
 /**
  * This mixin node type can be used to provide a standardized property that
@@ -159,7 +159,7 @@
  */
 [mix:language]
   mixin
-  - jcr:language (STRING)
+  - jcr:language (STRING) nofulltext
 
 /**
  * This mixin node type can be used to provide standardized mimetype and

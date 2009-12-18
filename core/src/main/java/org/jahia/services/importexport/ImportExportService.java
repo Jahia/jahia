@@ -135,6 +135,8 @@ public interface ImportExportService {
      *            imported
      * @param content
      *            the XML content stream
+     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     *          import
      * @throws IOException
      *             in case of read/write errors
      * @throws RepositoryException
@@ -142,7 +144,7 @@ public interface ImportExportService {
      * @throws JahiaException
      *             in case of errors during categories import
      */
-    void importXML(String parentNodePath, InputStream content) throws IOException, RepositoryException,
+    void importXML(String parentNodePath, InputStream content, boolean noRoot) throws IOException, RepositoryException,
             JahiaException;
 
     /**
@@ -151,11 +153,13 @@ public interface ImportExportService {
      *
      * @param parentNodePath
      * @param file
+     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     *          import
      * @throws IOException
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file) throws IOException, RepositoryException,
+    void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException,
             JahiaException;
 
     /**

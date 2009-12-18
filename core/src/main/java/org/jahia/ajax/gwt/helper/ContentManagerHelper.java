@@ -52,7 +52,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 
-import java.io.FileInputStream;
 import java.util.*;
 
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -828,10 +827,10 @@ public class ContentManagerHelper {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
             if ("application/zip".equals(item.contentType)) {
-                importExport.importZip(parentPath, item.file);
+                importExport.importZip(parentPath, item.file, false);
                 item.file.delete();
             } else if ("application/xml".equals(item.contentType) || "text/xml".equals(item.contentType)) {
-                importExport.importXML(parentPath, item.fileStream);
+                importExport.importXML(parentPath, item.fileStream, false);
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);

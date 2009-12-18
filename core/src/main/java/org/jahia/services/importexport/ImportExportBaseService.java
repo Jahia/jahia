@@ -996,7 +996,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return handler.getType();
     }
 
-    public void importXML(final String parentNodePath, InputStream content) throws IOException, RepositoryException, JahiaException {
+    public void importXML(final String parentNodePath, InputStream content, final boolean noRoot) throws IOException, RepositoryException, JahiaException {
         File tempFile = null;
 
         try {
@@ -1017,7 +1017,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 try {
-                                    session.importXML(parentNodePath, new FileInputStream(contentFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                    session.importXML(parentNodePath, new FileInputStream(contentFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
                                 } catch (IOException e) {
                                     throw new RepositoryException(e);
                                 }
@@ -1045,7 +1045,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    public void importZip(String parentNodePath, File file) throws IOException, RepositoryException, JahiaException {
+    public void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException, JahiaException {
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
         Map<String, Long> sizes = new HashMap<String, Long>();
@@ -1091,12 +1091,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     documentViewImportHandler.setUuidMapping(uuidMapping);
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setPathMapping(pathMapping);
+                    documentViewImportHandler.setNoRoot(noRoot);
 
                     handleImport(zis, documentViewImportHandler);
                     session.save();
                     break;
                 } else if (name.endsWith(".xml")) {
-                    importXML(parentNodePath, zis);
+                    importXML(parentNodePath, zis, false);
                 }
                 zis.closeEntry();
             }

@@ -51,12 +51,7 @@
         <div class="container container_16">
             <div class="grid_16">
                 <div id="search-bar"><!--start search-bar-->
-                    <form class="active" method="get" action="#">
-                        <div class="form-container">
-                            <input type="text" value="Start Searching ..." name="term" class="text-input"/>
-                            <input type="submit" value="Search" class="submit"/>
-                        </div>
-                    </form>
+                	<template:area path="${rootPage.path}/simpleSearch" nodeTypes="jnt:simpleSearchForm"/>
                 </div>
                 <!--stop search-bar-->
                 <div id="breadcrumbs"><!--start breadcrumbs-->

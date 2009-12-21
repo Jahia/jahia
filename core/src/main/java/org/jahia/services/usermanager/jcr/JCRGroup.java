@@ -280,7 +280,13 @@ public class JCRGroup extends JahiaGroup {
                     principalMap.put(member.getName(), jahiaUser);
                 } else {
                     String s = member.getName().replace("___", ":");
-                    principalMap.put(s, JahiaGroupManagerRoutingService.getInstance().lookupGroup(s));
+                    JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
+                    if (g != null) {
+                        principalMap.put(s, g);
+                    } else {
+                        logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                + "'");
+                    }
                 }
             }
         }

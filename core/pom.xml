@@ -201,13 +201,8 @@
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>1.4</version>
+            <version>1.5.4</version>
         </dependency>
-        <!--<dependency>
-            <groupId>commons-transaction</groupId>
-            <artifactId>commons-transaction</artifactId>
-            <version>1.2</version>
-        </dependency>-->
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
@@ -317,12 +312,6 @@
             <artifactId>drools-decisiontables</artifactId>
             <version>4.0.3</version>
         </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-        </dependency>
-        <!-- todo: migrate to 2.3-->
         <!--Lucene dependencies-->
         <dependency>
             <groupId>org.apache.lucene</groupId>

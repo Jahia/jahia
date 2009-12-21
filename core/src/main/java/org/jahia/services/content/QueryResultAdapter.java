@@ -68,7 +68,7 @@ public class QueryResultAdapter implements QueryResult {
     }
 
     public String[] getColumnNames() throws RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];
     }
 
     public RowIterator getRows() throws RepositoryException {
@@ -81,10 +81,7 @@ public class QueryResultAdapter implements QueryResult {
                     rows.add(new Row() {
                         public Value getValue(String s) throws ItemNotFoundException, RepositoryException {
                             if (s.equals(JcrConstants.JCR_PATH)) {
-                                String rowValue = row.getValue(s).getString();
-                                rowValue = rowValue.replaceFirst(queryResult.getProvider().getRelativeRoot(),"");
-                                String mountPoint = queryResult.getProvider().getMountPoint();
-                                return new StringValue(mountPoint.equals("/") ? rowValue : mountPoint + rowValue);
+                                return new StringValue(getPath());
                             }
                             return row.getValue(s);
                         }
@@ -94,27 +91,33 @@ public class QueryResultAdapter implements QueryResult {
                         }
 
                         public Node getNode() throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return queryResult.getProvider().getNodeWrapper(row.getNode(), queryResult.getSession());
                         }
 
                         public Node getNode(String selectorName) throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return queryResult.getProvider().getNodeWrapper(row.getNode(selectorName), queryResult.getSession());
+                        }
+
+                        private String getDerivedPath(String originalPath) throws RepositoryException {
+                            originalPath = originalPath.replaceFirst(queryResult.getProvider().getRelativeRoot(),"");
+                            String mountPoint = queryResult.getProvider().getMountPoint();
+                            return mountPoint.equals("/") ? originalPath : mountPoint + originalPath;
                         }
 
                         public String getPath() throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return getDerivedPath(row.getPath());
                         }
 
                         public String getPath(String selectorName) throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return getDerivedPath(row.getPath(selectorName));
                         }
 
                         public double getScore() throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return row.getScore();
                         }
 
                         public double getScore(String selectorName) throws RepositoryException {
-                            throw new UnsupportedRepositoryOperationException();
+                            return row.getScore(selectorName);
                         }
                     });
                 }

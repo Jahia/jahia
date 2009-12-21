@@ -465,6 +465,10 @@ public class JCRWorkspaceWrapper implements Workspace {
         public String[] getSelectorNames() throws RepositoryException {
             throw new UnsupportedRepositoryOperationException();
         }
+        
+        JCRSessionWrapper getSession() {
+            return session;
+        }
     }
 
 }

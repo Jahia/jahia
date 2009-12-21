@@ -50,6 +50,6 @@ public class I18NInterceptor implements PropertyInterceptor {
     }
 
     public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues) throws ValueFormatException, RepositoryException {
-        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return storedValues;
     }
 }

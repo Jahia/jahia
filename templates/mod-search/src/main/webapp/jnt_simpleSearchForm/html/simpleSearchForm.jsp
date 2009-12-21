@@ -12,6 +12,7 @@
 		</c:if>
 		<fmt:message key='search.startSearching' var="startSearching"/>
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
+       	<s:site display="false" value="${jahia.site.siteKey}"/>
     	<input type="submit" class="submit" value="<fmt:message key='search.submit'/>" title="<fmt:message key='search.submit'/>"/>
 	</div>
 </s:form><br class="clear"/>

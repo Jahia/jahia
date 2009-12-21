@@ -52,6 +52,7 @@ import java.io.IOException;
  * @author cmailleux
  */
 public class JCRPropertyTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 6088194510339167289L;
     private transient static Logger logger = Logger.getLogger(JCRPropertyTag.class);
     private JCRNodeWrapper node;
     private String name;
@@ -94,10 +95,14 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     return returnValue;
                 }
             } catch (PathNotFoundException e) {
-                logger.debug("Property : " + name + " not found in node " + node.getPath());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property : " + name + " not found in node " + node.getPath());
+                }
                 return returnValue;
             } catch (NoSuchNodeTypeException e) {
-                logger.debug("Property : " + name + " not found in node " + node.getPath());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property : " + name + " not found in node " + node.getPath());
+                }
                 return returnValue;
             }  catch (ConstraintViolationException e) {
                 if (!inherited) {
@@ -108,10 +113,12 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                         curNode = curNode.getParent();
                     }
                     catch (ItemNotFoundException e2) {
-                        logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
+                        }
                         return returnValue;
                     } catch (RepositoryException e1) {
-                        e1.printStackTrace();
+                        logger.error(e1.getMessage(), e1);
                         return returnValue;                        
                     }
                 }
@@ -158,7 +165,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     }
 
     /**
-     * If you want to recursivly look for a property in current node parent's nodes
+     * If you want to recursively look for a property in current node parent's nodes
      * Set this value to true
      *
      * @param inherited (false is default) if true look up in parents properties

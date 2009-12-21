@@ -32,7 +32,7 @@
 
 --%>
 <%@ tag body-content="empty"
-        description="Renders a date control to query any date field of a content object. It is used internally by created, lastModified and documentProperty tags." %>
+        description="Renders a date control to query any date field of a content object. It is used internally by created, lastModified and nodeProperty tags." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."

@@ -37,23 +37,23 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.search.SearchCriteriaFactory;
-import org.jahia.services.search.SearchCriteria.DocumentPropertyDescriptor;
+import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
 /**
- * Exposes a descriptor for the specified document property into the page scope.
+ * Exposes a descriptor for the specified node property into the page scope.
  * The descriptor contains information about property type (boolean, text, date,
  * category), if it is constrained with a list of allowed values etc.
  * 
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
-public class DocumentPropertyDescriptorTag extends AbstractJahiaTag {
+public class NodePropertyDescriptorTag extends AbstractJahiaTag {
 
     private static final String DEF_VAR = "descriptor";
 
-    private String documentType;
+    private String nodeType;
 
     private String name;
 
@@ -69,10 +69,10 @@ public class DocumentPropertyDescriptorTag extends AbstractJahiaTag {
 
     @Override
     public int doStartTag() throws JspException {
-        DocumentPropertyDescriptor descriptor = null;
+        NodePropertyDescriptor descriptor = null;
         try {
             descriptor = SearchCriteriaFactory.getPropertyDescriptor(
-                    documentType, name, Utils.getProcessingContext(pageContext));
+                    nodeType, name, Utils.getProcessingContext(pageContext));
             if (descriptor != null) {
                 pageContext.setAttribute(var, descriptor);
             }
@@ -86,13 +86,13 @@ public class DocumentPropertyDescriptorTag extends AbstractJahiaTag {
     @Override
     protected void resetState() {
         var = DEF_VAR;
-        documentType = null;
+        nodeType = null;
         name = null;
         super.resetState();
     }
 
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
     public void setName(String name) {

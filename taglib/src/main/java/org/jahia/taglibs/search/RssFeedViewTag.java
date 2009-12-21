@@ -219,7 +219,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
         boolean isFileSearch = false;
         try {
             String documentType = SearchCriteriaFactory.getInstance(
-                    getProcessingContext()).getDocumentType();
+                    getProcessingContext()).getNodeType();
             if (!StringUtils.isEmpty(documentType)) {
                 isFileSearch = NodeTypeRegistry.getInstance().getNodeType(
                         documentType).isNodeType(Constants.NT_HIERARCHYNODE);

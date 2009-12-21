@@ -49,7 +49,6 @@ import javax.jcr.query.RowIterator;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -61,7 +60,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
@@ -71,7 +69,7 @@ import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
 import org.jahia.services.search.SearchCriteria.DateValue;
-import org.jahia.services.search.SearchCriteria.DocumentProperty;
+import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
@@ -193,9 +191,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         StringBuilder query = new StringBuilder(256);
         String path = null;
-        if (params.getFileLocation() != null
-                && !params.getFileLocation().isEmpty()) {
-            path = params.getFileLocation().getValue().trim();
+        if (params.getFilePath() != null
+                && !params.getFilePath().isEmpty()) {
+            path = params.getFilePath().getValue().trim();
         }
         if (path != null) {
             String[] pathTokens = JahiaTools.getTokens(StringEscapeUtils
@@ -204,7 +202,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
             for (String folder : pathTokens) {
-                if (!params.getFileLocation().isIncludeChildren()) {
+                if (!params.getFilePath().isIncludeChildren()) {
                     if (lastFolder != null) {
                         jcrPath.append(lastFolder).append("/");
                     }
@@ -213,7 +211,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     jcrPath.append(folder).append("/");
                 }
             }
-            if (params.getFileLocation().isIncludeChildren()) {
+            if (params.getFilePath().isIncludeChildren()) {
                 jcrPath.append("/");
                 lastFolder = "*";
             }
@@ -238,7 +236,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
                 query.append("]");
             }
-            query.append("/home");
             query.append("//element(*,").append(getNodeType(params))
                     .append(")");
         } else {
@@ -255,8 +252,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
     
     private String getNodeType(SearchCriteria params) {
-        return StringUtils.isEmpty(params.getDocumentType()) ? 
-                "nt:base" : params.getDocumentType();
+        return StringUtils.isEmpty(params.getNodeType()) ? 
+                "nt:base" : params.getNodeType();
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
@@ -271,7 +268,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         addLanguageConstraints(params, constraints);
 
-        List<DocumentProperty> props = params.getPropertiesAll();
+        List<NodeProperty> props = params.getPropertiesAll();
         if (!props.isEmpty()) {
             addPropertyConstraints(constraints, props);
         }
@@ -416,10 +413,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addPropertyConstraints(StringBuilder constraints,
-            List<DocumentProperty> properties) {
-        for (DocumentProperty property : properties) {
+            List<NodeProperty> properties) {
+        for (NodeProperty property : properties) {
             if (!property.isEmpty()) {
-                if (DocumentProperty.Type.CATEGORY == property.getType()) {
+                if (NodeProperty.Type.CATEGORY == property.getType()) {
                     StringBuilder categoryConstraints = new StringBuilder(64);
                     for (String value : property.getCategoryValue().getValues()) {
                         addPropertyConstraintCategory(categoryConstraints,
@@ -428,10 +425,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     }
                     addConstraint(constraints, "and", categoryConstraints
                             .insert(0, "(").append(")").toString());
-                } else if (DocumentProperty.Type.DATE == property.getType()) {
+                } else if (NodeProperty.Type.DATE == property.getType()) {
                     addDateConstraint(constraints, property.getDateValue(), "@"
                             + property.getName());
-                } else if (DocumentProperty.Type.TEXT == property.getType()) {
+                } else if (NodeProperty.Type.TEXT == property.getType()) {
                     StringBuilder propertyConstraints = new StringBuilder(64);
                     for (String value : property.getValues()) {
                         if (property.isConstrained()) {
@@ -457,7 +454,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                     + propertyConstraints.toString() + ")");
                         }
                     }
-                } else if (DocumentProperty.Type.BOOLEAN == property.getType()) {
+                } else if (NodeProperty.Type.BOOLEAN == property.getType()) {
                     // only handle 'true' case
                     if (Boolean.parseBoolean(property.getValue())) {
                         addConstraint(constraints, "and", "@"
@@ -483,24 +480,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
-                boolean isFileSearch = false;
-                try {
-                    isFileSearch = NodeTypeRegistry.getInstance().getNodeType(getNodeType(params)).isNodeType(Constants.NT_HIERARCHYNODE);
-                } catch (Exception e) {
-                    logger.warn("Node type not found", e);
-                }
-                if (searchFields.isContent()) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains("
-                            + (isFileSearch ? "jcr:content" : ".")
-                            + ", " + searchExpression + ")");
-                }
-                if (isFileSearch || !searchFields.isContent()) {
+                if (searchFields.isSiteContent()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
+                } else {
+                    if (searchFields.isFileContent()) {
+                        addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");
+                    }
                     if (searchFields.isDescription()) {
                         addConstraint(textSearchConstraints, "or",
                                 "jcr:contains(@jcr:description, "
                                         + searchExpression + ")");
                     }
-                    if (searchFields.isDocumentTitle()) {
+                    if (searchFields.isTitle()) {
                         addConstraint(textSearchConstraints, "or",
                                 "jcr:contains(@jcr:title, " + searchExpression
                                         + ")");

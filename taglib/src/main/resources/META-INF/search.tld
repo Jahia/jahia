@@ -12,22 +12,22 @@
     <uri>http://www.jahia.org/tags/search</uri>
 
     <tag>
-        <description>Exposes a descriptor for the specified document property into the page scope.
+        <description>Exposes a descriptor for the specified node property into the page scope.
             The descriptor contains information about property type (boolean, text, date, category), if it is
             constrained with a list of allowed values etc.
         </description>
-        <name>documentPropertyDescriptor</name>
-        <tag-class>org.jahia.taglibs.search.DocumentPropertyDescriptorTag</tag-class>
+        <name>nodePropertyDescriptor</name>
+        <tag-class>org.jahia.taglibs.search.NodePropertyDescriptorTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>The node type name.</description>
-            <name>documentType</name>
+            <name>nodeType</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>The document property name.</description>
+            <description>The node property name.</description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -189,16 +189,16 @@
         <path>/META-INF/tags/search/date.tag</path>
     </tag-file>
     <tag-file>
-        <name>documentProperty</name>
-        <path>/META-INF/tags/search/documentProperty.tag</path>
+        <name>nodeProperty</name>
+        <path>/META-INF/tags/search/nodeProperty.tag</path>
     </tag-file>
     <tag-file>
-        <name>documentType</name>
-        <path>/META-INF/tags/search/documentType.tag</path>
+        <name>nodeType</name>
+        <path>/META-INF/tags/search/nodeType.tag</path>
     </tag-file>
     <tag-file>
-        <name>fileLocation</name>
-        <path>/META-INF/tags/search/fileLocation.tag</path>
+        <name>filePath</name>
+        <path>/META-INF/tags/search/filePath.tag</path>
     </tag-file>
     <tag-file>
         <name>fileType</name>

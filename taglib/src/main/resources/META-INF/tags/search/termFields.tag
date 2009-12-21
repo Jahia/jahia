@@ -36,10 +36,10 @@
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided. [true]"
         %>
-<%@ attribute name="value" required="false" type="java.lang.String" description="Comma separated list of fields to search in. [content]" %>
+<%@ attribute name="value" required="false" type="java.lang.String" description="Comma separated list of fields to search in. [siteContent]" %>
 <%@ attribute name="selectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
-              This option has effect only in case the searchInAllowSelection attribute is set to true. [content,metadata]" %>
+              This option has effect only in case the searchInAllowSelection attribute is set to true. [siteContent,fileContent]" %>
 <%@ attribute name="appearance" required="false" type="java.lang.String"
               description="Specify the way field options will be displayed. Possible values are: checkbox and select. [checkbox]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -48,10 +48,10 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="appearance" value="${functions:default(appearance, 'checkbox')}"/>
-<c:set var="value" value="${functions:default(value, 'content')}"/>
+<c:set var="value" value="${functions:default(value, 'siteContent')}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
 <c:set var="termIndex" value="${searchTermFieldIndexes[formId]}"/>
-<c:set var="selectionOptions" value="${functions:default(selectionOptions, 'content,metadata')}"/>
+<c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'siteContent,fileContent')}"/>
 <c:if test="${display}">
     <c:if test="${appearance == 'select'}">
         <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>

@@ -58,8 +58,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.search.SearchCriteria.DateValue;
-import org.jahia.services.search.SearchCriteria.DocumentProperty;
-import org.jahia.services.search.SearchCriteria.DocumentPropertyDescriptor;
+import org.jahia.services.search.SearchCriteria.NodeProperty;
+import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
 import org.jahia.services.search.SearchCriteria.HierarchicalValue;
 import org.jahia.services.search.SearchCriteria.Term;
 
@@ -102,7 +102,7 @@ public class SearchCriteriaFactory {
         });
         SERIALIZER.alias("search-criteria", SearchCriteria.class);
         SERIALIZER.alias("date-value", DateValue.class);
-        SERIALIZER.alias("document-property", DocumentProperty.class);
+        SERIALIZER.alias("node-property", NodeProperty.class);
         SERIALIZER.alias("hierarchical-value", HierarchicalValue.class);
         SERIALIZER.alias("term", Term.class);
     }
@@ -110,7 +110,7 @@ public class SearchCriteriaFactory {
     static {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, DateValue.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
-                DocumentProperty.Type.class);
+                NodeProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
     }
 
@@ -163,8 +163,8 @@ public class SearchCriteriaFactory {
                 logger.debug(searchParams);
             }
 
-            // initialize document properties
-            initDocumentProperties(searchParams, ctx);
+            // initialize node properties
+            initNodeProperties(searchParams, ctx);
 
             ctx.setAttribute(ATTR_QUERY_PARAMS, searchParams);
         }
@@ -172,7 +172,7 @@ public class SearchCriteriaFactory {
         return searchParams;
     }
 
-    private static DocumentPropertyDescriptor getPropertyDescriptor(
+    private static NodePropertyDescriptor getPropertyDescriptor(
             ExtendedItemDefinition itemDef, ExtendedNodeType nodeType,
             ProcessingContext ctx) throws RepositoryException {
 
@@ -180,22 +180,22 @@ public class SearchCriteriaFactory {
         PropertyDefinition propDef = JCRContentUtils.getPropertyDefinition(
                 nodeType, propDefExt.getName());
 
-        DocumentProperty.Type type = DocumentProperty.Type.TEXT;
+        NodeProperty.Type type = NodeProperty.Type.TEXT;
         switch (propDef.getRequiredType()) {
         case PropertyType.BOOLEAN:
-            type = DocumentProperty.Type.BOOLEAN;
+            type = NodeProperty.Type.BOOLEAN;
             break;
         case PropertyType.DATE:
-            type = DocumentProperty.Type.DATE;
+            type = NodeProperty.Type.DATE;
             break;
         case PropertyType.STRING:
             if (SelectorType.CATEGORY == (propDefExt.getSelector())) {
-                type = DocumentProperty.Type.CATEGORY;
+                type = NodeProperty.Type.CATEGORY;
             }
             break;
         }
 
-        DocumentPropertyDescriptor descriptor = new DocumentPropertyDescriptor(
+        NodePropertyDescriptor descriptor = new NodePropertyDescriptor(
                 itemDef.getName(), itemDef.getLabel(ctx != null ? ctx
                         .getLocale() : Locale.getDefault()), type);
 
@@ -215,46 +215,46 @@ public class SearchCriteriaFactory {
         return descriptor;
     }
 
-    public static DocumentPropertyDescriptor getPropertyDescriptor(
-            String documentType, String propertyName, ProcessingContext ctx)
+    public static NodePropertyDescriptor getPropertyDescriptor(
+            String nodeType, String propertyName, ProcessingContext ctx)
             throws RepositoryException {
         PropertyDefinition propDef = JCRContentUtils.getPropertyDefinition(
-                documentType, propertyName);
-        DocumentPropertyDescriptor descriptor = null;
+                nodeType, propertyName);
+        NodePropertyDescriptor descriptor = null;
         if (propDef != null) {
             descriptor = getPropertyDescriptor(
                     (ExtendedItemDefinition) propDef, NodeTypeRegistry
-                            .getInstance().getNodeType(documentType), ctx);
+                            .getInstance().getNodeType(nodeType), ctx);
         }
 
         return descriptor;
     }
 
-    private static void initDocumentProperties(SearchCriteria searchParams,
+    private static void initNodeProperties(SearchCriteria searchParams,
             ProcessingContext ctx) {
 
-        List<DocumentProperty> props = new LinkedList<DocumentProperty>();
-        for (Map.Entry<String, Map<String, DocumentProperty>> docTypeEntry : searchParams
+        List<NodeProperty> props = new LinkedList<NodeProperty>();
+        for (Map.Entry<String, Map<String, NodeProperty>> docTypeEntry : searchParams
                 .getProperties().entrySet()) {
-            for (Map.Entry<String, DocumentProperty> propEntry : docTypeEntry
+            for (Map.Entry<String, NodeProperty> propEntry : docTypeEntry
                     .getValue().entrySet()) {
-                DocumentProperty prop = propEntry.getValue();
-                // set document type and property name
-                prop.setDocumentType(docTypeEntry.getKey());
+                NodeProperty prop = propEntry.getValue();
+                // set node type and property name
+                prop.setNodeType(docTypeEntry.getKey());
                 prop.setName(propEntry.getKey());
                 if (!prop.isAllEmpty()) {
                     try {
                         // retrieve property descriptor
-                        DocumentPropertyDescriptor descriptor = getPropertyDescriptor(
-                                prop.getDocumentType(), prop.getName(), ctx);
+                        NodePropertyDescriptor descriptor = getPropertyDescriptor(
+                                prop.getNodeType(), prop.getName(), ctx);
                         // set additional properties
                         prop.setConstrained(descriptor.isConstrained());
                         prop.setMultiple(descriptor.isMultiple());
                         prop.setType(descriptor.getType());
                     } catch (RepositoryException e) {
                         logger.error(
-                                "Error retrieving property descriptor for document type '"
-                                        + prop.getDocumentType()
+                                "Error retrieving property descriptor for node type '"
+                                        + prop.getNodeType()
                                         + "' and property name '"
                                         + prop.getName() + "'", e);
                     }

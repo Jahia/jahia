@@ -58,8 +58,6 @@ import org.jahia.engines.calendar.CalendarHandler;
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
 
-    private static final long serialVersionUID = 4633533116047727827L;
-
     /**
      * Supports comma separated multiple values.
      * 
@@ -67,9 +65,9 @@ public class SearchCriteria implements Serializable {
      */
     public static class CommaSeparatedMultipleValue extends MultipleValue {
 
-        private static final long serialVersionUID = 2324041504396269857L;
-        
         private static final char MULTIPLE_VALUE_SEPARATOR = ',';
+        
+        private static final long serialVersionUID = 2324041504396269857L;
 
         public void setValue(String value) {
             if (StringUtils.isNotEmpty(value)
@@ -96,14 +94,14 @@ public class SearchCriteria implements Serializable {
      */
     public static class DateValue implements Serializable {
 
-        private static final long serialVersionUID = -1637520083714465344L;
-
         public enum Type {
             ANYTIME, LAST_MONTH, LAST_SIX_MONTHS, LAST_THREE_MONTHS, LAST_WEEK, RANGE, TODAY;
         }
 
         public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
                 CalendarHandler.DEFAULT_DATEONLY_FORMAT);
+
+        private static final long serialVersionUID = -1637520083714465344L;
 
         private String from;
 
@@ -191,238 +189,6 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
-     * Single search criterion on the node property.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    public static class DocumentProperty extends MultipleValue {
-
-        private static final long serialVersionUID = 1356495981201889467L;
-
-        public enum Type {
-            BOOLEAN, CATEGORY, DATE, TEXT;
-        }
-
-        private HierarchicalValue categoryValue = new HierarchicalValue();
-
-        private boolean constrained;
-
-        private DateValue dateValue = new DateValue();
-
-        private String documentType;
-
-        private MatchType match = MatchType.AS_IS;
-
-        private boolean multiple;
-
-        private String name;
-
-        private Type type = Type.TEXT;
-
-        public HierarchicalValue getCategoryValue() {
-            return categoryValue;
-        }
-
-        public DateValue getDateValue() {
-            return dateValue;
-        }
-
-        public String getDocumentType() {
-            return documentType;
-        }
-
-        public MatchType getMatch() {
-            return match;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Type getType() {
-            return type;
-        }
-
-        public boolean isAllEmpty() {
-            return super.isEmpty() && categoryValue.isEmpty()
-                    && dateValue.isEmpty();
-        }
-
-        public boolean isConstrained() {
-            return constrained;
-        }
-
-        public boolean isEmpty() {
-            boolean empty = false;
-            if (Type.CATEGORY == type) {
-                empty = categoryValue.isEmpty();
-            } else if (Type.DATE == type) {
-                empty = dateValue.isEmpty();
-            } else if (Type.TEXT == type || Type.BOOLEAN == type) {
-                empty = super.isEmpty();
-            } else {
-                throw new IllegalArgumentException(
-                        "Unknown document property value type '" + type + "'");
-            }
-            return empty;
-        }
-
-        public boolean isMultiple() {
-            return multiple;
-        }
-
-        public void setCategoryValue(HierarchicalValue categoryValue) {
-            this.categoryValue = categoryValue;
-        }
-
-        public void setConstrained(boolean constrained) {
-            this.constrained = constrained;
-        }
-
-        public void setDateValue(DateValue dateValue) {
-            this.dateValue = dateValue;
-        }
-
-        public void setDocumentType(String nodeType) {
-            this.documentType = nodeType;
-        }
-
-        public void setMatch(MatchType matchType) {
-            this.match = matchType;
-        }
-
-        public void setMultiple(boolean multiple) {
-            this.multiple = multiple;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setType(Type type) {
-            this.type = type;
-        }
-
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.reflectionToString(this,
-                    TO_STRING_STYLE);
-        }
-
-    }
-
-    /**
-     * Contains description of the document (node) property.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    public static class DocumentPropertyDescriptor {
-
-        private String[] allowedValues;
-
-        private boolean constrained;
-
-        private String defaultValue;
-
-        private String label;
-
-        private boolean multiple;
-
-        private String name;
-
-        private Map<String,String> selectorOptions;
-
-        private DocumentProperty.Type type = DocumentProperty.Type.TEXT;
-
-        /**
-         * Initializes an instance of this class.
-         * 
-         * @param name
-         *            document type name
-         * @param label
-         *            display label
-         * @param type
-         *            the property type
-         */
-        public DocumentPropertyDescriptor(String name, String label,
-                DocumentProperty.Type type) {
-            super();
-            this.name = name;
-            this.label = label;
-            this.type = type;
-        }
-
-        public String[] getAllowedValues() {
-            return allowedValues;
-        }
-
-        public String getDefaultValue() {
-            return defaultValue;
-        }
-
-        public String getLabel() {
-            return label;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Map<String,String> getSelectorOptions() {
-            return selectorOptions;
-        }
-
-        public DocumentProperty.Type getType() {
-            return type;
-        }
-
-        public boolean isConstrained() {
-            return constrained;
-        }
-
-        public boolean isMultiple() {
-            return multiple;
-        }
-
-        public void setAllowedValues(String[] allowedValues) {
-            this.allowedValues = allowedValues;
-        }
-
-        public void setConstrained(boolean constrained) {
-            this.constrained = constrained;
-        }
-
-        public void setDefaultValue(String defaultValue) {
-            this.defaultValue = defaultValue;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public void setMultiple(boolean multiple) {
-            this.multiple = multiple;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setSelectorOptions(Map<String,String> selectorOptions) {
-            this.selectorOptions = new HashMap<String,String>(selectorOptions);
-        }
-
-        public void setType(DocumentProperty.Type type) {
-            this.type = type;
-        }
-
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.reflectionToString(this);
-        }
-    }
-
-    /**
      * Represents a selactable value (file location, category etc.) that is a
      * part of the hierarchical structure.
      * 
@@ -485,13 +251,243 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
+     * Single search criterion on the node property.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class NodeProperty extends MultipleValue {
+
+        public enum Type {
+            BOOLEAN, CATEGORY, DATE, TEXT;
+        }
+
+        private static final long serialVersionUID = 1356495981201889467L;
+
+        private HierarchicalValue categoryValue = new HierarchicalValue();
+
+        private boolean constrained;
+
+        private DateValue dateValue = new DateValue();
+
+        private MatchType match = MatchType.AS_IS;
+
+        private boolean multiple;
+
+        private String name;
+
+        private String nodeType;
+
+        private Type type = Type.TEXT;
+
+        public HierarchicalValue getCategoryValue() {
+            return categoryValue;
+        }
+
+        public DateValue getDateValue() {
+            return dateValue;
+        }
+
+        public MatchType getMatch() {
+            return match;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getNodeType() {
+            return nodeType;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public boolean isAllEmpty() {
+            return super.isEmpty() && categoryValue.isEmpty()
+                    && dateValue.isEmpty();
+        }
+
+        public boolean isConstrained() {
+            return constrained;
+        }
+
+        public boolean isEmpty() {
+            boolean empty = false;
+            if (Type.CATEGORY == type) {
+                empty = categoryValue.isEmpty();
+            } else if (Type.DATE == type) {
+                empty = dateValue.isEmpty();
+            } else if (Type.TEXT == type || Type.BOOLEAN == type) {
+                empty = super.isEmpty();
+            } else {
+                throw new IllegalArgumentException(
+                        "Unknown node property value type '" + type + "'");
+            }
+            return empty;
+        }
+
+        public boolean isMultiple() {
+            return multiple;
+        }
+
+        public void setCategoryValue(HierarchicalValue categoryValue) {
+            this.categoryValue = categoryValue;
+        }
+
+        public void setConstrained(boolean constrained) {
+            this.constrained = constrained;
+        }
+
+        public void setDateValue(DateValue dateValue) {
+            this.dateValue = dateValue;
+        }
+
+        public void setMatch(MatchType matchType) {
+            this.match = matchType;
+        }
+
+        public void setMultiple(boolean multiple) {
+            this.multiple = multiple;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setNodeType(String nodeType) {
+            this.nodeType = nodeType;
+        }
+
+        public void setType(Type type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.reflectionToString(this,
+                    TO_STRING_STYLE);
+        }
+
+    }
+
+    /**
+     * Contains description of the node property.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class NodePropertyDescriptor {
+
+        private String[] allowedValues;
+
+        private boolean constrained;
+
+        private String defaultValue;
+
+        private String label;
+
+        private boolean multiple;
+
+        private String name;
+
+        private Map<String,String> selectorOptions;
+
+        private NodeProperty.Type type = NodeProperty.Type.TEXT;
+
+        /**
+         * Initializes an instance of this class.
+         * 
+         * @param name
+         *            node type name
+         * @param label
+         *            display label
+         * @param type
+         *            the property type
+         */
+        public NodePropertyDescriptor(String name, String label,
+                NodeProperty.Type type) {
+            super();
+            this.name = name;
+            this.label = label;
+            this.type = type;
+        }
+
+        public String[] getAllowedValues() {
+            return allowedValues;
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Map<String,String> getSelectorOptions() {
+            return selectorOptions;
+        }
+
+        public NodeProperty.Type getType() {
+            return type;
+        }
+
+        public boolean isConstrained() {
+            return constrained;
+        }
+
+        public boolean isMultiple() {
+            return multiple;
+        }
+
+        public void setAllowedValues(String[] allowedValues) {
+            this.allowedValues = allowedValues;
+        }
+
+        public void setConstrained(boolean constrained) {
+            this.constrained = constrained;
+        }
+
+        public void setDefaultValue(String defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public void setMultiple(boolean multiple) {
+            this.multiple = multiple;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setSelectorOptions(Map<String,String> selectorOptions) {
+            this.selectorOptions = new HashMap<String,String>(selectorOptions);
+        }
+
+        public void setType(NodeProperty.Type type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.reflectionToString(this);
+        }
+    }
+
+    /**
      * Single text serch criterion with a search text and match type.
      * 
      * @author Sergiy Shyrkov
      */
     public static class Term implements Serializable {
-
-        private static final long serialVersionUID = -3881090179063748926L;
 
         public enum MatchType {
             ALL_WORDS, ANY_WORD, AS_IS, EXACT_PHRASE, WITHOUT_WORDS;
@@ -506,43 +502,29 @@ public class SearchCriteria implements Serializable {
 
             private static final long serialVersionUID = 6583369520862461173L;
 
-            private boolean content;
+            private boolean siteContent;
 
             private boolean description;
 
-            private boolean documentTitle;
+            private boolean fileContent;
 
             private boolean filename;
 
             private boolean keywords;
 
-            private boolean metadata;
+            private boolean title;
 
-            public boolean areAllSelected(boolean isFileSearch) {
-                boolean allSelected = false;
-                if (isFileSearch) {
-                    allSelected = isContent() && isDescription()
-                            && isDocumentTitle() && isFilename()
-                            && isKeywords();
-                } else {
-                    allSelected = isContent() && isMetadata();
-                } 
-
-                return allSelected;
-            }
-
-            public boolean isContent() {
-                return content
-                        || (!description && !documentTitle && !filename
-                                && !keywords && !metadata);
+            public boolean isSiteContent() {
+                return siteContent
+                || (!fileContent && !description && !title && !filename && !keywords);
             }
 
             public boolean isDescription() {
                 return description;
             }
 
-            public boolean isDocumentTitle() {
-                return documentTitle;
+            public boolean isFileContent() {
+                return fileContent;
             }
 
             public boolean isFilename() {
@@ -553,56 +535,43 @@ public class SearchCriteria implements Serializable {
                 return keywords;
             }
 
-            public boolean isMetadata() {
-                return metadata;
+            public boolean isTitle() {
+                return title;
             }
 
-            public void setAll(boolean all) {
-                setContent(all);
-                setDescription(all);
-                setDocumentTitle(all);
-                setFilename(all);
-                setKeywords(all);
-                setMetadata(all);
+            public void setSiteContent(boolean content) {
+                this.siteContent = content;
             }
 
             public void setCustom(String custom) {
                 if (custom != null) {
-                    if (custom.contains("all")) {
-                        setAll(true);
-                    } else {
-                        if (custom.contains("content")) {
-                            setContent(true);
-                        }
-                        if (custom.contains("description")) {
-                            setDescription(true);
-                        }
-                        if (custom.contains("documentTitle")) {
-                            setDocumentTitle(true);
-                        }
-                        if (custom.contains("filename")) {
-                            setFilename(true);
-                        }
-                        if (custom.contains("keywords")) {
-                            setKeywords(true);
-                        }
-                        if (custom.contains("metadata")) {
-                            setMetadata(true);
-                        }
+                    if (custom.contains("siteContent")) {
+                        setSiteContent(true);
+                    }
+                    if (custom.contains("fileContent")) {
+                        setFileContent(true);
+                    }
+                    if (custom.contains("description")) {
+                        setDescription(true);
+                    }
+                    if (custom.contains("title")) {
+                        setTitle(true);
+                    }
+                    if (custom.contains("filename")) {
+                        setFilename(true);
+                    }
+                    if (custom.contains("keywords")) {
+                        setKeywords(true);
                     }
                 }
-            }
-
-            public void setContent(boolean content) {
-                this.content = content;
             }
 
             public void setDescription(boolean description) {
                 this.description = description;
             }
 
-            public void setDocumentTitle(boolean documentTitle) {
-                this.documentTitle = documentTitle;
+            public void setFileContent(boolean everywhere) {
+                this.fileContent = everywhere;
             }
 
             public void setFilename(boolean filename) {
@@ -613,8 +582,8 @@ public class SearchCriteria implements Serializable {
                 this.keywords = keywords;
             }
 
-            public void setMetadata(boolean metadata) {
-                this.metadata = metadata;
+            public void setTitle(boolean title) {
+                this.title = title;
             }
 
             @Override
@@ -624,6 +593,8 @@ public class SearchCriteria implements Serializable {
             }
 
         }
+
+        private static final long serialVersionUID = -3881090179063748926L;
 
         private SearchFields fields = new SearchFields();
 
@@ -667,6 +638,8 @@ public class SearchCriteria implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 4633533116047727827L;
+
     private static final ToStringStyle TO_STRING_STYLE = ToStringStyle.MULTI_LINE_STYLE;
 
     private static boolean isValueEmpty(String value) {
@@ -686,7 +659,7 @@ public class SearchCriteria implements Serializable {
                                         term.getFields(), TO_STRING_STYLE))
                         .toString());
 
-            } else if (obj instanceof DocumentProperty) {
+            } else if (obj instanceof NodeProperty) {
                 toStringItems.add(ReflectionToStringBuilder.reflectionToString(
                         obj, TO_STRING_STYLE));
             } else {
@@ -701,9 +674,7 @@ public class SearchCriteria implements Serializable {
 
     private String createdBy;
 
-    private String documentType;
-
-    private HierarchicalValue fileLocation = new HierarchicalValue();
+    private HierarchicalValue filePath = new HierarchicalValue();
 
     private String fileType;
 
@@ -715,17 +686,23 @@ public class SearchCriteria implements Serializable {
 
     private String lastModifiedBy;
 
+    private int limit;
+
+    private String nodeType;
+
+    private int offset;
+
     private HierarchicalValue pagePath = new HierarchicalValue();
 
-    private Map<String /* documentType */, Map<String /* propertyName */, DocumentProperty>> properties = LazyMap
-            .decorate(new HashMap<String, Map<String, DocumentProperty>>(),
+    private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
+            .decorate(new HashMap<String, Map<String, NodeProperty>>(),
                     new Factory() {
                         public Object create() {
                             return LazyMap.decorate(
-                                    new HashMap<String, DocumentProperty>(),
+                                    new HashMap<String, NodeProperty>(),
                                     new Factory() {
                                         public Object create() {
-                                            return new DocumentProperty();
+                                            return new NodeProperty();
                                         }
                                     });
                         }
@@ -734,17 +711,13 @@ public class SearchCriteria implements Serializable {
     private String rawQuery;
 
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
-
+    
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
             new Factory() {
                 public Object create() {
                     return new Term();
                 }
             });
-
-    private int limit;
-    
-    private int offset;
     
     /**
      * Initializes an instance of this class.
@@ -761,12 +734,8 @@ public class SearchCriteria implements Serializable {
         return createdBy;
     }
 
-    public String getDocumentType() {
-        return documentType;
-    }
-
-    public HierarchicalValue getFileLocation() {
-        return fileLocation;
+    public HierarchicalValue getFilePath() {
+        return filePath;
     }
 
     public String getFileType() {
@@ -789,20 +758,40 @@ public class SearchCriteria implements Serializable {
         return lastModifiedBy;
     }
 
+    /**
+     * Returns the maximum hit count to be returned. If the limit was not set, returns 0.
+     * @return the maximum hit count to be returned. If the limit was not set, returns 0
+     */
+    public int getLimit() {
+        return limit;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    /**
+     * Returns the start offset of the search hit list. If the offset was not set, returns 0.  
+     * @return the start offset of the search hit list. If the offset was not set, returns 0
+     */
+    public int getOffset() {
+        return offset;
+    }
+
     public HierarchicalValue getPagePath() {
         return pagePath;
     }
 
-    public Map<String /* documentType */, Map<String /* propertyName */, DocumentProperty>> getProperties() {
+    public Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> getProperties() {
         return properties;
     }
 
-    public List<DocumentProperty> getPropertiesAll() {
-        List<DocumentProperty> props = new LinkedList<DocumentProperty>();
+    public List<NodeProperty> getPropertiesAll() {
+        List<NodeProperty> props = new LinkedList<NodeProperty>();
 
-        for (Map<String, DocumentProperty> docTypeEntry : getProperties()
+        for (Map<String, NodeProperty> docTypeEntry : getProperties()
                 .values()) {
-            for (DocumentProperty prop : docTypeEntry.values()) {
+            for (NodeProperty prop : docTypeEntry.values()) {
                 props.add(prop);
             }
         }
@@ -831,11 +820,11 @@ public class SearchCriteria implements Serializable {
      */
     public boolean isEmpty() {
         boolean empty = isValueEmpty(getRawQuery())
-                && isValueEmpty(getDocumentType())
+                && isValueEmpty(getNodeType())
                 && isValueEmpty(getFileType()) && isValueEmpty(getCreatedBy())
                 && getCreated().isEmpty() && isValueEmpty(getLastModifiedBy())
                 && getLastModified().isEmpty() && getPagePath().isEmpty()
-                && getFileLocation().isEmpty();
+                && getFilePath().isEmpty();
 
         if (empty) {
             for (Term term : getTerms()) {
@@ -847,9 +836,9 @@ public class SearchCriteria implements Serializable {
         }
 
         if (empty) {
-            for (Map<String, DocumentProperty> docProperties : getProperties()
+            for (Map<String, NodeProperty> docProperties : getProperties()
                     .values()) {
-                for (DocumentProperty prop : docProperties.values()) {
+                for (NodeProperty prop : docProperties.values()) {
                     if (!prop.isEmpty()) {
                         empty = false;
                         break;
@@ -872,12 +861,8 @@ public class SearchCriteria implements Serializable {
         this.createdBy = author;
     }
 
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
-
-    public void setFileLocation(HierarchicalValue fileLocation) {
-        this.fileLocation = fileLocation;
+    public void setFilePath(HierarchicalValue fileLocation) {
+        this.filePath = fileLocation;
     }
 
     public void setFileType(String fileType) {
@@ -900,12 +885,32 @@ public class SearchCriteria implements Serializable {
         this.lastModifiedBy = lastEditor;
     }
 
+    /**
+     * Sets the maximum size of the result set to <code>limit</code>.
+     * @param limit the maximum hot count to be returned
+     */
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    /**
+     * Sets the start offset of the result set to <code>offset</code>.
+     * @param offset the start offset of the search hit list
+     */
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
     public void setPagePath(HierarchicalValue pagePath) {
         this.pagePath = pagePath;
     }
 
     public void setProperties(
-            Map<String, Map<String, DocumentProperty>> properties) {
+            Map<String, Map<String, NodeProperty>> properties) {
         this.properties = properties;
     }
 
@@ -920,7 +925,7 @@ public class SearchCriteria implements Serializable {
     /**
      * Simplified method for setting the search term. This method resets all
      * text searches, creates a new one with the provided term, default match
-     * type and all search fields.<br>
+     * type and all search fields.
      * 
      * @param term
      *            the search term string
@@ -929,7 +934,7 @@ public class SearchCriteria implements Serializable {
         getTerms().clear();
         Term search = getTerms().get(0);
         search.setTerm(term);
-        search.getFields().setAll(true);
+        search.getFields().setFileContent(true);
     }
 
     public void setTerms(List<Term> textSearches) {
@@ -939,52 +944,20 @@ public class SearchCriteria implements Serializable {
     @Override
     public String toString() {
         return new ToStringBuilder(this, TO_STRING_STYLE).append("rawQuery",
-                this.getRawQuery()).append("createdby", this.getCreatedBy())
+                this.getRawQuery()).append("createdBy", this.getCreatedBy())
                 .append("created", this.getCreated()).append("lastModifiedBy",
                         this.getLastModifiedBy()).append("lastModified",
                         this.getLastModified()).append("pagePath",
                         this.getPagePath()).append("fileType",
-                        this.getFileType()).append("documentType",
-                        this.getDocumentType()).append("fileLocation",
-                        this.getFileLocation()).append("properties",
+                        this.getFileType()).append("nodeType",
+                        this.getNodeType()).append("filePath",
+                        this.getFilePath()).append("properties",
                         listToString(this.getPropertiesAll())).append("terms",
                         listToString(this.getTerms())).append("itemsPerPage",
                         this.getItemsPerPage()).append("sites", this.getSites())
                 .append("languages", this.getLanguages())
                 .append("limit", this.getLimit())
                 .append("offset", this.getOffset()).toString();
-    }
-
-    /**
-     * Returns the maximum hit count to be returned. If the limit was not set, returns 0.
-     * @return the maximum hit count to be returned. If the limit was not set, returns 0
-     */
-    public int getLimit() {
-        return limit;
-    }
-
-    /**
-     * Sets the maximum size of the result set to <code>limit</code>.
-     * @param limit the maximum hot count to be returned
-     */
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    /**
-     * Returns the start offset of the search hit list. If the offset was not set, returns 0.  
-     * @return the start offset of the search hit list. If the offset was not set, returns 0
-     */
-    public int getOffset() {
-        return offset;
-    }
-
-    /**
-     * Sets the start offset of the result set to <code>offset</code>.
-     * @param offset the start offset of the search hit list
-     */
-    public void setOffset(int offset) {
-        this.offset = offset;
     }
 
 }

@@ -32,11 +32,11 @@
 
 --%>
 <%@ tag body-content="empty" dynamic-attributes="attributes"
-        description="Renders input control for the document property depending on its type (boolean, text, date, category)." %>
+        description="Renders input control for the node property depending on its type (boolean, text, date, category)." %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
         %>
-<%@ attribute name="documentType" required="true" type="java.lang.String"
+<%@ attribute name="nodeType" required="true" type="java.lang.String"
               description="The node type of this property." %>
 <%@ attribute name="name" required="true" type="java.lang.String" description="The name of the property." %>
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value for the property" %>
@@ -57,9 +57,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
-<c:set var="propName" value="src_properties(${documentType}).${name}.value"/>
+<c:set var="propName" value="src_properties(${nodeType}).${name}.value"/>
 <c:set var="value" value="${functions:default(param[propName], value)}"/>
-<s:documentPropertyDescriptor documentType="${documentType}" name="${name}">
+<s:nodePropertyDescriptor nodeType="${nodeType}" name="${name}">
     <c:if test="${display}">
         <c:set target="${attributes}" property="name" value="${propName}"/>
         <c:choose>
@@ -81,19 +81,19 @@
                     </select>
                 </c:if>
                 <c:if test="${!descriptor.constrained}">
-                    <c:set var="propName" value="src_properties(${documentType}).${name}.match"/>
+                    <c:set var="propName" value="src_properties(${nodeType}).${name}.match"/>
                     <c:set var="match" value="${functions:default(param[propName], match)}"/>
-                    <select name="src_properties(${documentType}).${name}.match">
-                        <option value="any_word" ${'any_word' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.any_word"/></option>
-                        <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.all_words"/></option>
-                        <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.exact_phrase"/></option>
-                        <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.without_words"/></option>
+                    <select name="src_properties(${nodeType}).${name}.match">
+                        <option value="any_word" ${'any_word' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.any_word"/></option>
+                        <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.all_words"/></option>
+                        <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.exact_phrase"/></option>
+                        <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.without_words"/></option>
                     </select>
                     <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 </c:if>
             </c:when>
             <c:when test="${descriptor.type == 'CATEGORY'}">
-                <c:set var="propName" value="src_properties(${documentType}).${name}.categoryValue.value"/>
+                <c:set var="propName" value="src_properties(${nodeType}).${name}.categoryValue.value"/>
                 <c:set target="${attributes}" property="name" value="${propName}"/>
                 <c:set target="${attributes}" property="id" value="${functions:default(attributes.id, propName)}"/>
                 <c:set var="value" value="${functions:default(param[propName], value)}"/>
@@ -101,11 +101,11 @@
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : 'root'}"/>
                 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 <ui:categorySelector fieldId="${attributes.id}"
-                                     fieldIdIncludeChildren="src_properties(${documentType}).${name}.categoryValue.includeChildren"
+                                     fieldIdIncludeChildren="src_properties(${nodeType}).${name}.categoryValue.includeChildren"
                                      root="${categoryRoot}"/>
             </c:when>
             <c:when test="${descriptor.type == 'DATE'}">
-                <s:date name="src_properties(${documentType}).${name}.dateValue" value="${value}" from="${from}"
+                <s:date name="src_properties(${nodeType}).${name}.dateValue" value="${value}" from="${from}"
                         to="${to}"/>
             </c:when>
         </c:choose>
@@ -118,28 +118,28 @@
             <c:when test="${descriptor.type == 'TEXT'}">
                 <input type="hidden" name="${propName}" value="${fn:escapeXml(value)}"/>
                 <c:if test="${not descriptor.constrained && not empty match}">
-                    <input type="hidden" name="src_properties(${documentType}).${name}.match" value="${fn:escapeXml(match)}"/>
+                    <input type="hidden" name="src_properties(${nodeType}).${name}.match" value="${fn:escapeXml(match)}"/>
                 </c:if>
             </c:when>
             <c:when test="${descriptor.type == 'CATEGORY'}">
-                <input type="hidden" name="src_properties(${documentType}).${name}.categoryValue.value"
+                <input type="hidden" name="src_properties(${nodeType}).${name}.categoryValue.value"
                        value="${fn:escapeXml(value)}"/>
                 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
-                <input type="hidden" name="src_properties(${documentType}).${name}.categoryValue.includeChildren"
+                <input type="hidden" name="src_properties(${nodeType}).${name}.categoryValue.includeChildren"
                        value="${fn:escapeXml(includeChildren)}"/>
             </c:when>
             <c:when test="${descriptor.type == 'DATE'}">
-                <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.type" value="${fn:escapeXml(value)}"/>
+                <input type="hidden" name="src_properties(${nodeType}).${name}.dateValue.type" value="${fn:escapeXml(value)}"/>
                 <c:if test="${value == 'range'}">
                     <c:if test="${not empty from}">
-                        <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.from"
+                        <input type="hidden" name="src_properties(${nodeType}).${name}.dateValue.from"
                                value="${fn:escapeXml(from)}"/>
                     </c:if>
                     <c:if test="${not empty to}">
-                        <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.to" value="${fn:escapeXml(to)}"/>
+                        <input type="hidden" name="src_properties(${nodeType}).${name}.dateValue.to" value="${fn:escapeXml(to)}"/>
                     </c:if>
                 </c:if>
             </c:when>
         </c:choose>
     </c:if>
-</s:documentPropertyDescriptor>
+</s:nodePropertyDescriptor>

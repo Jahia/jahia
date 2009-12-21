@@ -48,6 +48,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.TestHelper;
 
 /**
  * Unit test for the Tagging feature: creating tags, assigning tags to nodes
@@ -59,11 +61,13 @@ public class TaggingTest extends TestCase {
 
 	private static final int TAGS_TO_CREATE = 1000;
 
+    private final static String TESTSITE_NAME = "taggingTest";
+
 	private int counter = 0;
 
 	private TaggingService service;
 
-	private String siteKey;
+    private JahiaSite site;
 
 	private String tagPrefix;
 
@@ -73,7 +77,7 @@ public class TaggingTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		siteKey = Jahia.getThreadParamBean().getSiteKey();
+        site = TestHelper.createSite(TESTSITE_NAME);
 		tagPrefix = "test-" + System.currentTimeMillis() + "-";
 		service = (TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService");
 		// create the first tag
@@ -84,9 +88,9 @@ public class TaggingTest extends TestCase {
 	protected void tearDown() throws Exception {
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				session.checkout("/sites/" + siteKey + "/tags");
+				session.checkout("/sites/" + TESTSITE_NAME + "/tags");
 				NodeIterator nodeIterator = session.getWorkspace().getQueryManager().createQuery(
-				        "select * from [jnt:tag] " + "where ischildnode([/sites/" + siteKey
+				        "select * from [jnt:tag] " + "where ischildnode([/sites/" + TESTSITE_NAME
 				                + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
 				while (nodeIterator.hasNext()) {
 					Node node = nodeIterator.nextNode();
@@ -98,9 +102,9 @@ public class TaggingTest extends TestCase {
 						// duplicate results
 					}
 				}
-				session.checkout("/sites/" + siteKey);
+				session.checkout("/sites/" + TESTSITE_NAME);
 				try {
-					session.getNode("/sites/" + siteKey + "/tags-content").remove();
+					session.getNode("/sites/" + TESTSITE_NAME + "/tags-content").remove();
 				} catch (PathNotFoundException e) {
 					// ignore it
 				}
@@ -108,8 +112,9 @@ public class TaggingTest extends TestCase {
 				return null;
 			}
 		});
+        TestHelper.deleteSite(TESTSITE_NAME);
+
 		tagPrefix = null;
-		siteKey = null;
 		counter = 0;
 		service = null;
 	}
@@ -118,28 +123,28 @@ public class TaggingTest extends TestCase {
 		String tag = null;
 		for (int i = 0; i < TAGS_TO_CREATE; i++) {
 			tag = generateTagName();
-			service.createTag(tag, siteKey);
+			service.createTag(tag, TESTSITE_NAME);
 		}
 	}
 
 	public void testCreateTag() throws RepositoryException {
 		String tag = generateTagName();
-		service.createTag(tag, siteKey);
-		assertTrue("Tag node is not created", service.exists(tag, siteKey));
+		service.createTag(tag, TESTSITE_NAME);
+		assertTrue("Tag node is not created", service.exists(tag, TESTSITE_NAME));
 	}
 
 	public void testDeleteTag() throws RepositoryException {
 		String tag = generateTagName();
-		service.createTag(tag, siteKey);
-		assertTrue(service.deleteTag(tag, siteKey));
+		service.createTag(tag, TESTSITE_NAME);
+		assertTrue(service.deleteTag(tag, TESTSITE_NAME));
 
-		assertFalse(service.deleteTag(tagPrefix + "-1", siteKey));
+		assertFalse(service.deleteTag(tagPrefix + "-1", TESTSITE_NAME));
 	}
 
 	public void testTagContentObject() throws RepositoryException {
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				Node siteNode = session.getNode("/sites/" + siteKey);
+				Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
 				session.checkout(siteNode);
 				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
 				Node contentNode = contentFolder.addNode("content-1", "jnt:content");
@@ -154,13 +159,13 @@ public class TaggingTest extends TestCase {
 		for (int i = 0; i < 10; i++) {
 			tag = generateTagName();
 			tags.add(tag);
-			service.tag("/sites/" + siteKey + "/tags-content/content-1", tag, siteKey, true);
+			service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-1", tag, TESTSITE_NAME, true);
 		}
 
 		List<String> assignedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(
 		        new JCRCallback<List<String>>() {
 			        public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				        Node node = session.getNode("/sites/" + siteKey + "/tags-content/content-1");
+				        Node node = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content/content-1");
 				        Value[] values = node.getProperty("j:tags").getValues();
 				        List<String> nodeTags = new LinkedList<String>();
 				        for (Value val : values) {
@@ -177,7 +182,7 @@ public class TaggingTest extends TestCase {
 		// create 10 content nodes
 		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 			public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				Node siteNode = session.getNode("/sites/" + siteKey);
+				Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
 				session.checkout(siteNode);
 				Node contentFolder = siteNode.addNode("tags-content", "jnt:folder");
 				for (int i = 1; i <= 10; i++) {
@@ -195,14 +200,14 @@ public class TaggingTest extends TestCase {
 		for (int i = 0; i < 10; i++) {
 			String tag = generateTagName();
 			tags.add(tag);
-			service.createTag(tag, siteKey);
+			service.createTag(tag, TESTSITE_NAME);
 		}
 
 		// tag content using those tags
 		for (int i = 1; i <= 10; i++) {
 			for (int j = i; j <= 10; j++) {
 				service
-				        .tag("/sites/" + siteKey + "/tags-content/content-" + i, tags.get(j - 1), siteKey,
+				        .tag("/sites/" + TESTSITE_NAME + "/tags-content/content-" + i, tags.get(j - 1), TESTSITE_NAME,
 				                false);
 			}
 		}
@@ -212,7 +217,7 @@ public class TaggingTest extends TestCase {
 		        new JCRCallback<Object>() {
 			        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 				        for (int i = 1; i <= 10; i++) {
-				        	Node tagNode = session.getNode("/sites/" + siteKey + "/tags/" + tags.get(i-1));
+				        	Node tagNode = session.getNode("/sites/" + TESTSITE_NAME + "/tags/" + tags.get(i-1));
 				        	assertEquals("Wrong count for the tag '" + tagNode.getName() + "'", tagNode.getReferences().getSize(), i);
                         }
 				        return null;

@@ -40,7 +40,9 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tags.TaggingService;
+import org.jahia.test.TestHelper;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.Node;
@@ -63,8 +65,8 @@ public class ServiceLoggingTest extends TestCase {
 	private int counter = 0;
 
 	private TaggingService service;
-
-	private String siteKey;
+    private final static String TESTSITE_NAME = "serviceLoggingTest";
+    private JahiaSite site;
 
 	private String tagPrefix;
 
@@ -74,7 +76,7 @@ public class ServiceLoggingTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		siteKey = Jahia.getThreadParamBean().getSiteKey();
+        site = TestHelper.createSite(TESTSITE_NAME);
 		tagPrefix = "test-" + System.currentTimeMillis() + "-";
 		service = (TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService");
 	}
@@ -82,8 +84,8 @@ public class ServiceLoggingTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
         deleteAllTags();
+        TestHelper.deleteSite(TESTSITE_NAME);
         tagPrefix = null;
-		siteKey = null;
 		counter = 0;
 		service = null;
 	}
@@ -91,9 +93,9 @@ public class ServiceLoggingTest extends TestCase {
     private void deleteAllTags() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.checkout("/sites/" + siteKey + "/tags");
+                session.checkout("/sites/" + TESTSITE_NAME + "/tags");
                 NodeIterator nodeIterator = session.getWorkspace().getQueryManager().createQuery(
-                        "select * from [jnt:tag] " + "where ischildnode([/sites/" + siteKey
+                        "select * from [jnt:tag] " + "where ischildnode([/sites/" + TESTSITE_NAME
                                 + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
                 while (nodeIterator.hasNext()) {
                     Node node = nodeIterator.nextNode();
@@ -105,9 +107,9 @@ public class ServiceLoggingTest extends TestCase {
                         // duplicate results
                     }
                 }
-                session.checkout("/sites/" + siteKey);
+                session.checkout("/sites/" + TESTSITE_NAME);
                 try {
-                    session.getNode("/sites/" + siteKey + "/tags-content").remove();
+                    session.getNode("/sites/" + TESTSITE_NAME + "/tags-content").remove();
                 } catch (PathNotFoundException e) {
                     // ignore it
                 }
@@ -127,7 +129,7 @@ public class ServiceLoggingTest extends TestCase {
         stopWatch.start("Create "+TAGS_TO_CREATE+" with logs");
 		for (int i = 0; i < TAGS_TO_CREATE; i++) {
 			tag = generateTagName();
-			service.createTag(tag, siteKey);
+			service.createTag(tag, TESTSITE_NAME);
 		}
         stopWatch.stop();
         final long withLogs = stopWatch.getTotalTimeMillis();
@@ -136,7 +138,7 @@ public class ServiceLoggingTest extends TestCase {
         stopWatch.start("Create "+TAGS_TO_CREATE+" without logs");
 		for (int i = 0; i < TAGS_TO_CREATE; i++) {
 			tag = generateTagName();
-			service.createTag(tag, siteKey);
+			service.createTag(tag, TESTSITE_NAME);
 		}
         stopWatch.stop();
         final long withoutLogs = stopWatch.getTotalTimeMillis();

@@ -227,7 +227,7 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.setStyleAttribute("padding", "0");
                     form = new FormPanel();
                     form.setFieldWidth(500);
-                    form.setLabelWidth(140);
+                    form.setLabelWidth(80);
                     form.setHeaderVisible(false);
                     form.setFrame(false);
                     setBorders(false);

@@ -113,6 +113,7 @@ public class EditContentEngine extends Window {
     private Button cancel;
     private ClassificationEditor classificationEditor;
     public static final int BUTTON_HEIGHT = 24;
+    private boolean isNodeNameFieldDisplayed = false;
 
     /**
      * Initializes an instance of this class.
@@ -350,12 +351,15 @@ public class EditContentEngine extends Window {
                 contentTab.setProcessed(true);
                 contentTab.setStyleName("x-panel-mc");
 
-                FormPanel formPanel = getNamePanel();
-                contentTab.add(formPanel);
+
 
                 propertiesEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
                 propertiesEditor.setHeight(504);
-
+                /*if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                    FormPanel formPanel = getNamePanel();
+                    contentTab.add(formPanel);
+                    isNodeNameFieldDisplayed = true;
+                }*/
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             } else if (isReference && referencedNode != null) {
@@ -363,8 +367,11 @@ public class EditContentEngine extends Window {
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
                 propertiesEditor.setHeight(504);
 
-                FormPanel formPanel = getNamePanel();
-                contentTab.add(formPanel);
+                /*if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                    FormPanel formPanel = getNamePanel();
+                    contentTab.add(formPanel);
+                    isNodeNameFieldDisplayed = true;
+                }*/
 
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
@@ -615,6 +622,7 @@ public class EditContentEngine extends Window {
 
         public void componentSelected(ButtonEvent event) {
             List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+            if(isNodeNameFieldDisplayed)
             node.setName(((TextField<?>)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue());
             elements.add(node);
             List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
@@ -720,11 +728,13 @@ public class EditContentEngine extends Window {
 
     private class CreateSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
-            String nodeName = ((TextField<?>)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue();
-            if(nodeName.equals("Automatically Created (you can type your name here if you want)")) {
-                nodeName = targetName;
+            String nodeName = targetName;
+            if (isNodeNameFieldDisplayed) {
+                nodeName = ((TextField<?>) ((FormPanel) contentTab.getItem(0)).getItem(0)).getRawValue();
+                if (nodeName.equals("Automatically Created (you can type your name here if you want)")) {
+                    nodeName = targetName;
+                }
             }
-
             List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
             List<String> mixin = new ArrayList<String>();
             if (propertiesEditor != null) {

@@ -31,10 +31,12 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.CharUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
@@ -52,6 +54,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 
+import java.text.Normalizer;
 import java.util.*;
 
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -436,25 +439,49 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
+        final JCRSessionWrapper jcrSessionWrapper;
         try {
-            parentNode = sessionFactory.getCurrentUserSession(null, context.getLocale()).getNode(parentPath);
+            jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, context.getLocale());
+            parentNode = jcrSessionWrapper.getNode(parentPath);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        if (name == null) {
-            name = findAvailableName(parentNode, nodeType.replaceAll(":", "_"));
-        } else {
-            name = findAvailableName(parentNode, name);
-        }
-        checkName(name);
-        if (checkExistence(parentPath + "/" + name)) {
-            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
+        String nodeName = name;
+        if(name==null) {
+            for (GWTJahiaNodeProperty property : props) {
+                final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+                if(property.getName().equals("jcr:title") && propertyValues !=null && propertyValues.size()>0) {
+                    nodeName = propertyValues.get(0).getString();
+                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.Form.NFKD).toCharArray();
+                    final char[] newChars = new char[chars.length];
+                    int j=0;
+                    for (char aChar : chars) {
+                        if (CharUtils.isAsciiAlphanumeric(aChar)) {
+                            newChars[j++] = aChar;
+                        }
+                    }
+                    nodeName = new String(newChars,0,j).replaceAll(" ","_").toLowerCase().trim();
+                    if(nodeName.length()>32) {
+                        nodeName = nodeName.substring(0,32);
+                    }
+                }
+            }
         }
 
-        JCRNodeWrapper childNode = addNode(parentNode, name, nodeType, mixin, props);
+        if (nodeName == null) {
+            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":")+1));
+        } else {
+            nodeName = findAvailableName(parentNode, nodeName);
+        }
+        checkName(nodeName);
+        if (checkExistence(parentPath + "/" + nodeName)) {
+            throw new GWTJahiaServiceException("A node already exists with name '" + nodeName + "'");
+        }
+
+        JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props);
         try {
-            parentNode.save();
+            jcrSessionWrapper.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());

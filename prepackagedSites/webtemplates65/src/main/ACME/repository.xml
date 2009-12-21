@@ -413,7 +413,7 @@
                     <j:translation jcr:uuid="ee30ab64-fc50-4291-b695-dfccf45d0b5f" jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title_fr="Activités"></j:translation>
                 </page1>
                 <page4 jcr:uuid="205eac12-e134-4689-a2ec-68f8cc50220a" j:template="events" jcr:primaryType="jnt:page" j:fullpath="/sites/ACME/home/page4">
-                    <j:translation jcr:title_en="Event" jcr:uuid="6959e5ea-4d1e-48f9-ad58-4b2e1d9325b1" jcr:language="en" jcr:primaryType="jnt:translation"></j:translation>
+                    <j:translation jcr:title_en="Events" jcr:uuid="6959e5ea-4d1e-48f9-ad58-4b2e1d9325b1" jcr:language="en" jcr:primaryType="jnt:translation"></j:translation>
                     <introduction jcr:uuid="22bdd2fd-3c36-43a6-a86b-71ae50b2eca5" jcr:primaryType="jnt:contentList" j:fullpath="/sites/ACME/home/page4/introduction">
                         <ctn15 jcr:uuid="9c34dd8d-d049-47b9-bf2b-cb10daf013b3" jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:primaryType="jnt:bigText" j:fullpath="/sites/ACME/home/page4/introduction/ctn15">
                             <j:translation jcr:uuid="b29dee44-5316-479c-aaa1-6d496a4cbbcf" jcr:language="en" text_en="&lt;div&gt;Acme participates in a large number of national and international events. The objective: to contribute to discussions on urbanism, architecture and sustainable construction.&lt;/div&gt; " jcr:primaryType="jnt:translation"></j:translation>
@@ -592,7 +592,7 @@
                         <j:translation jcr:uuid="f75a6789-b93d-4b1b-8f1b-02e4e5fab687" jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title_fr="Archives (2008)"></j:translation>
                     </page9>
                     <page10 jcr:uuid="6bde7f61-bae3-426c-a3c5-3d2589d21140" j:template="news" jcr:primaryType="jnt:page" j:fullpath="/sites/ACME/home/page8/page10">
-                        <j:translation jcr:title_en="New Archives (2007)" jcr:uuid="f5057b65-d7f0-49ff-861e-b9110d8e6380" jcr:language="en" jcr:primaryType="jnt:translation"></j:translation>
+                        <j:translation jcr:title_en="News Archives (2007)" jcr:uuid="f5057b65-d7f0-49ff-861e-b9110d8e6380" jcr:language="en" jcr:primaryType="jnt:translation"></j:translation>
                         <news jcr:uuid="a3a75c79-b8c0-4dc9-a59b-1a296e11e6e4" jcr:primaryType="jnt:contentList" j:fullpath="/sites/ACME/home/page8/page10/news">
                             <ctn51 jcr:uuid="9493c342-b35b-4a71-a0e4-616cd5763524" image="99e3f026-a4c0-4c5b-aa70-44ccb8e1fd65" jcr:primaryType="jnt:news" j:fullpath="/sites/ACME/home/page8/page10/news/ctn51" date="2007-06-18T00:00:00.000+02:00">
                                 <j:translation jcr:uuid="4975f52b-cfb9-4fb4-b511-809806f5fe90" jcr:language="en" jcr:title_en="Lorem ipsum dolor sit amet 2007" desc_en="&lt;BODY&gt;  &lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt; &lt;/BODY&gt; " jcr:primaryType="jnt:translation"></j:translation>

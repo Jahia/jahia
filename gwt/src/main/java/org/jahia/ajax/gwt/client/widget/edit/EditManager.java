@@ -31,6 +31,7 @@ public class EditManager extends ContentPanel {
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
         data.setSplit(true);
+        data.setFloatable(true);
         sidePanel = new SidePanel();
         sidePanel.setStyleAttribute("z-index", "999");
         add(sidePanel, data);

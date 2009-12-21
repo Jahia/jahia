@@ -10,7 +10,7 @@
 
     <groups jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:groupsFolder"/>
 
-    <content jcr:primaryType="jnt:folder"/>
+    <contents jcr:primaryType="jnt:folder"/>
 
     <themes jcr:primaryType="jnt:folder"/>
 

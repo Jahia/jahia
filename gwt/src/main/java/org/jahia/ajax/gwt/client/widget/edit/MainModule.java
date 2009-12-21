@@ -161,6 +161,10 @@ public class MainModule extends ContentPanel implements Module {
         return path;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public GWTJahiaNode getNode() {
         return node; 
     }

@@ -75,19 +75,9 @@ public class ContentViews extends TopRightComponent {
     public ContentViews(ManagerConfiguration config) {
         configuration = config;
         tableView = new TableView(config);
-        thumbView = new ThumbView(config);
+        thumbView = new ThumbView(config, false);
         templateView = new TemplateView(config);
-        detailedThumbView = new ThumbView(config) {
-            @Override
-            public native String getTemplate() /*-{
-        return ['<tpl for=".">',
-                '<div style="padding: 0 0 10px 0;margin-bottom: 12px;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-                '<div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{preview}" title="{name}"></div>',
-                '<div style="margin-left: 150px; margin-right: 110px;"><p style="font:bold;">{name}</p><br/><p> {description}</p></div></div>',
-                '</tpl>',
-                '<div class="x-clear"></div>'].join("");
-    }-*/;
-        };
+        detailedThumbView = new ThumbView(config, true);
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);

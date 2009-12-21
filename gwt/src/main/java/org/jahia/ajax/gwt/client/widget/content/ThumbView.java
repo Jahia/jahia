@@ -33,14 +33,11 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -69,13 +66,13 @@ public class ThumbView extends TopRightComponent {
 
     private ContentPanel m_component;
     private ListStore<GWTJahiaNode> store;
-    private MyListView<GWTJahiaNode> view;
+    private ThumbsListView view;
     private SimpleComboBox<String> sort;
     private ToggleButton sortOrder ;
 
     private ManagerConfiguration configuration;
 
-    public ThumbView(final ManagerConfiguration config) {
+    public ThumbView(final ManagerConfiguration config, boolean detailed) {
         configuration = config;
 
         m_component = new ContentPanel(new FitLayout());
@@ -147,23 +144,9 @@ public class ThumbView extends TopRightComponent {
 
         m_component.setTopComponent(bar);
 
-        view = new MyListView<GWTJahiaNode>() {
-            @Override
-            protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-                String s = model.getName();
-                model.set("shortName", Format.ellipse(s, 14));
-                return model;
-            }
-
-            public void setContextMenu(Menu menu) {
-                super.setContextMenu(menu);
-            }
-        };
-
-        view.setTemplate(getTemplate());
+        view = new ThumbsListView(detailed);
         view.setStore(store);
-        view.setItemSelector("div.thumb-wrap");
-        view.setOverStyle("x-view-over");
+
         view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
@@ -272,25 +255,4 @@ public class ThumbView extends TopRightComponent {
         return m_component;
     }
 
-    private class MyListView<T extends ModelData> extends ListView<T> {
-        @Override
-        protected T prepareData(T model) {
-            String s = ((GWTJahiaNode) model).getName();
-            model.set("shortName", Format.ellipse(s, 14));
-            return model;
-        }
-
-        public void setContextMenu(Menu menu) {
-            super.setContextMenu(menu);
-        }
-    }
-
-    public native String getTemplate() /*-{
-        return ['<tpl for=".">',
-                '<div class="thumb-wrap" id="{name}">',
-                '<div class="thumb"><img src="{preview}" title="{name}"></div>',
-                '<span class="x-editable">{shortName}</span></div>',
-                '</tpl>',
-                '<div class="x-clear"></div>'].join("");
-    }-*/;
 }

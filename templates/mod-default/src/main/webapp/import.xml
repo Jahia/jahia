@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0"
+                    xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+                    xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+                    xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+    <schmurtz jcr:primaryType="jnt:schmurtzsRoot">
+        <jnt_navBar jcr:primaryType="jnt:schmurtzsFolder">
+            <topBar jcr:primaryType="jnt:schmurtz">
+                <j:target jcr:primaryType="jnt:navBar"
+                          j:maxDepth="1"
+                          j:startLevel="0"/>
+            </topBar>
+            <sideBar jcr:primaryType="jnt:schmurtz">
+                <j:target jcr:primaryType="jnt:navBar"
+                          j:maxDepth="3"
+                          j:startLevel="2"/>
+            </sideBar>
+        </jnt_navBar>
+    </schmurtz>
+</content>

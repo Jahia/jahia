@@ -402,50 +402,15 @@ public class NavigationHelper {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.ALL_FILES)) {
-                GWTJahiaNode root = getNode("/shared/files", workspace, jParams);
-                if (root != null) {
-                    root.setDisplayName("shared");
-                    userNodes.add(root);
-                }
-
-                root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/files", workspace, jParams);
-                if (root != null) {
-                    root.setDisplayName(jParams.getSite().getSiteKey());
-                    userNodes.add(root);
-                }
-
-                for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
-                    root = getNode(node.getPath() + "/files", workspace, jParams);
-                    if (root != null) {
-                        root.setDisplayName(jParams.getUser().getName());
-                        userNodes.add(root);
-                    }
-                    break; // one node should be enough
-                }
-
-                root = getNode("/mounts", workspace, jParams);
+                addShareSiteUserFolder(jParams, userNodes, workspace, "/files");
+                GWTJahiaNode root = getNode("/mounts", workspace, jParams);
                 if (root != null) {
                     userNodes.add(root);
                 }
+            } else if (key.equals(JCRClientUtils.ALL_CONTENT)) {
+                addShareSiteUserFolder(jParams, userNodes, workspace, "/contents");
             } else if (key.equals(JCRClientUtils.ALL_MASHUPS)) {
-                GWTJahiaNode root = getNode("/shared/mashups", workspace, jParams);
-                if (root != null) {
-                    root.setDisplayName("shared");
-                    userNodes.add(root);
-                }
-                root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/mashups", workspace, jParams);
-                if (root != null) {
-                    root.setDisplayName(jParams.getSite().getSiteKey());
-                    userNodes.add(root);
-                }
-                for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
-                    root = getNode(node.getPath() + "/mashups", workspace, jParams);
-                    if (root != null) {
-                        root.setDisplayName(jParams.getUser().getName());
-                        userNodes.add(root);
-                    }
-                    break; // one node should be enough
-                }
+                addShareSiteUserFolder(jParams, userNodes, workspace, "/mashups");
             } else if (key.equals(JCRClientUtils.CATEGORY_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/categories", workspace, jParams);
                 if (root != null) {
@@ -504,6 +469,36 @@ public class NavigationHelper {
 
 
         return userNodes;
+    }
+
+    private void addShareSiteUserFolder(ProcessingContext jParams, List<GWTJahiaNode> userNodes, String workspace, String folderName) throws GWTJahiaServiceException {
+        GWTJahiaNode root = null;
+        try {
+            root = getNode("/shared"+ folderName, workspace, jParams);
+            root.setDisplayName("shared");
+            userNodes.add(root);
+        } catch (GWTJahiaServiceException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            root = getNode("/sites/" + jParams.getSite().getSiteKey() + folderName, workspace, jParams);
+            root.setDisplayName(jParams.getSite().getSiteKey());
+            userNodes.add(root);
+        } catch (GWTJahiaServiceException e) {
+            e.printStackTrace();
+        }
+
+        for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
+            try {
+                root = getNode(node.getPath() + folderName, workspace, jParams);
+                root.setDisplayName(jParams.getUser().getName());
+                userNodes.add(root);
+            } catch (GWTJahiaServiceException e) {
+                e.printStackTrace();
+            }
+            break; // one node should be enough
+        }
     }
 
     public List<GWTJahiaNode> getMountpoints(ProcessingContext context) {

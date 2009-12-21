@@ -71,6 +71,8 @@ public final class JCRClientUtils {
 
     public final static String ALL_MASHUPS = "mashups";
 
+    public final static String ALL_CONTENT = "contents";
+
     public final static String GLOBAL_REPOSITORY = "globalRepository";
     
     public static final String SCHMURTZ_REPOSITORY = "schmurtzRepository";

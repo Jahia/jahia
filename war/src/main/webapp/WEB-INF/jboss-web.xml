@@ -3,7 +3,7 @@
 <jboss-web>
 
     <loader-repository>
-        org.jahia:loader=jahia.war 
+        org.jahia:loader=ROOT.war 
         <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
     </loader-repository>
     

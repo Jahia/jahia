@@ -47,9 +47,9 @@ public interface MetricsLoggingService {
     /**
      * Log some metric about a node.
      * @param user user achieving the operation
-     * @param ipAddress ip address of the user
+     * @param ipAddress IP address of the user
      * @param sessionID   if available, the identifier of the session, otherwise null or an empty string is fine. Note
-     * that if you use null it will be outputted verbatim in the log.
+     * that if you use null it will be output verbatim in the log.
      * @param path the node path on which the operation has been achieved
      * @param nodeType the type of the node
      * @param logTemplate the name of the template log you want to use.
@@ -58,7 +58,7 @@ public interface MetricsLoggingService {
     void logContentEvent(String user, String sessionID, String ipAddress, String path, String nodeType, String logTemplate, String... args);
 
     /**
-     * Start a profiler and start the associated action (if the profilerName is not foudn it will create it)
+     * Start a profiler and start the associated action (if the profilerName is not found it will create it)
      * @param profilerName name of the profiler you want to use or create
      * @param action the action you want to profile
      */
@@ -86,7 +86,7 @@ public interface MetricsLoggingService {
     void stopNestedProfiler(String parentProfilerName, String nestedProfilerName);
 
     /**
-     * Start a new porfiler and return it to the caller.
+     * Start a new profiler and return it to the caller.
      * @param profilerName the new profiler you want to start
      * @return the newly created Profiler
      */

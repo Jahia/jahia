@@ -5,5 +5,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
-<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
-<img src="${image.node.url}" alt="${title.string}"/>
+<img src="${image.node.url}" alt="${fn:escapeXml(currentNode.name)}"/>

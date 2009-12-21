@@ -66,9 +66,11 @@ public class SiteBean {
     private JahiaTemplatesPackage templatePackage;
 
     public SiteBean() {
+        super();
     }
 
     public SiteBean(JahiaSite jahiaSite, ProcessingContext processingContext) {
+        this();
         this.jahiaSite = jahiaSite;
         this.processingContext = processingContext;
     }

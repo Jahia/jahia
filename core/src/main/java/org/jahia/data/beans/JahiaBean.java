@@ -31,6 +31,11 @@
  */
  package org.jahia.data.beans;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
@@ -64,6 +69,13 @@ public class JahiaBean {
     private SiteBean siteBean;
     
     private JahiaUser user;
+    
+    @SuppressWarnings("unchecked")
+    private Map<String, SiteBean> sitesFacade = LazyMap.decorate(new HashMap<String, SiteBean>(), new Transformer() {
+        public Object transform(Object input) {
+            return getSiteByKey(String.valueOf(input));
+        }
+    });
 
     public JahiaBean(final ProcessingContext ctx) {
         this(ctx, new SiteBean(ctx.getSite(), ctx), ctx.getPage() != null ? new PageBean(ctx.getPage(), ctx) : null, new RequestBean(new GuiBean(ctx), ctx), new DateBean(), ctx.getUser());
@@ -105,15 +117,34 @@ public class JahiaBean {
 
     public SiteBean getSite(final String name) {
         try {
-            final JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(name);
-            return new SiteBean(jahiaSite, processingContext);
+            return new SiteBean(ServicesRegistry.getInstance().getJahiaSitesService().getSite(name), processingContext);
         } catch (JahiaException je) {
             logger.error("Cannot find site " + name + ":", je);
             return null;
         }
     }
 
+    public SiteBean getSiteByKey(final String key) {
+        JahiaSite site = null;
+        try {
+            site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(key);
+        } catch (JahiaException je) {
+            logger.error("Cannot find site for key '" + key + "'", je);
+        }
+        return site != null ? new SiteBean(site, processingContext) : null;
+    }
+    
+    /**
+     * Returns a map of all sites with site key as a map key.
+     * 
+     * @return a map of all sites with site key as a map key
+     */
+    public Map<String, SiteBean> getSites() {
+        return sitesFacade;
+    }
+
     public JahiaUser getUser() {
         return user;
     }
+
 }

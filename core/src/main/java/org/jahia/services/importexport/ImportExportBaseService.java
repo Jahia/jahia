@@ -803,14 +803,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<Object> keys = p.keySet();
 
         Map<String, SiteLanguageSettings> m = new HashMap<String, SiteLanguageSettings>();
-        Set<String> old = new HashSet<String>();
+        Map<String, SiteLanguageSettings> old = new HashMap<String, SiteLanguageSettings>();
 
         try {
             List<SiteLanguageSettings> languageSettings = site.getLanguageSettings(false);
             for (Iterator<SiteLanguageSettings> iterator = languageSettings.iterator(); iterator.hasNext();) {
                 SiteLanguageSettings setting = (SiteLanguageSettings) iterator.next();
-//                m.put(setting.getCode(), setting);
-                old.add(setting.getCode());
+                old.put(setting.getCode(), setting);
             }
         } catch (JahiaException e) {
             logger.error("Cannot get languages", e);
@@ -892,7 +891,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
             String code = iterator.next();
             SiteLanguageSettings set = m.get(code);
-            if (old.contains(code)) {
+            if (old.containsKey(code)) {
+                // set proper ID for update
+                set.setID(old.get(code).getID());
                 listManager.updateSiteLanguageSettings(set);
             } else {
                 listManager.addSiteLanguageSettings(set);

@@ -31,69 +31,57 @@
  */
 package org.jahia.services.search;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
- * File and folder search result item, used as a view object in JSP templates.
+ * Abstract search result item, used as a view object in JSP templates.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class AbstractHit implements Hit {
+public abstract class AbstractHit<T> implements Hit<T> {
 
-    protected Object resource;
-    private float score;
     private String excerpt;
+    protected T resource;
+    private float score;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param searchHit
-     *            search result item to be wrapped
+     * @param resource search result item to be wrapped
      */
-    public AbstractHit(Object resource) {
+    public AbstractHit(T resource) {
         super();
         this.resource = resource;
-    }
-
-    public Object getRawHit() {
-        return resource;
-    }
-
-    public Hit getReferencedHit() {
-        return null;
-    }    
-    
-    public float getScore() {
-        return score;
-    }
-
-    public boolean isTypeContainer() {
-        return getType() == Type.CONTAINER;
-    }
-
-    public boolean isTypeDocument() {
-        return getType() == Type.FILE || getType() == Type.FOLDER;
-    }
-
-    public boolean isTypeFile() {
-        return getType() == Type.FILE;
-    }
-
-    public boolean isTypeFolder() {
-        return getType() == Type.FOLDER;
-    }
-
-    public boolean isTypePage() {
-        return getType() == Type.PAGE;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
     }
 
     public String getExcerpt() {
         return excerpt;
     }
 
+    public T getRawHit() {
+        return resource;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
     public void setExcerpt(String excerpt) {
         this.excerpt = excerpt;
     }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("type", this.getType()).append("title",
+                this.getTitle()).append("link", this.getLink()).append("score", this.getScore()).append("contentType",
+                this.getContentType()).append("created", this.getCreated()).append("createdBy", this.getCreatedBy())
+                .append("lastModified", this.getLastModified()).append("lastModifiedBy", this.getLastModifiedBy())
+                .append("lastModifiedBy", this.getLastModifiedBy()).toString();
+    }
+
 }

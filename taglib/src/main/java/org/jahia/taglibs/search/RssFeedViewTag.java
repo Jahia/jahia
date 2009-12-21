@@ -104,7 +104,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
                     + ResultsTag.class.getName());
         }
 
-        List<Hit> results = parent.getHits();
+        List<Hit<?>> results = parent.getHits();
 
         SyndFeed feed = getFeed(results);
 
@@ -157,7 +157,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
         return link;
     }
 
-    private SyndFeed getFeed(List<Hit> results) {
+    private SyndFeed getFeed(List<Hit<?>> results) {
         SyndFeed feed = new SyndFeedImpl();
 
         OpenSearchModuleImpl osm = new OpenSearchModuleImpl();

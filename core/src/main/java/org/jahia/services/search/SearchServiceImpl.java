@@ -33,6 +33,7 @@ package org.jahia.services.search;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
 
 /**
@@ -65,9 +66,9 @@ public class SearchServiceImpl extends SearchService {
     }    
     
     @Override
-    public SearchResponse search(SearchCriteria criteria) {
+    public SearchResponse search(SearchCriteria criteria, ProcessingContext context) {
         // @TODO add logic to pick the right search provider
-        return searchProvider.search(criteria);
+        return searchProvider.search(criteria, context);
     }
 
     @Override

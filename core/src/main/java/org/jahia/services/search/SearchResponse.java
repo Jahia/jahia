@@ -41,7 +41,7 @@ import java.util.List;
  *
  */
 public class SearchResponse {
-    private List<Hit> results = Collections.emptyList();
+    private List<Hit<?>> results = Collections.emptyList();
 
     /**
      * Initializes an instance of this class.
@@ -54,7 +54,7 @@ public class SearchResponse {
      * Holds a list of Hit objects matching the search criteria.
      * @return list of Hit objects
      */
-    public List<Hit> getResults() {
+    public List<Hit<?>> getResults() {
         return results;
     }
 
@@ -63,7 +63,7 @@ public class SearchResponse {
      * by the Jahia search service.
      * @param results List of Hit objects
      */
-    public void setResults(List<Hit> results) {
+    public void setResults(List<Hit<?>> results) {
         this.results = results;
     }
 }

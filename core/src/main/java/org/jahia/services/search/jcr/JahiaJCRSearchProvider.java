@@ -34,8 +34,8 @@ package org.jahia.services.search.jcr;
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
@@ -54,6 +54,7 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
@@ -64,6 +65,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
+import org.jahia.services.search.JCRNodeHit;
 import org.jahia.services.search.PageHit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchProvider;
@@ -96,22 +98,31 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             .getLogger(JahiaJCRSearchProvider.class);
 
     /* (non-Javadoc)
-     * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria)
+     * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
      */
-    public SearchResponse search(SearchCriteria criteria) {
+    public SearchResponse search(SearchCriteria criteria, ProcessingContext context) {
         String xpathQuery = buildXpathQuery(criteria);
 
         SearchResponse response = new SearchResponse();
 
         if (!StringUtils.isEmpty(xpathQuery)) {
-            List<Hit> results = new ArrayList<Hit>();
+            List<Hit<?>> results = new LinkedList<Hit<?>>();
             try {
-                JCRStoreService jcrService = ServicesRegistry.getInstance()
-                        .getJCRStoreService();
-                JCRSessionWrapper session = jcrService.getSessionFactory()
-                        .getCurrentUserSession();
+                JCRSessionWrapper session = ServicesRegistry.getInstance()
+                .getJCRStoreService().getSessionFactory()
+                        .getCurrentUserSession(null, context.getLocale());
                 QueryManager qm = session.getWorkspace().getQueryManager();
                 Query query = qm.createQuery(xpathQuery, Query.XPATH);
+                
+                
+                if (criteria.getLimit() > 0) {
+                    // set maximum hit count
+                    query.setLimit(criteria.getLimit());
+                }
+                if (criteria.getOffset() > 0) {
+                    // set offset for pagination
+                    query.setOffset(criteria.getOffset());
+                }
 
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
@@ -119,9 +130,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 while (it.hasNext()) {
                     try {
                         Row row = it.nextRow();
-                        String path = row.getValue(JcrConstants.JCR_PATH)
-                                .getString();
-                        JCRNodeWrapper node = session.getNode(path);
+                        JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
                         if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                             try {
                                 node = node.getParent();
@@ -129,9 +138,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 node = null;
                             }
                         }
-                        AbstractHit searchHit = buildHit(row, node);
-
-                        results.add(searchHit);
+                        results.add(buildHit(row, node));
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
                     }
@@ -145,17 +152,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return response;
     }
     
-    private AbstractHit buildHit(Row row, JCRNodeWrapper node) throws RepositoryException {
-        AbstractHit searchHit = null;
-        if (node.isFile()) {
-            FileHit fileHit = new FileHit(node);
-            searchHit = fileHit;
+    private Hit<?> buildHit(Row row, JCRNodeWrapper node) throws RepositoryException {
+        AbstractHit<?> searchHit = null;
+        if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
+            searchHit = new FileHit(node);
         } else {
-            PageHit pageHit = new PageHit(node);
             JCRNodeWrapper pageNode = node;
-            while (pageNode != null
-                    && !pageNode
-                            .isNodeType(Constants.JAHIANT_PAGE)) {
+            while (pageNode != null && !pageNode.isNodeType(Constants.JAHIANT_PAGE)) {
                 try {
                     pageNode = pageNode.getParent();
                 } catch (ItemNotFoundException e) {
@@ -164,24 +167,23 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
             }
             if (pageNode != null) {
-                pageHit.setPage(pageNode);
+                searchHit = new PageHit(pageNode);
+            } else {
+                searchHit = new JCRNodeHit(node);
             }
-            searchHit = pageHit;
         }
 
         try {
-            searchHit.setScore((float) (row.getValue(
-                    JcrConstants.JCR_SCORE).getDouble() / 1000.));
+            searchHit.setScore((float) (row.getScore() / 1000.));
 
             // this is Jackrabbit specific, so if other implementations
             // throw exceptions, we have to do a check here            
-            Value excerpt = row
-                    .getValue("rep:excerpt(.)");
+            Value excerpt = row.getValue("rep:excerpt(.)");
             if (excerpt != null) {
                 searchHit.setExcerpt(excerpt.getString());
             }
         } catch (Exception e) {
-            logger.debug("Search details cannot be retrieved", e);
+            logger.warn("Search details cannot be retrieved", e);
         }
         return searchHit;
     }

@@ -23,9 +23,6 @@
                     <div>${hit.excerpt}</div>
                     <div>${hit.contentType}</div>
                     <div><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
-                    <c:if test="${hit.typeFile}">
-                    	<div>${hit.sizeKb}k</div>
-                    </c:if>
 				</li>
 			</s:resultIterator>
         </ul>

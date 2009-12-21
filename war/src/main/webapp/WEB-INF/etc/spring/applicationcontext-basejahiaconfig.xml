@@ -79,7 +79,7 @@
     </bean>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
-        <constructor-arg>
+        <constructor-arg index="0">
             <map>
                 <entry key="pdf">
                     <list>
@@ -133,6 +133,7 @@
                 </entry>
             </map>
         </constructor-arg>
+        <constructor-arg index="1" ref="fileExtensionIcons"/>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

@@ -50,7 +50,7 @@ public class ResultIteratorTag extends LoopTagSupport {
 
     private static final String DEF_VAR = "hit";
 
-    private Iterator<Hit> resultIterator;
+    private Iterator<Hit<?>> resultIterator;
 
     /**
      * Initializes an instance of this class.
@@ -89,7 +89,7 @@ public class ResultIteratorTag extends LoopTagSupport {
                     + ResultsTag.class.getName());
         }
 
-        List<Hit> results = parent.getHits();
+        List<Hit<?>> results = parent.getHits();
         if (results == null || results.size() <= begin) {
             results = Collections.emptyList();
         } else if (end != -1 && begin > 0) {

@@ -31,6 +31,8 @@
  */
 package org.jahia.services.search;
 
+import org.jahia.params.ProcessingContext;
+
 /**
  * Interface for different provider implementations used by the SearchService.
  *
@@ -44,7 +46,8 @@ public interface SearchProvider {
      * SearchCriteriaFactory.
      * 
      * @param criteria the passed SearchCriteria object, which includes all search criteria 
+     * @param context context object, containing information about current user, locale etc.
      * @return SearchResponse object with the list of hits matching the criteria
      */
-    public abstract SearchResponse search(SearchCriteria criteria);
+    public abstract SearchResponse search(SearchCriteria criteria, ProcessingContext context);
 }

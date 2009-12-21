@@ -31,248 +31,63 @@
  */
 package org.jahia.services.search;
 
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
-import org.jahia.data.beans.LookupBaseBean;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.utils.FileUtils;
 
 /**
  * File and folder search result item, used as a view object in JSP templates.
  * 
  * @author Sergiy Shyrkov
  */
-public class FileHit extends AbstractHit {
-
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(FileHit.class);
-
-    private static final Map<String, String> ICONS_TYPES;
-
-    // TODO move this mapping to some configuration resource
-    static {
-        ICONS_TYPES = new HashMap<String, String>();
-
-        ICONS_TYPES.put("unknown", "file");
-
-        ICONS_TYPES.put("txt", "txt");
-        ICONS_TYPES.put("text", "txt");
-
-        ICONS_TYPES.put("html", "html");
-        ICONS_TYPES.put("htm", "html");
-
-        ICONS_TYPES.put("pdf", "pdf");
-
-        ICONS_TYPES.put("doc", "doc");
-        ICONS_TYPES.put("ppt", "ppt");
-        ICONS_TYPES.put("xls", "xls");
-
-        ICONS_TYPES.put("jar", "zip");
-        ICONS_TYPES.put("zip", "zip");
-        ICONS_TYPES.put("rar", "rar");
-        ICONS_TYPES.put("tar", "zip");
-        ICONS_TYPES.put("tgz", "zip");
-
-        ICONS_TYPES.put("mp3", "sound");
-        ICONS_TYPES.put("wav", "sound");
-        ICONS_TYPES.put("mid", "sound");
-        ICONS_TYPES.put("midi", "sound");
-
-        ICONS_TYPES.put("bmp", "img");
-        ICONS_TYPES.put("gif", "img");
-        ICONS_TYPES.put("ico", "img");
-        ICONS_TYPES.put("jpeg", "img");
-        ICONS_TYPES.put("jpg", "img");
-        ICONS_TYPES.put("png", "img");
-        ICONS_TYPES.put("tif", "img");
-        ICONS_TYPES.put("tiff", "img");
-
-        ICONS_TYPES.put("avi", "video");
-        ICONS_TYPES.put("mpeg", "video");
-        ICONS_TYPES.put("mpa", "video");
-        ICONS_TYPES.put("mpe", "video");
-        ICONS_TYPES.put("mpg", "video");
-        ICONS_TYPES.put("mov", "video");
-
-        ICONS_TYPES.put("exe", "exe");
-    }
-
-    private JCRNodeWrapper node;
-
-    private Map<String, String> propertiesFacade;
-
-    private String content;
+public class FileHit extends JCRNodeHit {
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param searchHit
-     *            search result item to be wrapped
-     * @param processingContext
-     *            current processing context object
+     * @param node search result item to be wrapped
      */
-    public FileHit(Object resource) {
-        super(resource);
-        this.node = (JCRNodeWrapper) resource;
-        this.propertiesFacade = new LookupBaseBean<String, String>() {
-            private Map<String, String> properties;
-
-            @Override
-            public Set<Map.Entry<String, String>> entrySet() {
-                return getProperties().entrySet();
-            }
-
-            @Override
-            public String get(Object key) {
-                return node.getPropertyAsString(String.valueOf(key));
-            }
-
-            private Map<String, String> getProperties() {
-                if (null == properties) {
-                    try {
-                        properties = node.getPropertiesAsString();
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot get properties ",e);
-                    }
-                }
-                return properties;
-            }
-
-            @Override
-            public Set<String> keySet() {
-                return getProperties().keySet();
-            }
-
-            @Override
-            public int size() {
-                return getProperties().size();
-            }
-
-            @Override
-            public Collection<String> values() {
-                return getProperties().values();
-            }
-        };
+    public FileHit(JCRNodeWrapper node) {
+        super(node);
     }
 
     /**
-     * Returns the resource content length in bytes if applicable.
+     * Returns the folder path for this hit.
      * 
-     * @return resource content length in bytes if applicable
+     * @return the folder path for this hit
      */
-    public long getContentLength() {
-        return node.getFileContent().getContentLength();
-    }
-
-    public String getContentType() {
-        return node.getFileContent().getContentType();
-    }
-
-    public Date getCreated() {
-        return node.getCreationDateAsDate();
-    }
-
-    public String getCreatedBy() {
-        return node.getCreationUser();
-    }
-
     public String getFolderPath() {
-        return node.isCollection() ? node.getPath() : FilenameUtils
-                .getFullPathNoEndSeparator(node.getPath());
-    }
-
-    public String getIconType() {
-        String extension = FilenameUtils.getExtension(node.getName());
-        String icon = StringUtils.isNotEmpty(extension) ? ICONS_TYPES
-                .get(extension.toLowerCase()) : null;
-
-        return icon != null ? icon : ICONS_TYPES.get("unknown");
-    }
-
-    public Date getLastModified() {
-        return node.getLastModifiedAsDate();
-    }
-
-    public String getLastModifiedBy() {
-        return node.getModificationUser();
-    }
-
-    public String getLink() {
-        return node.getUrl();
-    }
-
-    public String getName() {
-        return node.getName();
-    }
-
-    public String getPath() {
-        return node.getPath();
-    }
-
-    public Map<String, String> getProperties() {
-        return propertiesFacade;
-    }
-
-    public JCRNodeWrapper getRawHit() {
-        return node;
-    }
-
-    public int getSizeKb() {
-        int sizeInKb = (int) (getContentLength() / 1000f);
-        return sizeInKb > 0 ? sizeInKb : 1;
+        return isFolder() ? getPath() : FilenameUtils.getFullPathNoEndSeparator(getPath());
     }
 
     /**
-     * Returns the hit text content.
-     *
-     * @return the hit text content
+     * Returns an icon name that corresponds to the current item. Mapping
+     * between file extensions and icons is configured in the
+     * <code>applicationcontext-basejahiaconfig.xml</code> file.
+     * 
+     * @return an icon name that corresponds to the current item
      */
-    public String getContent() {
-        if (content != null){
-            return content;
-        }
-        if (!node.isFile() || node.getFileContent().isImage()){
-            content = "";
-            return content;
-        } else {
-            try {
-                if (node.getRealNode().hasNode(Constants.JCR_CONTENT)){
-                    if (node.getRealNode().getNode(Constants.JCR_CONTENT).hasProperty(Constants.EXTRACTED_TEXT)){
-                        Property property = node.getRealNode().getNode(Constants.JCR_CONTENT)
-                                .getProperty(Constants.EXTRACTED_TEXT);
-                        content = FileUtils.readerToString(new InputStreamReader(property.getStream()));
-                    }
-                }
-            } catch ( Throwable t ){
-                logger.debug(t);
-            }
-        }
-        if (content == null){
-            content = "";
-        }
-        return content;
+    public String getIconType() {
+        Map<String, String> types = getIconTypes();
+        String extension = isFolder() ? "dir" : FilenameUtils.getExtension(getName());
+        String icon = StringUtils.isNotEmpty(extension) ? types.get(extension.toLowerCase()) : null;
+
+        return icon != null ? icon : types.get("unknown");
     }
 
-    public String getTitle() {
-        return node.getName();
+    private Map<String, String> getIconTypes() {
+        return JCRContentUtils.getInstance().getFileExtensionIcons();
     }
 
-    public Type getType() {
-        return isFolder() ? Type.FOLDER : Type.FILE;
-    }
-
+    /**
+     * Returns <code>true</code> if this search hit represents a folder.
+     * 
+     * @return <code>true</code> if this search hit represents a folder
+     */
     public boolean isFolder() {
-        return node.isCollection();
+        return isCollection();
     }
 }

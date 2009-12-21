@@ -34,20 +34,11 @@ package org.jahia.services.search;
 import java.util.Date;
 
 /**
- * Describes basic properties of an abstract search hit item.
+ * Describes basic properties of a search hit item.
  * 
  * @author Sergiy Shyrkov
  */
-public interface Hit {
-
-    /**
-     * Possible search hit types.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    public enum Type {
-        CONTAINER, FILE, FOLDER, PAGE;
-    }
+public interface Hit<T> {
 
     /**
      * Returns the MIME type of the hit content, if applicable.
@@ -69,6 +60,13 @@ public interface Hit {
      * @return the resource author (creator)
      */
     String getCreatedBy();
+
+    /**
+     * Returns the short description, abstract or excerpt of the hit's content.
+     * 
+     * @return the short description, abstract or excerpt of the hit's content
+     */
+    String getExcerpt();
 
     /**
      * Returns the last modification date.
@@ -96,7 +94,7 @@ public interface Hit {
      * 
      * @return the raw hit object
      */
-    Object getRawHit();
+    T getRawHit();
 
     /**
      * Returns the hit score.
@@ -104,20 +102,6 @@ public interface Hit {
      * @return the hit score
      */
     float getScore();
-
-    /**
-     * Returns the short description, abstract or excerpt of the hit's content.
-     * 
-     * @return the short description, abstract or excerpt of the hit's content
-     */
-    String getExcerpt();
-
-    /**
-     * Returns the file text content.
-     *
-     * @return the file content
-     */
-    String getContent();
 
     /**
      * Returns the title text.
@@ -131,6 +115,5 @@ public interface Hit {
      * 
      * @return the hit type
      */
-    Type getType();
-
+    String getType();
 }

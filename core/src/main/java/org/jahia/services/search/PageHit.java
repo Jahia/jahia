@@ -31,9 +31,6 @@
  */
 package org.jahia.services.search;
 
-import java.util.Date;
-
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 
 /**
@@ -41,102 +38,20 @@ import org.jahia.services.content.JCRNodeWrapper;
  * 
  * @author Sergiy Shyrkov
  */
-public class PageHit extends AbstractHit implements Hit {
+public class PageHit extends JCRNodeHit {
 
-    private JCRNodeWrapper page;
-
-    public PageHit(Object resource) {
-        super(resource);
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param node search result item to be wrapped
+     */
+    public PageHit(JCRNodeWrapper page) {
+        super(page);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getContentType()
-     */
     public String getContentType() {
         // not applicable
         return "text/html";
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getCreationDate()
-     */
-    public Date getCreated() {
-        return page.getCreationDateAsDate();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getAuthor()
-     */
-    public String getCreatedBy() {
-        return page.getCreationUser();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getLastModified()
-     */
-    public Date getLastModified() {
-        return page.getLastModifiedAsDate();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getLastModifiedBy()
-     */
-    public String getLastModifiedBy() {
-        return page.getModificationUser();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getLink()
-     */
-    public String getLink() {
-        return page.getUrl();
-    }
-
-    /**
-     * Returns the page text content.
-     *
-     * @return the page content
-     */
-    public String getContent() {
-        return getExcerpt();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getTitle()
-     */
-    public String getTitle() {
-        return page.getPropertyAsString(Constants.JCR_TITLE);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.data.search.Hit#getType()
-     */
-    public Type getType() {
-        return Type.PAGE;
-    }
-
-    public JCRNodeWrapper getPage() {
-        return page;
-    }
-
-    public void setPage(JCRNodeWrapper page) {
-        this.page = page;
     }
 
 }

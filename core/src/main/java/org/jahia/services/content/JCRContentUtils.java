@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
@@ -149,6 +150,9 @@ public final class JCRContentUtils {
     }
     
     public static JCRContentUtils getInstance() {
+        if (instance == null) {
+            throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");
+        }
         return instance;
     }
 
@@ -232,16 +236,21 @@ public final class JCRContentUtils {
     
     private Map<String, List<String>> mimeTypes;
 
+    private Map<String, String> fileExtensionIcons;
+
     /**
      * Initializes an instance of this class.
      * 
      * @param mimeTypes
      *            a map with mime type mappings
+     * @param fileExtensionIcons mapping between file extensions and corresponding icons 
      */
-    public JCRContentUtils(Map<String, List<String>> mimeTypes) {
+    @SuppressWarnings("unchecked")
+    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons) {
         super();
         instance = this;
-        this.mimeTypes = mimeTypes;
+        this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
+        this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
     }
 
     /**
@@ -375,6 +384,15 @@ public final class JCRContentUtils {
         } while (true);
 
         return name;
+    }
+
+    /**
+     * Returns a mapping between file extensions and corresponding icons.
+     * 
+     * @return a mapping between file extensions and corresponding icons
+     */
+    public Map<String, String> getFileExtensionIcons() {
+        return fileExtensionIcons;
     }
 
 }

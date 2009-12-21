@@ -37,7 +37,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -59,14 +58,11 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private static final String DEF_VAR = "hits";
 
-    private static final transient Logger logger = Logger
-            .getLogger(ResultsTag.class);
-
     private int count;
 
     private String countVar = DEF_COUNT_VAR;
 
-    private List<Hit> hits;
+    private List<Hit<?>> hits;
 
     private String storedQuery;
 
@@ -97,7 +93,7 @@ public class ResultsTag extends AbstractJahiaTag {
             return SKIP_BODY;
         }
         hits = ServicesRegistry.getInstance().getSearchService().search(
-                criteria).getResults();
+                criteria, ctx).getResults();
         count = hits.size();
 
         pageContext.setAttribute(var, hits);
@@ -115,7 +111,7 @@ public class ResultsTag extends AbstractJahiaTag {
         return countVar;
     }
 
-    public List<Hit> getHits() {
+    public List<Hit<?>> getHits() {
         return hits;
     }
 

@@ -31,12 +31,13 @@
  */
 package org.jahia.services.search;
 
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 
 /**
  * Abstract class for the new Jahia search service. 
  * 
- * In constrast to the query-services, which allow all kind of complex queries, the search
+ * In contrast to the query-services, which allow all kind of complex queries, the search
  * service is more simple and mainly takes care about fulltext (unstructured) search and 
  * metadata search.
  * 
@@ -62,7 +63,8 @@ public abstract class SearchService extends JahiaService {
      * SearchCriteriaFactory.
      * 
      * @param criteria the passed SearchCriteria object, which includes all search criteria 
+     * @param context context object, containing information about current user, locale etc.
      * @return SearchResponse object with the list of hits matching the criteria
      */
-    public abstract SearchResponse search(SearchCriteria criteria);
+    public abstract SearchResponse search(SearchCriteria criteria, ProcessingContext context);
 }

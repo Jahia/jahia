@@ -14,4 +14,4 @@
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
     	<input type="submit" class="submit" value="<fmt:message key='search.submit'/>" title="<fmt:message key='search.submit'/>"/>
 	</div>
-</s:form>
+</s:form><br class="clear"/>

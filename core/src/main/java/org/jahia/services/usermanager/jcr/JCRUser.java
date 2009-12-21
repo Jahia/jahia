@@ -79,18 +79,20 @@ public class JCRUser implements JahiaUser {
      *         corresponds to the user key, which is unique within a Jahia system.
      */
     public String getName() {
-        try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
-                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    if (name == null) {
+        if (name == null) {
+            try {
+                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
+                    public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         name = getNode(session).getName();
+                        return name;
                     }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while retrieving the user's name", e);
+                return "";
+            }
+        } else {
             return name;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving the user's name", e);
-            return "";
         }
     }
 

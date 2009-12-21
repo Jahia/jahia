@@ -61,6 +61,7 @@ public class ContentTypeModelData extends BaseModelData implements Serializable 
         public ContentTypeModelData(GWTJahiaNode gwtJahiaNode) {
             this.gwtJahiaNode = gwtJahiaNode;
             set("label", gwtJahiaNode.getDisplayName());
+            set("author",gwtJahiaNode.getCreatedBy());
         }
 
         public String getLabel() {

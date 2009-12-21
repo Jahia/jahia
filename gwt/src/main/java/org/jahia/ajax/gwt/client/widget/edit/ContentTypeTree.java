@@ -43,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
@@ -171,7 +172,7 @@ public class ContentTypeTree extends LayoutContainer{
                                                                    });
             }
         }
-        ColumnConfig name = new ColumnConfig("label", "Label", width-15);
+        ColumnConfig name = new ColumnConfig("label", "Label", width-150);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
@@ -179,32 +180,35 @@ public class ContentTypeTree extends LayoutContainer{
                 Label label = new Label((String) modelData.get(s));
                 ContentTypeModelData gwtJahiaNode = (ContentTypeModelData) modelData;
                 HorizontalPanel panel = new HorizontalPanel();
-                panel.setWidth(width);
+                panel.setWidth(width-150);
                 panel.setTableWidth("100%");
                 TableData tableData;
                 if (gwtJahiaNode.getGwtJahiaNodeType() != null || gwtJahiaNode.getGwtJahiaNode() != null) {
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
-                    tableData.setWidth("3%");
+                    tableData.setWidth("5%");
                     panel.add(ContentModelIconProvider.getInstance().getIcon(
                             gwtJahiaNode.getGwtJahiaNodeType()).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
-                    tableData.setWidth("97%");
+                    tableData.setWidth("95%");
                     panel.add(label, tableData);
                 } else {
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("100%");
                     panel.add(label, tableData);
                 }
+                panel.layout();
                 return panel;
             }
         });
-        name.setFixed(true);
-        treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(Arrays.asList(name)));
+        ColumnConfig author = new ColumnConfig("author", "Author", 150);        
+        treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(Arrays.asList(name,author)));
         treeGrid.setBorders(true);
         treeGrid.setHeight(height);
         treeGrid.setAutoExpandColumn("label");
         treeGrid.getTreeView().setRowHeight(rowHeight);
         treeGrid.getTreeView().setForceFit(true);
+        treeGrid.getStyle().setNodeCloseIcon(null);
+        treeGrid.getStyle().setNodeOpenIcon(null);
         final LayoutContainer window = this;
 
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
@@ -280,6 +284,7 @@ public class ContentTypeTree extends LayoutContainer{
         });
         }
         add(treeGrid);
+        setWidth("100%");
         if(previewPanel!=null)
             add(previewPanel);
     }

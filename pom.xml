@@ -39,6 +39,12 @@
     <url>http://10.8.37.111/svn/jahia/trunk</url>
   </scm>
   <developers>
+  		<developer>
+  			<name>Anna Afshar</name>
+  			<email>anna.afshar@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+  		</developer>
         <developer>
             <name>Benjamin Papez</name>
             <email>benjamin.papez@jahia.com</email>
@@ -48,6 +54,12 @@
         <developer>
             <name>Cédric Mailleux</name>
             <email>cedric.mailleux@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Clément Egger</name>
+            <email>clement.egger@jahia.com</email>
             <organization>Jahia Solution</organization>
             <organizationUrl>http://www.jahia.org</organizationUrl>
         </developer>
@@ -64,6 +76,12 @@
             <organizationUrl>http://www.jahia.org</organizationUrl>
         </developer>
         <developer>
+            <name>Régis Mora</name>
+            <email>regis.mora@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
             <name>Serge Huber</name>
             <email>serge.huber@jahia.com</email>
             <organization>Jahia Solution</organization>
@@ -72,6 +90,12 @@
         <developer>
             <name>Sergiy Shyrkov</name>
             <email>sergiy.shyrkov@jahia.com</email>
+            <organization>Jahia Solution</organization>
+            <organizationUrl>http://www.jahia.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Stéphanie Rouaud</name>
+            <email>stephanie.rouaud@jahia.com</email>
             <organization>Jahia Solution</organization>
             <organizationUrl>http://www.jahia.org</organizationUrl>
         </developer>

@@ -10,8 +10,12 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -72,7 +76,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             }
         });
 
-        ThumbsListView listView = new ThumbsListView(true);
+        final ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x",  "hidden");
         listView.setStore(contentStore);
         contentStore.setSortField("display");
@@ -81,6 +85,27 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);
+
+        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent>(){
+            public void handleEvent(ListViewEvent be) {
+                Window w = new Window();
+                GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
+
+                final String text = "Preview of " + node.getDisplayName();
+                w.setHeading(text);
+                w.setScrollMode(Style.Scroll.AUTO);
+                w.setModal(true);
+                w.setClosable(true);
+                w.setSize(Math.max(node.getWidth()+60, 400), Math.max(node.getHeight()+80, 50));
+                w.setBlinkModal(true);
+                w.setPlain(true);
+                w.setToolTip(text);
+                w.setLayout(new CenterLayout());
+                w.add(new Image(listView.getSelectionModel().getSelectedItem().getUrl()));
+                w.show();
+
+            }
+        });
 
         dragSource = new ImageDragSource(listView);
     }

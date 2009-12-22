@@ -1,0 +1,75 @@
+Search components
+
+  Several pre-built components are provided for quick start in using search features:
+
+  * {{{Simple} Simple search form}} - provides an HTML form with an entry field and a button to perform a fulltext site search.
+
+  * {{{Advanced} Advanced search form}} - is a complex form with multiple criteria to execute search requests.
+
+  * {{{results} Search results}} - a list view that is used in conjunction with search forms to display the list of search hits.
+
+  * {{{query} JCR query}} - allows creation of dynamic queries to retrieve and display a list of content objects using {{{http://www.day.com/specs/jcr/2.0/6_Query.html}JCR-SQL2 or XPath}} language.
+
+* {Simple} search form
+
+  Can be created in a page using drag & drop from the left-side panel or by selecting a target area and using New Content Wizard. The component name to be selected is <Simple search form>.
+  
+[./images/simpleSearch.png]
+
+
+  An HTML form with an input field and a submit button will be created in the page as shown on the following screenshot:
+  
+[./images/simpleSearchArea.png]
+
+
+  Corresponding template: <<</templates/search/jnt_searchResults/html/searchResults.jsp>>>
+  
+  For details on creating custom search forms see {{{./forms.html} Building search forms}}.
+  
+* {Advanced} search form
+
+  Similar to the {{{Simple} simple search form}} an advanced form can be inserted into a page. The component name to be selected is <Advanced search form>.
+  
+  An HTML form with an input field and a submit button will be created in the page as shown on the following screenshot:
+  
+[./images/advancedSearch.png]
+
+
+  Corresponding template: <<</templates/search/jnt_advancedSearchForm/html/advancedSearchForm.jsp>>>
+  
+* Search {results}
+
+  In order to display the results after form submit (see {{{Simple} simple}} or {{{Advanced} advanced}} search form sections) a component named <Search results> needs to be inserted into the page.
+  
+  An HTML form with an input field and a submit button will be created in the page as shown on the following screenshot:
+  
+[./images/searchResults.png]
+
+
+  Corresponding template: <<</templates/search/jnt_searchResults/html/searchResults.jsp>>>
+  
+* JCR {query}
+
+  For the sake of simplicity and quick prototyping, we have provided a <JCR query> component, which can be used to retrieve and display lists of content objects using JCR-SQL2 or XPath queries.
+  
+  Here we will give an example of retrieving a list of 10 last updated pages in the site, sorted by the last modification date descending, and displaying them as a list of links.
+  
+  We insert a new content of type <JCR query> into an area in our page and provide the following statement using JCR-SQL2 language:
+  
+-------------------------------
+  select * from [jnt:page] as page order by page.[jcr:lastModified] desc
+-------------------------------
+  
+  Corresponding screenshot is shown below:
+  
+[./images/createJcrQuery.png]
+
+  In the <Layout> tab of the create content engine we select <linkList> as a template: 
+  
+[./images/createJcrQueryTemplate.png]
+
+  Now we can save the query and check the results:
+
+[./images/jcrQueryResult.png]
+
+  Corresponding templates: <<</templates/search/jnt_jcrQuery/html/jcrQuery.hidden.load.jsp>>>, <<</templates/default/jmix_list/html/list.linkList.jsp>>>

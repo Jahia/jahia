@@ -1,0 +1,13 @@
+Jahia Search Module
+
+* Goals Overview
+
+  Module is aimed to provide several ready to use search components as well as the templates to build search forms and result lists.
+
+  * Search components
+
+    Brief overview of the {{{./components.html} provided components}} for using Jahia search features.
+
+  * Building custom search templates
+
+    A "How To" for {{{./forms.html} developing custom search forms}} and displaying search results using Jahia Search JSP Tag Library.

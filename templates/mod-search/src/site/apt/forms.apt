@@ -1,0 +1,196 @@
+Building search forms
+
+  This section shows the usage of Jahia Search JSP Tag Library in building custom search forms for several use cases.
+  Use cases listed in this section:
+  
+  * {{{Simple} Simple search form}}
+  
+  * {{{site} Advanced site search with metadata}}
+  
+  * {{{document} Advanced document search with metadata}}
+  
+  * {{{results} Displaying search results}}
+
+* {Simple} search form
+
+    Here is the template, used in our provided component, described in {{{./components.html#Simple} Search components}} section,
+    leaving out internationalization and layout for the sake of simplicity:
+
+-------------
+  1: <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+  2: 
+  3: <s:form method="get">
+  4:    <label for="searchTerm">Start searching:</label>
+  5:      <s:term id="searchTerm"/>
+  6:      <s:site value="${renderContext.siteNode.name}" display="false"/>
+  7:      <input type="submit" value="Search" title="Search"/>
+  8: </s:form>
+-------------
+
+  This code snippet results in an HTML form with an input field and a submit button, shown in the {{{./components.html#Simple} Simple search form}} section.
+  All the form-related search tags are nested in a <<<\<s:form/\>>>> tag (lines 3 to 8).
+  
+  <<<\<s:term/\>>>> tag (line 5) renders a simple entry field for the search term.
+  
+  Next line (line 6) has a hidden (note <<<display="false">>> attribute) field that restricts the search scope to the current site.
+  Otherwise the search is global to the whole content repository.
+  Line 7 contains standard HTML input element that renders form submit button.
+
+* Advanced {site} search with metadata
+
+    The following code is used to render an advanced form for searching site content
+    (we omit resource bundles and layout stuff):
+
+-------------
+  1: <s:form name="advancedSearchForm" method="get">
+  2:   <fieldset>
+  3:     <legend>Text search</legend>
+  4:       <label for="searchTerm">Search:</label>
+  5:       <s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>
+  6:       <s:term id="searchTerm"/><br/>
+  7:       <s:termFields value="siteContent" display="false"/>
+  8:   </fieldset>
+  9:
+  10:  <fieldset>
+  11:    <legend>Author and date</legend>
+  12:    <label for="searchCreatedBy">Author:</label>
+  13:    <s:createdBy id="searchCreatedBy"/><br/>
+  14:
+  15:    <label for="searchCreated">Created:</label>
+  16:    <s:created id="searchCreated"/><br/>
+  17:
+  18:    <label for="searchLastModifiedBy">Last editor:</label>
+  19:    <s:lastModifiedBy id="searchLastModifiedBy"/><br/>
+  20:
+  21:    <label for="searchLastModified">Modified:</label>
+  22:    <s:lastModified id="searchLastModified"/>
+  23:  </fieldset>
+  24:
+  25:  <fieldset>
+  26:    <legend>More...</legend>
+  27:    <label for="searchSite">Site:</label>
+  28:    <s:site id="searchSite"/><br/>
+  29:
+  30:    <label for="searchLanguage">Language:</label>
+  31:    <s:language id="searchLanguage"/><br/>
+  32:
+  33:    <label for="searchPagePath">Page:</label>
+  34:    <s:pagePath id="searchPagePath"/><br/>
+  35:  </fieldset>
+  36:
+  37:  <input type="submit" name="search" value="Search"/>
+  38: </s:form>
+-------------
+
+    The code renders the following form as a result:
+    
+[./images/advancedSearchSite.png]
+
+    The first fieldset (lines 2 to 8) contains a hidden field, created by the <<<\<s:termFields/\>>>> tag with the value <siteContent>,
+    which indicates that the search will take place in the site content (contrary to the document repository).
+    
+    Next fieldset (lines 10 to 23) is responsible for rendering metadata related entry fields, like author,
+    creation date, last editor and last modification date.
+    
+    The last fieldset (lines 25 to 35) displays additional criteria: site selection, content language selection
+    and the page path (restricted search on a particular page or site section).
+    
+    One note to the site selection. All search tags allow path-through attributes to be specified,
+    i.e. CSS class, style, title, HTML element ID, JavaScript event handlers.
+    For example the site selection tag can be transformed into a multiple selection combo box
+    (allows selection of multiple sites for simultaneous search) by simply adding the <<<multiple>>> attribute:
+    
+-------------
+  <s:site multiple="multiple"/>
+-------------
+
+* Advanced {document} search with metadata
+
+    The following code is used to render an advanced form for searching through the document repository
+    (we omit resource bundles and layout stuff):
+
+-------------
+  1: <s:form name="advancedSearchForm" method="get">
+  2:   <fieldset>
+  3:     <legend>Text search</legend>
+  4:       <label for="searchTerm">Search:</label>
+  5:       <s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>
+  6:       <s:term id="searchTerm"/><br/>
+  7:       <s:termFields value="fileContent" display="false"/>
+  8:   </fieldset>
+  9:
+  10:  <fieldset>
+  11:    <legend>Author and date</legend>
+  12:    <label for="searchCreatedBy">Author:</label>
+  13:    <s:createdBy id="searchCreatedBy"/><br/>
+  14:
+  15:    <label for="searchCreated">Created:</label>
+  16:    <s:created id="searchCreated"/><br/>
+  17:
+  18:    <label for="searchLastModifiedBy">Last editor:</label>
+  19:    <s:lastModifiedBy id="searchLastModifiedBy"/><br/>
+  20:
+  21:    <label for="searchLastModified">Modified:</label>
+  22:    <s:lastModified id="searchLastModified"/>
+  23:  </fieldset>
+  24:
+  25:  <fieldset>
+  26:    <legend>More...</legend>
+  27:    <label for="searchSite">Site:</label>
+  28:    <s:site id="searchSite"/><br/>
+  29:
+  30:    <label for="searchFileType">File type:</label>
+  31:    <s:fileType id="searchFileType"/><br/>
+  32     <s:nodeType value="nt:file" display="false"/>
+  33:  </fieldset>
+  34:
+  35:  <input type="submit" name="search" value="Search"/>
+  36: </s:form>
+-------------
+
+    Following form is displayed as a result:
+    
+[./images/advancedSearchDocuments.png]
+
+    The code is similar to the {{{site} advanced search for site content search}}.
+    The first fieldset contains in the line 7 the <fileContent> value instead of the <siteContent> to indicate the search in document content.
+    
+    And last fieldset (lines 25 to 33) contains additionally the file type selection control and a hidden field, generated by
+    the <<<\<s:nodeType/\>>>> tag, which scopes the search to results with node type <nt:file>.
+
+* Displaying search {results}
+
+    For displaying results of the search the <<<\<s:results/\>>>> and <<<\<s:resultIterator/\>>>> pair of tags can be used.
+    
+    The  <<<\<s:results/\>>>>  tag parses the search parameters from the current request, executes the search and exposes the results list (<<<java.util.List\<org.jahia.services.search.Hit\<?\>\>>>>)
+    and the total hit count into the page scoped variables with names <hits> and <count> (these names can be overridden with the tag attributes: see documentation for Jahia Search tag Library for more details).
+    
+    The second tag - <<<\<s:resultIterator/\>>>> - is used to iterate over the exposed list of hits as shown in the following example:   
+
+-------------
+  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+  <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+  <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+
+  <s:results>
+    <c:if test="${count > 0}">
+      <h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
+      <ul>
+      <s:resultIterator>
+        <li>
+          <div><a href="${hit.link}">${fn:escapeXml(hit.title)}</a></div>
+          <div>${hit.excerpt}</div>
+          <div>${hit.contentType}</div>
+          <div><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
+        </li>
+      </s:resultIterator>
+      </ul>
+    </c:if>
+    <c:if test="${count == 0}">
+      <h4><fmt:message key="search.results.no.results"/></h4>
+    </c:if>
+  </s:results>
+-------------
+
+    The corresponding screenshot is given in the {{{./components.html#results} Search results}} section.

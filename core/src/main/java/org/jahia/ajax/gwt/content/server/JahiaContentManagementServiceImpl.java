@@ -695,4 +695,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException {
         return search.getNodesOfType(nodeType,retrieveParamBean());
     }
+
+    public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path) throws GWTJahiaServiceException {
+        contentManager.pasteOnTopOf(nodes, path, getUser());
+    }
 }

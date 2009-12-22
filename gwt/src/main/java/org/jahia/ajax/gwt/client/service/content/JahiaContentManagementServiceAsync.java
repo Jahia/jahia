@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.List;
 import java.util.Map;
@@ -223,4 +224,6 @@ public interface JahiaContentManagementServiceAsync {
     void getNode(String path,AsyncCallback<GWTJahiaNode> async);
 
     void getNodesOfType(String nodeType,AsyncCallback<List<GWTJahiaNode>> async);
+
+    void pasteOnTopOf(List<GWTJahiaNode> nodes, String path, AsyncCallback async);
 }

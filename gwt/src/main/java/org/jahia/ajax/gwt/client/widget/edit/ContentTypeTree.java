@@ -38,13 +38,17 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.Event;
@@ -72,20 +76,23 @@ import java.util.List;
  * @since : JAHIA 6.1
  *        Created : 21 déc. 2009
  */
-public class ContentTypeTree extends LayoutContainer{
+public class ContentTypeTree extends LayoutContainer {
     private TreeGrid<ContentTypeModelData> treeGrid;
-    private final Linker linker;
+    private Linker linker;
     private final GWTJahiaNodeType nodeType;
     private final String baseType;
-    private final GWTJahiaNode parentNode;
+    private GWTJahiaNode parentNode;
     private final boolean displaySchmurtz;
     private final boolean displayPreview;
     private final int width;
     private final int height;
     private final int rowHeight;
+    private final boolean popup;
+    private TreeStore<ContentTypeModelData> store;
 
     public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
-                           boolean displaySchmurtz,boolean displayPreview,int width,int height,int rowHeight) {
+                           boolean displaySchmurtz, boolean displayPreview, int width, int height, int rowHeight,
+                           boolean isPopup) {
         this.linker = linker;
         this.nodeType = nodeType;
         this.baseType = baseType;
@@ -95,57 +102,16 @@ public class ContentTypeTree extends LayoutContainer{
         this.width = width;
         this.height = height;
         this.rowHeight = rowHeight;
+        popup = isPopup;
         createUI();
     }
 
 
     public void createUI() {
-        final TreeStore<ContentTypeModelData> store = new TreeStore<ContentTypeModelData>();
+        store = new TreeStore<ContentTypeModelData>();
         ContentTypeModelData rootEmptyContent = null;
         if (nodeType == null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseType, parentNode,
-                                                                            new AsyncCallback<List<GWTJahiaNodeType>>() {
-                                                                                public void onFailure(
-                                                                                        Throwable caught) {
-                                                                                    MessageBox.alert("Alert",
-                                                                                                     "Unable to load content definitions for base type '" + baseType + "' and parent node '" + parentNode.getPath() + "'. Cause: " + caught.getLocalizedMessage(),
-                                                                                                     null);
-                                                                                }
-
-                                                                                public void onSuccess(
-                                                                                        List<GWTJahiaNodeType> result) {
-                                                                                    for (GWTJahiaNodeType gwtJahiaNodeType : result) {
-                                                                                        final ContentTypeModelData data = new ContentTypeModelData(
-                                                                                                gwtJahiaNodeType);
-                                                                                        store.add(data, false);
-                                                                                        final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
-                                                                                        schmurtzFolder.setPath(
-                                                                                                "/schmurtzs/" + gwtJahiaNodeType.getName().replaceAll(
-                                                                                                        ":", "_"));
-                                                                                        JahiaContentManagementService.App.getInstance().ls(
-                                                                                                JCRClientUtils.SCHMURTZ_REPOSITORY,
-                                                                                                schmurtzFolder,
-                                                                                                "jnt:schmurtz", null,
-                                                                                                null, null, false,
-                                                                                                new AsyncCallback<List<GWTJahiaNode>>() {
-                                                                                                    public void onFailure(
-                                                                                                            Throwable caught) {
-                                                                                                    }
-
-                                                                                                    public void onSuccess(
-                                                                                                            List<GWTJahiaNode> result) {
-                                                                                                        for (GWTJahiaNode gwtJahiaNode : result) {
-                                                                                                            store.add(
-                                                                                                                    data,
-                                                                                                                    new ContentTypeModelData(
-                                                                                                                            gwtJahiaNode),
-                                                                                                                    false);
-                                                                                                        }
-                                                                                                    }
-                                                                                                });
-                                                                                    }
-                                                                                }
-                                                                            });
+            filldataStore(parentNode);
         } else {
             rootEmptyContent = new ContentTypeModelData(nodeType);
             store.add(rootEmptyContent, false);
@@ -172,7 +138,7 @@ public class ContentTypeTree extends LayoutContainer{
                                                                    });
             }
         }
-        ColumnConfig name = new ColumnConfig("label", "Label", width-150);
+        ColumnConfig name = new ColumnConfig("label", "Label", width - 40);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
@@ -180,7 +146,7 @@ public class ContentTypeTree extends LayoutContainer{
                 Label label = new Label((String) modelData.get(s));
                 ContentTypeModelData gwtJahiaNode = (ContentTypeModelData) modelData;
                 HorizontalPanel panel = new HorizontalPanel();
-                panel.setWidth(width-150);
+                panel.setWidth(width - 40);
                 panel.setTableWidth("100%");
                 TableData tableData;
                 if (gwtJahiaNode.getGwtJahiaNodeType() != null || gwtJahiaNode.getGwtJahiaNode() != null) {
@@ -200,24 +166,28 @@ public class ContentTypeTree extends LayoutContainer{
                 return panel;
             }
         });
-        ColumnConfig author = new ColumnConfig("author", "Author", 150);        
-        treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(Arrays.asList(name,author)));
+        ColumnConfig author = new ColumnConfig("author", "Author", 40);
+        treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(Arrays.asList(name, author)));
         treeGrid.setBorders(true);
-        treeGrid.setHeight(height);
+        if (height > 0) {
+            treeGrid.setHeight(height);
+        } else {
+            treeGrid.setHeight("100%");
+        }
         treeGrid.setAutoExpandColumn("label");
         treeGrid.getTreeView().setRowHeight(rowHeight);
         treeGrid.getTreeView().setForceFit(true);
         treeGrid.getStyle().setNodeCloseIcon(null);
         treeGrid.getStyle().setNodeOpenIcon(null);
         final LayoutContainer window = this;
-
+        if(popup) {
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent baseEvent) {
                 ContentTypeModelData contentTypeModelData = (ContentTypeModelData) (((TreeGridEvent) baseEvent).getModel());
                 final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
                 final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
-                if (gwtJahiaNodeType != null) {
+                if (gwtJahiaNodeType != null && linker!=null) {
                     new EditContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
                     window.hide();
                 } else if (gwtJahiaNode != null) {
@@ -240,6 +210,7 @@ public class ContentTypeTree extends LayoutContainer{
 
                                 public void onSuccess(Object result) {
                                     hide();
+                                    if(linker!=null)
                                     linker.refreshMainComponent();
                                 }
                             });
@@ -248,48 +219,116 @@ public class ContentTypeTree extends LayoutContainer{
                 }
             }
         });
+        }
         ContentPanel previewPanel = null;
-        if(displayPreview) {
+        if (displayPreview) {
             previewPanel = new ContentPanel();
             final LayoutContainer layoutContainer = new LayoutContainer();
-        previewPanel.add(layoutContainer);
-        treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ContentTypeModelData>() {
-            @Override
-            public void selectionChanged(
-                    SelectionChangedEvent<ContentTypeModelData> contentTypeModelDataSelectionChangedEvent) {
-                final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNodeType();
-                final GWTJahiaNode gwtJahiaNode = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNode();
-                if (gwtJahiaNodeType != null) {
-                    layoutContainer.removeAll();
-                    layout();
-                } else if (gwtJahiaNode != null) {
-                    final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                    instance.getRenderedContent(gwtJahiaNode.getPath() + "/j:target", null,
-                                                ((EditLinker) linker).getLocale(), null, "wrapper.previewwrapper", null,
-                                                false, new AsyncCallback<String>() {
-                                public void onSuccess(String result) {
-                                    HTML html = new HTML(result);
-                                    layoutContainer.removeAll();
-                                    layoutContainer.add(html);
-                                    layout();
-                                }
+            previewPanel.add(layoutContainer);
+            treeGrid.getSelectionModel().addSelectionChangedListener(
+                    new SelectionChangedListener<ContentTypeModelData>() {
+                        @Override
+                        public void selectionChanged(
+                                SelectionChangedEvent<ContentTypeModelData> contentTypeModelDataSelectionChangedEvent) {
+                            final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNodeType();
+                            final GWTJahiaNode gwtJahiaNode = contentTypeModelDataSelectionChangedEvent.getSelectedItem().getGwtJahiaNode();
+                            if (gwtJahiaNodeType != null) {
+                                layoutContainer.removeAll();
+                                layout();
+                            } else if (gwtJahiaNode != null) {
+                                final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
+                                if(linker!=null) {
+                                instance.getRenderedContent(gwtJahiaNode.getPath() + "/j:target", null,
+                                                            ((EditLinker) linker).getLocale(), null,
+                                                            "wrapper.previewwrapper", null, false,
+                                                            new AsyncCallback<String>() {
+                                                                public void onSuccess(String result) {
+                                                                    HTML html = new HTML(result);
+                                                                    layoutContainer.removeAll();
+                                                                    layoutContainer.add(html);
+                                                                    layout();
+                                                                }
 
-                                public void onFailure(Throwable caught) {
-                                    Log.error("", caught);
+                                                                public void onFailure(Throwable caught) {
+                                                                    Log.error("", caught);
 //                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
+                                                                }
+                                                            });
                                 }
-                            });
-                }
-            }
-        });
+                            }
+                        }
+                    });
+        }
+        if(popup) {
+            VBoxLayout vBoxLayout = new VBoxLayout();
+            vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+            setLayout(vBoxLayout);
+        } else {
+            FitLayout vBoxLayout = new FitLayout();
+            setLayout(vBoxLayout);
+            setBorders(true);
         }
         add(treeGrid);
         setWidth("100%");
-        if(previewPanel!=null)
+        if (previewPanel != null) {
             add(previewPanel);
+        }
+    }
+
+    private void filldataStore(GWTJahiaNode parentNode) {
+        store.removeAll();
+        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseType, parentNode,
+                                                                        new AsyncCallback<List<GWTJahiaNodeType>>() {
+                                                                            public void onFailure(
+                                                                                    Throwable caught) {
+                                                                                MessageBox.alert("Alert",
+                                                                                                 "Unable to load content definitions for base type '" + baseType + "' and parent node '" + ContentTypeTree.this.parentNode.getPath() + "'. Cause: " + caught.getLocalizedMessage(),
+                                                                                                 null);
+                                                                            }
+
+                                                                            public void onSuccess(
+                                                                                    List<GWTJahiaNodeType> result) {
+                                                                                for (GWTJahiaNodeType gwtJahiaNodeType : result) {
+                                                                                    final ContentTypeModelData data = new ContentTypeModelData(
+                                                                                            gwtJahiaNodeType);
+                                                                                    store.add(data, false);
+                                                                                    final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
+                                                                                    schmurtzFolder.setPath(
+                                                                                            "/schmurtzs/" + gwtJahiaNodeType.getName().replaceAll(
+                                                                                                    ":", "_"));
+                                                                                    JahiaContentManagementService.App.getInstance().ls(
+                                                                                            JCRClientUtils.SCHMURTZ_REPOSITORY,
+                                                                                            schmurtzFolder,
+                                                                                            "jnt:schmurtz", null,
+                                                                                            null, null, false,
+                                                                                            new AsyncCallback<List<GWTJahiaNode>>() {
+                                                                                                public void onFailure(
+                                                                                                        Throwable caught) {
+                                                                                                }
+
+                                                                                                public void onSuccess(
+                                                                                                        List<GWTJahiaNode> result) {
+                                                                                                    for (GWTJahiaNode gwtJahiaNode : result) {
+                                                                                                        store.add(
+                                                                                                                data,
+                                                                                                                new ContentTypeModelData(
+                                                                                                                        gwtJahiaNode),
+                                                                                                                false);
+                                                                                                    }
+                                                                                                }
+                                                                                            });
+                                                                                }
+                                                                            }
+                                                                        });
     }
 
     public TreeGrid<ContentTypeModelData> getTreeGrid() {
         return treeGrid;
+    }
+
+    public void setLinker(Linker linker) {
+        this.linker = linker;
+        this.parentNode = linker.getMainNode();
+        filldataStore(parentNode);
     }
 }

@@ -242,4 +242,6 @@ public interface JahiaContentManagementService extends RemoteService {
                                boolean forceCreate) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException;
+
+     public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path) throws GWTJahiaServiceException;
 }

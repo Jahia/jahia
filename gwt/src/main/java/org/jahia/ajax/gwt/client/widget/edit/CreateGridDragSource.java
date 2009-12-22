@@ -14,7 +14,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
  * To change this template use File | Settings | File Templates.
  */
 public class CreateGridDragSource extends EditModeGridDragSource {
-    public CreateGridDragSource(Grid<GWTJahiaNodeType> grid) {
+    public CreateGridDragSource(Grid<ContentTypeModelData> grid) {
         super(grid);
     }
 

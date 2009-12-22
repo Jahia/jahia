@@ -2,14 +2,17 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +59,7 @@ public class EditModeDNDListener extends DNDListener {
             int i = targetPath.lastIndexOf('/');
             String name = targetPath.substring(i +1);
             String parentPath = targetPath.substring(0,i);
-            GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
+            final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
 
             // Drop into empty placeholder
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
@@ -83,9 +86,29 @@ public class EditModeDNDListener extends DNDListener {
                 }
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
-                GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
-                e.getStatus().setData(OPERATION_CALLED, "true");
-                new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
+                ContentTypeModelData modelData = e.getStatus().getData(SOURCE_NODETYPE);
+                if(modelData.getGwtJahiaNode()==null) {
+                    GWTJahiaNodeType type = modelData.getGwtJahiaNodeType();
+                    e.getStatus().setData(OPERATION_CALLED, "true");
+                    new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
+                } else {
+                    final GWTJahiaNode gwtJahiaNode = modelData.getGwtJahiaNode();
+                    final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
+                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
+                            public void onFailure(Throwable caught) {
+                                MessageBox.alert("Alert",
+                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 null);
+                            }
+
+                            public void onSuccess(GWTJahiaNode result) {
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
+                                result.setName(gwtJahiaNode.getName());
+                                nodes.add(result);
+                                instance.paste(nodes, parent.getPath(), false,new DropAsyncCallback());
+                            }
+                        });
+                }
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);
@@ -117,10 +140,31 @@ public class EditModeDNDListener extends DNDListener {
                 JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
-                GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
-                new EditContentEngine(editLinker, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
+                final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
+                ContentTypeModelData modelData = e.getStatus().getData(SOURCE_NODETYPE);
+                if(modelData.getGwtJahiaNode()==null) {
+                    GWTJahiaNodeType type = modelData.getGwtJahiaNodeType();
+                    e.getStatus().setData(OPERATION_CALLED, "true");
+                    new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
+                } else {
+                    final GWTJahiaNode gwtJahiaNode = modelData.getGwtJahiaNode();
+                    final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
+                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
+                            public void onFailure(Throwable caught) {
+                                MessageBox.alert("Alert",
+                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 null);
+                            }
+
+                            public void onSuccess(GWTJahiaNode result) {
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
+                                result.setName(gwtJahiaNode.getName());
+                                nodes.add(result);
+                                instance.pasteOnTopOf(nodes, parent.getPath(),new DropAsyncCallback());
+                            }
+                        });
+                }
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);

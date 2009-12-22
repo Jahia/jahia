@@ -3,9 +3,13 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
+<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="statement" var="query"/>
 <jcr:nodeProperty node="${currentNode}" name="language" var="lang"/>
 <jcr:nodeProperty node="${currentNode}" name="maxItems" var="maxItems"/>
+<c:if test="${not empty title.string}">
+	<h3>${fn:escapeXml(title.string)}</h3>
+</c:if>
 <c:if test="${renderContext.editMode}">
 	<p>${fn:escapeXml(jcr:label(currentNode.primaryNodeType))} (${lang.string}):&nbsp;${fn:escapeXml(query.string)}</p>
 </c:if>

@@ -258,6 +258,15 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         set("lastPublishedBy", lastPublicationUser);
     }
 
+
+    public void setTags(String tags) {
+        set("tags",tags);
+    }
+
+    public String getTags() {
+        return get("tags");
+    }
+
     public void setCollection(Boolean collection) {
         set("collection", collection);
     }

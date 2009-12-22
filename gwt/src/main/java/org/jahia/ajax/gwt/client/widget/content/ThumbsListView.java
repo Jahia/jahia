@@ -48,9 +48,9 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     public native String getDetailedTemplate() /*-{
     return ['<tpl for=".">',
         '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{preview}" title="{name}"></div>',
-        '<div style="margin-left: 160px; " class="thumbDetails"><div><b>Name:</b></div><div style="padding-left: 10px">{name}</div><div><b>Description</b></div><div style="padding-left: 10px">{description}</div><div><b>Author</b></div><div style="padding-left: 10px">{createdBy}</div></div></div>',
-        '</tpl>',
+        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{preview}" title="{name}"></div>',
+        '<div style="margin-left: 160px; " class="thumbDetails"><div><b>Name:</b></div><div style="padding-left: 10px">{name}</div><div><b>Author</b></div><div style="padding-left: 10px">{createdBy}</div><div><b>Tags</b></div><div style="padding-left: 10px">{tags}</div></div></div>',
+        '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
         '<div class="x-clear"></div>'].join("");
     }-*/;
 

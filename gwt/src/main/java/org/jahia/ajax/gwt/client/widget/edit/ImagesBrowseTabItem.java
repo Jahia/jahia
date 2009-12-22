@@ -75,6 +75,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x",  "hidden");
         listView.setStore(contentStore);
+        contentStore.setSortField("display");
         contentContainer.add(listView);
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();

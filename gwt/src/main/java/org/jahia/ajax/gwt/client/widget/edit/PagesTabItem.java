@@ -6,24 +6,26 @@ import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,6 +105,12 @@ class PagesTabItem extends SidePanelTabItem {
                     if (path.startsWith(child.getPath())) {
                         setExpanded(child, true);
                     }
+                    if (path.equals(child.getPath())) {
+                        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+                        l.add(child);
+                        tree.getSelectionModel().setSelection(l);
+                    }
+
                 }
             }
         };
@@ -116,57 +124,143 @@ class PagesTabItem extends SidePanelTabItem {
 
         add(treeContainer, treeVBoxData);
 
-
-        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener() {
+        this.tree.setSelectionModel(new TreePanelSelectionModel<GWTJahiaNode>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent se) {
+            protected void onMouseDown(TreePanelEvent be) {
+                return;
+            }
 
+            @Override
+            protected void onMouseClick(TreePanelEvent e) {
+                super.onMouseDown(e);
+            }
+        });
+        this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                if (!se.getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
+                    editLinker.getMainModule().mask("Loading","x-mask-loading");
+                    editLinker.getMainModule().setPath(se.getSelectedItem().getPath());
+                    editLinker.getMainModule().setTemplate(null);
+                    editLinker.getMainModule().refresh();
+                }
             }
         });
 
-        TreePanelDragSource source = new TreePanelDragSource(tree);
-        TreePanelDropTarget target = new TreePanelDropTarget(tree) {
-            @Override
-            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-                super.handleInsert(dndEvent, treeNode);
-            }
+    }
 
-            @Override
-            protected void handleAppend(DNDEvent event, TreePanel.TreeNode item) {
-                super.handleAppend(event, item);
-                if (((List) event.getData()).contains(activeItem.getModel())) {
-                    event.getStatus().setStatus(false);
-                }
-            }
-
-            @Override
-            protected void handleInsertDrop(DNDEvent dndEvent, TreePanel.TreeNode item, int index) {
-                if (dndEvent.getStatus().getStatus()) {
-//                    ContentActions.move(editLinker, (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-//                    JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
-                }
-            }
-
-            @Override
-            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-                if (dndEvent.getStatus().getStatus()) {
-//                    ContentActions.move(editLinker, (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-//                    JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
-                }
-            }
-
-        };
+    private void initDND() {
+        EditModeTreePanelDragSource source = new PageTreePanelDragSource();
+        TreePanelDropTarget target = new PageTreePanelDropTarget();
         target.setAllowDropOnLeaf(true);
         target.setAllowSelfAsSource(true);
         target.setAutoExpand(true);
         target.setFeedback(DND.Feedback.INSERT);
+
+        source.addDNDListener(editLinker.getDndListener());
+        target.addDNDListener(editLinker.getDndListener());
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
-
+        initDND();
     }
 
+    public void refresh() {
+        treeStore.removeAll();
+        init = true;
+        treeLoader.load();
+    }
+
+    class PageTreePanelDropTarget extends TreePanelDropTarget {
+        public PageTreePanelDropTarget() {
+            super(PagesTabItem.this.tree);
+        }
+
+        @Override
+        protected void onDragEnter(DNDEvent e) {
+
+            boolean allowed = EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE));
+            if (allowed) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
+            }
+            e.getStatus().setStatus(allowed);
+            e.setCancelled(false);
+
+        }
+
+        @Override
+        protected void showFeedback(DNDEvent e) {
+            super.showFeedback(e);
+            e.getStatus().setData("type", status);
+            if (activeItem != null) {
+                GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
+                GWTJahiaNode parent = treeStore.getParent(activeNode);
+                if (status == 1) {
+                    List<GWTJahiaNode> children = treeStore.getChildren(parent);
+                    int next = children.indexOf(activeNode) + 1;
+                    if (next < children.size()) {
+                        GWTJahiaNode n = children.get(next);
+                        e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, n);
+                    } else {
+                        e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, null);
+                    }
+                }
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, parent);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, activeNode.get("path"));
+            } else {
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, null);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, null);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, null);
+            }
+        }
+
+        @Override
+        protected void handleInsertDrop(DNDEvent e, TreePanel.TreeNode item, int index) {
+        }
+
+        @Override
+        protected void handleAppendDrop(DNDEvent e, TreePanel.TreeNode treeNode) {
+        }
+
+        public AsyncCallback getCallback() {
+            AsyncCallback callback = new AsyncCallback() {
+                public void onSuccess(Object o) {
+                    editLinker.getMainModule().refresh();
+                    refresh();
+                }
+
+                public void onFailure(Throwable throwable) {
+                    Window.alert("Failed : "+throwable);
+                }
+            };
+            return callback;
+        }
+    }
+
+    private class PageTreePanelDragSource extends EditModeTreePanelDragSource {
+        public PageTreePanelDragSource() {
+            super(PagesTabItem.this.tree);
+        }
+
+        @Override
+        protected void onDragStart(DNDEvent e) {
+            super.onDragStart(e);
+            Selection.getInstance().hide();
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
+            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+            l.add(PagesTabItem.this.tree.getSelectionModel().getSelectedItem());
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
+        }
+
+
+        @Override
+        protected void onDragDrop(DNDEvent event) {
+            // do nothing
+        }
+    }
 }

@@ -95,6 +95,7 @@ public class MainModule extends ContentPanel implements Module {
                 setVScrollPosition(i);
                 List<String> list = new ArrayList<String>(1);
                 list.add(path);
+                editLinker.getMainModule().unmask();                
             }
 
             public void onFailure(Throwable caught) {
@@ -163,6 +164,10 @@ public class MainModule extends ContentPanel implements Module {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 
     public GWTJahiaNode getNode() {

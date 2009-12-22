@@ -1,18 +1,17 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,12 +30,16 @@ public class EditModeDNDListener extends DNDListener {
 
     public static final String QUERY_SOURCE_TYPE = "query";
 
+    public static final String PAGETREE_TYPE = "pageTree";
     public static final String SIMPLEMODULE_TYPE = "simpleModule";
     public static final String PLACEHOLDER_TYPE = "placeholder";
 
     public static final String TARGET_TYPE = "targetType";
     public static final String TARGET_PATH = "targetPath";
     public static final String TARGET_NODE = "targetNode";
+    public static final String TARGET_NEXT_NODE = "targetNextNode";
+    public static final String TARGET_PARENT = "targetParent";
+    public static final String TARGET_CALLBACK = "callback";
 
     public static final String SOURCE_QUERY = "query";
 
@@ -54,6 +57,7 @@ public class EditModeDNDListener extends DNDListener {
         if ("true".equals(e.getStatus().getData(OPERATION_CALLED))) {
             return;
         }
+        AsyncCallback callback = new DropAsyncCallback();
         if (PLACEHOLDER_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
             String targetPath = e.getStatus().getData(TARGET_PATH);
             int i = targetPath.lastIndexOf('/');
@@ -68,9 +72,9 @@ public class EditModeDNDListener extends DNDListener {
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, callback);
                 } else if (nodes.size() == 1) {
-                    JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), parentPath, name, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), parentPath, name, callback);
                 }
 
             } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
@@ -80,9 +84,9 @@ public class EditModeDNDListener extends DNDListener {
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    JahiaContentManagementService.App.getInstance().moveAtEnd(selectedNode.getPath(), parentPath, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(selectedNode.getPath(), parentPath, callback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().move(selectedNode.getPath(), targetPath, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().move(selectedNode.getPath(), targetPath, callback);
                 }
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
@@ -114,9 +118,9 @@ public class EditModeDNDListener extends DNDListener {
                 String q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, "jnt_query", new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, "jnt_query", callback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, name, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, name, callback);
                 }
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
@@ -127,17 +131,17 @@ public class EditModeDNDListener extends DNDListener {
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if (nodes.size()>1) {
-                    JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, callback);
                 } else if (nodes.size() == 1) {
                     final GWTJahiaNode node = nodes.get(0);
-                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, targetPath, node.getName(), new DropAsyncCallback());
+                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, targetPath, node.getName(), callback);
                 }
             } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item move
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
+                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, callback);
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 e.getStatus().setData(OPERATION_CALLED, "true");
@@ -169,7 +173,38 @@ public class EditModeDNDListener extends DNDListener {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                JahiaContentManagementService.App.getInstance().saveSearchOnTopOf(q, targetPath, "jnt_query", new DropAsyncCallback());
+                JahiaContentManagementService.App.getInstance().saveSearchOnTopOf(q, targetPath, "jnt_query", callback);
+            }
+        } else if (PAGETREE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
+            if (PAGETREE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                GWTJahiaNode source = ((List<GWTJahiaNode>)e.getStatus().getData(SOURCE_NODES)).get(0);
+
+                String targetPath = (String) e.getStatus().getData(TARGET_PATH);
+
+                if (e.getDropTarget() instanceof PagesTabItem.PageTreePanelDropTarget) {
+                    callback = ((PagesTabItem.PageTreePanelDropTarget)e.getDropTarget()).getCallback();
+                }
+
+                if (e.getStatus().getData("type").equals(-1)) {
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), targetPath, callback);
+                } else if (e.getStatus().getData("type").equals(0)) {
+                    JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), targetPath, callback);
+                } else if (e.getStatus().getData("type").equals(1)) {
+                    GWTJahiaNode node = e.getStatus().getData(TARGET_NEXT_NODE);
+                    if (node == null) {
+                        GWTJahiaNode parent = e.getStatus().getData(TARGET_PARENT);
+                        JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), parent.getPath(), callback);
+                    } else {
+                        JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), node.getPath(), callback);
+                    }
+                }
+//
+//                if ("append".equals(e.getStatus().getData("type"))) {
+//                } else if ("insert".equals(e.getStatus().getData("type"))) {
+//                    Window.alert("insert");
+//                }
+//                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
             }
         }
         super.dragDrop(e);

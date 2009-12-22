@@ -384,6 +384,7 @@
 //---------------------------------------------------------
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
+ orderable
  + * (nt:base) version
 
 [jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata

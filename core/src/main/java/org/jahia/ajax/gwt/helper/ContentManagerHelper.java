@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import com.ibm.icu.text.Normalizer;
 import org.apache.commons.lang.CharUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -54,7 +55,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 
-import java.text.Normalizer;
 import java.util.*;
 
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -453,7 +453,7 @@ public class ContentManagerHelper {
                 final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
                 if(property.getName().equals("jcr:title") && propertyValues !=null && propertyValues.size()>0) {
                     nodeName = propertyValues.get(0).getString();
-                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.Form.NFKD).toCharArray();
+                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
                     final char[] newChars = new char[chars.length];
                     int j=0;
                     for (char aChar : chars) {

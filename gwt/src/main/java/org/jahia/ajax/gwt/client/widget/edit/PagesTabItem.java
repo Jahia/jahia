@@ -8,8 +8,6 @@ import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
@@ -126,28 +124,17 @@ class PagesTabItem extends SidePanelTabItem {
 
         this.tree.setSelectionModel(new TreePanelSelectionModel<GWTJahiaNode>() {
             @Override
-            protected void onMouseDown(TreePanelEvent be) {
-                return;
-            }
-
-            @Override
             protected void onMouseClick(TreePanelEvent e) {
-                super.onMouseDown(e);
-            }
-        });
-        this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                if (!se.getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
+                super.onMouseClick(e);
+                if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
                     editLinker.getMainModule().mask("Loading","x-mask-loading");
-                    editLinker.getMainModule().setPath(se.getSelectedItem().getPath());
+                    editLinker.getMainModule().setPath(getSelectedItem().getPath());
                     editLinker.getMainModule().setTemplate(null);
                     editLinker.getMainModule().refresh();
                 }
             }
         });
-
+        this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
     }
 
     private void initDND() {

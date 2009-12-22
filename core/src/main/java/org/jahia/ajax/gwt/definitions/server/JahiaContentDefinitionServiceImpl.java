@@ -62,7 +62,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getNodeType(name, retrieveParamBean());
     }
 
-    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() {
+    public Map<GWTJahiaNodeType,Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes() {
         return contentDefinition.getNodeTypes(retrieveParamBean());
     }
 
@@ -81,7 +81,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
+    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
         return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
     }
 

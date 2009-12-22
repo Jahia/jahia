@@ -124,6 +124,7 @@
     <bean name="ContentDefinitionHelper" class="org.jahia.ajax.gwt.helper.ContentDefinitionHelper" >
         <property name="navigation" ref="NavigationHelper" />
         <property name="choiceListInitializerService" ref="choiceListInitializers"/>
+        <property name="sessionFactory" ref="jcrSessionFactory" />
     </bean>
 
     <bean name="ContentHubHelper" class="org.jahia.ajax.gwt.helper.ContentHubHelper" >

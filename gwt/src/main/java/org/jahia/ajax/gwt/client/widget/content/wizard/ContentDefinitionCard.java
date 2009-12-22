@@ -113,7 +113,7 @@ public class ContentDefinitionCard extends ContentWizardCard {
     public void createUI() {
         removeAll();
         final ListStore<GWTJahiaNodeType> store = new ListStore<GWTJahiaNodeType>();
-        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(
+        /*JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(
                 baseType, parentNode,
                 new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
@@ -128,7 +128,7 @@ public class ContentDefinitionCard extends ContentWizardCard {
                     public void onSuccess(List<GWTJahiaNodeType> result) {
                         store.add(result);
                     }
-                });
+                });*/
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("name", Messages.get(

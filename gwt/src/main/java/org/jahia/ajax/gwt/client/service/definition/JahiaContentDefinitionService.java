@@ -67,7 +67,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     public GWTJahiaNodeType getNodeType(String names);
 
-    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes();
+    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes();
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 
@@ -82,7 +82,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode);
+    Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode);
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
 

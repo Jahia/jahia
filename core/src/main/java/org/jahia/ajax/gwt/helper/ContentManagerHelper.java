@@ -406,7 +406,7 @@ public class ContentManagerHelper {
                             newChars[j++] = aChar;
                         }
                     }
-                    nodeName = new String(newChars,0,j).replaceAll(" ","_").toLowerCase().trim();
+                    nodeName = new String(newChars,0,j).trim().replaceAll(" ","-").toLowerCase();
                     if(nodeName.length()>32) {
                         nodeName = nodeName.substring(0,32);
                     }

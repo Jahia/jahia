@@ -217,6 +217,17 @@ public class EditContentEngine extends Window {
 
         buttonBar.add(ok);
 
+        if (!existingNode) {
+        Button okAndNew = new Button(Messages.getResource("fm_saveAndNew"));
+        okAndNew.setHeight(BUTTON_HEIGHT);
+        okAndNew.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+
+            okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
+            buttonBar.add(okAndNew);
+        }
+
+
+
         /* ToDo: activate restore button in the engine
 
         restore = new Button(Messages.getResource("fm_restore"));
@@ -783,6 +794,72 @@ public class EditContentEngine extends Window {
                         if(node.getNodeTypes().contains("jnt:schmurtz")) {
                             linker.refreshLeftPanel();
                         }
+                    }
+                });
+            }
+        }
+    }
+
+    private class CreateAndAddNewSelectionListener extends SelectionListener<ButtonEvent> {
+        public void componentSelected(ButtonEvent event) {
+            String nodeName = targetName;
+            if (isNodeNameFieldDisplayed) {
+                nodeName = ((TextField<?>) ((FormPanel) contentTab.getItem(0)).getItem(0)).getRawValue();
+                if (nodeName.equals("Automatically Created (you can type your name here if you want)")) {
+                    nodeName = targetName;
+                }
+            }
+            List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+            List<String> mixin = new ArrayList<String>();
+            if (propertiesEditor != null) {
+                props.addAll(propertiesEditor.getProperties());
+                mixin.addAll(propertiesEditor.getAddedTypes());
+            }
+            if (layoutEditor != null) {
+                props.addAll(layoutEditor.getProperties());
+                mixin.addAll(layoutEditor.getAddedTypes());
+                mixin.addAll(layoutEditor.getTemplateTypes());
+            }
+            if (metadataEditor != null) {
+                props.addAll(metadataEditor.getProperties());
+                mixin.addAll(metadataEditor.getAddedTypes());
+            }
+            if (optionsEditor != null) {
+                props.addAll(optionsEditor.getProperties());
+                mixin.addAll(optionsEditor.getAddedTypes());
+            }
+
+            if (createInParentAndMoveBefore) {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<Object>() {
+                    public void onFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                    }
+
+                    public void onSuccess(Object o) {
+                        Info.display("", "Node created");
+                        linker.refreshMainComponent();
+                        EditContentEngine.this.removeAll(true);
+                        EditContentEngine.this.initTabs();
+                        EditContentEngine.this.layout(true);
+                    }
+                });
+            } else {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<GWTJahiaNode>() {
+                    public void onFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                    }
+
+                    public void onSuccess(GWTJahiaNode node) {
+                        Info.display("", "Node created");
+                        linker.refreshMainComponent();
+                        if(node.getNodeTypes().contains("jnt:schmurtz")) {
+                            linker.refreshLeftPanel();
+                        }
+                        EditContentEngine.this.removeAll(true);
+                        EditContentEngine.this.initTabs();
+                        EditContentEngine.this.layout(true);
                     }
                 });
             }

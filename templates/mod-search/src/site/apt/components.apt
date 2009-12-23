@@ -72,4 +72,4 @@ Search components
 
 [./images/jcrQueryResult.png]
 
-  Corresponding templates: <<</templates/search/jnt_jcrQuery/html/jcrQuery.hidden.load.jsp>>>, <<</templates/default/jmix_list/html/list.linkList.jsp>>>
+  Corresponding templates: <<</templates/default/jnt_query/html/query.hidden.load.jsp>>>, <<</templates/default/jmix_list/html/list.linkList.jsp>>>

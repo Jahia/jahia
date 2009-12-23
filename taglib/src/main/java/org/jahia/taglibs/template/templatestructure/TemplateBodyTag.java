@@ -418,6 +418,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_info_totalSize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.totalSize.label"));
 
         addGwtDictionaryMessage("fm_save", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.save.label"));
+        addGwtDictionaryMessage("fm_saveAndNew", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.saveAndNew.label"));
         addGwtDictionaryMessage("fm_restore", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.restore.label"));
 
         addGwtDictionaryMessage("fm_page", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.page.label"));

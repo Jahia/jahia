@@ -378,7 +378,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             ServicesRegistry.getInstance().getJahiaEventService().fireSiteAdded(new JahiaEvent(this, Jahia.getThreadParamBean() , site));
         } else {
-            return null;
+            throw new IOException("site already exists");
         }
 
 

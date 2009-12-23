@@ -582,7 +582,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (zipentry == null) break;
                 String name = zipentry.getName();
                 if (name.equals(REPOSITORY_XML)) {
-                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, site.getSiteKey());
+                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
 
                     documentViewImportHandler.setUuidMapping(uuidMapping);
                     documentViewImportHandler.setReferences(references);

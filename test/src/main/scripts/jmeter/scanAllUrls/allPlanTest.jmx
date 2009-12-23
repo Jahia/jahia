@@ -17,11 +17,6 @@
             <stringProp name="Argument.value">5000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="LOGINPATH" elementType="Argument">
-            <stringProp name="Argument.name">LOGINPATH</stringProp>
-            <stringProp name="Argument.value">${__P(loginpath,/jahia/cms/login)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="lang" elementType="Argument">
             <stringProp name="Argument.name">lang</stringProp>
             <stringProp name="Argument.value">en</stringProp>
@@ -156,7 +151,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">${LOGINPATH}</stringProp>
+            <stringProp name="HTTPSampler.path">${CONTEXT}/cms/login</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

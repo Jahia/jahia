@@ -253,7 +253,7 @@
                                               toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
                                         <sleep seconds="90"/>
                                         <echo message="Get the sitemap"/>
-                                        <get src="${jahia.test.jmeter.sitemap.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on"
+                                        <get src="${jahia.test.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on"
                                              dest="${project.build.directory}/rawpageurls.txt" ignoreerrors="true" username="${jahia.test.jmeter.username}" password="${jahia.test.jmeter.password}"/>
                                         <available file="${project.build.directory}/rawpageurls.txt"
                                                    property="sitemap.present"/>
@@ -379,7 +379,6 @@
                                 <configuration>
                                     <properties>
                                         <path>${jahia.test.jmeter.path}</path>
-                                        <loginPath>${jahia.test.jmeter.loginpath}</loginPath>
                                         <context>${jahia.test.jmeter.context}</context>
                                         <threads>${jahia.test.jmeter.threads}</threads>
                                         <loops>${jahia.test.jmeter.loops}</loops>

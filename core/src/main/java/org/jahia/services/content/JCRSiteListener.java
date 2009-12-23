@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.services.sites.JahiaSite;
@@ -74,6 +75,19 @@ public class JCRSiteListener extends JahiaEventListener {
                     return null;                    
                 }
             });
+            // Now let's delete the live workspace site.
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper sites = session.getNode("/sites");
+                    if (!sites.isCheckedOut()) {
+                        sites.checkout();
+                    }
+                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
+                    site.remove();
+                    session.save();
+                    return null;
+                }
+            }, null, Constants.LIVE_WORKSPACE);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

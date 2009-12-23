@@ -526,7 +526,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         if (siteID1 <= 0) {
                             usersFolderNode = session.getNode("/groups/" + name.trim());
                         } else {
-                            String siteName = sitesService.getSite(siteID1).getSiteKey();
+                            JahiaSite site = sitesService.getSite(siteID1);
+                            if (site == null) {
+                                // This can happen if this method is called during the creation of the site !
+                                logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
+                                return null;
+                            }
+                            String siteName = site.getSiteKey();
                             usersFolderNode = session.getNode(
                                   "/sites/" + siteName + "/groups/" + name.trim());
                         }

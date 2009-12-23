@@ -41,4 +41,4 @@
   </template:import>
 </template:module>
 
-<template:include page="modules/login/loginForm.jsp"/>
+<jsp:include page="../modules/login/loginForm.jsp"/>

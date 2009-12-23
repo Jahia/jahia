@@ -58,8 +58,6 @@ public class JahiaBean {
 
     private DateBean dateBean;
 
-    private IncludesBean includesBean;
-    
     private PageBean pageBean;
     
     private ProcessingContext processingContext;
@@ -88,17 +86,12 @@ public class JahiaBean {
         this.requestBean = requestBean;
         this.dateBean=dateBean;
         this.user = user;
-        includesBean = new IncludesBean(processingContext);
     }
     
     public DateBean getDate() {
         return dateBean;
     }
     
-    public IncludesBean getIncludes() {
-        return includesBean;
-    }
-
     public PageBean getPage() {
         return pageBean;
     }

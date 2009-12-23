@@ -126,39 +126,8 @@
         </attribute>
     </tag>
     <tag>
-        <description>Custom jsp:include implementation that resolves the specified template path considering template
-            set inheritance
-        </description>
-        <name>include</name>
-        <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>
-                The JSP page to include. The path should be relative to the template set root folder.
-                The actual resource to include will be resolved considering the template set inheritance.
-            </description>
-            <name>page</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                If set to 'false' the included JSP page will not be cached by the HTML container cache and the page skeleton cache.
-                A placeholder will be included in the page skeleton to always request the JSP page when the result HTML page content
-                is built by the SkeletonAggregatorValve.
-                This is useful, for example, when including a navigation history (breadcrumbs) into the page to be always refreshed
-                from the server.
-                The default value is 'true'.   
-            </description>
-            <name>cache</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>
-            Tag is used to add parameters to the parent tag, that impements ParamParent, e.g. 'include' or 'module' tags
+            Tag is used to add parameters to the parent tag, that implements ParamParent, e.g. 'include' or 'module' tags
         </description>
 	    <name>param</name>
 	    <tag-class>org.apache.taglibs.standard.tag.rt.core.ParamTag</tag-class>
@@ -286,14 +255,6 @@
         <name>import</name>
         <tag-class>org.jahia.taglibs.template.include.ImportTag</tag-class>
         <body-content>JSP</body-content>
-    </tag>
-    <tag>
-        <description>
-            Used to call the overriden JSP from the parent set. Does nothing, if it is not found.
-        </description>
-        <name>executeSuper</name>
-        <tag-class>org.jahia.taglibs.template.include.ExecuteSuperTag</tag-class>
-        <body-content>empty</body-content>
     </tag>
     <tag>
         <description>

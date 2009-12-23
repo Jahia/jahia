@@ -55,14 +55,14 @@
                 </span>
                 <!--stop pagepath-->                     
                 <ui:langBar display="horizontal" linkDisplay="flag" rootPage="${rootPage}"/>
-                <template:include page="common/breadcrumbs.jsp" cache="false"/>
+                <jsp:include page="../../common/breadcrumbs.jsp"/>
             </div>
         </div>
     </div>
     <div id="pagecontent">
         <div class="content2cols">
             <div id="columnA">
-                <template:include page="common/columnA.jsp"/>
+                <jsp:include page="../../common/columnA.jsp"/>
             </div>
             <div id="columnB">
                 <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}"/></h2>

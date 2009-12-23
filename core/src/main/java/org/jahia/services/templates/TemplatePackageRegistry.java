@@ -243,8 +243,6 @@ class TemplatePackageRegistry {
             rootFolder = new File(templatePackage.getFilePath());
         }
 
-        templatePackage.getLookupPath().add(templatePackage.getRootFolderPath());
-
         try {
             File classesFolder = new File(rootFolder, "WEB-INF/classes");
             if (classesFolder.exists()) {

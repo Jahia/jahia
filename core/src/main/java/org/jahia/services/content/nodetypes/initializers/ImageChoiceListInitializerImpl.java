@@ -32,15 +32,13 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.templates.TemplateUtils;
 
-import javax.jcr.Value;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,25 +58,11 @@ public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
             JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     templatePackageName);
             for (ChoiceListValue bean : values) {
-                String path = null;
-                for (Object o : pkg.getLookupPath()) {
-                    String rootFolderPath = (String) o;
-                    // look for theme png name
-                    final Value value = bean.getValue();
-                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(
-                        rootFolderPath + "/" + epd.getName() + "s/" + value + ".png"));
-                    if (f.exists()) {
-                        path = rootFolderPath + "/" + epd.getName() + "s/" + value + ".png";
-                    }
-                }
-                String contextPath = context.getContextPath();
-                if (contextPath.equals("/")) {
-                    contextPath = "";
-                }
+                String path = TemplateUtils.resolvePath(epd.getName() + "s/" + bean.getValue() + ".png", pkg);
                 if (path != null) {
-                    bean.addProperty("image", contextPath + path);
+                    bean.addProperty("image", path);
                 } else {
-                    bean.addProperty("image", contextPath + "/css/blank.gif");
+                    bean.addProperty("image", context.getContextPath() + "/css/blank.gif");
                 }
             }
             return values;

@@ -31,11 +31,9 @@
  */
 package org.jahia.services.templates;
 
-import java.net.MalformedURLException;
 import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -295,147 +293,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         }
 
         return sourcePath;
-    }
-
-    /**
-     * Returns the resource path (related to the Web context), resolved using
-     * template package inheritance or <code>null</code>, in case the
-     * specified resource can not found. The resource is first searched in the
-     * current template package folder, then (if not found) in the parent
-     * package folder and so on.
-     *
-     * @param resource the resource name or path related to the template package root
-     *                 folder
-     * @param siteId   current site ID
-     * @return the resource path (related to the Web context), resolved using
-     *         template package inheritance or <code>null</code>, in case the
-     *         specified resource can not found
-     */
-    public String resolveResourcePath(String resource, int siteId) {
-        return resolveResourcePath(resource, getTemplatePackage(siteId));
-    }
-
-    /**
-     * Returns the resource path (related to the Web context), resolved using
-     * template package inheritance or <code>null</code>, in case the
-     * specified resource can not found. The resource is first searched in the
-     * current template package folder, then (if not found) in the parent
-     * package folder and so on.
-     *
-     * @param resource the resource name or path related to the template package root
-     *                 folder
-     * @param pkg      current template package
-     * @return the resource path (related to the Web context), resolved using
-     *         template package inheritance or <code>null</code>, in case the
-     *         specified resource can not found
-     */
-    private String resolveResourcePath(String resource,
-                                       JahiaTemplatesPackage pkg) {
-        String path = null;
-        if (pkg != null) {
-            for (String rootFolderPath : pkg.getLookupPath()) {
-                try {
-                    StringBuffer buff = new StringBuffer(64);
-                    buff.append(rootFolderPath);
-                    if (!resource.startsWith("/")) {
-                        buff.append("/");
-                    }
-                    buff.append(resource);
-                    String testPath = buff.toString();
-                    if (Jahia.getStaticServletConfig().getServletContext()
-                            .getResource(testPath) != null) {
-                        path = testPath;
-                        break;
-                    }
-                } catch (MalformedURLException e) {
-                    logger.warn("Unable to resolve resource path for '"
-                            + resource + "' and template set package '" + pkg.getName()
-                            + "'", e);
-                }
-            }
-        } else {
-            try {
-                if (Jahia.getStaticServletConfig().getServletContext().getResource(resource) != null) {
-                    path = resource;
-                }
-            } catch (MalformedURLException e) {
-				logger.warn("Unable to resolve resource path for '" + resource + "'", e);
-            }
-        } 
-
-        return path;
-    }
-
-    /**
-     * Returns the resource path (related to the Web context), resolved using
-     * template package inheritance or <code>null</code>, in case the
-     * specified resource can not found. The resource is first searched in the
-     * current template package folder, then (if not found) in the parent
-     * package folder and so on.
-     *
-     * @param resource            the resource name or path related to the template package root
-     *                            folder
-     * @param templatePackageName template set name of the current site
-     * @return the resource path (related to the Web context), resolved using
-     *         template package inheritance or <code>null</code>, in case the
-     *         specified resource can not found
-     */
-    public String resolveResourcePath(String resource,
-                                      String templatePackageName) {
-        JahiaTemplatesPackage currentPkg = getTemplatePackage(templatePackageName);
-        if (currentPkg == null) {
-            currentPkg = getTemplatePackageByFileName(templatePackageName);
-        }
-        return resolveResourcePath(resource, currentPkg);
-    }
-
-    /**
-     * Returns the overridden resource path (related to the Web context),
-     * resolved using template package inheritance or <code>null</code>, in
-     * case the specified resource can not found. I.e. it returns the resource
-     * that is overridden by the specified resource in any of the parent template
-     * sets.
-     *
-     * @param jspServletPath      the resource name or path related to the template package root
-     *                            folder
-     * @param templatePackageName template set name of the current site
-     * @return the overridden resource path (related to the Web context),
-     *         resolved using template package inheritance or <code>null</code>,
-     *         in case the specified resource can not found
-     */
-    public String resolveOverriddenResourcePathByServletPath(String jspServletPath,
-                                                             String templatePackageName) {
-
-        if (null == jspServletPath || null == templatePackageName) {
-            throw new IllegalArgumentException(
-                    "Either servletPath, templatePackageName or both are null");
-        }
-
-        String path = null;
-
-        JahiaTemplatesPackage currentPkg = getTemplatePackage(templatePackageName);
-        if (currentPkg == null) {
-            currentPkg = getTemplatePackageByFileName(templatePackageName);
-        }
-        if (currentPkg != null) {
-            JahiaTemplatesPackage foundPackage = null;
-            String resource = null;
-            for (String pkgName : currentPkg.getHierarchy()) {
-                JahiaTemplatesPackage pkg = getTemplatePackage(pkgName);
-                String rootFolder = pkg.getRootFolderPath();
-                if (jspServletPath.startsWith(rootFolder)) {
-                    // found the template package
-                    foundPackage = pkg;
-                    resource = jspServletPath.substring(rootFolder.length());
-                    break;
-                }
-            }
-            if (foundPackage != null && foundPackage.getDepends() != null) {
-//                path = resolveResourcePath(resource, foundPackage.getDepends());
-            }
-        }
-
-        return path;
     }
 
     public void setTemplatePackageDeployer(TemplatePackageDeployer deployer) {

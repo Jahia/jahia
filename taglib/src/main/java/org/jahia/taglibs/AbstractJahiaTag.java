@@ -36,7 +36,6 @@ import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
-import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -183,12 +182,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
     public void popTag() {
         Stack<Tag> stack = (Stack<Tag>) pageContext.getRequest().getAttribute(PARENT_TAG_REQUEST_ATTRIBUTE);
         stack.pop();
-    }
-
-    public static String resolveIncludeFullPath(final PageContext pageContext,
-                                                final String fileName) {
-        final TemplatePathResolverBean templatePath = Utils.getJahiaBean(pageContext).getIncludes().getTemplatePath();
-        return templatePath.lookup(fileName);
     }
 
     protected String getMessage(final String key, final String defaultValue) {
@@ -365,10 +358,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
             dictionaryMap.put(aliasName, message);
             updateJahiaGwtDictionary(dictionaryMap);
         }
-    }
-
-    protected String resolveIncludeFullPath(final String fileName) {
-        return resolveIncludeFullPath(pageContext, fileName);
     }
 
     protected String extractDefaultValue(final String value) {

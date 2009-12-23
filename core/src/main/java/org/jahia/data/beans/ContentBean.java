@@ -50,8 +50,6 @@ import java.util.Map;
 
 public abstract class ContentBean extends AbstractJahiaObjectBean {
 
-    protected MetadataLookupBean metadata;
-    
     protected ProcessingContext processingContext;
     
     public abstract int getID();
@@ -78,12 +76,4 @@ public abstract class ContentBean extends AbstractJahiaObjectBean {
         return getContentObject().getObjectKey().getKey();
     }
 
-    public MetadataLookupBean getMetadata() {
-        if (metadata == null) {
-            metadata = new MetadataLookupBean(this.getContentObject(),
-                    processingContext);
-        }
-
-        return metadata;
-    }
 }

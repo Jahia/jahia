@@ -48,6 +48,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteriaFactory;
+import org.jahia.services.templates.TemplateUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -135,15 +136,10 @@ public class RssFeedViewTag extends AbstractJahiaTag {
                     .setHref(jahiaBean.getSite().getExternalUrl()
                             + "?template="
                             + URLEncoder
-                                    .encode(
-                                            jahiaBean
-                                                    .getIncludes()
-                                                    .getTemplatePath()
-                                                    .lookup(
-                                                            "/opensearch/descriptor-"
-                                                                    + (isFileSearchMode() ? "files"
-                                                                            : "pages")
-                                                                    + "-rss.jsp"),
+                                    .encode(TemplateUtils.resolvePath("/opensearch/descriptor-"
+                                            + (isFileSearchMode() ? "files"
+                                                    : "pages")
+                                            + "-rss.jsp", getJahiaBean().getSite().getTemplatePackage()),
                                             pageContext.getResponse()
                                                     .getCharacterEncoding() != null ? pageContext
                                                     .getResponse()

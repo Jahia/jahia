@@ -41,6 +41,7 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.settings.SettingsBean;
 
 import java.io.File;
 import java.util.*;
@@ -67,7 +68,7 @@ public class JahiaTemplatesPackage {
      */
     private String m_Name;
     /**
-     * Name of the parent package *
+     * Name of the dependent package *
      */
     private List<String> depends = new LinkedList<String>();
     /**
@@ -108,22 +109,9 @@ public class JahiaTemplatesPackage {
     private List<String> rulesFiles = new LinkedList<String>();
 
     /**
-     * Contains names of the template sets starting from this one, then the direct parent and so on.
-     */
-    private List<String> hierarchy = new LinkedList<String>();
-
-    /**
      * Contains names of the resource bundles for template sets starting from this one, then the direct parent and so on.
      */
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
-
-    /**
-     * Based on hierarchy path, contains root folder paths for each of the
-     * template sets in the hierarchy path.
-     */
-    private List<String> lookupPath = new LinkedList<String>();
-
-    private Map<String, String> properties = new HashMap<String, String>();
 
     /**
      * Return the template name
@@ -165,23 +153,17 @@ public class JahiaTemplatesPackage {
     public void setRootFolder(String folder) {
         if (StringUtils.isNotEmpty(folder)) {
             m_RootFolder = folder;
-            StringBuffer path = new StringBuffer(64).append(org.jahia.settings.SettingsBean.getInstance()
-                    .getTemplatesContext());
-            if (org.jahia.settings.SettingsBean.getInstance().getTemplatesContext().charAt(
-                    org.jahia.settings.SettingsBean.getInstance().getTemplatesContext().length() - 1) != '/') {
-                path.append("/");
-            }
-            path.append(folder);
-            rootFolderPath = path.toString();
+            SettingsBean conf = SettingsBean.getInstance(); 
+            rootFolderPath = conf.getTemplatesContext() + (conf.getTemplatesContext().endsWith("/") ? "" : "/") + folder;
         } else {
             m_RootFolder = "";
-            rootFolderPath = org.jahia.settings.SettingsBean.getInstance().getTemplatesContext();
+            rootFolderPath = SettingsBean.getInstance().getTemplatesContext();
         }
 
         // need to recalculate paths
         for (JahiaTemplateDef tempDef : templates.values()) {
             if (tempDef.getParent() == this) {
-                tempDef.setFilePath(new StringBuffer(64).append(
+                tempDef.setFilePath(new StringBuilder(64).append(
                         getRootFolderPath()).append('/').append(
                         tempDef.getFileName()).toString());
             }
@@ -419,47 +401,6 @@ public class JahiaTemplatesPackage {
         return getTemplateMap().get(name);
     }
 
-    /**
-     * Returns names of the template sets starting from this one, then the
-     * direct parent and so on.
-     *
-     * @return names of the template sets starting from this one, then the
-     *         direct parent and so on
-     */
-    public List<String> getHierarchy() {
-        return hierarchy;
-    }
-
-    /**
-     * Returns names of the template sets starting from highest parent
-     *
-     * @return names of the template sets starting from highest parent
-     */
-    public List<String> getInvertedHierarchy() {
-        if (hierarchy != null && hierarchy.size() > 1) {
-            final List<String> result = new ArrayList<String>(hierarchy.size());
-            for (int i = hierarchy.size() - 1; i > -1; i--) {
-                result.add(hierarchy.get(i));
-            }
-            return result;
-        } else {
-            return hierarchy;
-        }
-    }
-
-    /**
-     * Returns a list of root folders (based on hierarchy path), to lookup pages
-     * starting from the current root folder, than direct parent's root folder and
-     * so on.
-     *
-     * @return a list of root folders (based on hierarchy path), to lookup pages
-     *         starting from the current root folder, than direct parent's root
-     *         folder and so on
-     */
-    public List<String> getLookupPath() {
-        return lookupPath;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -497,8 +438,6 @@ public class JahiaTemplatesPackage {
     }
 
    public void clearHierarchy() {
-        getHierarchy().clear();
-        getLookupPath().clear();
         getResourceBundleHierarchy().clear();
     }
 

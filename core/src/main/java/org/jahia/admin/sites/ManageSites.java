@@ -897,7 +897,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
         TreeMap<String, JahiaTemplatesPackage> orderedTemplateSets = new TreeMap<String, JahiaTemplatesPackage>();
         for (JahiaTemplatesPackage tmp : templateSets) {
-            final String key = tmp.getInvertedHierarchy().toString();
             orderedTemplateSets.put(tmp.getName(), tmp);
         }
 

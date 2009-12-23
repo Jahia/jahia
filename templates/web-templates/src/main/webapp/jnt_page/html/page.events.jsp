@@ -37,9 +37,9 @@
 
 <%--Define special variable for header (particular script/css)--%>
 <c:set var="templateHeader" scope="request">
-    <script type="text/javascript" src='<utility:resolvePath value='javascript/jQuery.js'/>'></script>
-    <script type="text/javascript" src='<utility:resolvePath value='javascript/jquery-ui-1.6rc6.js'/>'></script>
-    <script type="text/javascript" src='<utility:resolvePath value='javascript/i18n/ui.datepicker-${requestScope.currentRequest.locale}.js'/>'></script>
+    <script type="text/javascript" src='${url.currentModule}/javascript/jQuery.js'></script>
+    <script type="text/javascript" src='${url.currentModule}/javascript/jquery-ui-1.6rc6.js'></script>
+    <script type="text/javascript" src='${url.currentModule}/javascript/i18n/ui.datepicker-${requestScope.currentRequest.locale}.js'></script>
     <script type="text/javascript">
         jQuery.noConflict();
     </script>

@@ -40,7 +40,6 @@
 <ui:loginRememberMe/>
 <ui:loginUsername/>
 <ui:loginRedirectChoice/>
-<utility:resolvePath value=""/>
 <utility:applicationResources/>
 <ui:folderSelector fieldId=""/>
 <ui:categorySelector fieldId=""/>

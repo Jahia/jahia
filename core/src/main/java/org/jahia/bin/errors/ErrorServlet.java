@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.login.Login_Engine;
 import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -152,12 +153,14 @@ public class ErrorServlet extends HttpServlet {
                     // try template set error page considering inheritance
                     JahiaTemplateManagerService templateService = ServicesRegistry
                             .getInstance().getJahiaTemplateManagerService();
-                    path = templateService.resolveResourcePath("/errors/"
-                            + page, site.getTemplatePackageName());
+                    JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site.getTemplatePackageName());
+                    pathToCheck = pkg.getRootFolderPath() + "errors/" + page;
+                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                            : null;
                     if (null == path) {
-                        path = templateService.resolveResourcePath(
-                                "/errors/error.jsp", site
-                                        .getTemplatePackageName());
+                        pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
+                        path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                                : null;
                     }
                 }
             }

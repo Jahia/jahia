@@ -35,6 +35,8 @@ public class URLGenerator {
     private Map<String, String> languages;
 
     private Map<String, String> templates;
+    
+    private String templatesPath;
 
     public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
@@ -48,16 +50,18 @@ public class URLGenerator {
      */
     protected void initURL() {
         if (context.isEditMode()) {
-            base = context.getRequest().getContextPath() + Edit.getEditServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+            base = getContext() + Edit.getEditServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         } else {
-            base = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+            base = getContext() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         }
 
         final String resourcePath = context.getMainResource().getNode().getPath()  + ".html";
 
-        live = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale() + resourcePath;
-        edit = context.getRequest().getContextPath() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
-        preview = context.getRequest().getContextPath() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        live = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        edit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        
+        templatesPath = getContext() + "/templates";
     }
 
     public String getContext() {
@@ -65,7 +69,7 @@ public class URLGenerator {
     }
 
     public String getFiles() {
-        return context.getRequest().getContextPath() + "/files";
+        return getContext() + "/files";
     }
 
     public String getBase() {
@@ -94,7 +98,7 @@ public class URLGenerator {
     }
 
     public String getCurrentModule() {
-        return context.getRequest().getContextPath() + "/templates/" + ((Script) context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
+        return getTemplatesPath() + "/" + ((Script) context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
     }
 
     public String getCurrent() {
@@ -116,7 +120,7 @@ public class URLGenerator {
                     } else {
                         servletPath = Render.getRenderServletPath();
                     }
-                    return context.getRequest().getContextPath() + servletPath + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
+                    return getContext() + servletPath + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
                 }
             });
         }
@@ -134,6 +138,14 @@ public class URLGenerator {
             });
         }
         return templates;
+    }
+
+    /**
+     * Returns the path to the templates folder.
+     * @return the path to the templates folder
+     */
+    public String getTemplatesPath() {
+        return templatesPath;
     }
 
     /**

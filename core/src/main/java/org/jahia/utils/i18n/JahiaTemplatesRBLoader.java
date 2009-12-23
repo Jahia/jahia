@@ -139,7 +139,8 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             } else {
                 String fileName = NAME_PATTERN.matcher(name).replaceAll(File.separator);
                 if (aPackage != null) {
-                    String path = templateManagerService.resolveResourcePath(fileName, aPackage.getName());
+                    String path = aPackage.getRootFolderPath() + fileName;
+                    path = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path) != null ? path : null; 
                     if (path != null) {
                         stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
                     }

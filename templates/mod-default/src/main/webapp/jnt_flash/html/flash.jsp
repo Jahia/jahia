@@ -25,7 +25,7 @@
             <div id="flashcontent"><!--START FLASH -->
                 <strong>You need to upgrade your Flash Player</strong><br />
                 <br />
-                <a href="http://www.adobe.com/go/getflashplayer"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/160x41_Get_Flash_Player.jpg'/>" alt="get flash player" /></a>
+                <a href="http://www.adobe.com/go/getflashplayer"><img src="${url.currentModule}/theme/${requestScope.currentTheme}/img/160x41_Get_Flash_Player.jpg" alt="get flash player" /></a>
                 </div></div>
         <script type="text/javascript">
             var so = new SWFObject("${flashSource.node.path}", "${nameFlash.string}", "${widthFlash.long}", "${heightFlash.long}", "${flashPlayer.string}", "${bgcolorFlash.string}");

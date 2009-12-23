@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -44,6 +45,7 @@ class BrowseTabItem extends SidePanelTabItem {
         treeContainer = new LayoutContainer();
         treeContainer.setBorders(true);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
+        treeContainer.setLayout(new FitLayout());
         // data proxy
         RpcProxy<List<GWTJahiaNode>> treeProxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -79,7 +81,7 @@ class BrowseTabItem extends SidePanelTabItem {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.getTreeView().setForceFit(true);
-        tree.setAutoHeight(true);
+        tree.setHeight("100%");
         tree.setIconProvider(ContentModelIconProvider.getInstance());
 
         treeContainer.add(tree);

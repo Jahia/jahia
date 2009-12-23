@@ -1,6 +1,6 @@
 Crazy Jane - Jahia Templates - Schmurtz
 
-* What is a Schmurtz ?
+* What is a Schmurtz?
 
   A Schmurtz is a piece of reusable content, by that we means that if you have a section of your site that you want to generalize for further usage.
   You can click on the top level page of the section you want to backup, then click on the "Save As Schmurtz" button in the "Edit" menu.
@@ -8,23 +8,23 @@ Crazy Jane - Jahia Templates - Schmurtz
 
 [./images/schmurtz.png]  
 
-* Can I modify locally the content from an existing Schmurtz ?
+* Can I modify locally the content from an existing Schmurtz?
 
   Yes as soon as you have created a content from an already created Schmurtz, the local copy is yours and you can modify it in the way you want.
 
-* Can I modify a schmurtz
+* Can I modify a schmurtz?
 
   Yes, it is possible, but you must go through the Content Manager to access the schmurtz that were saved in a specific folder tree
 
-* If I change a schmurtz, does all the content created using that schmurtz will be also updated
+* If I change a schmurtz, does all the content created using that schmurtz will be also updated?
 
-No, the schmurtz act as a "master", but each copy is independant and therefore, modifications to the original schmurtz is not propagated
+  No, the schmurtz act as a "master", but each copy is independent and therefore, modifications to the original schmurtz is not propagated
 
-* Can I bundle already configured Schmurtz with my modules ?
+* Can I bundle already configured Schmurtz with my modules?
 
   Yes
 
-* How ?
+* How?
 
   A file import.xml can be created in the root of the module. This file will be automatically imported and can
   contain schmurtz documents. In the JCR, schmurtzes are organized in subfolder of /schmurtz, named by node type -

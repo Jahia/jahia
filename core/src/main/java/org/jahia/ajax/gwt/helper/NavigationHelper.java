@@ -49,6 +49,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRVersionHistory;
@@ -217,31 +218,31 @@ public class NavigationHelper {
             }
         }
 
-        try {
+//        try {
 //            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-                Resource r = new Resource(node, "html", null, null);
-                RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
-                renderContext.setSite(context.getSite());
-                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/sites/" + context.getSite().getSiteKey()));
-                renderContext.setIncludeSubModules(false);
-            renderContext.setMainResource(r);    
-                renderService.render(r, renderContext);
-                List<String> l = r.getMissingResources();
-                if (l != null) {
-                    for (String s : l) {
-                        if (!node.hasNode(s)) {
-                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, null, node.isWriteable(), false, false, false, null, false);
-                            o.setExt("icon-placeholder");
-                            result.add(o);
-                        }
-                    }
-                }
+//                Resource r = new Resource(node, "html", null, null);
+//                RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
+//                renderContext.setSite(context.getSite());
+//                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/sites/" + context.getSite().getSiteKey()));
+//                renderContext.setIncludeSubModules(false);
+//            renderContext.setMainResource(r);
+//                renderService.render(r, renderContext);
+//                List<String> l = r.getMissingResources();
+//                if (l != null) {
+//                    for (String s : l) {
+//                        if (!node.hasNode(s)) {
+//                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, null, node.isWriteable(), false, false, false, null, false);
+//                            o.setExt("icon-placeholder");
+//                            result.add(o);
+//                        }
+//                    }
+//                }
 //            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RenderException e) {
-            logger.error(e.getMessage(), e);
-        }
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        } catch (RenderException e) {
+//            logger.error(e.getMessage(), e);
+//        }
 
         // ToDo : find a better way to implement this. Avoid multiple ajax request
         if (logger.isDebugEnabled()) {
@@ -697,6 +698,24 @@ public class NavigationHelper {
         n.setCreatedBy(f.getCreationUser());
         n.setLastPublished(f.getLastPublishedAsDate());
         n.setLastPublishedBy(f.getPublicationUser());
+
+
+        try {
+            if (f.hasProperty("j:tags")) {
+                StringBuilder b = new StringBuilder();
+                Value[] values = f.getProperty("j:tags").getValues();
+                for (int j = 0; j < values.length; j++) {
+                    JCRValueWrapper value = (JCRValueWrapper) values[j];
+                    b.append(", ");
+                    b.append(value.getNode().getName());
+                }
+                if (b.length()>0) {
+                    n.setTags(b.substring(2));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting tags", e);
+        }
 
         setIcon(f, n);
 

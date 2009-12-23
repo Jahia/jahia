@@ -858,7 +858,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             PropertyIterator pi = objectNode.getProperties();
             while (pi.hasNext()) {
                 Property property = (Property) pi.next();
-                if (!property.getDefinition().isProtected()) {
+                if (!property.getDefinition().isProtected() && !property.getName().equals("jcr:language")) {
                     if (property.isMultiple()) {
                         t.setProperty(property.getName(), property.getValues());
                     } else {

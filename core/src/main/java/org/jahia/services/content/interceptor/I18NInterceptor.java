@@ -18,7 +18,7 @@ import javax.jcr.version.VersionException;
  */
 public class I18NInterceptor implements PropertyInterceptor {
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
-        return !definition.isInternationalized() && node.hasNode("j:translation");
+        return !definition.isInternationalized() && node.hasNode("j:translation") && !"jcr:language".equals(definition.getName());
     }
 
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

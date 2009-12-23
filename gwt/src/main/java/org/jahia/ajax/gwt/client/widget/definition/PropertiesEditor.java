@@ -136,9 +136,9 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (viewInheritedItems) {
-                addItems(nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
+                addItems(form, nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
             }
-            addItems(nodeType, nodeType.getItems(), false, fieldSetGrouping);
+            addItems(form, nodeType, nodeType.getItems(), false, fieldSetGrouping);
         }
         if (mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
@@ -147,9 +147,9 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 if (viewInheritedItems) {
-                    addItems(mix, mix.getInheritedItems(), true, fieldSetGrouping);
+                    addItems(form, mix, mix.getInheritedItems(), true, fieldSetGrouping);
                 }
-                addItems(mix, mix.getItems(), true, fieldSetGrouping);
+                addItems(form, mix, mix.getItems(), true, fieldSetGrouping);
             }
         }
         if (templateField != null && templateField.getValue() != null) {
@@ -159,7 +159,7 @@ public class PropertiesEditor extends FormPanel {
 
     }
 
-    private void addItems(GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
+    private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
 
         for (final GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
@@ -233,6 +233,7 @@ public class PropertiesEditor extends FormPanel {
                     setBodyBorder(false);
                     fieldSet.add(form);
                     add(fieldSet);
+                    this.form = form;
                 }
                 if (isMultipleEdit && !definition.isProtected()) {
                     field.setEnabled(false);
@@ -266,7 +267,7 @@ public class PropertiesEditor extends FormPanel {
             for (GWTJahiaNodeType mix : mixin) {
                 if (mix.getName().equals(addMixin)) {
                     templateTypes.add(mix.getName());
-                    addItems(mix, mix.getItems(), false, false);
+                    addItems(form, mix, mix.getItems(), false, false);
                 }
             }
         }

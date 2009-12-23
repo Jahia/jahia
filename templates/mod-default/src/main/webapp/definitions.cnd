@@ -7,16 +7,21 @@
 
 [jmix:sendAsNewsletter] mixin
 
-[jmix:filteredList] > jmix:listMixin mixin
- - filter (string, choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
- 
+[jmix:filter] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
+ - firstField (string, choicelist[sortableFieldnames])
+ - secondField (string, choicelist[sortableFieldnames])
+ - thirdField (string, choicelist[sortableFieldnames])
+
+[jmix:pager] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
+ - pageSize (long)
+
 [jmix:orderedList] > jmix:layout, jmix:listMixin mixin
  - firstField (string, choicelist[sortableFieldnames])
- - firstDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc' 
+ - firstDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames])
  - secondDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
  - thirdField (string, choicelist[sortableFieldnames])
- - thirdDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'  
+ - thirdDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
 
 [jnt:fileList] > jnt:content, jmix:structuredContent
  - folder (weakreference, file[folder])

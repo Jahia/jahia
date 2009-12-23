@@ -1,4 +1,3 @@
-<%@ page import="java.util.Collection" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -6,46 +5,59 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<c:remove var="currentList" scope="request"/>
-<template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
-    <template:param name="forcedSkin" value="none" />
-</template:module>
-
-<c:if test="${empty editable}">
-    <c:set var="editable" value="false"/>
-</c:if>
-
 <div id="${currentNode.UUID}">
 
-    <c:set var="step" value="2"/>
+    <c:remove var="currentList" scope="request"/>
+    <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
+        <template:param name="forcedSkin" value="none"/>
+    </template:module>
 
-    <template:addResources type="javascript" resources="ajaxreplace.js" />
-
-    <c:set var="begin" value="${param.begin}"/>
-<c:set var="end" value="${param.end}"/>
-
-    <c:if test="${empty begin}">
-        <c:set var="begin" value="0"/>
-    </c:if>
-    <c:if test="${empty end}">
-        <c:set var="end" value="${step - 1}"/>
+    <c:if test="${empty editable}">
+        <c:set var="editable" value="false"/>
     </c:if>
 
-    <c:set var="nbPages" value="${fn:length(currentList) / 2}" />
-    <c:forEach begin="0" end="${nbPages}" var="i">
-        <a href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ i * 2 }&end=${ (i + 1)*2-1}')"> ${ i + 1}</a>&nbsp;
+    <template:addResources type="javascript" resources="ajaxreplace.js"/>
+    <template:initPager pageSize="${currentNode.properties['pageSize'].long}" totalSize="${fn:length(currentList)}"/>
+
+    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+        <p>
+            <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}">
+                <c:if test="${not empty forcedSkin}">
+                    <template:param name="forcedSkin" value="${forcedSkin}"/>
+                </c:if>
+                <c:if test="${not empty renderOptions}">
+                    <template:param name="renderOptions" value="${renderOptions}"/>
+                </c:if>
+            </template:module>
+        </p>
     </c:forEach>
 
-<c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-    <p>
-        <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
-            <c:if test="${not empty forcedSkin}">
-                <template:param name="forcedSkin" value="${forcedSkin}"/>
+    <div class="pagination"><!--start pagination-->
+
+        <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${tasks.nodes.size} results</span>
+        </div>
+        <div class="paginationNavigation">
+            <c:if test="${currentPage>1}">
+                <a class="previousLink"
+                   href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')">Previous</a>
             </c:if>
-            <c:if test="${not empty renderOptions}">
-                <template:param name="renderOptions" value="${renderOptions}"/>
+            <c:forEach begin="1" end="${nbPages}" var="i">
+                <c:if test="${i != currentPage}">
+                    <span><a class="paginationPageUrl"
+                             href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ (i-1) * pageSize }&end=${ i*pageSize-1}')"> ${ i }</a></span>
+                </c:if>
+                <c:if test="${i == currentPage}">
+                    <span class="currentPage">${ i }</span>
+                </c:if>
+            </c:forEach>
+
+            <c:if test="${currentPage<nbPages}">
+                <a class="nextLink"
+                   href="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')">Next</a>
             </c:if>
-        </template:module>
-    </p>
-</c:forEach>
+        </div>
+
+        <div class="clear"></div>
+    </div>
+    <!--stop pagination-->
 </div>

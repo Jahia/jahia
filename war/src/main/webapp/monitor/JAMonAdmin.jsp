@@ -38,7 +38,7 @@
 
 // Set formatting rules per the requests Locale (as opposed to the servers locale).
 // This will format data per the users preference (note this sets it for the given thread/servlet)
-LocaleContext.setLocale(request.getUILocale());
+LocaleContext.setLocale(request.getLocale());
 
 // Assign request parameters to local variables.
 String action    = getValue(request.getParameter("action"),"Refresh");

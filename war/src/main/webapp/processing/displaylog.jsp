@@ -84,7 +84,7 @@
 <%
     JahiaUser theUser = (JahiaUser) session.getAttribute(ParamBean.SESSION_USER);
     Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
-    if (locale == null) locale = request.getUILocale();//fail-over locale
+    if (locale == null) locale = request.getLocale();//fail-over locale
     boolean dispOK = true;//error flag
     String errorMessage = "initialization error!";
     if (theUser == null || theUser.getUsername().equals("guest")) {

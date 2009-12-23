@@ -114,6 +114,7 @@ public class EditContentEngine extends Window {
     private ClassificationEditor classificationEditor;
     public static final int BUTTON_HEIGHT = 24;
     private boolean isNodeNameFieldDisplayed = false;
+    private String nodeName;
 
     /**
      * Initializes an instance of this class.
@@ -127,7 +128,7 @@ public class EditContentEngine extends Window {
         if (node.getNodeTypes().contains("jnt:nodeReference")) {
             isReference = true;
         }
-
+        nodeName = node.getName();
         loadNode();
         initWindowProperties();
         initTabs();
@@ -355,11 +356,11 @@ public class EditContentEngine extends Window {
 
                 propertiesEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
                 propertiesEditor.setHeight(504);
-                /*if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     FormPanel formPanel = getNamePanel();
                     contentTab.add(formPanel);
                     isNodeNameFieldDisplayed = true;
-                }*/
+                }
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             } else if (isReference && referencedNode != null) {
@@ -367,11 +368,11 @@ public class EditContentEngine extends Window {
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
                 propertiesEditor.setHeight(504);
 
-                /*if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     FormPanel formPanel = getNamePanel();
                     contentTab.add(formPanel);
                     isNodeNameFieldDisplayed = true;
-                }*/
+                }
 
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
@@ -605,7 +606,7 @@ public class EditContentEngine extends Window {
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         if (existingNode) {
-            setHeading("Edit");
+            setHeading("Edit "+nodeName);
             //setHeading("Edit " + contentPath);
         } else {
             setHeading("Create " + type.getName());

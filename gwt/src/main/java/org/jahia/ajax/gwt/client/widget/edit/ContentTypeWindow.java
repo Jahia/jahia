@@ -88,7 +88,7 @@ public class ContentTypeWindow extends Window {
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         contentTypeTree = new ContentTypeTree(linker, nodeType, baseType, parentNode,
-                                                                    displaySchmurtz,true,695,500,25, true);
+                                                                    displaySchmurtz,true,695,500,25, true,this);
         add(contentTypeTree);
         contentTypeTree.layout(true);
         layout();

@@ -38,10 +38,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -89,11 +86,12 @@ public class ContentTypeTree extends LayoutContainer {
     private final int height;
     private final int rowHeight;
     private final boolean popup;
+    private final Window window;
     private TreeStore<ContentTypeModelData> store;
 
     public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
                            boolean displaySchmurtz, boolean displayPreview, int width, int height, int rowHeight,
-                           boolean isPopup) {
+                           boolean isPopup, Window window) {
         this.linker = linker;
         this.nodeType = nodeType;
         this.baseType = baseType;
@@ -104,7 +102,13 @@ public class ContentTypeTree extends LayoutContainer {
         this.height = height;
         this.rowHeight = rowHeight;
         popup = isPopup;
+        this.window = window;
         createUI();
+    }
+
+    public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
+                           boolean displaySchmurtz, boolean displayPreview, int width, int height, int rowHeight) {
+        this(linker, nodeType, baseType, parentNode, displaySchmurtz, displayPreview, width, height, rowHeight,false,null);
     }
 
 
@@ -186,7 +190,6 @@ public class ContentTypeTree extends LayoutContainer {
         treeGrid.getTreeView().setForceFit(true);
         treeGrid.getStyle().setNodeCloseIcon(null);
         treeGrid.getStyle().setNodeOpenIcon(null);
-        final LayoutContainer window = this;
         if (popup) {
             treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
             treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {

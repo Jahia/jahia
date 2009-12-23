@@ -238,11 +238,11 @@ public class EditModeDNDListener extends DNDListener {
                     callback = ((PagesTabItem.PageTreePanelDropTarget)e.getDropTarget()).getCallback();
                 }
 
-                if (e.getStatus().getData("type").equals(-1)) {
+                if (e.getStatus().<Object>getData("type").equals(-1)) {
                     JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), targetPath, callback);
-                } else if (e.getStatus().getData("type").equals(0)) {
+                } else if (e.getStatus().<Object>getData("type").equals(0)) {
                     JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), targetPath, callback);
-                } else if (e.getStatus().getData("type").equals(1)) {
+                } else if (e.getStatus().<Object>getData("type").equals(1)) {
                     GWTJahiaNode node = e.getStatus().getData(TARGET_NEXT_NODE);
                     if (node == null) {
                         GWTJahiaNode parent = e.getStatus().getData(TARGET_PARENT);

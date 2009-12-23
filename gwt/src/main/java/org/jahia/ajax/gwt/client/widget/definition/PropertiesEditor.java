@@ -35,7 +35,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -68,6 +67,8 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> removedTypes = new HashSet<String>();
     private ComboBox<GWTJahiaValueDisplayBean> templateField;
     private Set<String> templateTypes = new HashSet<String>();
+    private FieldSet fieldSet = null;
+    private FormPanel form = this;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
@@ -135,9 +136,9 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (viewInheritedItems) {
-                addItems(this,nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
+                addItems(nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
             }
-            addItems(this,nodeType, nodeType.getItems(), false, fieldSetGrouping);
+            addItems(nodeType, nodeType.getItems(), false, fieldSetGrouping);
         }
         if (mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
@@ -145,10 +146,10 @@ public class PropertiesEditor extends FormPanel {
                     continue;
                 }
 
-                    if (viewInheritedItems) {
-                        addItems(this,mix, mix.getInheritedItems(), true, fieldSetGrouping);
-                    }
-                    addItems(this,mix, mix.getItems(), true, fieldSetGrouping);
+                if (viewInheritedItems) {
+                    addItems(mix, mix.getInheritedItems(), true, fieldSetGrouping);
+                }
+                addItems(mix, mix.getItems(), true, fieldSetGrouping);
             }
         }
         if (templateField != null && templateField.getValue() != null) {
@@ -158,9 +159,7 @@ public class PropertiesEditor extends FormPanel {
 
     }
 
-    private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
-
-        FieldSet fieldSet = null;
+    private void addItems(GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
 
         for (final GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
@@ -198,9 +197,9 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (field != null) {
-                if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeType()))) {
+                if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     fieldSet = new FieldSet();
-                    fieldSet.setId(definition.getDeclaringNodeType());
+                    fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.add(field);
                     fieldSet.setCollapsible(true);
                     if (optional) {
@@ -267,7 +266,7 @@ public class PropertiesEditor extends FormPanel {
             for (GWTJahiaNodeType mix : mixin) {
                 if (mix.getName().equals(addMixin)) {
                     templateTypes.add(mix.getName());
-                    addItems(form, mix, mix.getItems(), false, false);
+                    addItems(mix, mix.getItems(), false, false);
                 }
             }
         }

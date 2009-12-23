@@ -86,19 +86,16 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
 
         SortedSet<Template> templates;
-        if ("j:template".equals(declaringPropertyDefinition.getName())) {
-            templates = new TreeSet<Template>();
-            try {
+
+        try {
+            if ("j:template".equals(declaringPropertyDefinition.getName())) {
+                templates = new TreeSet<Template>();
                 for (String s : nodeTypeList) {
                     templates.addAll(RenderService.getInstance().getTemplatesSet(
                             NodeTypeRegistry.getInstance().getNodeType(s)));
                 }
-            } catch (RepositoryException e) {
-
-            }
-        } else if ("j:referenceTemplate".equals(declaringPropertyDefinition.getName())) {
-            templates = new TreeSet<Template>();
-            try {
+            } else if ("j:referenceTemplate".equals(declaringPropertyDefinition.getName())) {
+                templates = new TreeSet<Template>();
                 if (node.hasProperty("j:node")) {
                     JCRNodeWrapper ref = (JCRNodeWrapper) node.getProperty("j:node").getNode();
 
@@ -107,42 +104,35 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                                 NodeTypeRegistry.getInstance().getNodeType(s)));
                     }
                 }
-            } catch (RepositoryException e) {
-
-            }
-        } else if ("jnt:contentList".equals(realNodeType)) {
-            if (node != null) {
+            } else if (node != null && node.isNodeType("jmix:list")) {
                 templates = new TreeSet<Template>();
-                try {
-                    NodeIterator children = node.getNodes();
-                    while (children.hasNext()) {
-                        JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
-                        final List<String> nodeTypesList = child.getNodeTypes();
-                        for (String s : nodeTypesList) {
-                            final SortedSet<Template> templateSortedSet = RenderService.getInstance().getTemplatesSet(
-                                    NodeTypeRegistry.getInstance().getNodeType(s));
-                            if (templates.isEmpty()) {
-                                templates.addAll(templateSortedSet);
-                            } else {
-                                SortedSet<Template> commonTemplateSortedSet = new TreeSet<Template>();
-                                for (Template template : templateSortedSet) {
-                                    for (Template template1 : templates) {
-                                        if (template1.getKey().equals(template.getKey())) {
-                                            commonTemplateSortedSet.add(template);
-                                        }
+                NodeIterator children = node.getNodes();
+                while (children.hasNext()) {
+                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+                    final List<String> nodeTypesList = child.getNodeTypes();
+                    for (String s : nodeTypesList) {
+                        final SortedSet<Template> templateSortedSet = RenderService.getInstance().getTemplatesSet(
+                                NodeTypeRegistry.getInstance().getNodeType(s));
+                        if (templates.isEmpty()) {
+                            templates.addAll(templateSortedSet);
+                        } else {
+                            SortedSet<Template> commonTemplateSortedSet = new TreeSet<Template>();
+                            for (Template template : templateSortedSet) {
+                                for (Template template1 : templates) {
+                                    if (template1.getKey().equals(template.getKey())) {
+                                        commonTemplateSortedSet.add(template);
                                     }
                                 }
-                                templates = commonTemplateSortedSet;
                             }
+                            templates = commonTemplateSortedSet;
                         }
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
                 }
             } else {
                 templates = RenderService.getInstance().getAllTemplatesSet();
             }
-        } else {
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             templates = RenderService.getInstance().getAllTemplatesSet();
         }
 
@@ -153,7 +143,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     && !template.getKey().startsWith("debug.")
                     && !template.getKey().contains("hidden.")
                     && (!"siteLayout".equals(template.getModule().getModuleType()) || template.getModule().getName().equals(jParams.getSite().getTemplatePackageName()))
-            ) {
+                    ) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 Properties properties = template.getProperties();
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {

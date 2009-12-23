@@ -9,8 +9,3 @@
 [jnt:advancedSearchForm] > jnt:content, mix:title, jmix:searchFormContent
 
 [jnt:searchResults] > jnt:content, mix:title, jmix:searchFormContent
-
-[jnt:jcrQuery] > jnt:content, mix:title, jmix:list, jmix:queryContent
- - statement (string) indexed=no mandatory
- - language (string, choicelist) = 'JCR-SQL2' indexed=no < 'JCR-SQL2', 'XPath'
- - maxItems (long) = 10 indexed=no

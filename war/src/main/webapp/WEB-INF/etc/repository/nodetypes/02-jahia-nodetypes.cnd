@@ -120,8 +120,9 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:list
-
+[jnt:query] > nt:query, mix:title, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:list, jmix:queryContent
+ - maxItems (long) = 10 indexed=no
+ 
 //---------------------------------------------------------
 // Files
 //---------------------------------------------------------

@@ -195,7 +195,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public boolean isContentItem() {
         return declaringNodeType.isNodeType("jmix:content") || declaringNodeType.isNodeType("jnt:container")
-                 || declaringNodeType.isNodeType("jnt:content")|| name.toString().equals("jcr:title") || name.toString().equals("jcr:language");
+                 || declaringNodeType.isNodeType("jnt:content")|| name.toString().equals("jcr:title") || name.toString().equals("jcr:language") || name.toString().equals("jcr:statement");
     }
 
     public boolean isPublicationItem() {

@@ -34,6 +34,7 @@ package org.jahia.services.content.decorator;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.NodeIteratorImpl;
 
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -57,29 +58,16 @@ public class JCRQueryNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public List<JCRNodeWrapper> getChildren() {
-        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
-
+    public NodeIterator getNodes() {
         try {
             Query q = getSession().getWorkspace().getQueryManager().getQuery(getRealNode());
-//                Query q = provider.getService().getQueryManager(user).getQuery(this);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
-            while (ni.hasNext()) {
-                Node node = ni.nextNode();
-                if (node instanceof JCRNodeWrapper) {
-                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node;
-                    list.add(nodeWrapper);
-                } else {
-                    JCRNodeWrapper child = getProvider().getNodeWrapper(node, (JCRSessionWrapper) getSession());
-                    list.add(child);
-                }
-            }
-            return list;
+            return ni;
         } catch (RepositoryException e) {
             logger.debug("Cannot execute query",e);
         }
-        return list;
+        return new NodeIteratorImpl( new ArrayList<JCRNodeWrapper>().iterator(),0);
     }
 
 

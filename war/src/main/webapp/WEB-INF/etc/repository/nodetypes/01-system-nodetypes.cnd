@@ -462,7 +462,7 @@
  */
 [nt:query]
   - jcr:statement (STRING)
-  - jcr:language (STRING)
+  - jcr:language (STRING, choicelist) = 'JCR-SQL2' indexed=no < 'JCR-SQL2', 'XPath'
 
 //------------------------------------------------------------------------------
 // L I F E C Y C L E   M A N A G E M E N T

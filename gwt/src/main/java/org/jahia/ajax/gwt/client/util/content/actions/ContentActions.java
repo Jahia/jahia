@@ -970,7 +970,7 @@ public class ContentActions {
                                     } else {
                                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
                                         props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target)));
-                                        new EditContentEngine(linker, result.get(0), nodeType, props, null, false).show();
+                                        new EditContentEngine(linker, result.get(0), nodeType, props, null, false).show();                                        
                                     }
                                 }
                             });

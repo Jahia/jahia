@@ -44,4 +44,8 @@ class CreateContentTabItem extends SidePanelTabItem {
         contentTypeTree.setLinker(linker);
         gridDragSource.addDNDListener(linker.getDndListener());
     }
+
+    public void refresh() {
+        contentTypeTree.refresh();
+    }
 }

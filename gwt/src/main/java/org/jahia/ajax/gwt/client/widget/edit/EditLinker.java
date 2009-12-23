@@ -222,6 +222,10 @@ public class EditLinker implements Linker {
         return selectionContext;
     }
 
+    public void refreshLeftPanel() {
+        sidePanel.refresh();
+    }
+
     private void refreshSelectionContext() {
         selectionContext.setMainNode(getMainNode());
         selectionContext.setSelectedNodes(getSelectedNodes());

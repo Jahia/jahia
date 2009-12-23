@@ -59,4 +59,7 @@ public class SidePanel extends ContentPanel {
     }
 
 
+    public void refresh() {
+        ((CreateContentTabItem)tabs.get(1)).refresh();
+    }
 }

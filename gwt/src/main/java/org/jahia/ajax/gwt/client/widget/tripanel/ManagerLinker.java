@@ -324,6 +324,10 @@ public class ManagerLinker implements Linker {
         return selectionContext;
     }
 
+    public void refreshLeftPanel() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     private void refreshSelectionContext() {
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode)getTreeSelection());

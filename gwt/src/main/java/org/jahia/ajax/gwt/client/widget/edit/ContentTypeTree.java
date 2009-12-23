@@ -355,4 +355,8 @@ public class ContentTypeTree extends LayoutContainer {
         this.parentNode = linker.getMainNode();
         filldataStore();
     }
+
+    public void refresh() {
+        filldataStore();
+    }
 }

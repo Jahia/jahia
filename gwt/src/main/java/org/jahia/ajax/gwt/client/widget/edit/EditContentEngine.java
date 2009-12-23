@@ -779,6 +779,9 @@ public class EditContentEngine extends Window {
                         Info.display("", "Node created");
                         EditContentEngine.this.hide();
                         linker.refreshMainComponent();
+                        if(node.getNodeTypes().contains("jnt:schmurtz")) {
+                            linker.refreshLeftPanel();
+                        }
                     }
                 });
             }

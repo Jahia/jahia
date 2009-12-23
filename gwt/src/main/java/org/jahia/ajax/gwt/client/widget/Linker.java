@@ -54,4 +54,6 @@ public interface Linker {
     public void select(Object o);
     public void setSelectPathAfterDataUpdate(String path);
     public LinkerSelectionContext getSelectionContext();
+
+    void refreshLeftPanel();
 }

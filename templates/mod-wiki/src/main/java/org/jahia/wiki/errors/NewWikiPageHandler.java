@@ -8,6 +8,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
@@ -45,16 +46,20 @@ public class NewWikiPageHandler implements ErrorHandler {
 
             Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-            JCRNodeWrapper parent = session.getNode(parentPath);
-            if (parent.isNodeType("jnt:page") && parent.hasProperty("j:template") &&
-                    parent.getProperty("j:template").getString().equals("wikiHome")) {
-                String newName = StringUtils.substringAfterLast(path,"/");
-                newName = StringUtils.substringBefore(newName,".html");
-                String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
+            try {
+                JCRNodeWrapper parent = session.getNode(parentPath);
+                if (parent.isNodeType("jnt:page") && parent.hasProperty("j:template") &&
+                        parent.getProperty("j:template").getString().equals("wikiHome")) {
+                    String newName = StringUtils.substringAfterLast(path,"/");
+                    newName = StringUtils.substringBefore(newName,".html");
+                    String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
 
-                link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?newPageName="+URLEncoder.encode(newName, "UTF-8");
-                response.sendRedirect(link);
-                return true;
+                    link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?newPageName="+URLEncoder.encode(newName, "UTF-8");
+                    response.sendRedirect(link);
+                    return true;
+                }
+            } catch (PathNotFoundException e1) {
+                return false;
             }
         } catch (Exception e1) {
             logger.error(e1,e1);

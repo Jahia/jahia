@@ -250,7 +250,7 @@
                                     <tasks>
                                         <echo message="Deploy ACME Demo Web Site"/>
                                         <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates65.zip"
-                                              toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
+                                                     toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
                                         <sleep seconds="90"/>
                                         <echo message="Get the sitemap"/>
                                         <get src="${jahia.test.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on"
@@ -365,7 +365,7 @@
                                         <db-pwd>${jahia.configure.databasePassword}</db-pwd>
                                         <db-name>${jahia.test.jmeter.dbname}</db-name>
                                         <db-clean>true</db-clean>
-                                        <results-path>${pom.basedir}/results</results-path>
+                                        <results-path>${pom.basedir}/target/jmeterResults</results-path>
                                     </properties>
                                     <source>${pom.basedir}/src/main/scripts/groovy/parseJMeterFiles.groovy</source>
                                 </configuration>

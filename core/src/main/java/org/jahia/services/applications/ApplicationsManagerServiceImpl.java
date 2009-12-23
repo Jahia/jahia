@@ -235,9 +235,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     private ApplicationBean fromNodeToBean(JCRNodeWrapper wrapper) throws RepositoryException {
         return new ApplicationBean(wrapper.getUUID(), wrapper.getPropertyAsString("j:name"),
-                                   wrapper.getPropertyAsString("j:context"), wrapper.getProperty(
+                wrapper.getPropertyAsString("j:context"), wrapper.getProperty(
                         "j:isVisible").getBoolean(), wrapper.getPropertyAsString("j:description"),
-                                   wrapper.getPropertyAsString("j:type"));
+                wrapper.getPropertyAsString("j:type"));
     }
 
     /**
@@ -448,6 +448,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * delete groups associated with an application.
      * When deleting an Application definition, should call this method to
@@ -478,6 +479,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * create groups for each context, that is for each field id
      */
@@ -498,6 +500,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * delete groups associated with a gived context, that is attached to a field id
      * and all its members
@@ -514,7 +517,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             role = roles.next();
             groupName = new StringBuffer().append(entryPointInstance.getID()).append("_").append(role).toString();
             JahiaGroup grp = groupManagerService.lookupGroup(0,
-                                                             groupName); // Hollis : All App group roles are in site 0 !!!
+                    groupName); // Hollis : All App group roles are in site 0 !!!
             if (grp != null) {
                 // delete all members
                 grp.removeMembers();
@@ -525,6 +528,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * return a DOM document of applications definitions
      *
@@ -546,6 +550,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * Get an WebAppContext for a given application bean
      *
@@ -578,7 +583,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             // Create the new entry point instance with its acl id binded to the one of its application parent
         } catch (JahiaException je) {
             logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(),
-                         je);
+                    je);
         }
         if (epInstance != null) {
             try {
@@ -638,7 +643,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             return appProvider.getAppEntryPointDefinitions(appBean);
         } catch (JahiaException je) {
             logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(),
-                         je);
+                    je);
             return Collections.emptyList();
         }
     }
@@ -655,33 +660,41 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      *                        the persistence system.
      */
     public EntryPointInstance getEntryPointInstance(final String epInstanceID) throws JahiaException {
-        final EntryPointInstance[] entryPointInstanceByID = new EntryPointInstance[]{entryPointCache.get(
-                ENTRY_POINT_INSTANCE + epInstanceID)};
-        if (entryPointInstanceByID[0] == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(
-                epInstanceID)) {
+        final EntryPointInstance[] entryPointInstanceByID = new EntryPointInstance[]{entryPointCache.get(ENTRY_POINT_INSTANCE + epInstanceID)};
+        if (entryPointInstanceByID[0] == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(epInstanceID)) {
             try {
                 JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
                 final JCRPortletNode node = (JCRPortletNode) session.getNodeByUUID(epInstanceID);
-                entryPointInstanceByID[0] = new EntryPointInstance(node.getUUID(), node.getContextName(),
-                        node.getDefinitionName(), node.getName());
-                if (node.hasProperty("j:cacheScope")) {
-                    entryPointInstanceByID[0].setCacheScope(node.getProperty("j:cacheScope").getString());
-                }
-                if (node.hasProperty("j:expirationTime")) {
-                    entryPointInstanceByID[0].setExpirationTime(node.getProperty("j:expirationTime").getLong());
-                }
+                entryPointInstanceByID[0] = getEntryPointInstance(node);
                 entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID[0]);
                 return entryPointInstanceByID[0];
             } catch (javax.jcr.ItemNotFoundException e) {
                 // user can't not access to portlet instance: intance doen't exist or user has no reqs ACL
-                logger.debug(
-                        "User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);
+                logger.debug("User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);
                 return null;
             } catch (RepositoryException e) {
                 logger.error(e, e);
             }
         }
         return entryPointInstanceByID[0];
+    }
+
+    /**
+     * Get entryPoint object from JCRPorletNode
+     * @param node
+     * @return
+     * @throws RepositoryException
+     */
+    public EntryPointInstance getEntryPointInstance(JCRPortletNode node) throws RepositoryException {
+        EntryPointInstance entryPointInstance = new EntryPointInstance(node.getUUID(), node.getContextName(),
+                node.getDefinitionName(), node.getName());
+        if (node.hasProperty("j:cacheScope")) {
+            entryPointInstance.setCacheScope(node.getCacheScope());
+        }
+        if (node.hasProperty("j:expirationTime")) {
+            entryPointInstance.setExpirationTime(node.getExpirationTime());
+        }
+        return entryPointInstance;
     }
 
     /**
@@ -708,6 +721,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
 
     //--------------------------------------------------------------------------
+
     /**
      * load all application Definitions in registry
      */
@@ -728,6 +742,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
+
     /**
      * throw an exception if the service hasn't been loaded successfully
      */
@@ -735,8 +750,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
         if (!isLoaded) {
             throw new JahiaException("Error accessing a service that was not initialized successfully",
-                                     "Error accessing a service that was not initialized successfully",
-                                     JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
+                    "Error accessing a service that was not initialized successfully",
+                    JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
         }
 
     }

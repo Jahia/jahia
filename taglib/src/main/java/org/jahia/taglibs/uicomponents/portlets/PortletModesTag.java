@@ -44,6 +44,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRPortletNode;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -199,17 +200,12 @@ public class PortletModesTag extends TagSupport {
             portletWindowBean = (PortletWindowBean) pageContext.
                     findAttribute(name);
         } else if (node != null) {
-            EntryPointInstance entryPointInstance = null;
             try {
-                if (node.getUUID() != null) {
-                    entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(node.getUUID());
-                    if (entryPointInstance == null) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("User " + processingContext.getUser().getName() + " could not load the portlet instance :" + node.getUUID());
-                        }
-                        entryPointInstance = null;
-                    }
+                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(new JCRPortletNode(node));
+                if (entryPointInstance == null) {
+                    logger.error("User " + processingContext.getUser().getName() + " could not load the portlet instance :" + node.getUUID());
                 }
+
                 if (entryPointInstance != null) {
                     ApplicationBean appBean = ServicesRegistry.getInstance().
                             getApplicationsManagerService().
@@ -259,8 +255,8 @@ public class PortletModesTag extends TagSupport {
         try {
 
             htmlToolBox.drawPortletModeList(portletWindowBean, namePostFix,
-                                            resourceBundle, listCSSClass,
-                                            currentCSSClass, out);
+                    resourceBundle, listCSSClass,
+                    currentCSSClass, out);
 
         } catch (IOException ioe) {
             logger.error("IO exception while trying to display action menu for object " + name, ioe);

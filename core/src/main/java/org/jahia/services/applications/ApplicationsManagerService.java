@@ -39,6 +39,7 @@ package org.jahia.services.applications;
 
 import java.util.List;
 
+import javax.jcr.RepositoryException;
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
 import org.apache.pluto.container.PortletWindow;
@@ -50,6 +51,7 @@ import org.jahia.data.applications.WebAppContext;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRPortletNode;
 
 /**
  * This Service is used to manage the jahia application definitions.
@@ -235,6 +237,13 @@ public abstract class ApplicationsManagerService extends JahiaService {
         throws JahiaException;
 
     /**
+     * Get the corresponding an entrypoint obejct
+     * @param node
+     * @return
+     */
+    public abstract EntryPointInstance getEntryPointInstance(JCRPortletNode node) throws RepositoryException;
+
+    /**
      * Removes an entry point instance from the persistance system.
      * @param epInstanceID int the unique identifier for the entry point
      * instance
@@ -243,7 +252,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
      */
     public abstract void removeEntryPointInstance (String epInstanceID)
         throws JahiaException;
-
+                                  
     public abstract PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams)
         throws JahiaException;
 

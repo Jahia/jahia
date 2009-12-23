@@ -51,6 +51,46 @@ import java.util.*;
 public class JahiaPortletUtil {
     public static final String JAHIA_SHARED_MAP = "jahiaSharedMap";
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPortletUtil.class);
+    public static final String PLUTO_PREFIX = "__";
+    public static final String PLUTO_ACTION = "ac";
+    public static final String PLUTO_RESOURCE = "rs";
+
+    /**
+     * Return an path without the pluto part
+     * @param pathInfo
+     * @return
+     */
+    public static String removePlutoPart(final String pathInfo) {
+        if (isPortletRequest(pathInfo)) {
+            return pathInfo.substring(0,pathInfo.indexOf('/'+PLUTO_PREFIX, 1));
+        }
+        return pathInfo;
+    }
+
+    /**
+     * Return true is the request is a portlet request
+     * @param pathInfo
+     * @return
+     */
+    public static boolean isPortletRequest(final String pathInfo) {
+        if (pathInfo != null) {
+            StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
+            while (st.hasMoreTokens()) {
+                String token = st.nextToken();
+                // remder/resource url
+                if (token.startsWith(PLUTO_PREFIX + PLUTO_RESOURCE)) {
+                    return true;
+                }
+                // actionUrl
+                else if (token.startsWith(PLUTO_PREFIX + PLUTO_ACTION)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
 
     /**
      * Copysome jahia attributes into attributes if the portlet request
@@ -304,6 +344,7 @@ public class JahiaPortletUtil {
 
     /**
      * Set jahia attributes
+     *
      * @param portalRequest
      * @param jahiaAttributes
      */

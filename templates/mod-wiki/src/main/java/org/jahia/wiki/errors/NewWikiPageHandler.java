@@ -5,13 +5,12 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.URLGenerator;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
-import javax.jcr.RepositoryException;
 import javax.jcr.PathNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
@@ -25,6 +24,7 @@ import java.net.URLEncoder;
  * To change this template use File | Settings | File Templates.
  */
 public class NewWikiPageHandler implements ErrorHandler {
+    private static final Logger logger = Logger.getLogger(NewWikiPageHandler.class);
 
     public boolean handle(Throwable e, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
@@ -49,7 +49,7 @@ public class NewWikiPageHandler implements ErrorHandler {
             if (parent.isNodeType("jnt:page") && parent.hasProperty("j:template") &&
                     parent.getProperty("j:template").getString().equals("wikiHome")) {
                 String newName = StringUtils.substringAfterLast(path,"/");
-                newName = StringUtils.substringBefore(newName,".");
+                newName = StringUtils.substringBefore(newName,".html");
                 String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
 
                 link = StringUtils.substringBeforeLast(link,"/") + ".wikiCreate.html?newPageName="+URLEncoder.encode(newName, "UTF-8");
@@ -57,7 +57,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 return true;
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+            logger.error(e1,e1);
         }
         return false;
     }

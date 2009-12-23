@@ -100,7 +100,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <!-- Portal Services injected into the Configuration  -->
     <!-- ================================================ -->
     <bean id="PortalURLParser"
-          class="org.apache.pluto.driver.url.impl.PortalURLParserImpl"
+          class="org.jahia.services.applications.pluto.JahiaPortalURLParserImpl"
           factory-method="getParser"
           scope="singleton">
     </bean>

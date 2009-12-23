@@ -32,6 +32,7 @@
 package org.jahia.services.search;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
 
 /**
  * Search hit that represents internal page object.
@@ -43,10 +44,11 @@ public class PageHit extends JCRNodeHit {
     /**
      * Initializes an instance of this class.
      * 
-     * @param node search result item to be wrapped
+     * @param page search result item to be wrapped
+     * @param context
      */
-    public PageHit(JCRNodeWrapper page) {
-        super(page);
+    public PageHit(JCRNodeWrapper page, RenderContext context) {
+        super(page, context);
     }
 
     public String getContentType() {

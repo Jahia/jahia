@@ -37,6 +37,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
 
 /**
  * File and folder search result item, used as a view object in JSP templates.
@@ -49,9 +50,10 @@ public class FileHit extends JCRNodeHit {
      * Initializes an instance of this class.
      * 
      * @param node search result item to be wrapped
+     * @param context
      */
-    public FileHit(JCRNodeWrapper node) {
-        super(node);
+    public FileHit(JCRNodeWrapper node, RenderContext context) {
+        super(node, context);
     }
 
     /**
@@ -81,6 +83,33 @@ public class FileHit extends JCRNodeHit {
     private Map<String, String> getIconTypes() {
         return JCRContentUtils.getInstance().getFileExtensionIcons();
     }
+
+    public String getLink() {
+        return resource.getUrl();
+    }
+
+    /**
+     * Returns the resource content length in bytes if applicable.
+     *
+     * @return resource content length in bytes if applicable
+     */
+    public long getContentLength() {
+        return resource.getFileContent().getContentLength();
+    }
+
+    /**
+     * Returns the resource content length in kilobytes if applicable.
+     *
+     * @return resource content length in kilobytes if applicable
+     */
+    public long getContentLengthKb() {
+        long length = getContentLength();
+        return (long) (length > 0 ? length / 1000f : 0);
+    }
+
+    public String getContentType() {
+        return resource.getFileContent().getContentType();
+    }    
 
     /**
      * Returns <code>true</code> if this search hit represents a folder.

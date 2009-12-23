@@ -33,6 +33,7 @@ package org.jahia.services.search;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jahia.services.render.RenderContext;
 
 /**
  * Abstract search result item, used as a view object in JSP templates.
@@ -44,15 +45,18 @@ public abstract class AbstractHit<T> implements Hit<T> {
     private String excerpt;
     protected T resource;
     private float score;
+    protected RenderContext context;
 
     /**
      * Initializes an instance of this class.
      * 
      * @param resource search result item to be wrapped
+     * @param context
      */
-    public AbstractHit(T resource) {
+    public AbstractHit(T resource, RenderContext context) {
         super();
         this.resource = resource;
+        this.context = context;
     }
 
     public String getExcerpt() {
@@ -65,6 +69,10 @@ public abstract class AbstractHit<T> implements Hit<T> {
 
     public float getScore() {
         return score;
+    }
+
+    public RenderContext getContext() {
+        return context;
     }
 
     public void setExcerpt(String excerpt) {

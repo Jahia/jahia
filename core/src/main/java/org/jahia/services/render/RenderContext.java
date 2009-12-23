@@ -50,6 +50,8 @@ public class RenderContext {
     private Resource mainResource;
     private JahiaUser user;
     private JahiaSite site;
+    private URLGenerator URLGenerator;
+
     private Stack<Resource> resourcesStack = new Stack<Resource>();
 
     private boolean includeSubModules = true;
@@ -87,6 +89,14 @@ public class RenderContext {
 
     public void setSite(JahiaSite site) {
         this.site = site;
+    }
+
+    public URLGenerator getURLGenerator() {
+        return URLGenerator;
+    }
+
+    public void setURLGenerator(URLGenerator URLGenerator) {
+        this.URLGenerator = URLGenerator;
     }
 
     public Set<String> getDisplayedModules() {

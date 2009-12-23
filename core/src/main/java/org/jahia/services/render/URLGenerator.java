@@ -3,6 +3,7 @@ package org.jahia.services.render;
 import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;
@@ -43,6 +44,7 @@ public class URLGenerator {
         this.resource = resource;
         this.jcrStoreService = jcrStoreService;
         initURL();
+        context.setURLGenerator(this);
     }
 
     /**
@@ -91,7 +93,7 @@ public class URLGenerator {
     public String getUserProfile() {
         if (userProfile == null) {
             if (!JahiaUserManagerService.isGuest(context.getUser())) {
-                userProfile = base + jcrStoreService.getUserFolders(null, context.getUser()).iterator().next().getPath() + ".html";
+                userProfile = buildURL(jcrStoreService.getUserFolders(null, context.getUser()).iterator().next(), null);
             }
         }
         return userProfile;
@@ -102,11 +104,7 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        if (resource.getForcedTemplate() != null) {
-            return base + resource.getNode().getPath() + "." + resource.getForcedTemplate() + ".html";
-        } else {
-            return base + resource.getNode().getPath() + ".html";
-        }
+        return buildURL(resource.getNode(), resource.getForcedTemplate());
     }
 
     @SuppressWarnings("unchecked")
@@ -133,7 +131,7 @@ public class URLGenerator {
         if (templates == null) {
             templates = LazyMap.decorate(new HashMap(), new Transformer() {
                 public Object transform(Object template) {
-                    return base + resource.getNode().getPath() + "." + template + ".html";
+                    return buildURL(resource.getNode(), (String) template);
                 }
             });
         }
@@ -162,5 +160,8 @@ public class URLGenerator {
             return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
         }
     }
-
+    
+    public String buildURL(JCRNodeWrapper node, String template) {
+        return base + node.getPath() + (template!=null?"."+template:"") + ".html";
+    }
 }

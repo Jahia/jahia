@@ -33,6 +33,7 @@ package org.jahia.services.search;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
+import org.jahia.services.render.RenderContext;
 
 /**
  * Abstract class for the new Jahia search service. 
@@ -66,5 +67,5 @@ public abstract class SearchService extends JahiaService {
      * @param context context object, containing information about current user, locale etc.
      * @return SearchResponse object with the list of hits matching the criteria
      */
-    public abstract SearchResponse search(SearchCriteria criteria, ProcessingContext context);
+    public abstract SearchResponse search(SearchCriteria criteria, RenderContext context);
 }

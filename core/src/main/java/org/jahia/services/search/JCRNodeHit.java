@@ -43,6 +43,7 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.render.RenderContext;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
@@ -60,32 +61,14 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
      * Initializes an instance of this class.
      * 
      * @param node search result item to be wrapped
+     * @param context
      */
-    public JCRNodeHit(JCRNodeWrapper node) {
-        super(node);
-    }
-
-    /**
-     * Returns the resource content length in bytes if applicable.
-     * 
-     * @return resource content length in bytes if applicable
-     */
-    public long getContentLength() {
-        return resource.getFileContent().getContentLength();
-    }
-
-    /**
-     * Returns the resource content length in kilobytes if applicable.
-     * 
-     * @return resource content length in kilobytes if applicable
-     */
-    public long getContentLengthKb() {
-        long length = getContentLength();
-        return (long) (length > 0 ? length / 1000f : 0);
+    public JCRNodeHit(JCRNodeWrapper node, RenderContext context) {
+        super(node, context);
     }
 
     public String getContentType() {
-        return resource.getFileContent().getContentType();
+        return "text/html";
     }
 
     public Date getCreated() {
@@ -105,7 +88,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getLink() {
-        return resource.getUrl();
+        return context.getURLGenerator().buildURL(resource, null);
     }
 
     public String getPath() {
@@ -163,6 +146,10 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         }
 
         return type;
+    }
+
+    public String getIconType() {
+        return "";
     }
 
     /**

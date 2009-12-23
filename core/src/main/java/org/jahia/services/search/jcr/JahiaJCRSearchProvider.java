@@ -53,13 +53,13 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
@@ -98,7 +98,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     /* (non-Javadoc)
      * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
      */
-    public SearchResponse search(SearchCriteria criteria, ProcessingContext context) {
+    public SearchResponse search(SearchCriteria criteria, RenderContext context) {
         String xpathQuery = buildXpathQuery(criteria);
 
         SearchResponse response = new SearchResponse();
@@ -108,7 +108,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             try {
                 JCRSessionWrapper session = ServicesRegistry.getInstance()
                 .getJCRStoreService().getSessionFactory()
-                        .getCurrentUserSession(null, context.getLocale());
+                        .getCurrentUserSession(null, context.getMainResource().getLocale());
                 QueryManager qm = session.getWorkspace().getQueryManager();
                 Query query = qm.createQuery(xpathQuery, Query.XPATH);
                 
@@ -136,7 +136,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 node = null;
                             }
                         }
-                        results.add(buildHit(row, node));
+                        results.add(buildHit(row, node, context));
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
                     }
@@ -150,10 +150,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return response;
     }
     
-    private Hit<?> buildHit(Row row, JCRNodeWrapper node) throws RepositoryException {
+    private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context) throws RepositoryException {
         AbstractHit<?> searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
-            searchHit = new FileHit(node);
+            searchHit = new FileHit(node, context);
         } else {
             JCRNodeWrapper pageNode = node;
             while (pageNode != null && !pageNode.isNodeType(Constants.JAHIANT_PAGE)) {
@@ -165,9 +165,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
             }
             if (pageNode != null) {
-                searchHit = new PageHit(pageNode);
+                searchHit = new PageHit(pageNode, context);
             } else {
-                searchHit = new JCRNodeHit(node);
+                searchHit = new JCRNodeHit(node, context);
             }
         }
 

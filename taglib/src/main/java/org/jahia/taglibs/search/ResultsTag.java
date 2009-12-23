@@ -31,24 +31,24 @@
  */
 package org.jahia.taglibs.search;
 
-import java.util.List;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
+import java.util.List;
+
 /**
  * Performs the content search and exposes search results for being displayed.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
@@ -82,9 +82,10 @@ public class ResultsTag extends AbstractJahiaTag {
 
         SearchCriteria criteria = null;
         ProcessingContext ctx = Utils.getProcessingContext(pageContext);
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         try {
             criteria = // TODO implement new: storedQuery != null ? getStoredQueryCriteria() : 
-                getSearchCriteria(ctx);
+                    getSearchCriteria(ctx);
         } catch (JahiaException e) {
             throw new JspTagException(e);
         }
@@ -92,8 +93,7 @@ public class ResultsTag extends AbstractJahiaTag {
         if (null == criteria) {
             return SKIP_BODY;
         }
-        hits = ServicesRegistry.getInstance().getSearchService().search(
-                criteria, ctx).getResults();
+        hits = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext).getResults();
         count = hits.size();
 
         pageContext.setAttribute(var, hits);

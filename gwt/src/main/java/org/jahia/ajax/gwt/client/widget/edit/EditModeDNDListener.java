@@ -234,8 +234,8 @@ public class EditModeDNDListener extends DNDListener {
 
                 String targetPath = (String) e.getStatus().getData(TARGET_PATH);
 
-                if (e.getDropTarget() instanceof PagesTabItem.PageTreePanelDropTarget) {
-                    callback = ((PagesTabItem.PageTreePanelDropTarget)e.getDropTarget()).getCallback();
+                if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
+                    callback = ((PagesTabItem.PageTreeGridDropTarget)e.getDropTarget()).getCallback();
                 }
 
                 if (e.getStatus().<Object>getData("type").equals(-1)) {

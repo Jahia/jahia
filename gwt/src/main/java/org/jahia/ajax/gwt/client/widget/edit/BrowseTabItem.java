@@ -4,15 +4,22 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,7 +34,7 @@ class BrowseTabItem extends SidePanelTabItem {
     protected LayoutContainer treeContainer;
     protected TreeLoader<GWTJahiaNode> treeLoader;
     protected TreeStore<GWTJahiaNode> treeStore;
-    protected TreePanel<GWTJahiaNode> tree;
+    protected TreeGrid<GWTJahiaNode> tree;
 
     public BrowseTabItem(final String repositoryType, final String nodetypes) {
         VBoxLayout l = new VBoxLayout();
@@ -65,9 +72,15 @@ class BrowseTabItem extends SidePanelTabItem {
             }
         };
         treeStore = new TreeStore<GWTJahiaNode>(treeLoader);
-        tree = new TreePanel<GWTJahiaNode>(treeStore);
+        ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
+        columnConfig.setRenderer(new TreeGridCellRenderer());
+//        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
+        tree = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(columnConfig)));
+        tree.setAutoExpandColumn("displayName");
+        tree.getTreeView().setRowHeight(25);
+        tree.getTreeView().setForceFit(true);
+        tree.setAutoHeight(true);
         tree.setIconProvider(ContentModelIconProvider.getInstance());
-        tree.setDisplayProperty("displayName");
 
         treeContainer.add(tree);
 

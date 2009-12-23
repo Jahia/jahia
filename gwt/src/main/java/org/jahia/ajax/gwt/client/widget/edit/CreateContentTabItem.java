@@ -33,8 +33,6 @@ class CreateContentTabItem extends SidePanelTabItem {
         contentTypeTree = new ContentTypeTree(null, null, "jnt:content", null, true, false, 400, 0, 25,false);
 
         add(contentTypeTree);
-
-        add(contentTypeTree);
         gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
     }
 

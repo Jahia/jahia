@@ -1,12 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
-import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
+import com.extjs.gxt.ui.client.dnd.TreeGridDragSource;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.DragEvent;
 import com.extjs.gxt.ui.client.event.DragListener;
-import com.extjs.gxt.ui.client.widget.tree.Tree;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,12 +14,12 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
  * Time: 11:12:43 AM
  * To change this template use File | Settings | File Templates.
  */
-public class EditModeTreePanelDragSource extends TreePanelDragSource {
-    public EditModeTreePanelDragSource(TreePanel c) {
+public class EditModeTreeGridDragSource extends TreeGridDragSource {
+    public EditModeTreeGridDragSource(TreeGrid c) {
         super(c);
         DragListener listener = new DragListener() {
             public void dragEnd(DragEvent de) {
-                DNDEvent e = new DNDEvent(EditModeTreePanelDragSource.this, de.getEvent());
+                DNDEvent e = new DNDEvent(EditModeTreeGridDragSource.this, de.getEvent());
                 e.setData(data);
                 e.setDragEvent(de);
                 e.setComponent(component);

@@ -31,7 +31,7 @@ import java.util.List;
 class FilesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore contentStore;
+    protected ListStore<GWTJahiaNode> contentStore;
     protected DisplayGridDragSource displayGridSource;
 
     public FilesBrowseTabItem() {

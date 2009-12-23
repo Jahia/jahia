@@ -35,7 +35,7 @@ import java.util.List;
 class ImagesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore contentStore;
+    protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
     public ImagesBrowseTabItem() {

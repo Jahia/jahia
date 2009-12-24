@@ -46,6 +46,8 @@
 
             <mashups jcr:primaryType="jnt:folder"/>
 
+            <contents jcr:primaryType="jnt:folder"/>
+
             <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled">
                 <j:acl jcr:primaryType="jnt:acl">
                     <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -191,4 +192,46 @@ public class ModuleHelper {
     public static Map<String, List<Module>> getModulesByPath() {
         return modulesByPath;
     }
+
+    public static void tranformLinks(final HTML html) {
+        String baseUrl = JahiaGWTParameters.getParam(JahiaGWTParameters.BASE_URL);
+        List<Element> el = getAllLinks(html.getElement());
+        for (Element element : el) {
+            String link = DOM.getElementAttribute(element, "href");
+            if (link.startsWith(baseUrl)) {
+                String path = link.substring(baseUrl.length());
+                String template = path.substring(path.indexOf('.')+1);
+                if (template.contains(".")) {
+                    template = template.substring(0, template.lastIndexOf('.'));
+                } else {
+                    template = null;
+                }
+                path = path.substring(0,path.indexOf('.'));
+                Log.debug("-->"+path + " , "+template);
+                DOM.setElementAttribute(element,"href","#");
+                if (template == null) {
+                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null)");
+                } else {
+                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+"')");
+                }
+            }
+        }
+    }
+
+    public static List<Element> getAllLinks(Element parent) {
+        List<Element> list = new ArrayList<Element>();
+        int nb = DOM.getChildCount(parent);
+
+        if (parent.getNodeName().toUpperCase().equals("A")) {
+            String link = DOM.getElementAttribute(parent, "href");
+            if (link != null && link.length() > 0) {
+                list.add(parent);
+            }
+        }
+        for (int i = 0; i < nb; i++) {
+            list.addAll(getAllLinks(DOM.getChild(parent, i)));
+        }
+        return list;
+    }
+
 }

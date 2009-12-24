@@ -26,6 +26,7 @@ import java.util.ArrayList;
  */
 public class MainModule extends ContentPanel implements Module {
 
+    private static MainModule module;
     private GWTJahiaNode node;
     private HTML html;
     private String path;
@@ -49,6 +50,8 @@ public class MainModule extends ContentPanel implements Module {
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 
+        module = this;
+        exportStaticMethod();
     }
 
     public void initWithLinker(EditLinker linker) {
@@ -108,7 +111,7 @@ public class MainModule extends ContentPanel implements Module {
     private void display(String result) {
         html = new HTML(result);
         add(html);
-
+        ModuleHelper.tranformLinks(html);
         ModuleHelper.initAllModules(this, html);
         ModuleHelper.buildTree(this);
         parse();
@@ -157,17 +160,22 @@ public class MainModule extends ContentPanel implements Module {
         return selectable;
     }
 
-
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
+    public void goTo(String path, String template) {
+        mask("Loading","x-mask-loading");
         this.path = path;
+        this.template = template;
+        refresh();        
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public static void staticGoTo(String path, String template) {
+        module.mask("Loading","x-mask-loading");
+        module.path = path;
+        module.template = template;
+        module.refresh();
     }
 
     public GWTJahiaNode getNode() {
@@ -213,4 +221,12 @@ public class MainModule extends ContentPanel implements Module {
 
     public void setDraggable(boolean isDraggable) {
     }
+
+    public static native void exportStaticMethod() /*-{
+       $wnd.goTo = function(x,y) {
+          @org.jahia.ajax.gwt.client.widget.edit.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(x,y);
+       }
+    }-*/;
+
+
 }

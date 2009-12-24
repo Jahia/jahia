@@ -178,6 +178,7 @@ public class GWTInitializer {
         // put live workspace url
         if (request.getAttribute("renderContext") != null) {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
+            params.put(JahiaGWTParameters.BASE_URL, url.getBase());
             params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
             params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
             params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());

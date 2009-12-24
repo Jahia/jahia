@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,13 +88,14 @@ public class ClassificationEditor extends LayoutContainer {
 
     public ClassificationEditor(final GWTJahiaNode node) {
         setLayout(new RowLayout(Style.Orientation.VERTICAL));
-        TreeStore<GWTJahiaNode> treeStore = createStoreAndLoader(node);
+        createStoreAndLoader(node);
 
         this.setBorders(false);
         TableData tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.TOP);
         tableData.setWidth("100%");
         tableData.setHeight("50%");
-        this.add(createTreeGrid(treeStore));
+
+        this.add(createTreeGrid());
 
         // Now manage the tab for categories and tags
         selectionTabPanel = new TabPanel();
@@ -108,10 +110,13 @@ public class ClassificationEditor extends LayoutContainer {
     /**
      * Create Browser tree Grid
      *
-     * @param treeStore
      * @return
      */
-    private TreeGrid<GWTJahiaNode> createTreeGrid(TreeStore<GWTJahiaNode> treeStore) {
+    private TreeGrid<GWTJahiaNode> createTreeGrid() {
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY + ";" + JCRClientUtils.TAG_REPOSITORY);
+        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES+","+JCRClientUtils.TAG_NODETYPES);
+        treeStore = treeGridFactory.getStore();
+
         ColumnConfig name = new ColumnConfig("name", "Name", 680);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
@@ -178,7 +183,7 @@ public class ClassificationEditor extends LayoutContainer {
             }
         });
         action.setFixed(true);
-        TreeGrid<GWTJahiaNode> treeGrid = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(name, action)));
+        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(Arrays.asList(name, action)));
         treeGrid.addListener(Events.RowClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent gridEvent) {
                 GWTJahiaNode selectedNode = (GWTJahiaNode) gridEvent.getModel();
@@ -204,33 +209,7 @@ public class ClassificationEditor extends LayoutContainer {
         }
     }
 
-    private TreeStore<GWTJahiaNode> createStoreAndLoader(final GWTJahiaNode node) {
-        // data proxy
-        RpcProxy<List<GWTJahiaNode>> privateProxy = new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                if (gwtJahiaFolder == null) {
-                    async.getRoot(JCRClientUtils.CATEGORY_REPOSITORY + ";" + JCRClientUtils.TAG_REPOSITORY, "", "", "",
-                            null,null, listAsyncCallback);
-                } else {
-                    async.ls(JCRClientUtils.CATEGORY_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder,
-                            JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES, "", "",
-                            false, listAsyncCallback);
-                }
-            }
-        };
-        TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(privateProxy) {
-            @Override
-            public boolean hasChildren(GWTJahiaNode parent) {
-                return parent.hasChildren();
-            }
-
-            protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-            }
-        };
-
+    private void createStoreAndLoader(final GWTJahiaNode node) {
         TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
@@ -255,7 +234,6 @@ public class ClassificationEditor extends LayoutContainer {
                 });
             }
         });
-        treeStore = new TreeStore<GWTJahiaNode>(loader);
         catStore = new TreeStore<GWTJahiaNode>(catLoader);
         TreeLoader<GWTJahiaNode> tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -282,7 +260,6 @@ public class ClassificationEditor extends LayoutContainer {
         });
 
         tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
-        return treeStore;
     }
 
     private void createCategoriesPanel(TabPanel tabPanel) {

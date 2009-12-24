@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schmurtzs j:fullpath="/schmurtzs" jcr:primaryType="jnt:schmurtzsRoot" jcr:uuid="8849335a-e1eb-440e-b21d-0966ba7f315c"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+           xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
+    <jnt_page j:fullpath="/schmurtzs/jnt_page" jcr:primaryType="jnt:schmurtzsFolder"
+              jcr:uuid="34d3698e-4052-4977-b8b2-9b2ea08ed9d3">
+        <_x0033_pageschmurtz j:fullpath="/schmurtzs/jnt_page/3pageschmurtz" jcr:primaryType="jnt:schmurtz"
+                             jcr:uuid="1daff37d-174d-4a69-a049-c4c666fc4e3e">
+            <j:translation jcr:language="en" jcr:title_en="3pageschmurtz" jcr:primaryType="jnt:translation"
+                           j:targetReference="316b7767-46c8-412c-a3bd-dbbd5cca5cea"
+                           jcr:uuid="6412f2d8-b7df-4728-8096-22f8ec88a51b"/>
+            <j:target j:fullpath="/sites/mySite/home" jcr:primaryType="jnt:page"
+                      jcr:uuid="73b5d62e-4493-4764-9f95-484f45e1f0d7">
+                <j:translation jcr:language="en" jcr:title_en="Welcome to servername" jcr:primaryType="jnt:translation"
+                               jcr:uuid="6eda3f4d-6306-48e7-ba45-2a311baed970"/>
+                <maincontent j:fullpath="/sites/mySite/home/maincontent" jcr:primaryType="jnt:contentList"
+                             jcr:uuid="40a6eee6-5ac1-4d0e-8278-117e691bf1b4"/>
+                <logo j:fullpath="/sites/mySite/home/logo" jcr:primaryType="jnt:contentList"
+                      jcr:uuid="e5f933be-6896-4ccf-8038-4b22f00e042d"/>
+                <simpleSearch j:fullpath="/sites/mySite/home/simpleSearch" jcr:primaryType="jnt:contentList"
+                              jcr:uuid="93ba6f9e-f12a-4888-8df7-8637a8141520"/>
+                <topMenu j:fullpath="/sites/mySite/home/topMenu" j:maxDepth="1" jcr:mixinTypes="jmix:renderable"
+                         j:template="dropDown" j:startLevel="1" jcr:primaryType="jnt:navBar"
+                         jcr:uuid="06d3297d-f529-4ad0-80b2-5427b5f859b2"/>
+                <footer j:fullpath="/sites/mySite/home/footer" jcr:primaryType="jnt:contentList"
+                        jcr:uuid="e4582ac6-a416-42cc-a949-afc844d461d5"/>
+                <page1 j:fullpath="/sites/mySite/home/page1" jcr:primaryType="jnt:page"
+                       jcr:uuid="b3766e32-25e0-49a5-9bfc-c83c7b9dba32">
+                    <j:translation jcr:language="en" jcr:title_en="page1" jcr:primaryType="jnt:translation"
+                                   jcr:uuid="d40ad20c-b627-45d4-a4ce-6fb09e821d49"/>
+                </page1>
+                <page2 j:fullpath="/sites/mySite/home/page2" jcr:primaryType="jnt:page"
+                       jcr:uuid="4eb6245a-8377-4cd3-9e5c-1f68c3c9eee7">
+                    <j:translation jcr:language="en" jcr:title_en="page2" jcr:primaryType="jnt:translation"
+                                   jcr:uuid="12502f86-eb9d-466b-8a1d-e30696d8ce82"/>
+                </page2>
+                <page3 j:fullpath="/sites/mySite/home/page3" jcr:primaryType="jnt:page"
+                       jcr:uuid="8511e582-69e9-46d2-9e6d-63e6289f9a24">
+                    <j:translation jcr:language="en" jcr:title_en="page3" jcr:primaryType="jnt:translation"
+                                   jcr:uuid="d66522b7-7348-4682-82d5-218b1b4ae1a5"/>
+                </page3>
+            </j:target>
+        </_x0033_pageschmurtz>
+    </jnt_page>
+</schmurtzs>

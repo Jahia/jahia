@@ -207,7 +207,6 @@ public class ModuleHelper {
                     template = null;
                 }
                 path = path.substring(0,path.indexOf('.'));
-                Log.debug("-->"+path + " , "+template);
                 DOM.setElementAttribute(element,"href","#");
                 if (template == null) {
                     DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null)");

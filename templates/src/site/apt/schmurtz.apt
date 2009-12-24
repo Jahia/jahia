@@ -1,33 +1,34 @@
-Crazy Jane - Jahia Templates - Schmurtz
+Crazy Jane - Jahia Templates - Reusable components
 
-* What is a Schmurtz?
+* What is a Reusable component?
 
-  A Schmurtz is a piece of reusable content, by that we means that if you have a section of your site that you want to generalize for further usage.
-  You can click on the top level page of the section you want to backup, then click on the "Save As Schmurtz" button in the "Edit" menu.
-  This will save a copy of your content in a specific folder. Then when you want to create a new content you can reuse this schmurtz or create a new content.
+  A reusable component is a piece of content saved in a special location by an authorized author that can be reused esily while building sites or webmastering pages, because reussable components appears directly in Jahia's GUI when manipulating content.
+  For instance, it means that if you decide that a section of a site, a list of objects or a page should be kept for further usage, you can do it.
+  In this case, you just have to click on the top level page of the section you want to save as reusable component, then click on the "Save As reusable component" button in the "Edit" menu.
+  This will save a copy of your content in a specific folder. Then when you want to create a new content you can reuse this component as a model.
 
 [./images/schmurtz.png]  
 
-* Can I modify locally the content from an existing Schmurtz?
+* Can I modify locally the content from an existing "reusable component"?
 
-  Yes as soon as you have created a content from an already created Schmurtz, the local copy is yours and you can modify it in the way you want.
+  Yes as soon as you have created a content based on a "reusable component", the local copy is yours and you can modify it in the way you want.
 
-* Can I modify a schmurtz?
+* Can I modify a reusable component?
 
-  Yes, it is possible, but you must go through the Content Manager to access the schmurtz that were saved in a specific folder tree
+  Yes, it is possible, but you must go through the Content Manager to access the reusable components folder where they are saved. The resusable components folder tree is automatically created and maintenained by Jahia, based on the content type of the objet.
 
-* If I change a schmurtz, does all the content created using that schmurtz will be also updated?
+* If I change a reusable component, does all the content created based on that component will be also updated?
 
-  No, the schmurtz act as a "master", but each copy is independent and therefore, modifications to the original schmurtz is not propagated
+  No, the reusable component act as a "master", but each copy is independent and therefore, modifications to the original component is not propagated
 
-* Can I bundle already configured Schmurtz with my modules?
+* Can I bundle already configured reusable component with my modules?
 
   Yes
 
 * How?
 
   A file import.xml can be created in the root of the module. This file will be automatically imported and can
-  contain schmurtz documents. In the JCR, schmurtzes are organized in subfolder of /schmurtz, named by node type -
+  contain reusable components. In the JCR, reusable components are organized in subfolder of /schmurtz, named by node type -
   this folder will contain a node of type "jnt:schmurtz", with a single subnode j:target.
 
   For example this import file will create two schmurtzes for type jnt:navBar :

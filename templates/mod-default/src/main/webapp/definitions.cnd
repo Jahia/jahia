@@ -40,7 +40,7 @@
  - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
  - alt (string) i18n indexed=no
 
-[jnt:video] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:video] > jnt:content, mix:title, jmix:structuredContent
  - name (string)
  - source (weakreference, file)
  - width (long) = '0'
@@ -56,7 +56,7 @@
  - displaysize (long) = '0' analyzer='keyword' nofulltext
  - loop (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
 
-[jnt:flash] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:flash] > jnt:content, mix:title, jmix:structuredContent
  - flashSource (weakreference, file)
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext

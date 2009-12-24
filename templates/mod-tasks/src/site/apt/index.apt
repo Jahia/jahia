@@ -19,7 +19,7 @@ Jahia Tasks Module
 
 ** Using the tasks component
 
-  The components "Tasks" from interactive component displays a simple form that can be used to create and assign task
+  The components "Tasks" from "site components" displays a simple form that can be used to create and assign task
   to a user.
 
 [./images/taskForm.jpg]

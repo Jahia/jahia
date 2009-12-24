@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 
-[jnt:topStories] > jnt:content, jmix:list, jmix_queryContent
+[jnt:topStories] > jnt:content, jmix:list, jmix:queryContent
  - j:level (string,choicelist[resourceBundle]) = 'first' < 'first','second','third'
  - j:limit (long)
 

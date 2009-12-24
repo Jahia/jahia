@@ -148,14 +148,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean()));
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths,
+        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, selectedNodes, openPaths,
                                        false, null);
     }
 
@@ -659,14 +659,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return navigation.getNode(path,"default",retrieveParamBean());
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,boolean forceCreate) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths,boolean forceCreate) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths,forceCreate,contentManager);
+        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, selectedNodes, openPaths,forceCreate,contentManager);
     }
 
     public List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException {

@@ -954,7 +954,7 @@ public class ContentActions {
 
                         public void onSuccess(final GWTJahiaNodeType nodeType) {
 
-                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.SCHMURTZ_REPOSITORY, target.getNodeTypes().get(0), null, null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
+                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.SCHMURTZ_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
                                 public void onFailure(Throwable caught) {
                                     MessageBox.alert("Alert",
                                             "Unable to load schmurtzs node for current site. Cause: "

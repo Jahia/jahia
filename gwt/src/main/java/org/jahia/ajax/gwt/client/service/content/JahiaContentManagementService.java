@@ -75,7 +75,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException;
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
@@ -235,9 +237,6 @@ public interface JahiaContentManagementService extends RemoteService {
      * @throws GWTJahiaServiceException if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
-
-    List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,
-                               boolean forceCreate) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException;
 

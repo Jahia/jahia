@@ -212,7 +212,7 @@ public class ClassificationEditor extends LayoutContainer {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                 if (gwtJahiaFolder == null) {
                     async.getRoot(JCRClientUtils.CATEGORY_REPOSITORY + ";" + JCRClientUtils.TAG_REPOSITORY, "", "", "",
-                            null, listAsyncCallback);
+                            null,null, listAsyncCallback);
                 } else {
                     async.ls(JCRClientUtils.CATEGORY_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder,
                             JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES, "", "",

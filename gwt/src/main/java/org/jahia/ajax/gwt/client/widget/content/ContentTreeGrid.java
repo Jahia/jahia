@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
@@ -49,16 +48,14 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -98,7 +95,7 @@ public class ContentTreeGrid extends ContentPanel {
 
         // add toolbar
         contentToolbar = new ContentToolbar(configuration, linker);
-        treeGridTopRightComponent = new TreeGridTopRightComponent(repoType, configuration);
+        treeGridTopRightComponent = new TreeGridTopRightComponent(repoType, configuration, selectedNodes);
 
 
         // register component linker
@@ -158,11 +155,12 @@ public class ContentTreeGrid extends ContentPanel {
         private boolean init = true;
         private TreeGrid<GWTJahiaNode> m_treeGrid;
         private TreeLoader<GWTJahiaNode> loader;
-        private TreeTableStore<GWTJahiaNode> store;
+        private List<GWTJahiaNode> selectedNodes;
 
-        private TreeGridTopRightComponent(String repositoryType, ManagerConfiguration configuration){
+        private TreeGridTopRightComponent(String repositoryType, ManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes){
             this.repositoryType = repositoryType;
             this.configuration = configuration;
+            this.selectedNodes = selectedNodes;
             init();
         }
 
@@ -170,13 +168,24 @@ public class ContentTreeGrid extends ContentPanel {
          * init
          */
         private void init() {
-            // create loader
-            loader = createTreeLoader();
+//            // create loader
+//            loader = createTreeLoader();
+//
+//            // tree store
+//            store = new TreeTableStore<GWTJahiaNode>(loader);
 
-            // tree store
-            store = new TreeTableStore<GWTJahiaNode>(loader);
-
-            m_treeGrid = new TreeGrid<GWTJahiaNode>(store, getHeaders());
+            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType != null ? repositoryType : JCRClientUtils.GLOBAL_REPOSITORY);
+            factory.setNodeTypes(configuration.getNodeTypes());
+            factory.setMimeTypes(configuration.getMimeTypes());
+            factory.setFilters(configuration.getFilters());
+            factory.setNoFolders(!configuration.isAllowCollections());
+            List<String> selectedPath = new ArrayList<String>();
+            for (GWTJahiaNode node : selectedNodes) {
+                selectedPath.add(node.getPath());
+            }
+            factory.setSelectedPath(selectedPath);
+            loader = factory.getLoader();
+            m_treeGrid = factory.getTreeGrid(getHeaders());
             m_treeGrid.addListener(Events.RowClick, new Listener<GridEvent>() {
                 public void handleEvent(GridEvent gridEvent) {
                     linker.handleNewSelection();
@@ -188,44 +197,44 @@ public class ContentTreeGrid extends ContentPanel {
 
         }
 
-        private TreeLoader<GWTJahiaNode> createTreeLoader() {
-            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-
-            // data proxy
-            RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
-                @Override
-                protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                    if (init) {
-                        if (repositoryType != null) {
-                            service.getRoot(repositoryType, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
-                        } else {
-                            service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
-                        }
-                        init = false;
-                    } else {
-                        service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
-                    }
-                }
-            };
-
-
-            TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
-                @Override
-                public boolean hasChildren(GWTJahiaNode parent) {
-                    return parent.hasChildren();
-                }
-
-                public void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-                    super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-                    if (init) {
-                        Log.debug("setting init to false");
-                        init = false;
-                    }
-                }
-            };
-
-            return loader;
-        }
+//        private TreeLoader<GWTJahiaNode> createTreeLoader() {
+//            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+//
+//            // data proxy
+//            RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
+//                @Override
+//                protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
+//                    if (init) {
+//                        if (repositoryType != null) {
+//                            service.getRoot(repositoryType, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
+//                        } else {
+//                            service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
+//                        }
+//                        init = false;
+//                    } else {
+//                        service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
+//                    }
+//                }
+//            };
+//
+//
+//            TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
+//                @Override
+//                public boolean hasChildren(GWTJahiaNode parent) {
+//                    return parent.hasChildren();
+//                }
+//
+//                public void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
+//                    super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
+//                    if (init) {
+//                        Log.debug("setting init to false");
+//                        init = false;
+//                    }
+//                }
+//            };
+//
+//            return loader;
+//        }
 
         /**
          * Get header from configuration

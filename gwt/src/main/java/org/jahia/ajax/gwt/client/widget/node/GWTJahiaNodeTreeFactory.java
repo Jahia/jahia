@@ -176,8 +176,7 @@ public class GWTJahiaNodeTreeFactory {
         @Override
         protected void load(Object currentPage, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
-                openPath.addAll(selectedPath);
-                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes, mimeTypes, filters, openPath, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes, mimeTypes, filters, selectedPath, openPath, listAsyncCallback);
             } else {
                 GWTJahiaNode folder = (GWTJahiaNode) currentPage;
                 if (folder.isExpandOnLoad()) {
@@ -239,10 +238,8 @@ public class GWTJahiaNodeTreeFactory {
                 if (child.isExpandOnLoad()) {
                     setExpanded(child, true);
                 }
-                if (selectedPath.contains(child.getPath())) {
-                    List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-                    l.add(child);
-                    getSelectionModel().setSelection(l);
+                if (child.isSelectedOnLoad()) {
+                    getSelectionModel().select(true,child);
                 }
             }
         }

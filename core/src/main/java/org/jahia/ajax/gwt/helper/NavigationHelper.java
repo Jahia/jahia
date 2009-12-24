@@ -302,7 +302,7 @@ public class NavigationHelper {
         return false;
     }
 
-    public List<GWTJahiaNode> retrieveRoot(String repositoryKey, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, List<String> openPaths,
+    public List<GWTJahiaNode> retrieveRoot(String repositoryKey, ProcessingContext jParams, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths,
                                            boolean forceCreate, ContentManagerHelper contentManager) throws GWTJahiaServiceException {
         List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         if (nodeTypes == null) {
@@ -445,18 +445,32 @@ public class NavigationHelper {
             }
         }
         List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
+        if (selectedNodes != null) {
+            if (openPaths == null) {
+                openPaths = selectedNodes;
+            } else {
+                openPaths.addAll(selectedNodes);
+            }
+        }
         if (openPaths != null) {
             for (String openPath : new HashSet<String>(openPaths)) {
-                for (int i = 0; i< allNodes.size(); i++) {
-                    GWTJahiaNode node = allNodes.get(i);
-                    if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad()) {
-                        node.setExpandOnLoad(true);
-                        List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false,jParams);
-                        for (int j = 0; j< list.size(); j++) {
-                            node.insert(list.get(j),j);
-                            allNodes.add(list.get(j));
+                try {
+                    for (int i = 0; i< allNodes.size(); i++) {
+                        GWTJahiaNode node = allNodes.get(i);
+                        if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
+                            node.setExpandOnLoad(true);
+                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false,jParams);
+                            for (int j = 0; j< list.size(); j++) {
+                                node.insert(list.get(j),j);
+                                allNodes.add(list.get(j));
+                            }
+                        }
+                        if (selectedNodes != null && selectedNodes.contains(node.getPath())) {
+                            node.setSelectedOnLoad(true);
                         }
                     }
+                } catch (Throwable e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
         }

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,10 +29,7 @@ import java.util.List;
 * To change this template use File | Settings | File Templates.
 */
 class BrowseTabItem extends SidePanelTabItem {
-    private boolean init = true;
     protected LayoutContainer treeContainer;
-    protected TreeLoader<GWTJahiaNode> treeLoader;
-    protected TreeStore<GWTJahiaNode> treeStore;
     protected TreeGrid<GWTJahiaNode> tree;
 
     public BrowseTabItem(final String repositoryType, final String nodetypes) {
@@ -43,38 +41,13 @@ class BrowseTabItem extends SidePanelTabItem {
         treeContainer.setBorders(true);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
-        // data proxy
-        RpcProxy<List<GWTJahiaNode>> treeProxy = new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                if (init) {
-                    JahiaContentManagementService.App.getInstance().getRoot(repositoryType, nodetypes, "", "", null, listAsyncCallback);
-                } else {
-                    JahiaContentManagementService.App.getInstance().ls(repositoryType,(GWTJahiaNode) gwtJahiaFolder, nodetypes, "", "", false, listAsyncCallback);
-                }
-            }
-        };
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType);
+        factory.setNodeTypes(nodetypes);
 
-        treeLoader = new BaseTreeLoader<GWTJahiaNode>(treeProxy) {
-            @Override
-            public boolean hasChildren(GWTJahiaNode parent) {
-                return parent.hasFolderChildren();
-            }
-
-            protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-                if (init) {
-                    Log.debug("setting init to false");
-                    init = false;
-                }
-
-            }
-        };
-        treeStore = new TreeStore<GWTJahiaNode>(treeLoader);
         ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
         columnConfig.setRenderer(new TreeGridCellRenderer());
 //        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
-        tree = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(columnConfig)));
+        tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig)));
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.getTreeView().setForceFit(true);

@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -52,7 +51,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, null, true, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, true, listAsyncCallback);
             }
         };
 

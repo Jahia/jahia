@@ -133,7 +133,7 @@ public class ContentTypeTree extends LayoutContainer {
                 schmurtzFolder.setPath("/schmurtzs/" + nodeType.getName().replaceAll(":", "_"));
                 final ContentTypeModelData finalRootEmptyContent = rootEmptyContent;
                 JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
-                                                                   "jnt:schmurtz", null, null, null, false,
+                                                                   "jnt:schmurtz", null, null, false,
                                                                    new AsyncCallback<List<GWTJahiaNode>>() {
                                                                        public void onFailure(Throwable caught) {
                                                                        }

@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.TreeEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -81,7 +80,7 @@ public class JahiaFolderPortletTree extends LayoutContainer {
                 if (gwtJahiaFolder == null) {
                     service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, JCRClientUtils.FOLDER_NODETYPES, null, null, null, callback);
                 } else {
-                    service.ls(JCRClientUtils.GLOBAL_REPOSITORY,(GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, null, null, null, false, callback);
+                    service.ls(JCRClientUtils.GLOBAL_REPOSITORY,(GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, null, null, false, callback);
                 }
 
             }

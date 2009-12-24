@@ -49,7 +49,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", null, null, null, true, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", null, null, true, listAsyncCallback);
             }
         };
 

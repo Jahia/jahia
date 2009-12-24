@@ -1,16 +1,12 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -22,9 +18,9 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,73 +48,19 @@ class PagesTabItem extends SidePanelTabItem {
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
+    }
 
-        /*treeContainer = new LayoutContainer();
-        treeContainer.setBorders(true);
-        treeContainer.setScrollMode(Style.Scroll.AUTO);*/
-        // data proxy
-        RpcProxy<List<GWTJahiaNode>> treeProxy = new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object currentPage, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                if (init) {
-                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.SITE_REPOSITORY,
-                                                                            JCRClientUtils.SITE_NODETYPES, "", "",
-                                                                            null, listAsyncCallback);
-                } else {
-                    JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SITE_REPOSITORY, (GWTJahiaNode) currentPage,
-                                                                       JCRClientUtils.SITE_NODETYPES, "", "", null,
-                                                                       true, listAsyncCallback);
-                }
-            }
-        };
-
-        treeLoader = new BaseTreeLoader<GWTJahiaNode>(treeProxy) {
-            @Override
-            public boolean hasChildren(GWTJahiaNode parent) {
-                return parent.hasChildren();
-            }
-
-            protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-                if (init) {
-                    Log.debug("setting init to false");
-                    init = false;
-                }
-
-            }
-        };
-        treeStore = new TreeStore<GWTJahiaNode>(treeLoader);
-
+    private void initTree() {
         ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
         columnConfig.setRenderer(new TreeGridCellRenderer());
         ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
-        tree = new TreeGrid<GWTJahiaNode>(treeStore, new ColumnModel(Arrays.asList(columnConfig,author))){
-            @Override
-            protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
-                super.onDataChanged(mTreeStoreEvent);
-                init = false;
-                GWTJahiaNode p = mTreeStoreEvent.getParent();
-                if (p == null) {
-                    expandChildren(treeStore.getRootItems());
-                } else {
-                    expandChildren(treeStore.getChildren(p));
-                }
-            }
 
-            private void expandChildren(List<GWTJahiaNode> children) {
-                for (GWTJahiaNode child : children) {
-                    if (path.startsWith(child.getPath())) {
-                        setExpanded(child, true);
-                    }
-                    if (path.equals(child.getPath())) {
-                        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-                        l.add(child);
-                        tree.getSelectionModel().setSelection(l);
-                    }
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(JCRClientUtils.SITE_REPOSITORY);
+        factory.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
+        factory.setSelectedPath(path);
 
-                }
-            }
-        };
+        tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig,author)));
+
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.getTreeView().setForceFit(true);
@@ -155,6 +97,7 @@ class PagesTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
+        initTree();
         initDND();
     }
 

@@ -215,7 +215,7 @@ public class ClassificationEditor extends LayoutContainer {
                             null, listAsyncCallback);
                 } else {
                     async.ls(JCRClientUtils.CATEGORY_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder,
-                            JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES, "", "", null,
+                            JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES, "", "",
                             false, listAsyncCallback);
                 }
             }

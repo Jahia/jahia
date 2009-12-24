@@ -203,7 +203,7 @@ public class ContentTreeGrid extends ContentPanel {
                         }
                         init = false;
                     } else {
-                        service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
+                        service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
                     }
                 }
             };

@@ -55,10 +55,7 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.FileUtils;
@@ -143,14 +140,13 @@ public class NavigationHelper {
      * @param nodeTypes
      * @param mimeTypes
      * @param filters
-     * @param openPaths
      * @param noFolders
      * @param viewTemplateAreas
      * @param context
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> openPaths, String selectedPath, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
 
 
@@ -244,19 +240,6 @@ public class NavigationHelper {
 //            logger.error(e.getMessage(), e);
 //        }
 
-        // ToDo : find a better way to implement this. Avoid multiple ajax request
-        if (logger.isDebugEnabled()) {
-            logger.debug(" Selected path: " + selectedPath);
-        }
-        for (GWTJahiaNode gwtJahiaNode : result) {
-            if (openPaths != null) {
-                gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode, openPaths));
-                gwtJahiaNode.setSelectedOnLoad(selectedPath != null && selectedPath.equalsIgnoreCase(gwtJahiaNode.getPath()));
-            }
-
-        }
-
-//        Collections.sort(result);
         return result;
     }
 
@@ -461,14 +444,22 @@ public class NavigationHelper {
                 }
             }
         }
-        for (GWTJahiaNode userNode : userNodes) {
-            if (openPaths != null && openPaths.size() > 0) {
-                logger.debug("Path to open " + openPaths);
-                userNode.setExpandOnLoad(expandOnLoad(userNode, openPaths));
+        List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
+        if (openPaths != null) {
+            for (String openPath : new HashSet<String>(openPaths)) {
+                for (int i = 0; i< allNodes.size(); i++) {
+                    GWTJahiaNode node = allNodes.get(i);
+                    if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad()) {
+                        node.setExpandOnLoad(true);
+                        List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false,jParams);
+                        for (int j = 0; j< list.size(); j++) {
+                            node.insert(list.get(j),j);
+                            allNodes.add(list.get(j));
+                        }
+                    }
+                }
             }
         }
-
-
         return userNodes;
     }
 

@@ -4,7 +4,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -13,13 +12,11 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +50,7 @@ class BrowseTabItem extends SidePanelTabItem {
                 if (init) {
                     JahiaContentManagementService.App.getInstance().getRoot(repositoryType, nodetypes, "", "", null, listAsyncCallback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls(repositoryType,(GWTJahiaNode) gwtJahiaFolder, nodetypes, "", "", null, false, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls(repositoryType,(GWTJahiaNode) gwtJahiaFolder, nodetypes, "", "", false, listAsyncCallback);
                 }
             }
         };

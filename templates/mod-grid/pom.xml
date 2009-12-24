@@ -41,8 +41,8 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.templates</groupId>
-    <artifactId>mod-pages</artifactId>
-    <name>Jahia Pages</name>
+    <artifactId>mod-grid</artifactId>
+    <name>Jahia Grid Pages</name>
     <packaging>war</packaging>
     <description>These are the custom module (jahiaPages) for running on a Jahia server.</description>
     <repositories>
@@ -125,7 +125,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <root-folder>pages</root-folder>
+                            <root-folder>grid</root-folder>
                             <module-type>siteLayout</module-type>
                         </manifestEntries>
                     </archive>

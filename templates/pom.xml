@@ -73,7 +73,7 @@
         <module>mod-location</module>
         <module>mod-metrics</module>
         <module>mod-news</module>
-        <module>mod-pages</module>
+        <module>mod-grid</module>
         <module>mod-people</module>
         <module>mod-press</module>
         <module>mod-publication</module>

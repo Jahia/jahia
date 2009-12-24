@@ -87,6 +87,7 @@
                         <version>1.2-SNAPSHOT</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
+                            <noServer>true</noServer>
                             <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
@@ -132,6 +133,7 @@
                         <version>1.2-SNAPSHOT</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
+                            <noServer>true</noServer>
                             <force>true</force>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
@@ -425,7 +427,7 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.templates</groupId>
-            <artifactId>mod-pages</artifactId>
+            <artifactId>mod-grid</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>

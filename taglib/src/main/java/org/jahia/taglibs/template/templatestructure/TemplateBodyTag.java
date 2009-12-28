@@ -178,39 +178,38 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
                 buf.append("<div class=\"markedForDelete\">");
             }
-            if (useGwt) {
-                addMandatoryGwtMessages(jData);
-                if (!isLogged() && gwtForGuest) {
-                    if (gwtScript.equals("")) {
-                        gwtScript = "guest";
-                    }
-                } else if (gwtScript == null || gwtScript.equals("")) {
-                    gwtScript = "general";
-                }
-                if (isLiveMode()) {
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
-                } else {
-
-                    if (checkGAprofilePresent(jData)) {
-                        String gviz =
-                                "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
-                                        "<script type='text/javascript'>" +
-                                        "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
-                                        "</script>";
-                        buf.append(gviz);
-                    }
-
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
-                }
-
-                if (isLogged()) {
-                    if (renderContext == null || !renderContext.isEditMode()) {
-                        addToolbarMessageResources();
-                        // jahia module entry for toolbar
-                        buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
-                    }
-                }
-            }
+//            if (useGwt) {
+//                if (!isLogged() && gwtForGuest) {
+//                    if (gwtScript.equals("")) {
+//                        gwtScript = "guest";
+//                    }
+//                } else if (gwtScript == null || gwtScript.equals("")) {
+//                    gwtScript = "general";
+//                }
+//                if (isLiveMode()) {
+//                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
+//                } else {
+//
+//                    if (checkGAprofilePresent(jData)) {
+//                        String gviz =
+//                                "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
+//                                        "<script type='text/javascript'>" +
+//                                        "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
+//                                        "</script>";
+//                        buf.append(gviz);
+//                    }
+//
+//                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
+//                }
+//
+//                if (isLogged()) {
+//                    if (renderContext == null || !renderContext.isEditMode()) {
+//                        addToolbarMessageResources();
+//                        // jahia module entry for toolbar
+//                        buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
+//                    }
+//                }
+//            }
             buf.append("\t<div id=\"").append(DEFAULT_CONTENT).append("\">");
 
             pageContext.getOut().println(buf.toString());
@@ -291,6 +290,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     private void addEditModeResources() {
+        addGwtDictionaryMessage("fm_copyright", Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION  + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber());
         addGwtDictionaryMessage("fm_newdir", getJahiaInternalResourceValue("toolbar.manager.button.createFolder"));
         addGwtDictionaryMessage("fm_newdirname", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"));
         addGwtDictionaryMessage("fm_newcontent", getJahiaInternalResourceValue("toolbar.manager.button.newContent"));
@@ -566,22 +566,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("ece_metadata", getJahiaInternalResourceValue("org.jahia.jcr.edit.metadata.tab"));
         addGwtDictionaryMessage("ece_classification", getJahiaInternalResourceValue("org.jahia.jcr.edit.classification.tab"));
         addGwtDictionaryMessage("ece_options", getJahiaInternalResourceValue("org.jahia.jcr.edit.options.tab"));        
-    }
-
-    /**
-     * Add mandatory messages
-     *
-     * @param jData
-     */
-    private void addMandatoryGwtMessages(JahiaData jData) {
-        addGwtDictionaryMessage("display", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.display", jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("reset", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.reset", jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.alert", jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.warning", jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.all", jData.getProcessingContext().getLocale()));
-        String copyright = Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber();
-        addGwtDictionaryMessage("fm_copyright", copyright);
-
     }
 
     public int doEndTag() {

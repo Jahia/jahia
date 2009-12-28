@@ -1,12 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -27,23 +25,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Side panel tab item for browsing the pages tree.
  * User: toto
  * Date: Dec 21, 2009
  * Time: 2:22:37 PM
- * To change this template use File | Settings | File Templates.
  */
 class PagesTabItem extends SidePanelTabItem {
 
-    private boolean init = true;
     protected LayoutContainer treeContainer;
-    protected TreeLoader<GWTJahiaNode> treeLoader;
-    protected TreeStore<GWTJahiaNode> treeStore;
     protected TreeGrid<GWTJahiaNode> tree;
     protected String path;
 
     public PagesTabItem() {
-        setText("&nbsp;");
         setIcon(ContentModelIconProvider.CONTENT_ICONS.page());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
@@ -52,7 +45,7 @@ class PagesTabItem extends SidePanelTabItem {
 
     private void initTree() {
         ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
-        columnConfig.setRenderer(new TreeGridCellRenderer());
+        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
         ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
 
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(JCRClientUtils.SITE_REPOSITORY);
@@ -102,10 +95,10 @@ class PagesTabItem extends SidePanelTabItem {
     }
 
     public void refresh() {
-        treeStore.removeAll();
-        init = true;
-        treeLoader.load();
+        tree.getTreeStore().removeAll();
+        tree.getTreeStore().getLoader().load();
     }
+    
     class PageTreeGridDropTarget extends TreeGridDropTarget {
         public PageTreeGridDropTarget() {
             super(PagesTabItem.this.tree);
@@ -129,9 +122,9 @@ class PagesTabItem extends SidePanelTabItem {
             e.getStatus().setData("type", status);
             if (activeItem != null) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                GWTJahiaNode parent = treeStore.getParent(activeNode);
+                GWTJahiaNode parent = tree.getTreeStore().getParent(activeNode);
                 if (status == 1) {
-                    List<GWTJahiaNode> children = treeStore.getChildren(parent);
+                    List<GWTJahiaNode> children = tree.getTreeStore().getChildren(parent);
                     int next = children.indexOf(activeNode) + 1;
                     if (next < children.size()) {
                         GWTJahiaNode n = children.get(next);
@@ -150,8 +143,8 @@ class PagesTabItem extends SidePanelTabItem {
             }
         }
 
-        public AsyncCallback getCallback() {
-            AsyncCallback callback = new AsyncCallback() {
+        public AsyncCallback<Object> getCallback() {
+            AsyncCallback<Object> callback = new AsyncCallback<Object>() {
                 public void onSuccess(Object o) {
                     editLinker.getMainModule().refresh();
                     refresh();

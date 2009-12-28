@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Search tab item for the side panel for performing simple queries in the content repository.
  * User: toto
  * Date: Dec 21, 2009
  * Time: 3:14:11 PM
- * To change this template use File | Settings | File Templates.
  */
 class SearchTabItem extends SidePanelTabItem {
     protected ListStore<GWTJahiaNode> contentStore;
@@ -41,7 +40,6 @@ class SearchTabItem extends SidePanelTabItem {
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(l);
 
-        setText("&nbsp;");
         setIcon(ContentModelIconProvider.CONTENT_ICONS.query());
 
         FormPanel searchForm = new FormPanel();
@@ -106,7 +104,7 @@ class SearchTabItem extends SidePanelTabItem {
         });
         displayColumns.add(col);
         displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        final Grid grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);
 

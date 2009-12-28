@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA.
+* Side panel tab item for browsing the content repository.
 * User: toto
 * Date: Dec 21, 2009
 * Time: 2:22:24 PM
-* To change this template use File | Settings | File Templates.
 */
 class ContentBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
@@ -36,7 +35,6 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
     public ContentBrowseTabItem() {
         super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.FOLDER_NODETYPES);
-        setText("&nbsp;");
         setIcon(ContentModelIconProvider.CONTENT_ICONS.content());
 
         contentContainer = new LayoutContainer();

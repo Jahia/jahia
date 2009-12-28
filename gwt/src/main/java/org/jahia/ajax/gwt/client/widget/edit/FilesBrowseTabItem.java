@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA.
+* Side panel tab for browsing file repository.
 * User: toto
 * Date: Dec 21, 2009
 * Time: 2:22:24 PM
-* To change this template use File | Settings | File Templates.
 */
 class FilesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
@@ -36,7 +35,6 @@ class FilesBrowseTabItem extends BrowseTabItem {
 
     public FilesBrowseTabItem() {
         super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES);
-        setText("&nbsp;");
         setIcon(ContentModelIconProvider.CONTENT_ICONS.file());
 
         contentContainer = new LayoutContainer();

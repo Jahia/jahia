@@ -13,7 +13,7 @@
 <c:set var="totalUsages" value="0"/>
 <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
 <c:forEach items="${tags.nodes}" var="tag">
-	<c:set var="count" value="${tag.references.size}"/>
+	<c:set var="count" value="${tag.weakReferences.size}"/>
 	<c:if test="${usageThreshold <= 0 || count >= usageThreshold}">
 		<c:set target="${filteredTags}" property="${tag.name}" value="${tag}"/>
 		<c:set var="totalUsages" value="${totalUsages + count}"/>
@@ -23,7 +23,7 @@
 <c:if test="${not empty filteredTags}">
 		<ul>
 			<c:forEach items="${filteredTags}" var="tag">
-				<c:set var="tagCount" value="${tag.value.references.size}"/>
+				<c:set var="tagCount" value="${tag.value.weakReferences.size}"/>
 				<li><a class="tag${functions:round(10 * tagCount / totalUsages)}0" title="${tag.value.name} (${tagCount})">${tag.value.name}</a></li>
 			</c:forEach>
 		</ul>

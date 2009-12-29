@@ -61,7 +61,7 @@ public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable 
         List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(values.size());
         for (GWTJahiaNodePropertyValue aVal : values) {
             if (aVal.getNode() != null) {
-                vals.add(new GWTJahiaNodePropertyValue(aVal.getNode()));
+                vals.add(new GWTJahiaNodePropertyValue(aVal.getNode(), aVal.getType()));
             } else if (aVal.getLinkNode() != null) {
                  vals.add(new GWTJahiaNodePropertyValue(aVal.getLinkNode(),aVal.getType()));
             } else {

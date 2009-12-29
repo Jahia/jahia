@@ -199,7 +199,7 @@ public class NavigationHelper {
                         }
                     if (displayTags) {
                         try {
-                            theNode.set("count", f.getReferences().getSize());
+                            theNode.set("count", f.getWeakReferences().getSize());
                         } catch (RepositoryException e) {
                             logger.warn("Unable to count node references for node: " + f.getPath(), e);
                         }
@@ -709,10 +709,12 @@ public class NavigationHelper {
             if (f.hasProperty("j:tags")) {
                 StringBuilder b = new StringBuilder();
                 Value[] values = f.getProperty("j:tags").getValues();
-                for (int j = 0; j < values.length; j++) {
-                    JCRValueWrapper value = (JCRValueWrapper) values[j];
-                    b.append(", ");
-                    b.append(value.getNode().getName());
+                for (Value value : values) {
+                    Node node = ((JCRValueWrapper) value).getNode();
+                    if (node != null) {
+                        b.append(", ");
+                        b.append(node.getName());
+                    }
                 }
                 if (b.length()>0) {
                     n.setTags(b.substring(2));

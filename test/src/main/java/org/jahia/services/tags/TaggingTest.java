@@ -218,7 +218,7 @@ public class TaggingTest extends TestCase {
 			        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 				        for (int i = 1; i <= 10; i++) {
 				        	Node tagNode = session.getNode("/sites/" + TESTSITE_NAME + "/tags/" + tags.get(i-1));
-				        	assertEquals("Wrong count for the tag '" + tagNode.getName() + "'", tagNode.getReferences().getSize(), i);
+				        	assertEquals("Wrong count for the tag '" + tagNode.getName() + "'", tagNode.getWeakReferences().getSize(), i);
                         }
 				        return null;
 			        }

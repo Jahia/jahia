@@ -42,6 +42,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -969,7 +970,7 @@ public class ContentActions {
                                                 null);
                                     } else {
                                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
-                                        props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target)));
+                                        props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                                         new EditContentEngine(linker, result.get(0), nodeType, props, null, false).show();                                        
                                     }
                                 }

@@ -93,7 +93,12 @@ public class JCRPublicationService extends JahiaService {
                                 }
                             }
                         } catch (ItemNotFoundException e) {
-                            logger.warn("Cannot get reference " + v.getString());
+                            if (definition.getRequiredType() == PropertyType.REFERENCE) {
+                                logger.warn("Cannot get reference " + v.getString());
+                            } else {
+                                logger.debug("Cannot get reference " + v.getString());
+                            }
+                            
                         }
                     }
                 } else {

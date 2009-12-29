@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -717,7 +718,7 @@ public class EditContentEngine extends Window {
             gwtJahiaNodes = classificationEditor.getTagStore().getAllItems();
             values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
             for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
-                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode));
+                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
             }
             gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
             gwtJahiaNodeProperty.setMultiple(true);

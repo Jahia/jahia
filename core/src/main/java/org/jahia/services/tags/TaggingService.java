@@ -185,7 +185,7 @@ public class TaggingService {
 		return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Long>() {
 			public Long doInJCR(JCRSessionWrapper session) throws RepositoryException {
 				JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
-				return tagNode != null ? tagNode.getReferences().getSize() : -1;
+				return tagNode != null ? tagNode.getWeakReferences().getSize() : -1;
 			}
 		});
 	}
@@ -251,7 +251,7 @@ public class TaggingService {
                 doSessionCommit = true;
             }
             if (tagNode != null) {
-                Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.REFERENCE) };
+                Value[] newValues = new Value[] { new ValueImpl(tagNode.getIdentifier(), PropertyType.WEAKREFERENCE) };
                 Value[] values = null;
                 boolean exists = false;
                 if (node.hasProperty(TAGS)) {

@@ -423,6 +423,7 @@ public class ContentDefinitionHelper {
                 theValue = val.getString();
                 break;
             case PropertyType.WEAKREFERENCE:
+                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false), GWTJahiaNodePropertyType.WEAKREFERENCE);
             case PropertyType.REFERENCE:
                 return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
             case PropertyType.STRING:
@@ -469,6 +470,9 @@ public class ContentDefinitionHelper {
                 break;
             case GWTJahiaNodePropertyType.REFERENCE:
                 value = ReferenceValue.valueOf(val.getString());
+                break;
+            case GWTJahiaNodePropertyType.WEAKREFERENCE:
+                value = WeakReferenceValue.valueOf(val.getString());
                 break;
             case GWTJahiaNodePropertyType.STRING:
                 value = new StringValue(val.getString());

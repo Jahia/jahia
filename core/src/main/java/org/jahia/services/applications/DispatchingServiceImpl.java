@@ -125,6 +125,10 @@ public class DispatchingServiceImpl extends DispatchingService {
         // Now let's check the request URL to see if the target application is this one or not.
 
         HttpServletRequest request = jParams.getRequest();
+
+        Object url = request.getAttribute("url");
+        request.setAttribute("url",null);  // todo : should we put something here ?
+
         String renderResult = null;
         if(request!=null) {
 
@@ -140,6 +144,9 @@ public class DispatchingServiceImpl extends DispatchingService {
                 renderResult = (String) request.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr);
             }
         }
+
+        request.setAttribute("url",url);
+
         return renderResult;
 
     }

@@ -349,9 +349,9 @@
                 </property>
                 <property name="filters" >
                     <list>
-                        <!--<bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
-                            <property name="applyOnNodeTypes" value="jnt:portlet"/>
-                        </bean>-->
+                        <bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
+                            <property name="applyOnMainResource" value="true"/>
+                        </bean>
 
                         <bean class="org.jahia.services.render.filter.AttributesFilter" />
                         <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" />

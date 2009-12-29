@@ -31,6 +31,7 @@
  */
 package org.jahia.services.applications.pluto;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.pluto.driver.url.PortalURLParameter;
 import org.apache.pluto.driver.url.PortalURLParser;
 import org.apache.pluto.driver.url.PortalURL;
@@ -130,7 +131,8 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
         final String urlBase = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         final String contextPath = request.getContextPath();
         final String servletName = request.getServletPath();
-        return parse(urlBase, contextPath, servletName, request.getParameter(PORTLET_INFO));
+        final String pathInfo = request.getPathInfo();
+        return parse(urlBase, contextPath, servletName, pathInfo, request.getParameter(PORTLET_INFO));
     }
 
 
@@ -139,15 +141,14 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
      *
      * @return the portal URL.
      */
-    private PortalURL parse(String urlBase, String contextPath, String servletName, String pathInfo) {
+    private PortalURL parse(String urlBase, String contextPath, String servletName, String pathInfo, String portletInfo) {
         // Construct portal URL using info retrieved from servlet request.
-        PortalURL portalURL = new RelativePortalURLImpl(urlBase, contextPath, servletName, this);
+        PortalURL portalURL = new RelativePortalURLImpl(urlBase, contextPath, servletName+pathInfo, this);
 
-
-        if (pathInfo == null) {
+        if (portletInfo == null) {
             if (servletName.contains(".jsp") && !servletName.endsWith(".jsp")) {
                 int idx = servletName.indexOf(".jsp") + ".jsp".length();
-                pathInfo = servletName.substring(idx);
+                portletInfo = servletName.substring(idx);
                 servletName = servletName.substring(0, idx);
                 portalURL = new RelativePortalURLImpl(urlBase, contextPath, servletName, this);
             } else {
@@ -156,11 +157,11 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Parsing request pathInfo: " + pathInfo);
+            LOG.debug("Parsing request pathInfo: " + portletInfo);
         }
 
         StringBuffer renderPath = new StringBuffer();
-        StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
+        StringTokenizer st = new StringTokenizer(portletInfo, "/", false);
         while (st.hasMoreTokens()) {
 
             String token = st.nextToken();
@@ -250,7 +251,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
 
         // Append the server URI and the servlet path.
         //buffer.append(portalURL.getServletPath().startsWith("/") ? "" : "/").append(portalURL.getServletPath());
-        return buffer.append("?").append(PORTLET_INFO).append("=").append(toPortletPathInfo(portalURL).replace('?','&')).toString();
+        return buffer.append(StringUtils.substringAfterLast(portalURL.getServletPath(),"/")).append("?").append(PORTLET_INFO).append("=").append(toPortletPathInfo(portalURL).replace('?','&')).toString();
     }
 
     /**

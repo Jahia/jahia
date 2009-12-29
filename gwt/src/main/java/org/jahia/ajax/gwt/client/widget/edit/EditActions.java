@@ -4,9 +4,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -169,19 +173,25 @@ public class EditActions {
      */
     public static void delete(final Linker linker) {
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
-            List<String> paths = new ArrayList<String>();
-            for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                paths.add(node.getPath());
-            }
-            JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-delete->" + throwable.getMessage());
-                }
+            MessageBox.confirm("", Messages.get("fm_confRemove", "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
+                public void handleEvent(MessageBoxEvent be) {
+                    if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                        List<String> paths = new ArrayList<String>();
+                        for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                            paths.add(node.getPath());
+                        }
+                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
+                            public void onFailure(Throwable throwable) {
+                                Log.error("", throwable);
+                                com.google.gwt.user.client.Window.alert("-delete->" + throwable.getMessage());
+                            }
 
-                public void onSuccess(Object o) {
-                    linker.refresh();
-                    linker.select(null);
+                            public void onSuccess(Object o) {
+                                linker.refresh();
+                                linker.select(null);
+                            }
+                        });
+                    }
                 }
             });
         }

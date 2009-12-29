@@ -571,7 +571,7 @@ public class ContentActions {
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizard(final Linker linker, final String nodeType, final boolean displaySchmurtz) {
+    public static void showContentWizard(final Linker linker, final String nodeType, final boolean displayReusableComponents) {
         if(nodeType ==  null){
             showContentWizardByNodeType(linker, null, true);
             return;
@@ -582,7 +582,7 @@ public class ContentActions {
             public void onSuccess(GWTJahiaNodeType jahiaNodeType) {
                 if (jahiaNodeType != null) {
                     Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
-                    showContentWizardByNodeType(linker, jahiaNodeType, displaySchmurtz);
+                    showContentWizardByNodeType(linker, jahiaNodeType, displayReusableComponents);
                 }else{
                     Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");                    
                 }
@@ -600,10 +600,10 @@ public class ContentActions {
      *
      * @param linker
      * @param nodeType
-     * @param displaySchmurtz
+     * @param displayReusableComponents
      */
     public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType,
-                                                   boolean displaySchmurtz) {
+                                                   boolean displayReusableComponents) {
         GWTJahiaNode parent = linker.getSelectedNode();
         if (parent == null) {
             parent = linker.getMainNode();
@@ -615,7 +615,7 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeType,displaySchmurtz).show();
+            new ContentTypeWindow(linker, parent, nodeType,displayReusableComponents).show();
         }
     }
 
@@ -941,23 +941,23 @@ public class ContentActions {
         }
     }
 
-    public static void saveAsSchmurtz(final Linker linker) {
+    public static void saveAsReusableComponent(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:schmurtz", new AsyncCallback<GWTJahiaNodeType>() {
+            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new AsyncCallback<GWTJahiaNodeType>() {
                         public void onFailure(Throwable caught) {
                             MessageBox.alert("Alert",
-                                    "Unable to load node type definitions for type 'jnt:schmurtz'. Cause: "
+                                    "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
                                             + caught.getLocalizedMessage(),
                                     null);
                         }
 
                         public void onSuccess(final GWTJahiaNodeType nodeType) {
 
-                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.SCHMURTZ_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
+                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
                                 public void onFailure(Throwable caught) {
                                     MessageBox.alert("Alert",
-                                            "Unable to load schmurtzs node for current site. Cause: "
+                                            "Unable to load reusable component node for current site. Cause: "
                                                     + caught.getLocalizedMessage(),
                                             null);
                                 }
@@ -965,7 +965,7 @@ public class ContentActions {
                                 public void onSuccess(List<GWTJahiaNode> result) {
                                     if (result.isEmpty()) {
                                         MessageBox.alert("Alert",
-                                                "Unable to load schmurtzs root node",
+                                                "Unable to load reusable components root node",
                                                 null);
                                     } else {
                                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);

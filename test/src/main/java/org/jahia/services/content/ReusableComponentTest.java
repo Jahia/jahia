@@ -22,20 +22,20 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Test of the import export of the schmurtz function
+ * Test of the import export of the reusableComponent function
  *
  * @author loom
  *         Date: Dec 18, 2009
  *         Time: 12:07:48 PM
  */
-public class SchmurtzTest extends TestCase {
+public class ReusableComponentTest extends TestCase {
     private JahiaSite site;
     private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrSessionWrapperTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
-    private final static String SCHMURTZ_HOME = "/schmurtzs";
-    private final static String PAGESCHMURTZ_HOME_NODE_PATH = "/schmurtzs/jnt_page";
-    private final static String TEST_SCHMURTZ_PATH = "/schmurtzs/jnt_page/3pageschmurtz/j:target";
+    private final static String REUSABLE_COMPONENTS_HOME = "/reusableComponents";
+    private final static String PAGE_REUSABLE_COMPONENT_HOME_NODE_PATH = "/reusableComponents/jnt_page";
+    private final static String TEST_REUSABLE_COMPONENT_PATH = "/reusableComponents/jnt_page/3pagereusableComponent/j:target";
 
     @Override
     protected void setUp() throws Exception {
@@ -55,25 +55,25 @@ public class SchmurtzTest extends TestCase {
         JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode
                 .getNode("home");
         InputStream importStream = getClass().getClassLoader()
-                .getResourceAsStream("imports/import-schmurtz.xml");
+                .getResourceAsStream("imports/import-reusableComponents.xml");
         session.importXML("/", importStream,
                 ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
         importStream.close();
         session.save();
 
-        JCRNodeWrapper testSchmurtzNode = session.getNode(TEST_SCHMURTZ_PATH);
+        JCRNodeWrapper testReusableComponentNode = session.getNode(TEST_REUSABLE_COMPONENT_PATH);
 
-        // now let's use the schmurtz to create content.
-        assertTrue("Error while instantiating schmurtz", testSchmurtzNode.copyFile(stageNode, "newTestSchmurtz"));
+        // now let's use the reusableComponent to create content.
+        assertTrue("Error while instantiating reusableComponent", testReusableComponentNode.copyFile(stageNode, "newTestReusableComponent"));
 
         session.save();
 
-        // now we need to validate schmurtz instance.
-        assertNotNull("Could not find instantiated schmurtz page", session.getNode("/sites/jcrSessionWrapperTest/home/newTestSchmurtz/page1"));
+        // now we need to validate reusableComponent instance.
+        assertNotNull("Could not find instantiated reusableComponent page", session.getNode("/sites/jcrSessionWrapperTest/home/newTestReusableComponent/page1"));
 
         // now let's clean up after the test.
-        JCRNodeWrapper schmurtzTestNode = session.getNode(PAGESCHMURTZ_HOME_NODE_PATH + "/3pageschmurtz");
-        schmurtzTestNode.remove();
+        JCRNodeWrapper reusableComponentTestNode = session.getNode(PAGE_REUSABLE_COMPONENT_HOME_NODE_PATH + "/3pagereusableComponent");
+        reusableComponentTestNode.remove();
 
         // no need to clean up inside the site, since we will remove it completely anyway.
     }
@@ -136,38 +136,38 @@ public class SchmurtzTest extends TestCase {
                 .getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper siteHomePageNode = (JCRNodeWrapper) siteRootNode
                 .getNode("home");
-        JCRNodeWrapper schmurtzHomeNode = (JCRNodeWrapper) session.getNode(SCHMURTZ_HOME);
-        JCRNodeWrapper pageSchmurtzHomeNode = (JCRNodeWrapper) session.getNode(PAGESCHMURTZ_HOME_NODE_PATH);
+        JCRNodeWrapper reusableComponentHomeNode = (JCRNodeWrapper) session.getNode(REUSABLE_COMPONENTS_HOME);
+        JCRNodeWrapper pageReusableComponentHomeNode = (JCRNodeWrapper) session.getNode(PAGE_REUSABLE_COMPONENT_HOME_NODE_PATH);
 
         // we need to create some content to export, that we can check after export.
         createSubPages(siteHomePageNode, 5, 2);
 
-        JCRNodeWrapper newSchmurtzNode = pageSchmurtzHomeNode.addNode("newTestSchmurtz", "jnt:schmurtz");
-        newSchmurtzNode.setProperty("j:targetReference", siteHomePageNode);
+        JCRNodeWrapper newReusableComponentNode = pageReusableComponentHomeNode.addNode("newTestReusableComponent", "jnt:reusableComponent");
+        newReusableComponentNode.setProperty("j:targetReference", siteHomePageNode);
 
-        String targetNode = newSchmurtzNode.getProperty("j:targetReference").getNode().getPath();
-        session.checkout(newSchmurtzNode);
-        newSchmurtzNode.getProperty("j:targetReference").remove();
+        String targetNode = newReusableComponentNode.getProperty("j:targetReference").getNode().getPath();
+        session.checkout(newReusableComponentNode);
+        newReusableComponentNode.getProperty("j:targetReference").remove();
         session.save();
-        session.getWorkspace().copy(targetNode, newSchmurtzNode.getPath() + "/j:target");
-        // logger.info("Schmurtz is created with the name '" + newSchmurtzNode.getName() + "' for target node " + targetNode);
+        session.getWorkspace().copy(targetNode, newReusableComponentNode.getPath() + "/j:target");
+        // logger.info("ReusableComponent is created with the name '" + newReusableComponentNode.getName() + "' for target node " + targetNode);
 
         session.save();
 
-        FileOutputStream fileOutputStream = new FileOutputStream("schmurtz-export-test.xml");
-        session.exportDocumentView(SCHMURTZ_HOME, fileOutputStream, true, false);
+        FileOutputStream fileOutputStream = new FileOutputStream("reusableComponent-export-test.xml");
+        session.exportDocumentView(REUSABLE_COMPONENTS_HOME, fileOutputStream, true, false);
         fileOutputStream.close();
 
         // now we need to validate export.
         SAXBuilder saxBuilder = new SAXBuilder();
-        Document jdomDocument = saxBuilder.build("schmurtz-export-test.xml");
+        Document jdomDocument = saxBuilder.build("reusableComponent-export-test.xml");
         String prefix = "";
         String tagPre = ("".equals(prefix) ? "" : prefix + ":");
-        checkOnlyOneElement(jdomDocument, "/schmurtzs/jnt_page/newTestSchmurtz", prefix);
+        checkOnlyOneElement(jdomDocument, "/reusableComponents/jnt_page/newTestReusableComponent", prefix);
 
         // now let's clean up.
-        newSchmurtzNode = session.getNode(PAGESCHMURTZ_HOME_NODE_PATH + "/newTestSchmurtz");
-        newSchmurtzNode.remove();
+        newReusableComponentNode = session.getNode(PAGE_REUSABLE_COMPONENT_HOME_NODE_PATH + "/newTestReusableComponent");
+        newReusableComponentNode.remove();
         session.save();
 
         // no need to clean up inside the site, since we will remove it completely anyway.        

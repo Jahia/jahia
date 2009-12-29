@@ -266,7 +266,7 @@ public class ContentDefinitionHelper {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
                     try {
-                        JCRNodeWrapper node = sessionWrapper.getNode("/schmurtzs/" + nodeType.getName().replaceAll(":",
+                        JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
                                                                                                                    "_"));
                         NodeIterator iterator = node.getNodes();
                         while (iterator.hasNext()) {
@@ -368,7 +368,7 @@ public class ContentDefinitionHelper {
                     if(gwtNodeTypes.contains(getGWTJahiaNodeType(ctx, nodeType))) {
                     List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
                     try {
-                        JCRNodeWrapper node = sessionWrapper.getNode("/schmurtzs/" + nodeType.getName().replaceAll(":",
+                        JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
                                                                                                                    "_"));
                         NodeIterator iterator = node.getNodes();
                         while (iterator.hasNext()) {

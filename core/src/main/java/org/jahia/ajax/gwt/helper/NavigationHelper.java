@@ -427,19 +427,19 @@ public class NavigationHelper {
                 if (root != null) {
                     userNodes.add(root);
                 }
-            } else if (key.equals(JCRClientUtils.SCHMURTZ_REPOSITORY)) {
+            } else if (key.equals(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY)) {
                 GWTJahiaNode root = null;
                 final String s = nodeTypes.replaceAll(":", "_");
                 try {
-                    root = getNode("/schmurtzs/"+ s, workspace, jParams);
+                    root = getNode("/reusableComponents/"+ s, workspace, jParams);
                 } catch (GWTJahiaServiceException e) {
                     if(forceCreate) {
-                        contentManager.createNode("/schmurtzs", s,"jnt:schmurtzsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
-                        root = getNode("/schmurtzs/"+ s, workspace, jParams);
+                        contentManager.createNode("/reusableComponents", s,"jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
+                        root = getNode("/reusableComponents/"+ s, workspace, jParams);
                     }
                 }
                 if (root != null) {
-                    root.setDisplayName("schmurtzs");
+                    root.setDisplayName("reusableComponents");
                     userNodes.add(root);
                 }
             }

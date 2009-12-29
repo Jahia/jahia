@@ -248,12 +248,12 @@ rule "Profile Image update"
         Create a square thumbnail on reference "avatar_60" of size 60
 end
 
-rule "Create schmurtz"
+rule "Create reusable component"
     when
         A new node is created
-             - it has the type jnt:schmurtz
+             - it has the type jnt:reusableComponent
         The node has a property j:targetReference
     then
-        Log "Creating schmurtz node: " + node.getPath()
-        Create schmurtz node
+        Log "Creating reusable component node: " + node.getPath()
+        Create reusable node
 end

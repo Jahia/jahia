@@ -381,7 +381,7 @@
 [jmix:templateMixin] mixin
 
 //---------------------------------------------------------
-// Pages, content lists, schmurtzs
+// Pages, content lists, reusable components
 //---------------------------------------------------------
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
@@ -394,13 +394,13 @@
  orderable
  + * (nt:base) version
 
-[jnt:schmurtzsRoot] > nt:base, jmix:hierarchyNode, jmix:collection
- + * (jnt:schmurtzsFolder)
+[jnt:reusableComponentsRoot] > nt:base, jmix:hierarchyNode, jmix:collection
+ + * (jnt:reusableComponentsFolder)
 
-[jnt:schmurtzsFolder] > nt:base, jmix:hierarchyNode, jmix:collection
- + * (jnt:schmurtz) 
+[jnt:reusableComponentsFolder] > nt:base, jmix:hierarchyNode, jmix:collection
+ + * (jnt:reusableComponent)
 
-[jnt:schmurtz] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
+[jnt:reusableComponent] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
  - j:picture (weakreference, file[mime='image/*'])
  - j:targetReference (weakreference) hidden < nt:base
  + j:target (nt:base) version

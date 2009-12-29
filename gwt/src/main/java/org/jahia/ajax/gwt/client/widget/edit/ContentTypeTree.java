@@ -80,7 +80,7 @@ public class ContentTypeTree extends LayoutContainer {
     private final GWTJahiaNodeType nodeType;
     private final String baseType;
     private GWTJahiaNode parentNode;
-    private final boolean displaySchmurtz;
+    private final boolean displayReusableComponents;
     private final boolean displayPreview;
     private final int width;
     private final int height;
@@ -90,13 +90,13 @@ public class ContentTypeTree extends LayoutContainer {
     private TreeStore<ContentTypeModelData> store;
 
     public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
-                           boolean displaySchmurtz, boolean displayPreview, int width, int height, int rowHeight,
+                           boolean displayReusableComponents, boolean displayPreview, int width, int height, int rowHeight,
                            boolean isPopup, Window window) {
         this.linker = linker;
         this.nodeType = nodeType;
         this.baseType = baseType;
         this.parentNode = parentNode;
-        this.displaySchmurtz = displaySchmurtz;
+        this.displayReusableComponents = displayReusableComponents;
         this.displayPreview = displayPreview;
         this.width = width;
         this.height = height;
@@ -107,8 +107,8 @@ public class ContentTypeTree extends LayoutContainer {
     }
 
     public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
-                           boolean displaySchmurtz, boolean displayPreview, int width, int height, int rowHeight) {
-        this(linker, nodeType, baseType, parentNode, displaySchmurtz, displayPreview, width, height, rowHeight,false,null);
+                           boolean displayReusableComponents, boolean displayPreview, int width, int height, int rowHeight) {
+        this(linker, nodeType, baseType, parentNode, displayReusableComponents, displayPreview, width, height, rowHeight,false,null);
     }
 
 
@@ -127,13 +127,13 @@ public class ContentTypeTree extends LayoutContainer {
             rootEmptyContent = new ContentTypeModelData(nodeType);
             store.add(rootEmptyContent, false);
         }
-        if (displaySchmurtz) {
-            final GWTJahiaNode schmurtzFolder = new GWTJahiaNode();
+        if (displayReusableComponents) {
+            final GWTJahiaNode reusableComponentsFolder = new GWTJahiaNode();
             if (nodeType != null && rootEmptyContent != null) {
-                schmurtzFolder.setPath("/schmurtzs/" + nodeType.getName().replaceAll(":", "_"));
+                reusableComponentsFolder.setPath("/reusableComponents/" + nodeType.getName().replaceAll(":", "_"));
                 final ContentTypeModelData finalRootEmptyContent = rootEmptyContent;
-                JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.SCHMURTZ_REPOSITORY, schmurtzFolder,
-                                                                   "jnt:schmurtz", null, null, false,
+                JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, reusableComponentsFolder,
+                                                                   "jnt:reusableComponent", null, null, false,
                                                                    new AsyncCallback<List<GWTJahiaNode>>() {
                                                                        public void onFailure(Throwable caught) {
                                                                        }
@@ -205,7 +205,7 @@ public class ContentTypeTree extends LayoutContainer {
                         instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable caught) {
                                 MessageBox.alert("Alert",
-                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
                                                  null);
                             }
 

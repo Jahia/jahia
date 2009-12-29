@@ -791,7 +791,7 @@ public class EditContentEngine extends Window {
                         Info.display("", "Node created");
                         EditContentEngine.this.hide();
                         linker.refreshMainComponent();
-                        if(node.getNodeTypes().contains("jnt:schmurtz")) {
+                        if(node.getNodeTypes().contains("jnt:reusableComponent")) {
                             linker.refreshLeftPanel();
                         }
                     }
@@ -854,7 +854,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(GWTJahiaNode node) {
                         Info.display("", "Node created");
                         linker.refreshMainComponent();
-                        if(node.getNodeTypes().contains("jnt:schmurtz")) {
+                        if(node.getNodeTypes().contains("jnt:reusableComponent")) {
                             linker.refreshLeftPanel();
                         }
                         EditContentEngine.this.removeAll(true);

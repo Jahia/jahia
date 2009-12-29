@@ -36,16 +36,16 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
- * Toolbar action item to save the current node as a schmurtz.
+ * Toolbar action item to save the current node as a reusable component.
  * 
  * @author Sergiy Shyrkov
  */
-public class SaveAsSchmurtzActionItem extends BaseActionItem {
+public class SaveAsReusableComponentActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = -3579254325077395142L;
 
     public void onComponentSelection() {
-        ContentActions.saveAsSchmurtz(linker);
+        ContentActions.saveAsReusableComponent(linker);
     }
 
     public void handleNewLinkerSelection() {

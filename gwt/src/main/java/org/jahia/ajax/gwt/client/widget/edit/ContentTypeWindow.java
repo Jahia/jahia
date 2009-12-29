@@ -67,7 +67,7 @@ public class ContentTypeWindow extends Window {
     private ContentTypeTree contentTypeTree;
 
 
-    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType, boolean displaySchmurtz) {
+    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType, boolean displayReusableComponents) {
         this.linker = linker;
         if (nodeType != null) {
             this.baseType = nodeType.getName();
@@ -88,7 +88,7 @@ public class ContentTypeWindow extends Window {
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         contentTypeTree = new ContentTypeTree(linker, nodeType, baseType, parentNode,
-                                                                    displaySchmurtz,true,695,500,25, true,this);
+                                                                    displayReusableComponents,true,695,500,25, true,this);
         add(contentTypeTree);
         contentTypeTree.layout(true);
         layout();
@@ -126,7 +126,7 @@ public class ContentTypeWindow extends Window {
                         instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable caught) {
                                 MessageBox.alert("Alert",
-                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
                                                  null);
                             }
 

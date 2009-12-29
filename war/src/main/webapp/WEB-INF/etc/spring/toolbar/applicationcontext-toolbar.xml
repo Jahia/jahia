@@ -673,7 +673,7 @@
                 <ref bean="org.jahia.toolbar.item.delete"/>
                 <ref bean="org.jahia.toolbar.item.lock"/>
                 <ref bean="org.jahia.toolbar.item.unlock"/>
-                <ref bean="org.jahia.toolbar.item.saveAsSchmurtz"/>
+                <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
                 <ref bean="org.jahia.toolbar.item.ClipBoard"/>
             </list>
         </property>
@@ -781,7 +781,7 @@
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.saveAsSchmurtz"/>
+                <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
             </list>
         </property>
     </bean>
@@ -932,7 +932,7 @@
                 <ref bean="org.jahia.toolbar.item.cut"/>
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
-                <ref bean="org.jahia.toolbar.item.saveAsSchmurtz"/>
+                <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
             </list>
         </property>
     </bean>
@@ -2382,13 +2382,13 @@
         <property name="mediumIconStyle" value="gwt-toolbar-icon-pasteref"/>
     </bean>
 
-    <bean id="org.jahia.toolbar.item.saveAsSchmurtz" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.saveAsReusableComponent" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsSchmurtzActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsReusableComponentActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.saveAsSchmurtz"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-saveAsSchmurtz"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsSchmurtz"/>
+        <property name="titleKey" value="toolbar.manager.button.saveAsReusableComponent"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
     </bean>
     
     <bean id="org.jahia.toolbar.item.preview" class="org.jahia.services.toolbar.bean.Item">

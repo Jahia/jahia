@@ -7,7 +7,7 @@ Crazy Jane - Jahia Templates - Reusable components
   In this case, you just have to click on the top level page of the section you want to save as reusable component, then click on the "Save As reusable component" button in the "Edit" menu.
   This will save a copy of your content in a specific folder. Then when you want to create a new content you can reuse this component as a model.
 
-[./images/schmurtz.png]  
+[./images/reusableComponent.png]
 
 * Can I modify locally the content from an existing "reusable component"?
 
@@ -28,10 +28,10 @@ Crazy Jane - Jahia Templates - Reusable components
 * How?
 
   A file import.xml can be created in the root of the module. This file will be automatically imported and can
-  contain reusable components. In the JCR, reusable components are organized in subfolder of /schmurtz, named by node type -
-  this folder will contain a node of type "jnt:schmurtz", with a single subnode j:target.
+  contain reusable components. In the JCR, reusable components are organized in subfolder of /reusableComponents, named by node type -
+  this folder will contain a node of type "jnt:reusableComponent", with a single subnode j:target.
 
-  For example this import file will create two schmurtzes for type jnt:navBar :
+  For example this import file will create two reusable components for type jnt:navBar :
 
 ------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
@@ -39,19 +39,19 @@ Crazy Jane - Jahia Templates - Reusable components
                     xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
                     xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
                     xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
-    <schmurtz jcr:primaryType="jnt:schmurtzsRoot">
-        <jnt_navBar jcr:primaryType="jnt:schmurtzsFolder">
-            <topBar jcr:primaryType="jnt:schmurtz">
+    <reusableComponents jcr:primaryType="jnt:reusableComponentsRoot">
+        <jnt_navBar jcr:primaryType="jnt:reusableComponentsFolder">
+            <topBar jcr:primaryType="jnt:reusableComponent">
                 <j:target jcr:primaryType="jnt:navBar"
                           j:maxDepth="1"
                           j:startLevel="0"/>
             </topBar>
-            <sideBar jcr:primaryType="jnt:schmurtz">
+            <sideBar jcr:primaryType="jnt:reusableComponent">
                 <j:target jcr:primaryType="jnt:navBar"
                           j:maxDepth="3"
                           j:startLevel="2"/>
             </sideBar>
         </jnt_navBar>
-    </schmurtz>
+    </reusableComponents>
 </content>
 ------------------------------

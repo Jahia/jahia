@@ -569,7 +569,7 @@ public class Service {
         service.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
     }
 
-    public void createSchmurtz(final NodeWrapper node, KnowledgeHelper drools)
+    public void createReusableComponent(final NodeWrapper node, KnowledgeHelper drools)
             throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(
                 new JCRCallback<Boolean>() {
@@ -580,7 +580,7 @@ public class Service {
                         node.getNode().getProperty("j:targetReference").remove();
                         session.save();
                         session.getWorkspace().copy(targetNode, node.getPath() + "/j:target");
-                        logger.info("Schmurtz is created with the name '" + node.getName() + "' for target node " + targetNode);
+                        logger.info("Reusable component is created with the name '" + node.getName() + "' for target node " + targetNode);
                         return true;
                     }
                 });

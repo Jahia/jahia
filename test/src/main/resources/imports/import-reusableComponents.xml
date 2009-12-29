@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schmurtzs j:fullpath="/schmurtzs" jcr:primaryType="jnt:schmurtzsRoot" jcr:uuid="8849335a-e1eb-440e-b21d-0966ba7f315c"
+<reusableComponents j:fullpath="/reusableComponents" jcr:primaryType="jnt:reusableComponentsRoot" jcr:uuid="8849335a-e1eb-440e-b21d-0966ba7f315c"
            xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
            xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
-    <jnt_page j:fullpath="/schmurtzs/jnt_page" jcr:primaryType="jnt:schmurtzsFolder"
+    <jnt_page j:fullpath="/reusableComponents/jnt_page" jcr:primaryType="jnt:reusableComponentsFolder"
               jcr:uuid="34d3698e-4052-4977-b8b2-9b2ea08ed9d3">
-        <_x0033_pageschmurtz j:fullpath="/schmurtzs/jnt_page/3pageschmurtz" jcr:primaryType="jnt:schmurtz"
+        <_x0033_pagereusableComponent j:fullpath="/reusableComponents/jnt_page/3pagereusableComponent" jcr:primaryType="jnt:reusableComponent"
                              jcr:uuid="1daff37d-174d-4a69-a049-c4c666fc4e3e">
-            <j:translation jcr:language="en" jcr:title_en="3pageschmurtz" jcr:primaryType="jnt:translation"
+            <j:translation jcr:language="en" jcr:title_en="3pagereusableComponent" jcr:primaryType="jnt:translation"
                            j:targetReference="316b7767-46c8-412c-a3bd-dbbd5cca5cea"
                            jcr:uuid="6412f2d8-b7df-4728-8096-22f8ec88a51b"/>
             <j:target j:fullpath="/sites/mySite/home" jcr:primaryType="jnt:page"
@@ -41,6 +41,6 @@
                                    jcr:uuid="d66522b7-7348-4682-82d5-218b1b4ae1a5"/>
                 </page3>
             </j:target>
-        </_x0033_pageschmurtz>
+        </_x0033_pagereusableComponent>
     </jnt_page>
-</schmurtzs>
+</reusableComponents>

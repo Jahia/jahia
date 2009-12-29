@@ -130,7 +130,7 @@ public class EditModeDNDListener extends DNDListener {
                         instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable caught) {
                                 MessageBox.alert("Alert",
-                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
                                                  null);
                             }
 
@@ -209,7 +209,7 @@ public class EditModeDNDListener extends DNDListener {
                         instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable caught) {
                                 MessageBox.alert("Alert",
-                                                 "Unable to copy schmurtz to destination. Cause: " + caught.getLocalizedMessage(),
+                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
                                                  null);
                             }
 

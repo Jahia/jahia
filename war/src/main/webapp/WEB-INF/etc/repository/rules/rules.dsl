@@ -77,6 +77,6 @@
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeLater(node, "{property}",{ruleName}, drools);
-[consequence][]Create schmurtz {node}=service.createSchmurtz(node, drools);
+[consequence][]Create reusable {node}=service.createReusableComponent(node, drools);
 [consequence][]Create task "{title}" with description "{description}" for user {forUser}=service.createTask({forUser}, "{title}", "{description}", drools);
 [consequence][]Create task "{title}" with description "{description}" for members of group {group}=service.createTaskForGroupMembers({group}, "{title}", "{description}", drools);

@@ -115,5 +115,5 @@
         </j:acl>
     </categories>
 
-    <schmurtzs jcr:primaryType="jnt:schmurtzsRoot"/>
+    <reusableComponents jcr:primaryType="jnt:reusableComponentsRoot"/>
 </content>

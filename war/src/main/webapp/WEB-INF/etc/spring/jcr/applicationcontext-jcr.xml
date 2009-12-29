@@ -136,7 +136,14 @@
         <property name="interceptors">
             <list>
                 <bean class="org.jahia.services.content.interceptor.URLInterceptor"/>
-                <bean class="org.jahia.services.content.interceptor.I18NInterceptor"/>
+                <bean class="org.jahia.services.content.interceptor.I18NInterceptor">
+                	<property name="skippedProperties">
+                		<set>
+                			<value>jcr:language</value>
+                			<value>j:tags</value>
+                		</set>
+                	</property>
+                </bean>
             </list>
         </property>
     </bean>

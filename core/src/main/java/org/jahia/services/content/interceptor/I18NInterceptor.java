@@ -1,5 +1,7 @@
 package org.jahia.services.content.interceptor;
 
+import java.util.Set;
+
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -17,8 +19,11 @@ import javax.jcr.version.VersionException;
  * To change this template use File | Settings | File Templates.
  */
 public class I18NInterceptor implements PropertyInterceptor {
+    
+    private Set<String> skippedProperties;
+    
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
-        return !definition.isInternationalized() && node.hasNode("j:translation") && !"jcr:language".equals(definition.getName());
+        return !definition.isInternationalized() && node.hasNode("j:translation") && !skippedProperties.contains(definition.getName());
     }
 
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -51,5 +56,9 @@ public class I18NInterceptor implements PropertyInterceptor {
 
     public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues) throws ValueFormatException, RepositoryException {
         return storedValues;
+    }
+
+    public void setSkippedProperties(Set<String> skippedProperties) {
+        this.skippedProperties = skippedProperties;
     }
 }

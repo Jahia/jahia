@@ -18,7 +18,14 @@
 <c:forEach items="${currentList}" var="subchild">
     <li>
 		<jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
-        <a href="${url.base}/${subchild.path}.html"><c:out value="${not empty title && not empty title.string ? title.string : currentNode.name}"/></a>
+        <c:choose>
+            <c:when test='${jcr:isNodeType(subchild, "nt:file")}' >
+                <a href="${url.files}${subchild.path}"><c:out value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
+            </c:when>
+            <c:otherwise>
+                <a href="${url.base}${subchild.path}.html"><c:out value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>                
+            </c:otherwise>
+        </c:choose>
     </li>
 </c:forEach>
 </ul>

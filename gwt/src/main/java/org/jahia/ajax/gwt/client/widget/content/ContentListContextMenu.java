@@ -52,15 +52,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * Context menu used in the content managers.
  *
  * @author rfelden
  * @version 8 juil. 2008 - 11:42:43
  */
 
-/**
- * ToDo: [ManagerConfiguration-Spring] get the set of the toolbar from the ManagerConfiguration
- */
 public class ContentListContextMenu extends Menu {
     final ManagerLinker linker;
     final ManagerConfiguration config;
@@ -79,7 +76,7 @@ public class ContentListContextMenu extends Menu {
             }
 
             public void onFailure(Throwable throwable) {
-                Log.error("Unable to get toobar due to", throwable);
+                Log.error("Unable to get toolbar due to", throwable);
             }
         });
 
@@ -93,7 +90,7 @@ public class ContentListContextMenu extends Menu {
     }
 
     /**
-     * Create Menue
+     * Create menu
      *
      * @param gwtJahiaToolbarSet
      */
@@ -121,7 +118,7 @@ public class ContentListContextMenu extends Menu {
 
 
     /**
-     * check linker seletion
+     * check linker selection
      */
     private void checkLinkerSelection() {
         for (ActionItem item : actionItems) {

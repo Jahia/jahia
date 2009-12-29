@@ -98,11 +98,12 @@ class PagesTabItem extends SidePanelTabItem {
         initDND();
     }
 
+    @Override
     public void refresh() {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
     }
-    
+
     class PageTreeGridDropTarget extends TreeGridDropTarget {
         public PageTreeGridDropTarget() {
             super(PagesTabItem.this.tree);

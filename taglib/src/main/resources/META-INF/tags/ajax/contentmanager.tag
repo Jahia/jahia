@@ -373,6 +373,8 @@ while (selectedNodeIter.hasNext()) {
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.save.label"
                             aliasResourceName="fm_save"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.saveAndNew.label"
+                            aliasResourceName="fm_saveAndNew"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.restore.label"
                             aliasResourceName="fm_restore"/>
 

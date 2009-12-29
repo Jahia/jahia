@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
@@ -71,6 +72,9 @@ class PagesTabItem extends SidePanelTabItem {
 
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.pages", tree.getSelectionModel()));
+        
         add(tree);
     }
 
@@ -179,4 +183,5 @@ class PagesTabItem extends SidePanelTabItem {
             // do nothing
         }
     }
+
 }

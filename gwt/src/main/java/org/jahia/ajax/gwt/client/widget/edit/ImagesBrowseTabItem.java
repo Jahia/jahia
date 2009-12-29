@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -73,6 +74,8 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             }
         });
 
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images", tree.getSelectionModel()));
+
         final ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x",  "hidden");
         listView.setStore(contentStore);
@@ -104,6 +107,8 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             }
         });
 
+        listView.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images.preview", listView.getSelectionModel()));
+        
         dragSource = new ImageDragSource(listView);
     }
 

@@ -142,6 +142,9 @@ public class ContentTypeWindow extends Window {
                                     public void onSuccess(Object result) {
                                         hide();
                                         linker.refreshMainComponent();
+                                        if (baseType.equals("jnt:page")) {
+                                            linker.refreshLeftPanel();
+                                        }
                                     }
                                 });
                             }

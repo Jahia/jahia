@@ -75,8 +75,7 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
     private void addMandatoryGwtMessages(JahiaData jData, Locale currentLocale) {
         addGwtDictionaryMessage("workInProgressTitle", getAdminMessage("org.jahia.admin.workInProgressTitle", jData, currentLocale));
         addGwtDictionaryMessage("workInProgressProgressText", getAdminMessage("org.jahia.admin.workInProgressProgressText", jData, currentLocale));
-        String copyright = Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber();
-        addGwtDictionaryMessage("fm_copyright", copyright);
+        addGwtDictionaryMessage("fm_copyright", Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber());
     }
 
     /**

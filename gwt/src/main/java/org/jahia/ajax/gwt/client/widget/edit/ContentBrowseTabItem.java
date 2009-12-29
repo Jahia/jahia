@@ -98,4 +98,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
         super.initWithLinker(linker);
         displayGridSource.addDNDListener(editLinker.getDndListener());
     }
+
+    @Override
+    protected boolean acceptNode(GWTJahiaNode node) {
+        return node.getInheritedNodeTypes().contains("jnt:content");
+    }
 }

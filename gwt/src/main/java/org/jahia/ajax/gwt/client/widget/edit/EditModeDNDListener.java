@@ -36,6 +36,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String QUERY_SOURCE_TYPE = "query";
 
     public static final String PAGETREE_TYPE = "pageTree";
+    public static final String BROWSETREE_TYPE = "browseTree";
     public static final String SIMPLEMODULE_TYPE = "simpleModule";
     public static final String PLACEHOLDER_TYPE = "placeholder";
 
@@ -257,6 +258,15 @@ public class EditModeDNDListener extends DNDListener {
 //                    Window.alert("insert");
 //                }
 //                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
+            }
+        } else if (BROWSETREE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
+            String targetPath = e.getStatus().getData(TARGET_PATH);
+            if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item move
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
+
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), targetPath, nodes.get(0).getName(), callback);
             }
         }
         super.dragDrop(e);

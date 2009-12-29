@@ -142,4 +142,10 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
     }
 
+    @Override
+    protected boolean acceptNode(GWTJahiaNode node) {
+        return node.getInheritedNodeTypes().contains("jnt:portlet");
+    }
+
+
 }

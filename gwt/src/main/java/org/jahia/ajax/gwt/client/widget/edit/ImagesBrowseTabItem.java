@@ -172,4 +172,10 @@ class ImagesBrowseTabItem extends BrowseTabItem {
 
     }
 
+    @Override
+    protected boolean acceptNode(GWTJahiaNode node) {
+        return node.getInheritedNodeTypes().contains("nt:file");
+    }
+
+
 }

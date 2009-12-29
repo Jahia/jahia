@@ -135,8 +135,8 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("percent.png")
     public AbstractImagePrototype percent();
 
-    @Resource("jnt_adress.png")
-    public AbstractImagePrototype jntAdress();
+    @Resource("jnt_address.png")
+    public AbstractImagePrototype jntAddress();
 
     @Resource("jnt_tag.png")
     public AbstractImagePrototype jntTag();

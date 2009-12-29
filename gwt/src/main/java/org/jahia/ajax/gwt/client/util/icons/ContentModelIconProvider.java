@@ -111,7 +111,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String DEFAULT_NODE = "default_node";
     public static final String FOLDER_CLOSE = "folder_close";
     public static final String FOLDER_OPEN = "folder_open";
-    public static final String JNT_ADRESS = "jnt_adress";
+    public static final String JNT_ADDRESS = "jnt_address";
     public static final String JAHIA_FORUM = "jahiaForum:";
     public static final String JNT_RICHTEXT = "jnt:richtext";
     public static final String JNT_VIDEO = "jnt:video";
@@ -208,8 +208,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.folderClose();
             } else if (type.equalsIgnoreCase(FOLDER_OPEN)) {
                 return CONTENT_ICONS.folderOpen();
-            } else if (type.equalsIgnoreCase(JNT_ADRESS)) {
-                return CONTENT_ICONS.jntAdress();
+            } else if (type.equalsIgnoreCase(JNT_ADDRESS)) {
+                return CONTENT_ICONS.jntAddress();
             }
             // node type that begins with jahiaForum:
             else if (type.indexOf(JAHIA_FORUM) == 0) {

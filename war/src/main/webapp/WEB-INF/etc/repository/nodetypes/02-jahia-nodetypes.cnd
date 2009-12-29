@@ -335,8 +335,8 @@
 //---------------------------------------------------------
 
 [jmix:link] mixin
-- j:alt (string)
-- j:target (string, choicelist) < '_blank','_self'
+ - j:alt (string)
+ - j:target (string, choicelist) < '_blank','_self'
 
 [jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:node (weakreference)
@@ -419,7 +419,7 @@
 [jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
 + * (jnt:portletDefinition)
 
-[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, jmix:interactiveContent, jmix:publication
+[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:interactiveContent, jmix:publication
  - j:application (string,portletdefinition) hidden
  - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)

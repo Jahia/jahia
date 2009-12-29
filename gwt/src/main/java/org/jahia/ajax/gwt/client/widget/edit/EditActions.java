@@ -182,8 +182,8 @@ public class EditActions {
                         }
                         JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
                             public void onFailure(Throwable throwable) {
-                                Log.error("", throwable);
-                                com.google.gwt.user.client.Window.alert("-delete->" + throwable.getMessage());
+                                Log.error(throwable.getMessage(), throwable);
+                                MessageBox.alert("", throwable.getMessage(), null);
                             }
 
                             public void onSuccess(Object o) {

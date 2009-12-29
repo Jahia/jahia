@@ -11,18 +11,19 @@
     function addNewTag(tagForm, uuid, separator) {
         var newTag = tagForm.elements['j:newTag'];
         if (newTag.value.length > 0) {
-            jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
-                var tagContainer = jQuery('#jahia-tags-' + uuid);
-            <%-- TODO: need to check if the tag already assigned to prevent dublicates --%>
-                if (separator.length > 0 && jQuery('#jahia-tags-' + uuid + ' > span').length > 0) {
-                    tagContainer.append(separator);
-                }
-                var tagDisplay = jQuery('<span>' + newTag.value + '</span>');
-                tagDisplay.hide();
-                tagContainer.append(tagDisplay);
-                tagDisplay.fadeIn('fast');
-                newTag.value = '';
-            });
+            var tagContainer = jQuery('#jahia-tags-' + uuid);
+            if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
+	            jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
+	                if (separator.length > 0 && jQuery('#jahia-tags-' + uuid + ' > span').length > 0) {
+	                    tagContainer.append(separator);
+	                }
+	                var tagDisplay = jQuery('<span>' + newTag.value + '</span>');
+	                tagDisplay.hide();
+	                tagContainer.append(tagDisplay);
+	                tagDisplay.fadeIn('fast');
+	                newTag.value = '';
+	            });
+            }
         }
     }
 </script>

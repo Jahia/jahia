@@ -26,9 +26,6 @@
 [jnt:fileList] > jnt:content, jmix:structuredContent
  - folder (weakreference, file[folder])
 
-[jnt:image] > jnt:content, jmix:structuredContent
- - image (weakreference, file[mime='image/*']) i18n
-
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent
  - source (string) indexed=no
  - name (string) indexed=no

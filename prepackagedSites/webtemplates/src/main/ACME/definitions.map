@@ -108,8 +108,8 @@ web_templates:pressContainer.title = jcr:title
 web_templates:introductionContainer = jnt:bigText, setProperty jmix:renderable.j:template=introduction
 web_templates:introductionContainer.introduction = jnt:bigText.text
 
-web_templates:logoContainer = jnt:image
-web_templates:logoContainer.logo = jnt:image.image
+web_templates:logoContainer = jnt:nodeReference
+web_templates:logoContainer.logo = j:node
 
 web_templates:footerContentContainer = jnt:bigText
 web_templates:footerContentContainer.footer = jnt:bigText.text

@@ -58,6 +58,7 @@
 			                <ref bean="org.jahia.toolbar.item.cut"/>
 			                <ref bean="org.jahia.toolbar.item.paste"/>
 			                <ref bean="org.jahia.toolbar.item.pasteReference"/>
+			                <ref bean="org.jahia.toolbar.item.Separator"/>
 			                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
                 		</list>
                 	</property>

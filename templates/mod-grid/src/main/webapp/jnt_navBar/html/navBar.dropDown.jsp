@@ -53,7 +53,7 @@
        <div class="clear"></div>
     </div>
     <div id="navbar">
-        <jcr:JCRSimpleNavigation node="${rootPage}" var="menu"/>
+        <jcr:simpleNavigationMenu node="${rootPage}" var="menu"/>
         <c:if test="${not empty menu}">
             <ul class="main-nav">
                 <li class="home"><a href="${url.base}${rootPage.path}.html">Home</a></li>
@@ -65,7 +65,7 @@
                     </c:if>
                     <li class="${submenu}">
                         <a href="${url.base}${navNode.path}.html">${title.string}</a>
-                        <jcr:JCRSimpleNavigation node="${navNode}" var="innerMenu"/>
+                        <jcr:simpleNavigationMenu node="${navNode}" var="innerMenu"/>
                         <c:if test="${not empty innerMenu}">
                             <div class="box-inner">
                                 <ul class="submenu">

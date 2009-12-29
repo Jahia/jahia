@@ -1,6 +1,6 @@
 Jahia Test Package
 
-* Executing a test
+* JUnit test
 
  Jahia can execute JUnit test inside tomcat's context. Tests need to be deployed into Jahia, and can be executed
  through maven.
@@ -28,7 +28,9 @@ Jahia Test Package
 
 * Jmeter test
 
- You can execute JMeter test on your running tomcat
+** Running tests
+
+ You can execute JMeter tests on your running tomcat
 
  If your on windows this will run only under CYGWIN
 
@@ -50,6 +52,9 @@ Jahia Test Package
  You also need to add some parameters for jmeter :
 
 ---------------------------
+<jahia.test.jmeter.username>root</jahia.test.jmeter.username>
+<jahia.test.jmeter.password>root1234</jahia.test.jmeter.password>
+<jahia.test.jmeter.context>/jahia</jahia.test.jmeter.context>
 <jahia.test.jmeter.loops>3</jahia.test.jmeter.loops>
 <jahia.test.jmeter.threads>1</jahia.test.jmeter.threads>
 ---------------------------
@@ -69,8 +74,18 @@ Jahia Test Package
 
  To execute the jmeter test just run : mvn -P jmeterTest install
 
+ A single  jmeter test can be executed by adding the -Dtest parameter to the command line, with the name of the jmeter  
+ test folder.
+
+** Developing a jmeter test
+
+ Every JMeter has a folder in scripts/jmeter with one or more .jmx file and a test.properties file. The test.properties
+ file allows you to add custom parameters to the execution of the jmeter. The whole content of test.properties will be
+ added tho the jmeter command line.
+
 * Execute tests in automated environment
 
  A profile startJahia is defined to help execution of tests automatically. This profile will configure jahia, start
  tomcat, execute test tasks, then stops jahia and delete it. This need to be combined with other profiles / tasks
  (testJahia, jmeterTest) .
+

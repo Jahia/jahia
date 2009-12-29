@@ -38,7 +38,7 @@ class BrowseTabItem extends SidePanelTabItem {
         factory.setNodeTypes(nodetypes);
 
         ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
-        columnConfig.setRenderer(new TreeGridCellRenderer());
+        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
 //        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
         tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig)));
         tree.setAutoExpandColumn("displayName");

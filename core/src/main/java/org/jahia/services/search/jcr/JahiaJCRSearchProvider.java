@@ -236,6 +236,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
                 query.append("]");
             }
+            if (!isFileSearch(params)) {
+                query.append("/home");
+            }
             query.append("//element(*,").append(getNodeType(params))
                     .append(")");
         } else {
@@ -249,6 +252,21 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         logger.info("XPath query built: " + xpathQuery);
 
         return xpathQuery;
+    }
+    
+    private boolean isFileSearch(SearchCriteria params) {
+        boolean fileSearch = false;
+        for (Term textSearch : params.getTerms()) {
+            SearchFields fields = textSearch.getFields();
+            if (fields.isFileContent()) {
+                fileSearch = true;
+            }
+            if (fields.isSiteContent()) {
+                fileSearch = false;
+                break;
+            }
+        }
+        return fileSearch;
     }
     
     private String getNodeType(SearchCriteria params) {
@@ -503,7 +521,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     }
                     if (searchFields.isFilename()) {
                         addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(@j:filename, " + searchExpression
+                                "jcr:contains(@j:nodename, " + searchExpression
                                         + ")");
                     }
                 }

@@ -3,18 +3,18 @@ Usage of User Profile
   When the user access to his own profile, in live mode he could edit all his information directly from the page
   without going to edit mode engines or content manager.
 
-  This module mainly use {{{http://jquery.com/}JQuery}} and {{{http://www.appelsiini.net/projects/jeditable}JEditable}}.
+  This module mainly use {{{http://jquery.com/}jQuery}} and {{{http://www.appelsiini.net/projects/jeditable}Jeditable}}.
 
   This is a good entry point to have example of how to use in line edition for editing small properties in live mode.
 
-  In this documentation we will show how to make edition of text,richtext,date,file,dropdown properties.
+  In this documentation we will show how to make edition of text, richtext, date, file, dropdown properties.
 
-  For each of those type of data we use the same principle a javascript function applied to a class that allow
-  the edition of the content when the user click on it.
+  For each of those type of data we use the same principle a JavaScript function applied to a class that allow
+  the edition of the content when the user clicks on it.
 
 * {Simple} Text
 
-  Here the javascript example of how to edit a simple text :
+  Here the JavaScript example of how to edit a simple text :
 
 -----------------------------------------------
 <script type="text/javascript">
@@ -39,11 +39,11 @@ $(document).ready(function() {
 </script>
 -----------------------------------------------
 
-  In this javascript function we create a data map for handling our form data, we pass a 'methodToCall' parameter to Jahia
-  to use a put method instead of a post. For the name of the properties to update we get it form the id of the html object
-  associated with this edition. When the post i submitted we get the updated node as json data and we update some specific content on the page.
+  In this JavaScript function we create a data map for handling our form data, we pass a 'methodToCall' parameter to Jahia
+  to use a put method instead of a post. For the name of the properties to update we get it form the id of the HTML object
+  associated with this edition. When the post is submitted we get the updated node as json data and we update some specific content on the page.
 
-  Now the html code associated :
+  Now the HTML code associated :
 
 -----------------------------------------------
 <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
@@ -75,7 +75,7 @@ $(document).ready(function() {
 </script>
 -----------------------------------------------
 
-  Now the html for using this ckeditor in line edition :
+  Now the HTML for using this CKEditor in line edition :
 
 -----------------------------------------------
 <div class="ckeditorEdit" id="j_about">${fields['j:about']}</div>
@@ -83,7 +83,7 @@ $(document).ready(function() {
 
 * {Date} Picker
 
-  For date we will use a {{{http://www.eyecon.ro/datepicker/}date picker plugin for jquery}}. Here how we use it for Jahia.
+  For date we will use a {{{http://www.eyecon.ro/datepicker/}date picker plugin for jQuery}}. Here how we use it for Jahia.
 
 -----------------------------------------------
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
@@ -117,10 +117,10 @@ $(document).ready(function() {
             tooltip : 'Click to edit',
             datepicker : {
                 flat: true,
-                date: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                date: '${not empty editBirthDate ? editBirthDate : editNowDate}',
                 format: 'd/m/Y',
                 view: 'years',
-                current: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                current: '${not empty editBirthDate ? editBirthDate : editNowDate}',
                 calendars: 1,
                 starts: 1     }
         });
@@ -174,8 +174,8 @@ $(document).ready(function() {
 </script>
 ------------------------------------------------
 
-  The tag <<<\<jcr:propertyInitializers/\>>>> store the list of ChoiceListValue object associated with the property to he specifed var.
-  We iterate ober the list to create a javascript map that will be used for initializing our data for the dropdown list.
+  The tag <<<\<jcr:propertyInitializers/\>>>> store the list of ChoiceListValue object associated with the property to the specified var.
+  We iterate over the list to create a JavaScript map that will be used for initializing our data for the dropdown list.
 
   HTML usage example :
 
@@ -221,7 +221,7 @@ $(document).ready(function() {
 
   We see that the ajaxupload editable allow to define a callback with the data from the result of the post.
   We use those datas (list of uuids) to associate the newly created file with our profile <<<j:picture>>> property.
-  Once associated ine the json for the <<<j:picture>>> property we have the url associated instead of the uuid of the
+  Once associated in the json for the <<<j:picture>>> property we have the url associated instead of the uuid of the
   reference.
 
   HTML usage example :

@@ -158,12 +158,13 @@
             tooltip : 'Click to edit',
             datepicker : {
                 flat: true,
-                date: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                date: '${not empty editBirthDate ? editBirthDate : editNowDate}',
                 format: 'd/m/Y',
                 view: 'years',
-                current: '<c:if test="${not empty editBirthDate}">${editBirthDate}</c:if><c:if test="${empty editBirthDate}">${editNowDate}</c:if>',
+                current: '${not empty editBirthDate ? editBirthDate : editNowDate}',
                 calendars: 1,
-                starts: 1     }
+                starts: 1
+            }
         });
 
         $(".genderEdit").editable(function (value, settings) {

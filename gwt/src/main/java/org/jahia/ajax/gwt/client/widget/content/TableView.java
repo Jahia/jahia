@@ -168,7 +168,7 @@ public class TableView extends TopRightComponent {
         }
         m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_grid.setBorders(true);
-        m_grid.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "name");
+        m_grid.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "displayName");
         if (checkboxSelectionModel != null) {
         	m_grid.setSelectionModel(checkboxSelectionModel);
         	m_grid.addPlugin(checkboxSelectionModel);

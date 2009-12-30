@@ -319,9 +319,10 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         if (key == null || key.length() == 0) {
             return key;
         }
-        String value = new JahiaResourceBundle(paramBean.getUILocale(), paramBean.getSite().getTemplatePackageName()).get(key, null);
+        Locale locale = paramBean.getUILocale() != null ? paramBean.getUILocale() : paramBean.getLocale();  
+        String value = new JahiaResourceBundle(locale, paramBean.getSite() != null ? paramBean.getSite().getTemplatePackageName() : null).get(key, null);
         if (value == null || value.length() == 0) {
-            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getUILocale());
+            value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Resources value: " + value);

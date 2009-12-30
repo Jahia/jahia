@@ -3780,7 +3780,7 @@ public class ProcessingContext {
     }
 
     public Locale getUILocale() {
-        return uiLocale;
+        return uiLocale != null ? uiLocale : getCurrentLocale();
     }
 
     public void setUILocale(Locale uiLocale) {

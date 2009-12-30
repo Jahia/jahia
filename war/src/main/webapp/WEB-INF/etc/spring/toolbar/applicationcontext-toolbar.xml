@@ -2279,8 +2279,8 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.manager.button.createFolder"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newFolder"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newFolder"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newfolder"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newfolder"/>
     </bean>
 
     <bean id="org.jahia.toolbar.item.newGadget" class="org.jahia.services.toolbar.bean.Item">

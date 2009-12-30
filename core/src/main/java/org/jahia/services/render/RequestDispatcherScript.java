@@ -197,7 +197,7 @@ public class RequestDispatcherScript implements Script {
                 }
             });
         } catch (ServletException e) {
-            throw new RenderException(e);
+            throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);
         } catch (IOException e) {
             throw new RenderException(e);
         } finally {

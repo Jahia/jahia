@@ -31,45 +31,49 @@
  */
 package org.jahia.services.query;
 
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStream;
 import java.util.*;
 
 /**
- * Unit test for publish / unpublish using JCR - tests publish / unpublish of pages, container lists, containers - with different language
- * settings (all, none, one, two languages) - with using user not having rights - publication with automatically publishing parent
+ * Unit test for checking different index options
  * 
  * @author Benjamin Papez
  * 
  */
-public class IndexOptionsTest extends TestCase {
+public class IndexOptionsTest {
     private static Logger logger = Logger.getLogger(IndexOptionsTest.class);
-    private JahiaSite site;
-    private final static String TESTSITE_NAME = "jcrWorkflowTest";
+    private final static String TESTSITE_NAME = "jcrIndexOptionsTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         try {
-            site = TestHelper.createSite(TESTSITE_NAME);
+            JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
             assertNotNull(site);
 
             JCRStoreService jcrService = ServicesRegistry.getInstance()
                     .getJCRStoreService();
             JCRSessionWrapper session = jcrService.getSessionFactory()
                     .getCurrentUserSession();
-            InputStream importStream = getClass().getClassLoader()
+            InputStream importStream = IndexOptionsTest.class.getClassLoader()
                     .getResourceAsStream("imports/importIndexOptionNodes.xml");
             session.importXML(SITECONTENT_ROOT_NODE + "/home", importStream,
                     ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
@@ -79,7 +83,18 @@ public class IndexOptionsTest extends TestCase {
             logger.warn("Exception during test setUp", ex);
         }
     }
+    
+    @Before
+    public void setUp() {
 
+    }
+    
+    @After
+    public void tearDown() {
+        
+    }
+    
+    @Test
     public void testNonIndexedFields() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
@@ -109,7 +124,8 @@ public class IndexOptionsTest extends TestCase {
             session.save();
         }
     }
-
+    
+    @Test
     public void testNoFulltextIndexedField() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
@@ -139,7 +155,8 @@ public class IndexOptionsTest extends TestCase {
             session.save();
         }
     }
-
+    
+    @Test
     public void testSorting() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
@@ -255,7 +272,8 @@ public class IndexOptionsTest extends TestCase {
             session.save();
         }
     }
-
+    
+    @Test
     public void testPublishUnpublishPageWithContent() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
@@ -286,8 +304,8 @@ public class IndexOptionsTest extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {

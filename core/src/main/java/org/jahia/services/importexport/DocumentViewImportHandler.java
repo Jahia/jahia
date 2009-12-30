@@ -195,13 +195,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         switch (uuidBehavior) {
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
                                 try {
-                                    session.getNodeByUUID(uuid);
-                                    throw new ItemExistsException(uuid);
+                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                    if (node.isNodeType("mix:shareable")) {
+                                        // ..
+                                    } else {
+                                        throw new ItemExistsException(uuid);
+                                    }
                                 } catch (ItemNotFoundException e) {
                                 }
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
                                 //todo implement uuid behaviour cases
+
+                                if (uuidMapping.containsKey(uuid)) {
+                                    // shareable node ?
+                                }
 
                                 if (nodes.peek().getRealNode() instanceof NodeImpl) {
                                     Name name = NameFactoryImpl.getInstance().create(namespaceURI,decodedLocalName);
@@ -403,13 +411,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
             zis = null;
         }
-
-        if (resolveReferenceAtEnd) {
-            try {
+        try {
+            if (resolveReferenceAtEnd) {
                 ReferencesHelper.resolveCrossReferences(session, uuidMapping, references);
-            } catch (RepositoryException e) {
-                throw new SAXException(e);
             }
+        } catch (RepositoryException e) {
+            throw new SAXException(e);
         }
     }
 

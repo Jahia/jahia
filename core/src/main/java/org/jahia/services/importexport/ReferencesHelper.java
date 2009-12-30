@@ -3,10 +3,7 @@ package org.jahia.services.importexport;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +35,14 @@ public class ReferencesHelper {
                 update(references.get(uuid), session, uuidMapping.get(uuid));
             } else {
                 try {
-                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                    // node was existing and is not in import, use old uuid
-                    update(references.get(uuid), session, uuid);
+                    if (uuid.startsWith("/")) {
+                        JCRNodeWrapper node = session.getNode(uuid);
+                        update(references.get(uuid), session, node.getIdentifier());
+                    } else {
+                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                        // node was existing and is not in import, use old uuid
+                        update(references.get(uuid), session, uuid);
+                    }
                 } catch (ItemNotFoundException e) {
                     // store reference for later
                     List<String> paths = references.get(uuid);
@@ -59,13 +61,28 @@ public class ReferencesHelper {
 
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {
         for (String path : paths) {
-            Node n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
+            JCRNodeWrapper n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
             String pName = path.substring(path.lastIndexOf("/") + 1);
-
-            try {
-                n.setProperty(pName, value);
-            } catch (ItemNotFoundException e) {
-                e.printStackTrace();
+            if (pName.startsWith("@")) {
+                //shareable node
+                JCRNodeWrapper source = session.getNodeByUUID(value);
+                if (!source.isNodeType("mix:shareable")) {
+                    source.addMixin("mix:shareable");
+                    session.save(); // must save after adding shareable
+                }
+                n.clone(source, pName.substring(1));
+//                JCRWorkspaceWrapper wrapper = n.getSession().getWorkspace();
+//                wrapper.clone(wrapper.getName(), source.getPath(), n.getPath() + "/" + pName.substring(1), false);
+            } else {
+                try {
+                    if (n.getApplicablePropertyDefinition(pName).isMultiple()) {
+                        n.setProperty(pName, new String[]{value});
+                    } else {
+                        n.setProperty(pName, value);
+                    }
+                } catch (ItemNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -32,6 +32,9 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.NodeImpl;
+import org.apache.jackrabbit.spi.*;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -2209,5 +2212,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
         return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
+                   ConstraintViolationException, LockException,
+                   RepositoryException {
+        if (getRealNode() instanceof NodeImpl && sharedNode.getRealNode() instanceof NodeImpl) {
+            String uri = "";
+            if (name.contains(":")) {
+                uri = session.getNamespaceURI(StringUtils.substringBefore(name, ":"));
+                name = StringUtils.substringAfter(name, ":");
+            }
+            org.apache.jackrabbit.spi.Name jrname = NameFactoryImpl.getInstance().create(uri, name);
+
+            NodeImpl node = (NodeImpl) getRealNode();
+
+            return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), session);
+        }
+        throw new UnsupportedRepositoryOperationException();
     }
 }

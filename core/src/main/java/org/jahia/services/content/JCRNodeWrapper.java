@@ -763,4 +763,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     Node getOrCreateI18N(Locale locale) throws RepositoryException;
 
+    public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
+                   ConstraintViolationException, LockException,
+                   RepositoryException;
+
 }

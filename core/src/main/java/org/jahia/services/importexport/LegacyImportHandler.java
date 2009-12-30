@@ -36,6 +36,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private final static int CTX_LIST = 2;
     private final static int CTX_FIELD = 3;
     private final static int CTX_SKIP = 4;
+    private final static int CTX_SHAREABLE = 5;
     //    private final static int CTX_MERGED = 5;
     private final static int CTX_BOX = 6;
 
@@ -211,6 +212,12 @@ public class LegacyImportHandler extends DefaultHandler {
 //                    System.out.println("merge " + localName);
 //                    currentCtx.peek().pushMerge(registry.getNodeType(attributes.getValue(Constants.JCR_NS, "primaryType")));
 //                    break;
+                case CTX_SHAREABLE:
+                    System.out.println("create shareable "+localName);
+                    if ("#shareableSource".equals(mapping.getMappedItem(getCurrentContentType().getName(), localName))) {
+                        createShareableNode(attributes.getValue("jahia:value"));
+                    }
+                    break;
                 case CTX_SKIP:
                     System.out.println("skipped " + localName);
                     currentCtx.peek().pushSkip();
@@ -329,6 +336,16 @@ public class LegacyImportHandler extends DefaultHandler {
         currentCtx.peek().pushList(node, listType);
     }
 
+    private void createShareableNode(String uuid) throws RepositoryException {
+        if (!references.containsKey(uuid)) {
+            references.put(uuid,
+                    new ArrayList<String>());
+        }
+        references.get(uuid).add(
+                getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
+        currentCtx.peek().pushSkip();
+    }
+
     private void createContent(String primaryType, String uuid, String pickerRelationshipUuid) throws RepositoryException {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
@@ -337,22 +354,24 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.peek().pushSkip();
         } else if (nodeType.equals("#box")) {
             currentCtx.peek().pushBox(t);
+        } else if (nodeType.equals("#shareable")) {
+            currentCtx.peek().pushShareable(t);
         } else {
             if (uuidMapping.containsKey(uuid)) {
                 JCRNodeWrapper node = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
-                JCRNodeWrapper node = getCurrentContentNode().addNode(
-                        "ctn" + (ctnId++), "jnt:nodeReference");
-
-                uuidMapping.put(uuid, node.getIdentifier());
+//                JCRNodeWrapper node = getCurrentContentNode().addNode(
+//                        "ctn" + (ctnId++), "jnt:nodeReference");
+//
+//                uuidMapping.put(uuid, node.getIdentifier());
 
                 if (!references.containsKey(pickerRelationshipUuid)) {
                     references.put(pickerRelationshipUuid,
                             new ArrayList<String>());
                 }
                 references.get(pickerRelationshipUuid).add(
-                        node.getIdentifier() + "/j:node");
+                        getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
                 currentCtx.peek().pushSkip();
             } else {             
                 try {
@@ -361,7 +380,8 @@ public class LegacyImportHandler extends DefaultHandler {
                     System.out.println("--- Cannot found type, skip : "+nodeType);
                     currentCtx.peek().pushSkip();
                 }
-                JCRNodeWrapper node = getCurrentContentNode().addNode("ctn" + (ctnId++), nodeType);
+
+                JCRNodeWrapper node = getCurrentContentNode().addNode(StringUtils.substringAfter(nodeType,":") + "_" + (ctnId++), nodeType);
                 uuidMapping.put(uuid, node.getIdentifier());
 
                 currentCtx.peek().pushContainer(node, t);
@@ -695,6 +715,14 @@ public class LegacyImportHandler extends DefaultHandler {
             propertyNames.push(null);
             boxProperties.push(null);
             ctx.push(CTX_SKIP);
+        }
+
+        void pushShareable(ExtendedNodeType t) {
+            contents.push(contents.peek());
+            contentsType.push(t);
+            propertyNames.push(null);
+            boxProperties.push(null);
+            ctx.push(CTX_SHAREABLE);
         }
 
         void pop() {

@@ -708,6 +708,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         categoriesImportHandler.setUuidProps(catProps);
         usersImportHandler.setUuidProps(userProps);
 
+//        session.save();
         ReferencesHelper.resolveCrossReferences(session, uuidMapping, references);
         session.save();
     }
@@ -1093,7 +1094,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setPathMapping(pathMapping);
                     documentViewImportHandler.setNoRoot(noRoot);
-
+                    
                     handleImport(zis, documentViewImportHandler);
                     session.save();
                     break;

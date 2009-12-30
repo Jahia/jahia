@@ -341,6 +341,9 @@
 [jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:node (weakreference)
 
+[jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
+ + j:node (mix:shareable)
+
 [jnt:nodeLink] > jnt:nodeReference, mix:title, jmix:link
 
 [jnt:externalLink] > nt:base, mix:title, jmix:hierarchyNode, jmix:link, jmix:basemetadata
@@ -386,13 +389,13 @@
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  orderable
- + * (nt:base) version
+ + * (nt:base) = nt:base version
 
 [jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:list
  orderable
- + * (nt:base) version
+ + * (nt:base) = nt:base version
 
 [jnt:reusableComponentsRoot] > nt:base, jmix:hierarchyNode, jmix:collection
  + * (jnt:reusableComponentsFolder)

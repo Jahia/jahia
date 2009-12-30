@@ -43,7 +43,7 @@
 
 [jnt:birthdate] > jnt:formElement,  jmix:formContent
 
-[jnt:address] > jnt:formElement,  jmix:formContent
+[jnt:addressBlock] > jnt:formElement,  jmix:formContent
  
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable

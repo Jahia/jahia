@@ -13,7 +13,6 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -86,8 +85,8 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);
 
-        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent>(){
-            public void handleEvent(ListViewEvent be) {
+        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>(){
+            public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
                 Window w = new Window();
                 GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
 
@@ -96,6 +95,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
                 w.setScrollMode(Style.Scroll.AUTO);
                 w.setModal(true);
                 w.setClosable(true);
+                w.setMaximizable(true);
                 w.setSize(Math.max(node.getWidth()+60, 400), Math.max(node.getHeight()+80, 50));
                 w.setBlinkModal(true);
                 w.setPlain(true);
@@ -119,7 +119,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
     }
 
     public class ImageDragSource extends ListViewDragSource {
-        public ImageDragSource(ListView listView) {
+        public ImageDragSource(ListView<GWTJahiaNode> listView) {
             super(listView);
             DragListener listener = new DragListener() {
                 public void dragEnd(DragEvent de) {

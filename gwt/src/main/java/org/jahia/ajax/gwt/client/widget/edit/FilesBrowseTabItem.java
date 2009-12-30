@@ -74,7 +74,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
         });
         displayColumns.add(col);
         displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        final Grid grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);
 
@@ -85,6 +85,9 @@ class FilesBrowseTabItem extends BrowseTabItem {
                 contentContainer.mask("Loading","x-mask-loading");
             }
         });
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.files", tree.getSelectionModel()));
+        grid.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.files.preview", grid.getSelectionModel()));
+        
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);

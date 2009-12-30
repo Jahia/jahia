@@ -51,6 +51,9 @@
                 <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 	<property name="items">
                 		<list>
+			                <ref bean="org.jahia.toolbar.item.download"/>
+			                <ref bean="org.jahia.toolbar.item.preview"/>
+			                <ref bean="org.jahia.toolbar.item.Separator"/>
 			                <ref bean="org.jahia.toolbar.item.rename"/>
 			                <ref bean="org.jahia.toolbar.item.delete"/>
 			                <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -68,4 +71,46 @@
         </property>
     </bean>
     
+    <bean id="org.jahia.toolbar.sidePanel.files" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                	<property name="items">
+                		<list>
+                			<ref bean="org.jahia.toolbar.item.createFolder"/>
+                			<ref bean="org.jahia.toolbar.item.upload"/>
+			                <ref bean="org.jahia.toolbar.item.Separator"/>
+                			<ref bean="org.jahia.toolbar.item.rename"/>
+                			<ref bean="org.jahia.toolbar.item.delete"/>
+                		</list>
+                	</property>
+        			<property name="contextMenu" value="true"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.sidePanel.files.preview" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                	<property name="items">
+                		<list>
+			                <ref bean="org.jahia.toolbar.item.download"/>
+			                <ref bean="org.jahia.toolbar.item.preview"/>
+			                <ref bean="org.jahia.toolbar.item.Separator"/>
+			                <ref bean="org.jahia.toolbar.item.rename"/>
+			                <ref bean="org.jahia.toolbar.item.delete"/>
+			                <ref bean="org.jahia.toolbar.item.Separator"/>
+			                <ref bean="org.jahia.toolbar.item.copy"/>
+			                <ref bean="org.jahia.toolbar.item.cut"/>
+			                <ref bean="org.jahia.toolbar.item.paste"/>
+			                <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                		</list>
+                	</property>
+        			<property name="contextMenu" value="true"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
 </beans>

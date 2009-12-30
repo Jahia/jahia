@@ -316,6 +316,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 try {
                     if (lang != null && attrName.endsWith("_" + lang)) {
                         propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
+                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
+                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
                     } else {
                         propDef = child.getApplicablePropertyDefinition(attrName);
                     }

@@ -61,11 +61,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Mashup management helper.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:43:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MashupHelper {
     private static Logger logger = Logger.getLogger(MashupHelper.class);
@@ -302,14 +301,7 @@ public class MashupHelper {
      */
     public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
-        String prefix = Jahia.getContextPath();
-        if (prefix.equals("/")) {
-            prefix = "";
-        } else {
-            prefix = prefix.substring(1) + "/";
-        }
-        // get RSS GWTJahiaPortletDefinition
-        final String appName = prefix + "rss";
+        final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/rss" : "rss";
         GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaRSSPortlet", context);
         if (gwtJahiaPortletDefinition == null) {
             logger.error("RSS portlet defintion not found --> Abort creating RSS portlet instance");
@@ -339,14 +331,7 @@ public class MashupHelper {
      */
     public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
-        String prefix = Jahia.getContextPath();
-        if (prefix.equals("/")) {
-            prefix = "";
-        } else {
-            prefix = prefix.substring(1) + "/";
-        }
-        // get RSS GWTJahiaPortletDefinition
-        final String appName = prefix + "googlegadget";
+        final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/googlegadget" : "googlegadget";
         // get RSS GWTJahiaPortletDefinition
         GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaGoogleGadget", context);
         if (gwtJahiaPortletDefinition == null) {

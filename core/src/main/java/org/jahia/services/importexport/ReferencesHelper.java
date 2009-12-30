@@ -66,10 +66,6 @@ public class ReferencesHelper {
             if (pName.startsWith("@")) {
                 //shareable node
                 JCRNodeWrapper source = session.getNodeByUUID(value);
-                if (!source.isNodeType("mix:shareable")) {
-                    source.addMixin("mix:shareable");
-                    session.save(); // must save after adding shareable
-                }
                 n.clone(source, pName.substring(1));
 //                JCRWorkspaceWrapper wrapper = n.getSession().getWorkspace();
 //                wrapper.clone(wrapper.getName(), source.getPath(), n.getPath() + "/" + pName.substring(1), false);

@@ -340,13 +340,7 @@ public class ContentManagerHelper {
                 member.setProperty("j:member", node.getUUID());
             }
         } else {
-            if (!node.isNodeType("mix:shareable")) {
-                node.addMixin("mix:shareable");
-            }
-            node.getSession().save();
-            JCRWorkspaceWrapper wrapper = node.getSession().getWorkspace();
-            wrapper       .clone(wrapper.getName(), node.getPath(), dest.getPath() + "/" +name, false);
-
+            dest.clone(node, name);
 //            Node reference = dest.addNode(name, "jnt:nodeReference");
 //            if (node.isNodeType("jnt:nodeReference")) {
 //                node = (JCRNodeWrapper) node.getProperty("j:node").getNode();

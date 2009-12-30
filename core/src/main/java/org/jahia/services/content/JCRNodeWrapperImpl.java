@@ -2065,6 +2065,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
             throws ConstraintViolationException, RepositoryException {
+        if (isNodeType("jnt:translation") && !propertyName.equals("jcr:language")) {
+            String lang = getRealNode().getProperty("jcr:language").getString();
+            if (propertyName.endsWith("_" + lang)) {
+                return getParent().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(propertyName, "_" + lang));
+            } else {
+                return getParent().getApplicablePropertyDefinition(propertyName);
+            }
+        }
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
         types.add(getPrimaryNodeType());
         ExtendedNodeType[] mixin = getMixinNodeTypes();
@@ -2214,9 +2222,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void makeShareable() throws RepositoryException {
+
+    }
+
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
                    ConstraintViolationException, LockException,
                    RepositoryException {
+        if (!sharedNode.isNodeType("jmix:shareable")) {
+            sharedNode.addMixin("jmix:shareable");
+
+            // ugly save needed by jackrabbit : todo remove it
+            session.save();
+        }
         if (getRealNode() instanceof NodeImpl && sharedNode.getRealNode() instanceof NodeImpl) {
             String uri = "";
             if (name.contains(":")) {

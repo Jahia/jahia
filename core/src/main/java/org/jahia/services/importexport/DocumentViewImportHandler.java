@@ -285,8 +285,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private void setAttributes(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         String lang = null;
         if (child.getPrimaryNodeTypeName().equals("jnt:translation")) {
-            lang = atts.getValue("jcr:language");
+            lang = atts.getValue(Constants.JCR_LANGUAGE);
+            child.setProperty(Constants.JCR_LANGUAGE, lang);
         }
+
         for (int i = 0; i < atts.getLength(); i++) {
             if (atts.getURI(i).equals("http://www.w3.org/2000/xmlns/")) {
                 continue;
@@ -301,6 +303,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
+            } else if (attrName.equals(Constants.JCR_LANGUAGE)) {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {
@@ -314,13 +317,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
                 ExtendedPropertyDefinition propDef;
                 try {
-                    if (lang != null && attrName.endsWith("_" + lang)) {
-                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
-                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
-                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
-                    } else {
+//                    if (lang != null && attrName.endsWith("_" + lang)) {
+//                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
+//                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
+//                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
+//                    } else {
                         propDef = child.getApplicablePropertyDefinition(attrName);
-                    }
+//                    }
                 } catch (ConstraintViolationException e) {
                     logger.error(e.getMessage());
                     continue;

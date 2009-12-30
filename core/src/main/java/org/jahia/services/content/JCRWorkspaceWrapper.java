@@ -147,7 +147,14 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            session.getProviderSession(provider).getWorkspace().move(source, dest);
+            JCRNodeWrapper sourceNode = session.getNode(source);
+            if (sourceNode.isNodeType("mix:shareable")) {
+                JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(dest,"/"));
+                parentNode.clone(sourceNode, StringUtils.substringAfterLast(dest,"/"));
+                sourceNode.remove();
+            } else {
+                session.getProviderSession(provider).getWorkspace().move(source, dest);
+            }
         }
     }
 

@@ -47,12 +47,18 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Iterator;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -94,7 +100,68 @@ public class TestHelper {
         return site;
     }
 
-    private static void removeAllSites(JahiaSitesService service) throws JahiaException {
+    public static JahiaSite createPrepackagedSite(String name,
+            String serverName, String templateSet, String prepackedZIPFile,
+            String siteZIPName) throws Exception {
+        JahiaSite site = null;
+        File tempFile = null;
+        try {
+            tempFile = extractSiteImportZip(prepackedZIPFile, siteZIPName);
+            site = TestHelper.createSite(name, serverName, templateSet,
+                    tempFile);
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
+        }
+        return site;
+    }
+
+    private static File extractSiteImportZip(String prepackagedZIPFile,
+            String siteZIPName) {
+        File siteZIPFile = null;
+        ZipInputStream zis = null;
+        OutputStream os = null;
+        try {
+            zis = new ZipInputStream(new FileInputStream(new File(
+                    prepackagedZIPFile)));
+            ZipEntry z = null;
+            while ((z = zis.getNextEntry()) != null) {
+                if (siteZIPName.equalsIgnoreCase(z.getName())) {
+                    siteZIPFile = File.createTempFile("import", ".zip");
+                    os = new FileOutputStream(siteZIPFile);
+                    byte[] buf = new byte[4096];
+                    int r;
+                    while ((r = zis.read(buf)) > 0) {
+                        os.write(buf, 0, r);
+                    }
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (zis != null) {
+                try {
+                    zis.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
+
+        return siteZIPFile;
+    }
+
+    
+    public static void removeAllSites(JahiaSitesService service) throws JahiaException {
         final Iterator<JahiaSite> sites = service.getSites();
         while (sites.hasNext()) {
             JahiaSite jahiaSite = sites.next();
@@ -105,7 +172,6 @@ public class TestHelper {
     public static void deleteSite(String name) throws Exception {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         service.removeSite(service.getSiteByKey(name));
-        removeAllSites(service);
     }
 
     public static void cleanDatabase() throws Exception {

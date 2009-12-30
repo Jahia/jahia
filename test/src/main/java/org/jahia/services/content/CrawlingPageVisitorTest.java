@@ -41,7 +41,6 @@ import org.apache.nutch.crawl.Injector;
 import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -49,23 +48,16 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Basic fetcher test 1. generate seedlist 2. inject 3. generate 4. fetch
- *
+ * 
  * @author nutch-dev <nutch-dev at lucene.apache.org> and Benjamin Papez
  */
 
@@ -75,16 +67,18 @@ public class CrawlingPageVisitorTest extends TestCase {
     private final static Path testdir = new Path(System
             .getProperty("java.io.tmpdir")
             + (!(System.getProperty("java.io.tmpdir").endsWith("/") || System
-            .getProperty("java.io.tmpdir").endsWith("\\")) ? System
-            .getProperty("file.separator") : "") + "test/fetch-test");
+                    .getProperty("java.io.tmpdir").endsWith("\\")) ? System
+                    .getProperty("file.separator") : "") + "test/fetch-test");
 
     private final static String ACMESITE_NAME = "CrawlACMETest";
 
-    private final static String ACME_SITECONTENT_ROOT_NODE =  "/sites/" + ACMESITE_NAME;
+    private final static String ACME_SITECONTENT_ROOT_NODE = "/sites/"
+            + ACMESITE_NAME;
 
     private final static String TESTSITE_NAME = "CrawlTCKTest";
 
-    private final static String TEST_SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private final static String TEST_SITECONTENT_ROOT_NODE = "/sites/"
+            + TESTSITE_NAME;
 
     private Configuration conf;
     private FileSystem fs;
@@ -99,63 +93,100 @@ public class CrawlingPageVisitorTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        ctx = Jahia.getThreadParamBean();
-        conf = CrawlDBTestUtil.createConfiguration();
-        fs = FileSystem.get(conf);
-        fs.delete(testdir);
-        urlPath = new Path(testdir, "urls");
-        crawldbPath = new Path(testdir, "crawldb");
-        segmentsPath = new Path(testdir, "segments");
-        defaultSite = ProcessingContext.getDefaultSite();
-        final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (defaultSite == null) {
-                    String prepackedZIP = SettingsBean.getInstance().getJahiaVarDiskPath()
-                            + "/prepackagedSites/webtemplates.zip";
-                    try {
-                        defaultSite = TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES, new File(prepackedZIP + "/ACME.zip"));
-                    } catch (Exception e) {
-                        logger.error("Cannot create site", e);
-                        fail("Cannot create site : " + e);
-                    }
-                    defaultSiteCreated = true;
-                    QueryResult queryResult = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:page] as p where ischildnode(p,[" + ACME_SITECONTENT_ROOT_NODE + "])",
-                            Query.JCR_SQL2).execute();
-                    for (NodeIterator ni = queryResult.getNodes(); ni.hasNext();) {
-                        jcrService.publish(((Node) ni.next()).getPath(), Constants.EDIT_WORKSPACE,
-                                Constants.LIVE_WORKSPACE, null, true, false);
-                    }
+        try {
+            ctx = Jahia.getThreadParamBean();
+            conf = CrawlDBTestUtil.createConfiguration();
+            fs = FileSystem.get(conf);
+            fs.delete(testdir);
+            urlPath = new Path(testdir, "urls");
+            crawldbPath = new Path(testdir, "crawldb");
+            segmentsPath = new Path(testdir, "segments");
+            try {
+                if (ProcessingContext.getDefaultSite() != null && ProcessingContext.getDefaultSite().getJCRPath() != null) {
+                    defaultSite = ProcessingContext.getDefaultSite();                    
                 }
-                try {
-                    JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
-                    for (Iterator<JahiaSite> it = sitesService.getSites(); it.hasNext();) {
-                        JahiaSite site = it.next();
-                        if (site.getTemplatePackageName().equals(TestHelper.TCK_TEMPLATES)) {
-                            testSite = site;
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.warn("Error while trying to find test site", e);
-                }
-                return null;
+            } catch (Exception e) {
             }
-        });
-
-//            if (testSite == null) {
-//                String prepackedZIP = SettingsBean.getInstance().getJahiaVarDiskPath()
-//                        + "/prepackagedSites/testSite.zip";
-//                testSite = TestHelper.createSite(TESTSITE_NAME, "127.0.0.1", TestHelper.TCK_TEMPLATES, new File(prepackedZIP + "/testSite.zip"));
-//                QueryResult queryResult = session.getWorkspace().getQueryManager().createQuery(
-//                        "select * from [jnt:page] as p where ischildnode(p,[" + TEST_SITECONTENT_ROOT_NODE + "])",
-//                        Query.JCR_SQL2).execute();
-//                for (NodeIterator ni = queryResult.getNodes(); ni.hasNext();) {
-//                    jcrService.publish(((Node) ni.next()).getPath(), Constants.EDIT_WORKSPACE,
-//                            Constants.LIVE_WORKSPACE, null, ctx.getUser(), true, true);
-//                }
-//                siteCreated = true;
-//            }
+            final JCRPublicationService jcrService = ServicesRegistry
+                    .getInstance().getJCRPublicationService();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            if (defaultSite == null) {
+                                try {
+                                    defaultSite = TestHelper
+                                            .createPrepackagedSite(
+                                                    ACMESITE_NAME,
+                                                    "localhost",
+                                                    TestHelper.ACME_TEMPLATES,
+                                                    SettingsBean
+                                                            .getInstance()
+                                                            .getJahiaVarDiskPath()
+                                                            + "/prepackagedSites/webtemplates65.zip",
+                                                    "ACME.zip");
+                                    defaultSiteCreated = true;
+                                    jcrService.publish(session.getNode(
+                                            ACME_SITECONTENT_ROOT_NODE
+                                                    + "/home").getPath(),
+                                            Constants.EDIT_WORKSPACE,
+                                            Constants.LIVE_WORKSPACE, null,
+                                            true, true);
+                                } catch (Exception e) {
+                                    logger.error("Cannot "
+                                            + (defaultSiteCreated ? "publish"
+                                                    : "create") + "site", e);
+                                }
+                            }
+//                            try {
+//                                JahiaSitesService sitesService = ServicesRegistry
+//                                        .getInstance().getJahiaSitesService();
+//                                for (Iterator<JahiaSite> it = sitesService
+//                                        .getSites(); it.hasNext();) {
+//                                    JahiaSite site = it.next();
+//                                    if (site.getTemplatePackageName().equals(
+//                                            TestHelper.TCK_TEMPLATES)) {
+//                                        testSite = site;
+//                                    }
+//                                }
+//                            } catch (Exception e) {
+//                                logger.warn(
+//                                        "Error while trying to find test site",
+//                                        e);
+//                            }
+//
+//                            if (testSite == null) {
+//                                try {
+//                                    testSite = TestHelper
+//                                            .createPrepackagedSite(
+//                                                    TESTSITE_NAME,
+//                                                    "127.0.0.1",
+//                                                    TestHelper.TCK_TEMPLATES,
+//                                                    SettingsBean
+//                                                            .getInstance()
+//                                                            .getJahiaVarDiskPath()
+//                                                            + "/prepackagedSites/testSite.zip",
+//                                                    "testSite.zip");
+//                                    testSiteCreated = true;
+//                                    jcrService.publish(session.getNode(
+//                                            TEST_SITECONTENT_ROOT_NODE
+//                                                     + "/home").getPath(),
+//                                            Constants.EDIT_WORKSPACE,
+//                                            Constants.LIVE_WORKSPACE, null,
+//                                            true, true);                            
+//                                } catch (Exception e) {
+//                                    logger.error("Cannot "
+//                                            + (testSiteCreated ? "publish"
+//                                                    : "create") + "site", e);
+//                                }
+//                            }
+//                            session.save();
+                            return null;
+                        }
+                    });
+        } catch (Exception ex) {
+            logger.warn("Exception during test setUp", ex);
+        }
     }
 
     @Override
@@ -168,37 +199,47 @@ public class CrawlingPageVisitorTest extends TestCase {
             if (testSiteCreated) {
                 TestHelper.deleteSite(TESTSITE_NAME);
             }
+            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                    .getCurrentUserSession();
+            session.save();
+            session.logout();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
     }
 
     public void testFetch() throws IOException {
-
         try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                    .getCurrentUserSession();
             // generate seedlist
             ArrayList<String> urls = new ArrayList<String>();
-            try {
-                RenderContext renderCtx = new RenderContext(((ParamBean) ctx).getRequest(), ((ParamBean) ctx).getResponse(), ctx.getUser());
-                if (defaultSite != null) {
-                    Resource resource = new Resource(defaultSite.getHomeContentPage().getJCRNode(ctx), "html", null,
-                            null);
-                    URLGenerator urlgenerator = new URLGenerator(renderCtx, resource, ServicesRegistry.getInstance()
-                            .getJCRStoreService());
-                    addUrl(urls, urlgenerator.getEdit(), ctx);
-                    addUrl(urls, urlgenerator.getLive(), ctx);
-                }
-                if (testSite != null) {
-                    Resource resource = new Resource(testSite.getHomeContentPage().getJCRNode(ctx), "html", null,
-                            null);
-                    URLGenerator urlgenerator = new URLGenerator(renderCtx, resource, ServicesRegistry.getInstance()
-                            .getJCRStoreService());
-                    addUrl(urls, urlgenerator.getEdit(), ctx);
-                    addUrl(urls, urlgenerator.getLive(), ctx);
-                }
-            } catch (JahiaException e) {
-                logger.warn("Cannot get all homepage urls", e);
+            RenderContext renderCtx = new RenderContext(((ParamBean) ctx)
+                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
+                    .getUser());
+            if (defaultSite != null) {
+                JCRNodeWrapper homeNode = session.getNode("/sites/"
+                        + defaultSite.getSiteKey() + "/home");
+                Resource resource = new Resource(homeNode, "html", null, null);
+                renderCtx.setMainResource(resource);
+                URLGenerator urlgenerator = new URLGenerator(renderCtx,
+                        resource, ServicesRegistry.getInstance()
+                                .getJCRStoreService());
+                addUrl(urls, urlgenerator.getEdit(), ctx);
+                addUrl(urls, urlgenerator.getLive(), ctx);
             }
+            if (testSite != null) {
+                JCRNodeWrapper homeNode = session.getNode("/sites/"
+                        + testSite.getSiteKey() + "/home");
+                Resource resource = new Resource(homeNode, "html", null, null);
+                renderCtx.setMainResource(resource);
+                URLGenerator urlgenerator = new URLGenerator(renderCtx,
+                        resource, ServicesRegistry.getInstance()
+                                .getJCRStoreService());
+                addUrl(urls, urlgenerator.getEdit(), ctx);
+                addUrl(urls, urlgenerator.getLive(), ctx);
+            }
+
             final StringBuffer adminUrl = new StringBuffer();
             adminUrl.append(ctx.getContextPath()).append(
                     Jahia.getInitAdminServletPath()).append("?do=passthru");
@@ -226,7 +267,7 @@ public class CrawlingPageVisitorTest extends TestCase {
     }
 
     private void addUrl(ArrayList<String> urls, String pageUrl,
-                        ProcessingContext ctx) {
+            ProcessingContext ctx) {
         final StringBuilder newSiteURL = new StringBuilder(64);
         newSiteURL.append(ctx.getScheme()).append("://");
         newSiteURL.append(ctx.getServerName());

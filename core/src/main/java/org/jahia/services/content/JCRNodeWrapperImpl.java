@@ -32,8 +32,11 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
+import org.apache.jackrabbit.core.id.*;
 import org.apache.jackrabbit.spi.*;
+import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -276,6 +279,37 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(provider.encodeInternalName(name), type);
         return provider.getNodeWrapper(n, session);
+    }
+
+    public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
+        if (objectNode instanceof NodeImpl) {
+            JahiaSessionImpl jrSession = (JahiaSessionImpl) objectNode.getSession();
+
+            jrSession.getNodeTypeInstanceHandler().setCreated(created);
+            jrSession.getNodeTypeInstanceHandler().setCreatedBy(createdBy);
+            jrSession.getNodeTypeInstanceHandler().setLastModified(lastModified);
+            jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(lastModifiedBy);
+            try {
+                if (identifier != null) {
+                    org.jahia.services.content.nodetypes.Name jahiaName = new org.jahia.services.content.nodetypes.Name(name, NodeTypeRegistry.getInstance().getNamespaces());
+                    Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri(),jahiaName.getLocalName());
+                    org.jahia.services.content.nodetypes.Name jahiaTypeName = NodeTypeRegistry.getInstance().getNodeType(type).getNameObject();
+                    Name typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(), jahiaTypeName.getLocalName());
+                    Node child;
+                    child = ((NodeImpl)objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
+                    return provider.getNodeWrapper(child, session);
+                } else {
+                    return addNode(name, type);
+                }
+            } finally {
+                jrSession.getNodeTypeInstanceHandler().setCreated(null);
+                jrSession.getNodeTypeInstanceHandler().setCreatedBy(null);
+                jrSession.getNodeTypeInstanceHandler().setLastModified(null);
+                jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(null);
+            }
+        } else {
+            return addNode(name, type);
+        }
     }
 
     /**

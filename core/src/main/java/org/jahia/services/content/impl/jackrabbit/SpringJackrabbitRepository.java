@@ -33,6 +33,7 @@ package org.jahia.services.content.impl.jackrabbit;
 
 import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.api.JackrabbitRepository;
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
@@ -142,7 +143,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     protected JackrabbitRepository createRepository()
             throws RepositoryException, IOException {
         RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
-        return RepositoryImpl.create(config);
+        return JahiaRepositoryImpl.create(config);
     }
 
 

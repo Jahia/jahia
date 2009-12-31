@@ -32,6 +32,7 @@
 package org.apache.jackrabbit.core.jndi;
 
 import org.apache.jackrabbit.api.JackrabbitRepository;
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.RepositoryImpl;
 
@@ -57,7 +58,7 @@ public class JahiaBindableRepository extends BindableRepository {
         RepositoryConfig config = RepositoryConfig.create(
                 resolvePath(getReference().get(CONFIGFILEPATH_ADDRTYPE).getContent().toString()),
                 resolvePath(getReference().get(REPHOMEDIR_ADDRTYPE).getContent().toString()));
-        return RepositoryImpl.create(config);
+        return JahiaRepositoryImpl.create(config);
     }
 
     public String resolvePath (String path) {

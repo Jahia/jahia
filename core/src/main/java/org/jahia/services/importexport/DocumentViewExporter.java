@@ -33,7 +33,7 @@ public class DocumentViewExporter {
     private JCRNodeWrapper rootNode;
     private Stack<String> stack;
 
-    private List<String> excluded = Arrays.asList("jcr:predecessors", "jcr:created", "j:originWS", "jcr:lastModified", "jcr:createdBy", "j:nodename", "jcr:versionHistory", "jcr:lastModifiedBy", "jcr:baseVersion", "jcr:isCheckedOut");
+    private List<String> excluded = Arrays.asList("jcr:predecessors", "j:originWS", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut");
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;

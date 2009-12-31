@@ -343,6 +343,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.addNode(s, s1);
     }
 
+    public JCRNodeWrapper addNode(String relPath, String primaryNodeTypeName, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
+        return node.addNode(relPath, primaryNodeTypeName, identifier, created, createdBy, lastModified, lastModifiedBy);
+    }
+
     public JCRPlaceholderNode getPlaceholder() throws RepositoryException {
         return new JCRPlaceholderNode(node);
     }

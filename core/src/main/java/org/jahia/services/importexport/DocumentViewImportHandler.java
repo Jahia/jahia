@@ -32,10 +32,12 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.impl.common.ReaderInputStream;
@@ -189,9 +191,25 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
                         nodes.peek().addMixin("jmix:accessControlled");
                     }
+                    Calendar created = null;
+                    String createdBy = null;
+                    Calendar lastModified = null;
+                    String lastModifiedBy = null;
+                    if (!StringUtils.isEmpty(atts.getValue("jcr:created"))) {
+                        created = ISO8601.parse(atts.getValue("jcr:created"));
+                    }
+                    if (!StringUtils.isEmpty(atts.getValue("jcr:lastModified"))) {
+                        lastModified = ISO8601.parse(atts.getValue("jcr:lastModified"));
+                    }
+                    if (!StringUtils.isEmpty(atts.getValue("jcr:createdBy"))) {
+                        createdBy = atts.getValue("jcr:createdBy");
+                    }
+                    if (!StringUtils.isEmpty(atts.getValue("jcr:lastModifiedBy"))) {
+                        lastModifiedBy = atts.getValue("jcr:lastModifiedBy");
+                    }
 
                     String uuid = atts.getValue("jcr:uuid");
-                    if (uuid != null && uuid.length() > 0) {
+                    if (!StringUtils.isEmpty(uuid)) {
                         switch (uuidBehavior) {
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
                                 try {
@@ -206,27 +224,16 @@ public class DocumentViewImportHandler extends DefaultHandler {
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
                             case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
                                 //todo implement uuid behaviour cases
-
                                 if (uuidMapping.containsKey(uuid)) {
                                     // shareable node ?
                                 }
+                                break;
 
-                                if (nodes.peek().getRealNode() instanceof NodeImpl) {
-                                    Name name = NameFactoryImpl.getInstance().create(namespaceURI,decodedLocalName);
-                                    org.jahia.services.content.nodetypes.Name jahiaName = NodeTypeRegistry.getInstance().getNodeType(pt).getNameObject();                                   
-                                    Name typeName = NameFactoryImpl.getInstance().create(jahiaName.getUri(), jahiaName.getLocalName());
-                                    ((NodeImpl)nodes.peek().getRealNode()).addNode(name, typeName, NodeId.valueOf(uuid));
-                                    child = session.getNode(path);
-                                    break;
-                                }
-                            default:
-                                child = nodes.peek().addNode(decodedQName, pt);
+                            case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
+                                uuid = null;
                         }
-                    } else {
-                        child = nodes.peek().addNode(decodedQName, pt);
                     }
-
-
+                    child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
 
                     addMixins(child, atts);
 

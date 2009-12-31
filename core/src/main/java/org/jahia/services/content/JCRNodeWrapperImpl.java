@@ -292,7 +292,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 if (identifier != null) {
                     org.jahia.services.content.nodetypes.Name jahiaName = new org.jahia.services.content.nodetypes.Name(name, NodeTypeRegistry.getInstance().getNamespaces());
-                    Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri(),jahiaName.getLocalName());
+                    Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri() == null ? "" : jahiaName.getUri(),jahiaName.getLocalName());
                     org.jahia.services.content.nodetypes.Name jahiaTypeName = NodeTypeRegistry.getInstance().getNodeType(type).getNameObject();
                     Name typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(), jahiaTypeName.getLocalName());
                     Node child;

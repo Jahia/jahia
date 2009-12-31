@@ -61,24 +61,28 @@ public class ReferencesHelper {
 
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {
         for (String path : paths) {
-            JCRNodeWrapper n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
-            String pName = path.substring(path.lastIndexOf("/") + 1);
-            if (pName.startsWith("@")) {
-                //shareable node
-                JCRNodeWrapper source = session.getNodeByUUID(value);
-                n.clone(source, pName.substring(1));
-//                JCRWorkspaceWrapper wrapper = n.getSession().getWorkspace();
-//                wrapper.clone(wrapper.getName(), source.getPath(), n.getPath() + "/" + pName.substring(1), false);
-            } else {
-                try {
-                    if (n.getApplicablePropertyDefinition(pName).isMultiple()) {
-                        n.setProperty(pName, new String[]{value});
-                    } else {
-                        n.setProperty(pName, value);
+            try {
+                JCRNodeWrapper n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
+                String pName = path.substring(path.lastIndexOf("/") + 1);
+                if (pName.startsWith("@")) {
+                    //shareable node
+                    JCRNodeWrapper source = session.getNodeByUUID(value);
+                    n.clone(source, pName.substring(1));
+    //                JCRWorkspaceWrapper wrapper = n.getSession().getWorkspace();
+    //                wrapper.clone(wrapper.getName(), source.getPath(), n.getPath() + "/" + pName.substring(1), false);
+                } else {
+                    try {
+                        if (n.getApplicablePropertyDefinition(pName).isMultiple()) {
+                            n.setProperty(pName, new String[]{value});
+                        } else {
+                            n.setProperty(pName, value);
+                        }
+                    } catch (ItemNotFoundException e) {
+                        e.printStackTrace();
                     }
-                } catch (ItemNotFoundException e) {
-                    e.printStackTrace();
                 }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
             }
         }
     }

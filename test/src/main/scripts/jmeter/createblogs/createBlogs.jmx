@@ -24,7 +24,7 @@
           </elementProp>
           <elementProp name="CONTEXT" elementType="Argument">
             <stringProp name="Argument.name">CONTEXT</stringProp>
-            <stringProp name="Argument.value">${__P(context,)}</stringProp>
+            <stringProp name="Argument.value">${__P(context, )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="THREADS" elementType="Argument">

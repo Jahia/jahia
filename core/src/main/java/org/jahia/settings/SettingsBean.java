@@ -555,8 +555,7 @@ public class SettingsBean {
             settings.put("default_templates_set",
                     getString("default_templates_set"));
 
-            settings.put("templates.boxes.onError",
-                    getString("templates.boxes.onError", null));
+            settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
 
             settings.setFast(true);
             ehCacheJahiaFile = getString("ehcache.jahia.file","ehcache-jahia.xml");

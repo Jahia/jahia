@@ -193,17 +193,16 @@ containerCacheLiveModeOnly = false
 ######################################################################
 # Default value for template set
 default_templates_set		                        =   Web templates
-# Default setting for the error handling in boxes.
-# Can be overridden in the templates deployment descriptor (templates.xml)
-# for each template set.
-# How should we handle an exception within the box?
-#    'hide' - the whole box content will not be written out into the JSP writer if any error occurs;
-#    'compact' (default) - shows a predefined error message instead of partial box content
-#    						(the message can be overridden using 'errorMessage' attribute);
+# Default setting for the error handling in modules (page fragments).
+# How should we handle an exception within the fragment?
+#    'hide' - the whole module content will not be written out into
+#             the JSP writer if any error occurs;
+#    'compact' (default) - shows a predefined error message instead of
+#                          partial module content;
 #    'full' - shows real exception message with a stacktrace;
-#    'propagate' - propagates the occurred exception to the higher level
-#					(normally ends up with a standard error page) 
-templates.boxes.onError                             	= full
+#    'propagate' - propagates the occurred exception to the higher
+#                  level (normally ends up with a standard error page) 
+templates.modules.onError                             	= compact
 
 ######################################################################
 ### Filemanager  #####################################################

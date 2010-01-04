@@ -394,24 +394,7 @@ public class SkeletonAggregatorValve implements Valve {
 
         String content = null;
 
-        String onError = "full";
-        try {
-            if (ctx.getSite() != null) {
-//                String value = ServicesRegistry.getInstance()
-//                        .getJahiaTemplateManagerService().getTemplatePackage(
-//                                ctx.getSite().getTemplatePackageName())
-//                        .getProperty("boxes.onError");
-//                if (value == null) {
-//                     get the default property value from jahia.properties
-                    String value = SettingsBean.getInstance().lookupString(
-                            "templates.boxes.onError");
-//                }
-                onError = value != null ? value : "full";
-            }
-        } catch (Exception e) {
-            logger.warn("Unable to resolve error handling type. Cause: "
-                    + e.getMessage(), e);
-        }
+        String onError = SettingsBean.getInstance().lookupString("templates.modules.onError");
 
         Throwable cause = null;
         if (ex instanceof ServletException) {
@@ -456,7 +439,7 @@ public class SkeletonAggregatorValve implements Valve {
     }
 
     private static String getErrorMessage(ProcessingContext ctx) {
-        return JahiaResourceBundle.getString(null, "boxes.onError.message", ctx
+        return JahiaResourceBundle.getString(null, "templates.modules.onError", ctx
                 .getLocale(), ctx.getSite().getTemplatePackageName());
     }
 

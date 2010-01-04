@@ -170,16 +170,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/css/styles.css\"/>");
-        buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-        buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/languageSwitchingLinks.css\"/>");
-        buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-        buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/css/portlet-spec-1.0.css\"/>");
-        buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-        buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/css/portlets.css\"/>");
         buf.append(DefaultIncludeProvider.getJSToolsImportCss((HttpServletRequest) pageContext.getRequest()));
         if (pageTitle != null) {
         	buf.append("\t<title>").append(pageTitle).append("</title>\n");

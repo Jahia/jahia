@@ -241,7 +241,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void move(String source, String dest) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        ((JCRNodeWrapper) getItem(source)).moveFile(dest);
+        getWorkspace().move(source, dest, true);
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {

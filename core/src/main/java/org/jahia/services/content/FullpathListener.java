@@ -33,13 +33,14 @@ package org.jahia.services.content;
 
 import org.apache.log4j.Logger;
 import static org.jahia.api.Constants.*;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 /**
  * Listener implementation used to update field references when a node is moved/renamed.
@@ -47,13 +48,11 @@ import javax.jcr.observation.EventIterator;
  * Date: Jul 21, 2008
  * Time: 2:36:05 PM
  */
-public class FieldReferenceListener extends DefaultEventListener {
-    private static Logger logger = Logger.getLogger(FieldReferenceListener.class);
-
-    private JahiaFieldXRefManager fieldXRefManager = null;
+public class FullpathListener extends DefaultEventListener {
+    private static Logger logger = Logger.getLogger(FullpathListener.class);
 
     public int getEventTypes() {
-        return Event.NODE_ADDED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED;
     }
 
     public String getPath() {
@@ -76,9 +75,10 @@ public class FieldReferenceListener extends DefaultEventListener {
                         }
 
                         String path = event.getPath();
-
                         if (event.getType() == Event.NODE_ADDED) {
-                            updateFullPath((Node) session.getItem(path));
+                            nodeAdded((Node) session.getItem(path));
+                        } else if (event.getType() == Event.NODE_REMOVED) {
+                            nodeRemoved(session, path);
                         }
                     }
                     return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -90,14 +90,21 @@ public class FieldReferenceListener extends DefaultEventListener {
 
     }
 
-    private void updateFullPath(Node node) throws RepositoryException {
+    private void nodeAdded(Node node) throws RepositoryException {
+        if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
+            String oldPath = node.getProperty(FULLPATH).getString();
+
+            NodeIterator ni = node.getSharedSet();
+            while (ni.hasNext()) {
+                JCRNodeWrapper shared = (JCRNodeWrapper) ni.next();
+                if (shared.getPath().equals(oldPath)) {
+                    return;
+                }
+            }
+        }
         if (node.isNodeType(JAHIAMIX_HIERARCHYNODE)) {
             if (!node.isCheckedOut()) {
                 node.checkout();
-            }
-            if (node.hasProperty(FULLPATH)) {
-                String oldPath = node.getProperty(FULLPATH).getString();
-//                move(node.getUUID(), oldPath, node.getPath());
             }
             node.setProperty(FULLPATH, node.getPath());
             node.setProperty("j:nodename", node.getName());
@@ -105,12 +112,16 @@ public class FieldReferenceListener extends DefaultEventListener {
         }
         if (node.isNodeType(NT_FOLDER)) {
             for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
-                updateFullPath(ni.nextNode());
+                nodeAdded(ni.nextNode());
             }
         }
     }
 
-    public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
-        this.fieldXRefManager = fieldXRefManager;
+    private void nodeRemoved(JCRSessionWrapper session, String path) throws RepositoryException {
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:shareable] as node where node.[j:fullpath]= '"+path+"'", Query.JCR_SQL2);
+        QueryResult qr = q.execute();
+        // todo : update shared set if removed path was in j:fullpath
     }
+
+
 }

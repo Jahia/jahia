@@ -280,9 +280,12 @@ public class ContentTest extends TestCase {
 
             session.save();
 
-            boolean result = testFile.moveFile(providerRoot + "/" + collectionName);
+            try {
+                session.move(testFile.getPath(), providerRoot + "/" + collectionName+"/"+testFile.getName());
+            } catch (RepositoryException e) {
+                fail("move throwed exception :" + e);
+            }
 
-            assertTrue("move returned false", result);
 
             try {
                 session.getNode(providerRoot + "/" + collectionName);

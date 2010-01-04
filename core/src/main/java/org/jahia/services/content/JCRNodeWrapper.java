@@ -356,13 +356,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException;
 
     /**
-     * Get the <code>JahiaFileField</code> object to be used with legacy jahia file fields.
-     * @return the Jahia file field object for legacy code
-     * @deprecated
-     */
-    JahiaFileField getJahiaFileField ();
-
-    /**
      * Get the value to store in jahia_fields_data when used as a jahia file field
      * @return the value for jahia_fields_data for legacy code
      * @deprecated
@@ -544,23 +537,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @throws RepositoryException
      */
     boolean renameFile(String newName) throws RepositoryException;
-
-    /**
-     * Move the current file node to a new destination
-     * @param dest The destination name for the file node 
-     * @return true if action was successful, or false if not
-     * @throws RepositoryException
-     */
-    boolean moveFile(String dest) throws RepositoryException;
-
-    /**
-     * Move the current file node to a new destination and rename it
-     * @param dest The destination name for the file node
-     * @param name The new name of the file node
-     * @return true if action was successful, or false if not
-     * @throws RepositoryException
-     */
-    boolean moveFile(String dest, String name) throws RepositoryException;
 
     /**
      * Copy the current file node to another destination

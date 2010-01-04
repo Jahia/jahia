@@ -200,54 +200,54 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
 
                     String uuid = atts.getValue("jcr:uuid");
-                    if (!StringUtils.isEmpty(uuid)) {
-                        switch (uuidBehavior) {
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
-                                try {
-                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                                    if (node.isNodeType("mix:shareable")) {
-                                        // ..
-                                    } else {
-                                        throw new ItemExistsException(uuid);
+                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
+                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
+                    } else {
+                        if (!StringUtils.isEmpty(uuid)) {
+                            switch (uuidBehavior) {
+                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
+                                    try {
+                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                        if (node.isNodeType("mix:shareable")) {
+                                            // ..
+                                        } else {
+                                            throw new ItemExistsException(uuid);
+                                        }
+                                    } catch (ItemNotFoundException e) {
                                     }
-                                } catch (ItemNotFoundException e) {
-                                }
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
-                                //todo implement uuid behaviour cases
-                                if (uuidMapping.containsKey(uuid)) {
-                                    // shareable node ?
-                                }
-                                break;
+                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
+                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                    break;
 
-                            case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
-                                uuid = null;
+                                case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
+                                    uuid = null;
+                            }
                         }
-                    }
-                    child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
+                        child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
 
-                    addMixins(child, atts);
+                        addMixins(child, atts);
 
-                    boolean contentFound = findContent();
+                        boolean contentFound = findContent();
 
-                    if (contentFound) {
-                        if (child.isFile()) {
-                            String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                            child.getFileContent().uploadFile(zis, mime);
-                            zis.close();
-                        } else {
-                            child.setProperty(Constants.JCR_DATA, zis);
-                            child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                            child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                            zis.close();
+                        if (contentFound) {
+                            if (child.isFile()) {
+                                String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                                child.getFileContent().uploadFile(zis, mime);
+                                zis.close();
+                            } else {
+                                child.setProperty(Constants.JCR_DATA, zis);
+                                child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+                                child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+                                zis.close();
+                            }
                         }
-                    }
 
-                    setAttributes(child, atts);
+                        setAttributes(child, atts);
 
-                    if (child.isCollection()) {
-                    } else if (currentFilePath == null) {
-                        currentFilePath = child.getPath();
+                        if (child.isCollection()) {
+                        } else if (currentFilePath == null) {
+                            currentFilePath = child.getPath();
+                        }
                     }
                 }
             } else {
@@ -301,7 +301,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
-            } else if (attrName.equals(Constants.JCR_LANGUAGE)) {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {

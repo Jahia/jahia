@@ -135,7 +135,7 @@
  - j:name
 
 [jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
- + * (jmix:hierarchyNode) version
+ + * (jmix:hierarchyNode) = jmix:hierarchyNode version
 
 [jnt:systemfolder] > jnt:folder
 
@@ -342,6 +342,7 @@
  - j:node (weakreference)
 
 [jmix:shareable] > mix:shareable mixin
+ - j:originalParent (weakreference)
 
 [jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  + j:node (mix:shareable)

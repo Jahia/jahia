@@ -321,54 +321,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     */
-    public JahiaFileField getJahiaFileField() {
-        JahiaFileField fField;
-        String uri;
-        uri = getPath();
-        String owner = "root:0";
-
-        String contentType = "application/binary";
-        int lastDot = uri.lastIndexOf(".");
-        if (lastDot > -1) {
-            String mimeType = Jahia.getStaticServletConfig().getServletContext().getMimeType(uri.substring(uri.lastIndexOf("/") + 1).toLowerCase());
-            if (mimeType != null) {
-                contentType = mimeType;
-            }
-        }
-
-        JahiaFile file = new JahiaFile(-1, // filemanager id
-                -1, // folder id
-                owner,
-                uri, // realname
-                getStorageName(), // storage name
-                System.currentTimeMillis(), // modif date
-                getFileContent().getContentLength(), // size
-                contentType, // type
-                getName(), // title
-                "", // descr
-                String.valueOf(ServicesRegistry.getInstance()
-                        .getJahiaVersionService().getCurrentVersionID()), // version
-                JahiaFile.STATE_ACTIVE);
-        fField = new JahiaFileField(file, new Properties());
-        fField.setID(0);
-        URI url = new URI();
-        url.setPath(getUrl());
-        url.setURIStartingAtPath(true);
-        fField.setDownloadUrl(url.toString());
-        fField.setThumbnailUrl(getThumbnailUrl("thumbnail"));
-        try {
-            if (hasProperty("j:width") && hasProperty("j:height")) {
-                fField.setOrientation(getProperty("j:width").getLong() >= getProperty("j:height").getLong() ? "landscape" : "portrait");
-            }
-        } catch (RepositoryException e) {
-            logger.debug("Can't get orientation", e);
-        }
-        return fField;
-    }
-
-    /**
-     * {@inheritDoc}
      * @deprecated As of JCR 2.0, {@link #getIdentifier()} should be used instead. 
      */
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -1248,47 +1200,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath() + "/" + provider.encodeInternalName(newName));
 
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean moveFile(String dest) throws RepositoryException {
-        return moveFile(dest, objectNode.getName());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean moveFile(String dest, String name) throws RepositoryException {
-        JCRStoreProvider destProvider = provider.getSessionFactory().getProvider(dest);
-        if (destProvider != provider) {
-            boolean result = copyFile(dest);
-            if (result) {
-                remove();
-            }
-            return result;
-        } else {
-            if (destProvider.getMountPoint().length() > 1) {
-                dest = provider.getRelativeRoot() + dest.substring(provider.getMountPoint().length());
-            }
-            String copyPath = provider.encodeInternalName(dest) + "/" + name;
-            try {
-                Node copy = (Node) objectNode.getSession().getItem(copyPath);
-                if (isFile()) {
-                    copy.remove();
-                    objectNode.getSession().move(objectNode.getPath(), copyPath);
-                } else {
-                    for (JCRNodeWrapper jcrFileNodeWrapper : getChildren()) {
-                        jcrFileNodeWrapper.moveFile(copyPath);
-                    }
-                    objectNode.remove();
-                }
-            } catch (PathNotFoundException e) {
-                objectNode.getSession().move(objectNode.getPath(), copyPath);
-            }
-        }
         return true;
     }
 
@@ -2265,10 +2176,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                    RepositoryException {
         if (!sharedNode.isNodeType("jmix:shareable")) {
             sharedNode.addMixin("jmix:shareable");
-
-            // ugly save needed by jackrabbit : todo remove it
-            session.save();
+            sharedNode.setProperty("j:originalParent", sharedNode.getParent());
         }
+
+        // ugly save needed by jackrabbit : todo remove it
+        session.save();
+
         if (getRealNode() instanceof NodeImpl && sharedNode.getRealNode() instanceof NodeImpl) {
             String uri = "";
             if (name.contains(":")) {

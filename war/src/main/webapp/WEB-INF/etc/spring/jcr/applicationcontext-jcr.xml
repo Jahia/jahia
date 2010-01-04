@@ -108,9 +108,7 @@
             <map>
                 <entry key="default">
                     <list>
-                        <bean class="org.jahia.services.content.FieldReferenceListener">
-                            <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
-                        </bean>
+                        <bean class="org.jahia.services.content.FullpathListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}"/>

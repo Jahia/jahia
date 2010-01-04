@@ -127,10 +127,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.createCollection(name);
     }
 
-    public JahiaFileField getJahiaFileField() {
-        return node.getJahiaFileField();
-    }
-
     public String getStorageName() {
         return node.getStorageName();
     }
@@ -245,14 +241,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean renameFile(String newName) throws RepositoryException {
         return node.renameFile(newName);
-    }
-
-    public boolean moveFile(String dest) throws RepositoryException {
-        return node.moveFile(dest);
-    }
-
-    public boolean moveFile(String dest, String name) throws RepositoryException {
-        return node.moveFile(dest, name);
     }
 
     public boolean copyFile(String dest) throws RepositoryException {

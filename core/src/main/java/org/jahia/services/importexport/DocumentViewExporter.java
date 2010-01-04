@@ -29,7 +29,7 @@ public class DocumentViewExporter {
     private boolean skipBinary;
     private Set<String> typesToIgnore = new HashSet<String>();
     private Map<String, String> prefixes;
-
+    private Set<String> exportedShareable;
     private JCRNodeWrapper rootNode;
     private Stack<String> stack;
 
@@ -50,6 +50,8 @@ public class DocumentViewExporter {
         prefixes.put(Constants.JAHIANT_PREF, Constants.JAHIANT_NS);
         prefixes.put(Constants.JAHIA_PREF, Constants.JAHIA_NS);
         prefixes.put(Constants.JAHIAMIX_PREF, Constants.JAHIAMIX_NS);
+
+        exportedShareable = new HashSet<String>();
     }
 
     public void setTypesToIgnore(Set<String> typesToIgnore) {
@@ -136,6 +138,18 @@ public class DocumentViewExporter {
                 }
             }
             AttributesImpl atts = new AttributesImpl();
+            if (node.isNodeType("jmix:shareable")) {
+
+                if (exportedShareable.contains(node.getIdentifier())) {
+                    atts.addAttribute(Constants.JCR_NS, "uuid", "jcr:uuid", CDATA, node.getIdentifier());
+                    String encodedName = ISO9075.encode(node.getName());
+                    startElement(encodedName, atts);
+                    endElement(encodedName);
+                    return;
+                } else {
+                    exportedShareable.add(node.getIdentifier());
+                }                
+            }
             PropertyIterator propsIterator = node.getProperties();
             while (propsIterator.hasNext()) {
                 JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();

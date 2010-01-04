@@ -806,7 +806,8 @@ public class ContentManagerHelper {
 
     public void move(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
-        session.getWorkspace().move(sourcePath, targetPath);
+        session.move(sourcePath, targetPath);
+        session.save();
     }
 
     public void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
@@ -827,7 +828,7 @@ public class ContentManagerHelper {
                 srcNode.getParent().checkout();
             }
             String newname = findAvailableName(targetParent, srcNode.getName());
-            session.getWorkspace().move(sourcePath, targetParent.getPath() + "/" + newname);
+            session.move(sourcePath, targetParent.getPath() + "/" + newname);
             targetParent.orderBefore(newname, targetNode.getName());
         }
         session.save();
@@ -851,7 +852,7 @@ public class ContentManagerHelper {
                 srcNode.getParent().checkout();
             }
             String newname = findAvailableName(targetNode, srcNode.getName());
-            session.getWorkspace().move(sourcePath, targetNode.getPath() + "/" + newname);
+            session.move(sourcePath, targetNode.getPath() + "/" + newname);
             targetNode.orderBefore(newname, null);
         }
         session.save();
@@ -975,7 +976,9 @@ public class ContentManagerHelper {
                                 try {
                                     session.checkout(node);
                                     session.checkout(node.getParent());
-                                    if (!node.moveFile(destPath, name)) {
+                                    try {
+                                        session.move(node.getPath(), destPath+"/"+name);
+                                    } catch (RepositoryException e) {
                                         missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
                                         continue;
                                     }

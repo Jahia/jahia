@@ -32,23 +32,15 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.JahiaSessionImpl;
-import org.apache.jackrabbit.core.NodeImpl;
-import org.apache.jackrabbit.core.id.NodeId;
-import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
-import org.apache.xmlbeans.impl.common.ReaderInputStream;
 import org.jahia.api.Constants;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -59,7 +51,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -100,7 +91,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private JCRSessionWrapper session;
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
-        this(session, rootPath, null,null,siteKey);
+        this(session, rootPath, null, null, siteKey);
     }
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList, String siteKey) throws IOException {
@@ -157,7 +148,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 decodedQName = siteKey;
                 String newpath;
                 final List<JCRNodeWrapper> nodeWrappers = JCRStoreService.getInstance().getSiteFolders(siteKey);
-                if(nodeWrappers!=null && !nodeWrappers.isEmpty()) {
+                if (nodeWrappers != null && !nodeWrappers.isEmpty()) {
                     JCRNodeWrapper siteFolder = nodeWrappers.get(0);
                     newpath = siteFolder.getPath();
                     pathMapping.put(path + "/", newpath + "/");
@@ -167,7 +158,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     try {
                         session.getNode(path);
                     } catch (RepositoryException e) {
-                        logger.error("Error during auto import the site "+path+" does not exist",e);
+                        logger.error("Error during auto import the site " + path + " does not exist", e);
                     }
                 }
             }
@@ -320,7 +311,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     child.addMixin(Constants.MIX_TITLE);
                 } else if (attrName.equals("j:defaultCategory")
                         && !child.isNodeType(Constants.JAHIAMIX_CATEGORIZED)) {
-                    child.addMixin(Constants.JAHIAMIX_CATEGORIZED);                    
+                    child.addMixin(Constants.JAHIAMIX_CATEGORIZED);
                 }
                 ExtendedPropertyDefinition propDef;
                 try {
@@ -329,7 +320,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 //                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
 //                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
 //                    } else {
-                        propDef = child.getApplicablePropertyDefinition(attrName);
+                    propDef = child.getApplicablePropertyDefinition(attrName);
 //                    }
                 } catch (ConstraintViolationException e) {
                     logger.error(e.getMessage());
@@ -337,15 +328,19 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE) {
-                    if (!references.containsKey(attrValue)) {
-                        references.put(attrValue, new ArrayList<String>());
+                    if (attrValue.length() > 0) {
+                        if (!references.containsKey(attrValue)) {
+                            references.put(attrValue, new ArrayList<String>());
+                        }
+                        references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                     }
-                    references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                 } else if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                    if (!references.containsKey(attrValue)) {
-                        references.put(attrValue, new ArrayList<String>());
+                    if (attrValue.length() > 0) {
+                        if (!references.containsKey(attrValue)) {
+                            references.put(attrValue, new ArrayList<String>());
+                        }
+                        references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                     }
-                    references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                 } else {
                     if (propDef.isProtected()) {
                         continue;

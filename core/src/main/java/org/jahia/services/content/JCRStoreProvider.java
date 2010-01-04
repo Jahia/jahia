@@ -293,6 +293,7 @@ public class JCRStoreProvider {
 
             initNodeTypes();
             initObservers();
+            initialized = true;
             initContent();
 
             if (rmibind != null) {
@@ -303,7 +304,6 @@ public class JCRStoreProvider {
                 }
             }
 
-            initialized = true;
             authenticationType = tmpAuthenticationType;
         } catch (Exception e){
             logger.error("Repository init error",e);

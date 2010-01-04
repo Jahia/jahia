@@ -95,7 +95,9 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
-    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRSessionFactory sessionFactory) {
+    private boolean eventsDisabled = false;
+
+    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, boolean eventsDisabled, JCRSessionFactory sessionFactory) {
         this.user = user;
         this.credentials = credentials;
         if (workspace == null) {
@@ -108,6 +110,7 @@ public class JCRSessionWrapper implements Session {
         if (locale == null) {
             interceptorsEnabled = false;
         }
+        this.eventsDisabled = eventsDisabled;
         this.sessionFactory = sessionFactory;
     }
 
@@ -246,6 +249,7 @@ public class JCRSessionWrapper implements Session {
         for (Session session : sessions.values()) {
             session.save();
         }
+
         JCRObservationManager.consume(this);
     }
 
@@ -685,5 +689,9 @@ public class JCRSessionWrapper implements Session {
         if (!versionManager.isCheckedOut(absPath)) {
             versionManager.checkout(absPath);
         }
+    }
+
+    public boolean isEventsDisabled() {
+        return eventsDisabled;
     }
 }

@@ -39,6 +39,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
@@ -121,10 +122,10 @@ while (selectedNodeIter.hasNext()) {
     var sAutoSelectParent = '${autoSelectParent}';
 
 </script>
-<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="<%=jahiaServletPath%>" jahiaContextPath="<%=jahiaContextPath%>" rootPath="<%=rootPath%>"
+<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="${fn:escapeXml(jahiaServletPath)}" jahiaContextPath="${fn:escapeXml(jahiaContextPath)}" rootPath="<%=rootPath%>"
                          startPath="<%=startPath%>"
                          nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
-                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"
+                         mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}"
                          embedded="<%=embedded%>" multiple="<%=multiple%>"/>
 
 <internal:gwtResourceBundle resourceName="toolbar.manager.button.createFolder"

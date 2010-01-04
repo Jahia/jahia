@@ -3,6 +3,8 @@ package org.jahia.services.render;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 
 import java.util.Properties;
 import java.util.Map;
@@ -10,14 +12,16 @@ import java.util.HashMap;
 import java.io.InputStream;
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
+
 /**
- * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 28, 2009
-* Time: 7:20:38 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * Implementation of the {@link Template} that uses {@link RequestDispatcher} to forward to a JSP resource.
+ * User: toto
+ * Date: Sep 28, 2009
+ * Time: 7:20:38 PM
+ */
 public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTemplate>, Template {
+    private static Logger logger = Logger.getLogger(RequestDispatcherTemplate.class);
     private String path;
     private String key;
     private JahiaTemplatesPackage ownerPackage;
@@ -42,7 +46,9 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
                 try {
                     properties.load(is);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.warn("Unable to read associated properties file under " + propName, e);
+                } finally {
+                    IOUtils.closeQuietly(is);
                 }
             }
         } else {

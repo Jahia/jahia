@@ -47,7 +47,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
@@ -86,10 +86,10 @@
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
             <fmt:message key="searchForm.date.from"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], from)}"/>
+            <uiComponents:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], from)}"/>
             <c:set var="valueParamName" value="${attributes.name}.to"/>
             <fmt:message key="searchForm.date.to"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], to)}"/>
+            <uiComponents:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], to)}"/>
     </div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

@@ -46,7 +46,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
@@ -75,7 +75,7 @@
         %>
     </c:if>
     <input ${functions:attributes(attributes)} value="${fn:escapeXml(pageTitle)}"/>
-    <ui:pageSelector fieldId="src_pagePath.value" fieldIdIncludeChildren="src_pagePath.includeChildren"
+    <uiComponents:pageSelector fieldId="src_pagePath.value" fieldIdIncludeChildren="src_pagePath.includeChildren"
         onSelect="function (pid, url, title) { document.getElementById('${attributes.id}').value=title; return true; }"/>
 </c:if>
 <c:if test="${!display && includeChildren}">

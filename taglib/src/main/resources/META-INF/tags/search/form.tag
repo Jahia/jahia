@@ -41,7 +41,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
+<%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
 <c:set var="org.jahia.tags.search.form.class" value="<%= this.getClass() %>" scope="request"/>
 <c:set var="formId" value="<%= this.toString() %>"/>
 <c:set target="${searchTermIndexes}" property="${formId}" value="0"/>
@@ -52,7 +52,7 @@
 <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
 <c:set var="searchFor" value="${functions:default(searchFor, 'pages')}"/>
 <c:if test="${empty resultsPage}">
-    <s:resultsPageUrl var="resultsPage"/>
+    <search:resultsPageUrl var="resultsPage"/>
 </c:if>
 <form ${functions:attributes(attributes)}>
     <c:if test="${not empty resultsPage && resultsPage != 'this'}">

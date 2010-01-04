@@ -48,15 +48,15 @@
         %>
 <%@ tag dynamic-attributes="attributes" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <c:set target="${attributes}" property="jahiatype" value="subscription"/>
 <c:set var="elementId" value="subscription_${source}"/>
-<c:set target="${attributes}" property="id" value="${h:default(id, elementId)}"/>
+<c:set target="${attributes}" property="id" value="${functions:default(id, elementId)}"/>
 <c:set target="${attributes}" property="source" value="${source}"/>
-<c:set target="${attributes}" property="event" value="${h:default(event, 'contentPublished')}"/>
-<c:set target="${attributes}" property="user" value="${h:default(user, jahia.user.username)}"/>
-<c:set target="${attributes}" property="confirmationRequired" value="${h:default(confirmationRequired, 'false')}"/>
+<c:set target="${attributes}" property="event" value="${functions:default(event, 'contentPublished')}"/>
+<c:set target="${attributes}" property="user" value="${functions:default(user, jahia.user.username)}"/>
+<c:set target="${attributes}" property="confirmationRequired" value="${functions:default(confirmationRequired, 'false')}"/>
 <c:if test="${empty requestScope['org.jahia.tags.subscribeButton.resourcesIncluded']}">
     <c:set var="org.jahia.tags.subscribeButton.resourcesIncluded" value="true" scope="request"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.operation.failure"/>
@@ -71,4 +71,4 @@
     <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.title"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.window.title"/>
 </c:if>
-<span ${h:attributes(attributes)}></span>
+<span ${functions:attributes(attributes)}></span>

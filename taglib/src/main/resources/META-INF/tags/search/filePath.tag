@@ -42,7 +42,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_filePath.value"/>
@@ -55,7 +55,7 @@
        value="${functions:default(param['src_filePath.includeChildren'], empty paramValues['src_filePath.value'] ? includeChildren : 'false')}"/>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${display}">
-    <ui:folderSelector fieldId="${attributes.id}" fieldIdIncludeChildren="src_filePath.includeChildren" includeChildren="${includeChildren}"/>
+    <uiComponents:folderSelector fieldId="${attributes.id}" fieldIdIncludeChildren="src_filePath.includeChildren" includeChildren="${includeChildren}"/>
 </c:if>
 <c:if test="${!display && includeChildren}">
     <input type="hidden" name="src_filePath.includeChildren" value="true"/>

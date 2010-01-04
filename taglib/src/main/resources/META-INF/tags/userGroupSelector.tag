@@ -41,12 +41,12 @@
 <%@ attribute name="multiple" required="false" type="java.lang.Boolean" description="Allow multiple principal selection? [false]" %>
 <%@ tag dynamic-attributes="attributes" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set target="${attributes}" property="jahiatype" value="usergroup"/>
 <c:set target="${attributes}" property="mode" value="${mode}"/>
 <c:set target="${attributes}" property="onSelect" value="${onSelect}"/>
 <c:set target="${attributes}" property="fieldId" value="${fieldId}"/>
-<c:set target="${attributes}" property="singleSelectionMode" value="${not h:default(multiple, false)}"/>
+<c:set target="${attributes}" property="singleSelectionMode" value="${not functions:default(multiple, false)}"/>
 <c:set var="elementId" value='<%= "usergroup_" + org.apache.commons.id.IdentifierUtils.nextLongIdentifier() %>'/>
-<c:set target="${attributes}" property="id" value="${h:default(attributes.id, elementId)}"/>
-<span ${h:attributes(attributes)} label="${empty label ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : label}"></span>
+<c:set target="${attributes}" property="id" value="${functions:default(attributes.id, elementId)}"/>
+<span ${functions:attributes(attributes)} label="${empty label ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : label}"></span>

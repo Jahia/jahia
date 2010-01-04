@@ -35,7 +35,7 @@
 <%@ tag dynamic-attributes="attributes"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <utility:setBundle basename="JahiaInternalResources"/>
@@ -48,8 +48,8 @@
   </c:if>
   <c:set target="${attributes}" property="type" value="text"/>
   <c:set target="${attributes}" property="name" value="loginChoice"/>
-  <c:set var="value" value="${h:default(param['loginRedirectChoice'], loginConstants.STAY_AT_CURRENT_PAGE)}"/>
-  <select ${h:attributes(attributes)}>
+  <c:set var="value" value="${functions:default(param['loginRedirectChoice'], loginConstants.STAY_AT_CURRENT_PAGE)}"/>
+  <select ${functions:attributes(attributes)}>
      <c:forEach items="${loginChoices}" var="loginChoice">
           <option value="${loginChoice.key}" ${value == loginChoice.key ? 'selected="selected"' : ''}><fmt:message key="${loginChoice.value}"/></option>
      </c:forEach>  

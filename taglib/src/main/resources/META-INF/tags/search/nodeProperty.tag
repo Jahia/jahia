@@ -52,14 +52,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
-<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${nodeType}).${name}.value"/>
 <c:set var="value" value="${functions:default(param[propName], value)}"/>
-<s:nodePropertyDescriptor nodeType="${nodeType}" name="${name}">
+<search:nodePropertyDescriptor nodeType="${nodeType}" name="${name}">
     <c:if test="${display}">
         <c:set target="${attributes}" property="name" value="${propName}"/>
         <c:choose>
@@ -100,12 +100,12 @@
                 <c:set var="categoryRoot"
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : 'root'}"/>
                 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
-                <ui:categorySelector fieldId="${attributes.id}"
+                <uiComponents:categorySelector fieldId="${attributes.id}"
                                      fieldIdIncludeChildren="src_properties(${nodeType}).${name}.categoryValue.includeChildren"
                                      root="${categoryRoot}"/>
             </c:when>
             <c:when test="${descriptor.type == 'DATE'}">
-                <s:date name="src_properties(${nodeType}).${name}.dateValue" value="${value}" from="${from}"
+                <search:date name="src_properties(${nodeType}).${name}.dateValue" value="${value}" from="${from}"
                         to="${to}"/>
             </c:when>
         </c:choose>
@@ -142,4 +142,4 @@
             </c:when>
         </c:choose>
     </c:if>
-</s:nodePropertyDescriptor>
+</search:nodePropertyDescriptor>

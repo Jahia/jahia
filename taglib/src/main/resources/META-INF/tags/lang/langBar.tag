@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
+<%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="uiComponents" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ attribute name="display" required="true" type="java.lang.String"%>
 <%@ attribute name="linkDisplay" required="false" rtexprvalue="true" %>
@@ -12,7 +12,7 @@
 <%@ attribute name="rootPage" type="org.jahia.services.content.JCRNodeWrapper" required="false" rtexprvalue="true" %>
 
 
-<ui:initLangBarAttributes order="${order}" activeLanguagesOnly="${activeLanguagesOnly}"/>
+<uiComponents:initLangBarAttributes order="${order}" activeLanguagesOnly="${activeLanguagesOnly}"/>
 
 <c:if test='${display != null}'>
     <c:if test='${fn:toLowerCase(display) == "comboBox"}'>
@@ -21,7 +21,7 @@
             <select name="languageSwitchParam"
                     onchange="document.location.href=(this.options[this.selectedIndex].value)">
                 <c:forEach var="langCode" items="${requestScope.languageCodes}">
-                    <ui:displayLanguageSwitchLink languageCode="${langCode}"
+                    <uiComponents:displayLanguageSwitchLink languageCode="${langCode}"
                                                   linkKind="${linkDisplay}"
                                                   var="linkValue"
                                                   urlVar="urlValue"
@@ -52,14 +52,14 @@
                     <li class="${linkDisplay}">
                         <c:choose>
                             <c:when test="${fn:toLowerCase(linkDisplay) == 'flag'}">
-                                <ui:displayLanguageFlag languageCode="${langCode}"
+                                <uiComponents:displayLanguageFlag languageCode="${langCode}"
                                                         title="Switch to ${langCode}"
                                                         titleKey="switchTo"
                                                         onLanguageSwitch="${onLanguageSwitch}"
                                                         redirectCssClassName="${redirectCssClassName}"/>
                             </c:when>
                             <c:otherwise>
-                                <ui:displayLanguageSwitchLink languageCode="${langCode}"
+                                <uiComponents:displayLanguageSwitchLink languageCode="${langCode}"
                                                               linkKind="${linkDisplay}"
                                                               title="Switch to ${langCode}"
                                                               titleKey="switchTo"
@@ -82,14 +82,14 @@
                     <li class="${requestScope.linkDisplay}">
                         <c:choose>
                             <c:when test="${fn:toLowerCase(linkDisplay) == 'flag'}">
-                                <ui:displayLanguageFlag languageCode="${langCode}"
+                                <uiComponents:displayLanguageFlag languageCode="${langCode}"
                                                         title="Switch to ${langCode}"
                                                         titleKey="switchTo"
                                                         onLanguageSwitch="${onLanguageSwitch}"
                                                         redirectCssClassName="${redirectCssClassName}"/>
                             </c:when>
                             <c:otherwise>
-                                <ui:displayLanguageSwitchLink languageCode="${langCode}"
+                                <uiComponents:displayLanguageSwitchLink languageCode="${langCode}"
                                                               title="Switch to ${langCode}"
                                                               titleKey="switchTo"
                                                               linkKind="${linkDisplay}"

@@ -49,7 +49,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
+<%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
@@ -68,6 +68,6 @@
     <input type="hidden" name="${key}" value="${fn:escapeXml(functions:default(param[key], match))}"/>
 </c:if>
 <c:if test="${searchInAllowSelection || not empty searchIn}">
-    <s:termFields value="${searchIn}" selectionOptions="${searchInSelectionOptions}" display="${searchInAllowSelection}"/>
+    <search:termFields value="${searchIn}" selectionOptions="${searchInSelectionOptions}" display="${searchInAllowSelection}"/>
 </c:if>
 <c:set target="${searchTermIndexes}" property="${formId}" value="${searchTermIndexes[formId] + 1}"/>

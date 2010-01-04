@@ -54,7 +54,7 @@
         %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -68,7 +68,7 @@
 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
 <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
 <c:set var="includeChildren"
-       value="${h:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
+       value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <jsp:useBean id="engineParams" class="java.util.HashMap"/>
 <c:set target="${engineParams}" property="selectPageOperation" value="selectAnyPage"/>
 <c:set target="${engineParams}" property="pageID" value="<%= Integer.valueOf(-1) %>"/>
@@ -81,7 +81,7 @@
 <c:set target="${attributes}" property="onclick" value="<%= null %>"/>
 <c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.select"/></c:set></c:if>
-<a ${h:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${fn:escapeXml(link)}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
+<a ${functions:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${fn:escapeXml(link)}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></label>
 </c:if>

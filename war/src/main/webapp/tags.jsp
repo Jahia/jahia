@@ -52,9 +52,9 @@
 <s:date/>
 <s:created/>
 <s:createdBy/>
-<s:documentProperty documentType="" name=""/>
-<s:documentType/>
-<s:fileLocation/>
+<s:nodeProperty nodeType="" name=""/>
+<s:nodeType/>
+<s:filePath/>
 <s:fileType/>
 <s:form/>
 <s:itemsPerPage/>
@@ -73,7 +73,7 @@
 <internal:contentManager/>
 <internal:aclEditor/>
 <internal:categoryManager/>
-<internal:categorySelector/>
+<internal:contentPicker/>
 <internal:jobReport/>
 <internal:workflowManager sitekey="test" startpage="1"/>
 <internal:aclNameEditor aclId="0" fieldId="0"/>

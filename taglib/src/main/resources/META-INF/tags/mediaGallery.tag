@@ -32,7 +32,7 @@
 
 --%>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
@@ -61,9 +61,9 @@
         </c:choose>
     </template:jahiaPageForm>
     <c:if test="${requestScope.currentRequest.editMode}">
-        <ui:folderSelector fieldId="${inputName}" displayIncludeChildren="false"
+        <uiComponents:folderSelector fieldId="${inputName}" displayIncludeChildren="false"
                            onSelect="function (path) { document.${name}.${inputName}.value=path; document.${name}.submit(); return false; }"/>
         <fmt:message key="mediagallery.imagefolder"/>
     </c:if>
-    <ui:thumbView path="${thePath}" cssClassName="thumbView"/>
+    <uiComponents:thumbView path="${thePath}" cssClassName="thumbView"/>
 </div>

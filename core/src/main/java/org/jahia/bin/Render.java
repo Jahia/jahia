@@ -163,9 +163,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
-        if (renderContext.isEditMode()) {
-            resp.setHeader("Pragma", "no-cache");
-        }
 
         PrintWriter writer = resp.getWriter();
         writer.print(out);

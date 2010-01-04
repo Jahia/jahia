@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.displaytag.decorator.TableDecorator;
 import org.jahia.services.search.FileHit;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 /**
  * Base decorator class for displaying a list of file search results.
@@ -48,7 +48,7 @@ import org.jahia.engines.calendar.CalendarHandler;
 public class FileSearchTableDecorator extends TableDecorator {
 
     private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance(
-            CalendarHandler.DEFAULT_DATE_FORMAT);
+            DateUtils.DEFAULT_DATETIME_FORMAT);
 
     protected String formatDate(Date date) {
         return date != null ? DATE_FORMAT.format(date) : null;

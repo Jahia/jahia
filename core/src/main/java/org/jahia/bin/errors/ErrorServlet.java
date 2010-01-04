@@ -49,13 +49,13 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.login.Login_Engine;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DateUtils;
 
 /**
  * Error pages dispatcher servlet.
@@ -65,7 +65,7 @@ import org.jahia.settings.SettingsBean;
 public class ErrorServlet extends HttpServlet {
 
     private static final FastDateFormat DATE_FORMAT = FastDateFormat
-            .getInstance(CalendarHandler.DEFAULT_DATE_FORMAT);
+            .getInstance(DateUtils.DEFAULT_DATETIME_FORMAT);
 
     private static final Logger logger = Logger.getLogger(ErrorServlet.class);
 

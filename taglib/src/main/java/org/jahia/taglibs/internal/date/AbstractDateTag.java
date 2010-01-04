@@ -32,13 +32,13 @@
 package org.jahia.taglibs.internal.date;
 
 import org.jahia.taglibs.ValueJahiaTag;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 /**
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
 public abstract class AbstractDateTag extends ValueJahiaTag {
-    protected static final String DATE_PATTERN_NO_TIME = CalendarHandler.DEFAULT_DATEONLY_FORMAT;
-    protected static final String DATE_PATTERN_TIME = CalendarHandler.DEFAULT_DATE_FORMAT;
+    protected static final String DATE_PATTERN_NO_TIME = DateUtils.DEFAULT_DATE_FORMAT;
+    protected static final String DATE_PATTERN_TIME = DateUtils.DEFAULT_DATETIME_FORMAT;
 }

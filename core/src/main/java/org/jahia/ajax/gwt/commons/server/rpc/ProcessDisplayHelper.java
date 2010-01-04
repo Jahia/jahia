@@ -36,21 +36,18 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
-import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
-import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
 import org.jahia.engines.EngineMessage;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.DateUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -290,7 +287,7 @@ public class ProcessDisplayHelper {
         if (locale == null) {
             locale = Locale.getDefault();
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT, locale);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT, locale);
         return dateFormat.format(new Date(dateL));
     }
 

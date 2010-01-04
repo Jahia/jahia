@@ -33,10 +33,10 @@ package org.jahia.taglibs.uicomponents.navigation;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.jcr.node.JCRTagUtils;
+import org.jahia.utils.DateUtils;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -101,7 +101,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         this.node = node;
     }
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
 
     public int doStartTag() throws JspException {
 

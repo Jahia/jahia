@@ -41,7 +41,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.jahia.resourcebundle.ResourceMessage;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 /**
  * @author loom
@@ -51,7 +51,7 @@ import org.jahia.engines.calendar.CalendarHandler;
  */
 public class DateValidator extends AbstractValidator {
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+    SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
     Date nowDate = new Date();
 
     public DateValidator(String name, String value, License license) {

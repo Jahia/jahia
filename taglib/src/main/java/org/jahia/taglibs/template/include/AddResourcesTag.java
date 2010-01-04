@@ -41,13 +41,13 @@ import org.jahia.registries.ServicesRegistry;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.io.File;
+import java.net.MalformedURLException;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * Add some resources to the head tag of the HTML.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -82,37 +82,45 @@ public class AddResourcesTag extends BodyTagSupport {
         final Set<String> links = renderContext.getExternalLinks(type);
         String[] strings = resources.split(",");
 
-        List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
-        packages.add(aPackage);
+        List<String> lookupPaths = new LinkedList<String>();
+        lookupPaths.add(aPackage.getRootFolderPath() + "/" + type + "/");
         for (String s : aPackage.getDepends()) {
-            packages.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(s));
+            lookupPaths.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(s).getRootFolderPath() + "/" + type + "/");
         }
 
         for (String resource : strings) {
-            if (resource.startsWith("/") || resource.startsWith("http://")) {
-                renderContext.addExternalLink(type, resource);
+            boolean found = false;
+            resource = resource.trim();
+            if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
+                found = true;
+                if (links == null || !links.contains(resource)) {
+                    renderContext.addExternalLink(type, resource);
+                }
             } else {
-                for (JahiaTemplatesPackage pack : packages){
-                    String path = pageContext.getServletContext().getRealPath(pack.getRootFolderPath());
-                    File f = new File(path + "/" + type + "/" + resource);
-                    if (f.exists()) {
-                        boolean found = false;
-                        if (links != null) {
-                            for (String link : links) {
-                                if (link.endsWith(f.getName())) {
-                                    found = true;
-                                }
-                            }
-                        }
-                        if (!found) {
-                            renderContext.addExternalLink(type,renderContext.getRequest().getContextPath() + pack.getRootFolderPath() + "/" + type + "/" + f.getName());
+                for (String lookupPath : lookupPaths){
+                    String path = lookupPath + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
+                    if (links != null && links.contains(pathWithContext)) {
+                        // we have it already
+                        found = true;
+                        break;  
+                    }
+                    try {
+                        if (pageContext.getServletContext().getResource(path) != null) {
+                            // we found it --> add it and stop
+                            renderContext.addExternalLink(type, pathWithContext);
+                            found = true;
                             break;
                         }
+                    } catch (MalformedURLException e) {
+                        logger.warn(e.getMessage(), e);
                     }
                 }
             }
+            if (!found) {
+                logger.warn("Unable to find resource '" + resource + "' in: " + lookupPaths);
+            }
         }
-
     }
 
     public void setNodetype(String nodetype) {

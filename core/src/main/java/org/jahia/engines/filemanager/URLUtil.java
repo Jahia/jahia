@@ -40,7 +40,7 @@ import java.util.BitSet;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 
 /**
@@ -61,7 +61,7 @@ public final class URLUtil {
      * The DateFormat to use for generating readable dates in cookies.
      */
     private static SimpleDateFormat format =
-        new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+        new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
 
 
     /**

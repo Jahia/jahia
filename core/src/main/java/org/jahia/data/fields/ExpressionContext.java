@@ -40,9 +40,9 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.expressions.ExpressionContextInterface;
 import org.jahia.services.expressions.DateBean;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.utils.DateUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.apache.commons.jexl.JexlContext;
 
 import java.util.Map;
@@ -90,7 +90,7 @@ public class ExpressionContext implements ExpressionContextInterface {
         vars.put("currentUser", getUser());
         vars.put("currentRequest", getRequestBean());
         vars.put("dateBean", new DateBean(Jahia.getThreadParamBean(),
-                new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT)));
+                new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT)));
     }
 
     public org.jahia.data.beans.PageBean getPageBean() {

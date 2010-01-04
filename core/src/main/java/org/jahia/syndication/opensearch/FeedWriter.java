@@ -46,7 +46,7 @@ import java.io.FileWriter;
 
 import org.jahia.params.ParamBean;
 import org.jahia.services.search.SearchResponse;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 /**
  * RSS feed producer for the Jahia search provider.
@@ -60,7 +60,7 @@ public class FeedWriter {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (FeedWriter.class);
 
-    private static final DateFormat DATE_PARSER = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+    private static final DateFormat DATE_PARSER = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
 
     public FeedWriter(){
     }

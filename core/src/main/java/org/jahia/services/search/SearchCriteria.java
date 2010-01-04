@@ -48,7 +48,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 /**
  * Bean for holding all search parameters.
@@ -99,7 +99,7 @@ public class SearchCriteria implements Serializable {
         }
 
         public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-                CalendarHandler.DEFAULT_DATEONLY_FORMAT);
+                DateUtils.DEFAULT_DATE_FORMAT);
 
         private static final long serialVersionUID = -1637520083714465344L;
 

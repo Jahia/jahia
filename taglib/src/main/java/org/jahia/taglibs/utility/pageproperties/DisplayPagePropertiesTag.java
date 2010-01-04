@@ -38,7 +38,7 @@ import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
@@ -76,7 +76,7 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
 
             final SimpleDateFormat sdf;
             if (dateFormat == null || dateFormat.length() == 0) {
-                sdf = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+                sdf = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
             } else {
                 sdf = new SimpleDateFormat(dateFormat);
             }

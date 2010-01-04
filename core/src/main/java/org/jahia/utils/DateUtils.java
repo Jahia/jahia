@@ -40,10 +40,27 @@ import java.util.Calendar;
  */
 public final class DateUtils {
 
+    /** Default date pattern */
+    public static final String DEFAULT_DATE_FORMAT = "dd.MM.yyyy";
+    /** Default datetime pattern */
+    public static final String DEFAULT_DATETIME_FORMAT = "dd.MM.yyyy HH:mm";
+
+    /**
+     * Returns the end of the day (23:59:59:999) for today.
+     * 
+     * @param date the date to be processed
+     * @return the end of the day (23:59:59:999) for today
+     */
     public static Calendar dayEnd() {
         return dayEnd(Calendar.getInstance());
     }
 
+    /**
+     * Returns the end of the day (23:59:59:999) for the specified date.
+     * 
+     * @param date the date to be processed
+     * @return the end of the day (23:59:59:999) for the specified date
+     */
     public static Calendar dayEnd(Calendar date) {
         Calendar c = (Calendar) date.clone();
 
@@ -55,10 +72,21 @@ public final class DateUtils {
         return c;
     }
 
+    /**
+     * Returns the start of the day (00:00:00:000) for today.
+     * 
+     * @return the start of the day (00:00:00:000) for today
+     */
     public static Calendar dayStart() {
         return dayStart(Calendar.getInstance());
     }
 
+    /**
+     * Returns the start of the day (00:00:00:000) for the specified date.
+     * 
+     * @param date the date to be processed
+     * @return the start of the day (00:00:00:000) for the specified date
+     */
     public static Calendar dayStart(Calendar date) {
         Calendar c = (Calendar) date.clone();
 
@@ -70,6 +98,9 @@ public final class DateUtils {
         return c;
     }
 
+    /**
+     * Initializes an instance of this class.
+     */
     private DateUtils() {
         super();
     }

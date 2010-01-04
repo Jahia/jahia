@@ -55,9 +55,9 @@ import org.jahia.content.FieldDefinitionKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.content.nodetypes.*;
+import org.jahia.utils.DateUtils;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.engines.calendar.CalendarHandler;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
@@ -231,7 +231,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
                             }
                             break;
                         case PropertyType.DATE :
-                            String format = CalendarHandler.DEFAULT_DATE_FORMAT;
+                            String format = DateUtils.DEFAULT_DATETIME_FORMAT;
                             if (opts != null && opts.get("format") != null) {
                                 format = opts.get("format");
                             }

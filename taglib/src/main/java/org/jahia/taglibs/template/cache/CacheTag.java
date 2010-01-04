@@ -37,10 +37,10 @@ import org.apache.struts.taglib.TagUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.params.ProcessingContext;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.DateUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -67,7 +67,7 @@ public class CacheTag extends AbstractJahiaTag {
     private Set<ContentObjectKey> dependencies;
     private boolean forceExecutionInEditMode;
     private long expiration= SettingsBean.getInstance().getContainerCacheDefaultExpirationDelay();
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
     private boolean debug = false;
 
     public int doStartTag() throws JspException {

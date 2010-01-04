@@ -48,7 +48,6 @@ import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.RequestBean;
 import org.jahia.data.beans.SiteBean;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.gui.GuiBean;
@@ -64,6 +63,7 @@ import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.expressions.DateBean;
+import org.jahia.utils.DateUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 /**
  * <p> Title: </p> <p> Description: </p> <p> Copyright: Copyright (c) 2004 </p> <p> Company: Jahia Ltd </p>
@@ -301,7 +301,7 @@ public class EngineValve implements Valve {
         request.setAttribute ("currentRequest", requestBean);
 
         DateBean dateBean = new DateBean(jParams,
-                new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT));
+                new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT));
         request.setAttribute("dateBean", dateBean);
 
         JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());

@@ -38,7 +38,7 @@
 <%@page import="org.jahia.resourcebundle.*" %>
 <%@page import="org.jahia.params.*" %>
 <%@page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.jahia.engines.calendar.CalendarHandler" %>
+<%@ page import="org.jahia.utils.DateUtils" %>
 <%
 ProcessingContext jParams = null;
 if (jData != null) {
@@ -46,7 +46,7 @@ jParams = jData.params();
 }
 List licenses         = (List) request.getAttribute("licenses");
 Date expirationDate = null;
-SimpleDateFormat dateFormatter = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
+SimpleDateFormat dateFormatter = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
 int maxDays = -1;
 if (request.getAttribute("expirationDate") != null) {
 expirationDate = (Date) request.getAttribute("expirationDate");

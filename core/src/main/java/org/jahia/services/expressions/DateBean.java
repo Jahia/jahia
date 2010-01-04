@@ -32,7 +32,7 @@
 package org.jahia.services.expressions;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.utils.DateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -81,7 +81,7 @@ public class DateBean {
      */
     public DateBean(ProcessingContext context, String dateFormat, String timeZone) {
         if (dateFormat == null || dateFormat.trim().equals("")) {
-            dateFormat = CalendarHandler.DEFAULT_DATE_FORMAT;
+            dateFormat = DateUtils.DEFAULT_DATETIME_FORMAT;
         }
         Locale l = Locale.getDefault();
         if (context != null && context.getLocale() != null) {
@@ -105,7 +105,7 @@ public class DateBean {
             if (context != null && context.getLocale() != null) {
                 l = context.getLocale();
             }
-            this.dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT, l);
+            this.dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT, l);
         }
         cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone(TIME_ZONE));

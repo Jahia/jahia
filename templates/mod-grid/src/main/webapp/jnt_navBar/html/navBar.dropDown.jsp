@@ -6,7 +6,7 @@
 
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <template:addResources type="css" resources="navigation.css" nodetype="jnt:navBar"/>
-<template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js" nodetype="jnt:navBar"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js" nodetype="jnt:navBar"/>
 <script type="text/javascript">
     $(document).ready(function() {
       $('#shortcuts').children('ul').hide();

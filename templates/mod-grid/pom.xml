@@ -127,6 +127,7 @@
                             <package-name>${project.name}</package-name>
                             <root-folder>grid</root-folder>
                             <module-type>siteLayout</module-type>
+                            <depends>Default Jahia Templates</depends>
                         </manifestEntries>
                     </archive>
                 </configuration>

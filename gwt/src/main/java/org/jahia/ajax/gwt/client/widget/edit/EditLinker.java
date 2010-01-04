@@ -144,6 +144,7 @@ public class EditLinker implements Linker {
         mainModule.refresh();
         refreshSelectionContext();
         toolbar.handleNewLinkerSelection();
+        sidePanel.refresh();
     }
 
     public GWTJahiaNode getSelectedNode() {

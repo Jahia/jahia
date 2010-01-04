@@ -255,18 +255,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
     
     private boolean isFileSearch(SearchCriteria params) {
-        boolean fileSearch = false;
-        for (Term textSearch : params.getTerms()) {
-            SearchFields fields = textSearch.getFields();
-            if (fields.isFileContent()) {
-                fileSearch = true;
-            }
-            if (fields.isSiteContent()) {
-                fileSearch = false;
-                break;
-            }
-        }
-        return fileSearch;
+        return params.getTerms().size() > 0 && !params.getTerms().get(0).getFields().isSiteContent();
     }
     
     private String getNodeType(SearchCriteria params) {

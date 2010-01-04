@@ -39,7 +39,7 @@
 <%@ attribute name="value" required="false" type="java.lang.String" description="Comma separated list of fields to search in. [siteContent]" %>
 <%@ attribute name="selectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
-              This option has effect only in case the searchInAllowSelection attribute is set to true. [siteContent,fileContent]" %>
+              This option has effect only in case the searchInAllowSelection attribute is set to true. Possibible options: siteContent, description, fileContent, filename, keywords, title, files (a shortcut for selecting file fields at once: description, fileContent, filename, keywords, title). [siteContent,files]" %>
 <%@ attribute name="appearance" required="false" type="java.lang.String"
               description="Specify the way field options will be displayed. Possible values are: checkbox and select. [checkbox]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -51,7 +51,7 @@
 <c:set var="value" value="${functions:default(value, 'siteContent')}"/>
 <c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
 <c:set var="termIndex" value="${searchTermFieldIndexes[formId]}"/>
-<c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'siteContent,fileContent')}"/>
+<c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'siteContent,files')}"/>
 <c:if test="${display}">
     <c:if test="${appearance == 'select'}">
         <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>

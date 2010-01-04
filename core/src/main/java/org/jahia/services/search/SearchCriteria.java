@@ -563,6 +563,13 @@ public class SearchCriteria implements Serializable {
                     if (custom.contains("keywords")) {
                         setKeywords(true);
                     }
+                    if (custom.contains("files")) {
+                        setDescription(true);
+                        setFileContent(true);
+                        setFilename(true);
+                        setKeywords(true);
+                        setTitle(true);
+                    }
                 }
             }
 

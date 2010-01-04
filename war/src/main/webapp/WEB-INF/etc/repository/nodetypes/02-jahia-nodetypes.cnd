@@ -424,7 +424,7 @@
 [jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
 + * (jnt:portletDefinition)
 
-[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:interactiveContent, jmix:publication
+[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
  - j:application (string,portletdefinition) hidden
  - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)

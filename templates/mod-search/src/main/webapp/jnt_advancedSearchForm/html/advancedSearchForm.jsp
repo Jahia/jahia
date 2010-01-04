@@ -9,10 +9,12 @@
 	<h3>${fn:escapeXml(title.string)}</h3>
 </c:if>
 <script type="text/javascript">
+/* <![CDATA[ */
 function toggleSearchMode(field) {
     document.getElementById('search-pages-criteria').style.display = field == 'siteContent' ? '' : 'none';
     document.getElementById('search-documents-criteria').style.display = field == 'siteContent' ? 'none' : '';
 }
+/* ]]> */
 </script>
 
 <div>

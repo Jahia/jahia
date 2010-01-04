@@ -36,10 +36,7 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
@@ -104,7 +101,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     logger.debug("Property : " + name + " not found in node " + node.getPath());
                 }
                 return returnValue;
-            }  catch (ConstraintViolationException e) {
+            } catch (ConstraintViolationException e) {
                 if (!inherited) {
                     logger.warn("Property : " + name + " not defined in node " + node.getPath());
                     return returnValue;
@@ -117,9 +114,14 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                             logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
                         }
                         return returnValue;
+                    } catch (AccessDeniedException e1) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Property : " + name + " parent access denied " + node.getPath());
+                        }
+                        return returnValue;
                     } catch (RepositoryException e1) {
                         logger.error(e1.getMessage(), e1);
-                        return returnValue;                        
+                        return returnValue;
                     }
                 }
             } catch (RepositoryException e) {

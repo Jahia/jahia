@@ -51,7 +51,7 @@
         <div class="container container_16">
             <div class="grid_16">
                 <div id="search-bar"><!--start search-bar-->
-                	<template:area path="${rootPage.path}/simpleSearch" nodeTypes="jnt:simpleSearchForm"/>
+                    <template:area path="simpleSearch" nodeTypes="jnt:simpleSearchForm"/>
                 </div>
                 <!--stop search-bar-->
                 <div id="breadcrumbs"><!--start breadcrumbs-->
@@ -60,20 +60,53 @@
                         <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
                         <jcr:node var="node" path="${currentPath}"/>
                         <c:if test="${jcr:isNodeType(node, 'jnt:page')}">
-                        <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}<c:if test="${not status.last}"></a> /</c:if>
+                            <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}
+                            <c:if test="${not status.last}"></a> /</c:if>
                         </c:if>
                     </c:forTokens>
                 </div>
                 <!--stop breadcrumbs-->
                 <h1>${currentNode.propertiesAsString['jcr:title']}</h1>
+
                 <div class="clear"></div>
-                    <template:module path="${rootPage.path}/topMenu">
-                        <template:import>
-                            <topMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
-                                    jcr:primaryType='jnt:navBar' j:maxDepth='1' j:nodename='jnt_navBar' j:startLevel='1' jcr:mixinTypes='jmix:renderable'
-                                    j:template='dropDown'/>
-                        </template:import>
-                    </template:module>
+                <div id="navigation">
+                    <template:area path="topMenu"/>
+
+
+                    <div id="shortcuts">
+                        <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
+                        <ul>
+                            <c:if test="${requestScope.currentRequest.logged}">
+                                <li class="more-shortcuts">
+                                    <a class="loginFormTopLogoutShortcuts"
+                                       href="<template:composePageURL page="logout"/>"><span>logout</span></a>
+                                </li>
+                                <li>
+                                    <span class="currentUser"><utility:userProperty/></span>
+                                </li>
+                                <li class="more-shortcuts">
+                                    <a href="${url.userProfile}">my settings</a>
+                                </li>
+                                <li class="more-shortcuts">
+                                    <a href="${url.edit}"><fmt:message key="edit"/></a>
+                                </li>
+                            </c:if>
+                            <li class="more-shortcuts"><a href="base.wrapper.bodywrapper.jsp#"
+                                                          onclick="javascript:window.print()">
+                                print</a>
+                            </li>
+                            <li class="more-shortcuts">
+                                <a href="${url.base}${rootPage.path}.html">home</a>
+                            </li>
+                            <li class="more-shortcuts">
+                                <a href="${url.base}${rootPage.path}.sitemap.html">sitemap</a>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+
+
+                </div>
             </div>
         </div>
         <div class="clear"></div>
@@ -94,12 +127,14 @@
         <div class="container container_16">
 
             <div class="grid_16">
-          <p class="copyright">
-          <span>COPYRIGHT (C) 2009 <a href="http://www.jahia.com/">Jahia Solutions Group</a></span>|
-          <span><a href="http://www.jahia.com/jahia/Jahia/Home/products/jahia_editions/licenses">Licence</a></span>|   
-          <span><a href="http://www.jahia.org/forum">COMMUNITY FORUMS</a></span>
-          <span><a href="http://www.jahia.com/jahia/Jahia/Home/services/annual_developer_subscription">COMMERCIAL SUPPORT</a></span>
-      </p>
+                <p class="copyright">
+                    <span>COPYRIGHT (C) 2009 <a href="http://www.jahia.com/">Jahia Solutions Group</a></span>|
+                    <span><a
+                            href="http://www.jahia.com/jahia/Jahia/Home/products/jahia_editions/licenses">Licence</a></span>|
+                    <span><a href="http://www.jahia.org/forum">COMMUNITY FORUMS</a></span>
+                    <span><a href="http://www.jahia.com/jahia/Jahia/Home/services/annual_developer_subscription">COMMERCIAL
+                        SUPPORT</a></span>
+                </p>
                 <template:area path="${rootPage.path}/footer"/>
             </div>
 

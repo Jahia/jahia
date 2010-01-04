@@ -94,6 +94,10 @@
  - j:maxDepth (long) = 3
  + * (jnt:navLink)
 
+[jnt:loginForm] > jnt:content, mix:title, jmix:interactiveContent
+ - j:displayRememberMeButton (boolean)
+ - j:displayLoginButton (boolean)
+
 [jnt:navLink] > jnt:content, mix:title
  page navLink primary
 
@@ -107,3 +111,4 @@
  - cast (string, richtext)
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no
+

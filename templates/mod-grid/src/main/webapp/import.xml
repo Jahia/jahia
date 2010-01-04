@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+         xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+         xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+    <reusableComponents jcr:primaryType="jnt:reusableComponentsRoot">
+        <jnt_page jcr:primaryType="jnt:reusableComponentsFolder">
+            <home jcr:primaryType="jnt:reusableComponent">
+                <j:target column="2col106" j:template="grid" jcr:mixinTypes="jmix:gridPage" jcr:primaryType="jnt:page">
+                    <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation" jcr:title_en="Home" jcr:language="en"/>
+                    <maincontent jcr:primaryType="jnt:contentList"/>
+                    <logo jcr:primaryType="jnt:contentList"/>
+                    <simpleSearch jcr:primaryType="jnt:contentList">
+                        <simpleSearchForm jcr:primaryType="jnt:simpleSearchForm"/>
+                    </simpleSearch>
+                    <topMenu jcr:primaryType="jnt:contentList">
+                        <topBar j:maxDepth="1" jcr:mixinTypes="jmix:renderable" j:template="dropDown" jcr:primaryType="jnt:navBar" j:startLevel="0"/>
+                    </topMenu>
+                    <footer jcr:primaryType="jnt:contentList"/>
+                    <col1 jcr:primaryType="jnt:contentList" />
+                    <col2 jcr:primaryType="jnt:contentList">
+                        <login-to-jahia jcr:primaryType="jnt:loginForm" >
+                            <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia" jcr:language="en" />
+                        </login-to-jahia>
+                    </col2>
+                </j:target>
+            </home>
+        </jnt_page>
+    </reusableComponents>
+</content>
+        

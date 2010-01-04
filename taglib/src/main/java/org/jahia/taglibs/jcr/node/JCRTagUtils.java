@@ -96,7 +96,7 @@ public class JCRTagUtils {
 
     public static boolean isNodeType(JCRNodeWrapper node, String type) {        
         try {
-            return node.isNodeType(type);
+            return node != null && node.isNodeType(type);
         } catch (RepositoryException e) {
             logger.error(e, e);
             return false;

@@ -144,7 +144,7 @@
         <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
     </th>
     <td nowrap>
-        <ui:dateSelector fieldName="${fromDateCalHandler.identifier}"
+        <ui:dateTimeSelector fieldName="${fromDateCalHandler.identifier}"
                                    datePattern="${fromDateCalHandler.dateFormat}"
                                    displayTime="true"
                                    templateUsage="false"
@@ -158,7 +158,7 @@
         <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
     </th>
     <td>
-        <ui:dateSelector fieldName="${toDateCalHandler.identifier}"
+        <ui:dateTimeSelector fieldName="${toDateCalHandler.identifier}"
                                    datePattern="${toDateCalHandler.dateFormat}"
                                    displayTime="true"
                                    templateUsage="false"

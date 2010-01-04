@@ -44,11 +44,11 @@
 <%@ attribute name="to" required="false" type="java.lang.String"
               description="Initial value for date to in case of the range date type." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="name" value="src_lastModified"/>
@@ -89,10 +89,12 @@
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
             <fmt:message key="searchForm.date.from"/>:&nbsp;
-            <uiComponents:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], from)}"/>
+            <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>
+            <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
             <c:set var="valueParamName" value="${attributes.name}.to"/>
             <fmt:message key="searchForm.date.to"/>:&nbsp;
-            <uiComponents:dateSelector fieldName="${valueParamName}" value="${functions:default(param[valueParamName], to)}"/>
+            <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], to)}"/>
+            <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
     </div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

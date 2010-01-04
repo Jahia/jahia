@@ -606,7 +606,7 @@
 
     <tag>
         <description>Displays a date field selector.</description>
-        <name>dateSelector</name>
+        <name>dateTimeSelector</name>
         <tag-class>org.jahia.taglibs.uicomponents.dateselector.GWTDateTimePickerTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
@@ -713,6 +713,16 @@
     </tag>
 
     <tag-file>
+        <description>
+        	Renders a date picker control using corresponding jQuery UI component (http://docs.jquery.com/UI/Datepicker).
+        	Datepicker options (see http://docs.jquery.com/UI/Datepicker#options) can be specified as a body of this tag in form {option1: value1, option2: value2 ...}.
+        	The template module that will use this tag should have Default Jahia Templates module as a dependency.
+        </description>
+        <name>dateSelector</name>
+        <path>/META-INF/tags/dateSelector.tag</path>
+    </tag-file>
+    
+    <tag-file>
         <description>Renders the link to the folder path selection engine (as a popup window)</description>
         <name>folderSelector</name>
         <path>/META-INF/tags/folderSelector.tag</path>
@@ -737,6 +747,32 @@
     </tag-file>
 
     <tag-file>
+        <name>langBar</name>
+        <path>/META-INF/tags/lang/langBar.tag</path>
+    </tag-file>
+    
+    <tag-file>
+        <name>loginArea</name>
+        <path>/META-INF/tags/login/loginArea.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginPassword</name>
+        <path>/META-INF/tags/login/loginPassword.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginRedirectChoice</name>
+        <path>/META-INF/tags/login/loginRedirectChoice.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginRememberMe</name>
+        <path>/META-INF/tags/login/loginRememberMe.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginUsername</name>
+        <path>/META-INF/tags/login/loginUsername.tag</path>
+    </tag-file>
+        
+    <tag-file>
         <description>Renders the link to the page selection engine (as a popup window)</description>
         <name>pageSelector</name>
         <path>/META-INF/tags/pageSelector.tag</path>
@@ -755,32 +791,9 @@
         <name>subscribeButton</name>
         <path>/META-INF/tags/subscribeButton.tag</path>
     </tag-file>
+    
     <tag-file>
         <name>userGroupSelector</name>
         <path>/META-INF/tags/userGroupSelector.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>loginArea</name>
-        <path>/META-INF/tags/login/loginArea.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>loginUsername</name>
-        <path>/META-INF/tags/login/loginUsername.tag</path>
-    </tag-file>    
-    <tag-file>
-        <name>loginPassword</name>
-        <path>/META-INF/tags/login/loginPassword.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>loginRememberMe</name>
-        <path>/META-INF/tags/login/loginRememberMe.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>loginRedirectChoice</name>
-        <path>/META-INF/tags/login/loginRedirectChoice.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>langBar</name>
-        <path>/META-INF/tags/lang/langBar.tag</path>
     </tag-file>
 </taglib>

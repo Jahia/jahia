@@ -288,6 +288,12 @@
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
                                             <fileset dir="${jahia.test.jmeter.path}/bin/results"/>
                                         </copy>
+                                        <copy toDir="${pom.basedir}/target/jmeterResults/">
+                                            <fileset dir="${pom.basedir}/results"/>
+                                        </copy>
+                                        <copy toDir="${pom.basedir}/target/jmeterResults/">
+                                            <fileset dir="${pom.basedir}/../results"/>
+                                        </copy>
                                     </tasks>
                                 </configuration>
                             </execution>

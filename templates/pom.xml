@@ -78,10 +78,12 @@
         <module>mod-press</module>
         <module>mod-publication</module>
         <module>mod-rating</module>
-        <module>mod-rss</module>
+        <!--<module>mod-rss</module>-->
         <module>mod-search</module>
         <module>mod-tasks</module>
         <module>mod-test</module>
+        <module>mod-templates-web</module>
+        <module>mod-templates-intranet</module>
         <module>mod-topstories</module>
         <module>mod-wiki</module>
         <!--<module>test-templates</module>-->

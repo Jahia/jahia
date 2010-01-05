@@ -1,0 +1,6 @@
+#bodywrapper div.box-outer {
+	margin:4px
+}
+#bodywrapper div.box-inner {
+	margin:-4px;
+}

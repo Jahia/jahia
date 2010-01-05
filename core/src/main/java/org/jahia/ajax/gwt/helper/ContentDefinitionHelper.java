@@ -47,10 +47,7 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -273,9 +270,25 @@ public class ContentDefinitionHelper {
                             JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
                             nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
                         }
+                    } catch (PathNotFoundException e) {
                     } catch (RepositoryException e) {
                         logger.debug(e.getMessage(), e);
                     }
+
+                    try {
+                        JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + ctx.getSite().getTemplatePackageName() + "/" +
+                                nodeType.getName().replaceAll(":","_"));
+                        NodeIterator iterator = node.getNodes();
+                        while (iterator.hasNext()) {
+                            JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+                            nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                        }
+                    } catch (PathNotFoundException e) {
+                    } catch (RepositoryException e) {
+                        logger.debug(e.getMessage(), e);
+                    }
+
+
                     l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
                 }
             }

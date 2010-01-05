@@ -345,7 +345,6 @@
  - j:node (weakreference)
 
 [jmix:shareable] > mix:shareable mixin
- - j:originalParent (weakreference)
 
 [jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  + j:node (mix:shareable)
@@ -407,6 +406,7 @@
  + * (jnt:reusableComponentsFolder)
 
 [jnt:reusableComponentsFolder] > nt:base, jmix:hierarchyNode, jmix:collection
+ + * (jnt:reusableComponentsFolder)
  + * (jnt:reusableComponent)
 
 [jnt:reusableComponent] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title

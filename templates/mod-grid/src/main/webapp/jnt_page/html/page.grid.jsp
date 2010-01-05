@@ -1,5 +1,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 <jsp:useBean id="colMap" class="java.util.LinkedHashMap"/>
+<template:addResources type="css" resources="960.css" />
+<div class="container container_16"><!--start container_16-->
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:gridPage')}">
     <jcr:nodeProperty node="${currentNode}" name="column" var="column"/>
     <c:choose>
@@ -84,4 +86,7 @@
             <!--stop grid_${col.value}-->
         </c:otherwise>
     </c:choose>
-</c:forEach>                       
+</c:forEach>
+    <div class='clear'></div>
+</div>
+<!--stop container_16-->

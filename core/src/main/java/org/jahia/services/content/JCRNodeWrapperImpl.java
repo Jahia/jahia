@@ -2175,8 +2175,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                    ConstraintViolationException, LockException,
                    RepositoryException {
         if (!sharedNode.isNodeType("jmix:shareable")) {
+            if (!sharedNode.isCheckedOut()) {
+                sharedNode.checkout();
+            }
             sharedNode.addMixin("jmix:shareable");
-            sharedNode.setProperty("j:originalParent", sharedNode.getParent());
+//            sharedNode.setProperty("j:originalParent", sharedNode.getParent());
         }
 
         // ugly save needed by jackrabbit : todo remove it

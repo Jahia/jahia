@@ -1,0 +1,97 @@
+Crazy Jane - Jahia Modules - Rules
+
+  Each modules in JAHIA can define is own rules, extends the rules specific language, and add is own set of global objects.
+
+* How to add rules in a module ?
+
+  Just define a rules.drl file at the root level of the module. An example from the tasks module :
+
+-------------------------------------
+###############################################################################
+package org.jahia.modules.tasks.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global Tasks tasks
+###############################################################################
+
+rule "A welcome task for the new user"
+   when
+       A new node is created
+		- the node has the type jnt:user
+   then
+       Log "Creating welcome task for new user: " + node.getName()
+       Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
+end
+
+rule "A notification about new group member"
+   when
+       A new node is created
+		- the node has the type jnt:member
+       The node has a parent
+   then
+       Log "Notifying members of the group '" + parent.getParent().getName() + "' about new member '" + node.getName()
+       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getName()
+end
+
+rule "A task has been created"
+    when
+        A new node is created
+        - the node has the type jnt:task
+        The node has a property assignee
+    then
+        Set the property state of the node with the value "active"
+        Assign permissions "rw-" on the node to the user property.getNode().getName()
+end
+-------------------------------------
+
+  This file define some new conditions that are not part from the default one :
+  << Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName() >>
+
+  And it also define a global object of type Tasks named tasks : << global Tasks tasks >>
+
+* How do I extends the specific language for my rules ?
+
+  It is also very simple. You only have to add a rules.dsl file at the root level of your module. An example from the tasks module :
+
+--------------------------------------
+[consequence][]Create task "{title}" with description "{description}" for user {forUser}=tasks.createTask({forUser}, "{title}", "{description}", drools);
+[consequence][]Create task "{title}" with description "{description}" for members of group {group}=tasks.createTaskForGroupMembers({group}, "{title}", "{description}", drools);
+--------------------------------------
+
+** The extension made in a module will be available for all other modules, so if your modules rely on dsl from another module
+  think of adding this module as a dependency of yours in the manifest file.
+
+* How do I add my own global objects to my rule context for execution ?
+
+  Define a spring file in your module (META-INF/spring/module-name.xml). Define a bean of type <<<<ModuleGlobalObject>>>>.
+  Example from the modules tasks :
+
+---------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
+        <property name="globalRulesObject">
+            <map>
+                <entry key="tasks">
+                    <bean class="org.jahia.modules.tasks.rules.Tasks" factory-method="getInstance">
+                        <property name="taskService" ref="org.jahia.services.tasks.TaskService"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+</beans>
+---------------------------------------
+
+** As for the dsl all modules will share the same set of global objects so be sure that the key you use is unique across all modules.  

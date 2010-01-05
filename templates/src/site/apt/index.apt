@@ -11,3 +11,11 @@ Jahia Crazy Jane - Templates Module
 	* Render filters
 
 	  How to use and develop {{{filter.html} rendering filters}}.
+
+	* Module rules
+
+	  How to use and develop {{{rules.html} rules in a module}}.
+
+	* Areas
+
+	  How to use and develop {{{areas.html} areas in a module}}.  

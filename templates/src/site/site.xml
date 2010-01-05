@@ -30,6 +30,7 @@ under the License.
             <item name="Rendering filters" href="./filter.html"/>
             <item name="Reusable component" href="./reusableComponent.html"/>
             <item name="Areas" href="./areas.html"/>
+            <item name="Rules" href="./rules.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

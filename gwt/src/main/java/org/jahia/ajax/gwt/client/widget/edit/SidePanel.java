@@ -20,25 +20,45 @@ import java.util.List;
  * Time: 5:27:33 PM
  */
 public class SidePanel extends ContentPanel {
-    private List<SidePanelTabItem> tabs;
+    private final List<SidePanelTabItem> tabs;
+    private final PagesTabItem pagesTabItem;
+    private final CreateContentTabItem createContentTabItem;
+    private final ContentBrowseTabItem contentBrowseTabItem ;
+    private final ImagesBrowseTabItem imagesBrowseTabItem ;
+    private final FilesBrowseTabItem filesBrowseTabItem  ;
+    private final MashupBrowseTabItem mashupBrowseTabItem ;
+    private final SearchTabItem searchTabItem;
 
     public SidePanel() {
         super(new FitLayout());
         setHeaderVisible(true);
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh() ;
+                refresh();
             }
-        }));        
+        }));
         tabs = new ArrayList<SidePanelTabItem>();
 
-        tabs.add(new PagesTabItem());
-        tabs.add(new CreateContentTabItem());
-        tabs.add(new ContentBrowseTabItem());
-        tabs.add(new ImagesBrowseTabItem());
-        tabs.add(new FilesBrowseTabItem());
-        tabs.add(new MashupBrowseTabItem());
-        tabs.add(new SearchTabItem());
+        pagesTabItem = new PagesTabItem();
+        tabs.add(pagesTabItem);
+
+        createContentTabItem = new CreateContentTabItem();
+        tabs.add(createContentTabItem);
+
+        contentBrowseTabItem = new ContentBrowseTabItem();
+        tabs.add(contentBrowseTabItem);
+
+        imagesBrowseTabItem = new ImagesBrowseTabItem();
+        tabs.add(imagesBrowseTabItem);
+
+        filesBrowseTabItem = new FilesBrowseTabItem();
+        tabs.add(filesBrowseTabItem);
+
+        mashupBrowseTabItem = new MashupBrowseTabItem();
+        tabs.add(mashupBrowseTabItem);
+
+        searchTabItem = new SearchTabItem();
+        tabs.add(searchTabItem);
 
         TabPanel tabPanel = new TabPanel();
 
@@ -65,5 +85,9 @@ public class SidePanel extends ContentPanel {
         for (SidePanelTabItem tab : tabs) {
             tab.refresh();
         }
+    }
+
+    public void refreshPageTabItem() {
+        pagesTabItem.refresh();
     }
 }

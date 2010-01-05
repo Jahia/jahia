@@ -44,16 +44,19 @@ import java.util.List;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
+    public final static int REFRESH_ALL = 1;
     public GWTJahiaNode getMainNode();
     public GWTJahiaNode getSelectedNode();
     public List<GWTJahiaNode> getSelectedNodes();
     public void loaded();
     public void loading(String resource);
     public void refresh();
+    public void refresh(int flag);
     public void refreshMainComponent();
     public void select(Object o);
     public void setSelectPathAfterDataUpdate(String path);
+    public void refreshLeftPanel();
+    public void refreshLeftPanel(int flag);
     public LinkerSelectionContext getSelectionContext();
 
-    void refreshLeftPanel();
 }

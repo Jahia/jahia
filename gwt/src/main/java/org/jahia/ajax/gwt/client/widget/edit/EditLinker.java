@@ -51,6 +51,8 @@ import java.util.ArrayList;
  *        Created : 24 août 2009
  */
 public class EditLinker implements Linker {
+    public static int REFRESH_PAGES = 1;
+
     private GWTJahiaNode sidePanelSelectedNode;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
@@ -141,10 +143,22 @@ public class EditLinker implements Linker {
     }
 
     public void refresh() {
+        refresh(Linker.REFRESH_ALL);
+    }
+
+    public void refresh(int flag) {
         mainModule.refresh();
         refreshSelectionContext();
         toolbar.handleNewLinkerSelection();
-        sidePanel.refresh();
+        refreshSidePanel(flag);
+    }
+
+    private void refreshSidePanel(int flag) {
+        if (flag == REFRESH_PAGES) {
+            sidePanel.refreshPageTabItem();
+        } else {
+            sidePanel.refresh();
+        }
     }
 
     public GWTJahiaNode getSelectedNode() {
@@ -225,6 +239,10 @@ public class EditLinker implements Linker {
 
     public void refreshLeftPanel() {
         sidePanel.refresh();
+    }
+
+    public void refreshLeftPanel(int flag) {
+        refreshSidePanel(flag);
     }
 
     private void refreshSelectionContext() {

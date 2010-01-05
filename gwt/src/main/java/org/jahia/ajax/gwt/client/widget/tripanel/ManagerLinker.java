@@ -308,6 +308,10 @@ public class ManagerLinker implements Linker {
         refreshAll();
     }
 
+    public void refresh(int flag){
+        refresh();
+    }
+
     public void refreshMainComponent() {
         refreshTable();
     }
@@ -326,6 +330,10 @@ public class ManagerLinker implements Linker {
 
     public void refreshLeftPanel() {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void refreshLeftPanel(int flag) {
+        refreshLeftPanel();
     }
 
     private void refreshSelectionContext() {

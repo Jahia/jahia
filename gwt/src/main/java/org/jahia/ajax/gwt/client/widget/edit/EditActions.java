@@ -187,7 +187,7 @@ public class EditActions {
                             }
 
                             public void onSuccess(Object o) {
-                                linker.refresh();
+                                linker.refresh(EditLinker.REFRESH_PAGES);
                                 linker.select(null);
                             }
                         });

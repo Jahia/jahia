@@ -260,7 +260,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
 
     public void setTags(String tags) {
-        set("tags",tags);
+        set("tags", tags);
     }
 
     public String getTags() {
@@ -512,6 +512,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setSelectedOnLoad(boolean selectedOnLoad) {
         this.selectedOnLoad = selectedOnLoad;
+    }
+
+    public boolean isPage() {
+        return getInheritedNodeTypes().contains("jnt:page") || getNodeTypes().contains("jnt:page");
     }
 
     @Override

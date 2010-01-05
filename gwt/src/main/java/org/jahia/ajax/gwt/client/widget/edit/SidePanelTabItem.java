@@ -33,11 +33,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SidePanelTabItem extends TabItem {
 
     class SidePanelLinker implements Linker {
-        
+
         private AbstractStoreSelectionModel<GWTJahiaNode> selectionModel;
-        
+
         private LinkerSelectionContext ctx;
-        
+
         public SidePanelLinker(AbstractStoreSelectionModel<GWTJahiaNode> selectionModel) {
             super();
             this.selectionModel = selectionModel;
@@ -74,8 +74,16 @@ public class SidePanelTabItem extends TabItem {
             editLinker.refreshLeftPanel();
         }
 
+        public void refresh(int flag) {
+            refresh();
+        }
+
         public void refreshLeftPanel() {
             editLinker.refreshLeftPanel();
+        }
+
+        public void refreshLeftPanel(int flag) {
+            refreshLeftPanel();
         }
 
         public void refreshMainComponent() {
@@ -93,7 +101,7 @@ public class SidePanelTabItem extends TabItem {
             // do nothing
         }
     }
-    
+
     class SidePanelMenu extends Menu {
         private List<ActionItem> actionItems = new ArrayList<ActionItem>();
 
@@ -101,7 +109,7 @@ public class SidePanelTabItem extends TabItem {
             super();
 
             final SidePanelLinker linker = new SidePanelLinker(selectionModel);
-            
+
             ToolbarService.App.getInstance().getGWTToolbars(toolbarBean, JahiaGWTParameters.getGWTJahiaPageContext(),
                     new AsyncCallback<GWTJahiaToolbarSet>() {
                         public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
@@ -179,9 +187,9 @@ public class SidePanelTabItem extends TabItem {
 
     /**
      * Creates the context menu using specified Spring toolbar bean name.
-     * 
-     * @param toolbarBean the Spring bean ID to look for in the
-     *            <code>applicationcontext-toolbar-sidepanel.xml</code> file
+     *
+     * @param toolbarBean    the Spring bean ID to look for in the
+     *                       <code>applicationcontext-toolbar-sidepanel.xml</code> file
      * @param selectionModel the tree selection model
      * @return the context menu using specified Spring toolbar bean name
      */

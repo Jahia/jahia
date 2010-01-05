@@ -82,11 +82,11 @@ public class EditContentEngine extends Window {
     private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String,GWTJahiaNodeProperty> props;
+    private Map<String, GWTJahiaNodeProperty> props;
 
     private GWTJahiaNode referencedNode;
     private List<GWTJahiaNodeType> referencedNodeTypes;
-    private Map<String,GWTJahiaNodeProperty> referencedProps;
+    private Map<String, GWTJahiaNodeProperty> referencedProps;
 
     private TabPanel tabs;
 
@@ -120,7 +120,7 @@ public class EditContentEngine extends Window {
     /**
      * Initializes an instance of this class.
      *
-     * @param node the content object to be edited
+     * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
     public EditContentEngine(GWTJahiaNode node, Linker linker) {
@@ -152,10 +152,10 @@ public class EditContentEngine extends Window {
     /**
      * Open Edit content engine for a new node creation
      *
-     * @param linker The linker
-     * @param parent The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
-     * @param type The selected node type of the new node
-     * @param targetName The name of the new node, or null if automatically defined
+     * @param linker                      The linker
+     * @param parent                      The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
+     * @param type                        The selected node type of the new node
+     * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
     public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName, boolean createInParentAndMoveBefore) {
@@ -165,11 +165,11 @@ public class EditContentEngine extends Window {
     /**
      * Open Edit content engine for a new node creation
      *
-     * @param linker The linker
-     * @param parent The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
-     * @param type The selected node type of the new node
-     * @param props initial values for properties
-     * @param targetName The name of the new node, or null if automatically defined
+     * @param linker                      The linker
+     * @param parent                      The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
+     * @param type                        The selected node type of the new node
+     * @param props                       initial values for properties
+     * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
     public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
@@ -191,7 +191,7 @@ public class EditContentEngine extends Window {
         initWindowProperties();
         initTabs();
         initFooter();
-        setFooter(true);     
+        setFooter(true);
         ok.setEnabled(true);
     }
 
@@ -219,14 +219,13 @@ public class EditContentEngine extends Window {
         buttonBar.add(ok);
 
         if (!existingNode) {
-        Button okAndNew = new Button(Messages.getResource("fm_saveAndNew"));
-        okAndNew.setHeight(BUTTON_HEIGHT);
-        okAndNew.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+            Button okAndNew = new Button(Messages.getResource("fm_saveAndNew"));
+            okAndNew.setHeight(BUTTON_HEIGHT);
+            okAndNew.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
 
             okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
             buttonBar.add(okAndNew);
         }
-
 
 
         /* ToDo: activate restore button in the engine
@@ -269,7 +268,7 @@ public class EditContentEngine extends Window {
      */
     private void initTabs() {
         tabs = new TabPanel();
-        
+
         tabs.setBodyBorder(false);
         tabs.setBorders(true);
 
@@ -365,10 +364,9 @@ public class EditContentEngine extends Window {
                 contentTab.setStyleName("x-panel-mc");
 
 
-
                 propertiesEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
                 propertiesEditor.setHeight(504);
-                if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     FormPanel formPanel = getNamePanel();
                     contentTab.add(formPanel);
                     isNodeNameFieldDisplayed = true;
@@ -380,7 +378,7 @@ public class EditContentEngine extends Window {
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
                 propertiesEditor.setHeight(504);
 
-                if(!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     FormPanel formPanel = getNamePanel();
                     contentTab.add(formPanel);
                     isNodeNameFieldDisplayed = true;
@@ -406,7 +404,7 @@ public class EditContentEngine extends Window {
         name.setName("name");
         if (existingNode) {
             name.setValue(node.getName());
-            contentTab.setData("NodeName",node.getName());
+            contentTab.setData("NodeName", node.getName());
         } else {
             name.setValue("Automatically Created (you can type your name here if you want)");
         }
@@ -439,7 +437,7 @@ public class EditContentEngine extends Window {
                             if (subNodesTemplateField != null && subNodesTemplateField.getValue() != null) {
                                 contextParams.put("forcedSubNodesTemplate", subNodesTemplateField.getValue().getValue());
                             }
-                            updatePreview((templateField != null && templateField.getValue() != null)? templateField.getValue().getValue():null, contextParams);
+                            updatePreview((templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null, contextParams);
                         }
                     };
                     if (templateField != null) {
@@ -470,7 +468,7 @@ public class EditContentEngine extends Window {
             if (mixin != null) {
                 metadataTab.setProcessed(true);
                 metadataTab.setStyleName("x-panel-mc");
-                metadataEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.METADATA, null, Arrays.asList("jmix:categorized","jmix:tagged"), !existingNode || node.isWriteable(), true);
+                metadataEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.METADATA, null, Arrays.asList("jmix:categorized", "jmix:tagged"), !existingNode || node.isWriteable(), true);
                 metadataEditor.setHeight(504);
                 metadataTab.add(metadataEditor);
                 layout();
@@ -487,7 +485,7 @@ public class EditContentEngine extends Window {
                 optionsTab.setProcessed(true);
                 optionsTab.setStyleName("x-panel-mc");
                 optionsEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.OPTIONS, null, null, !existingNode || node.isWriteable(), true);
-                optionsTab.setHeight(504);                
+                optionsTab.setHeight(504);
                 optionsTab.add(optionsEditor);
                 layout();
             }
@@ -521,6 +519,7 @@ public class EditContentEngine extends Window {
                         public void onFailure(Throwable throwable) {
                             Log.debug("Cannot get properties", throwable);
                         }
+
                         public void onSuccess(GWTJahiaGetPropertiesResult result) {
                             referencedNode = result.getNode();
                             referencedNodeTypes = result.getNodeTypes();
@@ -570,10 +569,11 @@ public class EditContentEngine extends Window {
 
     /**
      * Update preview
+     *
      * @param template
      * @param contextParams
      */
-    private void updatePreview(String template, Map<String,String> contextParams) {
+    private void updatePreview(String template, Map<String, String> contextParams) {
         if (node != null) {
             JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
@@ -594,6 +594,7 @@ public class EditContentEngine extends Window {
 
     /**
      * set preview HTML
+     *
      * @param html
      */
     public void setHTML(HTML html) {
@@ -618,7 +619,7 @@ public class EditContentEngine extends Window {
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         if (existingNode) {
-            setHeading("Edit "+nodeName);
+            setHeading("Edit " + nodeName);
             //setHeading("Edit " + contentPath);
         } else {
             setHeading("Create " + type.getName());
@@ -635,8 +636,8 @@ public class EditContentEngine extends Window {
 
         public void componentSelected(ButtonEvent event) {
             List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-            if(isNodeNameFieldDisplayed)
-            node.setName(((TextField<?>)((FormPanel)contentTab.getItem(0)).getItem(0)).getRawValue());
+            if (isNodeNameFieldDisplayed)
+                node.setName(((TextField<?>) ((FormPanel) contentTab.getItem(0)).getItem(0)).getRawValue());
             elements.add(node);
             List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
             if (propertiesEditor != null) {
@@ -675,7 +676,7 @@ public class EditContentEngine extends Window {
                 node.getNodeTypes().removeAll(optionsEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(optionsEditor.getAddedTypes());
             }
-            if (classificationEditor!=null) {
+            if (classificationEditor != null) {
                 updatePropertiesListWithClassificationEditorData(list);
             }
             JahiaContentManagementService.App.getInstance().saveProperties(elements, list, new AsyncCallback<Object>() {
@@ -789,16 +790,21 @@ public class EditContentEngine extends Window {
                     }
 
                     public void onSuccess(GWTJahiaNode node) {
-                        Info.display("", "Node created");
+                        Info.display("", "Node "+node.getName()+"created");
                         EditContentEngine.this.hide();
                         linker.refreshMainComponent();
-                        if(node.getNodeTypes().contains("jnt:reusableComponent")) {
+                        if (node.isPage()) {
+                            linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
+                        }
+                        if (node.getNodeTypes().contains("jnt:reusableComponent")) {
                             linker.refreshLeftPanel();
                         }
                     }
                 });
             }
         }
+
+
     }
 
     private class CreateAndAddNewSelectionListener extends SelectionListener<ButtonEvent> {
@@ -855,7 +861,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(GWTJahiaNode node) {
                         Info.display("", "Node created");
                         linker.refreshMainComponent();
-                        if(node.getNodeTypes().contains("jnt:reusableComponent")) {
+                        if (node.getNodeTypes().contains("jnt:reusableComponent")) {
                             linker.refreshLeftPanel();
                         }
                         EditContentEngine.this.removeAll(true);

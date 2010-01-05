@@ -413,6 +413,20 @@
         </property>
     </bean>
     
+    <bean id="org.jahia.services.content.rules.Service" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.content.rules.Service" factory-method="getInstance">
+            	<property name="taskService" ref="org.jahia.services.tasks.TaskService"/>
+            	<property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+                <property name="userManager" ref="JahiaUserManagerService"/>
+                <property name="siteUserManager" ref="JahiaSiteUserManagerService"/>
+                <property name="cacheService" ref="JahiaCacheService" />
+                <property name="schedulerService" ref="SchedulerService" />
+                <property name="sitesService" ref="JahiaSitesService" />
+            </bean>
+        </property>
+    </bean>
+    
     <bean id="SearchService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">

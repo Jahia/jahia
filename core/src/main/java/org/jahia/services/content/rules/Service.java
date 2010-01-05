@@ -39,10 +39,11 @@ import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
+import org.jahia.services.JahiaService;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -59,7 +60,9 @@ import org.jahia.services.tasks.Task;
 import org.jahia.services.tasks.TaskService;
 import org.jahia.services.tasks.Task.Priority;
 import org.jahia.services.tasks.Task.State;
+import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
@@ -82,13 +85,17 @@ import java.util.zip.ZipInputStream;
  * Date: 8 janv. 2008
  * Time: 12:04:29
  */
-public class Service {
+public class Service extends JahiaService {
     private static Logger logger = Logger.getLogger(Service.class);
     private static Service instance;
-
-    private Service() {
-        super();
-    }
+    
+    private TaskService taskService;
+    private TaggingService taggingService;
+    private JahiaSitesService sitesService;
+    private JahiaSiteUserManagerService siteUserManager;
+    private SchedulerService schedulerService;
+    private CacheService cacheService;
+    private JahiaUserManagerService userManager;
 
     public static synchronized Service getInstance() {
         if (instance == null) {
@@ -146,12 +153,10 @@ public class Service {
         if (type.equals("importInto")) {
             try {
                 logger.info("Import file " + uri);
-                ServicesRegistry registry = ServicesRegistry.getInstance();
-
                 String destKey = st.nextToken() + "_" + st.nextToken();
 
                 ContentObject dest = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(destKey));
-                JahiaSite site = registry.getJahiaSitesService().getSite(dest.getSiteID());
+                JahiaSite site = sitesService.getSite(dest.getSiteID());
 
                 Locale locale;
                 if (uri.endsWith(".zip")) {
@@ -160,7 +165,7 @@ public class Service {
                     locale = LanguageCodeConverters.languageCodeToLocale(st.nextToken().replace("-", "_"));
                 }
 
-                JahiaUser member = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(
+                JahiaUser member = siteUserManager.getMember(
                         site.getID(), user.getName());
                 ContentPage page = ContentPage.getPage(dest.getPageID());
 
@@ -174,8 +179,6 @@ public class Service {
                 Class<ImportJob> jobClass = ImportJob.class;
 
                 JobDetail jobDetail = BackgroundJob.createJahiaJob("Import content to " + destKey, jobClass, jParams);
-
-                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
 
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
@@ -209,17 +212,15 @@ public class Service {
                 }
                 jobDataMap.put(BackgroundJob.JOB_TYPE, "import");
                 jobDataMap.put(ImportJob.DELETE_FILE, true);
-                schedulerServ.scheduleJobNow(jobDetail);
+                schedulerService.scheduleJobNow(jobDetail);
             } catch (Exception e) {
                 logger.error("Error during import of file " + uri, e);
-                ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+                cacheService.flushAllCaches();
             }
         }
         if (type.equals("siteImport")) {
             try {
                 logger.info("Import site " + uri);
-                JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-
                 //String sitename = st.nextToken() + "_" + st.nextToken();
 
                 ZipEntry z;
@@ -232,9 +233,9 @@ public class Service {
                         infos.load(zis2);
                         zis2.closeEntry();
 
-                        boolean siteKeyEx = service.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
+                        boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
                                 infos.get("sitekey"));
-                        boolean serverNameEx = service.getSite((String) infos.get(
+                        boolean serverNameEx = sitesService.getSite((String) infos.get(
                                 "siteservername")) != null || "".equals(infos.get("siteservername"));
                         if (!user.getJahiaUser().isAdminMember(0)) {
                             return;
@@ -242,7 +243,7 @@ public class Service {
                         if (!siteKeyEx && !serverNameEx) {
                             if (!LicenseActionChecker.isAuthorizedByLicense(
                                     "org.jahia.actions.server.admin.sites.ManageSites", 0)) {
-                                if (service.getNbSites() > 0) {
+                                if (sitesService.getNbSites() > 0) {
                                     return;
                                 }
                             }
@@ -267,7 +268,7 @@ public class Service {
                                                                               System.currentTimeMillis(), null,
                                                                               user.getJahiaUser(), null,
                                                                               ProcessingContext.EDIT);
-                                service.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
+                                sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                         "description"), null, locale, tpl, "importRepositoryFile", null, uri, true,
                                                 false, ctx);
@@ -279,7 +280,7 @@ public class Service {
                 }
             } catch (Exception e) {
                 logger.error("Error during import of file " + uri, e);
-                ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+                cacheService.flushAllCaches();
             }
 
         } else if (type.endsWith("zip")) {
@@ -419,11 +420,11 @@ public class Service {
                 } else {
                     try {
                         importInfos.put("siteKeyExists", Boolean.valueOf(
-                                ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
+                                sitesService.getSiteByKey(
                                         (String) importInfos.get("sitekey")) != null || "".equals(importInfos.get(
                                         "sitekey"))));
                         importInfos.put("siteServerNameExists", Boolean.valueOf(
-                                ServicesRegistry.getInstance().getJahiaSitesService().getSite((String) importInfos.get(
+                                sitesService.getSite((String) importInfos.get(
                                         "siteservername")) != null || "".equals(importInfos.get("siteservername"))));
                     } catch (JahiaException e) {
                         logger.error(e.getMessage(), e);
@@ -439,7 +440,7 @@ public class Service {
 
     private void processFileImport(List<Map<Object, Object>> importsInfos)
             throws IOException, ServletException, JahiaException {
-        final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
+        final JahiaUser user = userManager.lookupUser("root");
         boolean license = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.server.admin.sites.ManageSites",
                                                                      0);
         boolean noMoreSite = false;
@@ -481,7 +482,7 @@ public class Service {
                 }
                 try {
                     if (!noMoreSite) {
-                        ServicesRegistry.getInstance().getJahiaSitesService().addSite(user, (String) infos.get(
+                        sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                                                       null, ctx.getLocale(), tpl,
                                                                                       "fileImport", file,
@@ -551,13 +552,12 @@ public class Service {
 			logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
 			return;
 		}
-		((TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService")).tag(node.getNode(), value, siteKey, true);
+		taggingService.tag(node.getNode(), value, siteKey, true);
 	}
 
     public void executeLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
-        final SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
         final String jobName = "RULES_JOB_" + uuid + ruleToExecute;
         final JobDetail jobDetail = new JobDetail(jobName, "RULES_JOBS", RuleJob.class,false,true,false);
         final JobDataMap map = jobDetail.getJobDataMap();
@@ -565,8 +565,8 @@ public class Service {
         map.put("node", uuid);
         map.put("user",((User)drools.getWorkingMemory().getGlobal("user")).getName());
         map.put("workspace",((String)drools.getWorkingMemory().getGlobal("workspace")));
-        service.deleteJob(jobName, "RULES_JOBS");
-        service.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
+        schedulerService.deleteJob(jobName, "RULES_JOBS");
+        schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
     }
 
     public void createReusableComponent(final NodeWrapper node, KnowledgeHelper drools)
@@ -596,7 +596,7 @@ public class Service {
         if (state != null) {
             task.setState(State.valueOf(state));
         }
-        ((TaskService) SpringContextSingleton.getBean("org.jahia.services.tasks.TaskService")).createTask(task, user);
+        taskService.createTask(task, user);
     }
 
     public void createTask(String user, String title, String description, KnowledgeHelper drools)
@@ -611,6 +611,42 @@ public class Service {
             logger.warn("Current site cannot be detected. Skip adding new task for members of group '" + group + "'");
             return;
         }
-        ((TaskService) SpringContextSingleton.getBean("org.jahia.services.tasks.TaskService")).createTaskForGroup(new Task(title, description), group, siteId);
+        taskService.createTaskForGroup(new Task(title, description), group, siteId);
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    public void setTaggingService(TaggingService taggingService) {
+        this.taggingService = taggingService;
+    }
+
+    public void setSitesService(JahiaSitesService sitesService) {
+        this.sitesService = sitesService;
+    }
+
+    public void setSiteUserManager(JahiaSiteUserManagerService siteUserManager) {
+        this.siteUserManager = siteUserManager;
+    }
+
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
+    public void setUserManager(JahiaUserManagerService userManager) {
+        this.userManager = userManager;
+    }
+
+    @Override
+    public void start() throws JahiaInitializationException {
+    }
+
+    @Override
+    public void stop() throws JahiaException {
     }
 }

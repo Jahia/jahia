@@ -480,10 +480,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 try {
                     JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
                     JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
-                    session.checkout(nodeWrapper);
-                    JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
-                    page.setProperty("jcr:title","Welcome to " + site.getServerName());
-                    session.save();
+                    if (!nodeWrapper.hasNode("home")) {
+                        session.checkout(nodeWrapper);
+                        JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
+                        page.setProperty("jcr:title","Welcome to " + site.getServerName());
+                        session.save();
+                    }
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }

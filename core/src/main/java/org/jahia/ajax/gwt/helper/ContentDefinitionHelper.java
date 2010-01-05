@@ -379,19 +379,35 @@ public class ContentDefinitionHelper {
                 while (subtypes.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     if(gwtNodeTypes.contains(getGWTJahiaNodeType(ctx, nodeType))) {
-                    List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-                    try {
-                        JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
-                                                                                                                   "_"));
-                        NodeIterator iterator = node.getNodes();
-                        while (iterator.hasNext()) {
-                            JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                            nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+                        try {
+                            JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
+                                    "_"));
+                            NodeIterator iterator = node.getNodes();
+                            while (iterator.hasNext()) {
+                                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+                                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                            }
+                        } catch (PathNotFoundException e) {
+                        } catch (RepositoryException e) {
+                            logger.debug(e.getMessage(), e);
                         }
-                    } catch (RepositoryException e) {
-                        logger.debug(e.getMessage(), e);
-                    }
-                    l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
+
+                        try {
+                            JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + ctx.getSite().getTemplatePackageName() + "/" +
+                                    nodeType.getName().replaceAll(":","_"));
+                            NodeIterator iterator = node.getNodes();
+                            while (iterator.hasNext()) {
+                                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+                                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                            }
+                        } catch (PathNotFoundException e) {
+                        } catch (RepositoryException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+
+
+                        l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
                     }
                 }
             }

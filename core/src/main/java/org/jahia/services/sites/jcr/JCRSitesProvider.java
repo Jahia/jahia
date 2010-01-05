@@ -158,7 +158,7 @@ public class JCRSitesProvider {
     }
 
 
-    public void addSite(JahiaSite site, JahiaUser user) {
+    public void addSite(final JahiaSite site, JahiaUser user) {
         try {
             int id = 1;
             List<JahiaSite> sites = getSites();
@@ -168,7 +168,22 @@ public class JCRSitesProvider {
                 }
             }
             site.setID(id);
+
             ServicesRegistry.getInstance().getJCRStoreService().deployNewSite(site, user);
+
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        JCRNodeWrapper defaultSite = session.getNode("/reusableComponents/"+site.getTemplatePackageName()+"/jnt_virtualsite/defaultSite/j:target");
+                        defaultSite.copyFile("/sites/",site.getSiteKey());
+                        session.save();
+                    } catch (PathNotFoundException e) {
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    return null;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

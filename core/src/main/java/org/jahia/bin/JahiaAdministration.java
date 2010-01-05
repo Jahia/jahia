@@ -1104,8 +1104,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     "",
                     "",
                     "",
-                    false,
-                    -1,
                     "",
                     null,
                     new Properties());

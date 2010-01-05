@@ -43,7 +43,6 @@ package org.jahia.services.sites;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager;
@@ -56,7 +55,7 @@ import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.JahiaPageService;
+
 import static org.jahia.services.sites.SitesSettings.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
@@ -98,11 +97,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     /** Server Name www.jahia.org * */
     private String mServerName = "";
 
-    /** is active or not * */
-    private boolean mIsActive = false;
-
-    /** the site's home page * */
-    private int mHomePageID = -1;
+    private String templatePackageName;
 
     /** desc * */
     private String mDescr;
@@ -126,16 +121,14 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     /**
      * Constructor
      */
-    public JahiaSite (int id, String title, String serverName, String siteKey,
-                      boolean isActive, int homePageID, String descr,
-                      JahiaBaseACL acl, Properties settings) {
+    public JahiaSite(int id, String title, String serverName, String siteKey,
+                     String descr,
+                     JahiaBaseACL acl, Properties settings) {
         this();
         mSiteID = id;
         mTitle = title;
         mServerName = serverName;
         mSiteKey = siteKey;
-        mIsActive = isActive;
-        mHomePageID = homePageID;
 
         if (descr == null) {
             descr = "no desc";
@@ -189,78 +182,29 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     }
 
 
-    public boolean isActive () {
-        return mIsActive;
-    }
-
-    public void setActive (boolean value) {
-        mIsActive = value;
-    }
-
     public int getHomePageID () {
-        return mHomePageID;
+        return -1;
     }
 
     /**
      * @return
      */
     public JahiaPage getHomePage () {
-        JahiaPage page = null;
-        JahiaPageService ps = ServicesRegistry.getInstance ().getJahiaPageService ();
-        if (ps == null) {
-            logger.error("Cannot find home page, null pageService");
-            return null;
-        }
-        try {
-            page = ps.lookupPage (getHomePageID (), Jahia.getThreadParamBean().getEntryLoadRequest(), Jahia.getThreadParamBean().getUser(), true);
-        } catch (JahiaException je) {
-            logger.error("Cannot find home page, "+mHomePageID, je);
-            return null;
-        }
-        return page;
+        return null;
     }
 
     /**
      * @return
      */
     public JahiaPage getHomePage (EntryLoadRequest entryLoadRequest) {
-        JahiaPage page = null;
-        JahiaPageService ps = ServicesRegistry.getInstance ().getJahiaPageService ();
-        if (ps == null) {
-            return null;
-        }
-        try {
-            page = ps.lookupPage (getHomePageID (), entryLoadRequest);
-        } catch (JahiaException je) {
-            return null;
-        }
-        return page;
+        return null;
     }
 
     public ContentPage getHomeContentPage () {
-        ContentPage contentPage = null;
-        JahiaPageService ps = ServicesRegistry.getInstance ().getJahiaPageService ();
-        if (ps == null) {
-            return null;
-        }
-        try {
-            contentPage = ps.lookupContentPage (getHomePageID (), true);
-        } catch (JahiaException je) {
-            return null;
-        }
-        return contentPage;
+        return null;
     }
 
-
-    public void setHomePageID (int id) {
-        mHomePageID = id;
-    }
-
-    public int getDefaultTemplateID () {
-        return Integer.parseInt(getProperty("defaultTemplateID", "-1"));
-    }
-
-    public boolean isURLIntegrityCheckEnabled () {       
+    public boolean isURLIntegrityCheckEnabled () {
         // we activate URL integrity checks by default if no setting was found.
         String value = getProperty(
                 URL_INTEGRITY_CHECKING_ENABLED, "true");
@@ -335,37 +279,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
                 tags != null ? StringUtils.join(StringUtils.split(tags
                         .toLowerCase(), ", ;/<>"), ",") : "");
     }
-
-    public void setDefaultTemplateID (int id) {
-        mSettings.setProperty("defaultTemplateID", Integer.toString (id));
-    }
-
-    public boolean getTemplatesAutoDeployMode () {
-
-        String val = mSettings.getProperty ("templatesAutoDeployMode");
-        if (val == null) {
-            return false;
-        }
-        return (val.equals ("true"));
-    }
-
-    public void setTemplatesAutoDeployMode (boolean mode) {
-        mSettings.setProperty("templatesAutoDeployMode", mode ? "true" : "false");
-    }
-
-    public boolean getWebAppsAutoDeployMode () {
-
-        String val = mSettings.getProperty ("webAppsAutoDeployMode");
-        if (val == null) {
-            return false;
-        }
-        return (val.equals ("true"));
-    }
-
-    public void setWebAppsAutoDeployMode (boolean mode) {
-        mSettings.setProperty("webAppsAutoDeployMode", mode ? "true" : "false");
-    }
-
 
     public String getTemplateFolder () {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
@@ -803,119 +716,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     }
 
     /**
-     * Change the versioning status.
-     *
-     * @param status active or deactivate versioning
-     */
-    public boolean setVersioning (boolean status) {
-        synchronized (mSettings) {
-            try {
-                int value = 0; // not active;
-                if (status)
-                    value = 1;
-                JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-                manager.save (this,
-                        VERSIONING_ENABLED, Integer.toString (value));
-
-                mSettings.setProperty (VERSIONING_ENABLED, Integer.toString (value));
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * returns the versioning status.
-     */
-    public boolean isVersioningEnabled () {
-
-        synchronized (mSettings) {
-            String prop = mSettings.getProperty (VERSIONING_ENABLED);
-            try {
-                if (prop != null) {
-                    return (Integer.parseInt (prop) == 1);
-                } else {
-                    JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-                    prop = manager.getProperty (this,
-                                    VERSIONING_ENABLED);
-                    if (prop == null || prop.trim ().equals ("")) {
-                        return false;
-                    } else {
-                        mSettings.setProperty (VERSIONING_ENABLED, prop.trim ());
-                    }
-                    return (Integer.parseInt (prop) == 1);
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Change the staging status.
-     *
-     * @param status active or deactivate staging
-     */
-    public boolean setStaging (boolean status) {
-        synchronized (mSettings) {
-            try {
-                int value = 0; // not active;
-                if (status)
-                    value = 1;
-                JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-                manager.save(this,
-                        STAGING_ENABLED, Integer.toString (value));
-
-                mSettings.setProperty (STAGING_ENABLED, Integer.toString (value));
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * returns the staging status.
-     */
-    public boolean isStagingEnabled () {
-
-        synchronized (mSettings) {
-            String prop = mSettings.getProperty (STAGING_ENABLED);
-            try {
-                if (prop != null) {
-                    return (Integer.parseInt (prop) == 1);
-                } else {
-                    JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-                    prop = manager.getProperty (this,
-                                    STAGING_ENABLED);
-                    if (prop == null || prop.trim ().equals ("")) {
-                        return false;
-                    } else {
-                        mSettings.setProperty (STAGING_ENABLED, prop.trim ());
-                    }
-                    return (Integer.parseInt (prop) == 1);
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return false;
-    }
-
-
-    /**
      * Returns a List of site language settings. The order of this List
      * corresponds to the ranking of the languages.
      *
@@ -1179,7 +979,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * @return the corresponding template set name of this virtual site
      */
     public String getTemplatePackageName() {
-        return mSettings.getProperty(TEMPLATE_PACKAGE_NAME);
+        return templatePackageName;
     }
 
     /**
@@ -1189,7 +989,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      *            the new template package name for this virtual site
      */
     public void setTemplatePackageName(String packageName) {
-        mSettings.setProperty(TEMPLATE_PACKAGE_NAME, packageName);
+        this.templatePackageName = packageName;
     }
 
     public boolean equals(Object obj) {

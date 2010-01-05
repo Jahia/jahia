@@ -49,20 +49,10 @@
         </property>
    </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaSiteManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSiteManager">
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
-                <property name="sitePropertyDAO" ref="jahiaSitePropertyDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaSitePropertyManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaSitePropertyManager">
                 <property name="jahiaSitePropertyDAO" ref="jahiaSitePropertyDAO" />
-                <property name="jahiaSiteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager" />
             </bean>
         </property>
     </bean>
@@ -133,7 +123,6 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaTemplateManager">
                 <property name="jahiaPagesDefinitionDAO" ref="jahiaPagesDefinitionDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
             </bean>
         </property>
     </bean>
@@ -151,7 +140,6 @@
             <bean class="org.jahia.hibernate.manager.JahiaGroupManager">
                 <property name="jahiaGroupAccessDAO" ref="jahiaGroupAccessDAO" />
                 <property name="jahiaGroupDAO" ref="jahiaGroupDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
                 <property name="jahiaUserDAO" ref="jahiaUserDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="preloadGroupMembers" value="true"/>
@@ -194,7 +182,6 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageListManager">
                 <property name="jahiaSiteLanguageListDAO" ref="jahiaSiteLanguageListDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
             </bean>
         </property>
@@ -203,7 +190,6 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager">
                 <property name="jahiaSiteLanguageMappingDAO" ref="jahiaSiteLanguageMappingDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
             </bean>
         </property>
     </bean>

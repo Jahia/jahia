@@ -34,7 +34,6 @@
  */
 package org.jahia.hibernate.dao;
 
-import org.jahia.hibernate.model.JahiaSite;
 import org.jahia.hibernate.model.JahiaSiteProp;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -70,16 +69,16 @@ public class JahiaSitePropertyDAO extends AbstractGeneratorDAO {
         return retval;
     }
 
-    public JahiaSiteProp getSitePropByKey(JahiaSite id, String name) {
+    public JahiaSiteProp getSitePropByKey(int id, String name) {
         JahiaSiteProp retval = null;
         String hql = "from JahiaSiteProp aTable WHERE aTable.comp_id.id = ? and aTable.comp_id.name = ?";
-        if (id == null || name == null) {
+        if (id == -1 || name == null) {
             log.error("Error: Cannot use null in query for unique column site "+id+" key= "+name);
             throw new RuntimeException("Error: Cannot use null in query for unique column");
         } else {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-            List<JahiaSiteProp> objects = template.find(hql, new Object[]{id.getId(), name});
+            List<JahiaSiteProp> objects = template.find(hql, new Object[]{id, name});
             if (objects.size() == 1) {
                 retval = objects.get(0);
             } else if (objects.size() > 1) {
@@ -93,7 +92,7 @@ public class JahiaSitePropertyDAO extends AbstractGeneratorDAO {
         return retval;
     }
 
-    public void remove(JahiaSite id, String name) {
+    public void remove(int id, String name) {
         HibernateTemplate hibernateTemplate = getHibernateTemplate();
         hibernateTemplate.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         hibernateTemplate.delete(getSitePropByKey(id, name));

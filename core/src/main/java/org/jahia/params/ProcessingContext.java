@@ -988,7 +988,7 @@ public class ProcessingContext {
      */
     public List<Locale> getLocales() throws JahiaException {
         JahiaSite site = getSite();
-        if (site != null) {
+        if (site != null && site.getID()>0) {
             return getLocales(site.isMixLanguagesActive());
         }
         return getLocales(false);

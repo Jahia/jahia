@@ -79,7 +79,7 @@ public final class JahiaAction extends Action {
             OperationManager operations = new OperationManager();
             ParamBean jParams = (ParamBean)
                                 request.getAttribute("org.jahia.params.ParamBean");
-            if (jParams == null || jParams.getContentPage() == null) {
+            if (jParams == null) {
                 throw new JahiaPageNotFoundException(null);
             }
             if ( jParams != null ){

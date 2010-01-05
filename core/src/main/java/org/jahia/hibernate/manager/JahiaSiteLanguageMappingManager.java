@@ -37,7 +37,6 @@ package org.jahia.hibernate.manager;
 import java.util.List;
 
 import org.apache.commons.collections.FastArrayList;
-import org.jahia.hibernate.dao.JahiaSiteDAO;
 import org.jahia.hibernate.dao.JahiaSiteLanguageMappingDAO;
 import org.jahia.hibernate.model.JahiaSiteLangMap;
 import org.jahia.services.sites.SiteLanguageMapping;
@@ -51,20 +50,15 @@ import org.jahia.services.sites.SiteLanguageMapping;
  */
 public class JahiaSiteLanguageMappingManager {
     private JahiaSiteLanguageMappingDAO dao;
-    private JahiaSiteDAO siteDAO;
     public void setJahiaSiteLanguageMappingDAO(JahiaSiteLanguageMappingDAO dao) {
         this.dao = dao;
-    }
-
-    public void setJahiaSiteDAO(JahiaSiteDAO siteDAO) {
-        this.siteDAO = siteDAO;
     }
 
     public List<SiteLanguageMapping> getSiteLanguageMappings(int id) {
         List<JahiaSiteLangMap> mappings = dao.getSiteLanguageMappings(new Integer(id));
         FastArrayList retList = new FastArrayList(mappings.size());
         for (JahiaSiteLangMap map : mappings) {
-            SiteLanguageMapping mapping = new SiteLanguageMapping(map.getId().intValue(),map.getSite().getId().intValue(),
+            SiteLanguageMapping mapping = new SiteLanguageMapping(map.getId().intValue(),map.getSite().intValue(),
                                                                   map.getFromLanguageCode(), map.getToLanguageCode());
             retList.add(mapping);
         }
@@ -75,7 +69,7 @@ public class JahiaSiteLanguageMappingManager {
     public void addSiteLanguageMapping(SiteLanguageMapping newMapping) {
         JahiaSiteLangMap jahiaSiteLangMap = new JahiaSiteLangMap();
         jahiaSiteLangMap.setFromLanguageCode(newMapping.getFromLanguageCode());
-        jahiaSiteLangMap.setSite(siteDAO.findById(new Integer(newMapping.getSiteID())));
+        jahiaSiteLangMap.setSite(new Integer(newMapping.getSiteID()));
         jahiaSiteLangMap.setToLanguageCode(newMapping.getToLanguageCode());
         dao.save(jahiaSiteLangMap);
         newMapping.setId(jahiaSiteLangMap.getId().intValue());
@@ -90,7 +84,7 @@ public class JahiaSiteLanguageMappingManager {
         JahiaSiteLangMap jahiaSiteLangMap = new JahiaSiteLangMap();
         jahiaSiteLangMap.setFromLanguageCode(curMapping.getFromLanguageCode());
         jahiaSiteLangMap.setId(new Integer(curMapping.getId()));
-        jahiaSiteLangMap.setSite(siteDAO.findById(new Integer(curMapping.getSiteID())));
+        jahiaSiteLangMap.setSite(new Integer(curMapping.getSiteID()));
         jahiaSiteLangMap.setToLanguageCode(curMapping.getToLanguageCode());
         dao.update(jahiaSiteLangMap);
         curMapping.setId(jahiaSiteLangMap.getId().intValue());

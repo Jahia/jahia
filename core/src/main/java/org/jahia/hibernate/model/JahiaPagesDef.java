@@ -52,7 +52,7 @@ public class JahiaPagesDef implements Serializable {
     /**
      * nullable persistent field
      */
-    private JahiaSite site;
+    private Integer site;
 
     /**
      * nullable persistent field
@@ -94,7 +94,7 @@ public class JahiaPagesDef implements Serializable {
     /**
      * full constructor
      */
-    public JahiaPagesDef(Integer idJahiaPagesDef, JahiaSite jahiaidJahiaPagesDef, String nameJahiaPagesDef,
+    public JahiaPagesDef(Integer idJahiaPagesDef, Integer jahiaidJahiaPagesDef, String nameJahiaPagesDef,
                          String sourcepathJahiaPagesDef, Boolean visibleJahiaPagesDef, Integer browsableJahiaPagesDef,
                          String warningMsgJahiaPagesDef, String imgJahiaPagesDef, Map<String, String> jahiaPagesDefProps) {
         this.id = idJahiaPagesDef;
@@ -140,11 +140,11 @@ public class JahiaPagesDef implements Serializable {
      * @hibernate.many-to-one cascade="none"
      * @hibernate.column name="jahiaid_jahia_pages_def"
      */
-    public JahiaSite getSite() {
+    public Integer getSite() {
         return this.site;
     }
 
-    public void setSite(JahiaSite site) {
+    public void setSite(Integer site) {
         this.site = site;
     }
 

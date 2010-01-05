@@ -54,14 +54,9 @@ import org.springframework.orm.ObjectRetrievalFailureException;
 public class JahiaSitePropertyManager {
 
     private JahiaSitePropertyDAO dao = null;
-    private JahiaSiteManager jahiaSiteManager = null;
 
     public void setJahiaSitePropertyDAO(JahiaSitePropertyDAO dao) {
         this.dao = dao;
-    }
-
-    public void setJahiaSiteManager(JahiaSiteManager siteManager) {
-        this.jahiaSiteManager = siteManager;
     }
 
     public void save(JahiaSite site, Properties updateProps) {
@@ -80,7 +75,7 @@ public class JahiaSitePropertyManager {
     private void saveProperty(JahiaSite id, String name, String value) {
         JahiaSiteProp siteProp;
         try {
-            siteProp = dao.getSitePropByKey(jahiaSiteManager.getModelSiteById(id.getID()), name);
+            siteProp = dao.getSitePropByKey(id.getID(), name);
             if (!value.equals(siteProp.getValue())) {
                 siteProp.setValue(value);
                 dao.update(siteProp);
@@ -103,23 +98,21 @@ public class JahiaSitePropertyManager {
     }
 
     public void remove(JahiaSite id) {
-        final org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
         Properties properties = id.getSettings();
         Enumeration<?> enumeration = properties.propertyNames();
         while (enumeration.hasMoreElements()) {
             String s = (String) enumeration.nextElement();
             try {
-                dao.remove(modelSiteById, s);
+                dao.remove(id.getID(), s);
             } catch (ObjectRetrievalFailureException e) {
             }
         }
     }
 
     public void remove(JahiaSite id, List<String> propertiesToBeRemoved) {
-        final org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
         for (String s : propertiesToBeRemoved) {
             try {
-                dao.remove(modelSiteById, s);
+                dao.remove(id.getID(), s);
             } catch (ObjectRetrievalFailureException e) {
             }
         }
@@ -131,10 +124,8 @@ public class JahiaSitePropertyManager {
 
     public String getProperty(JahiaSite id, String name) {
         try {
-            org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
-            if(modelSiteById!=null) {
-                final JahiaSiteProp sitePropByKey = dao.getSitePropByKey(modelSiteById,
-                                                                         name);
+            if(id!=null) {
+                final JahiaSiteProp sitePropByKey = dao.getSitePropByKey(id.getID(),name);
                 return sitePropByKey.getValue();
             }
             return null;
@@ -144,9 +135,8 @@ public class JahiaSitePropertyManager {
     }
 
     public void remove(JahiaSite id, String mixLanguagesActive) {
-        final org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
         try {
-            dao.remove(modelSiteById, mixLanguagesActive);
+            dao.remove(id.getID(), mixLanguagesActive);
         } catch (ObjectRetrievalFailureException e) {
         }
     }

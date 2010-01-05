@@ -277,6 +277,7 @@
 //---------------------------------------------------------
 
 [jmix:virtualsitesFolder] mixin
+ - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string)
  - j:virtualsitesFolderSkeleton (string)
 
@@ -284,6 +285,8 @@
  - j:title (string) protected
  - j:serverName (string) protected
  - j:description (string) protected
+ - j:siteId (long) protected
+ - j:installedModules (string) multiple
  + * (jmix:hierarchyNode)
 
 //---------------------------------------------------------
@@ -410,7 +413,10 @@
  - j:picture (weakreference, file[mime='image/*'])
  - j:targetReference (weakreference) hidden < nt:base
  + j:target (nt:base) version
- 
+
+[jnt:reuseComponent] > nt:base
+ - j:targetReference
+
 //---------------------------------------------------------
 // Portlets
 //---------------------------------------------------------

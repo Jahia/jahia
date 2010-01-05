@@ -54,42 +54,42 @@ public class JCRSiteListener extends JahiaEventListener {
             .getLogger(JCRSiteListener.class);
     
     public void siteAdded(JahiaEvent je) {
-        try {
-            ServicesRegistry.getInstance().getJCRStoreService().deployNewSite((JahiaSite) je.getObject(), je.getProcessingContext().getUser());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+//        try {
+//            ServicesRegistry.getInstance().getJCRStoreService().deployNewSite((JahiaSite) je.getObject(), je.getProcessingContext().getUser());
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        }
     }
 
     public void siteDeleted(final JahiaEvent je) {
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper sites = session.getNode("/sites");
-                    if (!sites.isCheckedOut()) {
-                        sites.checkout();
-                    }
-                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
-                    site.remove();
-                    session.save();
-                    return null;                    
-                }
-            });
-            // Now let's delete the live workspace site.
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper sites = session.getNode("/sites");
-                    if (!sites.isCheckedOut()) {
-                        sites.checkout();
-                    }
-                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
-                    site.remove();
-                    session.save();
-                    return null;
-                }
-            }, null, Constants.LIVE_WORKSPACE);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+//        try {
+//            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+//                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+//                    JCRNodeWrapper sites = session.getNode("/sites");
+//                    if (!sites.isCheckedOut()) {
+//                        sites.checkout();
+//                    }
+//                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
+//                    site.remove();
+//                    session.save();
+//                    return null;
+//                }
+//            });
+//            // Now let's delete the live workspace site.
+//            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+//                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+//                    JCRNodeWrapper sites = session.getNode("/sites");
+//                    if (!sites.isCheckedOut()) {
+//                        sites.checkout();
+//                    }
+//                    JCRNodeWrapper site = sites.getNode(((JahiaSite) je.getObject()).getSiteKey());
+//                    site.remove();
+//                    session.save();
+//                    return null;
+//                }
+//            }, null, Constants.LIVE_WORKSPACE);
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        }
     }
 }

@@ -38,20 +38,15 @@ package org.jahia.services.sites;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentObject;
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
-import org.jahia.hibernate.manager.JahiaSiteManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -64,11 +59,10 @@ import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -103,35 +97,22 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     private Cache<String, Serializable> siteCacheByName = null;
     private Cache<String, JahiaSite> siteCacheByKey = null;
 
-    // list of sites going to be deleted.
-    // This is used by some services like search engine to avoid useless indexation.
-    private List<Integer> sitesToDelete = new ArrayList<Integer>();
-
-    protected JahiaSiteManager siteManager = null;
+    protected JCRSitesProvider siteProvider = null;
     private JahiaSitePropertyManager sitePropertyManager = null;
 
     private CacheService cacheService;
-
-    private boolean started = false;
 
     protected JahiaGroupManagerService groupService;
     protected JahiaFileWatcherService fileWatcherService;
     protected JahiaACLManagerService jahiaAclService;
     protected JCRSessionFactory sessionFactory;
-    public synchronized boolean isStarted() {
-        return started;
-    }
-
-    public synchronized void setStarted(boolean started) {
-        this.started = started;
-    }
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
-    
-    public void setSiteManager(JahiaSiteManager siteManager) {
-        this.siteManager = siteManager;
+
+    public void setSiteProvider(JCRSitesProvider siteProvider) {
+        this.siteProvider = siteProvider;
     }
 
     public void setSitePropertyManager(JahiaSitePropertyManager sitePropertyManager) {
@@ -188,26 +169,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * cache was flushed in the meantime, this method is FALSE !
      */
     public Iterator<JahiaSite> getSites () throws JahiaException {
-        return new ArrayList<JahiaSite>(siteManager.getSites()).iterator();
-    }
-
-    /**
-     * return the all sites ids
-     *
-     * @return Iterator an Iterator of JahiaSite bean
-     *
-     * @todo this only returns the entries that are in the cache !! If the
-     * cache was flushed in the meantime, this method is FALSE !
-     */
-    public Integer[] getSiteIds () throws JahiaException {
-        Integer[] siteIds = new Integer[]{};
-        List<Integer> siteIdsList = new ArrayList<Integer>();
-        Iterator<JahiaSite> sites = getSites();
-        while (sites.hasNext()){
-            siteIdsList.add(new Integer(sites.next().getID()));
-        }
-        siteIds = siteIdsList.toArray(siteIds);
-        return siteIds;
+        return new ArrayList<JahiaSite>(siteProvider.getSites()).iterator();
     }
 
     public void start()
@@ -218,12 +180,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteCacheByName = cacheService.createCacheInstance(SITE_CACHE_BYNAME);
 //        siteCacheByName.registerListener(this);
         siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
-        try {
-            loadSitesInCache(settingsBean);
-        } catch (JahiaException je) {
-            throw new JahiaInitializationException("Error while loading sites in cache", je);
-        }
-        this.setStarted(true);
     }
 
     public void stop() {}
@@ -242,7 +198,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         }
         // try to load from db
 
-        site = siteManager.getSiteById(id);
+        site = siteProvider.getSiteById(id);
         // if the site could be loaded, add it into the cache
         if (site != null) {
             addToCache(site);
@@ -275,7 +231,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         JahiaSite site = siteCacheByKey.get(siteKey);
         if (site != null)
             return site;
-        site = siteManager.getSiteByKey(siteKey);
+        site = siteProvider.getSiteByKey(siteKey);
         // if the site could be loaded from the database, add it into the cache.
         if (site != null) {
             addToCache(site);
@@ -310,7 +266,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
         // the site was not found in the cache, try to load it from the
         // database.
-        JahiaSite site = siteManager.getSiteByName(serverName);
+        JahiaSite site = siteProvider.getSiteByName(serverName);
         // if the site could be loaded from the database, add it into the cache.
         if (site != null) {
             addToCache(site);
@@ -353,23 +309,18 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException
     {
-        JahiaBaseACL acl = null;
-        acl = new JahiaBaseACL();
-        acl.create(0);
         if (settings == null) {
             settings = new Properties();
         }
-        settings.setProperty("uuid", ContentObject.idGen.nextIdentifier().toString());
-        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey,true,-1,descr,acl,settings);
-        site.setTemplatesAutoDeployMode(true);
-        site.setWebAppsAutoDeployMode(true);
+        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,null,settings);
+
+        if (selectTmplSet != null) {
+            site.setTemplatePackageName(selectTmplSet);
+        }
 
         // check there is no site with same server name before adding
-        if (getSite (site.getServerName ()) == null
-                && getSiteByKey (site.getSiteKey ()) == null) {
-
-//            JahiaSitesPersistance.getInstance ().dbAddSite (site);
-            siteManager.saveJahiaSite(site);
+        if (getSiteByKey (site.getSiteKey ()) == null) {
+            siteProvider.addSite(site, jParams.getUser());
             if (site.getID () == -1) {
                 return null;
             }
@@ -388,28 +339,13 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             if (getNbSites() == 1 && !site.isDefault()) {
                 setDefaultSite(site);
             }
-            // default value
-            site.setStaging(true);
-            site.setVersioning(true);
 
             JahiaUserManagerService jums = ServicesRegistry.getInstance().getJahiaUserManagerService();
             JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            JahiaSitesService jsms = ServicesRegistry.getInstance().getJahiaSitesService();
 
-            jsms.updateSite(site);
+            updateSite(site);
 
             site.setMixLanguagesActive(false);
-
-            // settings default permissions
-            JahiaAclEntry adminAclEntry = new JahiaAclEntry(7, 0);
-
-            // root admin group
-            JahiaGroup adminGrp = jgms.getAdministratorGroup(0);
-            site.getACL().setGroupEntry(adminGrp, adminAclEntry);
-
-            // site admin group
-            adminGrp = jgms.getAdministratorGroup(site.getID());
-            site.getACL().setGroupEntry(adminGrp, adminAclEntry);
 
             // create default groups...
             JahiaGroup usersGroup = jgms.lookupGroup(0,JahiaGroupManagerService.USERS_GROUPNAME);
@@ -446,19 +382,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             File initialZip = null;
             String initialZipName = null;
-            if (selectTmplSet != null) {
-                ServicesRegistry.getInstance()
-                        .getJahiaTemplateManagerService()
-                        .associateTemplatePackageWithSite(selectTmplSet,
-                                site);
-                // no site level initial imports for now              
-//                if ("defaultImport".equals(firstImport)) {
-//                    initialZip = templPackage.getInitialImport() != null ? new File(
-//                            templPackage.getRootFolderPath(), templPackage
-//                            .getInitialImport())
-//                            : null;
-//                }
-            }
 
             jParams.setSite(site);
             jParams.setSiteID(site.getID());
@@ -486,67 +409,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 EntryLoadRequest savedEntryLoadRequest =
                         jParams.getSubstituteEntryLoadRequest();
                 jParams.setSubstituteEntryLoadRequest(saveRequest);
-
-                JahiaPageService pageService = ServicesRegistry.getInstance().getJahiaPageService();
-
-//                int homePageDefId = ServicesRegistry.getInstance()
-//                        .getJahiaPageTemplateService()
-//                        .lookupPageTemplateByName(
-//                                templPackage.getHomePageTemplate()
-//                                        .getName(), site.getID()).getID();
-
-
-                JahiaBaseACL jAcl = new JahiaBaseACL ();
-                jAcl.create (site.getAclID());
-
-                JahiaPage page = pageService.createPage(site.getID(),
-                        0,
-                        PageInfoInterface.TYPE_DIRECT,
-                        "Welcome to " + site.getServerName(),
-                        0,
-                        "http://",
-                        -1,
-                        jParams.getUser().getUserKey(),
-                        jAcl.getID(),
-                        jParams);
-
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
-
-                logger.debug("Home Page created");
-
-                // enable guest user to access the page
-                JahiaAclEntry guestAclEntry = new JahiaAclEntry(1, 0);
-
-                page.getACL().setGroupEntry(guestGroup, guestAclEntry);
-
-                // enable admin group to admin the page
-                adminAclEntry = new JahiaAclEntry(7, 0);
-                page.getACL().setGroupEntry(adminGroup, adminAclEntry);
-                JahiaEvent setRightsEvent = new JahiaEvent(this, jParams, page.getACL());
-                ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
-
-
-//                try {
-//                    JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
-//                    Node parent = source.getParent();
-//                    if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-//                        Node dest = sessionFactory.getCurrentUserSession().getNode("/sites/"+parent.getName());
-//                        source.copyFile(dest.getPath());
-//                        dest.save();
-//                    }
-//                } catch (JahiaException e) {
-//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                } catch (RepositoryException e) {
-//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                }
             }
 
             if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page
-                adminAclEntry = new JahiaAclEntry(7, 0);
-                site.getACL().setGroupEntry(adminGroup, adminAclEntry);
-                JahiaEvent setRightsEvent = new JahiaEvent(this, jParams, site.getACL());
-                ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
                 if (asAJob == null || asAJob.booleanValue()) {
 
                     // check if we need to import users synchronously
@@ -624,12 +491,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             logger.debug("Site updated with Home Page");
 
-            // start and create the site's new templates folder
-//                JahiaSiteTools.startTemplateObserver(site,
-//                        jParams.settings(),
-//                        ServicesRegistry.getInstance().getJahiaTemplatesDeployerService(),
-//                        ServicesRegistry.getInstance().getJahiaFileWatcherService());
-
         } else {
             removeSite(site);      // remove site because the process generate error(s)...
             return null;
@@ -644,18 +505,18 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite (JahiaSite site) throws JahiaException {
-//        JahiaSitesPersistance.getInstance ().dbRemoveSite (site.getID ());
-
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         List<String> groups = groupManagerService.getGroupList(site.getID());
         for (String group : groups) {
             groupManagerService.deleteGroup(groupService.lookupGroup(group));
         }
         sitePropertyManager.remove(site);
-        siteManager.remove(site.getID());
+        siteProvider.deleteSite(site.getSiteKey());
+
         siteCacheByID.remove (new Integer (site.getID ()));
         siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
+
         ServicesRegistry.getInstance().getJahiaEventService().fireSiteDeleted(new JahiaEvent(this,null,site));
         cacheService.createCacheInstance(JahiaPageBaseService.CONTENT_PAGE_CACHE).flush();
     }
@@ -668,15 +529,15 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      */
     public synchronized void updateSite (JahiaSite site) throws JahiaException {
 //        JahiaSitesPersistance.getInstance ().dbUpdateSite (site);
-        JahiaSite defaultSite = this.getDefaultSite();
+//        JahiaSite defaultSite = this.getDefaultSite();
         Properties props = new Properties();
         if (site.getSettings() != null){
             props = (Properties)site.getSettings().clone();
         }
-        siteManager.updateJahiaSite(site);
-        if ( defaultSite != null && defaultSite.getSiteKey().equals(site.getSiteKey()) ){
-            siteManager.setDefaultSite(site);
-        }
+
+        //todo update jahia site name/description
+//        siteManager.updateJahiaSite(site);
+        
         site.setSettings(props);
         sitePropertyManager.save(site);
         siteCacheByName.flush();
@@ -707,7 +568,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      */
     protected void loadSitesInCache (SettingsBean settingsBean) throws JahiaException {
 
-        List<JahiaSite> sites = siteManager.getSites();
+        List<JahiaSite> sites = siteProvider.getSites();
         if (sites != null) {
             int size = sites.size ();
             for (int i = 0; i < size; i++) {
@@ -720,80 +581,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     }
 
 
-    /**
-     * Add a site to the list of site going to be deleted
-     *
-     * @param siteID the site id
-     */
-    public synchronized void addSiteToDelete (int siteID) {
-        Integer I = new Integer (siteID);
-        if (!this.sitesToDelete.contains (I)) {
-            this.sitesToDelete.add (I);
-        }
-    }
-
-    /**
-     * Remove a given site from the list of site going to be deleted
-     *
-     * @param siteID the site id
-     */
-    public synchronized void removeSiteToDelete (int siteID) {
-        this.sitesToDelete.remove (new Integer (siteID));
-    }
-
-    /**
-     * Return true if the given site is going to be deleted
-     *
-     * @param siteID the site id
-     *
-     * @return boolean
-     */
-    public synchronized boolean isSiteToBeDeleted (int siteID) {
-        return (this.sitesToDelete.contains (new Integer (siteID)));
-    }
-
     // javadocs automaticaly imported from the JahiaSitesService class.
     //
     public int getNbSites ()
             throws JahiaException {
-        return siteManager.getNbSites ();
-    }
-
-
-    /**
-     * returns a DOM representation of a site
-     *
-     * @param siteID
-     */
-    public JahiaDOMObject getSiteAsDOM (int siteID) throws JahiaException {
-
-//        return JahiaSitesPersistance.getInstance ().getSiteAsDOM (siteID);
-        return null;
-    }
-
-
-    /**
-     * returns a DOM representation of a site's properties
-     *
-     * @param siteID
-     */
-    public JahiaDOMObject getSitePropsAsDOM (int siteID) throws JahiaException {
-
-//        return JahiaSitesPersistance.getInstance ().getSitePropsAsDOM (siteID);
-        return null;
-    }
-
-
-    /**
-     * Returns a properties as a String.
-     *
-     * @param siteID
-     * @param key    the property name
-     */
-    public String getProperty (int siteID, String key)
-            throws JahiaException {
-//        return JahiaSitesPersistance.getInstance ().getProperty (siteID, key);
-        return "";
+        return siteProvider.getNbSites ();
     }
 
     public JahiaSite getDefaultSite() {
@@ -801,22 +593,15 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (site != null) {
             return site;
         }
-        site = siteManager.getDefaultSite();
+        site = siteProvider.getDefaultSite();
         siteCacheByID.put("default", site);
         return site;
     }
 
     public void setDefaultSite(JahiaSite site) {
-        siteManager.setDefaultSite(site);
+        siteProvider.setDefaultSite(site);
         siteCacheByID.put("default", site);
     }
 
 
-    public List<JahiaSite> findSiteByPropertyNameAndValue(String name, String value) throws JahiaException {
-        List<JahiaSite> r = new ArrayList<JahiaSite>();
-        for (Integer integer : siteManager.findSiteIdByPropertyNameAndValue(name, value)) {
-            r.add(getSite(integer));
-        }
-        return r;
-    }
 }

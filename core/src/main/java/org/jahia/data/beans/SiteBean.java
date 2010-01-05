@@ -75,10 +75,6 @@ public class SiteBean {
         this.processingContext = processingContext;
     }
 
-    public JahiaSite getJahiaSite() {
-        return jahiaSite;
-    }
-
     public PageBean getPage(int pageID) {
         try {
             ContentPage contentPage = ContentPage.getPage(pageID);
@@ -89,10 +85,6 @@ public class SiteBean {
             logger.error("Error while retrieving page " + pageID + " for site + " + getId() + " : ", je);
             return null;
         }
-    }
-
-    public PageBean getPageByStringID(String pageIDStr) {
-        return getPage(Integer.parseInt(pageIDStr));
     }
 
     public int getID() {
@@ -111,24 +103,8 @@ public class SiteBean {
         return jahiaSite.getAclID();
     }
 
-    public int getDefaultTemplateID() {
-        return jahiaSite.getDefaultTemplateID();
-    }
-
     public String getDescription() {
         return jahiaSite.getDescr();
-    }
-
-    public int getGroupDefaultHomepageDef() {
-        return jahiaSite.getGroupDefaultHomepageDef();
-    }
-
-    public int getGroupDefaultHomepageDefActiveState() {
-        return jahiaSite.getGroupDefaultHomepageDefActiveState();
-    }
-
-    public int getGroupDefaultHomepageDefAtCreationOnly() {
-        return jahiaSite.getGroupDefaultHomepageDefAtCreationOnly();
     }
 
     public ContentPage getHomeContentPage() {
@@ -173,36 +149,12 @@ public class SiteBean {
         }
     }
 
-    public String[] getActiveLanguageCodes() {
-        List<String> codes = new LinkedList<String>();
-        try {
-            for (SiteLanguageSettings lang : jahiaSite
-                    .getLanguageSettings(true)) {
-                codes.add(lang.getCode());
-            }
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving language settings for site "
-                    + getId(), je);
-            return null;
-        }
-        String[] languages = new String[codes.size()];
-        return codes.toArray(languages);
-    }
-
     public String getServerName() {
         return jahiaSite.getServerName();
     }
 
     public String getSiteKey() {
         return jahiaSite.getSiteKey();
-    }
-
-    public String getSiteName() {
-        return jahiaSite.getTitle();
-    }
-
-    public String getTemplateFolder() {
-        return jahiaSite.getTemplateFolder();
     }
 
     public String getTemplatePackageName() {
@@ -218,44 +170,8 @@ public class SiteBean {
         return templatePackage;
     }
 
-    public boolean isTemplatesAutoDeployMode() {
-        return jahiaSite.getTemplatesAutoDeployMode();
-    }
-
     public String getTitle() {
         return jahiaSite.getTitle();
-    }
-
-    public int getUserDefaultHomepageDef() {
-        return jahiaSite.getUserDefaultHomepageDef();
-    }
-
-    public int getUserDefaultHomepageDefActiveState() {
-        return jahiaSite.getUserDefaultHomepageDefActiveState();
-    }
-
-    public int getUserDefaultHomepageDefAtCreationOnly() {
-        return jahiaSite.getUserDefaultHomepageDefAtCreationOnly();
-    }
-
-    public boolean isWebAppsAutoDeployMode() {
-        return jahiaSite.getWebAppsAutoDeployMode();
-    }
-
-    public boolean isActive() {
-        return jahiaSite.isActive();
-    }
-
-    public boolean isMixLanguagesActive() {
-        return jahiaSite.isMixLanguagesActive();
-    }
-
-    public boolean isStagingEnabled() {
-        return jahiaSite.isStagingEnabled();
-    }
-
-    public boolean isVersioningEnabled() {
-        return jahiaSite.isVersioningEnabled();
     }
 
     public String getJCRPath() throws JahiaException {

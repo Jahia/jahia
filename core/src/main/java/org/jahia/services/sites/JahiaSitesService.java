@@ -57,18 +57,6 @@ import java.io.IOException;
  */
 public abstract class JahiaSitesService extends JahiaService {
 
-    public static final int ORDER_BY_SERVER_NAME = 1;
-    public static final int ORDER_BY_TITLE = 2;
-
-    /**
-     *
-     * @return
-     */
-    public abstract boolean isStarted();
-
-    public abstract void setStarted(boolean started);
-    
-
     /**
      * return the list of all sites
      *
@@ -78,19 +66,9 @@ public abstract class JahiaSitesService extends JahiaService {
             throws JahiaException;
 
     /**
-     * return the all sites ids
-     *
-     * @return Iterator an Iterator of JahiaSite bean
-     *
-     * @todo this only returns the entries that are in the cache !! If the
-     * cache was flushed in the meantime, this method is FALSE !
-     */
-    public abstract Integer[] getSiteIds () throws JahiaException;
-
-    /**
      * return the site bean looking at it id
      *
-     * @param int the JahiaSite id
+     * @param id the JahiaSite id
      *
      * @return JahiaSite the JahiaSite bean
      */
@@ -101,7 +79,7 @@ public abstract class JahiaSitesService extends JahiaService {
     /**
      * return a site looking at its key
      *
-     * @param String site key
+     * @param siteKey site key
      *
      * @return JahiaSite the JahiaSite bean or null
      */
@@ -182,64 +160,11 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract int getNbSites ()
             throws JahiaException;
 
-    //-------------------------------------------------------------------------
-    /**
-     * Add a site to the list of site going to be deleted
-     *
-     * @param int siteID
-     */
-    public abstract void addSiteToDelete (int siteID);
-
-    //-------------------------------------------------------------------------
-    /**
-     * Remove a given site from the list of site going to be deleted
-     *
-     * @param int siteID
-     */
-    public abstract void removeSiteToDelete (int siteID);
-
-    //-------------------------------------------------------------------------
-    /**
-     * Return true if the given site is going to be deleted
-     *
-     * @param int the site id
-     *
-     * @return boolean
-     */
-    public abstract boolean isSiteToBeDeleted (int siteID);
-
     //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of a site
-     *
-     * @param int siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getSiteAsDOM (int siteID) throws JahiaException;
-
-    //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of a site's properties
-     *
-     * @param int siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getSitePropsAsDOM (int siteID) throws JahiaException;
-
-    /**
-     * Returns a properties as a String.
-     *
-     * @param int    siteid
-     * @param String the property name
-     */
-    public abstract String getProperty (int siteID, String key) throws JahiaException;
 
     public abstract JahiaSite getDefaultSite();
 
     public abstract void setDefaultSite(JahiaSite site);
 
-    public abstract List<JahiaSite> findSiteByPropertyNameAndValue(String name, String value) throws JahiaException;
 }
 

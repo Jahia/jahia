@@ -31,11 +31,9 @@
             </generator>
         </id>
 
-        <many-to-one
+        <property
             name="site"
-            class="org.jahia.hibernate.model.JahiaSite"
-            cascade="none"
-            outer-join="auto"
+            type="java.lang.Integer"
             update="true"
             insert="true"
             access="property"

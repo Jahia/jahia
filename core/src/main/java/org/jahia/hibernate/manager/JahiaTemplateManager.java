@@ -35,7 +35,6 @@
 package org.jahia.hibernate.manager;
 
 import org.jahia.hibernate.dao.JahiaPagesDefinitionDAO;
-import org.jahia.hibernate.dao.JahiaSiteDAO;
 import org.jahia.hibernate.model.JahiaPagesDef;
 import org.jahia.services.pages.JahiaPageDefinition;
 
@@ -52,7 +51,6 @@ public class JahiaTemplateManager {
 // ------------------------------ FIELDS ------------------------------
 
     private JahiaPagesDefinitionDAO dao = null;
-    private JahiaSiteDAO siteDAO = null;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -60,16 +58,12 @@ public class JahiaTemplateManager {
         this.dao = dao;
     }
 
-    public void setJahiaSiteDAO(JahiaSiteDAO dao) {
-        this.siteDAO = dao;
-    }
-
 // -------------------------- OTHER METHODS --------------------------
 
     public synchronized boolean insertPageTemplate(JahiaPageDefinition template) {
         JahiaPagesDef def = new JahiaPagesDef();
         def.setImage(template.getImage());
-        def.setSite(siteDAO.findById(new Integer(template.getJahiaID())));
+        def.setSite(new Integer(template.getJahiaID()));
         def.setName(template.getName());
         def.setProperties(template.getProperties());
         def.setSourcePath(JahiaPageDefinition.DEF_SOURCE_PATH);
@@ -92,7 +86,7 @@ public class JahiaTemplateManager {
         JahiaPageDefinition definition = null;
         if (def != null) {
             definition = new JahiaPageDefinition(def.getId().intValue(), def
-                    .getSite().getId().intValue(), def.getName(), def
+                    .getSite().intValue(), def.getName(), def
                     .getSourcePath(), def.getVisible().booleanValue(), def
                     .getImage(), def.getPageType());
             definition.setProperties(def.getProperties());
@@ -107,7 +101,7 @@ public class JahiaTemplateManager {
             def.setId(new Integer(template.getID()));
         }
         def.setImage(template.getImage());
-        def.setSite(siteDAO.findById(new Integer(template.getJahiaID())));
+        def.setSite(new Integer(template.getJahiaID()));
         def.setName(template.getName());
         def.setProperties(template.getProperties());
         def.setSourcePath(JahiaPageDefinition.DEF_SOURCE_PATH);

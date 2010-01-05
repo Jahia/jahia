@@ -61,7 +61,7 @@ public class JahiaGrp implements Serializable {
     /**
      * nullable persistent field
      */
-    private JahiaSite site;
+    private Integer site;
 
     /**
      * nullable persistent field
@@ -71,7 +71,7 @@ public class JahiaGrp implements Serializable {
     /**
      * full constructor
      */
-    public JahiaGrp(Integer idJahiaGrps, String nameJahiaGrps, String keyJahiaGrps, JahiaSite siteidJahiaGrps, Boolean hidden) {
+    public JahiaGrp(Integer idJahiaGrps, String nameJahiaGrps, String keyJahiaGrps, Integer siteidJahiaGrps, Boolean hidden) {
         this.id = idJahiaGrps;
         this.name = nameJahiaGrps;
         this.key = keyJahiaGrps;
@@ -134,11 +134,11 @@ public class JahiaGrp implements Serializable {
      * @hibernate.many-to-one
      * @hibernate.column name="siteid_jahia_grps"
      */
-    public JahiaSite getSite() {
+    public Integer getSite() {
         return this.site;
     }
 
-    public void setSite(JahiaSite site) {
+    public void setSite(Integer site) {
         this.site = site;
     }
 

@@ -107,19 +107,7 @@ public class JahiaVersionDBService extends JahiaVersionService {
      *                the site identifier
      */
     public boolean isStagingEnabled(int siteID) {
-
-        try {
-            JahiaSite site = ServicesRegistry.getInstance()
-                    .getJahiaSitesService().getSite(siteID);
-            if (site == null) {
-                logger.debug("Requested site [" + siteID + "] is null...");
-                return false;
-            }
-            return site.isStagingEnabled();
-        } catch (JahiaException je) {
-            logger.debug("Couldn't get staging status...", je);
-            return false;
-        }
+        return true;
     }
 
     /**
@@ -129,22 +117,7 @@ public class JahiaVersionDBService extends JahiaVersionService {
      *                the site identifier
      */
     public boolean isVersioningEnabled(int siteID) {
-        try {
-            if (siteID == 0) {
-                return false;
-            }
-            JahiaSite site = ServicesRegistry.getInstance()
-                    .getJahiaSitesService().getSite(siteID);
-            if (site == null) {
-                logger.debug("Requested site [" + siteID + "] is null...");
-                return false;
-            }
-            return site.isVersioningEnabled();
-
-        } catch (JahiaException je) {
-            logger.debug("Couldn't get versioning status...", je);
-            return false;
-        }
+        return true;
     }
 
     /**

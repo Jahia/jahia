@@ -51,7 +51,7 @@ public class JahiaSiteLangList implements Serializable {
     /**
      * nullable persistent field
      */
-    private JahiaSite site;
+    private Integer site;
 
     /**
      * nullable persistent field
@@ -76,7 +76,7 @@ public class JahiaSiteLangList implements Serializable {
     /**
      * full constructor
      */
-    public JahiaSiteLangList(Integer id, JahiaSite siteId, String code, Integer rank, Boolean activated,
+    public JahiaSiteLangList(Integer id, Integer siteId, String code, Integer rank, Boolean activated,
                              Boolean mandatory) {
         this.id = id;
         this.site = siteId;
@@ -116,11 +116,11 @@ public class JahiaSiteLangList implements Serializable {
     /**
      * @hibernate.many-to-one update="true" insert="true" column="site_id"
      */
-    public org.jahia.hibernate.model.JahiaSite getSite() {
+    public Integer getSite() {
         return this.site;
     }
 
-    public void setSite(org.jahia.hibernate.model.JahiaSite site) {
+    public void setSite(Integer site) {
         this.site = site;
     }
 

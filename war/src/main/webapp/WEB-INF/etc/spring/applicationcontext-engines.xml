@@ -12,7 +12,6 @@
     	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
     </bean>
     <bean id="selectPageEngine" class="org.jahia.engines.selectpage.SelectPage_Engine" />
-    <bean id="templateEngine" class="org.jahia.engines.template.Template_Engine" />
     <bean id="selectUGEngine" class="org.jahia.engines.users.SelectUG_Engine" />
     <bean id="lockEngine" class="org.jahia.engines.lock.LockEngine" />
     <bean id="mySettingsEngine" class="org.jahia.engines.mysettings.MySettingsEngine" />
@@ -28,7 +27,6 @@
                 <ref bean="loginEngine" />
                 <ref bean="logoutEngine" />
                 <ref bean="selectPageEngine" />
-                <ref bean="templateEngine" />
                 <ref bean="selectUGEngine" />
                 <ref bean="lockEngine" />
                 <ref bean="mySettingsEngine" />

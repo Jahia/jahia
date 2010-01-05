@@ -28,9 +28,9 @@
                         length="50"
                 />
 
-                    <key-many-to-one
+                    <key-property
                         name="site"
-                        class="org.jahia.hibernate.model.JahiaSite"
+                        type="java.lang.Integer"
                         column="siteid_sites_grps"
                     />
 

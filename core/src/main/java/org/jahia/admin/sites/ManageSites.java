@@ -255,8 +255,8 @@ public class ManageSites extends AbstractAdministrationModule {
                             "My Site",        // site title
                             "servername",        // site server name
                             "mySite",     // site key
-                            true,    // is active
-                            -1,        // default page (homepage id)
+                            // is active
+                            // default page (homepage id)
                             "",        // description
                             null,    // the acl
                             null);
@@ -314,8 +314,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     "mySite",        // site title
                     "servername",        // site server name
                     "mySite",     // site key
-                    true,    // is active
-                    -1,        // default page (homepage id)
+                    // is active
+                    // default page (homepage id)
                     "",        // description
                     null,    // the acl
                     null);
@@ -480,13 +480,13 @@ public class ManageSites extends AbstractAdministrationModule {
                         siteTitle,
                         siteServerName,
                         siteKey,
-                        true,        // is active
-                        -1,            // default page (homepage id)... subject to update in terminateAdd().
+                        // is active
+                        // default page (homepage id)... subject to update in terminateAdd().
                         siteDescr,
                         null,
                         null);
-                site.setTemplatesAutoDeployMode(true);
-                site.setWebAppsAutoDeployMode(true);
+//                site.setTemplatesAutoDeployMode(true);
+//                site.setWebAppsAutoDeployMode(true);
 
                 site.getSettings().setProperty(
                         JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
@@ -511,8 +511,6 @@ public class ManageSites extends AbstractAdministrationModule {
                         siteTitle,
                         siteServerName,
                         siteKey,
-                        true,
-                        -1,
                         siteDescr,
                         null,
                         null);
@@ -1244,8 +1242,6 @@ public class ManageSites extends AbstractAdministrationModule {
             String warningMsg = (String) request.getAttribute("warningMsg");
 
             Boolean defaultSite = Boolean.FALSE;
-            Boolean versioningEnabled = Boolean.valueOf(site.isVersioningEnabled());
-            Boolean stagingEnabled = Boolean.valueOf(site.isStagingEnabled());
 
             String enforcePasswordPolicy = site.getSettings().getProperty(
                     JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
@@ -1261,13 +1257,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             } else {
                 defaultSite = (Boolean) request.getAttribute("defaultSite");
-            }
-
-            if (request.getAttribute("versioningEnabled") != null) {
-                versioningEnabled = (Boolean) request.getAttribute("versioningEnabled");
-            }
-            if (request.getAttribute("stagingEnabled") != null) {
-                stagingEnabled = (Boolean) request.getAttribute("stagingEnabled");
             }
 
             // set default values...
@@ -1299,8 +1288,6 @@ public class ManageSites extends AbstractAdministrationModule {
             request.setAttribute("warningMsg", warningMsg);
             request.setAttribute("siteID", siteID);
             request.setAttribute("defaultSite", defaultSite);
-            request.setAttribute("versioningEnabled", versioningEnabled);
-            request.setAttribute("stagingEnabled", stagingEnabled);
             request.setAttribute("siteTemplatePackageName", site.getTemplatePackageName());
 
             // redirect...
@@ -1343,8 +1330,6 @@ public class ManageSites extends AbstractAdministrationModule {
             String siteDescr = site.getDescr();
            
 
-            Boolean versioningEnabled = Boolean.valueOf(site.isVersioningEnabled());
-            Boolean stagingEnabled = Boolean.valueOf(site.isStagingEnabled());
             String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
             // get tmplPackage list...
             JahiaTemplateManagerService templateMgr = ServicesRegistry
@@ -1380,10 +1365,6 @@ public class ManageSites extends AbstractAdministrationModule {
             request.setAttribute("siteDescr", siteDescr);
             request.setAttribute("siteID", site.getID());
             request.setAttribute("defaultSite", defaultSite);
-            request.setAttribute("versioningEnabled", versioningEnabled);
-            request.setAttribute("stagingEnabled", stagingEnabled);
-           
-
 
             if (tmplPack != null) {
                 request.setAttribute("templateName", tmplPack.getName());
@@ -1507,8 +1488,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 site.setTitle(siteTitle);
                 site.setServerName(siteServerName);
                 site.setDescr(siteDescr);
-                site.setVersioning(versioningEnabled);
-                site.setStaging(stagingEnabled);
 
                 site.getSettings().setProperty(
                         JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
@@ -1767,7 +1746,7 @@ public class ManageSites extends AbstractAdministrationModule {
         if (jParams.getSite() != null && jParams.getSite().getSiteKey().equals(site.getSiteKey())) {
             JahiaSite siteToUseNow = sMgr.getDefaultSite() != null ? sMgr
                     .getDefaultSite()
-                    : new JahiaSite(-1, "", "", "", false, -1, "",
+                    : new JahiaSite(-1, "", "", "", "",
                     null, new Properties());
             jParams.setSite(siteToUseNow);
             jParams.setContentPage(siteToUseNow.getHomeContentPage());
@@ -1818,12 +1797,7 @@ public class ManageSites extends AbstractAdministrationModule {
         textFileServ.deleteSiteBigText(site.getID(), theUser);
 
         // switch staging and versioning to false.
-        site.setStaging(false);
-        site.setVersioning(false);
         sMgr.updateSite(site);
-
-        // indicate the site is going to be deleted
-        sMgr.addSiteToDelete(site.getID());
 
         //remove site definition
         sMgr.removeSite(site);

@@ -39,7 +39,6 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.dao.JahiaGroupAccessDAO;
 import org.jahia.hibernate.dao.JahiaGroupDAO;
-import org.jahia.hibernate.dao.JahiaSiteDAO;
 import org.jahia.hibernate.dao.JahiaUserDAO;
 import org.jahia.hibernate.model.*;
 import org.jahia.services.cache.Cache;
@@ -70,7 +69,6 @@ public class JahiaGroupManager {
     private static final String CACHE_KEY_SITEPREFIX = "JahiaSite_";
     private JahiaGroupAccessDAO accessDAO = null;
     private JahiaGroupDAO dao = null;
-    private JahiaSiteDAO siteDAO = null;
     private CacheService cacheService = null;
     private Logger log = Logger.getLogger(JahiaGroupManager.class);
     private Cache<GroupCacheKey, JahiaGroup> cache = null;
@@ -106,10 +104,6 @@ public class JahiaGroupManager {
         this.dao = dao;
     }
 
-    public void setJahiaSiteDAO(JahiaSiteDAO dao) {
-        this.siteDAO = dao;
-    }
-
     public void setJahiaUserDAO(JahiaUserDAO dao) {
         // do nothing
     }
@@ -125,11 +119,9 @@ public class JahiaGroupManager {
         if (membership != null) {
             membership.flush();
         }
-        JahiaSite jahiaSite = null;
         JahiaGrp grpidSitesGrps = null;
         if (siteID > 0) {
             Integer siteid = new Integer(siteID);
-            jahiaSite = siteDAO.findById(siteid);
             grpidSitesGrps = dao.loadJahiaGroupBySiteAndName(siteid,
                                                              grp.getGroupname());
         }
@@ -137,7 +129,7 @@ public class JahiaGroupManager {
             grpidSitesGrps = dao.loadJahiaGroupByName(grp.getGroupname());
         }
         if (grpidSitesGrps != null) {
-            dao.addGroupToSite(new JahiaSitesGrp(new JahiaSitesGrpPK(grp.getGroupname(), jahiaSite), grpidSitesGrps));
+            dao.addGroupToSite(new JahiaSitesGrp(new JahiaSitesGrpPK(grp.getGroupname(), siteID), grpidSitesGrps));
             return true;
         }
         return false;
@@ -174,7 +166,7 @@ public class JahiaGroupManager {
         jahiaGrp.setName(group.getGroupname());
         jahiaGrp.setHidden(group.isHidden());
         if (group.getSiteID() > 0) {
-            jahiaGrp.setSite(siteDAO.findById(new Integer(group.getSiteID())));
+            jahiaGrp.setSite(group.getSiteID());
         }
         dao.save(jahiaGrp, group.getProviderName(), group.getProperties());
         if (cache != null) {
@@ -293,7 +285,7 @@ public class JahiaGroupManager {
                                                            JahiaGroupManagerDBProvider.PROVIDER_NAME);
                 int siteID = 0;
                 if (jahiaGrp.getSite() != null) {
-                    siteID = jahiaGrp.getSite().getId().intValue();
+                    siteID = jahiaGrp.getSite().intValue();
                 }
                 group = getJahiaGroup(jahiaGrp, siteID, members, properties, shouldPreload);
                 if (cache != null) {

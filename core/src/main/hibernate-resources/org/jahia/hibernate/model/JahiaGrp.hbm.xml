@@ -52,19 +52,14 @@
             unique="true"
         />
 
-        <many-to-one
+        <property
             name="site"
-            class="org.jahia.hibernate.model.JahiaSite"
-            cascade="none"
-            outer-join="auto"
+            type="java.lang.Integer"
             update="true"
             insert="true"
             access="property"
-        >
-            <column
-                name="siteid_jahia_grps" 
+            column="siteid_jahia_grps"
             />
-        </many-to-one>
 
         <property
             name="hidden"

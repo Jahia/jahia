@@ -69,7 +69,5 @@ public final class SitesSettings {
     /** Language settings */
     public static final String MIX_LANGUAGES_ACTIVE = "mix_languages_active";
 
-    public static final String TEMPLATE_PACKAGE_NAME = "templatePackageName";
-    
     public static final String FILE_LOCK_ON_PUBLICATION = "fileLockOnPublication";
 }

@@ -156,7 +156,16 @@
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="siteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager"/>
+        <property name="siteProvider">
+            <bean parent="txProxyTemplate">
+                <property name="target">
+                    <bean class="org.jahia.services.sites.jcr.JCRSitesProvider">
+                        <property name="sitePropertyDAO" ref="jahiaSitePropertyDAO" />
+                        <property name="jcrTemplate" ref="jcrTemplate"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
         <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager"/>
         <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
         <property name="jahiaAclService" ref="JahiaACLManagerService"/>

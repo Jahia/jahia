@@ -50,12 +50,12 @@ public class JahiaSitesGrpPK extends CachedPK implements Serializable {
     /**
      * identifier field
      */
-    private JahiaSite site;
+    private Integer site;
 
     /**
      * full constructor
      */
-    public JahiaSitesGrpPK(String grpnameSitesGrps, JahiaSite siteidSitesGrps) {
+    public JahiaSitesGrpPK(String grpnameSitesGrps, Integer siteidSitesGrps) {
         this.groupName = grpnameSitesGrps;
         this.site = siteidSitesGrps;
     }
@@ -83,11 +83,11 @@ public class JahiaSitesGrpPK extends CachedPK implements Serializable {
      * @hibernate.many-to-one update="false"
      * insert="false" column="siteid_sites_grps"
      */
-    public JahiaSite getSite() {
+    public Integer getSite() {
         return this.site;
     }
 
-    public void setSite(JahiaSite site) {
+    public void setSite(Integer site) {
         updated();
         this.site = site;
     }

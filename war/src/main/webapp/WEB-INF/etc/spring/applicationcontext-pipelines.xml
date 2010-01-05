@@ -14,32 +14,11 @@
         <property name="name" value="processPipeline" />
         <property name="valves">
             <list>
-                <bean class="org.jahia.operations.valves.SiteCheckValve" />
-                <bean class="org.jahia.operations.valves.OperationModeCheckValve" />
-                <bean class="org.jahia.operations.valves.PageAccessCheckValve" />
-                <bean class="org.jahia.operations.valves.HistoryValve" />
-                <bean class="org.jahia.operations.valves.UserAgentViewSwitcherValve">
-                    <property name="userAgentMatchingRules">
-                        <map>
-                            <entry key=".*iPhone.*" value="iphone" />
-                            <entry key=".*iPod.*" value="iphone" />
-                        </map>
-                    </property>
-                </bean>
-                <bean class="org.jahia.operations.valves.FormValve" />
-                <bean class="org.jahia.operations.valves.PlutoProcessActionValve">
-                    <property name="cacheInstance" ref="JahiaCacheService"/>
-                    <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
-                </bean>
-                <ref bean="org.jahia.operations.valves.SkeletonAggregatorValve"/>
                 <bean class="org.jahia.operations.valves.EngineValve" >
                     <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
                     <property name="skeletonAggregatorValve" ref="org.jahia.operations.valves.SkeletonAggregatorValve"/>
                 </bean>
                 <bean class="org.jahia.operations.valves.ResponseOutputValve" />
-                <bean class="org.jahia.operations.valves.SkeletonParseAndStoreValve">
-                    <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
-                </bean>
             </list>
         </property>
     </bean>

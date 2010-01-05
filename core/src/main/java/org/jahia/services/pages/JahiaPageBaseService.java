@@ -310,10 +310,10 @@ public class JahiaPageBaseService extends JahiaPageService {
         JahiaEvent theWfEvent = new JahiaEvent(this, jParam, page);
         ServicesRegistry.getInstance().getJahiaEventService().
                 fireAddPage(theWfEvent);
-        if (site.getHomePageID() == -1) {
-            site.setHomePageID(page.getID());
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
-        }
+//        if (site.getHomePageID() == -1) {
+//            site.setHomePageID(page.getID());
+//            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
+//        }
 
 
         return page;

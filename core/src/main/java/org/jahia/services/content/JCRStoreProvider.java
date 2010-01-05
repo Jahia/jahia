@@ -634,8 +634,11 @@ public class JCRStoreProvider {
                             }
 
                             Node siteNode = f.getNode(site.getSiteKey());
+                            siteNode.setProperty("j:title", site.getTitle());
                             siteNode.setProperty("j:description", site.getDescr());
                             siteNode.setProperty("j:serverName", site.getServerName());
+                            siteNode.setProperty("j:siteId", site.getID());
+                            siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
 
 //                            try {
 //                                Node home = siteNode.getNode("home");

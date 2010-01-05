@@ -51,7 +51,7 @@ public class JahiaSiteLangMap implements Serializable {
     /**
      * nullable persistent field
      */
-    private JahiaSite site;
+    private Integer site;
 
     /**
      * nullable persistent field
@@ -66,7 +66,7 @@ public class JahiaSiteLangMap implements Serializable {
     /**
      * full constructor
      */
-    public JahiaSiteLangMap(Integer id, JahiaSite siteId, String fromLangCode, String toLangCode) {
+    public JahiaSiteLangMap(Integer id, Integer siteId, String fromLangCode, String toLangCode) {
         this.id = id;
         this.site = siteId;
         this.fromLanguageCode = fromLangCode;
@@ -103,11 +103,11 @@ public class JahiaSiteLangMap implements Serializable {
     /**
      * @hibernate.many-to-one update="true" insert="true" column="site_id" 
      */
-    public org.jahia.hibernate.model.JahiaSite getSite() {
+    public Integer getSite() {
         return this.site;
     }
 
-    public void setSite(org.jahia.hibernate.model.JahiaSite site) {
+    public void setSite(Integer site) {
         this.site = site;
     }
 

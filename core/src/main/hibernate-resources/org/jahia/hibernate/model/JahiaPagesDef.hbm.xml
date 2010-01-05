@@ -31,19 +31,14 @@
             </generator>
         </id>
 
-        <many-to-one
+        <property
             name="site"
-            class="org.jahia.hibernate.model.JahiaSite"
-            cascade="none"
-            outer-join="auto"
+            type="java.lang.Integer"
             update="true"
             insert="true"
             access="property"
-        >
-            <column
-                name="jahiaid_jahia_pages_def" 
+            column="jahiaid_jahia_pages_def"
             />
-        </many-to-one>
 
         <property
             name="name"

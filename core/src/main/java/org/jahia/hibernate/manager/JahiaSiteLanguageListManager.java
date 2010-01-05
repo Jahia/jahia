@@ -59,7 +59,6 @@ public class JahiaSiteLanguageListManager {
     private static final String CACHE_NAME = "JahiaSiteLanguageListManager";
     private static final String CACHE_KEY_PREFIX = "JahiaSiteLanguage_";
 
-    private JahiaSiteDAO siteDAO = null;
     private JahiaSiteLanguageListDAO dao = null;
 
     private CacheService cacheService = null;
@@ -70,10 +69,6 @@ public class JahiaSiteLanguageListManager {
 
     public List<String> getAllSitesLanguages() {
         return dao.getAllSitesLanguages();
-    }
-
-    public void setJahiaSiteDAO(JahiaSiteDAO siteDAO) {
-        this.siteDAO = siteDAO;
     }
 
     public void setJahiaSiteLanguageListDAO(JahiaSiteLanguageListDAO dao) {
@@ -96,7 +91,7 @@ public class JahiaSiteLanguageListManager {
         langList.setCode(curSetting.getCode());
         langList.setMandatory(Boolean.valueOf(curSetting.isMandatory()));
         langList.setRank(Integer.valueOf(curSetting.getRank()));
-        langList.setSite(siteDAO.findById(new Integer(curSetting.getSiteID())));
+        langList.setSite(new Integer(curSetting.getSiteID()));
         dao.save(langList);
         curSetting.setID(langList.getId().intValue());
         flushCache(curSetting.getSiteID());
@@ -109,7 +104,7 @@ public class JahiaSiteLanguageListManager {
         langList.setId(Integer.valueOf(curSetting.getID()));
         langList.setMandatory(Boolean.valueOf(curSetting.isMandatory()));
         langList.setRank(new Integer(curSetting.getRank()));
-        langList.setSite(siteDAO.findById(new Integer(curSetting.getSiteID())));
+        langList.setSite(new Integer(curSetting.getSiteID()));
         dao.update(langList);
         flushCache(curSetting.getSiteID());
     }
@@ -143,7 +138,7 @@ public class JahiaSiteLanguageListManager {
             List<SiteLanguageSettings> tempList = new FastArrayList(settings.size());
             for (JahiaSiteLangList langList : settings) {
                 SiteLanguageSettings languageSettings = new SiteLanguageSettings(langList.getId().intValue(),
-                                                                                 langList.getSite().getId().intValue(),
+                                                                                 langList.getSite().intValue(),
                                                                                  langList.getCode(),
                                                                                  langList.getActivated().booleanValue(),
                                                                                  langList.getRank().intValue(),

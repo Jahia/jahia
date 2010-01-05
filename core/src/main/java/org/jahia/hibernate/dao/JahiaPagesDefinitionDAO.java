@@ -176,7 +176,7 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
             
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 template.save(new JahiaPagesDefProp(new JahiaPagesDefPropPK(
-                        ctnDef.getId(), ctnDef.getSite().getId(),
+                        ctnDef.getId(), ctnDef.getSite(),
                         entry.getKey()), entry.getValue()));
             }
             template.flush();

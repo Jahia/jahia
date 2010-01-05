@@ -46,7 +46,11 @@ import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 
 
@@ -128,15 +132,24 @@ public class Core_Engine implements JahiaEngine {
 
         try {
             String base;
-            if (ParamBean.NORMAL.equals(processingContext.getOpMode())) {
-                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.LIVE_WORKSPACE +"/"+processingContext.getLocale();
-            } else if (ParamBean.PREVIEW.equals(processingContext.getOpMode())) {
-                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
-            } else {
-                base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
-            }
+
             String jcrPath = "/sites/" + processingContext.getSiteKey() + "/home";
-            processingContext.getRealResponse().sendRedirect(base + jcrPath + ".html");
+
+            JCRNodeWrapper node = null;
+
+            try {
+                try {
+                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
+                    base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.LIVE_WORKSPACE +"/"+processingContext.getLocale();
+                } catch (PathNotFoundException e) {
+                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(jcrPath);
+                    base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
+                }
+
+                processingContext.getRealResponse().sendRedirect(base + jcrPath + ".html");
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

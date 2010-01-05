@@ -33,6 +33,9 @@ public class I18NInterceptor implements PropertyInterceptor {
 
         while (ni.hasNext()) {
             Node translation =  ni.nextNode();
+            if (!translation.isCheckedOut()) {
+                translation.checkout();
+            }
             translation.setProperty(name, originalValue);
         }
         return originalValue;
@@ -45,6 +48,9 @@ public class I18NInterceptor implements PropertyInterceptor {
 
         while (ni.hasNext()) {
             Node translation =  ni.nextNode();
+            if (!translation.isCheckedOut()) {
+                translation.checkout();
+            }
             translation.setProperty(name, originalValues);
         }
         return originalValues;

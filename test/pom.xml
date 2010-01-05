@@ -286,13 +286,13 @@
                                 <configuration>
                                     <tasks>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${jahia.test.jmeter.path}/bin/results"/>
+                                            <fileset dir="${jahia.test.jmeter.path}/bin/results" erroronmissingdir="false"/>
                                         </copy>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${pom.basedir}/results"/>
+                                            <fileset dir="${pom.basedir}/../results" erroronmissingdir="false"/>
                                         </copy>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${pom.basedir}/../results"/>
+                                            <fileset dir="${pom.basedir}/results" erroronmissingdir="false"/>
                                         </copy>
                                     </tasks>
                                 </configuration>

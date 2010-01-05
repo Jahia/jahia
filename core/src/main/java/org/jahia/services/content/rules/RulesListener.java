@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.rules;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.RuleBase;
@@ -55,9 +56,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -81,6 +80,10 @@ public class RulesListener extends DefaultEventListener {
     private String serverId;
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
+    private PackageBuilder builder;
+
+    private List<File> dslFiles = new LinkedList<File>();
+    private Map<String, Object> globalObjects = new LinkedHashMap<String, Object>();
 
     public RulesListener() {
         instances.add(this);
@@ -159,11 +162,11 @@ public class RulesListener extends DefaultEventListener {
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
-            PackageBuilder builder = new PackageBuilder(cfg);
+            builder = new PackageBuilder(cfg);
             for (String s : ruleFiles) {
                 InputStreamReader drl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-                InputStreamReader dsl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-                builder.addPackageFromDrl(drl, dsl);
+                dslFiles.add(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+                builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
             }
 
             //            builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
@@ -186,6 +189,14 @@ public class RulesListener extends DefaultEventListener {
         }
     }
 
+    private String getDslFiles() throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (File dslFile : dslFiles) {
+            stringBuilder.append(FileUtils.readFileToString(dslFile, "UTF-8")).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
     public void addRules(File dsrlFile) {
         try {
             Properties properties = new Properties();
@@ -194,19 +205,16 @@ public class RulesListener extends DefaultEventListener {
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
-            PackageBuilder builder = new PackageBuilder(cfg);
+            PackageBuilder packageBuilder = new PackageBuilder(cfg);
 
             InputStreamReader drl = new InputStreamReader(new FileInputStream(dsrlFile));
-            InputStreamReader dsl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
 
-            builder.addPackageFromDrl(drl, dsl);
+            packageBuilder.addPackageFromDrl(drl,new StringReader(getDslFiles()));
 
-            //            builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-
-            PackageBuilderErrors errors = builder.getErrors();
+            PackageBuilderErrors errors = packageBuilder.getErrors();
 
             if (errors.getErrors().length == 0) {
-                Package pkg = builder.getPackage();
+                Package pkg = packageBuilder.getPackage();
                 if (ruleBase.getPackage(pkg.getName()) != null) {
                     ruleBase.removePackage(pkg.getName());
                 }
@@ -422,7 +430,18 @@ public class RulesListener extends DefaultEventListener {
         globals.put("user", new User(username));
         globals.put("workspace", workspace);
         globals.put("delayedUpdates", delayedUpdates);
+        for (Map.Entry<String, Object> entry : globalObjects.entrySet()) {
+            globals.put(entry.getKey(),entry.getValue());
+        }
         return globals;
+    }
+
+    public void addRulesRescriptor(File file) {
+        dslFiles.add(file);
+    }
+
+    public void addGlobalObject(String key, Object value) {
+        globalObjects.put(key,value);
     }
 
     class DelayedUpdatesTimerTask extends TimerTask {

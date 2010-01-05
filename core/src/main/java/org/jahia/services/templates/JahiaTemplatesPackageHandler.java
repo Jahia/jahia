@@ -155,6 +155,12 @@ final class JahiaTemplatesPackageHandler {
                 templatePackage.setDefinitionsFile("definitions.grp");
             }
         }
+        if (templatePackage.getRulesDescriptorFiles().isEmpty()) {
+            // check if there is a rules file
+            if (new File(file, "rules.dsl").exists()) {
+                templatePackage.setRulesDescriptorFile("rules.dsl");
+            }
+        }
         if (templatePackage.getRulesFiles().isEmpty()) {
             // check if there is a rules file
             if (new File(file, "rules.drl").exists()) {

@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
+import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.filter.ModuleFilters;
 import org.jahia.services.render.filter.RenderFilter;
@@ -79,6 +80,15 @@ class TemplatePackageRegistry {
                 templatePackageRegistry.actions.put(action.getName(), action);
             } else if (bean instanceof ChoiceListInitializer) {
 
+            } else if(bean instanceof ModuleGlobalObject) {
+                ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
+                if(moduleGlobalObject.getGlobalRulesObject()!=null) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
+                            listener.addGlobalObject(entry.getKey(),entry.getValue());
+                        }
+                    }
+                }
             }
             return bean;
         }
@@ -269,7 +279,18 @@ class TemplatePackageRegistry {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
             }
         }
-
+        // add rules descriptor
+        if (!templatePackage.getRulesDescriptorFiles().isEmpty()) {
+            try {
+                for (String name : templatePackage.getRulesDescriptorFiles()) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        listener.addRulesRescriptor(new File(rootFolder, name));
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+            }
+        }
         // add rules
         if (!templatePackage.getRulesFiles().isEmpty()) {
             try {

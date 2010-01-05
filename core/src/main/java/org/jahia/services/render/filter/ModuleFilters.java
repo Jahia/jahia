@@ -39,7 +39,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 /**
  * Spring object, used to register a list of {@link RenderFilter} instances for
  * a template module. It will be automatically detected by the
- * {@link JahiaTemplateManagerService} and added into the regstry.
+ * {@link JahiaTemplateManagerService} and added into the registry.
  * 
  * @author Sergiy Shyrkov
  */

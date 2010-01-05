@@ -41,6 +41,7 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.exolab.core.messenger.PacketQueue;
 import org.jahia.settings.SettingsBean;
 
 import java.io.File;
@@ -112,6 +113,7 @@ public class JahiaTemplatesPackage {
      * Contains names of the resource bundles for template sets starting from this one, then the direct parent and so on.
      */
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
+    private List<String> rulesDescriptorFiles = new LinkedList<String>();
 
     /**
      * Return the template name
@@ -462,5 +464,13 @@ public class JahiaTemplatesPackage {
     @Override
     public int hashCode() {
         return m_Name != null ? m_Name.hashCode() : 0;
+    }
+
+    public List<String> getRulesDescriptorFiles() {
+        return rulesDescriptorFiles;
+    }
+
+    public void setRulesDescriptorFile(String rulesDescriptorFiles) {
+        this.rulesDescriptorFiles.add(rulesDescriptorFiles);
     }
 }

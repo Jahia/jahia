@@ -11,6 +11,7 @@ expander rules.dsl
 global User user
 global Service service
 global Logger logger
+global Tasks tasks
 ###############################################################################
 
 rule "A welcome task for the new user"

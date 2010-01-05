@@ -78,5 +78,3 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeLater(node, "{property}",{ruleName}, drools);
 [consequence][]Create reusable {node}=service.createReusableComponent(node, drools);
-[consequence][]Create task "{title}" with description "{description}" for user {forUser}=service.createTask({forUser}, "{title}", "{description}", drools);
-[consequence][]Create task "{title}" with description "{description}" for members of group {group}=service.createTaskForGroupMembers({group}, "{title}", "{description}", drools);

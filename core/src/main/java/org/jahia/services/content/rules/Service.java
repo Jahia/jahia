@@ -88,8 +88,7 @@ import java.util.zip.ZipInputStream;
 public class Service extends JahiaService {
     private static Logger logger = Logger.getLogger(Service.class);
     private static Service instance;
-    
-    private TaskService taskService;
+
     private TaggingService taggingService;
     private JahiaSitesService sitesService;
     private JahiaSiteUserManagerService siteUserManager;
@@ -584,38 +583,6 @@ public class Service extends JahiaService {
                         return true;
                     }
                 });
-    }
-
-    public void createTask(String user, String title, String description, String priority, Date dueDate, String state,
-            KnowledgeHelper drools) throws RepositoryException {
-        Task task = new Task(title, description);
-        if (priority != null) {
-            task.setPriority(Priority.valueOf(priority));
-        }
-        task.setDueDate(dueDate);
-        if (state != null) {
-            task.setState(State.valueOf(state));
-        }
-        taskService.createTask(task, user);
-    }
-
-    public void createTask(String user, String title, String description, KnowledgeHelper drools)
-            throws RepositoryException {
-        createTask(user, title, description, null, null, null, drools);
-    }
-
-    public void createTaskForGroupMembers(String group, String title, String description, KnowledgeHelper drools)
-    throws RepositoryException {
-        Integer siteId = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteID() : null;
-        if (siteId == null) {
-            logger.warn("Current site cannot be detected. Skip adding new task for members of group '" + group + "'");
-            return;
-        }
-        taskService.createTaskForGroup(new Task(title, description), group, siteId);
-    }
-
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
     }
 
     public void setTaggingService(TaggingService taggingService) {

@@ -31,7 +31,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders the entry field for allowing to enter the user's password." %>
+<%@ tag body-content="empty" description="Renders the entry field for allowing to enter the user password." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>

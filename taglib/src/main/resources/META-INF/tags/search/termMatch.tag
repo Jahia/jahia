@@ -31,7 +31,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders a select control for chosing the term match type: as is, all words, exact phrase or all words." %>
+<%@ tag body-content="empty" description="Renders a select control for choosing the term match type: as is, all words, exact phrase or all words." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided. [true]"

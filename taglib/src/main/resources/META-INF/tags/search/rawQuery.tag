@@ -32,7 +32,7 @@
 
 --%>
 <%@ tag body-content="empty"
-        description="Renders an input control for the raw search query. This query will be pass through to the search engine without any modifications (escaping, preffixing, rewriting etc.)" %>
+        description="Renders an input control for the raw search query. This query will be pass through to the search engine without any modifications (escaping, prefixing, rewriting etc.)" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."

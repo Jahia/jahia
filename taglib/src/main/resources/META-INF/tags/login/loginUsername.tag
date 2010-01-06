@@ -31,7 +31,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders the entry field to allow entering the user's name." %>
+<%@ tag body-content="empty" description="Renders the entry field to allow entering the user name." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>

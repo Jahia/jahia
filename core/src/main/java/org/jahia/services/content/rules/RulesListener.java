@@ -440,7 +440,7 @@ public class RulesListener extends DefaultEventListener {
         return globals;
     }
 
-    public void addRulesRescriptor(File file) {
+    public void addRulesDescriptor(File file) {
         dslFiles.add(file);
     }
 

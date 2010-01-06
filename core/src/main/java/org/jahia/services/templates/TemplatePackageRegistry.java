@@ -284,7 +284,7 @@ class TemplatePackageRegistry {
             try {
                 for (String name : templatePackage.getRulesDescriptorFiles()) {
                     for (RulesListener listener : RulesListener.getInstances()) {
-                        listener.addRulesRescriptor(new File(rootFolder, name));
+                        listener.addRulesDescriptor(new File(rootFolder, name));
                     }
                 }
             } catch (Exception e) {

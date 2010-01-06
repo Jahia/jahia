@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.definitions.server;
 
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -40,6 +41,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -83,6 +85,10 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      */
     public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
         return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
+    }
+
+    public Map<GWTJahiaNodeType, List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String type) throws GWTJahiaServiceException {
+        return contentDefinition.getNodeTypeWithReusableComponents(type, retrieveParamBean());
     }
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {

@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -83,6 +84,8 @@ public interface JahiaContentDefinitionService extends RemoteService {
      *         sub-types of the specified base type
      */
     Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode);
+
+    Map<GWTJahiaNodeType,List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String type) throws GWTJahiaServiceException;
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
 

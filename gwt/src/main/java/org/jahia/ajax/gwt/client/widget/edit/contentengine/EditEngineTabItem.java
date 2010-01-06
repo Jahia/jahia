@@ -1,0 +1,27 @@
+package org.jahia.ajax.gwt.client.widget.edit.contentengine;
+
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: toto
+ * Date: Jan 6, 2010
+ * Time: 6:31:49 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public abstract class EditEngineTabItem extends AsyncTabItem {
+    protected EditContentEngine engine;
+
+    protected EditEngineTabItem(EditContentEngine engine) {
+        this.engine = engine;
+        setStyleName("x-panel-mc");
+    }
+
+    protected EditEngineTabItem(String title, EditContentEngine engine) {
+        super(title);
+        this.engine = engine;
+        setStyleName("x-panel-mc");
+    }
+
+    public abstract void create();
+}

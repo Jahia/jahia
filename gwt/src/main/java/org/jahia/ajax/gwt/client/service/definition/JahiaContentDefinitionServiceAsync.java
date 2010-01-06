@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.service.definition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,8 @@ public interface JahiaContentDefinitionServiceAsync {
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>>> async);
+
+    void getNodeTypeWithReusableComponents(String type, AsyncCallback< Map<GWTJahiaNodeType,List<GWTJahiaNode>>> async);
 
     void getAvailableMixin(GWTJahiaNodeType type, AsyncCallback<List<GWTJahiaNodeType>> async);
 

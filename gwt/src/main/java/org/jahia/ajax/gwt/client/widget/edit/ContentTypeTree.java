@@ -129,25 +129,22 @@ public class ContentTypeTree extends LayoutContainer {
             store.add(rootEmptyContent, false);
         }
         if (displayReusableComponents) {
-            final GWTJahiaNode reusableComponentsFolder = new GWTJahiaNode();
             if (nodeType != null && rootEmptyContent != null) {
-                reusableComponentsFolder.setPath("/reusableComponents/" + nodeType.getName().replaceAll(":", "_"));
                 final ContentTypeModelData finalRootEmptyContent = rootEmptyContent;
-                JahiaContentManagementService.App.getInstance().ls(reusableComponentsFolder,
-                                                                   "jnt:reusableComponent", null, null, false,
-                                                                   new AsyncCallback<List<GWTJahiaNode>>() {
-                                                                       public void onFailure(Throwable caught) {
-                                                                       }
+                JahiaContentDefinitionService.App.getInstance().getNodeTypeWithReusableComponents(nodeType.getName(),
+                        new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNode>>>() {
+                            public void onFailure(Throwable caught) {
 
-                                                                       public void onSuccess(
-                                                                               List<GWTJahiaNode> result) {
-                                                                           for (GWTJahiaNode gwtJahiaNode : result) {
-                                                                               store.add(finalRootEmptyContent,
-                                                                                         new ContentTypeModelData(
-                                                                                                 gwtJahiaNode), false);
-                                                                           }
-                                                                       }
-                                                                   });
+                            }
+
+                            public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNode>> result) {
+                                for (List<GWTJahiaNode> nodes : result.values()) {
+                                    for (GWTJahiaNode node : nodes) {
+                                        store.add(finalRootEmptyContent, new ContentTypeModelData(node), false);
+                                    }
+                                }
+                            }
+                        });
             }
         }
         ColumnConfig name = new ColumnConfig("label", "Label", width - 40);

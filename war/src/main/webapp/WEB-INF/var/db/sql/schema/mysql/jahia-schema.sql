@@ -39,10 +39,6 @@
         drop 
         foreign key FKC2B7575A477EEAEC;
 
-    alter table jahia_grps 
-        drop 
-        foreign key FKE530C7C492027B41;
-
     alter table jahia_nstep_workflowinstance 
         drop 
         foreign key FKDA6D7CCF801AE453;
@@ -59,13 +55,9 @@
         drop 
         foreign key FK6A6E1C067F20B53;
 
-    alter table jahia_obj 
+    alter table jahia_pages_data 
         drop 
-        foreign key FKF6E0A6A143AACCE0;
-
-    alter table jahia_pages_def
-        drop 
-        foreign key FK1EA2B334B5FF0C79;
+        foreign key FKB5B3A65BFC25DDC3;
 
     alter table jahia_pages_def_prop 
         drop 
@@ -79,29 +71,9 @@
         drop 
         foreign key FK2BC650026DA1D1E6;
 
-    alter table jahia_retrule 
-        drop 
-        foreign key FK578E2BC72D76FCE6;
-
-    alter table jahia_retrule_range 
-        drop 
-        foreign key FK688A96C57D611258;
-
-    alter table jahia_site_lang_list 
-        drop 
-        foreign key FK1DDBC16D7EED26D3;
-
-    alter table jahia_site_lang_maps 
-        drop 
-        foreign key FK1DDC17667EED26D3;
-
     alter table jahia_sites_grps 
         drop 
         foreign key FK7B24559790F996AC;
-
-    alter table jahia_sites_grps 
-        drop 
-        foreign key FK7B245597F46755FE;
 
     alter table jahia_sites_users 
         drop 
@@ -192,12 +164,6 @@
     drop table if exists jahia_reference;
 
     drop table if exists jahia_resources;
-
-    drop table if exists jahia_retrule;
-
-    drop table if exists jahia_retrule_range;
-
-    drop table if exists jahia_retruledef;
 
     drop table if exists jahia_serverprops;
 
@@ -519,7 +485,6 @@
         timebpstate_jahia_obj integer,
         validfrom_jahia_obj bigint,
         validto_jahia_obj bigint,
-        retrule_jahia_obj integer,
         primary key (id_jahia_obj, type_jahia_obj)
     );
 
@@ -620,37 +585,6 @@
         languagecode_resource varchar(10) not null,
         value_resource varchar(255),
         primary key (name_resource, languagecode_resource)
-    );
-
-    create table jahia_retrule (
-        id_jahia_retrule integer not null,
-        id_jahia_retruledef integer,
-        inherited_retrule bit,
-        enabled_retrule bit,
-        title_retrule varchar(255),
-        comment_retrule varchar(255),
-        shared_retrule bit,
-        settings_retrule longtext,
-        primary key (id_jahia_retrule)
-    );
-
-    create table jahia_retrule_range (
-        id_retrule_range integer not null,
-        validfrom_retrule_range bigint,
-        validto_retrule_range bigint,
-        notiffromd_retrule_range bit,
-        notiftod_retrule_range bit,
-        primary key (id_retrule_range)
-    );
-
-    create table jahia_retruledef (
-        id_jahia_retruledef integer not null,
-        name_retruledef varchar(255) unique,
-        title_retruledef varchar(255),
-        ruleclass_retruledef varchar(255),
-        rulehelperclass_retruledef varchar(255),
-        dateformat_retruledef varchar(255),
-        primary key (id_jahia_retruledef)
     );
 
     create table jahia_serverprops (
@@ -827,7 +761,7 @@
         foreign key (id_jahia_fields_def) 
         references jahia_fields_def (id_jahia_fields_def);
 
-    alter table jahia_nstep_workflowinstance
+    alter table jahia_nstep_workflowinstance 
         add index FKDA6D7CCF801AE453 (user_id), 
         add constraint FKDA6D7CCF801AE453 
         foreign key (user_id) 
@@ -851,17 +785,11 @@
         foreign key (workflow_id) 
         references jahia_nstep_workflow (id);
 
-    alter table jahia_obj 
-        add index FKF6E0A6A143AACCE0 (retrule_jahia_obj), 
-        add constraint FKF6E0A6A143AACCE0 
-        foreign key (retrule_jahia_obj) 
-        references jahia_retrule (id_jahia_retrule);
-
-    alter table jahia_pages_def
-        add index FK1EA2B334B5FF0C79 (jahiaid_jahia_pages_def), 
-        add constraint FK1EA2B334B5FF0C79 
-        foreign key (jahiaid_jahia_pages_def) 
-        references jahia_sites (id_jahia_sites);
+    alter table jahia_pages_data 
+        add index FKB5B3A65BFC25DDC3 (pagedefid_jahia_pages_data), 
+        add constraint FKB5B3A65BFC25DDC3 
+        foreign key (pagedefid_jahia_pages_data) 
+        references jahia_pages_def (id_jahia_pages_def);
 
     alter table jahia_pages_def_prop 
         add index FK8840898E47E25CC (id_jahia_pages_def_prop), 
@@ -881,37 +809,13 @@
         foreign key (jahia_pwd_policy_id) 
         references jahia_pwd_policies (jahia_pwd_policy_id);
 
-    alter table jahia_retrule 
-        add index FK578E2BC72D76FCE6 (id_jahia_retruledef), 
-        add constraint FK578E2BC72D76FCE6 
-        foreign key (id_jahia_retruledef) 
-        references jahia_retruledef (id_jahia_retruledef);
-
-    alter table jahia_retrule_range 
-        add index FK688A96C57D611258 (id_retrule_range), 
-        add constraint FK688A96C57D611258 
-        foreign key (id_retrule_range) 
-        references jahia_retrule (id_jahia_retrule);
-
-    alter table jahia_site_lang_list 
-        add index FK1DDBC16D7EED26D3 (site_id), 
-        add constraint FK1DDBC16D7EED26D3 
-        foreign key (site_id) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_site_lang_maps 
-        add index FK1DDC17667EED26D3 (site_id), 
-        add constraint FK1DDC17667EED26D3 
-        foreign key (site_id) 
-        references jahia_sites (id_jahia_sites);
-
     alter table jahia_sites_grps 
         add index FK7B24559790F996AC (grpid_sites_grps), 
         add constraint FK7B24559790F996AC 
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
 
-    alter table jahia_sites_users
+    alter table jahia_sites_users 
         add index FKEA2BF1BF6CF683C0 (userid_sites_users), 
         add constraint FKEA2BF1BF6CF683C0 
         foreign key (userid_sites_users) 

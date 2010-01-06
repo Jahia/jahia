@@ -85,12 +85,6 @@
 
     drop table jahia_resources cascade constraints;
 
-    drop table jahia_retrule cascade constraints;
-
-    drop table jahia_retrule_range cascade constraints;
-
-    drop table jahia_retruledef cascade constraints;
-
     drop table jahia_serverprops cascade constraints;
 
     drop table jahia_site_lang_list cascade constraints;
@@ -411,7 +405,6 @@
         timebpstate_jahia_obj number(10,0),
         validfrom_jahia_obj number(19,0),
         validto_jahia_obj number(19,0),
-        retrule_jahia_obj number(10,0),
         primary key (id_jahia_obj, type_jahia_obj)
     );
 
@@ -512,37 +505,6 @@
         languagecode_resource varchar2(10 char) not null,
         value_resource varchar2(255 char),
         primary key (name_resource, languagecode_resource)
-    );
-
-    create table jahia_retrule (
-        id_jahia_retrule number(10,0) not null,
-        id_jahia_retruledef number(10,0),
-        inherited_retrule number(1,0),
-        enabled_retrule number(1,0),
-        title_retrule varchar2(255 char),
-        comment_retrule varchar2(255 char),
-        shared_retrule number(1,0),
-        settings_retrule clob,
-        primary key (id_jahia_retrule)
-    );
-
-    create table jahia_retrule_range (
-        id_retrule_range number(10,0) not null,
-        validfrom_retrule_range number(19,0),
-        validto_retrule_range number(19,0),
-        notiffromd_retrule_range number(1,0),
-        notiftod_retrule_range number(1,0),
-        primary key (id_retrule_range)
-    );
-
-    create table jahia_retruledef (
-        id_jahia_retruledef number(10,0) not null,
-        name_retruledef varchar2(255 char) unique,
-        title_retruledef varchar2(255 char),
-        ruleclass_retruledef varchar2(255 char),
-        rulehelperclass_retruledef varchar2(255 char),
-        dateformat_retruledef varchar2(255 char),
-        primary key (id_jahia_retruledef)
     );
 
     create table jahia_serverprops (
@@ -709,11 +671,6 @@
         foreign key (id_jahia_fields_def) 
         references jahia_fields_def;
 
-    alter table jahia_grps 
-        add constraint FKE530C7C492027B41 
-        foreign key (siteid_jahia_grps) 
-        references jahia_sites;
-
     alter table jahia_nstep_workflowinstance 
         add constraint FKDA6D7CCF801AE453 
         foreign key (user_id) 
@@ -734,15 +691,10 @@
         foreign key (workflow_id) 
         references jahia_nstep_workflow;
 
-    alter table jahia_obj 
-        add constraint FKF6E0A6A143AACCE0 
-        foreign key (retrule_jahia_obj) 
-        references jahia_retrule;
-
-    alter table jahia_pages_def 
-        add constraint FK1EA2B334B5FF0C79 
-        foreign key (jahiaid_jahia_pages_def) 
-        references jahia_sites;
+    alter table jahia_pages_data 
+        add constraint FKB5B3A65BFC25DDC3 
+        foreign key (pagedefid_jahia_pages_data) 
+        references jahia_pages_def;
 
     alter table jahia_pages_def_prop 
         add constraint FK8840898E47E25CC 
@@ -759,35 +711,10 @@
         foreign key (jahia_pwd_policy_id) 
         references jahia_pwd_policies;
 
-    alter table jahia_retrule 
-        add constraint FK578E2BC72D76FCE6 
-        foreign key (id_jahia_retruledef) 
-        references jahia_retruledef;
-
-    alter table jahia_retrule_range 
-        add constraint FK688A96C57D611258 
-        foreign key (id_retrule_range) 
-        references jahia_retrule;
-
-    alter table jahia_site_lang_list 
-        add constraint FK1DDBC16D7EED26D3 
-        foreign key (site_id) 
-        references jahia_sites;
-
-    alter table jahia_site_lang_maps 
-        add constraint FK1DDC17667EED26D3 
-        foreign key (site_id) 
-        references jahia_sites;
-
     alter table jahia_sites_grps 
         add constraint FK7B24559790F996AC 
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
-
-    alter table jahia_sites_grps 
-        add constraint FK7B245597F46755FE 
-        foreign key (siteid_sites_grps) 
-        references jahia_sites;
 
     alter table jahia_sites_users 
         add constraint FKEA2BF1BF6CF683C0 

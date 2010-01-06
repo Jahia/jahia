@@ -30,7 +30,7 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.data.definition;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;

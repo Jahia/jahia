@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 
 /**

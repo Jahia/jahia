@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.dnd.DND;
@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.util.Rectangle;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.List;
 

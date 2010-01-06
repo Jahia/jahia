@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import com.allen_sauer.gwt.log.client.Log;

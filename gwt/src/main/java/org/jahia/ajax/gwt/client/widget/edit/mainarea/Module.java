@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.HTML;

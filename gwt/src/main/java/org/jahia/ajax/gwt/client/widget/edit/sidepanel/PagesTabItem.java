@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
@@ -19,6 +18,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import java.util.List;
  * Date: Dec 21, 2009
  * Time: 2:22:37 PM
  */
-class PagesTabItem extends SidePanelTabItem {
+public class PagesTabItem extends SidePanelTabItem {
 
     protected LayoutContainer treeContainer;
     protected TreeGrid<GWTJahiaNode> tree;
@@ -104,7 +107,7 @@ class PagesTabItem extends SidePanelTabItem {
         tree.getTreeStore().getLoader().load();
     }
 
-    class PageTreeGridDropTarget extends TreeGridDropTarget {
+    public class PageTreeGridDropTarget extends TreeGridDropTarget {
         public PageTreeGridDropTarget() {
             super(PagesTabItem.this.tree);
         }

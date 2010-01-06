@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.dnd.DragSource;
@@ -13,6 +13,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.ArrayList;
 import java.util.List;

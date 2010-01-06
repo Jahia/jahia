@@ -56,7 +56,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
-import org.jahia.ajax.gwt.client.widget.edit.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;

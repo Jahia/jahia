@@ -4,9 +4,8 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**

@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
@@ -16,6 +16,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.Arrays;

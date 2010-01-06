@@ -1,23 +1,16 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +19,7 @@ import java.util.List;
  * Time: 7:25:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ListModule extends ContentPanel implements Module {
+public class AreaModule extends ContentPanel implements Module {
 
     private String id;
     private GWTJahiaNode node;
@@ -39,21 +32,23 @@ public class ListModule extends ContentPanel implements Module {
     private boolean isDraggable = true;
     private int depth;
     private boolean selectable;
+    private String nodeTypes;
 
-    public ListModule(String id, String path, String s, String template, String scriptInfo, MainModule mainModule) {
+    public AreaModule(String id, String path, String s, String template, String scriptInfo,String nodeTypes, MainModule mainModule) {
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
+        this.nodeTypes = nodeTypes;
         if (path.contains("/")) {
-            setHeading(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            setHeading(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
         } else {
-            setHeading(Messages.getResource("em_content")+" : "+ path);
+            setHeading(Messages.getResource("em_area")+" : "+ path);
         }
         setBorders(false);
         setBodyBorder(false);
-        getHeader().addStyleName("x-panel-header-listmodule");
+        getHeader().addStyleName("x-panel-header-areamodule");
         html = new HTML(s);
         add(html);
     }
@@ -61,19 +56,15 @@ public class ListModule extends ContentPanel implements Module {
     public void onParsed() {
 //        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
 
-        DragSource source = new ListModuleDragSource(this);
-        source.addDNDListener(mainModule.getEditLinker().getDndListener());
-
-        DropTarget target = new ListModuleDropTarget(this);
-        target.setAllowSelfAsSource(true);
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+//        DropTarget target = new AreaModuleDropTarget(this);
+//        target.addDNDListener(mainModule.getEditLinker().getDndListener());
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 if (selectable) {
                     Log.info("click" + path + " : " + scriptInfo);
-                    mainModule.getEditLinker().onModuleSelection(ListModule.this);
+                    mainModule.getEditLinker().onModuleSelection(AreaModule.this);
                 }
             }
         };
@@ -82,12 +73,12 @@ public class ListModule extends ContentPanel implements Module {
 
         Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().addHover(ListModule.this);
+                Hover.getInstance().addHover(AreaModule.this);
             }
         };
         Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().removeHover(ListModule.this);
+                Hover.getInstance().removeHover(AreaModule.this);
             }
         };
 
@@ -134,10 +125,6 @@ public class ListModule extends ContentPanel implements Module {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
-        if(node.getNodeTypes().contains("jmix:shareable")) {
-            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
-        }
     }
 
     public Module getParentModule() {
@@ -160,42 +147,21 @@ public class ListModule extends ContentPanel implements Module {
         return isDraggable;
     }
 
-    public class ListModuleDragSource extends ModuleDragSource {
-        public ListModuleDragSource(ListModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragStart(DNDEvent e) {
-            super.onDragStart(e);
-            Selection.getInstance().hide();
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            l.add(getModule().getNode());
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
-        }
-
-    }
-
-    public class ListModuleDropTarget extends ModuleDropTarget {
-        public ListModuleDropTarget(ListModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            if (getModule().getParentModule().getNode().isWriteable()) {
-                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
-                e.getStatus().setStatus(true);
-                e.setCancelled(false);
-            } else {
-                e.getStatus().setStatus(false);
-            }
-        }
-
-    }
-
+//    private class AreaModuleDropTarget extends ModuleDropTarget {
+//        public AreaModuleDropTarget(AreaModule areaModule) {
+//            super(areaModule);
+//        }
+//
+//        @Override
+//        protected void onDragEnter(DNDEvent e) {
+//            super.onDragEnter(e);
+//            if (getModule().getNode().isWriteable()) {
+//                boolean allowed = checkNodeType(e, nodeTypes);
+//                e.getStatus().setStatus(allowed);
+//                e.setCancelled(false);
+//            } else {
+//                e.getStatus().setStatus(false);
+//            }
+//        }
+//    }
 }

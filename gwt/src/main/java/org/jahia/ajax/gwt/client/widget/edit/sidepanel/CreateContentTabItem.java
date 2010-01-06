@@ -1,8 +1,11 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateGridDragSource;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
  * Side panel tab that allows creation of new content items using drag and drop.

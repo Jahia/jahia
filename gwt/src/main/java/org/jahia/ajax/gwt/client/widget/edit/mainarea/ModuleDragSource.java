@@ -1,8 +1,9 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.DOM;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
 
 /**
  * Created by IntelliJ IDEA.

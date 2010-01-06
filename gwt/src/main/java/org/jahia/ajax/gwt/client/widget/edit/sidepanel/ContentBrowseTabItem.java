@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -17,25 +17,27 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.DisplayGridDragSource;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Side panel tab for browsing file repository.
+* Side panel tab item for browsing the content repository.
 * User: toto
 * Date: Dec 21, 2009
 * Time: 2:22:24 PM
 */
-class FilesBrowseTabItem extends BrowseTabItem {
+class ContentBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected DisplayGridDragSource displayGridSource;
 
-    public FilesBrowseTabItem() {
-        super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.file());
+    public ContentBrowseTabItem() {
+        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.FOLDER_NODETYPES);
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.content());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -47,7 +49,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", null, null, true, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null, true, listAsyncCallback);
             }
         };
 
@@ -85,9 +87,6 @@ class FilesBrowseTabItem extends BrowseTabItem {
                 contentContainer.mask("Loading","x-mask-loading");
             }
         });
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.files", tree.getSelectionModel()));
-        grid.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.files.preview", grid.getSelectionModel()));
-        
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
@@ -99,12 +98,11 @@ class FilesBrowseTabItem extends BrowseTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        displayGridSource.addDNDListener(editLinker.getDndListener());        
+        displayGridSource.addDNDListener(editLinker.getDndListener());
     }
 
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
-        return node.getInheritedNodeTypes().contains("nt:file");
+        return node.getInheritedNodeTypes().contains("jnt:content");
     }
-
 }

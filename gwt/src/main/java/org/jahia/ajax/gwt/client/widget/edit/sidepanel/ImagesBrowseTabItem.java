@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -10,32 +10,37 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Side panel tab item for browsing mashup repository.
- * User: toto
- * Date: Dec 21, 2009
- * Time: 2:22:24 PM
- */
-class MashupBrowseTabItem extends BrowseTabItem {
+* Side panel tab item for browsing image resources in the repository.
+* User: toto
+* Date: Dec 21, 2009
+* Time: 2:22:24 PM
+*/
+class ImagesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
-    public MashupBrowseTabItem() {
-        super(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.FOLDER_NODETYPES);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.mashup());
+    public ImagesBrowseTabItem() {
+        super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES);
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.img());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -45,8 +50,8 @@ class MashupBrowseTabItem extends BrowseTabItem {
         RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, true, listAsyncCallback);
+                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, true, listAsyncCallback);
             }
         };
 
@@ -65,20 +70,47 @@ class MashupBrowseTabItem extends BrowseTabItem {
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                contentContainer.mask("Loading", "x-mask-loading");
+                contentContainer.mask("Loading","x-mask-loading");
                 listLoader.load(event.getSelectedItem());
             }
         });
 
-        ThumbsListView listView = new ThumbsListView(true);
-        listView.setStyleAttribute("overflow-x", "hidden");
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images", tree.getSelectionModel()));
+
+        final ThumbsListView listView = new ThumbsListView(true);
+        listView.setStyleAttribute("overflow-x",  "hidden");
         listView.setStore(contentStore);
+        contentStore.setSortField("display");
         contentContainer.add(listView);
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);
 
+        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>(){
+            public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
+                Window w = new Window();
+                GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
+
+                final String text = "Preview of " + node.getDisplayName();
+                w.setHeading(text);
+                w.setScrollMode(Style.Scroll.AUTO);
+                w.setModal(true);
+                w.setClosable(true);
+                w.setMaximizable(true);
+                w.setSize(Math.max(node.getWidth()+60, 400), Math.max(node.getHeight()+80, 50));
+                w.setBlinkModal(true);
+                w.setPlain(true);
+                w.setToolTip(text);
+                w.setLayout(new CenterLayout());
+                w.add(new Image(listView.getSelectionModel().getSelectedItem().getUrl()));
+                w.show();
+
+            }
+        });
+
+        listView.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images.preview", listView.getSelectionModel()));
+        
         dragSource = new ImageDragSource(listView);
     }
 
@@ -89,7 +121,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
     }
 
     public class ImageDragSource extends ListViewDragSource {
-        public ImageDragSource(ListView listView) {
+        public ImageDragSource(ListView<GWTJahiaNode> listView) {
             super(listView);
             DragListener listener = new DragListener() {
                 public void dragEnd(DragEvent de) {
@@ -144,7 +176,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
-        return node.getInheritedNodeTypes().contains("jnt:portlet");
+        return node.getInheritedNodeTypes().contains("nt:file");
     }
 
 

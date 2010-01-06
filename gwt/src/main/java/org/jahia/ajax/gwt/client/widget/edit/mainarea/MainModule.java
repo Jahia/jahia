@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -13,10 +13,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Map;
 import java.util.List;
@@ -230,7 +231,7 @@ public class MainModule extends ContentPanel implements Module {
 
     public static native void exportStaticMethod() /*-{
        $wnd.goTo = function(x,y) {
-          @org.jahia.ajax.gwt.client.widget.edit.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(x,y);
+          @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(x,y);
        }
     }-*/;
 

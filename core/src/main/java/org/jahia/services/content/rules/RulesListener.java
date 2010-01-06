@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -198,6 +199,7 @@ public class RulesListener extends DefaultEventListener {
     }
 
     public void addRules(File dsrlFile) {
+        InputStreamReader drl = null;
         try {
             Properties properties = new Properties();
             properties.setProperty("drools.dialect.java.compiler", "JANINO");
@@ -207,7 +209,7 @@ public class RulesListener extends DefaultEventListener {
 
             PackageBuilder packageBuilder = new PackageBuilder(cfg);
 
-            InputStreamReader drl = new InputStreamReader(new FileInputStream(dsrlFile));
+            drl = new InputStreamReader(new FileInputStream(dsrlFile));
 
             packageBuilder.addPackageFromDrl(drl,new StringReader(getDslFiles()));
 
@@ -229,6 +231,8 @@ public class RulesListener extends DefaultEventListener {
             logger.error(e.getMessage(), e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(drl);
         }
     }
 

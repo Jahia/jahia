@@ -46,10 +46,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRVersionHistory;
@@ -60,10 +57,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.FileUtils;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
@@ -601,6 +595,18 @@ public class NavigationHelper {
                 throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
             }
         }
+
+        try {
+            PropertyIterator references = node.getReferences();
+            while (references.hasNext()) {
+                JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
+                Node refNode = reference.getNode();
+                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(),refNode.getPath()));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         return result;
     }
 

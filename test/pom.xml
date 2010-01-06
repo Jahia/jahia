@@ -37,16 +37,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.nutch</groupId>
-            <artifactId>nutch</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mahout.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>0.19.1</version>
-        </dependency>
-        <dependency>
             <groupId>jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>3.5.0</version>
@@ -62,7 +52,7 @@
         <profile>
             <id>excludeBeforeJDK16</id>
             <activation>
-                <jdk>[1.5,1.6)</jdk>
+                <jdk>1.5</jdk>
             </activation>
             <build>
                 <plugins>
@@ -79,6 +69,26 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>crawler-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Nutch and its dependencies -->
+                <dependency>
+                    <groupId>org.apache.nutch</groupId>
+                    <artifactId>nutch</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.mahout.hadoop</groupId>
+                    <artifactId>hadoop-core</artifactId>
+                    <version>0.19.1</version>
+                </dependency> 
+                <!-- End of Nutch and its dependencies -->
+            </dependencies>
+        </profile>           
 
         <profile>
             <id>startJahia</id>

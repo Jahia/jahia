@@ -286,6 +286,26 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>crawler-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Nutch and its dependencies -->
+                <dependency>
+                    <groupId>org.apache.nutch</groupId>
+                    <artifactId>nutch</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.mahout.hadoop</groupId>
+                    <artifactId>hadoop-core</artifactId>
+                    <version>0.19.1</version>
+                </dependency> 
+                <!-- End of Nutch and its dependencies -->
+            </dependencies>
+        </profile>              
     </profiles>
 
     <dependencies>
@@ -824,21 +844,7 @@
           <version>0.9.0</version>
         </dependency>
 
-        <!-- End of Shindig dependencies -->
-        
-        <!-- Nutch and its dependencies -->
-        <dependency>
-            <groupId>org.apache.nutch</groupId>
-            <artifactId>nutch</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mahout.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>0.19.1</version>
-        </dependency> 
-        <!-- End of Nutch and its dependencies -->
-
+        <!-- End of Shindig dependencies -->       
     </dependencies>
 
     <build>

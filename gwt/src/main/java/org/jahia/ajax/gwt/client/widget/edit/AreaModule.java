@@ -57,8 +57,8 @@ public class AreaModule extends ContentPanel implements Module {
     public void onParsed() {
 //        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
 
-        DropTarget target = new AreaModuleDropTarget(this);
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+//        DropTarget target = new AreaModuleDropTarget(this);
+//        target.addDNDListener(mainModule.getEditLinker().getDndListener());
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
@@ -148,21 +148,21 @@ public class AreaModule extends ContentPanel implements Module {
         return isDraggable;
     }
 
-    private class AreaModuleDropTarget extends ModuleDropTarget {
-        public AreaModuleDropTarget(AreaModule areaModule) {
-            super(areaModule);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            if (getModule().getNode().isWriteable()) {
-                boolean allowed = checkNodeType(e, nodeTypes);
-                e.getStatus().setStatus(allowed);
-                e.setCancelled(false);
-            } else {
-                e.getStatus().setStatus(false);
-            }
-        }
-    }
+//    private class AreaModuleDropTarget extends ModuleDropTarget {
+//        public AreaModuleDropTarget(AreaModule areaModule) {
+//            super(areaModule);
+//        }
+//
+//        @Override
+//        protected void onDragEnter(DNDEvent e) {
+//            super.onDragEnter(e);
+//            if (getModule().getNode().isWriteable()) {
+//                boolean allowed = checkNodeType(e, nodeTypes);
+//                e.getStatus().setStatus(allowed);
+//                e.setCancelled(false);
+//            } else {
+//                e.getStatus().setStatus(false);
+//            }
+//        }
+//    }
 }

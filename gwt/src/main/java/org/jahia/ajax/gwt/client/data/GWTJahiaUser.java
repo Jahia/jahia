@@ -43,10 +43,12 @@ public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements Serializab
     
     public GWTJahiaUser() {
         super();
+        setAllowNestedValues(false);
     }
 
     public GWTJahiaUser(String username, String userKey) {
         super(userKey,username);
+        setAllowNestedValues(false);
         setUsername(username);
         setUserKey(userKey);
     }

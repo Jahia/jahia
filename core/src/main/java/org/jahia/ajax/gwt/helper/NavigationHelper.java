@@ -580,7 +580,6 @@ public class NavigationHelper {
             usages = node.getSharedSet();
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
         List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
 
@@ -592,7 +591,6 @@ public class NavigationHelper {
                 result.add(nodeUsage);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
             }
         }
 

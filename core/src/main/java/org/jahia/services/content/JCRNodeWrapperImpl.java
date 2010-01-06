@@ -1265,7 +1265,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (copy != null) {
+            if (hasProperty("jcr:language")) {
+                copy.setProperty("jcr:language", getProperty("jcr:language").getString());
+            }
             PropertyIterator props = getProperties();
+
             while (props.hasNext()) {
                 Property property = props.nextProperty();
                 try {

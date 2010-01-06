@@ -44,7 +44,7 @@
     <artifactId>mod-rss</artifactId>
     <name>Jahia RSS Feeds</name>
     <packaging>war</packaging>
-    <description>This is a custom module for running on a Jahia server.</description>
+    <description>Jahia template module for reading and rendering external RSS feeds.</description>
     <repositories>
         <repository>
             <id>jahiaRepository</id>
@@ -124,7 +124,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <root-folder>press</root-folder>
+                            <root-folder>rss</root-folder>
                         </manifestEntries>
                     </archive>
                 </configuration>

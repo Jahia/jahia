@@ -1,10 +1,10 @@
 Crazy Jane - Jahia Modules - Rules
 
-  Each modules in JAHIA can define is own rules, extends the rules specific language, and add is own set of global objects.
+  Each module in JAHIA can define its own rules, extend the rule domain specific language and add its own set of global objects.
 
-* How to add rules in a module ?
+* How to add rules in a module?
 
-  Just define a rules.drl file at the root level of the module. An example from the tasks module :
+  Just define a rules.drl file at the root level of the module. An example from the tasks module:
 
 -------------------------------------
 ###############################################################################
@@ -53,27 +53,86 @@ rule "A task has been created"
 end
 -------------------------------------
 
-  This file define some new conditions that are not part from the default one :
-  << Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName() >>
+  This file defines some new rule conditions that are not part of the default definition file:
+  
+-------------------------------------
+  Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
+-------------------------------------
 
-  And it also define a global object of type Tasks named tasks : << global Tasks tasks >>
+  And it also defines a global object of type Tasks named tasks:
+  
+-------------------------------------
+  global Tasks tasks
+-------------------------------------
 
-* How do I extends the specific language for my rules ?
+* How do I extend the domain specific language for my rules ?
 
-  It is also very simple. You only have to add a rules.dsl file at the root level of your module. An example from the tasks module :
+  It is also very simple. You only have to add a rules.dsl file at the root level of your module. An example from the tasks module:
 
 --------------------------------------
 [consequence][]Create task "{title}" with description "{description}" for user {forUser}=tasks.createTask({forUser}, "{title}", "{description}", drools);
 [consequence][]Create task "{title}" with description "{description}" for members of group {group}=tasks.createTaskForGroupMembers({group}, "{title}", "{description}", drools);
 --------------------------------------
 
-** The extension made in a module will be available for all other modules, so if your modules rely on dsl from another module
+  The extension made in a module will be available for all other modules, so if your modules rely on dsl from another module
   think of adding this module as a dependency of yours in the manifest file.
+  
+  Here is an example of using tasks in your own module (say, Jahia RSS Feeds module):
+  
+  [[1]] In <<<templates/rss/META-INF/MANIFEST.MF>>> we have:
 
-* How do I add my own global objects to my rule context for execution ?
+---------------------------------------
+  depends: Jahia Tasks
+---------------------------------------
 
-  Define a spring file in your module (META-INF/spring/module-name.xml). Define a bean of type <<<<ModuleGlobalObject>>>>.
-  Example from the modules tasks :
+  [[2]] And the <<<templates/rss/rules.drl>>> file content is:
+
+---------------------------------------
+###############################################################################
+package org.jahia.modules.rss.rules
+
+#list any import classes here.
+import org.apache.log4j.Logger
+import org.jahia.services.content.rules.*
+import org.jahia.modules.tasks.rules.*
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global Tasks tasks
+###############################################################################
+
+rule "Notification about new RSS feed"
+   when
+       A new node is created
+		- the node has the type jnt:rss
+        The node has a property url
+   then
+       Log "Notifying root about new RSS feed " + property.getStringValue()
+       Create task "New RSS feed alert" with description "Read the newly added RSS feed, retrieved from '" + property.getStringValue() + "'" for user "root"
+end
+---------------------------------------
+
+  []
+  
+  Note that the rule file must import the <<<org.jahia.modules.tasks.rules.*>>> package and have a definition for <<<tasks>>> global object, i.e.:
+
+---------------------------------------
+...
+import org.jahia.modules.tasks.rules.*
+
+...
+global Tasks tasks
+...
+---------------------------------------
+
+* How do I add my own global objects to my rule context for execution?
+
+  Define a spring file in your module (<<<META-INF/spring/module-name.xml>>>). Define a bean of type <<<ModuleGlobalObject>>>.
+  Example from the tasks module:
 
 ---------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
@@ -94,4 +153,4 @@ end
 </beans>
 ---------------------------------------
 
-** As for the dsl all modules will share the same set of global objects so be sure that the key you use is unique across all modules.  
+  As for the dsl all modules will share the same set of global objects so be sure that the key, you use, is unique across all modules.  

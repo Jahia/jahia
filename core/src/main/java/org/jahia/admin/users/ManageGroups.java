@@ -71,7 +71,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
@@ -826,12 +825,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             theGroup.removeMember((JahiaUser)it.next());
         }
 
-            // delete membership...
-            try {
-                JahiaSiteGroupManagerService siteGroupManager = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService();
-                siteGroupManager.removeGroup(theGroup);
-            } catch (Exception e) {
-            }
             // delete group...
             if (!gMgr.deleteGroup(theGroup)) {
               groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.cannotRemoved.label",
@@ -876,23 +869,6 @@ public class ManageGroups extends AbstractAdministrationModule {
         // create the group...
         JahiaGroup theGroup = null;
         theGroup = gMgr.createGroup(jahiaSite.getID(), name , null, false);
-        if (theGroup != null) {
-            // create group membership...
-            try {
-                JahiaSiteGroupManagerService siteGroupManager =
-                    ServicesRegistry.getInstance().getJahiaSiteGroupManagerService();
-                siteGroupManager.addGroup(jahiaSite.getID(), theGroup);
-
-                // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-                try {
-                    JahiaEvent je = new JahiaEvent(this, jParams, theGroup);
-                    JahiaEventGeneratorBaseService.getInstance().fireAddGroup(je);
-                } catch (JahiaException e1) {
-                    logger.error(e1.getMessage(), e1);
-                }
-                // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
-            } catch (Exception e) { }
-        }
         return theGroup;
     }
 

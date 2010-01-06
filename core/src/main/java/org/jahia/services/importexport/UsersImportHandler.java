@@ -55,8 +55,6 @@ public class UsersImportHandler  extends DefaultHandler {
     private static Logger logger = Logger.getLogger(UsersImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
-    private JahiaSiteUserManagerService su;
-    private JahiaSiteGroupManagerService sg;
     private JahiaSite site;
     private List<String[]> uuidProps = new ArrayList<String[]>();
 
@@ -67,23 +65,15 @@ public class UsersImportHandler  extends DefaultHandler {
         this.site = site;
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        su = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-        sg = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService();
     }
 
     public UsersImportHandler() {        
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        su = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-        sg = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         try {
-            Map<String,String> groups = new HashMap();
-            if (site != null){
-                groups = sg.getGroups(site.getID());
-            }
             if (currentGroup == null) {
                 if (localName.equals("user")) {
                     String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
@@ -109,18 +99,8 @@ public class UsersImportHandler  extends DefaultHandler {
                         }
                     }
                     if (name != null && pass != null) {
-                        if (site == null) {
-                            if (u.lookupUser(name) == null) {
-                                u.createUser(name, pass, p);
-                            }
-                        } else {
-                            if (su.getMember(site.getID(), name) == null) {
-                                JahiaUser user = u.lookupUser(name);
-                                if (user == null) {
-                                    user = u.createUser(name, pass, p);
-                                }
-                                su.addMember(site.getID(), user);
-                            }
+                        if (u.lookupUser(name) == null) {
+                            u.createUser(name, pass, p);
                         }
                     }
                 } else if (localName.equals("group")) {
@@ -147,9 +127,6 @@ public class UsersImportHandler  extends DefaultHandler {
                         if (currentGroup == null) {
                             currentGroup = g.createGroup(site.getID(), name, p, false);
                         }
-                        if (site != null && !groups.containsKey(currentGroup.getGroupname())) {
-                            sg.addGroup(site.getID(), currentGroup);
-                        }
                     }
                 }
             } else {
@@ -157,7 +134,7 @@ public class UsersImportHandler  extends DefaultHandler {
                 Principal p = null;
                 String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
                 if (localName.equals("user")) {
-                    p = su.getMember(site.getID(), name);
+                    p = u.lookupUser(name);
                 } else if (localName.equals("group")) {
                     p = g.lookupGroup(site.getID(), name);
                 }

@@ -43,7 +43,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -92,13 +91,7 @@ public final class JahiaSiteTools {
             return false;
         }
 
-        JahiaSiteGroupManagerService jsgms = ServicesRegistry.getInstance ()
-                .getJahiaSiteGroupManagerService ();
-        if (jsgms == null) {
-            return false;
-        }
-
-        return jsgms.addGroup (site.getID (), grp);
+        return true;
     }
 
 

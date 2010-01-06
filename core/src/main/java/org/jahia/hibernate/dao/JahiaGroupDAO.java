@@ -78,9 +78,9 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         if (siteId == null) {
-            return template.find("select distinct g.key from JahiaGrp g where g.site.id is null");
+            return template.find("select distinct g.key from JahiaGrp g where g.site is null");
         } else {
-            return template.find("select distinct g.key from JahiaGrp g where ((g.site.id=?) ) and g.hidden=false",
+            return template.find("select distinct g.key from JahiaGrp g where ((g.site=?) ) and g.hidden=false",
                                  siteId);
         }
     }
@@ -89,9 +89,9 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         if (siteId == null) {
-            return template.find("select distinct g.name from JahiaGrp g where g.site.id is null");
+            return template.find("select distinct g.name from JahiaGrp g where g.site is null");
         } else {
-            return template.find("select distinct g.name from JahiaGrp g where ((g.site.id=?) ) and g.hidden=false",
+            return template.find("select distinct g.name from JahiaGrp g where ((g.site=?) ) and g.hidden=false",
                                  siteId);
         }
     }
@@ -129,7 +129,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         template.setCacheQueries(true);
         JahiaGrp jahiaGrp = null;
         if (siteId != null && name != null) {
-            List<JahiaGrp> list = template.find("from JahiaGrp g where g.site.id=? and g.name=?",
+            List<JahiaGrp> list = template.find("from JahiaGrp g where g.site=? and g.name=?",
                                       new Object[]{siteId, name});
             if (list.size() > 0) {
                 jahiaGrp = list.get(0);
@@ -181,11 +181,11 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         List<String> list = null;
         if (curCriteriaValue != null && siteID != null) {
             list = template.find("select distinct s.group.key from JahiaSitesGrp s " +
-                                 "where s.comp_id.site.id=? and s.group.name like ? ",
+                                 "where s.comp_id.site=? and s.group.name like ? ",
                                  new Object[]{siteID, curCriteriaValue});
         } else if (curCriteriaValue != null) {
             list = template.find("select distinct s.group.key from JahiaSitesGrp s " +
-                                 "where s.comp_id.site.id is null and s.group.name like ? ",
+                                 "where s.comp_id.site is null and s.group.name like ? ",
                                  new Object[]{curCriteriaValue});
         }
         return list;
@@ -197,7 +197,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         List<String> list = null;
         if (curCriteriaValue != null && siteID != null) {
             list = template.find("select distinct s.key from JahiaGrp s " +
-                                 "where s.site.id=? and s.name like ? ",
+                                 "where s.site=? and s.name like ? ",
                                  new Object[]{siteID, curCriteriaValue});
         } else if (curCriteriaValue != null) {
             list = template.find("select distinct s.key from JahiaGrp s " +
@@ -217,7 +217,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
             args.add(siteID);
             args.add(providerName);
             StringBuffer hql = new StringBuffer("select distinct s.group.key from JahiaSitesGrp s,JahiaGrpProp p ");
-            hql.append("where s.comp_id.site.id=? and p.comp_id.provider=?");
+            hql.append("where s.comp_id.site=? and p.comp_id.provider=?");
             hql.append("and s.group.id=p.comp_id.id ");
             for (int i = 0; i < criteriaNameList.size(); i++) {
                 String name = (String) criteriaNameList.get(i);
@@ -272,7 +272,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
     public void removeGroupFromSite(Integer siteID, String groupname) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        template.deleteAll(template.find("from JahiaSitesGrp s where s.comp_id.site.id=? " +
+        template.deleteAll(template.find("from JahiaSitesGrp s where s.comp_id.site=? " +
                                       "and s.comp_id.groupName=?",new Object[]{siteID,groupname}));
     }
 
@@ -286,7 +286,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
     public void removeAllGroupsFromSite(Integer siteID) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        template.deleteAll(template.find("from JahiaSitesGrp s where s.comp_id.site.id=? ",
+        template.deleteAll(template.find("from JahiaSitesGrp s where s.comp_id.site=? ",
                                       new Object[]{siteID}));
     }
 
@@ -294,9 +294,9 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         if (siteID == null) {
-            return template.find("from JahiaSitesGrp s where s.comp_id.site.id is null");
+            return template.find("from JahiaSitesGrp s where s.comp_id.site is null");
         } else {
-            return template.find("from JahiaSitesGrp s where s.comp_id.site.id=?",
+            return template.find("from JahiaSitesGrp s where s.comp_id.site=?",
                                  siteID);
         }
     }

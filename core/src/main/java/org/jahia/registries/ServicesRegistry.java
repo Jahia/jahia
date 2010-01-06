@@ -68,7 +68,6 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.JahiaVersionService;
@@ -135,8 +134,6 @@ public class ServicesRegistry {
             "JahiaGroupManagerService";
     private static final String JAHIA_SITE_USER_MANAGER_SERVICE =
             "JahiaSiteUserManagerService";
-    private static final String JAHIA_SITE_GROUP_MANAGER_SERVICE =
-            "JahiaSiteGroupManagerService";
 
     // Jahia ACL Manager Service
     private static final String JAHIA_ACL_MANAGER_SERVICE = "JahiaACLManagerService";
@@ -381,13 +378,6 @@ public class ServicesRegistry {
      */
     public JahiaSiteUserManagerService getJahiaSiteUserManagerService() {
         return (JahiaSiteUserManagerService) getService(JAHIA_SITE_USER_MANAGER_SERVICE);
-    }
-
-    /**
-     * Return a reference on the DB Site Group Manager service
-     */
-    public JahiaSiteGroupManagerService getJahiaSiteGroupManagerService() {
-        return (JahiaSiteGroupManagerService) getService(JAHIA_SITE_GROUP_MANAGER_SERVICE);
     }
 
     /**

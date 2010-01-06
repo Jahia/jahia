@@ -141,7 +141,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.acl = acl;
     }
 
-    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
         return navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean());
     }
 

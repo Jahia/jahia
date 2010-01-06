@@ -51,6 +51,4 @@ public class ModuleDragSource extends EditModeDragSource {
             }
         }
     }
-
-
 }

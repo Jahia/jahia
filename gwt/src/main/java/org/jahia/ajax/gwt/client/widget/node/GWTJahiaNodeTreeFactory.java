@@ -186,7 +186,7 @@ public class GWTJahiaNodeTreeFactory {
                     }
                     listAsyncCallback.onSuccess(list);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls(repository, folder,
+                    JahiaContentManagementService.App.getInstance().ls(folder,
                             nodeTypes, mimeTypes, filters,
                             noFolders, listAsyncCallback);
                 }

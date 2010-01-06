@@ -132,7 +132,7 @@ public class ContentTypeTree extends LayoutContainer {
             if (nodeType != null && rootEmptyContent != null) {
                 reusableComponentsFolder.setPath("/reusableComponents/" + nodeType.getName().replaceAll(":", "_"));
                 final ContentTypeModelData finalRootEmptyContent = rootEmptyContent;
-                JahiaContentManagementService.App.getInstance().ls(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, reusableComponentsFolder,
+                JahiaContentManagementService.App.getInstance().ls(reusableComponentsFolder,
                                                                    "jnt:reusableComponent", null, null, false,
                                                                    new AsyncCallback<List<GWTJahiaNode>>() {
                                                                        public void onFailure(Throwable caught) {

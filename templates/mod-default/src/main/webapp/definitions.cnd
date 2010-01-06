@@ -102,7 +102,7 @@
  page navLink primary
 
 [jnt:teaser] > jnt:content, mix:title, jmix:structuredContent
- - abstract (string, text[multiline])) i18n
+ - abstract (string, text[multiline]) i18n
  - image (weakreference, file[mime='image/*']) i18n
  page link (page[type="external,internal"])
 

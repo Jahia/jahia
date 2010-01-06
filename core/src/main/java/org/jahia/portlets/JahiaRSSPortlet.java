@@ -39,6 +39,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.utils.rss.RSSUtil;
 
 
 /**
@@ -58,16 +59,15 @@ public class JahiaRSSPortlet extends JahiaPortlet {
      */
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         renderResponse.setContentType("text/html");
-        
+
         String url = (String) renderRequest.getAttribute("url");
         Long nbFeed = (Long) renderRequest.getAttribute("entriesCount");
         if (nbFeed == null || nbFeed < 0) {
             nbFeed = 5l;
         }
-        String id = renderRequest.getWindowID();
-        String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";
-        PrintWriter pw = renderResponse.getWriter();
-        pw.print(html);
+        renderRequest.setAttribute("syndFeed", RSSUtil.loadSyndFeed(url));
+        renderRequest.setAttribute("entriesCount", nbFeed);
+        getPortletContext().getRequestDispatcher("/portlet/rss/rssView.jsp").forward(renderRequest, renderResponse);
     }
 }
 

@@ -321,6 +321,7 @@ public class EditContentEngine extends Window {
         });
 
         add(tabs);
+
     }
 
     /**
@@ -372,7 +373,12 @@ public class EditContentEngine extends Window {
                 contentTab.setProcessed(true);
                 contentTab.setStyleName("x-panel-mc");
 
-
+                if(node.getNodeTypes().contains("jmix:shareable")) {
+                    Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
+                    label.setStyleAttribute("color","rgb(200,80,80)");
+                    label.setStyleAttribute("font-size","14px");
+                    contentTab.add(label);
+                }
                 propertiesEditor = new PropertiesEditor(nodeTypes, mixin, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
                 propertiesEditor.setHeight(504);
                 if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
@@ -381,9 +387,14 @@ public class EditContentEngine extends Window {
                     isNodeNameFieldDisplayed = true;
                 }
                 contentTab.add(propertiesEditor);
+
                 contentTab.layout();
             } else if (isReference && referencedNode != null) {
                 contentTab.setProcessed(true);
+                Label label = new Label("Important : This is a reference to another node, editing it will modify its value for all its usages");
+                label.setStyleAttribute("color","rgb(200,80,80)");
+                label.setStyleAttribute("font-size","14px");
+                contentTab.add(label);
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
                 propertiesEditor.setHeight(504);
 

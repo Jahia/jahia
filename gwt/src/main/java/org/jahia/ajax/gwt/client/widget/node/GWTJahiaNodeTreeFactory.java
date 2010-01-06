@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Tree factory for loading {@link GWTJahiaNode} items.
  * User: toto
  * Date: Dec 24, 2009
  * Time: 3:14:02 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaNodeTreeFactory {
     private boolean init = true;
@@ -36,6 +35,7 @@ public class GWTJahiaNodeTreeFactory {
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
     protected boolean saveOpenPath = false;
+    protected boolean autoSelect = true;
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
 
@@ -249,6 +249,7 @@ public class GWTJahiaNodeTreeFactory {
     class GWTJahiaNodeTreePanel extends TreePanel<GWTJahiaNode> {
         GWTJahiaNodeTreePanel(TreeStore store) {
             super(store);
+            setAutoSelect(autoSelect);
         }
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
@@ -275,6 +276,10 @@ public class GWTJahiaNodeTreeFactory {
             }
         }
 
+    }
+
+    public void setAutoSelect(boolean autoSelect) {
+        this.autoSelect = autoSelect;
     }
 
 

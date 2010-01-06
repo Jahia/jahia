@@ -44,11 +44,12 @@ import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
+import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -133,7 +134,7 @@ public class Core_Engine implements JahiaEngine {
         try {
             String base;
 
-            String jcrPath = "/sites/" + processingContext.getSiteKey() + "/home";
+            final String jcrPath = "/sites/" + processingContext.getSiteKey() + "/home";
 
             JCRNodeWrapper node = null;
 
@@ -142,11 +143,23 @@ public class Core_Engine implements JahiaEngine {
                     JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
                     base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.LIVE_WORKSPACE +"/"+processingContext.getLocale();
                 } catch (PathNotFoundException e) {
-                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(jcrPath);
-                    base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
+                    try {
+                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(jcrPath);
+                        base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
+                    } catch (PathNotFoundException e2) {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback(){
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                session.getNode(jcrPath);
+                                throw new AccessDeniedException();
+                            }
+                        });
+                        throw new AccessDeniedException();
+                    }
                 }
 
                 processingContext.getRealResponse().sendRedirect(base + jcrPath + ".html");
+            } catch (AccessDeniedException e) {
+                throw new JahiaUnauthorizedException();
             } catch (RepositoryException e) {
                 e.printStackTrace();
             }

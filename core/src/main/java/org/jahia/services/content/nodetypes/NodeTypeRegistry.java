@@ -32,6 +32,7 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.settings.SettingsBean;
 
@@ -42,11 +43,10 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Jahia implementation of the {@link NodeTypeManager}.
  * User: toto
  * Date: 4 janv. 2008
  * Time: 15:08:56
- * To change this template use File | Settings | File Templates.
  */
 public class NodeTypeRegistry implements NodeTypeManager {
     public static final String SYSTEM = "system";
@@ -89,25 +89,45 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public void addDefinitionsFile(File file, String systemId, boolean redeploy) throws ParseException, IOException {
         String ext = file.getName().substring(file.getName().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
-            JahiaCndReader r = new JahiaCndReader(new FileReader(file),file.getPath(), systemId, this);
-            r.parse();
+            FileReader defsReader = null;
+            try {
+                defsReader = new FileReader(file);
+                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+                r.parse();
+            } finally {
+                IOUtils.closeQuietly(defsReader);
+            }
         } else if (ext.equalsIgnoreCase(".grp")) {
-            JahiaGroupingFileReader r = new JahiaGroupingFileReader(new FileReader(file), file.getName(),systemId, this);
-            r.parse();            
+            FileReader defsReader = null;
+            try {
+                defsReader = new FileReader(file);
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
+                r.parse();            
+            } finally {
+                IOUtils.closeQuietly(defsReader);
+            }
         }
         if (redeploy) {
             Properties p = new Properties();
             File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
             if (f.exists()) {
                 FileInputStream stream = new FileInputStream(f);
-                p.load(stream);
-                stream.close();
+                try {
+                    p.load(stream);
+                } finally {
+                    IOUtils.closeQuietly(stream);
+                }
             }
             if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
                 JCRStoreService.getInstance().deployDefinitions(systemId);
                 p.setProperty(file.getPath(), Long.toString(file.lastModified()));
             }
-            p.store(new FileOutputStream(f), "");
+            FileOutputStream out = new FileOutputStream(f);
+            try {
+                p.store(out, "");
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
         }
     }
 

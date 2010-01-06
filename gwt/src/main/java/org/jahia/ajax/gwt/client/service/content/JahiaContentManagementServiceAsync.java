@@ -104,6 +104,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
+
     void getACL(String path, AsyncCallback<GWTJahiaNodeACL> async);
 
     void setACL(String path, GWTJahiaNodeACL acl, AsyncCallback async);

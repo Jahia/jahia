@@ -166,12 +166,12 @@ public class ContentManagerHelper {
     }
 
     public boolean checkExistence(String path) throws GWTJahiaServiceException {
-    	boolean exists = false;
+        boolean exists = false;
         try {
             sessionFactory.getCurrentUserSession().getNode(path);
             exists = true;
         } catch (PathNotFoundException e) {
-        	exists = false;
+            exists = false;
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException("Error:\n" + e.toString());
@@ -301,7 +301,7 @@ public class ContentManagerHelper {
     }
 
     public void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
-        pasteAtBottomOrOnTop(pathsToCopy, destinationPath, cut,false,null, user);
+        pasteAtBottomOrOnTop(pathsToCopy, destinationPath, cut, false, null, user);
     }
 
     public String findAvailableName(JCRNodeWrapper dest, String name) throws GWTJahiaServiceException {
@@ -387,29 +387,33 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
         String nodeName = name;
-        if(name==null) {
+        if (name == null) {
             for (GWTJahiaNodeProperty property : props) {
-                final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-                if(property.getName().equals("jcr:title") && propertyValues !=null && propertyValues.size()>0) {
-                    nodeName = propertyValues.get(0).getString();
-                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
-                    final char[] newChars = new char[chars.length];
-                    int j=0;
-                    for (char aChar : chars) {
-                        if (CharUtils.isAsciiAlphanumeric(aChar) || aChar==32) {
-                            newChars[j++] = aChar;
+                if (property != null) {
+                    final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+                    if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0) {
+                        nodeName = propertyValues.get(0).getString();
+                        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
+                        final char[] newChars = new char[chars.length];
+                        int j = 0;
+                        for (char aChar : chars) {
+                            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
+                                newChars[j++] = aChar;
+                            }
+                        }
+                        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+                        if (nodeName.length() > 32) {
+                            nodeName = nodeName.substring(0, 32);
                         }
                     }
-                    nodeName = new String(newChars,0,j).trim().replaceAll(" ","-").toLowerCase();
-                    if(nodeName.length()>32) {
-                        nodeName = nodeName.substring(0,32);
-                    }
+                }else{
+                    logger.error("found a null property");
                 }
             }
         }
 
         if (nodeName == null) {
-            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":")+1));
+            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1));
         } else {
             nodeName = findAvailableName(parentNode, nodeName);
         }
@@ -948,10 +952,10 @@ public class ContentManagerHelper {
 
 
     public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path, JahiaUser user) throws GWTJahiaServiceException {
-        pasteAtBottomOrOnTop(nodes, path.substring(0,path.lastIndexOf("/")),false,true,path,user);
+        pasteAtBottomOrOnTop(nodes, path.substring(0, path.lastIndexOf("/")), false, true, path, user);
     }
 
-    private void pasteAtBottomOrOnTop(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut,boolean onTop,String path, JahiaUser user)
+    private void pasteAtBottomOrOnTop(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut, boolean onTop, String path, JahiaUser user)
             throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
 
@@ -961,9 +965,9 @@ public class ContentManagerHelper {
                 JCRNodeWrapper node = session.getNode(aNode.getPath());
                 JCRNodeWrapper targetNode = null;
                 JCRNodeWrapper targetParent = null;
-                if(onTop && path!=null) {
-                targetNode = session.getNode(path);
-                targetParent = (JCRNodeWrapper) targetNode.getParent();
+                if (onTop && path != null) {
+                    targetNode = session.getNode(path);
+                    targetParent = (JCRNodeWrapper) targetNode.getParent();
                 }
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     JCRNodeWrapper dest = session.getNode(destinationPath);
@@ -977,12 +981,12 @@ public class ContentManagerHelper {
                                     session.checkout(node);
                                     session.checkout(node.getParent());
                                     try {
-                                        session.move(node.getPath(), destPath+"/"+name);
+                                        session.move(node.getPath(), destPath + "/" + name);
                                     } catch (RepositoryException e) {
                                         missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
                                         continue;
                                     }
-                                    if(onTop && path!=null && targetNode!=null && targetParent!=null) {
+                                    if (onTop && path != null && targetNode != null && targetParent != null) {
                                         targetParent.orderBefore(name, targetNode.getName());
                                     }
                                     dest.saveSession();
@@ -996,7 +1000,7 @@ public class ContentManagerHelper {
                                         missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
                                         continue;
                                     }
-                                    if(onTop && path!=null && targetNode!=null && targetParent!=null) {
+                                    if (onTop && path != null && targetNode != null && targetParent != null) {
                                         targetParent.orderBefore(name, targetNode.getName());
                                     }
                                     dest.saveSession();

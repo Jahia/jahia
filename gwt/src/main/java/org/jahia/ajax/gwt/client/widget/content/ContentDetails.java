@@ -110,6 +110,7 @@ public class ContentDetails extends BottomRightComponent {
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
 
+
     public ContentDetails(ManagerConfiguration config) {
         super();
         this.config = config;

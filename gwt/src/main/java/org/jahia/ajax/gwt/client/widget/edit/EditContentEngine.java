@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -57,6 +58,8 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -95,6 +98,8 @@ public class EditContentEngine extends Window {
     private AsyncTabItem metadataTab;
     private AsyncTabItem classificationTab;
     private AsyncTabItem optionsTab;
+    private AsyncTabItem rightsTab;
+
 
     private Linker linker = null;
     private GWTJahiaNode parent = null;
@@ -107,6 +112,7 @@ public class EditContentEngine extends Window {
     private PropertiesEditor layoutEditor;
     private PropertiesEditor metadataEditor;
     private PropertiesEditor optionsEditor;
+    private AclEditor rightsEditor;
     private LayoutContainer htmlPreview;
 
     private ButtonBar buttonBar;
@@ -116,6 +122,7 @@ public class EditContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
     private boolean isNodeNameFieldDisplayed = false;
     private String nodeName;
+
 
     /**
      * Initializes an instance of this class.
@@ -293,12 +300,13 @@ public class EditContentEngine extends Window {
         optionsTab.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
         tabs.add(optionsTab);
 
+
 //        publicationTab = new AsyncTabItem(Messages.get("ece_publication", "Publication"));
 //        publicationTab.setScrollMode(Style.Scroll.AUTO);
 //        tabs.add(publicationTab);
 
-//        rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
-//        tabs.add(rightsTab);
+        rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
+        tabs.add(rightsTab);
 
 //        workflowTab = new AsyncTabItem(Messages.get("ece_workflow", "Workflow"));
 //        tabs.add(workflowTab);
@@ -329,13 +337,14 @@ public class EditContentEngine extends Window {
             createMetadataTab();
 //        } else if (currentTab == publicationTab) {
 //            createPublicationTab();
-//        } else if (currentTab == rightsTab) {
-//        } else if (currentTab == workflowTab) {
+//        }  else if (currentTab == workflowTab) {
 //        } else if (currentTab == versionsTab) {
         } else if (currentTab == classificationTab) {
             createClassificationTab();
         } else if (currentTab == optionsTab) {
             createOptionsTab();
+        } else if (currentTab == rightsTab) {
+            createRightsTab();
         }
     }
 
@@ -495,6 +504,49 @@ public class EditContentEngine extends Window {
     }
 
     /**
+     * create rights tab
+     */
+    public void createRightsTab() {
+        if (!rightsTab.isProcessed()) {
+            contentService.getACL(node.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
+                /**
+                 * onsuccess
+                 * @param gwtJahiaNodeACL
+                 */
+                public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
+                    // auth. editor
+                    rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
+                    rightsEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
+                    rightsEditor.setCanBreakInheritance(false);
+                    if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
+                        rightsEditor.setReadOnly(true);
+                    } else {
+                        rightsEditor.setReadOnly(!node.isWriteable() || node.isLocked());
+                    }
+                    Button saveButton = rightsEditor.getSaveButton();
+                    saveButton.setVisible(false);
+                    //saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
+                    rightsTab.setLayout(new FitLayout());
+                    rightsTab.add(rightsEditor.renderNewAclPanel());
+                    rightsTab.layout();
+                    rightsTab.setProcessed(true);
+
+                }
+
+                /**
+                 * On failure
+                 * @param throwable
+                 */
+                public void onFailure(Throwable throwable) {
+                    Log.debug("Cannot retrieve acl", throwable);
+                }
+
+            });
+        }
+
+    }
+
+    /**
      * load node
      */
     private void loadNode() {
@@ -635,21 +687,27 @@ public class EditContentEngine extends Window {
         }
 
         public void componentSelected(ButtonEvent event) {
-            List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-            if (isNodeNameFieldDisplayed)
+            // node
+            final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            if (isNodeNameFieldDisplayed) {
                 node.setName(((TextField<?>) ((FormPanel) contentTab.getItem(0)).getItem(0)).getRawValue());
-            elements.add(node);
-            List<GWTJahiaNodeProperty> list = new ArrayList<GWTJahiaNodeProperty>();
+            }
+            nodes.add(node);
+
+
+            // general properties
+            final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
             if (propertiesEditor != null) {
-                list.addAll(propertiesEditor.getProperties());
+                properties.addAll(propertiesEditor.getProperties());
                 node.getNodeTypes().removeAll(propertiesEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(propertiesEditor.getAddedTypes());
             }
 
+            // reference
             if (isReference) {
-                List<GWTJahiaNode> refelements = new ArrayList<GWTJahiaNode>();
-                refelements.add(referencedNode);
-                JahiaContentManagementService.App.getInstance().saveProperties(refelements, list, new AsyncCallback<Object>() {
+                List<GWTJahiaNode> refNodes = new ArrayList<GWTJahiaNode>();
+                refNodes.add(referencedNode);
+                JahiaContentManagementService.App.getInstance().saveProperties(refNodes, properties, new AsyncCallback<Object>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);
@@ -658,35 +716,53 @@ public class EditContentEngine extends Window {
                     public void onSuccess(Object o) {
                     }
                 });
-                list.clear();
+                properties.clear();
             }
+
+            // layout properties
             if (layoutEditor != null) {
-                list.addAll(layoutEditor.getProperties());
+                properties.addAll(layoutEditor.getProperties());
                 node.getNodeTypes().removeAll(layoutEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(layoutEditor.getAddedTypes());
                 node.getNodeTypes().addAll(layoutEditor.getTemplateTypes());
             }
+
+            // meta properties
             if (metadataEditor != null) {
-                list.addAll(metadataEditor.getProperties());
+                properties.addAll(metadataEditor.getProperties());
                 node.getNodeTypes().removeAll(metadataEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(metadataEditor.getAddedTypes());
             }
+
+            // option properties
             if (optionsEditor != null) {
-                list.addAll(optionsEditor.getProperties());
+                properties.addAll(optionsEditor.getProperties());
                 node.getNodeTypes().removeAll(optionsEditor.getRemovedTypes());
                 node.getNodeTypes().addAll(optionsEditor.getAddedTypes());
             }
+
+            // classification
             if (classificationEditor != null) {
-                updatePropertiesListWithClassificationEditorData(list);
+                updatePropertiesListWithClassificationEditorData(properties);
             }
-            JahiaContentManagementService.App.getInstance().saveProperties(elements, list, new AsyncCallback<Object>() {
+
+            // new acl
+            final GWTJahiaNodeACL newNodeACL;
+            if (rightsEditor != null) {
+                newNodeACL = rightsEditor.getAcl();
+            } else {
+                newNodeACL = null;
+            }
+
+            // Ajax call to update values
+            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, newNodeACL, properties, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                    com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);
                 }
 
                 public void onSuccess(Object o) {
-                    Info.display("", "Properties saved");
+                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
                     EditContentEngine.this.hide();
                     linker.refreshMainComponent();
                 }
@@ -790,7 +866,7 @@ public class EditContentEngine extends Window {
                     }
 
                     public void onSuccess(GWTJahiaNode node) {
-                        Info.display("", "Node "+node.getName()+"created");
+                        Info.display("", "Node " + node.getName() + "created");
                         EditContentEngine.this.hide();
                         linker.refreshMainComponent();
                         if (node.isPage()) {

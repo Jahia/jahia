@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -156,7 +157,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
         return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, selectedNodes, openPaths,
-                                       false, null);
+                false, null);
     }
 
     public void saveSelectedPath(String path) throws GWTJahiaServiceException {
@@ -278,6 +279,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
         properties.saveProperties(nodes, newProps, retrieveParamBean());
     }
+
+    public void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
+        saveProperties(nodes, newProps);
+        if (acl != null) {
+            for (GWTJahiaNode node : nodes) {
+                setACL(node.getPath(), acl);
+            }
+        }
+    }
+
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
         return contentManager.getACL(path, retrieveParamBean());
@@ -656,21 +667,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *          if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
-        return navigation.getNode(path,"default",retrieveParamBean());
+        return navigation.getNode(path, "default", retrieveParamBean());
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths,boolean forceCreate) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, selectedNodes, openPaths,forceCreate,contentManager);
+        return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, selectedNodes, openPaths, forceCreate, contentManager);
     }
 
     public List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException {
-        return search.getNodesOfType(nodeType,retrieveParamBean());
+        return search.getNodesOfType(nodeType, retrieveParamBean());
     }
 
     public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path) throws GWTJahiaServiceException {

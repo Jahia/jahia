@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -167,6 +168,12 @@ public class FormFieldCreator {
                         }
                         field = combo;
                     }
+
+                    // if there is no values, the field is hidden
+                    if(propDefinition.getValueConstraints() !=null && propDefinition.getValueConstraints().isEmpty()){
+                        field.setVisible(false);
+                    }
+
                     break;
                 default:
                     field = new TextField();

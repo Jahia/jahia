@@ -123,6 +123,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;    
+
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException;
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException;

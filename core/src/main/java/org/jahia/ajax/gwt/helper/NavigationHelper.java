@@ -575,23 +575,16 @@ public class NavigationHelper {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        NodeIterator usages = null;
+        List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
         try {
-            usages = node.getSharedSet();
+            NodeIterator usages = node.getSharedSet();
+            while (usages.hasNext()) {
+                JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
+                result.add(new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath()));
+
+            }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-        }
-        List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
-
-        while (usages.hasNext()) {
-            JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
-            GWTJahiaNodeUsage nodeUsage = null;
-            try {
-                nodeUsage = new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath());
-                result.add(nodeUsage);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
         }
 
         try {

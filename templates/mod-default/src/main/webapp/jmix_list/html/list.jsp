@@ -14,14 +14,12 @@
 </c:if>
 
 <c:forEach items="${currentList}" var="subchild">
-    <p>
-        <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
-            <c:if test="${not empty forcedSkin}">
-                <template:param name="forcedSkin" value="${forcedSkin}"/>
-            </c:if>
-            <c:if test="${not empty renderOptions}">
-                <template:param name="renderOptions" value="${renderOptions}"/>
-            </c:if>
-        </template:module>
-    </p>
+    <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+        <c:if test="${not empty forcedSkin}">
+            <template:param name="forcedSkin" value="${forcedSkin}"/>
+        </c:if>
+        <c:if test="${not empty renderOptions}">
+            <template:param name="renderOptions" value="${renderOptions}"/>
+        </c:if>
+    </template:module>
 </c:forEach>

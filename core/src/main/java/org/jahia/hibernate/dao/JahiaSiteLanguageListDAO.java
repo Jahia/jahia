@@ -76,7 +76,7 @@ public class JahiaSiteLanguageListDAO extends AbstractGeneratorDAO {
 
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        return template.find("from JahiaSiteLangList l where l.site.id=? order by l.rank",
+        return template.find("from JahiaSiteLangList l where l.site=? order by l.rank",
                              siteID);
     }
 
@@ -87,7 +87,7 @@ public class JahiaSiteLanguageListDAO extends AbstractGeneratorDAO {
     }
 
     public void deleteAllFromSite(Integer siteID) {
-        String queryString = "from JahiaSiteLangList c where c.site.id=? ";
+        String queryString = "from JahiaSiteLangList c where c.site=? ";
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.deleteAll(template.find(queryString,siteID));

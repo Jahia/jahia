@@ -30,7 +30,7 @@ import java.util.List;
 class ContentBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore contentStore;
+    protected ListStore<GWTJahiaNode> contentStore;
     protected DisplayGridDragSource displayGridSource;
 
     public ContentBrowseTabItem() {
@@ -74,7 +74,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
         });
         displayColumns.add(col);
         displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        final Grid grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);
 

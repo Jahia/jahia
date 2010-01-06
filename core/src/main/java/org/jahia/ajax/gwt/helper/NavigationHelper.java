@@ -573,7 +573,7 @@ public class NavigationHelper {
         return node.getAbsoluteWebdavUrl(jParams);
     }
 
-    public List<GWTJahiaNodeUsage> getUsages(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -581,13 +581,25 @@ public class NavigationHelper {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        List<UsageEntry> usages = node.findUsages(jParams, false);
+        NodeIterator usages = null;
+        try {
+            usages = node.getSharedSet();
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+        }
         List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
 
-        for (UsageEntry usage : usages) {
-            GWTJahiaNodeUsage nodeUsage = new GWTJahiaNodeUsage(usage.getId(), usage.getVersion(), usage.getWorkflow(), usage.getExtendedWorkflowState(), usage.getLang(), usage.getPageTitle(), usage.getUrl());
-            nodeUsage.setVersionName(usage.getVersionName());
-            result.add(nodeUsage);
+        while (usages.hasNext()) {
+            JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
+            GWTJahiaNodeUsage nodeUsage = null;
+            try {
+                nodeUsage = new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath());
+                result.add(nodeUsage);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+            }
         }
         return result;
     }

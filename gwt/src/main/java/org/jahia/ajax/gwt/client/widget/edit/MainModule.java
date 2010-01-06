@@ -7,12 +7,14 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -186,6 +188,10 @@ public class MainModule extends ContentPanel implements Module {
         this.node = node;
         if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
 //            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
+        }
+        if(node.getNodeTypes().contains("jmix:shareable")) {
+            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
+            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
         }
     }
 

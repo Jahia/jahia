@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -51,6 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -735,11 +737,9 @@ public class ContentDetails extends BottomRightComponent {
 
             List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-            ColumnConfig col = new ColumnConfig("pageTitle", Messages.getResource("fm_page"), 150);
+            ColumnConfig col = new ColumnConfig("url", "URL", 300);
             columns.add(col);
-            col = new ColumnConfig("url", "URL", 150);
-            columns.add(col);
-            col = new ColumnConfig("lang", Messages.getResource("fm_language"), 130);
+            /*col = new ColumnConfig("lang", Messages.getResource("fm_language"), 130);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
             col = new ColumnConfig(Messages.getResource("fm_workflow"), 30);
@@ -755,7 +755,7 @@ public class ContentDetails extends BottomRightComponent {
             columns.add(col);
             col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 130);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
-            columns.add(col);
+            columns.add(col);*/
 
             ColumnModel cm = new ColumnModel(columns);
             final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>();
@@ -778,7 +778,30 @@ public class ContentDetails extends BottomRightComponent {
                             public void handleEvent(GridEvent tableEvent) {
                                 Object url = tableEvent.getModel().get("url");
                                 if (url != null && url instanceof String) {
-                                    Window.open((String) url, "_blank", "");
+                                    JahiaContentManagementService.App.getInstance().getRenderedContent((String) url,
+                                                                                                       null,
+                                                                                                       JahiaGWTParameters.getLanguage(), null, "wrapper.previewwrapper",
+                                                                                                       null, false, new AsyncCallback<String>() {
+                                        public void onSuccess(String result) {
+                                            HTML html = new HTML(result);
+                                            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+                                            w.setScrollMode(Style.Scroll.AUTO);
+                                            w.setModal(true);
+                                            w.setClosable(true);
+                                            w.setMaximizable(true);
+                                            w.setSize(800, 600);
+                                            w.setBlinkModal(true);
+                                            w.setPlain(true);
+                                            w.setLayout(new CenterLayout());
+                                            w.add(html);
+                                            w.show();
+                                        }
+
+                                        public void onFailure(Throwable caught) {
+                                            Log.error("", caught);
+                        //                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
+                                        }
+                                    });
                                 }
                             }
                         });

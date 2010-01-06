@@ -8,8 +8,10 @@ import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
@@ -123,6 +125,10 @@ public class SimpleModule extends LayoutContainer implements Module {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
+        if(node.getNodeTypes().contains("jmix:shareable")) {
+            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");            
+            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
+        }
     }
 
 

@@ -299,7 +299,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
-        return navigation.getUsages(path, retrieveParamBean());
+        return navigation.getUsages(path);
     }
 
     public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException {

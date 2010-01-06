@@ -56,6 +56,19 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
         setUrl(url);
     }
 
+    public GWTJahiaNodeUsage(String identifier, String url) {
+        setUrl(url);
+        setIdentifier(identifier);
+    }
+
+    public void setIdentifier(String identifier) {
+        set("identifier", identifier);
+    }
+
+    public String getIdentifier() {
+        return get("identifier");
+    }
+    
     public int getId() {
         Integer idInt = get("id");
         if (idInt != null) {

@@ -81,11 +81,6 @@
                          value="jahia_pwd_policy_rules.jahia_pwd_policy_rule_id"/>
                   <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
                          value="jahia_pwd_policy_rule_params.jahia_pwd_policy_rule_param_id"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaRetentionRule" value="jahia_retrule.id_jahia_retrule"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaRangeRetentionRule"
-                         value="jahia_retrule_range.id_retrule_range"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaRetentionRuleDef"
-                         value="jahia_retruledef.id_jahia_retruledef"/>
     			  <entry key="org.jahia.hibernate.model.JahiaSiteLangList" value="jahia_site_lang_list.id"/>
     			  <entry key="org.jahia.hibernate.model.JahiaSiteLangMap" value="jahia_site_lang_maps.id"/>
     			  <entry key="org.jahia.hibernate.model.JahiaSite" value="jahia_sites.id_jahia_sites"/>

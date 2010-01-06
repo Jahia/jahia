@@ -827,13 +827,7 @@
         foreign key (id_jahia_fields_def) 
         references jahia_fields_def (id_jahia_fields_def);
 
-    alter table jahia_grps 
-        add index FKE530C7C492027B41 (siteid_jahia_grps), 
-        add constraint FKE530C7C492027B41 
-        foreign key (siteid_jahia_grps) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_nstep_workflowinstance 
+    alter table jahia_nstep_workflowinstance
         add index FKDA6D7CCF801AE453 (user_id), 
         add constraint FKDA6D7CCF801AE453 
         foreign key (user_id) 
@@ -917,13 +911,7 @@
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
 
-    alter table jahia_sites_grps 
-        add index FK7B245597F46755FE (siteid_sites_grps), 
-        add constraint FK7B245597F46755FE 
-        foreign key (siteid_sites_grps) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_sites_users 
+    alter table jahia_sites_users
         add index FKEA2BF1BF6CF683C0 (userid_sites_users), 
         add constraint FKEA2BF1BF6CF683C0 
         foreign key (userid_sites_users) 

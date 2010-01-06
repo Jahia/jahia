@@ -148,12 +148,13 @@ public class ContentActions {
      * @param linker
      */
     public static void paste(final Linker linker) {
-        GWTJahiaNode m = linker.getMainNode();
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        GWTJahiaNode m = null;
+        if (selectedItems != null && selectedItems.size() == 1) {
+            m = selectedItems.get(0);
+        }
         if (m == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                m = selectedItems.get(0);
-            }
+            m = linker.getMainNode();
         }
         if (m != null && !m.isFile()) {
             linker.loading(Messages.getResource("fm_pasting"));
@@ -190,69 +191,40 @@ public class ContentActions {
      * @param linker
      */
     public static void pasteReference(final Linker linker) {
-        GWTJahiaNode m = null;
-
         final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1 && selectedItems.get(0) != null && !selectedItems.get(0).isFile()) {
+        GWTJahiaNode m = null;
+        if (selectedItems != null && selectedItems.size() == 1) {
             m = selectedItems.get(0);
-            if (m != null && !m.isFile()) {
-                linker.loading(Messages.getResource("fm_pastingref"));
-                final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-                if (copyPasteEngine.getCopiedPaths().size() == 1) {
-                    JahiaContentManagementService.App.getInstance().pasteReference(copyPasteEngine.getCopiedPaths().iterator().next(), m.getPath().substring(0,m.getPath().lastIndexOf('/')), m.getName(), new AsyncCallback() {
-                        public void onFailure(Throwable throwable) {
-                            Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
-                            linker.loaded();
-                        }
-
-                        public void onSuccess(Object o) {
-                            boolean refresh = false;
-                            for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
-                                if (!n.isFile()) {
-                                    refresh = true;
-                                    break;
-                                }
-                            }
-                            copyPasteEngine.onPastedPath();
-                            linker.loaded();
-                            if (refresh) {
-                                linker.refresh();
-                            } else {
-                                linker.refreshMainComponent();
-                            }
-                        }
-                    });
-                }
-            }
-        } else {
+        }
+        if (m == null) {
             m = linker.getMainNode();
-            if (m != null && !m.isFile()) {
-                linker.loading(Messages.getResource("fm_pastingref"));
-                final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-                JahiaContentManagementService.App.getInstance().pasteReferences(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
-                        Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
-                        linker.loaded();
-                    }
+        }
+        if (m != null && !m.isFile()) {
+            linker.loading(Messages.getResource("fm_pastingref"));
+            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+            JahiaContentManagementService.App.getInstance().pasteReferences(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
+                public void onFailure(Throwable throwable) {
+                    Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
+                    linker.loaded();
+                }
 
-                    public void onSuccess(Object o) {
-                        boolean refresh = false;
-                        for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
-                            if (!n.isFile()) {
-                                refresh = true;
-                                break;
-                            }
-                        }
-                        copyPasteEngine.onPastedPath();
-                        linker.loaded();
-                        if (refresh) {
-                            linker.refresh();
-                        } else {
-                            linker.refreshMainComponent();
+                public void onSuccess(Object o) {
+                    boolean refresh = false;
+                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                        if (!n.isFile()) {
+                            refresh = true;
+                            break;
                         }
                     }
-                });
-            }
+                    copyPasteEngine.onPastedPath();
+                    linker.loaded();
+                    if (refresh) {
+                        linker.refresh();
+                    } else {
+                        linker.refreshMainComponent();
+                    }
+                }
+            });
         }
     }
 

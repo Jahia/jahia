@@ -147,16 +147,7 @@
                                         <property name="distant.hosts.websphere.serverName"
                                                   value="${jahia.deploy.websphere.server.name}"/>
 
-                                        <!-- Now let's undeploy then deploy Jahia -->
-
-                                        <sshexec host="${serverHost}" username="${serverUser}"
-                                                 password="${serverPassword}"
-                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminApp.uninstall('jahia')&quot;"
-                                                 trust="true" failonerror="false"/>
-                                        <sshexec host="${serverHost}" username="${serverUser}"
-                                                 password="${serverPassword}"
-                                                 command="${websphereProfileDir}bin/wsadmin.sh -lang jython -c &quot;print AdminConfig.save()&quot;"
-                                                 trust="true" failonerror="true"/>
+                                        <!-- Now let's deploy Jahia -->
 
                                         <scp trust="true"
                                              file="${project.build.directory}/Jahia_v${jahia.package.version}-${buildNumber}-websphere-${jahia.websphere.version}.war"

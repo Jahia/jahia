@@ -42,6 +42,8 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -52,10 +54,11 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * File upload window.
  *
  * @author rfelden
  * @version 7 juil. 2008 - 17:45:41
@@ -63,6 +66,64 @@ import java.util.List;
 public class FileUploader extends Window {
     private int fieldCount = 0;
     private FormPanel form;
+    private List<UploadPanel> uploads = new LinkedList<UploadPanel>();
+    
+    private class UploadPanel extends HorizontalPanel {
+
+        private Button remove;
+        private FileUpload upload;
+        
+        public UploadPanel() {
+            super();
+            final UploadPanel panel = this;
+            remove = new Button("", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    if (uploads.size() > 1) {
+                        form.remove(panel);
+                        uploads.remove(panel);
+                        for (UploadPanel p : uploads) {
+                            p.checkVisibility();
+                        }
+                    }
+                }
+            });
+            remove.setIconStyle("gwt-icons-delete");
+            remove.setToolTip(Messages.getResource("fm_remove"));
+            if (uploads.size() == 0) {
+                remove.setVisible(false);
+            }
+            
+            add(remove);
+            
+            upload = new FileUpload();
+            upload.addChangeHandler(new ChangeHandler() {
+                private boolean done;
+                public void onChange(ChangeEvent event) {
+                   if ((!done || uploads.size() == 1) && upload.getFilename() != null && upload.getFilename().length() > 0) {
+                       addUploadField();
+                       done = true;
+                   }
+                }
+            });
+            upload.setWidth("430px");
+            DOM.setElementAttribute(upload.getElement(), "size", "53");
+            upload.setName("uploadedFile" + fieldCount++);
+            upload.addStyleName("fm-bottom-margin");
+            
+            add(upload);
+            
+            uploads.add(this);
+        }
+
+        public FileUpload getUpload() {
+            return upload;
+        }
+        
+        public void checkVisibility() {
+            remove.setVisible(uploads.size() > 1);
+        }
+        
+    }
 
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
@@ -81,7 +142,7 @@ public class FileUploader extends Window {
         form.setHeaderVisible(false);
         form.setBorders(false);
         form.setBodyBorder(false);
-        form.setAction(entryPoint + "fileupload"); // should do
+        form.setAction(entryPoint + "fileupload");
         form.setEncoding(FormPanel.Encoding.MULTIPART);
         form.setMethod(FormPanel.Method.POST);
 
@@ -113,7 +174,7 @@ public class FileUploader extends Window {
 
         final ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.getResource("fm_addFile"));
-        add.setIconStyle("fm-addFile");
+        add.setIconStyle("gwt-toolbar-icon-addFile");
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 addUploadField();
@@ -147,13 +208,9 @@ public class FileUploader extends Window {
         setBottomComponent(buttons);
 
         setTopComponent(toolBar);
-
-        final FileUpload upload = new FileUpload();
-        upload.setWidth("430px");
-        DOM.setElementAttribute(upload.getElement(), "size", "53");
-        upload.setName("uploadedFile" + fieldCount++);
-        upload.addStyleName("fm-bottom-margin");
-        form.add(upload);
+        
+        final UploadPanel p = new UploadPanel();
+        form.add(p);
 
         form.addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
@@ -166,7 +223,7 @@ public class FileUploader extends Window {
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.reset();
-                linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + upload.getFilename());
+                linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + p.getUpload().getFilename());
 
                 String result = formEvent.getResultHtml();
            
@@ -303,12 +360,10 @@ public class FileUploader extends Window {
     }
 
     private void addUploadField() {
-        FileUpload upload = new FileUpload();
-        upload.setWidth("430px");
-        DOM.setElementAttribute(upload.getElement(), "size", "53");
-        upload.setName("uploadedFile" + fieldCount++);
-        upload.addStyleName("fm-bottom-margin");
-        form.add(upload);
+        form.add(new UploadPanel());
+        for (UploadPanel p : uploads) {
+            p.checkVisibility();
+        }
         form.layout();
     }
 

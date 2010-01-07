@@ -671,10 +671,17 @@
             <list>
                 <ref bean="org.jahia.toolbar.item.edit"/>
                 <ref bean="org.jahia.toolbar.item.delete"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.copy"/>
+                <ref bean="org.jahia.toolbar.item.cut"/>
+                <ref bean="org.jahia.toolbar.item.paste"/>
+                <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.lock"/>
                 <ref bean="org.jahia.toolbar.item.unlock"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
-                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
             </list>
         </property>
     </bean>

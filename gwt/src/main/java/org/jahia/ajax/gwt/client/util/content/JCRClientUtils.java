@@ -31,6 +31,11 @@
  */
 package org.jahia.ajax.gwt.client.util.content;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: rfelden
  * Date: 12 déc. 2008 - 11:03:23
@@ -87,4 +92,11 @@ public final class JCRClientUtils {
         return name;
     }
 
+    public static List<String> getPathesList(List<GWTJahiaNode> l) {
+        List<String> res = new ArrayList<String>();
+        for (GWTJahiaNode node : l) {
+            res.add(node.getPath());
+        }
+        return res;
+    }
 }

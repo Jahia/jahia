@@ -85,19 +85,9 @@ public class ContentActions {
     public static void copy(final Linker linker) {
         final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
-            linker.loading(Messages.getResource("fm_copying"));
-            JahiaContentManagementService.App.getInstance().copy(selectedItems, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert(Messages.getResource("fm_failCopy") + "\n" + throwable.getLocalizedMessage());
-                    linker.loaded();
-                }
-
-                public void onSuccess(Object o) {
-                    CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
-                    linker.loaded();
-                    linker.select(null);
-                }
-            });
+            CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
+            linker.loaded();
+            linker.select(null);
         }
     }
 
@@ -127,7 +117,7 @@ public class ContentActions {
             }
             if (!actualSelection.isEmpty()) {
                 linker.loading(Messages.getResource("fm_cutting"));
-                JahiaContentManagementService.App.getInstance().cut(actualSelection, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         Window.alert(Messages.getResource("fm_failCut") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
@@ -161,7 +151,7 @@ public class ContentActions {
         if (m != null && !m.isFile()) {
             linker.loading(Messages.getResource("fm_pasting"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().paste(copyPasteEngine.getCopiedPaths(), m.getPath(), copyPasteEngine.isCut(), new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Window.alert(Messages.getResource("fm_failPaste") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
@@ -204,7 +194,7 @@ public class ContentActions {
         if (m != null && !m.isFile()) {
             linker.loading(Messages.getResource("fm_pastingref"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().pasteReferences(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
@@ -239,7 +229,7 @@ public class ContentActions {
      * @param target
      */
     public static void move(final Linker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
-        JahiaContentManagementService.App.getInstance().paste(sources, target.getPath(), true, new AsyncCallback() {
+        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, new AsyncCallback() {
             public void onFailure(Throwable throwable) {
                 Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
                 linker.loaded();

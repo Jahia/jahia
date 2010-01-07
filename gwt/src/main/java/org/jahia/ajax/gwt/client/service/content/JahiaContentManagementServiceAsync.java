@@ -86,13 +86,11 @@ public interface JahiaContentManagementServiceAsync {
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 
-    void copy(List<GWTJahiaNode> paths, AsyncCallback async);
+    void checkWriteable(List<String> paths, AsyncCallback async);
 
-    void cut(List<GWTJahiaNode> paths, AsyncCallback async);
+    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
 
-    void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut, AsyncCallback async);
-
-    void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
+    void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
     void rename(String path, String newName, AsyncCallback async);
 
@@ -160,7 +158,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
+    void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
 
@@ -221,5 +219,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodesOfType(String nodeType,AsyncCallback<List<GWTJahiaNode>> async);
 
-    void pasteOnTopOf(List<GWTJahiaNode> nodes, String path, AsyncCallback async);
+    void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut, AsyncCallback async);
 }

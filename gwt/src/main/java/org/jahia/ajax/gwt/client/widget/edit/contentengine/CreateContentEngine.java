@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -34,10 +36,10 @@ import java.util.Map;
  */
 public class CreateContentEngine extends AbstractContentEngine {
 
-    private GWTJahiaNodeType type = null;
-    private GWTJahiaNode parent = null;
-    private String targetName = null;
-    private boolean createInParentAndMoveBefore = false;
+    protected GWTJahiaNodeType type = null;
+    protected GWTJahiaNode parent = null;
+    protected String targetName = null;
+    protected boolean createInParentAndMoveBefore = false;
     
 
     /**
@@ -170,7 +172,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         }
     }
 
-    private void save(final boolean closeAfterSave) {
+    protected void save(final boolean closeAfterSave) {
         String nodeName = targetName;
         List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
         List<String> mixin = new ArrayList<String>();
@@ -197,6 +199,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 // ?
             } else if (item instanceof ClassificationTabItem) {
                 // ?
+            } else if (item instanceof CreatePageTabItem) {
+                props.add(new GWTJahiaNodeProperty("jcr:title",new GWTJahiaNodePropertyValue(((CreatePageTabItem) item).getContentTitle(),  GWTJahiaNodePropertyType.STRING)));
             }
         }
 

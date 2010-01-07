@@ -49,7 +49,6 @@ public class RightsTabItem extends EditEngineTabItem {
                 setLayout(new FitLayout());
                 add(rightsEditor.renderNewAclPanel());
                 layout();
-                setProcessed(true);
             }
 
             /**
@@ -61,6 +60,7 @@ public class RightsTabItem extends EditEngineTabItem {
             }
 
         });
+        setProcessed(true);
     }
 
     public AclEditor getRightsEditor() {

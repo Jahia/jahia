@@ -1,25 +1,24 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.ContentTypeModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -71,8 +70,8 @@ public class EditModeDNDListener extends DNDListener {
         if (PLACEHOLDER_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
             String targetPath = e.getStatus().getData(TARGET_PATH);
             int i = targetPath.lastIndexOf('/');
-            String name = targetPath.substring(i +1);
-            String parentPath = targetPath.substring(0,i);
+            String name = targetPath.substring(i + 1);
+            String parentPath = targetPath.substring(0, i);
             final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
 
             // Drop into empty placeholder
@@ -82,7 +81,7 @@ public class EditModeDNDListener extends DNDListener {
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
 //                if ("*".equals(name)) {
-                JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, callback);
+                JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(nodes), parentPath, null, callback);
 //                } else if (nodes.size() == 1) {
 //                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath+"/"+name, callback);
 //                }
@@ -101,51 +100,39 @@ public class EditModeDNDListener extends DNDListener {
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 ContentTypeModelData modelData = e.getStatus().getData(SOURCE_NODETYPE);
-                if(modelData.getGwtJahiaNode()==null) {
+                if (modelData.getGwtJahiaNode() == null) {
                     GWTJahiaNodeType type = modelData.getGwtJahiaNodeType();
                     e.getStatus().setData(OPERATION_CALLED, "true");
                     if (type.getItems() == null || type.getItems().size() == 0) {
                         JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null,
-                                                                                                type.getName(), null,
-                                                                                                new ArrayList<GWTJahiaNodeProperty>(), null,
-                                                                                                new AsyncCallback<GWTJahiaNode>() {
-                                                                                                    public void onFailure(
-                                                                                                            Throwable throwable) {
-                                                                                                        com.google.gwt.user.client.Window.alert(
-                                                                                                                "Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                                                                                        Log.error(
-                                                                                                                "failed",
-                                                                                                                throwable);
-                                                                                                    }
+                                type.getName(), null,
+                                new ArrayList<GWTJahiaNodeProperty>(), null,
+                                new AsyncCallback<GWTJahiaNode>() {
+                                    public void onFailure(
+                                            Throwable throwable) {
+                                        com.google.gwt.user.client.Window.alert(
+                                                "Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                        Log.error(
+                                                "failed",
+                                                throwable);
+                                    }
 
-                                                                                                    public void onSuccess(
-                                                                                                            GWTJahiaNode o) {
-                                                                                                        Info.display("",
-                                                                                                                     "Node created");
-                                                                                                        editLinker.refreshMainComponent();
-                                                                                                    }
-                                                                                                });
+                                    public void onSuccess(
+                                            GWTJahiaNode o) {
+                                        Info.display("",
+                                                "Node created");
+                                        editLinker.refreshMainComponent();
+                                    }
+                                });
                     } else {
                         new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf(
                                 "/") + 1)).show();
                     }
                 } else {
+                    e.getStatus().setData(OPERATION_CALLED, "true");
                     final GWTJahiaNode gwtJahiaNode = modelData.getGwtJahiaNode();
                     final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
-                            public void onFailure(Throwable caught) {
-                                MessageBox.alert("Alert",
-                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
-                                                 null);
-                            }
-
-                            public void onSuccess(GWTJahiaNode result) {
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
-                                result.setName(gwtJahiaNode.getName());
-                                nodes.add(result);
-                                instance.paste(nodes, parent.getPath(), false,new DropAsyncCallback());
-                            }
-                        });
+                    instance.paste(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parent.getPath(), gwtJahiaNode.getName(), false, new DropAsyncCallback());
                 }
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
@@ -157,14 +144,14 @@ public class EditModeDNDListener extends DNDListener {
                     JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, name, callback);
                 }
             }
-        } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
+        } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
             String targetPath = e.getStatus().getData(TARGET_PATH);
             // Drop into an existing module
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
-                List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, callback);
+                JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(JCRClientUtils.getPathesList(nodes), targetPath, null, callback);
             } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item move
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
@@ -176,50 +163,38 @@ public class EditModeDNDListener extends DNDListener {
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
                 ContentTypeModelData modelData = e.getStatus().getData(SOURCE_NODETYPE);
-                if(modelData.getGwtJahiaNode()==null) {
+                if (modelData.getGwtJahiaNode() == null) {
                     GWTJahiaNodeType type = modelData.getGwtJahiaNodeType();
                     e.getStatus().setData(OPERATION_CALLED, "true");
                     if (type.getItems() == null || type.getItems().size() == 0) {
                         JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null,
-                                                                                                type.getName(), null,
-                                                                                                new ArrayList<GWTJahiaNodeProperty>(), null,
-                                                                                                new AsyncCallback<GWTJahiaNode>() {
-                                                                                                    public void onFailure(
-                                                                                                            Throwable throwable) {
-                                                                                                        com.google.gwt.user.client.Window.alert(
-                                                                                                                "Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                                                                                        Log.error(
-                                                                                                                "failed",
-                                                                                                                throwable);
-                                                                                                    }
+                                type.getName(), null,
+                                new ArrayList<GWTJahiaNodeProperty>(), null,
+                                new AsyncCallback<GWTJahiaNode>() {
+                                    public void onFailure(
+                                            Throwable throwable) {
+                                        com.google.gwt.user.client.Window.alert(
+                                                "Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                        Log.error(
+                                                "failed",
+                                                throwable);
+                                    }
 
-                                                                                                    public void onSuccess(
-                                                                                                            GWTJahiaNode o) {
-                                                                                                        Info.display("",
-                                                                                                                     "Node created");
-                                                                                                        editLinker.refreshMainComponent();
-                                                                                                    }
-                                                                                                });
+                                    public void onSuccess(
+                                            GWTJahiaNode o) {
+                                        Info.display("",
+                                                "Node created");
+                                        editLinker.refreshMainComponent();
+                                    }
+                                });
                     } else {
-                        new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
+                        new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/") + 1), true).show();
                     }
                 } else {
+                    e.getStatus().setData(OPERATION_CALLED, "true");
                     final GWTJahiaNode gwtJahiaNode = modelData.getGwtJahiaNode();
                     final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
-                            public void onFailure(Throwable caught) {
-                                MessageBox.alert("Alert",
-                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
-                                                 null);
-                            }
-
-                            public void onSuccess(GWTJahiaNode result) {
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
-                                result.setName(gwtJahiaNode.getName());
-                                nodes.add(result);
-                                instance.pasteOnTopOf(nodes, parent.getPath(),new DropAsyncCallback());
-                            }
-                        });
+                    instance.pasteOnTopOf(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parent.getPath(), gwtJahiaNode.getName(), false, callback);
                 }
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
@@ -227,15 +202,15 @@ public class EditModeDNDListener extends DNDListener {
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 JahiaContentManagementService.App.getInstance().saveSearchOnTopOf(q, targetPath, "jnt_query", callback);
             }
-        } else if (PAGETREE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
+        } else if (PAGETREE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
             if (PAGETREE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                GWTJahiaNode source = ((List<GWTJahiaNode>)e.getStatus().getData(SOURCE_NODES)).get(0);
+                GWTJahiaNode source = ((List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES)).get(0);
 
                 String targetPath = (String) e.getStatus().getData(TARGET_PATH);
 
                 if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
-                    callback = ((PagesTabItem.PageTreeGridDropTarget)e.getDropTarget()).getCallback();
+                    callback = ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback();
                 }
 
                 if (e.getStatus().<Object>getData("type").equals(-1)) {
@@ -265,7 +240,7 @@ public class EditModeDNDListener extends DNDListener {
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                JahiaContentManagementService.App.getInstance().pasteReferences(nodes, targetPath, callback);
+                JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(nodes), targetPath, null, callback);
             }
         }
         super.dragDrop(e);
@@ -277,8 +252,9 @@ public class EditModeDNDListener extends DNDListener {
         }
 
         public void onFailure(Throwable throwable) {
-            Window.alert("Failed : "+throwable);
+            Window.alert("Failed : " + throwable);
         }
 
     }
+
 }

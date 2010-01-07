@@ -223,20 +223,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return navigation.getAbsolutePath(path, retrieveParamBean());
     }
 
-    public void copy(List<GWTJahiaNode> paths) throws GWTJahiaServiceException {
-        contentManager.copy(paths, getUser());
+    public void checkWriteable(List<String> paths) throws GWTJahiaServiceException {
+        contentManager.checkWriteable(paths, getUser());
     }
 
-    public void cut(List<GWTJahiaNode> paths) throws GWTJahiaServiceException {
-        contentManager.cut(paths, getUser());
+    public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException {
+        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, false, cut, false);
     }
 
-    public void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut) throws GWTJahiaServiceException {
-        contentManager.paste(pathsToCopy, destinationPath, cut, getUser());
-    }
-
-    public void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
-        contentManager.pasteReferences(pathsToCopy, destinationPath, getUser());
+    public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
+        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, false, false, true);
     }
 
     public void rename(String path, String newName) throws GWTJahiaServiceException {
@@ -533,8 +529,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
-        contentManager.pasteReferencesOnTopOf(pathsToCopy, destinationPath, true);
+    public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
+        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, true, false, true);
     }
 
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
@@ -676,7 +672,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return search.getNodesOfType(nodeType, retrieveParamBean());
     }
 
-    public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path) throws GWTJahiaServiceException {
-        contentManager.pasteOnTopOf(nodes, path, getUser());
+    public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException {
+        contentManager.pasteOnTopOf(nodes, path, newName, true, cut, false);
     }
 }

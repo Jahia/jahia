@@ -34,6 +34,8 @@ public class CreatePageTabItem extends EditEngineTabItem {
 
     protected GWTJahiaNodeType type;
     protected List<GWTJahiaNode> reusable;
+    protected ComboBox<GWTJahiaNode> combo;
+    protected Field titleField;
 
     public CreatePageTabItem(AbstractContentEngine engine) {
         super("Page infos",engine);
@@ -42,6 +44,7 @@ public class CreatePageTabItem extends EditEngineTabItem {
     @Override
     public void create() {
 
+        setProcessed(true);
         definitionService.getNodeTypeWithReusableComponents("jnt:page", new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNode>>>() {
             public void onFailure(Throwable caught) {
                 Log.error("",caught);
@@ -76,7 +79,7 @@ public class CreatePageTabItem extends EditEngineTabItem {
                 List<GWTJahiaItemDefinition> items = type.getInheritedItems();
                 for (GWTJahiaItemDefinition item : items) {
                     if (item.getName().equals("jcr:title")) {
-                        Field titleField = FormFieldCreator.createField(item, null);
+                        titleField = FormFieldCreator.createField(item, null);
                         set.setHeading(item.getDeclaringNodeTypeLabel());
                         formset.add(titleField);
                         break;
@@ -96,24 +99,31 @@ public class CreatePageTabItem extends EditEngineTabItem {
 
                 ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>();
                 store.add(reusable);
-                ComboBox<GWTJahiaNode> combo = new ComboBox<GWTJahiaNode>();
+                combo = new ComboBox<GWTJahiaNode>();
                 combo.setFieldLabel("schmurtz");
                 combo.setStore(store);
                 combo.setDisplayField("displayName");
                 combo.setValueField("uuid");
                 combo.setTypeAhead(true);
                 combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                combo.setForceSelection(true);
+//                combo.setForceSelection(true);
                 formset.add(combo);
 
                 form.add(set);
 
                 add(form);
-                setProcessed(true);
                 layout();
             }
         });
 
 
+    }
+
+    public String getContentTitle() {
+        return titleField.getValue().toString();
+    }
+
+    public List<GWTJahiaNode> getReusableComponent() {
+        return combo.getSelection();
     }
 }

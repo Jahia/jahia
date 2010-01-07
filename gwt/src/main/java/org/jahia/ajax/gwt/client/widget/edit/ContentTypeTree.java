@@ -201,29 +201,17 @@ public class ContentTypeTree extends LayoutContainer {
                         window.hide();
                     } else if (gwtJahiaNode != null) {
                         final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
+
+                        instance.paste(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parentNode.getPath(), gwtJahiaNode.getName() , false, new AsyncCallback() {
                             public void onFailure(Throwable caught) {
-                                MessageBox.alert("Alert",
-                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
-                                                 null);
+                                //To change body of implemented methods use File | Settings | File Templates.
                             }
 
-                            public void onSuccess(GWTJahiaNode result) {
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
-                                result.setName(gwtJahiaNode.getName());
-                                nodes.add(result);
-                                instance.paste(nodes, parentNode.getPath(), false, new AsyncCallback() {
-                                    public void onFailure(Throwable caught) {
-                                        //To change body of implemented methods use File | Settings | File Templates.
-                                    }
-
-                                    public void onSuccess(Object result) {
-                                        hide();
-                                        if (linker != null) {
-                                            linker.refreshMainComponent();
-                                        }
-                                    }
-                                });
+                            public void onSuccess(Object result) {
+                                hide();
+                                if (linker != null) {
+                                    linker.refreshMainComponent();
+                                }
                             }
                         });
                     }

@@ -45,12 +45,14 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -126,30 +128,17 @@ public class ContentTypeWindow extends Window {
                         window.hide();
                     } else if (gwtJahiaNode != null) {
                         final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                        instance.getNode(gwtJahiaNode.getPath() + "/j:target", new AsyncCallback<GWTJahiaNode>() {
+                        instance.paste(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parentNode.getPath(), gwtJahiaNode.getName(), false, new AsyncCallback() {
                             public void onFailure(Throwable caught) {
-                                MessageBox.alert("Alert",
-                                                 "Unable to copy reusable component to destination. Cause: " + caught.getLocalizedMessage(),
-                                                 null);
+                                //To change body of implemented methods use File | Settings | File Templates.
                             }
 
-                            public void onSuccess(GWTJahiaNode result) {
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
-                                result.setName(gwtJahiaNode.getName());
-                                nodes.add(result);
-                                instance.paste(nodes, parentNode.getPath(), false, new AsyncCallback() {
-                                    public void onFailure(Throwable caught) {
-                                        //To change body of implemented methods use File | Settings | File Templates.
-                                    }
-
-                                    public void onSuccess(Object result) {
-                                        hide();
-                                        linker.refreshMainComponent();
-                                        if (baseType.equals("jnt:page")) {
-                                            linker.refreshLeftPanel();
-                                        }
-                                    }
-                                });
+                            public void onSuccess(Object result) {
+                                hide();
+                                linker.refreshMainComponent();
+                                if (baseType.equals("jnt:page")) {
+                                    linker.refreshLeftPanel();
+                                }
                             }
                         });
                     }

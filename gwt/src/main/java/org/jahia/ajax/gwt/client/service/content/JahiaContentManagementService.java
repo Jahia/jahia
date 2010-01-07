@@ -105,13 +105,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException;
 
-    public void copy(List<GWTJahiaNode> paths) throws GWTJahiaServiceException;
+    public void checkWriteable(List<String> paths) throws GWTJahiaServiceException;
 
-    public void cut(List<GWTJahiaNode> paths) throws GWTJahiaServiceException;
+    public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException;
 
-    public void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut) throws GWTJahiaServiceException;
-
-    public void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
+    public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 
     public void rename(String path, String newName) throws GWTJahiaServiceException;
 
@@ -121,7 +119,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
-    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;    
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException;
 
@@ -157,7 +155,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
 
-    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;    
+    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;
 
     public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException;
 
@@ -179,7 +177,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
 
-    public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
+    public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException;
 
@@ -238,5 +236,5 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNode> getNodesOfType(String nodeType) throws GWTJahiaServiceException;
 
-     public void pasteOnTopOf(List<GWTJahiaNode> nodes, String path) throws GWTJahiaServiceException;
+     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException;
 }

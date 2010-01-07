@@ -145,7 +145,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                         stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
                     }
                     if (stream == null) {
-                    	stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(NAME_PATTERN.matcher(name).replaceAll("/"));
+                    	stream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream((!name.startsWith("/") ? "/" : "") + NAME_PATTERN.matcher(name).replaceAll("/"));
                     }
                     if (stream != null) {
                     	return stream;

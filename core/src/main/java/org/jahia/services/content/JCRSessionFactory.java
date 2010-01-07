@@ -56,14 +56,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         this.mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
         this.dynamicMountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
         namespaceRegistry = new NamespaceRegistryWrapper();
-        try {
-            Registry r = LocateRegistry.createRegistry(2099);
-            r.bind("jcrStoreService", new ServerAdapterFactory().getRemoteRepository(this));
-        } catch (RemoteException e) {
-            logger.error(e.getMessage(), e);
-        } catch (AlreadyBoundException e) {
-            logger.error(e.getMessage(), e);
-        }
 
         if ((servletContextAttributeName != null) &&
                 (servletContext != null)) {

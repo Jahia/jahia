@@ -31,6 +31,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -45,15 +51,15 @@ import com.extjs.gxt.ui.client.widget.Component;
  */
 public class ContentManager extends TriPanelBrowserViewport {
 
-    public ContentManager(String types, String filters, String mimeTypes, String conf) {
+    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final String conf) {
         // superclass constructor (define linker)
         super();
 
-        ManagerConfiguration config ;
+        ManagerConfiguration config;
         if (conf != null && conf.length() > 0) {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker) ;
+            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
         } else {
-            config = ManagerConfigurationFactory.getFileManagerConfiguration(linker) ;
+            config = ManagerConfigurationFactory.getFileManagerConfiguration(linker);
         }
 
         if (types != null && types.length() > 0) {
@@ -67,46 +73,70 @@ public class ContentManager extends TriPanelBrowserViewport {
         }
 
         // construction of the UI components
-        LeftComponent tree = null;
-        Component leftTree = null;
-
-        if(!config.isHideLeftPanel()){
+        final LeftComponent tree;
+        if (!config.isHideLeftPanel()) {
             tree = new ContentRepositoryTabs(config);
-            leftTree = tree.getComponent();
+        } else {
+            tree = null;
         }
-
-        final ContentViews filesViews = new ContentViews(config);
+        final ContentViews contentViews = new ContentViews(config);
         final BottomRightComponent tabs = new ContentDetails(config);
         final TopBar toolbar = new ContentToolbar(config, linker) {
             protected void setListView() {
-                filesViews.switchToListView();
+                contentViews.switchToListView();
             }
 
             protected void setThumbView() {
-                filesViews.switchToThumbView();
+                contentViews.switchToThumbView();
             }
 
             protected void setDetailedThumbView() {
-                filesViews.switchToDetailedThumbView();
+                contentViews.switchToDetailedThumbView();
             }
 
             protected void setTemplateView() {
-                filesViews.switchToTemplateView();
+                contentViews.switchToTemplateView();
             }
         };
         BottomBar statusBar = new ContentStatusBar();
 
         // setup widgets in layout
-
-        initWidgets(leftTree,
-                filesViews.getComponent(),
-                tabs.getComponent(),
-                toolbar.getComponent(),
-                statusBar.getComponent());
+        if (tree != null) {
+            initWidgets(tree.getComponent(),
+                    contentViews.getComponent(),
+                    tabs.getComponent(),
+                    toolbar.getComponent(),
+                    statusBar.getComponent());
+        } else {
+            initWidgets(null,
+                    contentViews.getComponent(),
+                    tabs.getComponent(),
+                    toolbar.getComponent(),
+                    statusBar.getComponent());
+        }
 
         // linker initializations
-        linker.registerComponents(tree, filesViews, tabs, toolbar, statusBar);
-        filesViews.initContextMenu();
+        linker.registerComponents(tree, contentViews, tabs, toolbar, statusBar);
+        contentViews.initContextMenu();
         linker.handleNewSelection();
+        if (config.isExpandRoot()) {
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    JahiaContentManagementService.App.getInstance().getNode(rootPath, new AsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode gwtJahiaNode) {
+                            linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode);
+                            linker.refresh();
+                        }
+
+                        public void onFailure(Throwable throwable) {
+                            Log.error("Unable to loaf node with path " + rootPath, throwable);
+                        }
+                    });
+                }
+            });
+        } else {
+            linker.handleNewSelection();
+        }
+
     }
 }

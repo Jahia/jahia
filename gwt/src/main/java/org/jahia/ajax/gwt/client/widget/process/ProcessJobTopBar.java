@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobStat;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 /**
@@ -156,11 +157,10 @@ public class ProcessJobTopBar extends TopBar {
     /**
      * Handle new selection
      *
-     * @param leftTreeSelection
-     * @param topTableSelection
      */
-    public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
-        GWTJahiaProcessJob jahiaProcessJob = (GWTJahiaProcessJob) topTableSelection;
+    public void handleNewSelection() {
+        GWTJahiaProcessJob jahiaProcessJob = (GWTJahiaProcessJob) getLinker().getTableSelection();
+
         if (jahiaProcessJob != null && jahiaProcessJob.getJobType().equalsIgnoreCase("waiting")) {
             deleteItem.setEnabled(true);
         } else {

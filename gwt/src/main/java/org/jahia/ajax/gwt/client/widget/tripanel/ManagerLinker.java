@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +56,7 @@ public class ManagerLinker implements Linker {
     private BottomBar m_bottomBar;
     private DNDListener dndListener;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
+    private GWTJahiaNode leftPanelSelectionWhenHidden;
 
     public ManagerLinker() {
     }
@@ -143,7 +145,15 @@ public class ManagerLinker implements Linker {
     public void handleNewSelection() {
         refreshSelectionContext();
         if (m_topBar != null) {
-            m_topBar.handleNewSelection(m_leftComponent != null ? m_leftComponent.getSelectedItem() : null, m_topRightComponent != null ? m_topRightComponent.getSelection() : null);
+            m_topBar.handleNewSelection();
+        }
+    }
+
+    public void handleNewSelection(List<GWTJahiaNode> nodes) {
+        selectionContext.setSelectedNodes(nodes);
+        selectionContext.refresh();
+        if (m_topBar != null) {
+            m_topBar.handleNewSelection();
         }
     }
 
@@ -197,11 +207,12 @@ public class ManagerLinker implements Linker {
     ////////////////////////
     // Selections getters //
     ////////////////////////
+
     public Object getTreeSelection() {
         if (m_leftComponent != null) {
             return m_leftComponent.getSelectedItem();
         } else {
-            return null;
+            return leftPanelSelectionWhenHidden;
         }
     }
 
@@ -216,6 +227,7 @@ public class ManagerLinker implements Linker {
     ////////////////////////
     // Components getters //
     ////////////////////////
+
     public Component getBottomRightComponent() {
         if (m_bottomRightComponent != null) {
             return m_bottomRightComponent.getComponent();
@@ -259,6 +271,7 @@ public class ManagerLinker implements Linker {
     ////////////////////////
     // Specific getters   //
     ////////////////////////
+
     public BottomRightComponent getBottomRightObject() {
         return m_bottomRightComponent;
     }
@@ -286,6 +299,12 @@ public class ManagerLinker implements Linker {
     ////////////////////////
     // Misc methods       //
     ////////////////////////
+
+
+    public void setLeftPanelSelectionWhenHidden(GWTJahiaNode leftPanelSelectionWhenHidden) {
+        this.leftPanelSelectionWhenHidden = leftPanelSelectionWhenHidden;
+    }
+
     public void setSelectPathAfterDataUpdate(String path) {
         m_topRightComponent.setSelectPathAfterDataUpdate(path);
     }
@@ -308,7 +327,7 @@ public class ManagerLinker implements Linker {
         refreshAll();
     }
 
-    public void refresh(int flag){
+    public void refresh(int flag) {
         refresh();
     }
 
@@ -317,7 +336,26 @@ public class ManagerLinker implements Linker {
     }
 
     public void select(Object o) {
-        handleNewSelection();
+        List<GWTJahiaNode> nodes = null;
+        if (o != null) {
+            if (m_leftComponent != null) {
+                m_leftComponent.openAndSelectItem(o);
+            }
+            if (m_bottomRightComponent != null) {
+                m_bottomRightComponent.clear();
+            }
+            if (m_topRightComponent != null) {
+                m_topRightComponent.setContent(o);
+            }
+            if (o instanceof GWTJahiaNode) {
+                nodes = new ArrayList<GWTJahiaNode>();
+            } else if (o instanceof List) {
+                nodes = ((List<GWTJahiaNode>) o);
+            }
+            handleNewSelection(nodes);            
+        }else{
+            handleNewSelection();
+        }
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
@@ -338,7 +376,7 @@ public class ManagerLinker implements Linker {
 
     private void refreshSelectionContext() {
         if (getTreeSelection() instanceof GWTJahiaNode) {
-            selectionContext.setMainNode((GWTJahiaNode)getTreeSelection());
+            selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
         }
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();

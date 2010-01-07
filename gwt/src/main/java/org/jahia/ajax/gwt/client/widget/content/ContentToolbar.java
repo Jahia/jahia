@@ -79,7 +79,7 @@ public class ContentToolbar extends TopBar {
     protected void setTemplateView() {
     }
 
-    public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
+    public void handleNewSelection() {
         m_component.handleNewLinkerSelection();
     }
 

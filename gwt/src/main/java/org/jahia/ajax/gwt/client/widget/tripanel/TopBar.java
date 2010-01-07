@@ -39,6 +39,6 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
  */
 public abstract class TopBar extends LinkableComponent {
 
-    public abstract void handleNewSelection(Object leftTreeSelection, Object topTableSelection) ;
+    public abstract void handleNewSelection() ;
 
 }

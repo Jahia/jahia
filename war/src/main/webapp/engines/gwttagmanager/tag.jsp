@@ -1,3 +1,4 @@
+<%@ page import="org.jahia.bin.Jahia" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -42,7 +43,7 @@
 </head>
 <body>
 <internal:contentManager enginemode="true"
-                      rootPath="/tags"
+                      rootPath='<%="/sites/"+Jahia.getThreadParamBean().getSiteKey()+"/tags"%>'
                       nodeTypes="jnt:tag"
                       conf="tagmanager"/>
 <internal:gwtGenerateDictionary/>

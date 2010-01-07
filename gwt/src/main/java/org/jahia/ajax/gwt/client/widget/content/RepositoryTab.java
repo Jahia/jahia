@@ -241,29 +241,4 @@ public class RepositoryTab extends ContentPanel {
         m_tree.getSelectionModel().deselectAll();
     }
 
-    /**
-     * This class extends the standard load listener to allow automated child selection once the children are retrieved.
-     */
-    private class FolderTreeStore<M extends ModelData> extends TreeStore<M> {
-        public FolderTreeStore(TreeLoader<M> loader) {
-            super(loader);
-        }
-
-        protected void onBeforeLoad(LoadEvent e) {
-            super.onBeforeLoad(e);
-            if (getLinker() != null) {
-                getLinker().loading("loading sub directories...");
-            }
-        }
-
-        /**
-         * This allows selection after tree items have been loaded (asynchronous call is 'blocking' here)
-         */
-        protected void onLoad(TreeLoadEvent e) {
-            super.onLoad(e);
-            if (getLinker() != null) {
-                getLinker().loaded();
-            }
-        }
-    }
 }

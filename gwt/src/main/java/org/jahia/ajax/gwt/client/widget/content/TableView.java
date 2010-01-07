@@ -204,9 +204,6 @@ public class TableView extends TopRightComponent {
             }
         });
 
-        /*GWTJahiaNode root = new GWTJahiaNode();
-        root.setPath(config.);
-        loader.load() */
 
         m_component.add(m_grid);
     }

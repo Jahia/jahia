@@ -72,7 +72,7 @@ public class ContentDefinitionToolbar extends TopBar {
         m_component.setHeight(21);
     }
 
-    public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
+    public void handleNewSelection() {
     }
 
     public Component getComponent() {

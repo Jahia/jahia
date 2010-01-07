@@ -72,4 +72,5 @@ public class ProcessdisplayManagerLinker extends ManagerLinker {
     public void setGwtJahiaProcessJobPreference(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreference) {
         this.gwtJahiaProcessJobPreference = gwtJahiaProcessJobPreference;
     }
+
 }

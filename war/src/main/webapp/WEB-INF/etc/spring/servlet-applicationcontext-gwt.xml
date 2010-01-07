@@ -135,7 +135,6 @@
         <property name="navigation"  ref="NavigationHelper"/>
         <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="captchaService"  ref="captchaService"/>
-        <property name="categoryService"  ref="CategoryService"/>
         <property name="importExport"  ref="ImportExportService"/>
         <property name="jcrService"  ref="JCRStoreService"/>
         <property name="versioning"  ref="VersioningHelper"/>

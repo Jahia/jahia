@@ -39,9 +39,6 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -52,7 +49,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -735,79 +731,10 @@ public class ContentDetails extends BottomRightComponent {
     public void displayFileUsages() {
         if (!usagesTabItem.isProcessed()) {
 
-            List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-
-            ColumnConfig col = new ColumnConfig("url", "URL", 300);
-            columns.add(col);
-            /*col = new ColumnConfig("lang", Messages.getResource("fm_language"), 130);
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            columns.add(col);
-            col = new ColumnConfig(Messages.getResource("fm_workflow"), 30);
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
-                public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
-                    String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
-                    String[] images = new String[]{"600", "111", "121", "130"};
-                    return "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
-                }
-            });
-            col.setHidden(true);
-            columns.add(col);
-            col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 130);
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            columns.add(col);*/
-
-            ColumnModel cm = new ColumnModel(columns);
-            final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>();
-            final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> tbl = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage>(usageStore, cm);
+            final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> tbl = NodeUsagesGrid.createUsageGrid(selectedNodes);
             usagesTabItem.add(tbl);
             usagesTabItem.setProcessed(true);
             usagesTabItem.layout();
-
-            for (GWTJahiaNode selectedNode : selectedNodes) {
-                String path = selectedNode.getPath();
-
-                service.getUsages(path, new AsyncCallback<List<GWTJahiaNodeUsage>>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot retrieve usages", throwable);
-                    }
-
-                    public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
-                        usageStore.add(gwtJahiaNodeUsages);
-                        tbl.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-                            public void handleEvent(GridEvent tableEvent) {
-                                Object url = tableEvent.getModel().get("url");
-                                if (url != null && url instanceof String) {
-                                    JahiaContentManagementService.App.getInstance().getRenderedContent((String) url,
-                                                                                                       null,
-                                                                                                       JahiaGWTParameters.getLanguage(), null, "wrapper.previewwrapper",
-                                                                                                       null, false, new AsyncCallback<String>() {
-                                        public void onSuccess(String result) {
-                                            HTML html = new HTML(result);
-                                            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-                                            w.setScrollMode(Style.Scroll.AUTO);
-                                            w.setModal(true);
-                                            w.setClosable(true);
-                                            w.setMaximizable(true);
-                                            w.setSize(800, 600);
-                                            w.setBlinkModal(true);
-                                            w.setPlain(true);
-                                            w.setLayout(new CenterLayout());
-                                            w.add(html);
-                                            w.show();
-                                        }
-
-                                        public void onFailure(Throwable caught) {
-                                            Log.error("", caught);
-                        //                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
-            }
         }
     }
 

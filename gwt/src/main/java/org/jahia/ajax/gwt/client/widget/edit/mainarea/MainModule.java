@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
@@ -192,7 +193,7 @@ public class MainModule extends ContentPanel implements Module {
         }
         if(node.getNodeTypes().contains("jmix:shareable")) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important","Important"),Messages.get("info_sharednode","This is a shared node")));
         }
     }
 

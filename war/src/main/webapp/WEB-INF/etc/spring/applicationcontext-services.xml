@@ -243,7 +243,7 @@
         <property name="settingsBean" ref="settingsBean" />
     </bean>
 
-   <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
+   <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate" depends-on="jackrabbit">
         <property name="templatePackageDeployer">
             <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
 		    	<property name="settingsBean" ref="settingsBean" />

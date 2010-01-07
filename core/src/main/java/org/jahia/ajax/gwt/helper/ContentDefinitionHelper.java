@@ -57,7 +57,7 @@ import java.util.*;
  * Helper class for accessing node types and definitions.
  *
  * @author Thomas Draier
- *         Date: Sep 12, 2008 - 11:48:20 AM
+ * Date: Sep 12, 2008 - 11:48:20 AM
  */
 public class ContentDefinitionHelper {
     private static final Logger logger = Logger.getLogger(ContentDefinitionHelper.class);
@@ -82,12 +82,6 @@ public class ContentDefinitionHelper {
             "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
 
     private static final List<String> excludedTypes = Arrays.asList("nt:base", "mix:versionable", "jnt:workflow", "jnt:extraResource");
-
-    private final Comparator<GWTJahiaNodeType> gwtJahiaNodeTypeNameComparator = new Comparator<GWTJahiaNodeType>() {
-        public int compare(GWTJahiaNodeType o1, GWTJahiaNodeType o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
 
     public GWTJahiaNodeType getNodeType(String name, ProcessingContext context) {
         ExtendedNodeType nodeType = null;
@@ -193,9 +187,12 @@ public class ContentDefinitionHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
-                            gwtValues.add(convertValue(value, epd.getRequiredType()));
+                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd.getRequiredType());
+                            if (convertedValue != null) {
+                                gwtValues.add(convertedValue);
+                            }
                         } catch (RepositoryException e) {
-                            e.printStackTrace();
+                            logger.warn(e.getMessage(), e);
                         }
                     }
                     prop.setDefaultValues(gwtValues);
@@ -438,7 +435,13 @@ public class ContentDefinitionHelper {
                 theValue = val.getString();
                 break;
             case PropertyType.WEAKREFERENCE:
-                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false), GWTJahiaNodePropertyType.WEAKREFERENCE);
+                GWTJahiaNodePropertyValue convertedValue = null;
+                JCRNodeWrapper node = (JCRNodeWrapper) ((JCRValueWrapper) val).getNode();
+                // check if the referenced node exists
+                if (node != null) {
+                    convertedValue = new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode(node, false), GWTJahiaNodePropertyType.WEAKREFERENCE);
+                }  
+                return convertedValue;
             case PropertyType.REFERENCE:
                 return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
             case PropertyType.STRING:

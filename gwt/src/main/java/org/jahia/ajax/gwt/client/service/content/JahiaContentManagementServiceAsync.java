@@ -92,8 +92,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut, AsyncCallback async);
 
-    void pasteReference(GWTJahiaNode pathsToCopy, String destinationPath, String name, AsyncCallback async);
-
     void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
 
     void rename(String path, String newName, AsyncCallback async);
@@ -161,8 +159,6 @@ public interface JahiaContentManagementServiceAsync {
     void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name, AsyncCallback async);
 
     void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
 

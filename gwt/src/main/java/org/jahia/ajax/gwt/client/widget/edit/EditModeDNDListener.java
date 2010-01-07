@@ -80,11 +80,11 @@ public class EditModeDNDListener extends DNDListener {
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                if ("*".equals(name)) {
-                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, callback);
-                } else if (nodes.size() == 1) {
-                    JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), parentPath, name, callback);
-                }
+//                if ("*".equals(name)) {
+                JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, callback);
+//                } else if (nodes.size() == 1) {
+//                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath+"/"+name, callback);
+//                }
 
             } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item move
@@ -163,12 +163,7 @@ public class EditModeDNDListener extends DNDListener {
                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                if (nodes.size()>1) {
-                    JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, callback);
-                } else if (nodes.size() == 1) {
-                    final GWTJahiaNode node = nodes.get(0);
-                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, targetPath, node.getName(), callback);
-                }
+                JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, callback);
             } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item move
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
@@ -269,7 +264,7 @@ public class EditModeDNDListener extends DNDListener {
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), targetPath, nodes.get(0).getName(), callback);
+                JahiaContentManagementService.App.getInstance().pasteReferences(nodes, targetPath, callback);
             }
         }
         super.dragDrop(e);

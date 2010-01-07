@@ -111,8 +111,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut) throws GWTJahiaServiceException;
 
-    public void pasteReference(GWTJahiaNode pathsToCopy, String destinationPath, String name) throws GWTJahiaServiceException;
-
     public void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
 
     public void rename(String path, String newName) throws GWTJahiaServiceException;
@@ -180,8 +178,6 @@ public interface JahiaContentManagementService extends RemoteService {
     public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
-
-    public void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name) throws GWTJahiaServiceException;
 
     public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
 

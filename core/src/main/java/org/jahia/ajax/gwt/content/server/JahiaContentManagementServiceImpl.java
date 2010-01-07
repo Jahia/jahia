@@ -235,10 +235,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.paste(pathsToCopy, destinationPath, cut, getUser());
     }
 
-    public void pasteReference(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {
-        contentManager.pasteReference(path, destinationPath, name, getUser());
-    }
-
     public void pasteReferences(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
         contentManager.pasteReferences(pathsToCopy, destinationPath, getUser());
     }
@@ -536,10 +532,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return template.getTemplatesSet(path, retrieveParamBean());
     }
 
-
-    public void pasteReferenceOnTopOf(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {
-        contentManager.pasteReferenceOnTopOf(path, destinationPath, name, true);
-    }
 
     public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
         contentManager.pasteReferencesOnTopOf(pathsToCopy, destinationPath, true);

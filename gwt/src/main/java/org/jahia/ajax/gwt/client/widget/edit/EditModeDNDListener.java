@@ -17,6 +17,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
@@ -125,7 +126,7 @@ public class EditModeDNDListener extends DNDListener {
                                                                                                     }
                                                                                                 });
                     } else {
-                        new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf(
+                        new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf(
                                 "/") + 1)).show();
                     }
                 } else {
@@ -200,7 +201,7 @@ public class EditModeDNDListener extends DNDListener {
                                                                                                     }
                                                                                                 });
                     } else {
-                        new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
+                        new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
                     }
                 } else {
                     final GWTJahiaNode gwtJahiaNode = modelData.getGwtJahiaNode();

@@ -35,8 +35,8 @@ public class CreatePageTabItem extends EditEngineTabItem {
     protected GWTJahiaNodeType type;
     protected List<GWTJahiaNode> reusable;
 
-    public CreatePageTabItem(EditContentEngine engine) {
-        super("create page",engine);
+    public CreatePageTabItem(AbstractContentEngine engine) {
+        super("Page infos",engine);
     }
 
     @Override

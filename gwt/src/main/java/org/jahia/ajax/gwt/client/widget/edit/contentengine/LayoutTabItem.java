@@ -29,7 +29,7 @@ public class LayoutTabItem extends PropertiesTabItem {
 
     private LayoutContainer htmlPreview;
 
-    public LayoutTabItem(EditContentEngine engine) {
+    public LayoutTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_layout", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabLayout());
     }

@@ -1,10 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.widget.Label;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
     protected String dataType;
     protected List<String> excludedTypes;
 
-    protected PropertiesTabItem(String title, EditContentEngine engine, String dataType) {
+    protected PropertiesTabItem(String title, AbstractContentEngine engine, String dataType) {
         super(title, engine);
         this.dataType = dataType;
     }
@@ -40,7 +38,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 add(label);
             }
 
-            propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProps(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
+            propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
             propertiesEditor.setHeight(504);
 
             postCreate();

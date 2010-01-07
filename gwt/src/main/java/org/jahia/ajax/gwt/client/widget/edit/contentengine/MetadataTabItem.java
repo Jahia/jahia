@@ -14,7 +14,7 @@ import java.util.Arrays;
  * To change this template use File | Settings | File Templates.
  */
 public class MetadataTabItem extends PropertiesTabItem {
-    public MetadataTabItem(EditContentEngine engine) {
+    public MetadataTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_metadata", "Metadata"), engine, GWTJahiaItemDefinition.METADATA);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabMetadata());
         excludedTypes = Arrays.asList("jmix:categorized", "jmix:tagged");

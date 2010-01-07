@@ -56,6 +56,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateReusableContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
@@ -943,7 +945,7 @@ public class ContentActions {
                                     } else {
                                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
                                         props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                                        new EditContentEngine(linker, result.get(0), nodeType, props, null, false).show();                                        
+                                        new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();                                        
                                     }
                                 }
                             });

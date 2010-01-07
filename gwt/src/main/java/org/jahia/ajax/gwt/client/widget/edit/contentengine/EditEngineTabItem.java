@@ -10,14 +10,14 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class EditEngineTabItem extends AsyncTabItem {
-    protected EditContentEngine engine;
+    protected AbstractContentEngine engine;
 
-    protected EditEngineTabItem(EditContentEngine engine) {
+    protected EditEngineTabItem(AbstractContentEngine engine) {
         this.engine = engine;
         setStyleName("x-panel-mc");
     }
 
-    protected EditEngineTabItem(String title, EditContentEngine engine) {
+    protected EditEngineTabItem(String title, AbstractContentEngine engine) {
         super(title);
         this.engine = engine;
         setStyleName("x-panel-mc");

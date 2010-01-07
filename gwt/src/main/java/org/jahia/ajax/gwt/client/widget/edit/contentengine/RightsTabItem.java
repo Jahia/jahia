@@ -21,7 +21,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 public class RightsTabItem extends EditEngineTabItem {
     private AclEditor rightsEditor;
 
-    public RightsTabItem(EditContentEngine engine) {
+    public RightsTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_rights", "Rights"), engine);
     }
 

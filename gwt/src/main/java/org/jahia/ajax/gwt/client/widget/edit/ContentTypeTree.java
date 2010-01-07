@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
 import java.util.ArrayList;
@@ -196,7 +197,7 @@ public class ContentTypeTree extends LayoutContainer {
                     final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
                     final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
                     if (gwtJahiaNodeType != null && linker != null) {
-                        new EditContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
+                        new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
                         window.hide();
                     } else if (gwtJahiaNode != null) {
                         final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();

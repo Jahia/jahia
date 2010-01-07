@@ -14,7 +14,7 @@ import java.util.Arrays;
  * To change this template use File | Settings | File Templates.
  */
 public class OptionsTabItem extends PropertiesTabItem {
-    public OptionsTabItem(EditContentEngine engine) {
+    public OptionsTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_options", "Options"), engine, GWTJahiaItemDefinition.OPTIONS);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
     }

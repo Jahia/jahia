@@ -28,6 +28,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
 import java.util.ArrayList;
@@ -54,7 +55,8 @@ public class EditActions {
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new ContentTypeWindow(linker, linker.getMainNode(), gwtJahiaNodeType,true).show();
+                    new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null).show();
+//                    new ContentTypeWindow(linker, linker.getMainNode(), gwtJahiaNodeType,true).show();
                 }
             });
         }

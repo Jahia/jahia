@@ -16,7 +16,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
 
-    public ContentTabItem(EditContentEngine engine) {
+    public ContentTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
     }

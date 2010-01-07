@@ -191,7 +191,7 @@ public class MainModule extends ContentPanel implements Module {
 //            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
         }
         if(node.getNodeTypes().contains("jmix:shareable")) {
-            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
+//            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
         }
     }

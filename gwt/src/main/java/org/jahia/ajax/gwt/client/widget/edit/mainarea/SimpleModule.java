@@ -128,7 +128,7 @@ public class SimpleModule extends LayoutContainer implements Module {
     public void setNode(GWTJahiaNode node) {
         this.node = node;
         if(node.getNodeTypes().contains("jmix:shareable")) {
-            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");            
+//            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
         }
     }

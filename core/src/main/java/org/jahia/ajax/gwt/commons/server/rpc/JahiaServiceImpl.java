@@ -38,7 +38,6 @@ import net.htmlparser.jericho.StartTag;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
@@ -127,22 +126,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return result;
     }
 
-    public GWTJahiaRSSFeed loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries) throws GWTJahiaServiceException {
-
-        try {
-            //load corresponding url
-            URL urlObj = new URL(url);
-            GWTJahiaRSSFeed gwtrssFeed = loadRssFeed(urlObj);
-            if (gwtrssFeed != null) {
-                gwtrssFeed.setUrl(url);
-                gwtrssFeed.setNbDisplayedEntries(maxEntries);
-                return gwtrssFeed;
-            }
-        } catch (MalformedURLException e) {
-
-        }
-        return null;
-    }
 
     /**
      * Retrieve all active languages for the current site.

@@ -44,7 +44,6 @@ public class SearchEngineBean {
     private String urlType;
     private String descriptorType;
     private String descriptorFile;
-    private OpenSearchDescriptor descriptor;
 
     public SearchEngineBean() {
     }
@@ -88,11 +87,5 @@ public class SearchEngineBean {
         this.descriptorFile = descriptorFile;
     }
 
-    public OpenSearchDescriptor getDescriptor() {
-        return descriptor;
-    }
-
-    public void setDescriptor(OpenSearchDescriptor descriptor) {
-        this.descriptor = descriptor;
-    }
+    
 }

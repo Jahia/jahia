@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
 
@@ -49,8 +48,6 @@ import java.util.List;
 public interface JahiaServiceAsync {
 
     void drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
-
-    void loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries, AsyncCallback<GWTJahiaRSSFeed> async);
 
     void getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine, AsyncCallback<GWTJahiaLanguageSwitcherBean> async) ;
 

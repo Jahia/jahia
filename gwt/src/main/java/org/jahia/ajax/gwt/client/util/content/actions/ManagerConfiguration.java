@@ -66,6 +66,8 @@ public class ManagerConfiguration implements Serializable {
     private boolean useCheckboxForSelection = true;
     
     private String toolbarGroup;
+
+    private boolean expandRoot = false;
     
 	private boolean allowCollections = true;
 
@@ -239,4 +241,11 @@ public class ManagerConfiguration implements Serializable {
     	this.useCheckboxForSelection = useCheckboxForSelection;
     }
 
+    public boolean isExpandRoot() {
+        return expandRoot;
+    }
+
+    public void setExpandRoot(boolean expandRoot) {
+        this.expandRoot = expandRoot;
+    }
 }

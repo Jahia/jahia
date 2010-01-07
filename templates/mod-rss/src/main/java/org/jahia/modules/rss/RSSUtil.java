@@ -40,7 +40,6 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.utils.RSSHelper;
 import java.io.IOException;
 import java.net.URL;
 
@@ -53,7 +52,7 @@ import java.net.URL;
  */
 public class RSSUtil {
 
-    private static final transient Logger logger = Logger.getLogger(RSSHelper.class);
+    private static final transient Logger logger = Logger.getLogger(RSSUtil.class);
     
     private SyndFeed feed;
     

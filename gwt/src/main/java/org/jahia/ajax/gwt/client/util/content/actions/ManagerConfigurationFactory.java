@@ -264,27 +264,27 @@ public class ManagerConfigurationFactory {
     }
 
     public static ManagerConfiguration getTagManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration categoryManagerConfig = new ManagerConfiguration();
-        categoryManagerConfig.setEnableTextMenu(true);
-        categoryManagerConfig.setDisplayExt(false);
-        categoryManagerConfig.setDisplaySize(false);
-        categoryManagerConfig.setDisplayDate(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setHideLeftPanel(true);
+        configuration.setEnableTextMenu(true);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
+        configuration.setDisplayDate(false);
+        configuration.setToolbarGroup("tag-manager");
+        configuration.setExpandRoot(true);
+        configuration.addColumn("ext");
+        configuration.addColumn("name");
+        configuration.addColumn("count");
+        configuration.addColumn("locked");
+        configuration.addColumn("path");
 
-        categoryManagerConfig.setToolbarGroup("tag-manager");
+        configuration.setDefaultView(JCRClientUtils.FILE_TABLE);
+        configuration.addAccordion(JCRClientUtils.TAG_REPOSITORY);
 
-        categoryManagerConfig.addColumn("ext");
-        categoryManagerConfig.addColumn("name");
-        categoryManagerConfig.addColumn("count");
-        categoryManagerConfig.addColumn("locked");
-        categoryManagerConfig.addColumn("path");
+        configuration.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
 
-        categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
-        categoryManagerConfig.addAccordion(JCRClientUtils.TAG_REPOSITORY);
-
-        categoryManagerConfig.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
-        categoryManagerConfig.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
-
-        return categoryManagerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getCategoryPickerConfiguration(final ManagerLinker linker) {

@@ -43,8 +43,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
-import org.jahia.ajax.gwt.utils.RSSHelper;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
@@ -359,17 +357,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     protected HttpServletResponse getThreadLocalResponse() {
         return getResponse();
     }
-
-    /**
-     * load RSS feed
-     *
-     * @param feedUrl
-     * @return
-     */
-    protected GWTJahiaRSSFeed loadRssFeed(URL feedUrl) {
-        return RSSHelper.createGWTRSSFeed(feedUrl);
-    }
-
 
     /**
      * Retrieve JahiaData object corresponding to the current request

@@ -52,8 +52,6 @@ public class LiveJahiaModuleProvider extends JahiaModuleProvider {
                 return new CalendarJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.MY_SETTINGS)) {
                 return new MySettingsJahiaModule();
-            } else if (jahiaType.equalsIgnoreCase(JahiaType.RSS)) {
-                return new RSSJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.SUBSCRIPTION)) {
                 return new SubscriptionJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.FORM)) {

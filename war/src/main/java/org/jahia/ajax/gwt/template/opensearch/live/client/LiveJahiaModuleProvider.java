@@ -32,8 +32,7 @@
 package org.jahia.ajax.gwt.template.opensearch.live.client;
 
 import org.jahia.ajax.gwt.client.core.JahiaModule;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.client.module.OpenSearchJahiaModule;
+
 
 /**
  * User: jahia
@@ -42,11 +41,7 @@ import org.jahia.ajax.gwt.client.module.OpenSearchJahiaModule;
  */
 public class LiveJahiaModuleProvider  extends org.jahia.ajax.gwt.template.common.live.client.LiveJahiaModuleProvider {
     public JahiaModule getJahiaModuleByJahiaType(String jahiaType) {
-        if (jahiaType != null) {
-            if (jahiaType.equalsIgnoreCase(JahiaType.OPENSEARCH)) {
-                return new OpenSearchJahiaModule();
-            }
-        }
+        
         return super.getJahiaModuleByJahiaType(jahiaType);
     }
 }

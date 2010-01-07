@@ -204,6 +204,10 @@ public class TableView extends TopRightComponent {
             }
         });
 
+        /*GWTJahiaNode root = new GWTJahiaNode();
+        root.setPath(config.);
+        loader.load() */
+
         m_component.add(m_grid);
     }
 
@@ -259,7 +263,7 @@ public class TableView extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            loader.load( root) ;
+            loader.load(root) ;
         }
     }
 

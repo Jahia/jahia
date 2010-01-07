@@ -36,8 +36,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -96,28 +94,7 @@ public class JahiaOpenSearchBaseService extends JahiaOpenSearchService {
      */
     public void loadSearchEngines() throws JahiaException {
 
-        searchEngineDigester.loadSearchEngines(searchEngineConfigFilePath);
-        searchEngines = searchEngineDigester.getSearchEngineBeans();
-        if (searchEngines == null){
-            searchEngines = new ArrayList<SearchEngineBean>();
-        }
-        Iterator<SearchEngineBean> it = searchEngines.iterator();
-        SearchEngineBean searchEngineBean = null;
-        OpenSearchDescriptor searchDescriptor = null;
-        while (it.hasNext()){
-            searchEngineBean = it.next();
-            try {
-                searchDescriptor = new OpenSearchDescriptor(searchEngineConfigFileFolder
-                    + File.separator + searchEngineBean.getDescriptorFile());
-                searchEngineBean.setDescriptor(searchDescriptor);
-            } catch (Throwable t){
-                logger.debug(t);
-            }
-        }
-        searchEngineGroups = searchEngineDigester.getSearchEngineGroupBeans();
-        if (searchEngineGroups == null){
-            searchEngineGroups = new ArrayList<SearchEngineGroupBean>();
-        }
+
     }
 
     public List<SearchEngineBean> getSearchEngines() throws JahiaException {

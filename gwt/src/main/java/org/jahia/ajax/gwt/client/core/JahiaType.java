@@ -44,19 +44,12 @@ public class JahiaType {
     public final static String FORM = "form";
     public final static String INLINE_EDITING = "inlineediting";
     public final static String JAHIA_TYPE = "jahiatype";
-    public final static String JOBREPORT = "jobreport";
     public final static String LAYOUT_MANAGER = "layoutmanager";
-    public final static String LAYOUT_MANAGER_BOX = "layoutmanagerbox";
     public final static String MEDIA_GALLERY = "mediaGallery";
     public final static String MY_SETTINGS = "mySettings";
-    public final static String OPENSEARCH = "opensearch";
-    public final static String PDISPLAY = "pdisplay";
     public final static String PORTLET_RENDER = "portletrender";
-    public final static String QUERY = "query";
-    public final static String RSS = "rss";
     public final static String SITEMAP = "sitemap";
     public final static String SUBSCRIPTION = "subscription";
     public final static String TOOLBARS_MANAGER = "toolsbars";
     public final static String USER_GROUP = "usergroup";
-    public final static String VERSION_COMPARISON = "versioncomparison";
 }

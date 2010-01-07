@@ -182,15 +182,15 @@ public class NavigationHelper {
             boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
             if (f.isVisible() && (matchNodeType || (!noFolders && f.isCollection()))) {
                 // in case of a folder, it allows to know if the node is selectable
-                boolean matchFilters = matchesMimeTypeFilters(f.isFile(),f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
+                boolean matchFilters = matchesMimeTypeFilters(f.isFile(), f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
                 if (f.isCollection() || matchFilters) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
-                        try {
-                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
-                        } catch (GWTJahiaServiceException e) {
-                            logger.error(e.getMessage(), e);
-                        }
+                    try {
+                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
+                    } catch (GWTJahiaServiceException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                     if (displayTags) {
                         try {
                             theNode.set("count", f.getWeakReferences().getSize());
@@ -267,7 +267,7 @@ public class NavigationHelper {
 
     public boolean matchesMimeTypeFilters(boolean isFile, String mimeType, String[] filters) {
         // no filters
-        if(filters == null || filters.length ==0 ){
+        if (filters == null || filters.length == 0) {
             return true;
         }
 
@@ -425,11 +425,11 @@ public class NavigationHelper {
                 GWTJahiaNode root = null;
                 final String s = nodeTypes.replaceAll(":", "_");
                 try {
-                    root = getNode("/reusableComponents/"+ s, workspace, jParams);
+                    root = getNode("/reusableComponents/" + s, workspace, jParams);
                 } catch (GWTJahiaServiceException e) {
-                    if(forceCreate) {
-                        contentManager.createNode("/reusableComponents", s,"jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
-                        root = getNode("/reusableComponents/"+ s, workspace, jParams);
+                    if (forceCreate) {
+                        contentManager.createNode("/reusableComponents", s, "jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
+                        root = getNode("/reusableComponents/" + s, workspace, jParams);
                     }
                 }
                 if (root != null) {
@@ -449,13 +449,13 @@ public class NavigationHelper {
         if (openPaths != null) {
             for (String openPath : new HashSet<String>(openPaths)) {
                 try {
-                    for (int i = 0; i< allNodes.size(); i++) {
+                    for (int i = 0; i < allNodes.size(); i++) {
                         GWTJahiaNode node = allNodes.get(i);
                         if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                             node.setExpandOnLoad(true);
-                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false,jParams);
-                            for (int j = 0; j< list.size(); j++) {
-                                node.insert(list.get(j),j);
+                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false, jParams);
+                            for (int j = 0; j < list.size(); j++) {
+                                node.insert(list.get(j), j);
                                 allNodes.add(list.get(j));
                             }
                         }
@@ -474,7 +474,7 @@ public class NavigationHelper {
     private void addShareSiteUserFolder(ProcessingContext jParams, List<GWTJahiaNode> userNodes, String workspace, String folderName) throws GWTJahiaServiceException {
         GWTJahiaNode root = null;
         try {
-            root = getNode("/shared"+ folderName, workspace, jParams);
+            root = getNode("/shared" + folderName, workspace, jParams);
             root.setDisplayName("shared");
             userNodes.add(root);
         } catch (GWTJahiaServiceException e) {
@@ -610,7 +610,7 @@ public class NavigationHelper {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 // use for pickers 
-                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n.isFile(),n.getFileContent().getContentType(), mimeTypesToMatch);
+                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n.isFile(), n.getFileContent().getContentType(), mimeTypesToMatch);
                 if (n.isCollection() || matchFilter) {
                     String path = n.getPath();
                     if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
@@ -725,7 +725,7 @@ public class NavigationHelper {
                         b.append(node.getName());
                     }
                 }
-                if (b.length()>0) {
+                if (b.length() > 0) {
                     n.setTags(b.substring(2));
                 }
             }
@@ -762,7 +762,7 @@ public class NavigationHelper {
                 n.setTemplate(f.getProperty("j:template").getValue().getString());
             }
 
-            if(f.hasProperty("jcr:title")) {
+            if (f.hasProperty("jcr:title")) {
                 n.setDisplayName(f.getProperty("jcr:title").getString());
             }
         } catch (RepositoryException e) {

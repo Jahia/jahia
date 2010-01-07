@@ -79,6 +79,9 @@ public class RulesListener extends DefaultEventListener {
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
     private String serverId;
+    
+    private Service ruleService;
+    private ExtractionService extractionService;
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
     private PackageBuilder builder;
@@ -427,9 +430,9 @@ public class RulesListener extends DefaultEventListener {
     public Map<String, Object> getGlobals(String username, List<Updateable> delayedUpdates) {
         Map<String, Object> globals = new HashMap<String, Object>();
 
-        globals.put("service", Service.getInstance());
+        globals.put("service", ruleService);
         globals.put("imageService", ImageService.getInstance());
-        globals.put("extractionService", ExtractionService.getInstance());
+        globals.put("extractionService", extractionService);
         globals.put("logger", logger);
         globals.put("user", new User(username));
         globals.put("workspace", workspace);
@@ -493,5 +496,13 @@ public class RulesListener extends DefaultEventListener {
 
     public static List<RulesListener> getInstances() {
         return instances;
+    }
+
+    public void setRuleService(Service ruleService) {
+        this.ruleService = ruleService;
+    }
+
+    public void setExtractionService(ExtractionService extractionService) {
+        this.extractionService = extractionService;
     }
 }

@@ -18,6 +18,8 @@ rule "A welcome task for the new user"
    when
        A new node is created
 		- the node has the type jnt:user
+		- its name is not guest
+		- its name is not root
    then
        Log "Creating welcome task for new user: " + node.getName()
        Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
@@ -27,6 +29,8 @@ rule "A notification about new group member"
    when
        A new node is created
 		- the node has the type jnt:member
+		- its name is not guest
+		- its name is not root
        The node has a parent
    then
        Log "Notifying members of the group '" + parent.getParent().getName() + "' about new member '" + node.getName()

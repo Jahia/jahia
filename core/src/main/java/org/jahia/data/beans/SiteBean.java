@@ -75,6 +75,22 @@ public class SiteBean {
         this.processingContext = processingContext;
     }
 
+    public String[] getActiveLanguageCodes() {
+        List<String> codes = new LinkedList<String>();
+        try {
+            for (SiteLanguageSettings lang : jahiaSite
+                    .getLanguageSettings(true)) {
+                codes.add(lang.getCode());
+            }
+        } catch (JahiaException je) {
+            logger.error("Error while retrieving language settings for site "
+                    + getId(), je);
+            return null;
+        }
+        String[] languages = new String[codes.size()];
+        return codes.toArray(languages);
+    }
+
     public PageBean getPage(int pageID) {
         try {
             ContentPage contentPage = ContentPage.getPage(pageID);

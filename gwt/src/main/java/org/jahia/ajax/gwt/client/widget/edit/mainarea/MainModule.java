@@ -92,7 +92,7 @@ public class MainModule extends ContentPanel implements Module {
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 int i = getVScrollPosition();
-
+                setHeading("Page : "+path);                
                 removeAll();
                 Selection.getInstance().hide();
                 Hover.getInstance().removeAll();

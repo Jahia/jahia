@@ -88,6 +88,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
             }
         });
 
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.contentBrowsing", tree.getSelectionModel()));
+        grid.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.contentBrowsing.preview", grid.getSelectionModel()));
+        
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);

@@ -61,29 +61,40 @@ public interface JahiaContentManagementServiceAsync {
 
     void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths,boolean forceCreate, AsyncCallback<List<GWTJahiaNode>> async);
 
+    /**
+     * Get a node by its path if existing.
+     * @param path of hte node we want
+     * @param async callback to execute
+     */
+    void getNode(String path,AsyncCallback<GWTJahiaNode> async);
+
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
-    
+
     void search(String searchString, int limit, AsyncCallback<List<GWTJahiaNode>> async);
 
     void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
+    void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
+
     void saveSearch(String searchString, String name, AsyncCallback<GWTJahiaNode> async);
 
-    void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
+    void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
+
+    void saveSearchOnTopOf(String searchString, String path, String name, AsyncCallback asyncCallback);
+
+    void mount(String path, String target, String root, AsyncCallback async);
 
     void getMountpoints(AsyncCallback<List<GWTJahiaNode>> async);
 
+    void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
+
+    void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async) ;
+
     void setLock(List<String> paths, boolean locked, AsyncCallback async);
 
-    void checkExistence(String path,AsyncCallback async);
-
-    void createFolder(String parentPath, String name, AsyncCallback async);
-
     void deletePaths(List<String> path, AsyncCallback async);
-
-    void getDownloadPath(String path, AsyncCallback<String> async);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 
@@ -95,15 +106,37 @@ public interface JahiaContentManagementServiceAsync {
 
     void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
-    void rename(String path, String newName, AsyncCallback async);
+    void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut, AsyncCallback async);
+
+    void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
     void getProperties(String path, AsyncCallback<GWTJahiaGetPropertiesResult> async);
-
-    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
 
     void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
     void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
+
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
+
+    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
+
+    void createFolder(String parentPath, String name, AsyncCallback async);
+
+    void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
+
+    void createRSSPortletInstance(String path,String name, String url, AsyncCallback<GWTJahiaNode> async);
+
+    void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
+
+    void checkExistence(String path,AsyncCallback async);
+
+    void rename(String path, String newName, AsyncCallback async);
+
+    void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+
+    void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+
+    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
     void getACL(String path, AsyncCallback<GWTJahiaNodeACL> async);
 
@@ -111,15 +144,15 @@ public interface JahiaContentManagementServiceAsync {
 
     void setACL(String path, GWTJahiaNodeACL acl, AsyncCallback async);
 
+    void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
+
     void getUsages(String path, AsyncCallback<List<GWTJahiaNodeUsage>> async);
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
 
     void unzip(List<String> paths, AsyncCallback async);
 
-    void getFileManagerUrl(AsyncCallback<String> async);
-
-    void mount(String path, String target, String root, AsyncCallback async);
+    void getExportUrl(String path, AsyncCallback<String> async);
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
 
@@ -131,47 +164,17 @@ public interface JahiaContentManagementServiceAsync {
 
     void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
 
-    void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
-
-    void createRSSPortletInstance(String path,String name, String url, AsyncCallback<GWTJahiaNode> async);
-
-    void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
-
-    void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
+    void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion,AsyncCallback async);
 
     void uploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
-
-    void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion,AsyncCallback async);    
 
     void getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode, AsyncCallback<String> async);
 
     void getNodeURL(String path, String locale,  int mode,AsyncCallback<String> async);
 
-    void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
-
-    void getExportUrl(String path, AsyncCallback<String> async);
-
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 
-    void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
-
-    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
-
-    void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
-
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
-
-    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
-
-    void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
-
-    void saveSearchOnTopOf(String searchString, String path, String name, AsyncCallback asyncCallback);
-
-    void getTemplatesPath(String path, AsyncCallback<List<String[]>> async);
-
-    void saveNodeTemplate(String path, String template , AsyncCallback async);
 
     /**
      * Publish the specified path.
@@ -207,15 +210,4 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
-
-    /**
-     * Get a node by its path if existing.
-     * @param path of hte node we want
-     * @param async callback to execute
-     */
-    void getNode(String path,AsyncCallback<GWTJahiaNode> async);
-
-    void getNodesOfType(String nodeType,AsyncCallback<List<GWTJahiaNode>> async);
-
-    void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut, AsyncCallback async);
 }

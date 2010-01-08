@@ -66,8 +66,10 @@
    		</c:if>
         <c:set var="currentLocale" value="${jahia.processingContext.locale}"/>
         <c:forTokens items="${valueOptions}" delims="," var="lang">
-            <c:set var="selectedLang" value=",${lang},"/>
-            <% jspContext.setAttribute("langDisplayName", LanguageCodeConverters.languageCodeToLocale((String) jspContext.getAttribute("lang")).getDisplayName(((Locale) jspContext.getAttribute("currentLocale")))); %>
+            <%
+            jspContext.setAttribute("selectedLang", "," + jspContext.getAttribute("lang") + ",");
+            jspContext.setAttribute("langDisplayName", LanguageCodeConverters.languageCodeToLocale((String) jspContext.getAttribute("lang")).getDisplayName(((Locale) jspContext.getAttribute("currentLocale")))); 
+            %>
             <option value="${lang}" ${fn:contains(selectedValues, selectedLang) ? 'selected="selected"' : ''}><c:out
                     value="${langDisplayName}"/></option>
         </c:forTokens>

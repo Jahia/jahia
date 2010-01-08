@@ -66,7 +66,9 @@
    			<option value=""><fmt:message key="searchForm.any"/></option>
    		</c:if>
     	<c:forEach items="${allSites}" var="site">
-    		<c:set var="siteKeyToCheck" value=",${site.siteKey},"/>
+            <%
+            jspContext.setAttribute("siteKeyToCheck", "," + jspContext.getAttribute("site.siteKey") + ",");
+            %>
     		<c:if test="${empty valueOptions || fn:contains(valueOptions, siteKeyToCheck)}">
             	<option value="${site.siteKey}" ${fn:contains(selectedValues, site.siteKey) ? 'selected="selected"' : ''}>${fn:escapeXml(not empty site.title ? site.title : site.siteKey)}</option>
             </c:if>

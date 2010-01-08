@@ -34,11 +34,11 @@ package org.jahia.bin.listeners;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
@@ -79,6 +79,8 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());                
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            JCRSessionFactory.getInstance().closeAllSessions();
         }
     }
 

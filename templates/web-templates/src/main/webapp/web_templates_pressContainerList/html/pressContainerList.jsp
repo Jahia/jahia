@@ -14,7 +14,7 @@
                 <div class="pressdatefrom">
 
                     <div><label><fmt:message key="web_templates_pressContainer.from"/> :</label>
-                        <ui:dateSelector cssClassName="dateSelection" fieldName="pressdatefrom"
+                        <ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdatefrom"
                                          value="${param.pressdatefrom}"/>
                     </div>
                     <div class="clear"></div>
@@ -23,7 +23,7 @@
                 <div class="pressdateto">
 
                     <div><label><fmt:message key="web_templates_pressContainer.to"/> :</label>
-                        <ui:dateSelector cssClassName="dateSelection" fieldName="pressdateto"
+                        <ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdateto"
                                          value="${param.pressdateto}"/>
                     </div>
                     <div class="clear"></div>

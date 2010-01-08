@@ -32,7 +32,7 @@
 
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@ include file="../../../../common/declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <%-- This file only describe the template --%>
 
 <%-- Define layout file --%>

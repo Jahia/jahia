@@ -96,7 +96,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     if (!node.getName().equals("jcr:system") && !node.getName().equals("j:acl")) {
-                        livesession.getWorkspace().clone("default", node.getPath(), node.getPath(), true);
+                        if (!livesession.nodeExists(node.getPath())) {
+                            livesession.getWorkspace().clone("default", node.getPath(), node.getPath(), false);
+                        }
                     }
                 }
             }

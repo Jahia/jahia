@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.event.*;
@@ -170,7 +171,11 @@ public class ThumbView extends TopRightComponent {
                             }
                         }
                     } else {
-                        getLinker().onTableItemDoubleClicked(selected);
+                        if (!config.isHideLeftPanel()) {
+                            getLinker().onTableItemDoubleClicked(selected);
+                        } else {
+                            Log.debug("Double click disabled if the hide panel is hidden");
+                        }
                     }
                 }
             }

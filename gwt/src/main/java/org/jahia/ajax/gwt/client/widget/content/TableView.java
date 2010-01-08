@@ -74,51 +74,51 @@ import java.util.List;
 public class TableView extends TopRightComponent {
 
     private static String[] STATE_IMAGES = new String[]{"000", "111", "121", "000", "000", "000"};
-    
-	private static final GridCellRenderer<GWTJahiaNode> EXT_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+
+    private static final GridCellRenderer<GWTJahiaNode> EXT_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
         }
     };
-	private static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
-		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-			if (modelData.isLocked().booleanValue()) {
-				String lockOwner = modelData.getLockOwner();
-				return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
-				        : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
-			} else {
-				return "";
-			}
-		}
-	};
-	private static final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
-		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-			if (modelData.getSize() != null) {
-				long size = modelData.getSize().longValue();
-				return Formatter.getFormattedSize(size);
-			} else {
-				return "-";
-			}
-		}
-	};
-	private static final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
-		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-			Date d = modelData.get(s);
-			if (d != null) {
-				return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).getStringValue(d);
-			} else {
-				return "-";
-			}
-		}
-	};
+    private static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                             ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            if (modelData.isLocked().booleanValue()) {
+                String lockOwner = modelData.getLockOwner();
+                return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
+                        : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
+            } else {
+                return "";
+            }
+        }
+    };
+    private static final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                             ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            if (modelData.getSize() != null) {
+                long size = modelData.getSize().longValue();
+                return Formatter.getFormattedSize(size);
+            } else {
+                return "-";
+            }
+        }
+    };
+    private static final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                             ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            Date d = modelData.get(s);
+            if (d != null) {
+                return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).getStringValue(d);
+            } else {
+                return "-";
+            }
+        }
+    };
 
-	private LayoutContainer m_component;
+    private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_grid;
     private ListStore<GWTJahiaNode> store;
-    private ListLoader<ListLoadResult<GWTJahiaNode>> loader ;
+    private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private ManagerConfiguration configuration;
 
     public TableView(final ManagerConfiguration config) {
@@ -131,7 +131,7 @@ public class TableView extends TopRightComponent {
         RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
+                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
             }
         };
@@ -141,14 +141,14 @@ public class TableView extends TopRightComponent {
             protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
                 if (getLinker() != null) {
-                    getLinker().loaded() ;
+                    getLinker().loaded();
                 }
             }
         };
         store = new ListStore<GWTJahiaNode>(loader) {
             protected void onBeforeLoad(LoadEvent e) {
                 if (getLinker() != null) {
-                    getLinker().loading("listing directory content...") ;
+                    getLinker().loading("listing directory content...");
                 }
                 super.onBeforeLoad(e);
             }
@@ -156,30 +156,30 @@ public class TableView extends TopRightComponent {
             @Override
             protected void onLoadException(LoadEvent loadEvent) {
                 super.onLoadException(loadEvent);
-                Log.error("Error listing directory content " + loadEvent.exception.toString()) ;
+                Log.error("Error listing directory content " + loadEvent.exception.toString());
             }
         };
         store.setStoreSorter(new FileStoreSorter());
         List<ColumnConfig> columns = getHeaders();
         CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
         if (configuration.isUseCheckboxForSelection()) {
-        	checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
+            checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
             columns.add(0, checkboxSelectionModel.getColumn());
         }
         m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_grid.setBorders(true);
         m_grid.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "displayName");
         if (checkboxSelectionModel != null) {
-        	m_grid.setSelectionModel(checkboxSelectionModel);
-        	m_grid.addPlugin(checkboxSelectionModel);
+            m_grid.setSelectionModel(checkboxSelectionModel);
+            m_grid.addPlugin(checkboxSelectionModel);
         }
         m_grid.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
 
 
         // on selection change listener
-        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>(){
+        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
-              getLinker().onTableItemSelected();
+                getLinker().onTableItemSelected();
             }
         });
 
@@ -197,8 +197,12 @@ public class TableView extends TopRightComponent {
                             }
                         }
                     } else {
-                        getLinker().onTableItemDoubleClicked(sel.get(0));
-                        setContent(sel.get(0));
+                        if (!config.isHideLeftPanel()) {
+                            getLinker().onTableItemDoubleClicked(sel.get(0));
+                            setContent(sel.get(0));
+                        } else{
+                            Log.debug("Double click disable if left panle is hidden");
+                        }
                     }
                 }
             }
@@ -229,9 +233,9 @@ public class TableView extends TopRightComponent {
 //                    before = y < mid;
                     int idx = grid.getView().findRowIndex(row);
                     activeItem = grid.getStore().getAt(idx);
-                    if (((List)event.getData()).contains(activeItem)) {
+                    if (((List) event.getData()).contains(activeItem)) {
                         event.getStatus().setStatus(false);
-                    } else if (((GWTJahiaNode)activeItem).isCollection()) {
+                    } else if (((GWTJahiaNode) activeItem).isCollection()) {
                         event.getStatus().setStatus(true);
                     } else {
                         event.getStatus().setStatus(false);
@@ -260,7 +264,7 @@ public class TableView extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            loader.load(root) ;
+            loader.load(root);
         }
     }
 
@@ -303,24 +307,24 @@ public class TableView extends TopRightComponent {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         List<String> columnNames = new ArrayList<String>(configuration.getTableColumns());
         if (columnNames.isEmpty()) {
-        	columnNames.add("providerKey");
-        	columnNames.add("ext");      	
-        	columnNames.add("name");
+            columnNames.add("providerKey");
+            columnNames.add("ext");
+            columnNames.add("name");
             columnNames.add("locked");
-        	columnNames.add("path");
-        	columnNames.add("size");
-        	columnNames.add("publicationInfo");
-        	columnNames.add("created");
-        	columnNames.add("createdBy");
-        	columnNames.add("lastModified");
-        	columnNames.add("lastModifiedBy");
-        	columnNames.add("lastPublished");
-        	columnNames.add("lastPublishedBy");
+            columnNames.add("path");
+            columnNames.add("size");
+            columnNames.add("publicationInfo");
+            columnNames.add("created");
+            columnNames.add("createdBy");
+            columnNames.add("lastModified");
+            columnNames.add("lastModifiedBy");
+            columnNames.add("lastPublished");
+            columnNames.add("lastPublishedBy");
         }
 
         for (String columnName : columnNames) {
             ColumnConfig col = null;
-	        
+
             if ("providerKey".equals(columnName)) {
                 col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 100);
                 col.setSortable(true);
@@ -338,13 +342,13 @@ public class TableView extends TopRightComponent {
                 col.setSortable(false);
                 col.setResizable(true);
             } else if ("name".equals(columnName)) {
-	            col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 240);
-	            col.setSortable(true);
-	            col.setResizable(true);
+                col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 240);
+                col.setSortable(true);
+                col.setResizable(true);
             } else if ("path".equals(columnName)) {
-	            col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
-	            col.setSortable(true);
-	            col.setResizable(true);
+                col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
+                col.setSortable(true);
+                col.setResizable(true);
                 col.setHidden(true);
             } else if ("size".equals(columnName)) {
                 col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 140);
@@ -389,31 +393,29 @@ public class TableView extends TopRightComponent {
             } else if ("publicationInfo".equals(columnName)) {
                 col = new ColumnConfig("publicationInfo", Messages.get("fm_column_publication_info", "State"), 30);
                 col.setAlignment(Style.HorizontalAlignment.LEFT);
-				col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-					public String render(GWTJahiaNode node, String property, ColumnData config, int rowIndex,
-					        int colIndex, ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-						int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
-						String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-						return "<img src=\"../../gwt/resources/images/workflow/" + STATE_IMAGES[state]
-						        + ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
-					}
-				});
-				col.setSortable(true);
-				col.setResizable(true);
+                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                    public String render(GWTJahiaNode node, String property, ColumnData config, int rowIndex,
+                                         int colIndex, ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+                        int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
+                        String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
+                        return "<img src=\"../../gwt/resources/images/workflow/" + STATE_IMAGES[state]
+                                + ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
+                    }
+                });
+                col.setSortable(true);
+                col.setResizable(true);
             } else if ("count".equals(columnName)) {
-	            col = new ColumnConfig("count", Messages.get("fm_column_count", "Count"), 60);
-	            col.setSortable(true);
-	            col.setResizable(true);
+                col = new ColumnConfig("count", Messages.get("fm_column_count", "Count"), 60);
+                col.setSortable(true);
+                col.setResizable(true);
             }
             if (col != null) {
-            	headerList.add(col);            	
+                headerList.add(col);
             }
         }
 
         return headerList;
     }
-
-
 
 
 }

@@ -65,14 +65,14 @@
    			<option value=""><fmt:message key="searchForm.any"/></option>
    		</c:if>
         <c:set var="currentLocale" value="${jahia.processingContext.locale}"/>
-        <c:forTokens items="${valueOptions}" delims="," var="lang">
-            <%
-            jspContext.setAttribute("selectedLang", "," + jspContext.getAttribute("lang") + ",");
-            jspContext.setAttribute("langDisplayName", LanguageCodeConverters.languageCodeToLocale((String) jspContext.getAttribute("lang")).getDisplayName(((Locale) jspContext.getAttribute("currentLocale")))); 
+        <%
+        for (String lang : ((String)jspContext.getAttribute("valueOptions")).split(",")) {
+            jspContext.setAttribute("selectedLang", "," + lang + ",");
+            jspContext.setAttribute("langDisplayName", LanguageCodeConverters.languageCodeToLocale(lang).getDisplayName(((Locale) jspContext.getAttribute("currentLocale")))); 
             %>
-            <option value="${lang}" ${fn:contains(selectedValues, selectedLang) ? 'selected="selected"' : ''}><c:out
+            <option value="<%=lang%>" ${fn:contains(selectedValues, selectedLang) ? 'selected="selected"' : ''}><c:out
                     value="${langDisplayName}"/></option>
-        </c:forTokens>
+        <%}%>
     </select>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="src_languages.values" value="${fn:escapeXml(value)}"/></c:if>

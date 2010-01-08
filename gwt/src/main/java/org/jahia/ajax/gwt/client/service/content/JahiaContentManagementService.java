@@ -109,6 +109,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException;
 
+    public void pasteAndSaveProperties(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException;
+
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 
     public void rename(String path, String newName) throws GWTJahiaServiceException;
@@ -122,6 +124,8 @@ public interface JahiaContentManagementService extends RemoteService {
     void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException;
+
+    public GWTJahiaNodeACL getNewACL(String parentPath) throws GWTJahiaServiceException;
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException;
 

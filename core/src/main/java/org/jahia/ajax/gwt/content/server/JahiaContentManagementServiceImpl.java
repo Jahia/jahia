@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -228,11 +227,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException {
-        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, false, cut, false);
+        contentManager.paste(pathsToCopy, destinationPath, newName, false, cut, false);
+    }
+
+    public void pasteAndSaveProperties(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> nodes = contentManager.paste(pathsToCopy, destinationPath, newName, false, cut, false);
+        saveProperties(nodes, newsProps);
+        if (acl != null) {
+            for (GWTJahiaNode node : nodes) {
+                setACL(node.getPath(), acl);
+            }
+        }
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
-        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, false, false, true);
+        contentManager.paste(pathsToCopy, destinationPath, newName, false, false, true);
     }
 
     public void rename(String path, String newName) throws GWTJahiaServiceException {
@@ -283,7 +292,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
-        return contentManager.getACL(path, retrieveParamBean());
+        return contentManager.getACL(path, retrieveParamBean(), false);
+    }
+
+    public GWTJahiaNodeACL getNewACL(String parentPath) throws GWTJahiaServiceException {
+        return contentManager.getACL(parentPath, retrieveParamBean(), true);
     }
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
@@ -530,7 +543,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
-        contentManager.pasteOnTopOf(pathsToCopy, destinationPath, newName, true, false, true);
+        contentManager.paste(pathsToCopy, destinationPath, newName, true, false, true);
     }
 
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
@@ -673,6 +686,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException {
-        contentManager.pasteOnTopOf(nodes, path, newName, true, cut, false);
+        contentManager.paste(nodes, path, newName, true, cut, false);
     }
 }

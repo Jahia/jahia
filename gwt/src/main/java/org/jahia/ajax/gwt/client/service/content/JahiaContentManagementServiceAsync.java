@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.List;
@@ -90,6 +91,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
 
+    void pasteAndSaveProperties(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps, AsyncCallback async);
+
     void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
     void rename(String path, String newName, AsyncCallback async);
@@ -103,6 +106,8 @@ public interface JahiaContentManagementServiceAsync {
     void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
     void getACL(String path, AsyncCallback<GWTJahiaNodeACL> async);
+
+    void getNewACL(String parentPath, AsyncCallback<GWTJahiaNodeACL> async) throws GWTJahiaServiceException;
 
     void setACL(String path, GWTJahiaNodeACL acl, AsyncCallback async);
 

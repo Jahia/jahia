@@ -392,7 +392,9 @@ public class ContentManagerHelper {
         }
     }
 
-    public void pasteOnTopOf(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop, boolean cut, boolean reference) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> paste(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop, boolean cut, boolean reference) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
+
         List<String> missedPaths = new ArrayList<String>();
 
         final JCRNodeWrapper targetParent;
@@ -418,7 +420,7 @@ public class ContentManagerHelper {
                         try {
                             name = findAvailableName(targetParent, name);
                             if (targetParent.isWriteable()) {
-                                doPaste(targetParent, node, name, cut, reference);
+                                res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference), false));
                                 if (moveOnTop)
                                     targetParent.orderBefore(name, targetNode.getName());
                             } else {
@@ -448,9 +450,10 @@ public class ContentManagerHelper {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
+        return res;
     }
 
-    private void doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut, boolean reference) throws RepositoryException, JahiaException {
+    private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut, boolean reference) throws RepositoryException, JahiaException {
         if (cut) {
             node.checkout();
             targetNode.checkout();
@@ -470,7 +473,8 @@ public class ContentManagerHelper {
                     if (node1 != null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
                         id = sitesService.getSiteByKey(node1.getName()).getID();
                     }
-                    Node member = targetNode.addNode(name + "___" + id, Constants.JAHIANT_MEMBER);
+                    name += ("___" + id);
+                    Node member = targetNode.addNode(name, Constants.JAHIANT_MEMBER);
                     member.setProperty("j:member", node.getUUID());
                 }
             } else {
@@ -480,6 +484,7 @@ public class ContentManagerHelper {
         } else {
             node.copyFile(targetNode.getPath(), name);
         }
+        return targetNode.getNode(name);
     }
 
     public void deletePaths(List<String> paths, JahiaUser user) throws GWTJahiaServiceException {
@@ -567,7 +572,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNodeACL getACL(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public GWTJahiaNodeACL getACL(String path, ProcessingContext jParams, boolean newAcl) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -591,7 +596,7 @@ public class ContentManagerHelper {
             Map<String, String> inheritedPerms = new HashMap<String, String>();
             String inheritedFrom = null;
             for (String[] strings : st) {
-                if (!path.equals(strings[0])) {
+                if (newAcl || !path.equals(strings[0])) {
                     inheritedFrom = strings[0];
                     inheritedPerms.put(strings[2], strings[1]);
                 } else {

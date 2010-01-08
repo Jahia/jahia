@@ -92,42 +92,23 @@ public class CreatePageContentEngine extends CreateContentEngine {
             }
 
             final GWTJahiaNode gwtJahiaNode = createPageTab.getReusableComponent().get(0);
-            contentService.paste(Arrays.asList(gwtJahiaNode.getPath()+ "/j:target"), parent.getPath() , gwtJahiaNode.getName(),false, new AsyncCallback() {
+            contentService.pasteAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()+ "/j:target"), parent.getPath() , gwtJahiaNode.getName(),false, null, props, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Window.alert("error1: "+caught);
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display("", "1");
+                    if (closeAfterSave) {
+                        Info.display("", "Page " + node.getName() + "created");
+                        CreatePageContentEngine.this.hide();
+                    } else {
+                        CreatePageContentEngine.this.tabs.removeAll();
+                        CreatePageContentEngine.this.initTabs();
+                        CreatePageContentEngine.this.layout(true);
+                    }
 
-                    contentService.getNode(parent.getPath() +"/"+ gwtJahiaNode.getName(), new AsyncCallback<GWTJahiaNode>() {
-                        public void onFailure(Throwable caught) {
-                            Window.alert("error2: "+caught);
-                        }
-
-                        public void onSuccess(GWTJahiaNode result) {
-                            Info.display("", "2");
-                            contentService.saveProperties(Arrays.asList(result), props, new AsyncCallback() {
-                                public void onFailure(Throwable caught) {
-                                    Window.alert("error3: "+caught);
-                                }
-
-                                public void onSuccess(Object result) {
-                                    if (closeAfterSave) {
-                                        Info.display("", "Page " + node.getName() + "created");
-                                        CreatePageContentEngine.this.hide();
-                                    } else {
-                                        CreatePageContentEngine.this.tabs.removeAll();
-                                        CreatePageContentEngine.this.initTabs();
-                                        CreatePageContentEngine.this.layout(true);
-                                    }
-
-                                    linker.refreshMainComponent();
-                                    linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
-                                }
-                            });
-                        }
-                    });
+                    linker.refreshMainComponent();
+                    linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
                 }
             });
         }

@@ -261,6 +261,10 @@ public class PropertiesHelper {
     }
 
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
+        if(objectNode == null || newProps == null || newProps.isEmpty()){
+            logger.debug("node or propesties are null or empty");
+            return;
+        }
         if (!objectNode.isCheckedOut()) {
             objectNode.checkout();
         }

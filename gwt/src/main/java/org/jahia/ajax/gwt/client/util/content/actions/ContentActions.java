@@ -41,6 +41,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -83,7 +84,7 @@ public class ContentActions {
      * @param linker
      */
     public static void copy(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
             linker.loaded();
@@ -97,7 +98,7 @@ public class ContentActions {
      * @param linker
      */
     public static void cut(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             final List<GWTJahiaNode> actualSelection = new ArrayList<GWTJahiaNode>();
             final List<GWTJahiaNode> lockedFiles = new ArrayList<GWTJahiaNode>();
@@ -140,7 +141,7 @@ public class ContentActions {
      * @param linker
      */
     public static void paste(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         GWTJahiaNode m = null;
         if (selectedItems != null && selectedItems.size() == 1) {
             m = selectedItems.get(0);
@@ -183,7 +184,7 @@ public class ContentActions {
      * @param linker
      */
     public static void pasteReference(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         GWTJahiaNode m = null;
         if (selectedItems != null && selectedItems.size() == 1) {
             m = selectedItems.get(0);
@@ -262,7 +263,7 @@ public class ContentActions {
     public static void upload(final Linker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getMainNode();
         if (m == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 m = selectedItems.get(0);
             }
@@ -278,7 +279,7 @@ public class ContentActions {
      * @param linker
      */
     public static void download(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             download(linker, selection, selection.getUrl());
@@ -318,7 +319,7 @@ public class ContentActions {
      * @param linker
      */
     public static void preview(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null && selection.isFile().booleanValue()) {
@@ -333,7 +334,7 @@ public class ContentActions {
      * @param linker
      */
     public static void openWebFolder(final Linker linker) {
-        List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         final GWTJahiaNode selection;
         if (selectedItems == null || selectedItems.size() > 1 || (selectedItems.size() == 1 && selectedItems.get(0).isFile())) {
             selection = (GWTJahiaNode) linker.getMainNode();
@@ -375,7 +376,7 @@ public class ContentActions {
     public static void createFolder(final Linker linker) {
         GWTJahiaNode parent = linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -400,6 +401,39 @@ public class ContentActions {
     }
 
     /**
+     * Create a node
+     * @param linker
+     * @param windowHeaer
+     * @param nodeType
+     */
+    public static void createNode(final Linker linker, final String windowHeaer, final String nodeType) {
+        GWTJahiaNode parent = linker.getMainNode();
+        if (parent == null) {
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+            if (selectedItems != null && selectedItems.size() == 1) {
+                parent = selectedItems.get(0);
+            }
+        }
+        if (parent != null && !parent.isFile()) {
+            String nodeName = Window.prompt(windowHeaer, "untitled");
+            if (nodeName != null && nodeName.length() > 0) {
+                linker.loading(Messages.getResource("fm_newfoldering"));
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new AsyncCallback<GWTJahiaNode>() {
+                    public void onSuccess(GWTJahiaNode o) {
+                        linker.loaded();
+                        linker.refresh();
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        Log.error("Unable to create [" + nodeType + "]", throwable);
+                        linker.loaded();
+                    }
+                });
+            }
+        }
+    }
+
+    /**
      * Show mashup wizard form
      *
      * @param linker
@@ -407,7 +441,7 @@ public class ContentActions {
     public static void showMashupWizard(final Linker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -426,7 +460,7 @@ public class ContentActions {
     public static void showRSSForm(final Linker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -458,7 +492,7 @@ public class ContentActions {
     public static void showGoogleGadgetForm(final Linker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -487,14 +521,15 @@ public class ContentActions {
      * Show deploy portlet form
      * @param linker
      */
-     /**
+    /**
      * Show deploy portlet form
+     *
      * @param linker
      */
     public static void showDeployPortletForm(final Linker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -507,7 +542,7 @@ public class ContentActions {
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
             w.setWidth(500);
-            w.add(new FormDeployPortletDefinition(){
+            w.add(new FormDeployPortletDefinition() {
                 public void closeParent() {
                     w.hide();
                 }
@@ -529,12 +564,14 @@ public class ContentActions {
 
     /**
      * Display content wizard with a pre-selected node type
+     *
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizard(final Linker linker, final String nodeType){
+    public static void showContentWizard(final Linker linker, final String nodeType) {
         showContentWizard(linker, nodeType, false);
     }
+
     /**
      * Show content wizard with a selected node type
      *
@@ -542,7 +579,7 @@ public class ContentActions {
      * @param nodeType
      */
     public static void showContentWizard(final Linker linker, final String nodeType, final boolean displayReusableComponents) {
-        if(nodeType ==  null){
+        if (nodeType == null) {
             showContentWizardByNodeType(linker, null, true);
             return;
         }
@@ -553,8 +590,8 @@ public class ContentActions {
                 if (jahiaNodeType != null) {
                     Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
                     showContentWizardByNodeType(linker, jahiaNodeType, displayReusableComponents);
-                }else{
-                    Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");                    
+                } else {
+                    Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");
                 }
             }
 
@@ -579,13 +616,13 @@ public class ContentActions {
             parent = linker.getMainNode();
         }
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
         }
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeType,displayReusableComponents).show();
+            new ContentTypeWindow(linker, parent, nodeType, displayReusableComponents).show();
         }
     }
 
@@ -613,7 +650,7 @@ public class ContentActions {
      * @param linker
      */
     public static void unmountFolder(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selection = selectedItems.get(0);
             if (selection.isLocked()) {
@@ -638,7 +675,7 @@ public class ContentActions {
     }
 
     public static void remove(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             boolean rem;
             boolean containFolder = false;
@@ -694,7 +731,7 @@ public class ContentActions {
     }
 
     public static void rename(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
@@ -729,7 +766,7 @@ public class ContentActions {
     }
 
     public static void zip(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getMainNode();
         if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
@@ -783,7 +820,7 @@ public class ContentActions {
     }
 
     public static void unzip(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             linker.loading(Messages.getResource("fm_unzipping"));
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
@@ -807,7 +844,7 @@ public class ContentActions {
     }
 
     public static void lock(boolean lock, final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             List<String> lockedBySystem = new LinkedList<String>();
@@ -862,7 +899,7 @@ public class ContentActions {
     }
 
     public static void resizeImage(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -872,7 +909,7 @@ public class ContentActions {
     }
 
     public static void rotateImage(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -882,7 +919,7 @@ public class ContentActions {
     }
 
     public static void exportContent(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -897,7 +934,7 @@ public class ContentActions {
     }
 
     public static void importContent(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -915,37 +952,37 @@ public class ContentActions {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
             JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new AsyncCallback<GWTJahiaNodeType>() {
+                public void onFailure(Throwable caught) {
+                    MessageBox.alert("Alert",
+                            "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
+                                    + caught.getLocalizedMessage(),
+                            null);
+                }
+
+                public void onSuccess(final GWTJahiaNodeType nodeType) {
+
+                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
                         public void onFailure(Throwable caught) {
                             MessageBox.alert("Alert",
-                                    "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
+                                    "Unable to load reusable component node for current site. Cause: "
                                             + caught.getLocalizedMessage(),
                                     null);
                         }
 
-                        public void onSuccess(final GWTJahiaNodeType nodeType) {
-
-                            JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
-                                public void onFailure(Throwable caught) {
-                                    MessageBox.alert("Alert",
-                                            "Unable to load reusable component node for current site. Cause: "
-                                                    + caught.getLocalizedMessage(),
-                                            null);
-                                }
-
-                                public void onSuccess(List<GWTJahiaNode> result) {
-                                    if (result.isEmpty()) {
-                                        MessageBox.alert("Alert",
-                                                "Unable to load reusable components root node",
-                                                null);
-                                    } else {
-                                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
-                                        props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                                        new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();                                        
-                                    }
-                                }
-                            });
+                        public void onSuccess(List<GWTJahiaNode> result) {
+                            if (result.isEmpty()) {
+                                MessageBox.alert("Alert",
+                                        "Unable to load reusable components root node",
+                                        null);
+                            } else {
+                                Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
+                                props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
+                                new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();
+                            }
                         }
                     });
+                }
+            });
         }
     }
 

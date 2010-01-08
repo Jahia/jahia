@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
@@ -12,7 +13,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class NewCategoryActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.showContentWizard(linker, "jnt:category");
+        ContentActions.createNode(linker, Messages.get("fm_newcategory", "New category"), "jnt:category");
     }
 
     public void handleNewLinkerSelection() {

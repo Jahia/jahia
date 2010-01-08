@@ -41,7 +41,7 @@ public class PagesTabItem extends SidePanelTabItem {
     protected String path;
 
     public PagesTabItem() {
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.page());
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());

@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -60,10 +61,12 @@ public class CreatePageContentEngine extends CreateContentEngine {
         if (createPageTab.getReusableComponent().isEmpty()) {
             super.save(closeAfterSave);
         } else {
-            String nodeName = targetName;
+            String nodeName = null;
             final List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
             final List<String> mixin = new ArrayList<String>();
 
+            // new acl
+            GWTJahiaNodeACL newNodeACL = null;
 
             for (TabItem item : tabs.getItems()) {
                 if (item instanceof PropertiesTabItem) {
@@ -73,33 +76,27 @@ public class CreatePageContentEngine extends CreateContentEngine {
                         mixin.addAll(pe.getAddedTypes());
                         mixin.addAll(pe.getTemplateTypes());
                     }
-                    if (item instanceof ContentTabItem) {
-                        if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                            nodeName = ((TextField<?>) ((FormPanel) item.getItem(0)).getItem(0)).getRawValue();
-                            if (nodeName.equals("Automatically Created (you can type your name here if you want)")) {
-                                nodeName = targetName;
-                            }
-                        }
-                    }
                 } else if (item instanceof RightsTabItem) {
                     AclEditor acl = ((RightsTabItem) item).getRightsEditor();
-                    // ?
+                    if (acl != null) {
+                        newNodeACL = acl.getAcl();
+                    }
                 } else if (item instanceof ClassificationTabItem) {
-                    // ?
+                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), props, mixin);
                 } else if (item instanceof CreatePageTabItem) {
                     props.add(new GWTJahiaNodeProperty("jcr:title",new GWTJahiaNodePropertyValue(((CreatePageTabItem) item).getContentTitle(),  GWTJahiaNodePropertyType.STRING)));
                 }
             }
 
             final GWTJahiaNode gwtJahiaNode = createPageTab.getReusableComponent().get(0);
-            contentService.pasteAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()+ "/j:target"), parent.getPath() , gwtJahiaNode.getName(),false, null, props, new AsyncCallback() {
+            contentService.copyAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()+ "/j:target"), parentNode.getPath(), mixin , newNodeACL, props, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Window.alert("error1: "+caught);
                 }
 
                 public void onSuccess(Object result) {
                     if (closeAfterSave) {
-                        Info.display("", "Page " + node.getName() + "created");
+                        Info.display("", "Page created");
                         CreatePageContentEngine.this.hide();
                     } else {
                         CreatePageContentEngine.this.tabs.removeAll();

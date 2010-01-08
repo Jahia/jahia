@@ -227,21 +227,29 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException {
-        contentManager.paste(pathsToCopy, destinationPath, newName, false, cut, false);
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false);
     }
 
-    public void pasteAndSaveProperties(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> nodes = contentManager.paste(pathsToCopy, destinationPath, newName, false, cut, false);
-        saveProperties(nodes, newsProps);
-        if (acl != null) {
+    public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
+        try {
+            String newName = contentManager.generateNameFromTitle(newsProps);
+            List<GWTJahiaNode> nodes = contentManager.copy(pathsToCopy, destinationPath, newName, false, false, false);
             for (GWTJahiaNode node : nodes) {
-                setACL(node.getPath(), acl);
+                node.getNodeTypes().addAll(mixin);
             }
+            saveProperties(nodes, newsProps);
+            if (acl != null) {
+                for (GWTJahiaNode node : nodes) {
+                    setACL(node.getPath(), acl);
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
-        contentManager.paste(pathsToCopy, destinationPath, newName, false, false, true);
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true);
     }
 
     public void rename(String path, String newName) throws GWTJahiaServiceException {
@@ -264,17 +272,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return result;
     }
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         if (captcha != null && !contentManager.checkCaptcha(context, captcha)) {
             throw new GWTJahiaServiceException("Invalid captcha");
         }
-
+        GWTJahiaNode res;
         if (captcha != null) {
-            return contentManager.unsecureCreateNode(parentPath, name, nodeType, mixin, props);
+            res = contentManager.unsecureCreateNode(parentPath, name, nodeType, mixin, props);
         } else {
-            return contentManager.createNode(parentPath, name, nodeType, mixin, props, context);
+            res = contentManager.createNode(parentPath, name, nodeType, mixin, props, context);
         }
+        if (acl != null) {
+            setACL(res.getPath(), acl);
+        }
+        return res;
     }
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
@@ -543,10 +555,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException {
-        contentManager.paste(pathsToCopy, destinationPath, newName, true, false, true);
+        contentManager.copy(pathsToCopy, destinationPath, newName, true, false, true);
     }
 
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, context);
@@ -554,6 +566,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
+        }
+        if (acl != null) {
+            setACL(jahiaNode.getPath(), acl);
         }
     }
 
@@ -686,6 +701,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException {
-        contentManager.paste(nodes, path, newName, true, cut, false);
+        contentManager.copy(nodes, path, newName, true, cut, false);
     }
 }

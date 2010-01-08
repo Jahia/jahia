@@ -9,8 +9,8 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -37,7 +37,6 @@ import java.util.Map;
 public class CreateContentEngine extends AbstractContentEngine {
 
     protected GWTJahiaNodeType type = null;
-    protected GWTJahiaNode parent = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
     
@@ -81,7 +80,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
         super(linker);
         this.existingNode = false;
-        this.parent = parent;
+        this.parentNode = parent;
         this.type = type;
         if (!"*".equals(targetName)) {
             this.targetName = targetName;
@@ -177,6 +176,8 @@ public class CreateContentEngine extends AbstractContentEngine {
         List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
         List<String> mixin = new ArrayList<String>();
 
+        // new acl
+        GWTJahiaNodeACL newNodeACL = null;
 
         for (TabItem item : tabs.getItems()) {
             if (item instanceof PropertiesTabItem) {
@@ -196,16 +197,16 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
             } else if (item instanceof RightsTabItem) {
                 AclEditor acl = ((RightsTabItem) item).getRightsEditor();
-                // ?
+                if (acl != null) {
+                    newNodeACL = acl.getAcl();
+                }
             } else if (item instanceof ClassificationTabItem) {
-                // ?
-            } else if (item instanceof CreatePageTabItem) {
-                props.add(new GWTJahiaNodeProperty("jcr:title",new GWTJahiaNodePropertyValue(((CreatePageTabItem) item).getContentTitle(),  GWTJahiaNodePropertyType.STRING)));
+                ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), props, mixin);
             }
         }
 
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<Object>() {
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, null, new AsyncCallback<Object>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);
@@ -224,7 +225,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
             });
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, type.getName(), mixin, props, null, new AsyncCallback<GWTJahiaNode>() {
+            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, null, new AsyncCallback<GWTJahiaNode>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);

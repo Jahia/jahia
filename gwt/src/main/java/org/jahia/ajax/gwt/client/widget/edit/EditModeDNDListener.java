@@ -105,7 +105,7 @@ public class EditModeDNDListener extends DNDListener {
                     e.getStatus().setData(OPERATION_CALLED, "true");
                     if (type.getItems() == null || type.getItems().size() == 0) {
                         JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null,
-                                type.getName(), null,
+                                type.getName(), null, null,
                                 new ArrayList<GWTJahiaNodeProperty>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(
@@ -168,7 +168,7 @@ public class EditModeDNDListener extends DNDListener {
                     e.getStatus().setData(OPERATION_CALLED, "true");
                     if (type.getItems() == null || type.getItems().size() == 0) {
                         JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null,
-                                type.getName(), null,
+                                type.getName(), null, null,
                                 new ArrayList<GWTJahiaNodeProperty>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(

@@ -27,7 +27,18 @@ public class RightsTabItem extends EditEngineTabItem {
 
     @Override
     public void create() {
-        final GWTJahiaNode node = engine.getNode();
+        if (engine.getNode() != null) {
+            setProcessed(true);
+            final GWTJahiaNode node = engine.getNode();
+            getACL(node);
+        } else if (engine.getParent() != null)  {
+            setProcessed(true);
+            final GWTJahiaNode node = engine.getParentNode();
+            getACL(node);
+        }
+    }
+
+    private void getACL(final GWTJahiaNode node) {
         JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
             /**
              * onsuccess
@@ -58,9 +69,7 @@ public class RightsTabItem extends EditEngineTabItem {
             public void onFailure(Throwable throwable) {
                 Log.debug("Cannot retrieve acl", throwable);
             }
-
         });
-        setProcessed(true);
     }
 
     public AclEditor getRightsEditor() {

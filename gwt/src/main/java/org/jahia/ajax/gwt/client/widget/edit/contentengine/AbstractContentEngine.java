@@ -40,6 +40,7 @@ public abstract class AbstractContentEngine extends Window {
     protected TabPanel tabs;
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
+    protected GWTJahiaNode parentNode;
     protected ButtonBar buttonBar;
     protected String heading;
 
@@ -130,6 +131,10 @@ public abstract class AbstractContentEngine extends Window {
 
     public GWTJahiaNode getNode() {
         return node;
+    }
+
+    public GWTJahiaNode getParentNode() {
+        return parentNode;
     }
 
     public boolean isExistingNode() {

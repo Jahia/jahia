@@ -26,7 +26,7 @@ public class UsagesTabItem extends EditEngineTabItem {
     @Override
     public void create() {
         setLayout(new FitLayout());
-        if (!engine.isExistingNode() || (engine.getNode() != null)) {
+        if (engine.getNode() != null) {
             Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));
             add(grid);
             setProcessed(true);

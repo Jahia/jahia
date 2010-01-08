@@ -213,49 +213,53 @@ public class ClassificationEditor extends LayoutContainer {
         TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                    public void onFailure(Throwable caught) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
-                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
-                                "j:defaultCategory");
-                        if (gwtJahiaNodeProperty != null) {
-                            final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                            for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                nodes.add(propertyValue.getNode());
-                            }
-                            listAsyncCallback.onSuccess(nodes);
+                if (node != null) {
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                        public void onFailure(Throwable caught) {
+                            //To change body of implemented methods use File | Settings | File Templates.
                         }
-                    }
-                });
+
+                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
+                                    "j:defaultCategory");
+                            if (gwtJahiaNodeProperty != null) {
+                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                    nodes.add(propertyValue.getNode());
+                                }
+                                listAsyncCallback.onSuccess(nodes);
+                            }
+                        }
+                    });
+                }
             }
         });
         catStore = new TreeStore<GWTJahiaNode>(catLoader);
         TreeLoader<GWTJahiaNode> tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                    public void onFailure(Throwable caught) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
-                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get("j:tags");
-                        if (gwtJahiaNodeProperty != null) {
-                            final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                            for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                nodes.add(propertyValue.getNode());
-                            }
-                            listAsyncCallback.onSuccess(nodes);
+                if (node != null) {
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                        public void onFailure(Throwable caught) {
+                            //To change body of implemented methods use File | Settings | File Templates.
                         }
-                    }
-                });
+
+                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get("j:tags");
+                            if (gwtJahiaNodeProperty != null) {
+                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                    nodes.add(propertyValue.getNode());
+                                }
+                                listAsyncCallback.onSuccess(nodes);
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -373,7 +377,7 @@ public class ClassificationEditor extends LayoutContainer {
                 async.getNode(s + "/" + name.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {
 
-                        async.createNode(s, name.getRawValue(), "jnt:tag", null, new ArrayList<GWTJahiaNodeProperty>(), null,
+                        async.createNode(s, name.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         com.google.gwt.user.client.Window.alert(

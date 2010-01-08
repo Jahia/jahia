@@ -213,7 +213,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         newNodeACL = acl.getAcl();
                     }
                 } else if (item instanceof ClassificationTabItem) {
-                    updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), properties);
+                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), properties, node.getNodeTypes());
                 }
             }
 
@@ -232,54 +232,6 @@ public class EditContentEngine extends AbstractContentEngine {
             });
         }
 
-        private void updatePropertiesListWithClassificationEditorData(ClassificationEditor classificationEditor, List<GWTJahiaNodeProperty> list) {
-            if (classificationEditor == null) {
-                return;
-            }
-            List<GWTJahiaNode> gwtJahiaNodes = classificationEditor.getCatStore().getAllItems();
-            List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
-            for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
-                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode));
-            }
-            GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-            gwtJahiaNodeProperty.setMultiple(true);
-            gwtJahiaNodeProperty.setValues(values);
-            gwtJahiaNodeProperty.setName("j:defaultCategory");
-            if (node.getProperties().containsKey("j:defaultCategory")) {
-                if (values.isEmpty()) {
-                    node.getNodeTypes().remove("jmix:categorized");
-                } else {
-                    list.add(gwtJahiaNodeProperty);
-                }
-            } else {
-                if (!values.isEmpty()) {
-                    node.getNodeTypes().add("jmix:categorized");
-                    list.add(gwtJahiaNodeProperty);
-                }
-            }
-
-            gwtJahiaNodes = classificationEditor.getTagStore().getAllItems();
-            values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
-            for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
-                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
-            }
-            gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-            gwtJahiaNodeProperty.setMultiple(true);
-            gwtJahiaNodeProperty.setValues(values);
-            gwtJahiaNodeProperty.setName("j:tags");
-            if (node.getProperties().containsKey("j:tags")) {
-                if (values.isEmpty()) {
-                    node.getNodeTypes().remove("jmix:tagged");
-                } else {
-                    list.add(gwtJahiaNodeProperty);
-                }
-            } else {
-                if (!values.isEmpty()) {
-                    node.getNodeTypes().add("jmix:tagged");
-                    list.add(gwtJahiaNodeProperty);
-                }
-            }
-        }
     }
 
 }

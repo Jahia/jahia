@@ -174,28 +174,7 @@ public class ContentManagerHelper {
         }
         String nodeName = name;
         if (name == null) {
-            for (GWTJahiaNodeProperty property : props) {
-                if (property != null) {
-                    final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-                    if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0) {
-                        nodeName = propertyValues.get(0).getString();
-                        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
-                        final char[] newChars = new char[chars.length];
-                        int j = 0;
-                        for (char aChar : chars) {
-                            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
-                                newChars[j++] = aChar;
-                            }
-                        }
-                        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
-                        if (nodeName.length() > 32) {
-                            nodeName = nodeName.substring(0, 32);
-                        }
-                    }
-                }else{
-                    logger.error("found a null property");
-                }
-            }
+            nodeName = generateNameFromTitle(props);
         }
 
         if (nodeName == null) {
@@ -216,6 +195,33 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
         return navigation.getGWTJahiaNode(childNode, true);
+    }
+
+    public String generateNameFromTitle(List<GWTJahiaNodeProperty> props) {
+        String nodeName = null;
+        for (GWTJahiaNodeProperty property : props) {
+            if (property != null) {
+                final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+                if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0) {
+                    nodeName = propertyValues.get(0).getString();
+                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
+                    final char[] newChars = new char[chars.length];
+                    int j = 0;
+                    for (char aChar : chars) {
+                        if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
+                            newChars[j++] = aChar;
+                        }
+                    }
+                    nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+                    if (nodeName.length() > 32) {
+                        nodeName = nodeName.substring(0, 32);
+                    }
+                }
+            }else{
+                logger.error("found a null property");
+            }
+        }
+        return nodeName;
     }
 
     public GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
@@ -392,7 +398,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public List<GWTJahiaNode> paste(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop, boolean cut, boolean reference) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> copy(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop, boolean cut, boolean reference) throws GWTJahiaServiceException {
         List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
         List<String> missedPaths = new ArrayList<String>();

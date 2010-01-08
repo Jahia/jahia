@@ -73,6 +73,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     public void start() throws JahiaInitializationException {
         boolean liveWorkspaceCreated = false;
         Session session = null;
+        Session livesession = null;
         try {
             try {
                 session = getSystemSession(null, "live");
@@ -90,22 +91,23 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 Node n = session.getNode("/");
                 recurseCheckin(n, session.getWorkspace().getVersionManager());
                 NodeIterator ni = n.getNodes();
-                Session livesession = getSystemSession(null, "live");
+                livesession = getSystemSession(null, "live");
 
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     if (!node.getName().equals("jcr:system") && !node.getName().equals("j:acl")) {
-                        livesession.getWorkspace().clone("default", node.getPath(), node.getPath(), false);
+                        livesession.getWorkspace().clone("default", node.getPath(), node.getPath(), true);
                     }
                 }
-                session.logout();
-                livesession.logout();
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Error starting store provider", e);
         } finally {
-            if(session!=null && session.isLive()) {
+            if (session != null && session.isLive()) {
                 session.logout();
+            }
+            if (livesession != null && livesession.isLive()) {
+                livesession.logout();
             }
         }
     }

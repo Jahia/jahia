@@ -527,6 +527,11 @@ public class ContentActions {
         showContentWizard(linker, null);
     }
 
+    /**
+     * Display content wizard with a pre-selected node type
+     * @param linker
+     * @param nodeType
+     */
     public static void showContentWizard(final Linker linker, final String nodeType){
         showContentWizard(linker, nodeType, false);
     }

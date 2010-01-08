@@ -41,6 +41,12 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("icon-content.png")
     public AbstractImagePrototype content();
 
+    @Resource("tab_addContent.png")
+    public AbstractImagePrototype tabAddContent();
+
+    @Resource("tab_browseContent.gif")
+    public AbstractImagePrototype tabBrowseContent();
+
     @Resource("icon-dir.png")
     public AbstractImagePrototype dir();
 
@@ -52,6 +58,9 @@ public interface ContentIconsImageBundle extends ImageBundle {
 
     @Resource("icon-file.png")
     public AbstractImagePrototype file();
+
+    @Resource("tab_documents.png")
+    public AbstractImagePrototype tabDocuments();
 
     @Resource("icon-gearth.png")
     public AbstractImagePrototype gearth();
@@ -71,6 +80,9 @@ public interface ContentIconsImageBundle extends ImageBundle {
 
     @Resource("icon-page.png")
     public AbstractImagePrototype page();
+
+    @Resource("tab_pages.png")
+    public AbstractImagePrototype tabPages();
 
     @Resource("icon-pdf.png")
     public AbstractImagePrototype pdf();

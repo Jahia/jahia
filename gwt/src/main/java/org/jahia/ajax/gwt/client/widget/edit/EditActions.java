@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -63,6 +64,28 @@ public class EditActions {
 
     }
 
+    /**
+     * Switch mode
+     *
+     * @param linker
+     */
+    public static void switchMode(final Linker linker,int mode) {
+        if (linker.getMainNode() != null) {
+            String path = linker.getMainNode().getPath();
+            String locale = JahiaGWTParameters.getLanguage();
+            JahiaContentManagementService.App.getInstance().getNodeURL(path,  locale, mode, new AsyncCallback<String>() {
+                public void onSuccess(String url) {
+                    com.google.gwt.user.client.Window.Location.replace(url);
+                }
+
+                public void onFailure(Throwable throwable) {
+                    Log.error("", throwable);
+                }
+            });
+        }
+
+    }
+
 
     /**
      * Dispay edit content window
@@ -71,7 +94,7 @@ public class EditActions {
      */
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
-            new EditContentEngine(linker.getSelectedNode(),linker).show();
+            new EditContentEngine(linker.getSelectedNode(), linker).show();
         }
     }
 
@@ -201,7 +224,6 @@ public class EditActions {
     }
 
 
-
     private static class PublishAllConfirmWindow extends Window {
 
         private PublishAllConfirmWindow(final Linker linker, final GWTJahiaNode selectedNode) {
@@ -212,7 +234,7 @@ public class EditActions {
 
             setModal(true);
 
-            final FormPanel form = new FormPanel() ;
+            final FormPanel form = new FormPanel();
             form.setFrame(false);
             form.setHeaderVisible(false);
             form.setBodyBorder(false);
@@ -225,10 +247,10 @@ public class EditActions {
 
             final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
-                    hide() ;
+                    hide();
                 }
             });
-            final Button ok = new Button(Messages.getResource("publication_publish")) ;
+            final Button ok = new Button(Messages.getResource("publication_publish"));
             SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
@@ -268,7 +290,7 @@ public class EditActions {
 
             setModal(true);
 
-            final FormPanel form = new FormPanel() ;
+            final FormPanel form = new FormPanel();
             form.setFrame(false);
             form.setHeaderVisible(false);
             form.setBodyBorder(false);
@@ -281,12 +303,12 @@ public class EditActions {
 
 
             List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-            
+
 //            CheckBoxSelectionModel<GWTJahiaPublicationInfo> sm = new CheckBoxSelectionModel<GWTJahiaPublicationInfo>();
 //            sm.setSelectionMode(SelectionMode.MULTI);
 //            configs.add(sm.getColumn());
-            
-            ColumnConfig column = new ColumnConfig();  
+
+            ColumnConfig column = new ColumnConfig();
             column.setId("path");
             column.setHeader(Messages.getResource("publication_path"));
             column.setWidth(400);
@@ -344,12 +366,12 @@ public class EditActions {
 
             final Grid<GWTJahiaPublicationInfo> g = new Grid<GWTJahiaPublicationInfo>(store, cm) {
 
-				@Override
+                @Override
                 protected void afterRenderView() {
-	                super.afterRenderView();
+                    super.afterRenderView();
                     getSelectionModel().selectAll();
                 }
-            	
+
             };
             g.setStripeRows(true);
 //            g.setSelectionModel(sm);
@@ -358,10 +380,10 @@ public class EditActions {
 
             final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
-                    hide() ;
+                    hide();
                 }
             });
-            final Button ok = new Button(Messages.getResource("publication_publish")) ;
+            final Button ok = new Button(Messages.getResource("publication_publish"));
             SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);

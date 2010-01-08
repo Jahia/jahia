@@ -489,6 +489,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return this.template.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, contextParams, editMode, retrieveParamBean());
     }
 
+    public String getNodeURL(String path, String locale,  int mode) throws GWTJahiaServiceException {
+        return this.template.getNodeURL(path,LanguageCodeConverters.languageCodeToLocale(locale),  mode, retrieveParamBean());
+    }
+
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException {
         return true;//Boolean.valueOf(contentManager.isFileAccessibleForCurrentContainer(retrieveParamBean(), path));
     }

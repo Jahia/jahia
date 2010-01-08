@@ -163,9 +163,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException;
 
-    public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException;
+    public String getNodeURL(String path, String locale,  int mode) throws GWTJahiaServiceException;
 
-    public Map<String, String> getStoredPasswordsProviders() throws GWTJahiaServiceException;
 
     public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException;
 

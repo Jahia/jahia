@@ -55,7 +55,7 @@
         </property>
     </bean>
 
-     <bean id="page-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+    <bean id="page-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
                 <ref bean="org.jahia.toolbar.manager.sites.shortcuts"/>
@@ -401,7 +401,7 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.MySettings"/>
-                <!-- ToDo : <ref bean="org.jahia.toolbar.item.myDashBoard"/-->                
+                <!-- ToDo : <ref bean="org.jahia.toolbar.item.myDashBoard"/-->
                 <ref bean="org.jahia.toolbar.item.Logout"/>
             </list>
         </property>
@@ -602,7 +602,8 @@
     </bean>
 
     <!-- language switcher -->
-    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup">
+    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher"
+          class="org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup">
         <property name="layout" value="menu"/>
         <property name="itemsResolver" ref="languageItemsResolver"/>
     </bean>
@@ -650,17 +651,17 @@
     </bean>
     -->
     <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
-            <property name="layout" value="menu"/>
-            <property name="titleKey" value="NewAction.label"/>
-                <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
-                <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
-            <property name="items">
-                <list>
-                    <ref bean="org.jahia.toolbar.item.createPage"/>
-                    <ref bean="org.jahia.toolbar.item.createContent"/>
-                </list>
-            </property>
-        </bean>
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="NewAction.label"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createContent"/>
+            </list>
+        </property>
+    </bean>
 
     <bean id="org.jahia.toolbar.itemsgroup.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
@@ -702,8 +703,6 @@
     </bean>
 
 
-
-
     <bean id="org.jahia.toolbar.itemsgroup.ContentAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
         <property name="items">
@@ -713,7 +712,6 @@
             </list>
         </property>
     </bean>
-
 
 
     <bean id="org.jahia.toolbar.itemsgroup.Admin" class="org.jahia.services.toolbar.bean.ItemsGroup">
@@ -1076,6 +1074,21 @@
         </property>
     </bean>
 
+    <!-- Switch mode item-->
+    <bean id="org.jahia.toolbar.item.SwitchMode" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="mode"/>
+                    <property name="value" value="preview"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
     <!-- base item: open window, redirect, display info, ajax action, separator-->
     <bean id="org.jahia.toolbar.item.OpenHTMLWindow" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
@@ -1207,7 +1220,7 @@
 
     <!-- Live-->
     <bean id="org.jahia.toolbar.item.Live" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+          parent="org.jahia.toolbar.item.SwitchMode">
         <property name="titleKey" value="operationMode.live"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-live-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-live-normal"/>
@@ -1224,8 +1237,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="liveUrl"/>
+                    <property name="name" value="mode"/>
+                    <property name="value" value="live"/>
                 </bean>
             </list>
         </property>
@@ -1238,41 +1251,10 @@
         </property>
     </bean>
 
-    <!-- Compare -->
-    <bean id="org.jahia.toolbar.item.Compare" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="operationMode.compare"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-compare-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-compare-normal"/>
-        <property name="descriptionKey" value="operationMode.compare"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
-                <property name="inputResolver" value="compare"/>
-            </bean>
-        </property>
-
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="compareUrl"/>
-                </bean>
-            </list>
-        </property>
-        <property name="selected">
-            <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
-                <property name="inputResolver" value="compare"/>
-            </bean>
-        </property>
-    </bean>
 
     <!-- Preview-->
     <bean id="org.jahia.toolbar.item.Preview" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+          parent="org.jahia.toolbar.item.SwitchMode">
         <property name="titleKey" value="operationMode.preview"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-preview-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-preview-normal"/>
@@ -1287,8 +1269,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="previewUrl"/>
+                    <property name="name" value="mode"/>
+                    <property name="value" value="preview"/>
                 </bean>
             </list>
         </property>
@@ -1303,7 +1285,7 @@
 
     <!-- Edit-->
     <bean id="org.jahia.toolbar.item.Edit" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+          parent="org.jahia.toolbar.item.SwitchMode">
         <property name="titleKey" value="operationMode.edit"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-edit-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-edit-normal"/>
@@ -1318,8 +1300,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="editUrl"/>
+                    <property name="name" value="mode"/>
+                    <property name="value" value="edit"/>
                 </bean>
             </list>
         </property>
@@ -2142,7 +2124,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreatePageActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.newpage"/>
-        <property name="descriptionKey" value="toolbar.edit.button.newpage"/>        
+        <property name="descriptionKey" value="toolbar.edit.button.newpage"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
     </bean>
@@ -2154,7 +2136,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.publish"/>
-        <property name="descriptionKey" value="toolbar.edit.button.publish"/>        
+        <property name="descriptionKey" value="toolbar.edit.button.publish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
     </bean>
@@ -2208,7 +2190,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.unlock"/>
-        <property name="descriptionKey" value="toolbar.edit.button.unlock"/>        
+        <property name="descriptionKey" value="toolbar.edit.button.unlock"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-unlock"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unlock"/>
     </bean>
@@ -2397,7 +2379,7 @@
         <property name="minIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
     </bean>
-    
+
     <bean id="org.jahia.toolbar.item.preview" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PreviewActionItem"/>

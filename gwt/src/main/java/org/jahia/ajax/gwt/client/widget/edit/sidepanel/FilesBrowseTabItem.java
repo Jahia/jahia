@@ -37,7 +37,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
 
     public FilesBrowseTabItem() {
         super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.file());
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabDocuments());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);

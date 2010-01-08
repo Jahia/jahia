@@ -45,6 +45,7 @@ import java.util.Map;
  */
 public class RedirectWindowActionItem extends BaseActionItem {
 
+
     @Override
     public void onComponentSelection() {
         String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");

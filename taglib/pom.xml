@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-taglib</artifactId>
-    <name>Jahia Tag libraries</name>
+    <name>Jahia Tag Libraries</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -103,18 +103,10 @@
                     </additionalBuildcommands>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>net.sourceforge.maven-taglib</groupId>
-                <artifactId>maven-taglib-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
     <reporting>
         <plugins>
-            <plugin>
-                <groupId>net.sourceforge.maven-taglib</groupId>
-                <artifactId>maven-taglib-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -126,6 +118,29 @@
                     <reportSet>
                         <reports>
                             <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>taglibrarydoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>net.sourceforge.maven-taglib</groupId>
+                <artifactId>maven-taglib-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>tagreference</report>
+                            <report>validate</report>
                         </reports>
                     </reportSet>
                 </reportSets>

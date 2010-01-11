@@ -63,20 +63,14 @@ public class GetContentObjectCategoriesTag extends ValueJahiaTag {
         if (getVar() != null) {
             pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
         }
-        if (getValueID() != null) {
-            pageContext.removeAttribute(getValueID(), PageContext.PAGE_SCOPE);
-        }
         try {
             final ObjectKey key = ObjectKey.getInstance(objectKey);
             final Set<Category> categories = Category.getObjectCategories(key);
             if (asSet) {
-                if (categories != null && (getVar() != null || getValueID() != null)) {
+                if (categories != null && (getVar() != null)) {
                     final Set<CategoryBean> categoryBeans = CategoryBean.getCategoryBeans(categories);
                     if (getVar() != null) {
                         pageContext.setAttribute(getVar(), categoryBeans);
-                    }
-                    if (getValueID() != null) {
-                        pageContext.setAttribute(getValueID(), categoryBeans);
                     }
                 }
             } else {
@@ -91,9 +85,6 @@ public class GetContentObjectCategoriesTag extends ValueJahiaTag {
                     if (getVar() != null) {
                         pageContext.setAttribute(getVar(), objectCategories.toString());
                     }
-                    if (getValueID() != null) {
-                        pageContext.setAttribute(getValueID(), objectCategories.toString());
-                }
                 }
             }
 

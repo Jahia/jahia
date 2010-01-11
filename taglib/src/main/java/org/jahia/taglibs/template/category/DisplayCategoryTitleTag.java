@@ -70,12 +70,9 @@ public class DisplayCategoryTitleTag extends ValueJahiaTag {
                     }
                 }
 
-                if (getVar() != null || getValueID() != null) {
+                if (getVar() != null) {
                     if (getVar() != null) {
                         pageContext.setAttribute(getVar(), result.toString());
-                    }
-                    if (getValueID() != null) {
-                        pageContext.setAttribute(getValueID(), result.toString());
                     }
                 } else {
                     pageContext.getOut().print(result.toString());

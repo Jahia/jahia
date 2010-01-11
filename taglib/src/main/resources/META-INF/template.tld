@@ -436,15 +436,6 @@
         <attribute>
             <description>
                 The name of the page scope variable to expose the collection of CategoryBean instances.
-                @deprecated this attribute is deprecated in favour of the var attribute
-            </description>
-            <name>valueID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                The name of the page scope variable to expose the collection of CategoryBean instances.
             </description>
             <name>var</name>
             <required>false</required>
@@ -594,15 +585,6 @@
                 Valid values are 'administration', 'login', 'logout', 'mySettings', 'siteMap', 'search'
             </description>
             <name>page</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                The name of the page scope variable to expose the result URL.
-                @deprecated this attribute is deprecated in favour of the var attribute
-            </description>
-            <name>valueID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

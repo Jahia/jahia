@@ -32,7 +32,6 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.data.JahiaData;
@@ -41,7 +40,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.util.Locale;
@@ -64,10 +62,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
     private String languageCode;
     private String linkKind;
-    /**
-     * @deprecated use {@link #urlValueID} instead
-     */
-    private String urlValueID;
     private String urlVar;
     private boolean display = true;
     private String onLanguageSwitch;
@@ -90,23 +84,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
     public void setRootPage(JCRNodeWrapper rootPage) {
         this.rootPage = rootPage;
-    }
-
-    /**
-     * @deprecated use {@link #setUrlVar(String)} instead
-     */
-    public void setUrlValueID(String urlValueID) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("The urlValueID attribute is deprecated for tag "
-                    + StringUtils.substringAfterLast(this.getClass().getName(),
-                    ".") + ". Please, use urlVar attribute instead.",
-                    new JspException());
-        } else {
-            logger.info("The urlValueID attribute is deprecated for tag "
-                    + StringUtils.substringAfterLast(this.getClass().getName(),
-                    ".") + ". Please, use urlVar attribute instead.");
-        }
-        this.urlValueID = urlValueID;
     }
 
     public void setOnLanguageSwitch(String onLanguageSwitch) {
@@ -158,9 +135,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                     }
 
                     buff.append(StringEscapeUtils.escapeXml(link));
-                    if (urlValueID != null && urlValueID.length() > 0) {
-                        pageContext.setAttribute(urlValueID, link);
-                    }
                     if (urlVar != null && urlVar.length() > 0) {
                         pageContext.setAttribute(urlVar, link);
                     }
@@ -176,7 +150,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                 buff.append("'>");
             } else {
                 buff.append("<span>");
-                if (urlValueID != null) pageContext.removeAttribute(urlValueID, PageContext.PAGE_SCOPE);
                 if (urlVar != null) pageContext.removeAttribute(urlVar, PageContext.PAGE_SCOPE);
             }
 
@@ -225,9 +198,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
             if (getVar() != null) {
                 pageContext.setAttribute(getVar(), attributeValue);
-            }
-            if (getValueID() != null) {
-                pageContext.setAttribute(getValueID(), attributeValue);
             }
 
             if (!isCurrentBrowsingLanguage) {
@@ -280,7 +250,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         redirectCssClassName = null;
         linkKind = null;
         languageCode = null;
-        urlValueID = null;
         urlVar = null;
         display = true;
         title = null;

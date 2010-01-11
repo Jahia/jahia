@@ -51,15 +51,11 @@ public class IsLoginErrorTag extends ValueJahiaTag {
     private static final transient Logger logger = Logger.getLogger(IsLoginErrorTag.class);
 
     public int doStartTag() {
-        final JahiaData jData = getJahiaData();
         final ProcessingContext jParams = getProcessingContext();
         final String valveResult = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (valveResult != null && !LoginEngineAuthValveImpl.OK.equals(valveResult)) {
             if (getVar() != null) {
                 pageContext.setAttribute(getVar(), valveResult);
-            }
-            if (getValueID() != null) {
-                pageContext.setAttribute(getValueID(), valveResult);
             }
             return EVAL_BODY_BUFFERED;            
         } else {

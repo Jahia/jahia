@@ -399,15 +399,6 @@
         <attribute>
             <description>
                 Name of the variable under which the errorcode will be set in page context.
-                @deprecated this attribute is deprecated in favour of the var attribute
-            </description>
-            <name>valueID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Name of the variable under which the errorcode will be set in page context.
             </description>
             <name>var</name>
             <required>false</required>
@@ -450,26 +441,8 @@
         <attribute>
             <description>
                 Name of the page scope variable to expose the value.
-                @deprecated this attribute is deprecated in favour of the var attribute
-            </description>
-            <name>valueID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Name of the page scope variable to expose the value.
             </description>
             <name>var</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Name of the page scope variable to expose the URL value.
-                @deprecated this attribute is deprecated in favour of the urlVar attribute
-            </description>
-            <name>urlValueID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -691,15 +664,6 @@
         <attribute>
             <name>categoryKeys</name>
             <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Name of the page scope variable to expose the value.
-                @deprecated this attribute is deprecated in favour of the var attribute
-            </description>
-            <name>valueID</name>
-            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>

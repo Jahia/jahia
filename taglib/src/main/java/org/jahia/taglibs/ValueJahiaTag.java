@@ -31,11 +31,6 @@
  */
 package org.jahia.taglibs;
 
-import javax.servlet.jsp.JspException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
 /**
  * Base class for tags, exposing any value into the page scope.
  * 
@@ -43,25 +38,9 @@ import org.apache.log4j.Logger;
  */
 public abstract class ValueJahiaTag extends AbstractJahiaTag {
 
-    private static final transient Logger logger = Logger
-            .getLogger(ValueJahiaTag.class);
-
-    /**
-     * @deprecated use {@link #var} instead
-     */
-    private String valueID;
+    private static final long serialVersionUID = -3802905326346941589L;
 
     private String var;
-
-    /**
-     * Returns the name of the page scope variable to expose the value under.
-     * 
-     * @return the name of the page scope variable to expose the value under
-     * @deprecated use {@link #getVar()} instead
-     */
-    protected final String getValueID() {
-        return valueID;
-    }
 
     /**
      * Returns the name of the page scope variable to expose the value under.
@@ -75,30 +54,7 @@ public abstract class ValueJahiaTag extends AbstractJahiaTag {
     @Override
     protected void resetState() {
         super.resetState();
-        valueID = null;
         var = null;
-    }
-
-    /**
-     * Sets the name of the page scope variable to expose the value under.
-     * 
-     * @param valueID
-     *            the name of the page scope variable to expose the value under
-     * @deprecated use {@link #setVar(String)} instead
-     */
-    public final void setValueID(String valueID) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("The valueID attribute is deprecated for tag "
-                    + StringUtils.substringAfterLast(this.getClass().getName(),
-                            ".") + ". Please, use var attribute instead.",
-                    new JspException());
-        } else {
-            logger.info("The valueID attribute is deprecated for tag "
-                    + StringUtils.substringAfterLast(this.getClass().getName(),
-                            ".") + ". Please, use var attribute instead.");
-        }
-        this.valueID = valueID == null || valueID.length() == 0 ? null
-                : valueID;
     }
 
     public final void setVar(String var) {

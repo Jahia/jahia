@@ -109,12 +109,9 @@ public class ComposeUrlTag extends ValueJahiaTag {
                 buffer.append(jParams.composePageUrl(jData.page()));
             }
 
-            if (getVar() != null || getValueID() != null) {
+            if (getVar() != null) {
                 if (getVar() != null) {
                     pageContext.setAttribute(getVar(), buffer.toString());
-                }
-                if (getValueID() != null) {
-                    pageContext.setAttribute(getValueID(), buffer.toString());
                 }
             } else {
                 pageContext.getOut().print(buffer.toString());

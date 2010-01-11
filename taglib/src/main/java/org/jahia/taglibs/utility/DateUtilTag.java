@@ -146,17 +146,11 @@ public class DateUtilTag extends AbstractDateTag {
                 if (getVar() != null) {
                     pageContext.setAttribute(getVar(), valueToSet);
                 }
-                if (getValueID() != null) {
-                    pageContext.setAttribute(getValueID(), valueToSet);
-                }
             } catch (ParseException pe) {
                 logger.debug("String passed to DateUtilTag could not be parsed as Date: " + currentDate);
                 Date newDate = new Date();
                 if (getVar() != null) {
                     pageContext.setAttribute(getVar(), newDate);
-                }
-                if (getValueID() != null) {
-                    pageContext.setAttribute(getValueID(), newDate);
                 }
             }
 

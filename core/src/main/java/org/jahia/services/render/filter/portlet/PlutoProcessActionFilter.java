@@ -118,7 +118,9 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         } catch (Exception t) {
             logger.error("Error while processing action", t);
         }
-        logger.debug(renderContext.getRequest().getRequestURI() + " is a renderURL");
+        if (logger.isDebugEnabled()) {
+            logger.debug(renderContext.getRequest().getRequestURI() + " is a renderURL");
+        }
         return chain.doFilter(renderContext, resource);
 
 

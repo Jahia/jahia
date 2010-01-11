@@ -36,6 +36,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.apache.log4j.Logger;
+import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -44,7 +45,10 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,6 +63,15 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     public static final String CACHE_NAME = "CJHTMLCache";
     private Cache blockingCache;
 
+    public Cache getBlockingCache() {
+        return blockingCache;
+    }
+
+    public Cache getDependenciesCache() {
+        return dependenciesCache;
+    }
+
+    private Cache dependenciesCache;
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
@@ -68,19 +81,32 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
             if (element == null) {
                 if(debugEnabled) logger.debug("Generating content for node : " + key);
                 String renderContent = chain.doFilter(renderContext, resource);
-                blockingCache.put(new Element(key, renderContent));
+                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);                
+                blockingCache.put(new Element(key, cacheEntry));
+                List<JCRNodeWrapper> nodeWrappers = resource.getDependencies();
                 if (debugEnabled) {
-                    List<JCRNodeWrapper> nodeWrappers = resource.getDependencies();
                     StringBuilder stringBuilder = new StringBuilder();
                     for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
                         stringBuilder.append(nodeWrapper.getPath()).append("\n");
                     }
                     logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
                 }
+                for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
+                    String path = nodeWrapper.getPath();
+                    Element element1 = dependenciesCache.get(path);
+                    Set<String> dependencies;
+                    if (element1 != null) {
+                        dependencies = (Set<String>) element1.getValue();
+                    } else {
+                        dependencies = new LinkedHashSet<String>();
+                    }
+                    dependencies.add(key);
+                    dependenciesCache.put(new Element(path,dependencies));
+                }
                 return renderContent;
             } else {
                 if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
-                return (String) element.getValue();
+                return (String) ((CacheEntry) element.getValue()).getObject();
             }
         }
         return chain.doFilter(renderContext, resource);
@@ -109,6 +135,8 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
         cacheManager.addCache(CACHE_NAME);
+        cacheManager.addCache(CACHE_NAME+"dependencies");
         blockingCache = cacheManager.getCache(CACHE_NAME);
+        dependenciesCache = cacheManager.getCache(CACHE_NAME+"dependencies");
     }
 }

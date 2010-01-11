@@ -39,6 +39,9 @@
 <%@ page import="org.jahia.services.cache.ehcache.EhCacheProvider" %>
 <%@ page import="org.jahia.services.render.filter.cache.CacheFilter" %>
 <%@ page import="java.util.Collections" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="org.jahia.services.cache.CacheEntry" %>
+<%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="java.util.List" %>
 <%--
   Created by IntelliJ IDEA.
@@ -80,10 +83,13 @@
             "EH_CACHE");
     CacheManager cacheManager = provider.getCacheManager();
     Cache containerCache = cacheManager.getCache(CacheFilter.CACHE_NAME);
+    Cache depCache = cacheManager.getCache(CacheFilter.CACHE_NAME+"dependencies");
     Statistics statistics = containerCache.getStatistics();
     if (pageContext.getRequest().getParameter("flush") != null) {
         containerCache.flush();
         containerCache.clearStatistics();
+        depCache.flush();
+        depCache.clearStatistics();
     }
     List keys = containerCache.getKeys();
     Collections.sort(keys);
@@ -105,15 +111,26 @@
         <tr>
             <th>Key</th>
             <th>Value</th>
+            <th>Dependencies</th>
         </tr>
         </thead>
         <tbody>
         <c:forEach items="${keys}" var="key" varStatus="i">
 
-            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:rgb(180,180,180);"</c:if>>
+            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:rgb(180,180,180);"</c:if>
+                    <% String attribute = (String) pageContext.getAttribute("key"); %>>
                 <td>${key}</td>
-                <td><%=containerCache.get(pageContext.getAttribute("key")).getValue()%>
+                <td><%=((CacheEntry)containerCache.get(attribute).getValue()).getObject()%>
                 </td>
+                <td><%
+                    Element element = depCache.get(attribute.split("__")[0]);
+                    if(element !=null) {
+                        Set<String> deps = (Set<String>) element.getValue();
+                        for (String dep : deps) {
+                            out.print(dep+"<br/>");
+                        }
+                    }
+                %></td>
             </tr>
         </c:forEach>
         </tbody>

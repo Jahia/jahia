@@ -42,6 +42,11 @@
 			                <ref bean="org.jahia.toolbar.item.Separator"/>
                 			<ref bean="org.jahia.toolbar.item.rename"/>
                 			<ref bean="org.jahia.toolbar.item.delete"/>
+                			<ref bean="org.jahia.toolbar.item.Separator"/>
+                			<ref bean="org.jahia.toolbar.item.copy"/>
+                			<ref bean="org.jahia.toolbar.item.cut"/>
+                			<ref bean="org.jahia.toolbar.item.paste"/>
+                			<ref bean="org.jahia.toolbar.item.pasteReference"/>
                 		</list>
                 	</property>
         			<property name="contextMenu" value="true"/>
@@ -56,7 +61,7 @@
                 <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 	<property name="items">
                 		<list>
-			                <ref bean="org.jahia.toolbar.item.rename"/>
+			                <ref bean="org.jahia.toolbar.item.edit"/>
 			                <ref bean="org.jahia.toolbar.item.delete"/>
 			                <ref bean="org.jahia.toolbar.item.Separator"/>
 			                <ref bean="org.jahia.toolbar.item.copy"/>

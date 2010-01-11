@@ -48,18 +48,8 @@ public class EngineToolBox {
 
     private static final EngineToolBox instance = new EngineToolBox ();
 
-    private static final String MSG_INTERNAL_ERROR = "Audit Log Manager internal error";
-    private static final String JSP_LOGFORM = "/engines/audit/viewlogs.jsp";
-    //private static final String JSP_SENDLOG = "/engines/audit/sendlogs.jsp";
-    private static final String JSP_FLUSHCONFIRM = "/engines/audit/flushconfirm.jsp";
-
-    /** Logger instance */
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (EngineToolBox.class);
-
-
     private EngineToolBox() {
     }
-
 
     /**
      * returns a single instance of the object
@@ -85,16 +75,5 @@ public class EngineToolBox {
     public void displayScreen(final ProcessingContext jParams, final Map<String, Object> engineMap) throws JahiaException {
         EngineRenderer.getInstance().render(jParams, engineMap);
     } // end displayScreen
-
-
-    /**
-     * loads log data for the JSP file
-     *
-     * @param jParams    a ParamBean object (with request and response)
-     * @param objectType an <code>int</code> representing the type of the object processed
-     * @param engineMap  then engine map, to be forwarded to the JSP file
-     */
-    public void loadLogData(final ProcessingContext jParams, final int objectType, final Map<String, Object> engineMap) throws JahiaException {
-    }
 
 }

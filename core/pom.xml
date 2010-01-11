@@ -962,12 +962,6 @@
             <version>0.9</version>
         </dependency>
 
-        <!-- displaytag library -->
-        <dependency>
-            <groupId>displaytag</groupId>
-            <artifactId>displaytag</artifactId>
-            <version>1.1</version>
-        </dependency>
         <!-- Dependencies for JAMon monitoring library -->
         <dependency>
             <groupId>com.jamonapi</groupId>
@@ -980,19 +974,6 @@
             <version>1.2</version>
         </dependency>
         <!-- End of dependencies for JAMon monitoring library -->
-        <!--to generate taglib documentation-->
-        <!--<dependency>
-            <groupId>maven-taglib</groupId>
-            <artifactId>maven-taglib-plugin</artifactId>
-            <version>1.4.2</version>
-            <type>plugin</type>
-        </dependency>
-        <dependency>
-            <groupId>taglibrarydoc</groupId>
-            <artifactId>tlddoc</artifactId>
-            <version>1.2</version>
-        </dependency>-->
-        <!--END to generate taglib documentation-->
         <!-- gwt -->
         <dependency>
             <groupId>com.google.gwt</groupId>

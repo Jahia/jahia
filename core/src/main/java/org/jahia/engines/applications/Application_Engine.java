@@ -33,12 +33,9 @@ package org.jahia.engines.applications;
 
 import org.jahia.data.JahiaData;
 import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.EngineLanguageHelper;
-import org.jahia.engines.audit.ManageLogs_Engine;
-import org.jahia.engines.rights.ManageRights;
 import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
@@ -47,18 +44,14 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseActionChecker;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.JahiaObjectTool;
 import org.jahia.api.Constants;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,7 +82,6 @@ public class Application_Engine implements JahiaEngine {
     private final String SAVE_STR = "save";
     private final String CANCEL_STR = "cancel";
     private final String OPEN_CATEGORIES = "open_categories";
-    private final String LOGS_STR = "logs";
     private final String APPLY_STR = "apply";
     private final String CLOSE_STR = "close";
     private final String LASTSCREEN_STR = "lastscreen";
@@ -212,12 +204,6 @@ public class Application_Engine implements JahiaEngine {
             } else {
                 throw new JahiaForbiddenAccessException();
             }
-        } else if (lastScreen.equals(LOGS_STR)) {
-            if (engineMap.get(ADMIN_ACCESS_STR) != null) {
-                ManageLogs_Engine.getInstance().handleActions(jParams, mode, engineMap, null);
-            } else {
-                throw new JahiaForbiddenAccessException();
-            }
         }
     }
 
@@ -241,8 +227,6 @@ public class Application_Engine implements JahiaEngine {
         // dispatches to the appropriate sub engine
         if (theScreen.equals(EDIT_STR)) {
             processApplicationEdit(jParams, mode, engineMap);
-        } else if (theScreen.equals(LOGS_STR)) {
-            toolBox.loadLogData(jParams, JahiaObjectTool.APPLICATION_TYPE, engineMap);
         } else if (theScreen.equals("rightsMgmt")) {
             if (engineMap.get(ADMIN_ACCESS_STR) != null) {
                 engineMap.put("aclContext","siteSelector");

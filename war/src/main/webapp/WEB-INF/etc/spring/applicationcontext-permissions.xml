@@ -50,7 +50,6 @@
                                 <value>org.jahia.actions.sites.*.engines.importexport.ManageExport</value>
                                 <!--<value>org.jahia.actions.sites.*.engines.contentdefinition.ContentDefinitionEngine</value>-->
                                 <value>org.jahia.actions.sites.*.engines.workflow.ManageWorkflow</value>
-                                <value>org.jahia.actions.sites.*.engines.audit.ManageLogs_Engine</value>
                                 <value>org.jahia.actions.sites.*.engines.filemanager</value>
                                 <value>org.jahia.actions.sites.*.engines.mashupmanager</value>
                                 <value>org.jahia.actions.sites.*.extensions.linkchecker</value>
@@ -103,7 +102,6 @@
                                 <value>org.jahia.actions.server.admin.categories.ManageCategories</value>
                                 <value>org.jahia.actions.server.admin.server.ManageServer</value>
                                 <value>org.jahia.actions.server.admin.database.ManageDatabase</value>
-                                <value>org.jahia.actions.server.admin.audit.ManageLogs</value>
                                 <value>org.jahia.actions.server.admin.users.ManageSuperAdminProps</value>
                                 <value>org.jahia.actions.server.admin.status.ManageStatus</value>
                                 <value>org.jahia.actions.server.admin.htmleditors.HtmlEditorsAdmin</value>

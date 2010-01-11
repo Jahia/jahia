@@ -85,12 +85,6 @@
     </filter>
 
     <filter>
-    	<description>Filter for displaytag export options</description>
-        <filter-name>ResponseOverrideFilter</filter-name>
-        <filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
-    </filter>
-
-    <filter>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>

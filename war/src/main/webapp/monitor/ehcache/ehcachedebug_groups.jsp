@@ -49,7 +49,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@ taglib uri="http://displaytag.sf.net/el" prefix="display" %>--%>
 <html>
   <head><title>Display content of Skeleton cache</title></head>
   <%

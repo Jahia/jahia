@@ -15,11 +15,9 @@
     </appender>
     -->
 
-    <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
+    <appender name="ROLL" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="jahia.log"/>
-        <param name="Threshold" value="info"/>
-        <param name="MaxFileSize" value="1MB"/>
-        <param name="MaxBackupIndex" value="2"/>
+        <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"/>
             <!-- another useful pattern to see date time,class, lines
@@ -198,9 +196,16 @@ think twice before changing it! -->
         <appender-ref ref="profilerLogs"/>
     </category>
 
+    <category name="org.jahia.services.render.filter.cache.CacheFilter">
+        <priority value="debug"/>
+    </category>
+
+    <category name="org">
+        <priority value="info"/>
+        <appender-ref ref="ROLL"/>
+    </category>
     <root>
         <level value="info"/>
-        <appender-ref ref="ROLL"/>
         <appender-ref ref="Console"/>
     </root>
 

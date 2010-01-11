@@ -43,6 +43,11 @@
             <name>XWiki Maven Repository</name>
             <url>http://maven.xwiki.org/releases</url>
         </repository>
+        <repository>
+            <id>sourceForge</id>
+            <name>Sourceforge Maven Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -804,10 +809,22 @@
             </exclusions>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>1.6.2</version>
+            <version>1.7.1</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jgroupsreplication</artifactId>
+            <version>1.3</version>
         </dependency>
 
         <dependency>

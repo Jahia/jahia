@@ -14,22 +14,20 @@
     <bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.clusterservice.batch.BatchingClusterServiceCacheProvider">
         <property name="clusterService" ref="clusterService"/>
     </bean>
-
+    <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider">
+        <!-- This property allows to fix a limit for cache entries dependencies management,
+if an entry have more than this value of dependencies then
+when we flush this entry we will flush the whole cache-->
+        <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
+        <property name="groupsSizeLimit" value="100"/>
+    </bean>
     <bean id="JahiaCacheService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
                 <property name="cacheProviders">
                     <map>
                         <entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider"/>
-                        <entry key="EH_CACHE">
-                            <bean class="org.jahia.services.cache.ehcache.EhCacheProvider">
-                                <!-- This property allows to fix a limit for cache entries dependencies management,
-                                if an entry have more than this value of dependencies then
-                                when we flush this entry we will flush the whole cache-->
-                                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
-                                <property name="groupsSizeLimit" value="100"/>
-                            </bean>
-                        </entry>
+                        <entry key="EH_CACHE" value-ref="ehCacheProvider"/>
                     </map>
                 </property>
                 <property name="cacheProviderForCache">

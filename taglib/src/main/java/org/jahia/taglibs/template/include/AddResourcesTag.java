@@ -51,12 +51,14 @@ import java.util.List;
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 27 oct. 2009
+ * Created : 27 oct. 2009
  */
 public class AddResourcesTag extends BodyTagSupport {
+    private static final long serialVersionUID = -552052631291168495L;
     private transient static Logger logger = Logger.getLogger(AddResourcesTag.class);
     private String nodetype;
     private JCRNodeWrapper node;
+    private boolean insert;
     private String type;
     private String resources;
 
@@ -94,7 +96,7 @@ public class AddResourcesTag extends BodyTagSupport {
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
                 if (links == null || !links.contains(resource)) {
-                    renderContext.addExternalLink(type, resource);
+                    renderContext.addExternalLink(type, resource, insert);
                 }
             } else {
                 for (String lookupPath : lookupPaths){
@@ -108,7 +110,7 @@ public class AddResourcesTag extends BodyTagSupport {
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
                             // we found it --> add it and stop
-                            renderContext.addExternalLink(type, pathWithContext);
+                            renderContext.addExternalLink(type, pathWithContext, insert);
                             found = true;
                             break;
                         }
@@ -137,5 +139,9 @@ public class AddResourcesTag extends BodyTagSupport {
 
     public void setResources(String resources) {
         this.resources = resources;
+    }
+
+    public void setInsert(boolean insert) {
+        this.insert = insert;
     }
 }

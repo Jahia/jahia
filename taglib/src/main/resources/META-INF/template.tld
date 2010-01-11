@@ -728,6 +728,13 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>If set to true the resource is inserted at the top of the resources list. Otherwise it is appended to the end. [false]</description>
+        	<name>insert</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        	<type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Add a wrapper.

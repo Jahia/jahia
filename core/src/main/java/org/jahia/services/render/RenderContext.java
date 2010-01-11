@@ -120,12 +120,23 @@ public class RenderContext {
     }
 
     public void addExternalLink(String externalLinkType,String externalLink) {
+        addExternalLink(externalLinkType, externalLink, false);
+    }
+
+    public void addExternalLink(String externalLinkType,String externalLink, boolean insert) {
         Set<String> externalLinkList = getExternalLinks(externalLinkType);
         if (externalLinkList == null) {
             externalLinkList = new LinkedHashSet<String>();
         }
-        externalLinkList.add(externalLink);
-        externalLinks.put(externalLinkType,externalLinkList);
+        if (insert) {
+            LinkedHashSet<String> my = new LinkedHashSet<String>();
+            my.add(externalLink);
+            my.addAll(externalLinkList);
+            externalLinkList = my;
+        } else {
+            externalLinkList.add(externalLink);
+        }
+        externalLinks.put(externalLinkType, externalLinkList);
     }
 
     public Set<String> getExternalLinks(String externalLinkType) {

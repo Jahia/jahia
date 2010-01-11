@@ -35,7 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <template:addResources type="javascript" resources="swfobject.js,textsizer.js,collapse.js" nodetype="jnt:page"/>
-<template:addResources type="css" resources="01web.css" nodetype="jnt:page"/>
+<template:addResources type="css" resources="01web.css" nodetype="jnt:page" insert="true"/>
 <div id="bodywrapper">
     <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
     <div id="contentArea">

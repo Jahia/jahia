@@ -1,18 +1,10 @@
-<%@ page import="javax.jcr.Node" %>
-<?xml version="1.0" encoding="iso-8859-1"?>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <channel>
-        <title>${currentNode.name}</title>
-        <link>${url.base}${currentNode.path}.rss</link>
-        <description>${currentNode.name}</description>
-        <generator>Jahia 6.0, http://www.jahia.org</generator>
-            <c:forEach items="${currentNode.children}" var="child">
-                <template:module templateType="rss" template="item" node="${child}" />
-            </c:forEach>
-    </channel>
-</rss>
+<item>
+    <title>${fn:escapeXml(currentNode.name)}</title>
+    <link>${pageContext.request.contextPath}/files${currentNode.path}</link>
+    <description>${fn:escapeXml(currentNode.name)}</description>
+    <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
+    <pubDate>${created.date}</pubDate>
+    <dc:date>${created.date}</dc:date>
+</item>

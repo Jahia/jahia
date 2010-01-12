@@ -34,6 +34,7 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.DefaultEventListener;
@@ -81,7 +82,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
      */
     public void onEvent(EventIterator events) {
         final Cache depCache = cacheFilter.getDependenciesCache();
-        final Cache htmlCache = cacheFilter.getBlockingCache();
+        final BlockingCache htmlCache = cacheFilter.getBlockingCache();
         while (events.hasNext()) {
             Event event = (Event) events.next();
             try {

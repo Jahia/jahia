@@ -35,6 +35,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -61,9 +62,11 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private EhCacheProvider cacheProvider;
     public static final String CACHE_NAME = "CJHTMLCache";
-    private Cache blockingCache;
-
-    public Cache getBlockingCache() {
+    private BlockingCache blockingCache;
+    private Cache dependenciesCache;
+    private int blockingTimeout = 5000;
+    
+    public BlockingCache getBlockingCache() {
         return blockingCache;
     }
 
@@ -71,12 +74,18 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
         return dependenciesCache;
     }
 
-    private Cache dependenciesCache;
+    public void setBlockingTimeout(int blockingTimeout) {
+        this.blockingTimeout = blockingTimeout;
+    }
+
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
             boolean debugEnabled = logger.isDebugEnabled();
             String key = generateKey(resource, renderContext);
+            if(debugEnabled) {
+                logger.debug("Cache filter for key "+key);
+            }
             Element element = blockingCache.get(key);
             if (element == null) {
                 if(debugEnabled) logger.debug("Generating content for node : " + key);
@@ -136,7 +145,8 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
         CacheManager cacheManager = cacheProvider.getCacheManager();
         cacheManager.addCache(CACHE_NAME);
         cacheManager.addCache(CACHE_NAME+"dependencies");
-        blockingCache = cacheManager.getCache(CACHE_NAME);
+        blockingCache = new BlockingCache(cacheManager.getCache(CACHE_NAME));
+        blockingCache.setTimeoutMillis(blockingTimeout);
         dependenciesCache = cacheManager.getCache(CACHE_NAME+"dependencies");
     }
 }

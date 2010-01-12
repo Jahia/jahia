@@ -816,6 +816,10 @@
                   <groupId>xerces</groupId>
                   <artifactId>xerces</artifactId>
               </exclusion>
+              <exclusion>
+                  <groupId>org.json</groupId>
+                  <artifactId>json</artifactId>
+              </exclusion>
             </exclusions>
 
         </dependency>

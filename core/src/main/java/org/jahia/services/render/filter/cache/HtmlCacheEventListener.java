@@ -65,7 +65,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
 
     @Override
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
+        return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
     }
 
     @Override

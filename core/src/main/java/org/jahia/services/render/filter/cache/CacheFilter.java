@@ -121,7 +121,7 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
         return chain.doFilter(renderContext, resource);
     }
 
-    private String generateKey(Resource resource, RenderContext context) {
+    public String generateKey(Resource resource, RenderContext context) {
         return new StringBuilder().append(resource.getNode().getPath()).append("__template__").append(
                 resource.getResolvedTemplate()).append("__lang__").append(resource.getLocale()).append(
                 "__site__").append(context.getSite().getSiteKey()).toString();

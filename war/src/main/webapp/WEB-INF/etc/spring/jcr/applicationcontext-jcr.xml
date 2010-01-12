@@ -122,6 +122,9 @@
                                 <list/>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
+                            <property name="cacheFilter" ref="cacheFilter"/>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">

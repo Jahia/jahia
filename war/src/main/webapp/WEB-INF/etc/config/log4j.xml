@@ -200,10 +200,15 @@ think twice before changing it! -->
         <priority value="debug"/>
     </category>
 
+    <category name="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
+        <priority value="debug"/>
+    </category>
+
     <category name="org">
         <priority value="info"/>
         <appender-ref ref="ROLL"/>
     </category>
+
     <root>
         <level value="info"/>
         <appender-ref ref="Console"/>

@@ -346,7 +346,11 @@
     </bean>
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
-    
+
+    <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
+        <property name="cacheProvider" ref="ehCacheProvider"/>
+    </bean>
+
     <bean id="RenderService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -367,9 +371,7 @@
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.cache.CacheFilter">
-                            <property name="cacheProvider" ref="ehCacheProvider"/>
-                        </bean>
+                        <ref bean="cacheFilter"/>
                         <bean class="org.jahia.services.render.filter.URLFilter" />
                         <bean class="org.jahia.services.render.filter.WrapperFilter" />
                         <bean class="org.jahia.services.render.filter.SkinFilter" />

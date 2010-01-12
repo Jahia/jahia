@@ -65,6 +65,8 @@ public class RenderContext {
     
     private String contentType;
 
+    private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
+
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
         this.response = response;
@@ -117,6 +119,10 @@ public class RenderContext {
 
     public void setEditMode(boolean editMode) {
         isEditMode = editMode;
+    }
+
+    public Map<String, Map<String, Integer>> getTemplatesCacheExpiration() {
+        return templatesCacheExpiration;
     }
 
     public void addExternalLink(String externalLinkType,String externalLink) {

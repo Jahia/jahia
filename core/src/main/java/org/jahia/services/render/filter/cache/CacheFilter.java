@@ -42,13 +42,12 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.Script;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Module content caching filter.
@@ -65,7 +64,7 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     private BlockingCache blockingCache;
     private Cache dependenciesCache;
     private int blockingTimeout = 5000;
-    
+
     public BlockingCache getBlockingCache() {
         return blockingCache;
     }
@@ -81,26 +80,58 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
+            Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
+            boolean getFromCache = true;
             boolean debugEnabled = logger.isDebugEnabled();
             String key = generateKey(resource, renderContext);
             if(debugEnabled) {
                 logger.debug("Cache filter for key "+key);
             }
             Element element = blockingCache.get(key);
-            if (element == null) {
+            if (element == null) {getFromCache = false;}
+            if (getFromCache) {
+                if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
+                return (String) ((CacheEntry) element.getValue()).getObject();
+            }
+            else {
                 if(debugEnabled) logger.debug("Generating content for node : " + key);
                 String renderContent = chain.doFilter(renderContext, resource);
-                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);                
-                blockingCache.put(new Element(key, cacheEntry));
-                List<JCRNodeWrapper> nodeWrappers = resource.getDependencies();
+                final Script script = (Script) renderContext.getRequest().getAttribute("script");
+                Long expiration = Long.parseLong(script.getTemplate().getProperties().getProperty("cache.expiration","-1"));
+                List<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
+                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
+                    Long lowestExpiration = 0L;
+                    String path = nodeWrapper.getPath();
+                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(path);
+                    if (cachesExpiration != null) {
+                        for(long cacheExpiration : cachesExpiration.values()) {
+                            if (lowestExpiration > cacheExpiration) { lowestExpiration = cacheExpiration; }
+                        }
+                        expiration = lowestExpiration;
+                    }
+                }
+                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);
+                Element cachedElement = new Element(key, cacheEntry);
+                if (expiration >= 0) {
+                    cachedElement.setTimeToLive(expiration.intValue());
+                    cachedElement.setTimeToIdle(0);
+                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(resource.getNode().getPath());
+                    if (cachesExpiration == null) {
+                        cachesExpiration = new HashMap<String,Integer>();
+                    }
+                    cachesExpiration.put(key,expiration.intValue());
+                    templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
+                }
+                blockingCache.put(cachedElement);
+                if(debugEnabled) logger.debug("Caching content for node : " + key);
                 if (debugEnabled) {
                     StringBuilder stringBuilder = new StringBuilder();
-                    for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
+                    for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                         stringBuilder.append(nodeWrapper.getPath()).append("\n");
                     }
                     logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
                 }
-                for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
+                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                     String path = nodeWrapper.getPath();
                     Element element1 = dependenciesCache.get(path);
                     Set<String> dependencies;
@@ -113,9 +144,6 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                     dependenciesCache.put(new Element(path,dependencies));
                 }
                 return renderContent;
-            } else {
-                if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
-                return (String) ((CacheEntry) element.getValue()).getObject();
             }
         }
         return chain.doFilter(renderContext, resource);

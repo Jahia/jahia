@@ -1076,7 +1076,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>1.5-20090211</version>
+            <version>20070829</version>
         </dependency>
 
         <!-- XWiki dependencies -->

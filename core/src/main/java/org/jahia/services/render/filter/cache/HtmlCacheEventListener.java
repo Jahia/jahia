@@ -35,17 +35,20 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.DefaultEventListener;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Output cache invalidation listener.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -83,6 +86,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
     public void onEvent(EventIterator events) {
         final Cache depCache = cacheFilter.getDependenciesCache();
         final BlockingCache htmlCache = cacheFilter.getBlockingCache();
+        final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
             try {
@@ -91,8 +95,10 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                     path = path.substring(0,path.lastIndexOf("/"));
                 }
-                final Element element = depCache.get(path);
+                path = StringUtils.substringBeforeLast(path, "/j:translation");
+                final Element element = !flushed.contains(path) ? depCache.get(path) : null;
                 if(element!=null) {
+                    flushed.add(path);
                     Set<String> deps = (Set<String>) element.getValue();
                     for (String dep : deps) {
                         if(logger.isDebugEnabled()) {

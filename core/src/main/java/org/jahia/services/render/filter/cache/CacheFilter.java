@@ -1,7 +1,7 @@
 /**
  *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Limited. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -47,12 +47,11 @@ import org.jahia.services.render.filter.RenderChain;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Module content caching filter.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -62,6 +61,7 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private EhCacheProvider cacheProvider;
     public static final String CACHE_NAME = "CJHTMLCache";
+    public static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
     private BlockingCache blockingCache;
     private Cache dependenciesCache;
     private int blockingTimeout = 5000;
@@ -143,10 +143,14 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
-        cacheManager.addCache(CACHE_NAME);
-        cacheManager.addCache(CACHE_NAME+"dependencies");
+        if (!cacheManager.cacheExists(CACHE_NAME)) {
+            cacheManager.addCache(CACHE_NAME);
+        }
+        if (!cacheManager.cacheExists(DEPS_CACHE_NAME)) {
+            cacheManager.addCache(DEPS_CACHE_NAME);
+        }
         blockingCache = new BlockingCache(cacheManager.getCache(CACHE_NAME));
         blockingCache.setTimeoutMillis(blockingTimeout);
-        dependenciesCache = cacheManager.getCache(CACHE_NAME+"dependencies");
+        dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
     }
 }

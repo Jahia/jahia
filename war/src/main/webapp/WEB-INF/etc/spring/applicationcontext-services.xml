@@ -349,7 +349,7 @@
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
         <property name="cacheProvider" ref="ehCacheProvider"/>
-        <!-- Time to waite before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
+        <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
         <property name="blockingTimeout" value="5000"/>
     </bean>
 

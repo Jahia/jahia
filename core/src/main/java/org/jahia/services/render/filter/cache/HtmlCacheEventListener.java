@@ -87,6 +87,10 @@ public class HtmlCacheEventListener extends DefaultEventListener {
             Event event = (Event) events.next();
             try {
                 String path = event.getPath();
+                final int type = event.getType();
+                if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
+                    path = path.substring(0,path.lastIndexOf("/"));
+                }
                 final Element element = depCache.get(path);
                 if(element!=null) {
                     Set<String> deps = (Set<String>) element.getValue();

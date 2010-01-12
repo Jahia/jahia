@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -43,6 +44,8 @@
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <%--
   Created by IntelliJ IDEA.
   User: rincevent
@@ -110,6 +113,7 @@
         <thead>
         <tr>
             <th>Key</th>
+            <th>Expiration</th>
             <th>Value</th>
             <th>Dependencies</th>
         </tr>
@@ -117,10 +121,15 @@
         <tbody>
         <c:forEach items="${keys}" var="key" varStatus="i">
 
-            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:rgb(180,180,180);"</c:if>
-                    <% String attribute = (String) pageContext.getAttribute("key"); %>>
+            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:rgb(180,180,180);"</c:if>>
+                    <% String attribute = (String) pageContext.getAttribute("key");
+                        final Element element1 = containerCache.get(attribute);
+                        if (element1 != null) {
+                    %>
+
                 <td>${key}</td>
-                <td><%=((CacheEntry)containerCache.get(attribute).getValue()).getObject()%>
+                <td><%=SimpleDateFormat.getDateTimeInstance().format(new Date(element1.getExpirationTime()))%></td>
+                <td><%=((CacheEntry) element1.getValue()).getObject()%>
                 </td>
                 <td><%
                     Element element = depCache.get(attribute.split("__")[0]);
@@ -131,6 +140,8 @@
                         }
                     }
                 %></td>
+                <%  containerCache.put(element1);
+                    }%>
             </tr>
         </c:forEach>
         </tbody>

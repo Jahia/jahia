@@ -81,15 +81,13 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
-            boolean getFromCache = true;
             boolean debugEnabled = logger.isDebugEnabled();
             String key = generateKey(resource, renderContext);
             if(debugEnabled) {
                 logger.debug("Cache filter for key "+key);
             }
             Element element = blockingCache.get(key);
-            if (element == null) {getFromCache = false;}
-            if (getFromCache) {
+            if (element != null) {
                 if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
                 return (String) ((CacheEntry) element.getValue()).getObject();
             }
@@ -105,34 +103,10 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                     Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(path);
                     if (cachesExpiration != null) {
                         for(long cacheExpiration : cachesExpiration.values()) {
-                            if (lowestExpiration > cacheExpiration) { lowestExpiration = cacheExpiration; }
+                            lowestExpiration = Math.min(cacheExpiration,lowestExpiration);
                         }
                         expiration = lowestExpiration;
                     }
-                }
-                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);
-                Element cachedElement = new Element(key, cacheEntry);
-                if (expiration >= 0) {
-                    cachedElement.setTimeToLive(expiration.intValue());
-                    cachedElement.setTimeToIdle(0);
-                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(resource.getNode().getPath());
-                    if (cachesExpiration == null) {
-                        cachesExpiration = new HashMap<String,Integer>();
-                    }
-                    cachesExpiration.put(key,expiration.intValue());
-                    templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
-                }
-                blockingCache.put(cachedElement);
-                if(debugEnabled) logger.debug("Caching content for node : " + key);
-                if (debugEnabled) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                        stringBuilder.append(nodeWrapper.getPath()).append("\n");
-                    }
-                    logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
-                }
-                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                    String path = nodeWrapper.getPath();
                     Element element1 = dependenciesCache.get(path);
                     Set<String> dependencies;
                     if (element1 != null) {
@@ -142,6 +116,32 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                     }
                     dependencies.add(key);
                     dependenciesCache.put(new Element(path,dependencies));
+                }
+                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);
+                Element cachedElement = new Element(key, cacheEntry);
+                if (expiration >= 0) {
+                    cachedElement.setTimeToLive(expiration.intValue()+1);
+                    cachedElement.setTimeToIdle(1);
+                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(resource.getNode().getPath());
+                    if (cachesExpiration == null) {
+                        cachesExpiration = new HashMap<String,Integer>();
+                    }
+                    cachesExpiration.put(key,expiration.intValue());
+                    templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
+                }
+                if(renderContent.trim().length()==0) {
+                    cachedElement.setTimeToIdle(1);
+                    cachedElement.setTimeToLive(1);
+                }
+                blockingCache.put(cachedElement);
+                
+                if (debugEnabled) {
+                    logger.debug("Caching content for node : " + key);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
+                        stringBuilder.append(nodeWrapper.getPath()).append("\n");
+                    }
+                    logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
                 }
                 return renderContent;
             }

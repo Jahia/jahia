@@ -3193,7 +3193,10 @@ public class ProcessingContext {
     }
     
     protected void resolveUILocale() throws JahiaException {
-        Locale locale = UserPreferencesHelper.getPreferredLocale(getUser(), getSite());
+        Locale locale = null;
+        if(!getUser().getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            locale = UserPreferencesHelper.getPreferredLocale(getUser(), getSite());
+        }
         if (locale == null) {
             locale = getCurrentLocale();
         }

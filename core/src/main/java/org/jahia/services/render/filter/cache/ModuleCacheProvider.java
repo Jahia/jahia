@@ -32,10 +32,14 @@
 
 package org.jahia.services.render.filter.cache;
 
+import java.text.ParseException;
+import java.util.Set;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 
+import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,9 +52,11 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class ModuleCacheProvider implements InitializingBean {
 
-    public static final String CACHE_NAME = "CJHTMLCache";
-    public static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
+    private static final String CACHE_NAME = "CJHTMLCache";
+    private static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
 
+    private static Logger logger = Logger.getLogger(ModuleCacheProvider.class);
+    
     /**
      * Returns an instance of this class
      * 
@@ -91,6 +97,28 @@ public class ModuleCacheProvider implements InitializingBean {
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
     }
 
+    /**
+     * Flushes all the cache entries, related to the specified node.
+     * 
+     * @param nodePath the node path to be invalidated.
+     * @throws ParseException in case of a malformed key
+     */
+    @SuppressWarnings("unchecked")
+    public void invalidate(String nodePath) {
+        Set<String> deps = (Set<String>) dependenciesCache.get(nodePath).getValue();
+        for (String dep : deps) {
+            blockingCache.remove(dep);
+            try {
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"));
+            } catch (ParseException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            if(logger.isDebugEnabled()) {
+                logger.debug("Removing entry from module output cache: " + dep);
+            }
+        }
+    }
+
     public BlockingCache getCache() {
         return blockingCache;
     }
@@ -119,5 +147,4 @@ public class ModuleCacheProvider implements InitializingBean {
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
-
 }

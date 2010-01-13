@@ -96,18 +96,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 final Element element = !flushed.contains(path) ? depCache.get(path) : null;
                 if(element!=null) {
                     flushed.add(path);
-                    Set<String> deps = (Set<String>) element.getValue();
-                    for (String dep : deps) {
-                        if(logger.isDebugEnabled()) {
-                            logger.debug("Removing entry : "+dep+" from html cache");
-                        }
-                        htmlCache.remove(dep);
-                        try {
-                            htmlCache.remove(cacheProvider.getKeyGenerator().replaceField(dep, "template", "hidden.load"));
-                        } catch (ParseException e) {
-                            logger.warn(e.getMessage(), e);
-                        }
-                    }
+                    cacheProvider.invalidate(path);
                     depCache.remove(element.getKey());
                 }
             } catch (RepositoryException e) {

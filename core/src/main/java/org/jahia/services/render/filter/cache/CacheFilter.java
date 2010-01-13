@@ -128,10 +128,14 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                     }
                     cachesExpiration.put(key,expiration.intValue());
                     templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
-                }
-                if(renderContent.trim().length()==0) {
-                    cachedElement.setTimeToIdle(1);
-                    cachedElement.setTimeToLive(1);
+                    final String hiddenKey = key.replaceAll("__template__(.*)__lang__",
+                                                            "__template__hidden.load__lang__");
+                    if(blockingCache.isKeyInCache(hiddenKey)) {
+                        Element hiddenElement = blockingCache.get(hiddenKey);
+                        hiddenElement.setTimeToIdle(1);
+                        hiddenElement.setTimeToLive(expiration.intValue()+1);
+                        blockingCache.put(hiddenElement);
+                    }
                 }
                 blockingCache.put(cachedElement);
                 

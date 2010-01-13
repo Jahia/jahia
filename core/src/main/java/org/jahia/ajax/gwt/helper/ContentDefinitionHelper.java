@@ -216,7 +216,7 @@ public class ContentDefinitionHelper {
                     item.setDataType(GWTJahiaItemDefinition.METADATA);
                 } else if (def.isOptionItem()) {
                     item.setDataType(GWTJahiaItemDefinition.OPTIONS);
-                } else if (def.isPublicationItem()) {
+                } else if (def.isPublicationItem() || def.isCacheItem()) {
                     item.setDataType(GWTJahiaItemDefinition.PUBLICATION);
                 } else if (def.isSystemItem()) {
                     item.setDataType(GWTJahiaItemDefinition.SYSTEM);
@@ -538,19 +538,24 @@ public class ContentDefinitionHelper {
             }
 
 
-            ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:contentMixin");
-            NodeTypeIterator it = baseMixin.getSubtypes();
-            while (it.hasNext()) {
-                ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
-                if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                    res.add(getGWTJahiaNodeType(ctx, nodeType, realType));
-                    foundTypes.add(nodeType.getName());
-                }
-            }
+            addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:contentMixin");
+            addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:publicationMixin");
         } catch (NoSuchNodeTypeException e) {
 
         }
         return res;
+    }
+
+    private void addGWTJahiaNodeType(ProcessingContext ctx, ArrayList<GWTJahiaNodeType> res, Set<String> foundTypes, ExtendedNodeType realType, String nodeType) throws NoSuchNodeTypeException {
+        ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+        NodeTypeIterator it = baseMixin.getSubtypes();
+        while (it.hasNext()) {
+            ExtendedNodeType nt = (ExtendedNodeType) it.next();
+            if (nt.isMixin() && !foundTypes.contains(nt.getName())) {
+                res.add(getGWTJahiaNodeType(ctx, nt, realType));
+                foundTypes.add(nt.getName());
+            }
+        }
     }
 
 }

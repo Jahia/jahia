@@ -202,6 +202,10 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:publication");
     }
 
+    public boolean isCacheItem() {
+        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:cache");
+    }
+
     public boolean isJahiaContentItem() {
         return !isSystemItem() && !isMetadataItem();
     }

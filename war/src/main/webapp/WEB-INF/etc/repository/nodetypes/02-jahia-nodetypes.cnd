@@ -388,6 +388,15 @@
 
 [jmix:templateMixin] mixin
 
+[jmix:publicationMixin] mixin
+
+//---------------------------------------------------------
+// Caches
+//---------------------------------------------------------
+
+[jmix:cache] > jmix:publicationMixin mixin
+- j:expiration (long)
+
 //---------------------------------------------------------
 // Pages, content lists, reusable components
 //---------------------------------------------------------

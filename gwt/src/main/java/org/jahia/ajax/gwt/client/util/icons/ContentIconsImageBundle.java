@@ -267,5 +267,8 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("engine-tab-options.png")
     public AbstractImagePrototype engineTabOption();
 
+    @Resource("engine-tab-publication.png")
+    public AbstractImagePrototype engineTabPublication();
+
 }
 

@@ -102,6 +102,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.add(new OptionsTabItem(this));
         tabs.add(new RightsTabItem(this));
         tabs.add(new UsagesTabItem(this));
+        tabs.add(new PublicationTabItem(this));
     }
 
     /**

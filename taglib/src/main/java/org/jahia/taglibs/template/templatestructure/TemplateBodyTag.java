@@ -569,8 +569,8 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("ece_rights", getJahiaInternalResourceValue("org.jahia.jcr.edit.rights.tab"));
         addGwtDictionaryMessage("ece_categories", getJahiaInternalResourceValue("org.jahia.jcr.edit.categories.tab"));
         addGwtDictionaryMessage("ece_tags", getJahiaInternalResourceValue("org.jahia.jcr.edit.tags.tab"));
+        addGwtDictionaryMessage("ece_publication", getJahiaInternalResourceValue("org.jahia.jcr.edit.publication.tab"));
     }
-
     public int doEndTag() {
         final StringBuilder buf = new StringBuilder("\n\t</div>\n");
 

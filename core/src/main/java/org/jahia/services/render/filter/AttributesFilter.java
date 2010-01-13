@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import javax.jcr.PropertyIterator;
 import javax.jcr.Property;
+import javax.jcr.nodetype.NodeType;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.HashMap;
@@ -58,12 +59,16 @@ public class AttributesFilter extends AbstractFilter {
         PropertyIterator pi = node.getProperties();
         while (pi.hasNext()) {
             Property property = pi.nextProperty();
-            if (property.getDefinition().getDeclaringNodeType().isNodeType("jmix:layout")) {
+            NodeType type = property.getDefinition().getDeclaringNodeType();
+            if (type.isNodeType("jmix:layout")) {
                 String key = StringUtils.substringAfter(property.getName(), ":");
                 if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(key))) {
                     params.put(key, property.getString());
                 }
+            } else if (type.isNodeType("jmix:cache")) {
+                pushAttribute(request, "cache.expiration", property.getString(), old);    
             }
+
         }
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {

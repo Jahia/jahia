@@ -44,6 +44,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,10 +100,13 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                     for (String dep : deps) {
                         if(logger.isDebugEnabled()) {
                             logger.debug("Removing entry : "+dep+" from html cache");
-                            logger.debug("Removing entry : "+dep.replaceAll("__template__(.*)__lang__","__template__hidden.load_lang__")+" from html cache");
                         }
                         htmlCache.remove(dep);
-                        htmlCache.remove(dep.replaceAll("__template__(.*)__lang__","__template__hidden.load__lang__"));
+                        try {
+                            htmlCache.remove(cacheProvider.getKeyGenerator().replaceField(dep, "template", "hidden.load"));
+                        } catch (ParseException e) {
+                            logger.warn(e.getMessage(), e);
+                        }
                     }
                     depCache.remove(element.getKey());
                 }

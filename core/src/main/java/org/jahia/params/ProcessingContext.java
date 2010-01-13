@@ -1193,7 +1193,7 @@ public class ProcessingContext {
      * @throws JahiaException
      */
     protected void setContentPageToPageWithURLKey() throws JahiaException {
-        final String pageURLKey = (String) pageURLKeys
+        /*final String pageURLKey = (String) pageURLKeys
                 .get(pageURLKeys.size() - 1);
         int pageID = 0;
         int currentParentPageID = 0;
@@ -1231,7 +1231,7 @@ public class ProcessingContext {
         }
 //        else {
 //            setContentPage(getSite().getHomeContentPage());
-//        }
+//        }*/
     }
 
     protected void setSiteInfoFromSiteFound() {

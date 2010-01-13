@@ -1,22 +1,18 @@
-<%@ page import="net.sf.ehcache.Cache" %>
-<%@ page import="net.sf.ehcache.CacheManager" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.cache.ehcache.EhCacheProvider" %>
-<%@ page import="org.jahia.services.render.filter.cache.CacheFilter" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="org.jahia.services.render.filter.cache.*" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="net.sf.ehcache.Ehcache" %>
 
 <%
-    EhCacheProvider provider = (EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
-            "EH_CACHE");
-    CacheManager cacheManager = provider.getCacheManager();
-    Cache htmlCache = cacheManager.getCache(CacheFilter.CACHE_NAME);
-    Cache depCache = cacheManager.getCache(CacheFilter.DEPS_CACHE_NAME);
+    ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
+    Ehcache cache = cacheProvider.getCache();
+	Ehcache depCache = cacheProvider.getDependenciesCache();
     String keyToFlush = request.getParameter("keyToFlush");
-    String nodePath = keyToFlush.split("__")[0];
+    String nodePath = cacheProvider.getKeyGenerator().getPath(keyToFlush);
     Set<String> deps = (Set<String>) depCache.get(nodePath).getValue();
     for (String dep : deps) {
-        htmlCache.remove(dep);
-        htmlCache.remove(dep.replaceAll("__template__(.*)__lang__", "__template__hidden.load__lang__"));
+        cache.remove(dep);
+        cache.remove(cacheProvider.getKeyGenerator().replaceField(dep, "template", "hidden.load"));
     }
     response.sendRedirect(request.getHeader("referer"));
 %>

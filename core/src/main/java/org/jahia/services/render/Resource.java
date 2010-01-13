@@ -36,10 +36,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A resource is the aggregation of a node and a specific template
@@ -54,7 +51,7 @@ public class Resource {
     private String template;
     private String forcedTemplate;
     private Stack<String> wrappers;
-    private List<JCRNodeWrapper> dependencies;
+    private Set<JCRNodeWrapper> dependencies;
 
     private List<Resource> includedResources;
     private List<String> missingResources;
@@ -73,7 +70,7 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.forcedTemplate = forcedTemplate;
-        dependencies = new ArrayList<JCRNodeWrapper>();
+        dependencies = new LinkedHashSet<JCRNodeWrapper>();
         dependencies.add(node);
 
         includedResources = new ArrayList<Resource>();
@@ -141,7 +138,7 @@ public class Resource {
         return getTemplates().iterator().next();
     }
 
-    public List<JCRNodeWrapper> getDependencies() {
+    public Set<JCRNodeWrapper> getDependencies() {
         return dependencies;
     }
 

@@ -96,7 +96,7 @@ public class CacheFilter extends AbstractFilter {
                 String renderContent = chain.doFilter(renderContext, resource);
                 final Script script = (Script) renderContext.getRequest().getAttribute("script");
                 Long expiration = Long.parseLong(script.getTemplate().getProperties().getProperty("cache.expiration","-1"));
-                List<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
+                Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
                 for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                     Long lowestExpiration = 0L;
                     String path = nodeWrapper.getPath();

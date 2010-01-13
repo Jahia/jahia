@@ -33,6 +33,7 @@
 package org.jahia.services.render.filter.cache;
 
 import java.text.ParseException;
+import java.util.Map;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -66,10 +67,10 @@ public interface CacheKeyGenerator {
      * Parses the specified key into separate fields.
      * 
      * @param key the cache key to be decomposed
-     * @return an array of field values
+     * @return a map with key field values
      * @throws ParseException in case of a malformed key
      */
-    String[] parse(String key) throws ParseException;
+    Map<String, String> parse(String key) throws ParseException;
 
     /**
      * Decomposes the key, replaces the specified field with the provided value

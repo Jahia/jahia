@@ -35,15 +35,16 @@ package org.jahia.services.render.filter.cache;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.SetUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -57,8 +58,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList(new String[] { "workspace",
             "language", "path", "template", "templateType", "queryString" }));
 
-    private List<String> fieldList = new ArrayList<String>(KNOWN_FIELDS);
-    private Set<String> fields = new LinkedHashSet<String>(KNOWN_FIELDS);
+    private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
     private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}");
 
@@ -88,30 +88,33 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     public String getPath(String key) throws ParseException {
-        return parse(key)[fieldList.indexOf("path")];
+        return parse(key).get("path");
     }
 
-    public String[] parse(String key) throws ParseException {
+    public Map<String, String> parse(String key) throws ParseException {
         Object[] values = format.parse(key);
-        String[] result = new String[values.length];
-        System.arraycopy(values, 0, result, 0, values.length);
+        Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
+        for (int i = 0; i < values.length; i++) {
+            Object object = values[i];
+            result.put(fields.get(i), (String) object);
+        }
         return result;
     }
 
     public String replaceField(String key, String fieldName, String newValue) throws ParseException {
-        String[] args = parse(key);
-        args[fieldList.indexOf(fieldName)] = newValue;
-        return format.format(args, new StringBuffer(32), new FieldPosition(0)).toString();
+        Map<String, String> args = parse(key);
+        args.put(fieldName, newValue);
+        return format.format(args.values().toArray(new String[] {}), new StringBuffer(32), new FieldPosition(0))
+                .toString();
     }
 
     @SuppressWarnings("unchecked")
-    public void setFields(Set<String> fields) {
-        this.fields = SetUtils.predicatedSet(fields, new Predicate() {
+    public void setFields(List<String> fields) {
+        this.fields = ListUtils.predicatedList(fields, new Predicate() {
             public boolean evaluate(Object object) {
                 return (object instanceof String) && KNOWN_FIELDS.contains(object);
             }
         });
-        fieldList = new ArrayList<String>(this.fields);
     }
 
     public void setFormat(String format) {

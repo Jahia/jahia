@@ -1,0 +1,34 @@
+
+.cacheDebugInfo {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	color:#333333;
+	background-color:#ffffcc;
+	border:1px solid #ffcc33;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding:5px;
+	overflow-x:auto;
+    margin-bottom:2px;
+}
+.cacheDebugInfo button	{
+	background-color: #66cc00;
+	color: white !important;
+	font-weight: bold;
+	font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: none;
+	padding: 2px;
+	border:1px solid #336600;
+	margin-top:5px
+}
+
+.cacheDebugInfo button:hover, .cacheDebugInfo button:active{
+	background: #339900;
+	cursor: pointer;
+	color: black !important;
+}
+.cacheDebugInfoLabel{
+	font-weight:bold
+}

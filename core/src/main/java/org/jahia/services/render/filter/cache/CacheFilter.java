@@ -50,6 +50,9 @@ import org.jahia.services.render.Script;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * Module content caching filter.
  *
@@ -67,16 +70,9 @@ public class CacheFilter extends AbstractFilter {
         if (!renderContext.isEditMode()) {
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
-            String key = String.valueOf(keyGenerator.generate(resource, renderContext));
-//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(resource.getLocale()).append(resource.getNode().getPath()).append(".").append(
-//                    resource.getResolvedTemplate()).toString();
-//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(
-//                    resource.getLocale()).append(resource.getNode().getPath()).append("/").append(
-//                    resource.getTemplateType()).toString();
-//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(
-//                    resource.getLocale()).append(resource.getNode().getPath()).append(".").append(
-//                    resource.getResolvedTemplate()).toString();
-
+            final String cacheInfo = renderContext.getRequest().getParameter("cacheinfo");
+            boolean displayCacheInfo = cacheInfo!=null?Boolean.valueOf(cacheInfo):false;
+            String key = String.valueOf(keyGenerator.generate(resource, renderContext,displayCacheInfo));
             if(debugEnabled) {
                 logger.debug("Cache filter for key "+key);
             }
@@ -88,7 +84,12 @@ public class CacheFilter extends AbstractFilter {
             }
             if (element != null) {
                 if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
-                return (String) ((CacheEntry) element.getValue()).getObject();
+                final String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
+                if(displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length()>0) {
+                    return appendDebugInformation(renderContext, key, cachedContent, element);
+                } else {
+                    return cachedContent;
+                }
             }
             else {
                 if(debugEnabled) logger.debug("Generating content for node : " + key);
@@ -137,7 +138,7 @@ public class CacheFilter extends AbstractFilter {
                     }
                 }
                 cacheProvider.getCache().put(cachedElement);
-                
+
                 if (debugEnabled) {
                     logger.debug("Caching content for node : " + key);
                     StringBuilder stringBuilder = new StringBuilder();
@@ -146,15 +147,40 @@ public class CacheFilter extends AbstractFilter {
                     }
                     logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
                 }
-                return renderContent;
+                if(displayCacheInfo && !renderContent.contains("<body") && renderContent.trim().length()>0) {
+                    return appendDebugInformation(renderContext, key, renderContent, cachedElement);
+                } else {
+                    return renderContent;
+                }
             }
         }
         return chain.doFilter(renderContext, resource);
     }
 
+    private String appendDebugInformation(RenderContext renderContext, String key, String renderContent, Element cachedElement) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<div class=\"cacheDebugInfo\">");
+        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
+        stringBuilder.append(key);
+        stringBuilder.append("</span><br/>");
+        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
+        stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getCreationTime())));
+        stringBuilder.append("</span><br/>");
+        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
+        stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getExpirationTime())));
+        stringBuilder.append("</span>");
+        stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext()).append("/flushKey.jsp\" method=\"post\"");
+        stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
+        stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
+        stringBuilder.append("</form>");
+        stringBuilder.append("</div>");
+        stringBuilder.append(renderContent);
+        return stringBuilder.toString();
+    }
+
     /**
      * Injects the cache key generator implementation.
-     * 
+     *
      * @param keyGenerator the cache key generator implementation to use
      */
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {

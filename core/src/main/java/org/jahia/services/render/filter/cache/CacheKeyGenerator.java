@@ -47,7 +47,8 @@ public interface CacheKeyGenerator {
      * 
      * @param resource the current resource being rendered
      * @param renderContext the current rendering context
+     * @param displayCacheInfo
      * @return the output cache key based on the provided data
      */
-    Object generate(Resource resource, RenderContext renderContext);
+    Object generate(Resource resource, RenderContext renderContext, boolean displayCacheInfo);
 }

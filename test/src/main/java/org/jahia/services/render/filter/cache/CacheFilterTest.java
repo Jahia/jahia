@@ -138,13 +138,16 @@ public class CacheFilterTest extends TestCase {
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
-        final String key = cacheFilter.generateKey(resource, context);
+
+        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
+        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        final String key = (String) generator.generate(resource, context, false);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
         String result = chain.doFilter(context, resource);
 
-        final Element element = cacheFilter.getBlockingCache().get(key);
+        final Element element = moduleCacheProvider.getCache().get(key);
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));
     }
@@ -173,14 +176,16 @@ public class CacheFilterTest extends TestCase {
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
-        final String key = cacheFilter.generateKey(resource, context);
+        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
+        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        final String key = (String) generator.generate(resource, context, false);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
         String result = chain.doFilter(context, resource);
 
-        final Element element = cacheFilter.getBlockingCache().get(key);
-        final Element element1 = cacheFilter.getDependenciesCache().get(node.getPath());
+        final Element element = moduleCacheProvider.getCache().get(key);
+        final Element element1 = moduleCacheProvider.getDependenciesCache().get(node.getPath());
         assertNotNull("Node /shared should have dependencies",element1);
         assertTrue("Dependencies must not be empty",((Set<String>) element1.getValue()).size()>0);
     }
@@ -211,13 +216,15 @@ public class CacheFilterTest extends TestCase {
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
-        final String key = cacheFilter.generateKey(resource, context);
+        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
+        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        final String key = (String) generator.generate(resource, context, false);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
         String result = chain.doFilter(context, resource);
 
-        final BlockingCache cache = cacheFilter.getBlockingCache();
+        final BlockingCache cache = moduleCacheProvider.getCache();
         Element element = cache.get(key);
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));

@@ -43,12 +43,12 @@ import org.jahia.services.render.Resource;
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
-    public Object generate(Resource resource, RenderContext renderContext) {
+    public Object generate(Resource resource, RenderContext renderContext, boolean displayCacheInfo) {
         StringBuilder key = new StringBuilder(32);
 
         key.append("/").append(resource.getWorkspace()).append("/").append(resource.getLocale()).append(
                 resource.getNode().getPath()).append(".").append(resource.getResolvedTemplate()).append(".").append(
-                resource.getTemplateType());
+                resource.getTemplateType()).append(displayCacheInfo?"__cacheinfo__":"");
 
         return key.toString();
     }

@@ -45,6 +45,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
+<%@ page import="org.apache.commons.io.FileUtils" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -57,7 +59,7 @@
 <body>
 <%
     Element elem = ((EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
-            "EH_CACHE")).getCacheManager().getCache(CacheFilter.CACHE_NAME).get(request.getParameter("key"));
+            "EH_CACHE")).getCacheManager().getCache(ModuleCacheProvider.CACHE_NAME).get(request.getParameter("key"));
     Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
 %><%= obj %>
 </body>
@@ -93,8 +95,8 @@
     EhCacheProvider provider = (EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
             "EH_CACHE");
     CacheManager cacheManager = provider.getCacheManager();
-    Cache containerCache = cacheManager.getCache(CacheFilter.CACHE_NAME);
-    Cache depCache = cacheManager.getCache(CacheFilter.CACHE_NAME+"dependencies");
+    Cache containerCache = cacheManager.getCache(ModuleCacheProvider.CACHE_NAME);
+    Cache depCache = cacheManager.getCache(ModuleCacheProvider.DEPS_CACHE_NAME);
     Statistics statistics = containerCache.getStatistics();
     if (pageContext.getRequest().getParameter("flush") != null) {
         containerCache.flush();
@@ -169,7 +171,7 @@
         </c:forEach>
 	    <script type="text/javascript">
 		    $(document).ready(function() {
-		        $("#cacheSize").before("<%= cacheSize %> bytes");
+		        $("#cacheSize").before("<%= FileUtils.byteCountToDisplaySize(cacheSize) %> bytes");
 	        });
 	    </script>
         </tbody>

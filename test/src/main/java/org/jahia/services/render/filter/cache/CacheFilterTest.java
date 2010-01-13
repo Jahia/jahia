@@ -141,7 +141,7 @@ public class CacheFilterTest extends TestCase {
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
-        final String key = (String) generator.generate(resource, context, false);
+        final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
@@ -178,7 +178,7 @@ public class CacheFilterTest extends TestCase {
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
-        final String key = (String) generator.generate(resource, context, false);
+        final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
@@ -218,7 +218,7 @@ public class CacheFilterTest extends TestCase {
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
-        final String key = (String) generator.generate(resource, context, false);
+        final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 

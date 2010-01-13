@@ -62,7 +62,6 @@ import java.util.*;
  */
 public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
-    private CacheKeyGenerator keyGenerator;
     private ModuleCacheProvider cacheProvider;
 
     @Override
@@ -70,9 +69,9 @@ public class CacheFilter extends AbstractFilter {
         if (!renderContext.isEditMode()) {
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
-            final String cacheInfo = renderContext.getRequest().getParameter("cacheinfo");
-            boolean displayCacheInfo = cacheInfo!=null?Boolean.valueOf(cacheInfo):false;
-            String key = String.valueOf(keyGenerator.generate(resource, renderContext,displayCacheInfo));
+            boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+            String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+
             if(debugEnabled) {
                 logger.debug("Cache filter for key "+key);
             }
@@ -128,8 +127,7 @@ public class CacheFilter extends AbstractFilter {
                     }
                     cachesExpiration.put(key,expiration.intValue());
                     templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
-                    final String hiddenKey = key.replaceAll("__template__(.*)__lang__",
-                            "__template__hidden.load__lang__");
+                    final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template", "hidden.load");
                     if(cacheProvider.getCache().isKeyInCache(hiddenKey)) {
                         Element hiddenElement = cacheProvider.getCache().get(hiddenKey);
                         hiddenElement.setTimeToIdle(1);
@@ -138,7 +136,7 @@ public class CacheFilter extends AbstractFilter {
                     }
                 }
                 cacheProvider.getCache().put(cachedElement);
-
+                
                 if (debugEnabled) {
                     logger.debug("Caching content for node : " + key);
                     StringBuilder stringBuilder = new StringBuilder();
@@ -155,6 +153,10 @@ public class CacheFilter extends AbstractFilter {
             }
         }
         return chain.doFilter(renderContext, resource);
+    }
+
+    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
     }
 
     private String appendDebugInformation(RenderContext renderContext, String key, String renderContent, Element cachedElement) {
@@ -176,18 +178,5 @@ public class CacheFilter extends AbstractFilter {
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();
-    }
-
-    /**
-     * Injects the cache key generator implementation.
-     *
-     * @param keyGenerator the cache key generator implementation to use
-     */
-    public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
-        this.keyGenerator = keyGenerator;
-    }
-
-    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
     }
 }

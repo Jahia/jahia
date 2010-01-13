@@ -32,12 +32,9 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ page import="net.sf.ehcache.Cache" %>
-<%@ page import="net.sf.ehcache.CacheManager" %>
+<%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Statistics" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.cache.ehcache.EhCacheProvider" %>
-<%@ page import="org.jahia.services.render.filter.cache.CacheFilter" %>
+<%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
@@ -45,7 +42,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%--
   Output cache monitoring JSP.
@@ -58,8 +54,8 @@
 <html>
 <body>
 <%
-    Element elem = ((EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
-            "EH_CACHE")).getCacheManager().getCache(ModuleCacheProvider.CACHE_NAME).get(request.getParameter("key"));
+	System.out.println(request.getParameter("key"));
+    Element elem = ModuleCacheProvider.getInstance().getCache().get(request.getParameter("key"));
     Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
 %><%= obj %>
 </body>
@@ -92,32 +88,31 @@
     </script>
 </head>
 <%
-    EhCacheProvider provider = (EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
-            "EH_CACHE");
-    CacheManager cacheManager = provider.getCacheManager();
-    Cache containerCache = cacheManager.getCache(ModuleCacheProvider.CACHE_NAME);
-    Cache depCache = cacheManager.getCache(ModuleCacheProvider.DEPS_CACHE_NAME);
-    Statistics statistics = containerCache.getStatistics();
+	ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
+    Ehcache cache = cacheProvider.getCache();
+	Ehcache depCache = cacheProvider.getDependenciesCache();
     if (pageContext.getRequest().getParameter("flush") != null) {
-        containerCache.flush();
-        containerCache.clearStatistics();
+        cache.flush();
+        cache.clearStatistics();
         depCache.flush();
         depCache.clearStatistics();
     }
-    List keys = containerCache.getKeys();
+    List keys = cache.getKeys();
     Collections.sort(keys);
     pageContext.setAttribute("keys", keys);
+    pageContext.setAttribute("cache", cache);
+    pageContext.setAttribute("stats", cache.getStatistics());
 %>
 <body style="background-color: #EAEAEA">
 <a href="index.html" title="back to the overview of caches">overview</a>&nbsp;
 <a href="?flush=true" onclick="return confirm('This will flush the content of the cache. Would you like to continue?')" title="flush the content of the module output cache">flush</a>&nbsp;
 <a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
 <div id="statistics">
-    <span>Cache Hits = <%=statistics.getCacheHits()%> (Cache hits in memory : <%=statistics.getInMemoryHits()%>; Cache hits on disk : <%=statistics.getOnDiskHits()%>)</span><br/>
-    <span>Cache Miss = <%=statistics.getCacheMisses()%></span><br/>
-    <span>Object counts = <%=statistics.getObjectCount()%></span><br/>
-    <span>Memory size = <%=containerCache.getMemoryStoreSize()%></span><br/>
-    <span>Disk size = <%=containerCache.getDiskStoreSize()%></span><br/>
+    <span>Cache Hits: ${stats.cacheHits} (Cache hits in memory : ${stats.inMemoryHits}; Cache hits on disk : ${stats.onDiskHits})</span><br/>
+    <span>Cache Miss: ${stats.cacheMisses}</span><br/>
+    <span>Object counts: ${stats.objectCount}</span><br/>
+    <span>Memory size: ${cache.memoryStoreSize}</span><br/>
+    <span>Disk size: ${cache.diskStoreSize}</span><br/>
     <span>Cache entries size = <span id="cacheSize"></span></span><br/>
 </div>
 <div id="keys">
@@ -137,7 +132,7 @@
 
             <tr <c:if test="${i.index mod 2 == 0}">style="background-color:#F8F8F8;"</c:if>>
                     <% String attribute = (String) pageContext.getAttribute("key");
-                        final Element element1 = containerCache.getQuiet(attribute);
+                        final Element element1 = cache.getQuiet(attribute);
                         if (element1 != null) {
                     %>
 
@@ -152,13 +147,16 @@
                 	</c:if>
                 	<c:if test="${not viewContent}">
                 		<center>
-                		<a href="ehcache_cj.jsp?key=${key}" target="_blank">view</a>
+                		<c:url var="detailsUrl" value="ehcache_cj.jsp">
+                			<c:param name="key" value="${key}"/>
+                		</c:url>
+                		<a href="${detailsUrl}" target="_blank">view</a>
                 		<br/>[<%= content.length() %>&nbsp;bytes]
                 		</center>
                 	</c:if>
                 </td>
                 <td><%
-                    Element element = depCache.getQuiet(attribute.split("__")[0]);
+                    Element element = depCache.getQuiet(cacheProvider.getKeyGenerator().getPath(attribute));
                     if(element !=null) {
                         Set<String> deps = (Set<String>) element.getValue();
                         for (String dep : deps) {

@@ -36,6 +36,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -49,21 +50,33 @@ public class ModuleCacheProvider implements InitializingBean {
 
     public static final String CACHE_NAME = "CJHTMLCache";
     public static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
+
+    /**
+     * Returns an instance of this class
+     * 
+     * @return an instance of this class
+     */
+    public static ModuleCacheProvider getInstance() {
+        return (ModuleCacheProvider) SpringContextSingleton.getBean("ModuleCacheProvider");
+    }
     
     private BlockingCache blockingCache;
     private int blockingTimeout = 5000;
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
 
+    private CacheKeyGenerator keyGenerator;
+
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
+     * <p>
+     * This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an exception
+     * in the event of misconfiguration.
+     * 
+     * @throws Exception in the event of misconfiguration (such as failure to
+     *             set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
@@ -86,12 +99,25 @@ public class ModuleCacheProvider implements InitializingBean {
         return dependenciesCache;
     }
 
+    public CacheKeyGenerator getKeyGenerator() {
+        return keyGenerator;
+    }
+
     public void setBlockingTimeout(int blockingTimeout) {
         this.blockingTimeout = blockingTimeout;
     }
 
     public void setCacheProvider(EhCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
+    }
+
+    /**
+     * Injects the cache key generator implementation.
+     * 
+     * @param keyGenerator the cache key generator implementation to use
+     */
+    public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
     }
 
 }

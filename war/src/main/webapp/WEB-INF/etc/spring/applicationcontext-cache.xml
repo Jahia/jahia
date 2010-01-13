@@ -94,13 +94,13 @@ when we flush this entry we will flush the whole cache-->
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
         <property name="blockingTimeout" value="5000"/>
+        <property name="keyGenerator">
+        	<bean class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator"/>
+        </property>
 	</bean>
-	
-	<bean id="ModuleCacheKeyGenerator" class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator"/>
 	
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
-        <property name="keyGenerator" ref="ModuleCacheKeyGenerator"/>
     </bean>
 
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">

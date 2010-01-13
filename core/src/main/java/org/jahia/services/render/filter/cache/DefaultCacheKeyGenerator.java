@@ -32,6 +32,18 @@
 
 package org.jahia.services.render.filter.cache;
 
+import java.text.FieldPosition;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.SetUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -39,18 +51,71 @@ import org.jahia.services.render.Resource;
  * Default implementation of the module output cache key generator.
  * 
  * @author Sergiy Shyrkov
- * 
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
-    public Object generate(Resource resource, RenderContext renderContext, boolean displayCacheInfo) {
-        StringBuilder key = new StringBuilder(32);
+    private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList(new String[] { "workspace",
+            "language", "path", "template", "templateType", "queryString" }));
 
-        key.append("/").append(resource.getWorkspace()).append("/").append(resource.getLocale()).append(
-                resource.getNode().getPath()).append(".").append(resource.getResolvedTemplate()).append(".").append(
-                resource.getTemplateType()).append(displayCacheInfo?"__cacheinfo__":"");
+    private List<String> fieldList = new ArrayList<String>(KNOWN_FIELDS);
+    private Set<String> fields = new LinkedHashSet<String>(KNOWN_FIELDS);
 
-        return key.toString();
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}");
+
+    public String generate(Resource resource, RenderContext renderContext) {
+        return format.format(getArguments(resource, renderContext), new StringBuffer(32), new FieldPosition(0))
+                .toString();
+    }
+
+    private Object[] getArguments(Resource resource, RenderContext renderContext) {
+        List<String> args = new LinkedList<String>();
+        for (String field : fields) {
+            if ("workspace".equals(field)) {
+                args.add(resource.getWorkspace());
+            } else if ("language".equals(field)) {
+                args.add(resource.getLocale().toString());
+            } else if ("path".equals(field)) {
+                args.add(resource.getNode().getPath());
+            } else if ("template".equals(field)) {
+                args.add(resource.getResolvedTemplate());
+            } else if ("templateType".equals(field)) {
+                args.add(resource.getTemplateType());
+            } else if ("queryString".equals(field)) {
+                args.add(renderContext.getRequest().getQueryString());
+            }
+        }
+        return args.toArray(new String[] {});
+    }
+
+    public String getPath(String key) throws ParseException {
+        return parse(key)[fieldList.indexOf("path")];
+    }
+
+    public String[] parse(String key) throws ParseException {
+        Object[] values = format.parse(key);
+        String[] result = new String[values.length];
+        System.arraycopy(values, 0, result, 0, values.length);
+        return result;
+    }
+
+    public String replaceField(String key, String fieldName, String newValue) throws ParseException {
+        String[] args = parse(key);
+        args[fieldList.indexOf(fieldName)] = newValue;
+        return format.format(args, new StringBuffer(32), new FieldPosition(0)).toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setFields(Set<String> fields) {
+        this.fields = SetUtils.predicatedSet(fields, new Predicate() {
+            public boolean evaluate(Object object) {
+                return (object instanceof String) && KNOWN_FIELDS.contains(object);
+            }
+        });
+        fieldList = new ArrayList<String>(this.fields);
+    }
+
+    public void setFormat(String format) {
+        this.format = new MessageFormat(format);
     }
 
 }

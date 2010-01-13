@@ -32,22 +32,23 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
+import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Script;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.springframework.beans.factory.InitializingBean;
-
-import java.util.*;
 
 /**
  * Module content caching filter.
@@ -56,37 +57,35 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 8 janv. 2010
  */
-public class CacheFilter extends AbstractFilter implements InitializingBean {
+public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
-    private EhCacheProvider cacheProvider;
-    public static final String CACHE_NAME = "CJHTMLCache";
-    public static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
-    private BlockingCache blockingCache;
-    private Cache dependenciesCache;
-    private int blockingTimeout = 5000;
-
-    public BlockingCache getBlockingCache() {
-        return blockingCache;
-    }
-
-    public Cache getDependenciesCache() {
-        return dependenciesCache;
-    }
-
-    public void setBlockingTimeout(int blockingTimeout) {
-        this.blockingTimeout = blockingTimeout;
-    }
+    private CacheKeyGenerator keyGenerator;
+    private ModuleCacheProvider cacheProvider;
 
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
-            String key = generateKey(resource, renderContext);
+            String key = String.valueOf(keyGenerator.generate(resource, renderContext));
+//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(resource.getLocale()).append(resource.getNode().getPath()).append(".").append(
+//                    resource.getResolvedTemplate()).toString();
+//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(
+//                    resource.getLocale()).append(resource.getNode().getPath()).append("/").append(
+//                    resource.getTemplateType()).toString();
+//            String key = new StringBuilder().append("/").append(resource.getWorkspace()).append("/").append(
+//                    resource.getLocale()).append(resource.getNode().getPath()).append(".").append(
+//                    resource.getResolvedTemplate()).toString();
+
             if(debugEnabled) {
                 logger.debug("Cache filter for key "+key);
             }
-            Element element = blockingCache.get(key);
+            Element element = null;
+            try {
+                element = cacheProvider.getCache().get(key);
+            } catch (LockTimeoutException e) {
+                logger.warn(e.getMessage(), e);
+            }
             if (element != null) {
                 if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
                 return (String) ((CacheEntry) element.getValue()).getObject();
@@ -107,7 +106,7 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                         }
                         expiration = lowestExpiration;
                     }
-                    Element element1 = dependenciesCache.get(path);
+                    Element element1 = cacheProvider.getDependenciesCache().get(path);
                     Set<String> dependencies;
                     if (element1 != null) {
                         dependencies = (Set<String>) element1.getValue();
@@ -115,7 +114,7 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                         dependencies = new LinkedHashSet<String>();
                     }
                     dependencies.add(key);
-                    dependenciesCache.put(new Element(path,dependencies));
+                    cacheProvider.getDependenciesCache().put(new Element(path,dependencies));
                 }
                 CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);
                 Element cachedElement = new Element(key, cacheEntry);
@@ -129,15 +128,15 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
                     cachesExpiration.put(key,expiration.intValue());
                     templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
                     final String hiddenKey = key.replaceAll("__template__(.*)__lang__",
-                                                            "__template__hidden.load__lang__");
-                    if(blockingCache.isKeyInCache(hiddenKey)) {
-                        Element hiddenElement = blockingCache.get(hiddenKey);
+                            "__template__hidden.load__lang__");
+                    if(cacheProvider.getCache().isKeyInCache(hiddenKey)) {
+                        Element hiddenElement = cacheProvider.getCache().get(hiddenKey);
                         hiddenElement.setTimeToIdle(1);
                         hiddenElement.setTimeToLive(expiration.intValue()+1);
-                        blockingCache.put(hiddenElement);
+                        cacheProvider.getCache().put(hiddenElement);
                     }
                 }
-                blockingCache.put(cachedElement);
+                cacheProvider.getCache().put(cachedElement);
                 
                 if (debugEnabled) {
                     logger.debug("Caching content for node : " + key);
@@ -153,36 +152,16 @@ public class CacheFilter extends AbstractFilter implements InitializingBean {
         return chain.doFilter(renderContext, resource);
     }
 
-    public String generateKey(Resource resource, RenderContext context) {
-        return new StringBuilder().append(resource.getNode().getPath()).append("__template__").append(
-                resource.getResolvedTemplate()).append("__lang__").append(resource.getLocale()).append(
-                "__site__").append(context.getSite().getSiteKey()).toString();
-    }
-
-    public void setCacheProvider(EhCacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
-    }
-
     /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
+     * Injects the cache key generator implementation.
+     * 
+     * @param keyGenerator the cache key generator implementation to use
      */
-    public void afterPropertiesSet() throws Exception {
-        CacheManager cacheManager = cacheProvider.getCacheManager();
-        if (!cacheManager.cacheExists(CACHE_NAME)) {
-            cacheManager.addCache(CACHE_NAME);
-        }
-        if (!cacheManager.cacheExists(DEPS_CACHE_NAME)) {
-            cacheManager.addCache(DEPS_CACHE_NAME);
-        }
-        blockingCache = new BlockingCache(cacheManager.getCache(CACHE_NAME));
-        blockingCache.setTimeoutMillis(blockingTimeout);
-        dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
+    public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
+    }
+
+    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
     }
 }

@@ -347,12 +347,6 @@
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
 
-    <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="cacheProvider" ref="ehCacheProvider"/>
-        <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
-        <property name="blockingTimeout" value="5000"/>
-    </bean>
-
     <bean id="RenderService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -374,6 +368,10 @@
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
                         <ref bean="cacheFilter"/>
+                        <!-- 
+                        <ref bean="mainResourceCacheFilter"/>
+                        <ref bean="nonMainResourceCacheFilter"/>
+                         -->
                         <bean class="org.jahia.services.render.filter.URLFilter" />
                         <bean class="org.jahia.services.render.filter.WrapperFilter" />
                         <bean class="org.jahia.services.render.filter.SkinFilter" />

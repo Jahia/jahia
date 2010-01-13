@@ -430,6 +430,17 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
+     * If set to <code>true</code>, the current filter won't be executed on main resources.
+     * 
+     * @param bool set to <code>true</code> to prevent filter from executing on main module
+     */
+    public void setSkipOnMainResource(boolean bool) {
+        if (bool) {
+            addCondition(new NotCondition(new MainResourceCondition()));
+        }
+    }
+
+    /**
      * Comma-separated list of module names this filter won't be executed for.
      * 
      * @param modules comma-separated list of module names this filter won't be

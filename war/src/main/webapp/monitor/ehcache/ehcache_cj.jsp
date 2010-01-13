@@ -1,9 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -47,20 +46,29 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%--
-  Created by IntelliJ IDEA.
+  Output cache monitoring JSP.
   User: rincevent
   Date: 28 mai 2008
   Time: 16:59:07
-  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@ taglib uri="http://displaytag.sf.net/el" prefix="display" %>--%>
+<c:if test="${not empty param.key}">
+<html>
+<body>
+<%
+    Element elem = ((EhCacheProvider) ServicesRegistry.getInstance().getCacheService().getCacheProviders().get(
+            "EH_CACHE")).getCacheManager().getCache(CacheFilter.CACHE_NAME).get(request.getParameter("key"));
+    Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
+%><%= obj %>
+</body>
+</html>
+</c:if>
+<c:if test="${empty param.key}">
 <html>
 <head>
-    <script type="text/javascript" src="jquery.js" language="JavaScript"></script>
+    <script type="text/javascript" src="jquery.min.js" language="JavaScript"></script>
     <script type="text/javascript" src="jquery.dataTables.min.js" language="JavaScript"></script>
-    <%--<script type="text/javascript" src="fixedHeader.js" language="JavaScript"></script>--%>
-    <title>Display content of Container cache</title>
+    <title>Display content of module output cache</title>
     <script type="text/javascript">
         var myTable = $(document).ready(function() {
             $('#cacheTable').dataTable({
@@ -98,18 +106,20 @@
     Collections.sort(keys);
     pageContext.setAttribute("keys", keys);
 %>
-<body bgcolor="whitesmoke">
-<a href="index.html">index</a>&nbsp;<a href="ehcache_cj.jsp?flush=true">flush</a>
-
+<body style="background-color: #EAEAEA">
+<a href="index.html" title="back to the overview of caches">overview</a>&nbsp;
+<a href="?flush=true" onclick="return confirm('This will flush the content of the cache. Would you like to continue?')" title="flush the content of the module output cache">flush</a>&nbsp;
+<a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
 <div id="statistics">
     <span>Cache Hits = <%=statistics.getCacheHits()%> (Cache hits in memory : <%=statistics.getInMemoryHits()%>; Cache hits on disk : <%=statistics.getOnDiskHits()%>)</span><br/>
     <span>Cache Miss = <%=statistics.getCacheMisses()%></span><br/>
     <span>Object counts = <%=statistics.getObjectCount()%></span><br/>
     <span>Memory size = <%=containerCache.getMemoryStoreSize()%></span><br/>
     <span>Disk size = <%=containerCache.getDiskStoreSize()%></span><br/>
+    <span>Cache entries size = <span id="cacheSize"></span></span><br/>
 </div>
 <div id="keys">
-    <table border="1" bgcolor="rgb(230,230,230)" id="cacheTable">
+    <table border="1" style="background-color: #CCCCCC" id="cacheTable">
         <thead>
         <tr>
             <th>Key</th>
@@ -119,20 +129,34 @@
         </tr>
         </thead>
         <tbody>
+        <% long cacheSize = 0; %>
+        <c:set var="depsCacheSize" value="0"/>
         <c:forEach items="${keys}" var="key" varStatus="i">
 
-            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:rgb(180,180,180);"</c:if>>
+            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:#F8F8F8;"</c:if>>
                     <% String attribute = (String) pageContext.getAttribute("key");
-                        final Element element1 = containerCache.get(attribute);
+                        final Element element1 = containerCache.getQuiet(attribute);
                         if (element1 != null) {
                     %>
 
                 <td>${key}</td>
                 <td><%=SimpleDateFormat.getDateTimeInstance().format(new Date(element1.getExpirationTime()))%></td>
-                <td><%=((CacheEntry) element1.getValue()).getObject()%>
+                <% String content = (String)((CacheEntry)element1.getValue()).getObject();
+                cacheSize += content != null ? content.length() : 0;
+                %>
+                <td>
+                	<c:if test="${param.viewContent}" var="viewContent">
+                		<%= content %>
+                	</c:if>
+                	<c:if test="${not viewContent}">
+                		<center>
+                		<a href="ehcache_cj.jsp?key=${key}" target="_blank">view</a>
+                		<br/>[<%= content.length() %>&nbsp;bytes]
+                		</center>
+                	</c:if>
                 </td>
                 <td><%
-                    Element element = depCache.get(attribute.split("__")[0]);
+                    Element element = depCache.getQuiet(attribute.split("__")[0]);
                     if(element !=null) {
                         Set<String> deps = (Set<String>) element.getValue();
                         for (String dep : deps) {
@@ -140,13 +164,18 @@
                         }
                     }
                 %></td>
-                <%  containerCache.put(element1);
-                    }%>
+                <%}%>
             </tr>
         </c:forEach>
+	    <script type="text/javascript">
+		    $(document).ready(function() {
+		        $("#cacheSize").before("<%= cacheSize %> bytes");
+	        });
+	    </script>
         </tbody>
     </table>
 </div>
-<a href="index.html">index</a>
+<a href="index.html">overview</a>
 </body>
 </html>
+</c:if>

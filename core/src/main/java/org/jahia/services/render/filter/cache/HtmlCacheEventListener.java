@@ -57,12 +57,8 @@ import java.util.Set;
 public class HtmlCacheEventListener extends DefaultEventListener {
     private transient static Logger logger = Logger.getLogger(HtmlCacheEventListener.class);
 
-    private CacheFilter cacheFilter;
-
-    public void setCacheFilter(CacheFilter cacheFilter) {
-        this.cacheFilter = cacheFilter;
-    }
-
+    private ModuleCacheProvider cacheProvider;
+    
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
@@ -84,8 +80,8 @@ public class HtmlCacheEventListener extends DefaultEventListener {
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
-        final Cache depCache = cacheFilter.getDependenciesCache();
-        final BlockingCache htmlCache = cacheFilter.getBlockingCache();
+        final Cache depCache = cacheProvider.getDependenciesCache();
+        final BlockingCache htmlCache = cacheProvider.getCache();
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
@@ -115,5 +111,9 @@ public class HtmlCacheEventListener extends DefaultEventListener {
             }
 
         }
+    }
+    
+    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
     }
 }

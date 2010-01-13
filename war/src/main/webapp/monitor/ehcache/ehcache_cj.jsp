@@ -64,13 +64,13 @@
 <c:if test="${empty param.key}">
 <html>
 <head>
+    <link type="text/css" href="css/demo_table.css" rel="stylesheet"/>
     <script type="text/javascript" src="jquery.min.js" language="JavaScript"></script>
     <script type="text/javascript" src="jquery.dataTables.min.js" language="JavaScript"></script>
     <title>Display content of module output cache</title>
     <script type="text/javascript">
         var myTable = $(document).ready(function() {
             $('#cacheTable').dataTable({
-                "bPaginate": true,
                 "bLengthChange": true,
                 "bFilter": true,
                 "bSort": true,
@@ -82,7 +82,8 @@
                     {
                         "sType": "html"
                     }
-                ]
+                ],
+                "sPaginationType": "full_numbers"
             });
         });
     </script>
@@ -103,7 +104,7 @@
     pageContext.setAttribute("cache", cache);
     pageContext.setAttribute("stats", cache.getStatistics());
 %>
-<body style="background-color: #EAEAEA">
+<body style="background-color: white;">
 <a href="index.html" title="back to the overview of caches">overview</a>&nbsp;
 <a href="?flush=true" onclick="return confirm('This will flush the content of the cache. Would you like to continue?')" title="flush the content of the module output cache">flush</a>&nbsp;
 <a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
@@ -116,7 +117,7 @@
     <span>Cache entries size = <span id="cacheSize"></span></span><br/>
 </div>
 <div id="keys">
-    <table border="1" style="background-color: #CCCCCC" id="cacheTable">
+    <table id="cacheTable">
         <thead>
         <tr>
             <th>Key</th>
@@ -130,7 +131,7 @@
         <c:set var="depsCacheSize" value="0"/>
         <c:forEach items="${keys}" var="key" varStatus="i">
 
-            <tr <c:if test="${i.index mod 2 == 0}">style="background-color:#F8F8F8;"</c:if>>
+            <tr>
                     <% String attribute = (String) pageContext.getAttribute("key");
                         final Element element1 = cache.getQuiet(attribute);
                         if (element1 != null) {
@@ -151,7 +152,7 @@
                 			<c:param name="key" value="${key}"/>
                 		</c:url>
                 		<a href="${detailsUrl}" target="_blank">view</a>
-                		<br/>[<%= content.length() %>&nbsp;bytes]
+                		<br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ","&nbsp;") %>]
                 		</center>
                 	</c:if>
                 </td>

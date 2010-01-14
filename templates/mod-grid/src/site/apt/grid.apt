@@ -1,0 +1,16 @@
+Usage of Grid in Jahia
+
+*  What is Grid
+
+    This module works with Jahia Intranet Templates using 960 grid system as display framework
+
+    You can find information about 960 grid system on {{{http://960.gs/}960.gs}}
+
+* How to add a row
+
+    In edit mode, you can drag and drop from Lists row item.
+
+    This item let you set the number of columns you want in your row.
+
+    Adding rows, defining columns let you create your full page
+

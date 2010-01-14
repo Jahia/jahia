@@ -2,16 +2,12 @@ Usage of themes in Jahia
 
   Themes allow you to change the display (css mostly) of a website.
 
-  {{{top} Introduction }}
-  {{{create} Creating a theme}}
-  {{{deploy} Deploying a theme}}
-
-* {top} Introduction
+*  Introduction
 
   Theme is a combination of css files stored in the JCR. Theses css are loaded after all other css to make the inheritance
   works.
 
-* {create} Creating a theme
+*  Creating a theme
 
   A theme should have this structure :
 

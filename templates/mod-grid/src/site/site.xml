@@ -26,14 +26,8 @@ under the License.
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
-            <item name="Usage" href="./usage.html" collapse="false">
-                <item name="Default Pages Templates" href="./usage.html#top"/>
-            </item>
-            <item name="Theme" href="./theme.html" collapse="false">
-                <item name="Introduction" href="./theme.html#top"/>
-                <item name="Introduction" href="./theme.html#create"/>
-                <item name="Introduction" href="./theme.html#deploy"/>
-            </item>
+            <item name="Grid system" href="./grid.html" collapse="false"/>
+            <item name="Theme" href="./theme.html" collapse="false"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

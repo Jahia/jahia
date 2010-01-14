@@ -38,8 +38,9 @@ import net.sf.ehcache.constructs.blocking.BlockingCache;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.*;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -59,7 +60,8 @@ public class HtmlCacheEventListener extends DefaultEventListener {
     private transient static Logger logger = Logger.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;
-    
+    private JCRTemplate jcrTemplate;
+
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
@@ -82,7 +84,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
      */
     public void onEvent(EventIterator events) {
         final Cache depCache = cacheProvider.getDependenciesCache();
-        final BlockingCache htmlCache = cacheProvider.getCache();
+//        final BlockingCache htmlCache = cacheProvider.getCache();
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
@@ -92,21 +94,54 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                     path = path.substring(0,path.lastIndexOf("/"));
                 }
-                path = StringUtils.substringBeforeLast(path, "/j:translation");
-                final Element element = !flushed.contains(path) ? depCache.get(path) : null;
-                if(element!=null) {
-                    flushed.add(path);
-                    cacheProvider.invalidate(path);
-                    depCache.remove(element.getKey());
+                if(path.contains("j:acl") || path.contains("jnt:group") || type == Event.NODE_MOVED) {
+                    // Flushing cache of acl key for users as a group or an acl has been updated
+                    CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
+                    if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
+                        DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
+                        generator.flushUsersGroupsKey();
+                    }
                 }
+                path = StringUtils.substringBeforeLast(path, "/j:translation");
+                flushDependenciesOfPath(depCache, flushed, path);
+                final String finalPath = path;
+                // Flushed shared node associated with this event
+                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            JCRNodeWrapper node = session.getNode(finalPath);
+                            NodeIterator nodeIterator = node.getSharedSet();
+                            while (nodeIterator.hasNext()) {
+                                JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
+                                flushDependenciesOfPath(depCache, flushed, wrapper.getPath());
+                            }
+                        } catch (RepositoryException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                        return null;
+                    }
+                });
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
 
         }
     }
-    
+
+    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {
+        Element element = !flushed.contains(path) ? depCache.get(path) : null;
+        if(element!=null) {
+            flushed.add(path);
+            cacheProvider.invalidate(path);
+            depCache.remove(element.getKey());
+        }
+    }
+
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
+    }
+
+    public void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
     }
 }

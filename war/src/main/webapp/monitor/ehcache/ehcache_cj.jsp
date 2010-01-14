@@ -115,6 +115,7 @@
     <span>Memory size: ${cache.memoryStoreSize}</span><br/>
     <span>Disk size: ${cache.diskStoreSize}</span><br/>
     <span>Cache entries size = <span id="cacheSize"></span></span><br/>
+    <span>Dependencies cache entries size = <span id="depsCacheSize"></span></span><br/>
 </div>
 <div id="keys">
     <table id="cacheTable">
@@ -128,7 +129,7 @@
         </thead>
         <tbody>
         <% long cacheSize = 0; %>
-        <c:set var="depsCacheSize" value="0"/>
+        <% long globalDepsCacheSize = 0; %>
         <c:forEach items="${keys}" var="key" varStatus="i">
 
             <tr>
@@ -160,9 +161,14 @@
                     Element element = depCache.getQuiet(cacheProvider.getKeyGenerator().getPath(attribute));
                     if(element !=null) {
                         Set<String> deps = (Set<String>) element.getValue();
+                        long depsCacheSize = 0;
                         for (String dep : deps) {
+                            depsCacheSize += dep.length();
                             out.print(dep+"<br/>");
-                        }
+                        }%>
+                    <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ","&nbsp;") %>]
+                    <%
+                        globalDepsCacheSize += depsCacheSize;
                     }
                 %></td>
                 <%}%>
@@ -170,7 +176,8 @@
         </c:forEach>
 	    <script type="text/javascript">
 		    $(document).ready(function() {
-		        $("#cacheSize").before("<%= FileUtils.byteCountToDisplaySize(cacheSize) %> bytes");
+		        $("#cacheSize").before("<%= FileUtils.byteCountToDisplaySize(cacheSize) %>");
+                $("#depsCacheSize").before("<%= FileUtils.byteCountToDisplaySize(globalDepsCacheSize) %>");
 	        });
 	    </script>
         </tbody>

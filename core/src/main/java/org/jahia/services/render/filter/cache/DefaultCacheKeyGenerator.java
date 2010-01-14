@@ -32,39 +32,62 @@
 
 package org.jahia.services.render.filter.cache;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.springframework.beans.factory.InitializingBean;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.*;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Predicate;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
+import java.util.*;
 
 /**
  * Default implementation of the module output cache key generator.
- * 
+ *
  * @author Sergiy Shyrkov
  */
-public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
+public class DefaultCacheKeyGenerator implements CacheKeyGenerator, InitializingBean {
 
-    private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList(new String[] { "workspace",
-            "language", "path", "template", "templateType", "queryString" }));
+    private static transient Logger logger = Logger.getLogger(DefaultCacheKeyGenerator.class);
 
+    private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
+                                                                                            "path", "template",
+                                                                                            "templateType", "acls",
+                                                                                            "queryString"));
+    private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}");
+
+    private JahiaGroupManagerService groupManagerService;
+    private Set<JahiaGroup> aclGroups = null;
+    private EhCacheProvider cacheProvider;
+    private Cache cache;
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
 
     public String generate(Resource resource, RenderContext renderContext) {
-        return format.format(getArguments(resource, renderContext), new StringBuffer(32), new FieldPosition(0))
-                .toString();
+        return format.format(getArguments(resource, renderContext), new StringBuffer(32), new FieldPosition(
+                0)).toString();
     }
 
     private Object[] getArguments(Resource resource, RenderContext renderContext) {
@@ -81,10 +104,83 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             } else if ("templateType".equals(field)) {
                 args.add(resource.getTemplateType());
             } else if ("queryString".equals(field)) {
-                args.add(renderContext.getRequest().getQueryString());
+                final String queryString = renderContext.getRequest().getQueryString();
+                args.add(queryString != null ? queryString : "");
+            } else if ("acls".equals(field)) {
+                try {
+                    // Todo Search for user specific acl
+                    final QueryManager queryManager = resource.getNode().getSession().getWorkspace().getQueryManager();
+                    JahiaUser principal = renderContext.getUser();
+                    final String userName = principal.getUsername();
+                    if (hasUserAcl(userName, queryManager)) {
+                        args.add((String) cache.get(userName).getValue());
+                    }
+                    // Todo else use user groupmembership
+                    else {
+                        Set<JahiaGroup> aclGroups = getAllAclsGroups(queryManager);
+                        StringBuilder b = new StringBuilder();
+                        for (JahiaGroup g : aclGroups) {
+                            if (g != null && g.isMember(principal)) {
+                                if (b.length() > 0) {
+                                    b.append("|");
+                                }
+                                b.append(g.getGroupname());
+                            }
+                        }
+                        if (b.toString().equals(
+                                JahiaGroupManagerService.GUEST_GROUPNAME) && !principal.getUsername().equals(
+                                JahiaUserManagerService.GUEST_USERNAME)) {
+                            b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
+                        }
+                        String userKey = b.toString();
+                        cache.put(new Element(userName,userKey));
+                        args.add(userKey);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
-        return args.toArray(new String[] {});
+        return args.toArray(new String[KNOWN_FIELDS.size()]);
+    }
+
+    private boolean hasUserAcl(String userName, QueryManager queryManager) throws RepositoryException {
+        if(cache.getSize()==0) {
+            Query query = queryManager.createQuery(
+                "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
+                Query.JCR_SQL2);
+            QueryResult queryResult = query.execute();
+            NodeIterator rowIterator = queryResult.getNodes();
+            while (rowIterator.hasNext()) {
+                Node node = (Node) rowIterator.next();
+                String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(),":");
+                if(!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/"+s+"/j:acl")) {
+                    cache.put(new Element(s,s));
+                }
+            }
+        }
+        return cache.isKeyInCache(userName);
+    }
+
+    private Set<JahiaGroup> getAllAclsGroups(QueryManager queryManager) throws RepositoryException {
+        if (aclGroups == null) {
+            aclGroups = new LinkedHashSet<JahiaGroup>();
+            Query groupQuery = queryManager.createQuery(
+                    "select u.[j:principal] as name from [jnt:ace] as u where u.[j:principal] like 'g%'",
+                    Query.JCR_SQL2);
+            QueryResult groupQueryResult = groupQuery.execute();
+            final RowIterator nodeIterator = groupQueryResult.getRows();
+            while (nodeIterator.hasNext()) {
+                Row row = (Row) nodeIterator.next();
+                final Value value = row.getValues()[0];
+                final String groupName = StringUtils.substringAfter(value.getString(), ":");
+                final JahiaGroup group = groupManagerService.lookupGroup(groupName);
+                if (!aclGroups.contains(group)) {
+                    aclGroups.add(group);
+                }
+            }
+        }
+        return aclGroups;
     }
 
     public String getPath(String key) throws ParseException {
@@ -104,15 +200,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     public String replaceField(String key, String fieldName, String newValue) throws ParseException {
         Map<String, String> args = parse(key);
         args.put(fieldName, newValue);
-        return format.format(args.values().toArray(new String[] {}), new StringBuffer(32), new FieldPosition(0))
-                .toString();
+        return format.format(args.values().toArray(new String[KNOWN_FIELDS.size()]), new StringBuffer(32),
+                             new FieldPosition(0)).toString();
     }
 
     @SuppressWarnings("unchecked")
     public void setFields(List<String> fields) {
         this.fields = ListUtils.predicatedList(fields, new Predicate() {
             public boolean evaluate(Object object) {
-                return (object instanceof String) && KNOWN_FIELDS.contains(object);
+                return (object instanceof String) && KNOWN_FIELDS.contains((String) object);
             }
         });
     }
@@ -121,4 +217,30 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         this.format = new MessageFormat(format);
     }
 
+    public void flushUsersGroupsKey() {
+        this.aclGroups = null;
+        cache.flush();
+    }
+
+    public void setCacheProvider(EhCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
+    }
+
+    /**
+     * Invoked by a BeanFactory after it has set all bean properties supplied
+     * (and satisfied BeanFactoryAware and ApplicationContextAware).
+     * <p>This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an
+     * exception in the event of misconfiguration.
+     *
+     * @throws Exception in the event of misconfiguration (such
+     *                   as failure to set an essential property) or if initialization fails.
+     */
+    public void afterPropertiesSet() throws Exception {
+        CacheManager cacheManager = cacheProvider.getCacheManager();
+        if (!cacheManager.cacheExists(CACHE_NAME)) {
+            cacheManager.addCache(CACHE_NAME);
+        }
+        cache = cacheManager.getCache(CACHE_NAME);
+    }
 }

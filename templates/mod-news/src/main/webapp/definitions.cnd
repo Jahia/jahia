@@ -8,6 +8,6 @@
  - type (string,choicelist[script=tests.groovy])
  - tags (weakreference,choicelist[nodes='/categories;jnt:category'])
 
-[jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent
+[jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache, jmix:publicationMixin 
   - maxNews (long) = 10 indexed=no
   - filter (reference, category[autoSelectParent=false])

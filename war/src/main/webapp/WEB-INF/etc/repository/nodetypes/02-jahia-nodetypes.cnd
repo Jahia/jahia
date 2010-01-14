@@ -394,7 +394,7 @@
 // Caches
 //---------------------------------------------------------
 
-[jmix:cache] > jmix:publicationMixin mixin
+[jmix:cache] > mixin
 - j:expiration (long)
 
 //---------------------------------------------------------

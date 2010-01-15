@@ -102,10 +102,12 @@ when we flush this entry we will flush the whole cache-->
         </property>
 	</bean>
 	
-    <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
+    <!--<bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
+    	<property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>-->
+    <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
-
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>
     </bean>

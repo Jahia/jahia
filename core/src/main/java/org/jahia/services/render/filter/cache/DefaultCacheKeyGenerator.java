@@ -108,14 +108,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(queryString != null ? queryString : "");
             } else if ("acls".equals(field)) {
                 try {
-                    // Todo Search for user specific acl
+                    // Search for user specific acl
                     final QueryManager queryManager = resource.getNode().getSession().getWorkspace().getQueryManager();
                     JahiaUser principal = renderContext.getUser();
                     final String userName = principal.getUsername();
                     if (hasUserAcl(userName, queryManager)) {
                         args.add((String) cache.get(userName).getValue());
                     }
-                    // Todo else use user groupmembership
+                    // else use user groupmembership
                     else {
                         Set<JahiaGroup> aclGroups = getAllAclsGroups(queryManager);
                         StringBuilder b = new StringBuilder();
@@ -133,7 +133,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
                         }
                         String userKey = b.toString();
-                        cache.put(new Element(userName,userKey));
+                        final Element element = new Element(userName, userKey);
+                        element.setEternal(true);
+                        cache.put(element);
                         args.add(userKey);
                     }
                 } catch (RepositoryException e) {
@@ -155,7 +157,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 Node node = (Node) rowIterator.next();
                 String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(),":");
                 if(!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/"+s+"/j:acl")) {
-                    cache.put(new Element(s,s));
+                    final Element element = new Element(s, s);
+                    element.setEternal(true);
+                    cache.put(element);
                 }
             }
         }
@@ -208,7 +212,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     public void setFields(List<String> fields) {
         this.fields = ListUtils.predicatedList(fields, new Predicate() {
             public boolean evaluate(Object object) {
-                return (object instanceof String) && KNOWN_FIELDS.contains((String) object);
+                return (object instanceof String) && KNOWN_FIELDS.contains(object);
             }
         });
     }

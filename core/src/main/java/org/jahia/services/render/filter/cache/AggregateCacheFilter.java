@@ -126,7 +126,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                             cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
                         }
                     }
-                    // Todo append cache:include tag
+                    // append cache:include tag
                     String cachedRenderContent = renderContent;
                     cachedRenderContent = cachedRenderContent.replaceAll(ESI_INCLUDE_STOPTAG_REGEXP, "</esi:include>");
                     cachedRenderContent = cachedRenderContent.replaceAll(ESI_INCLUDE_STARTTAG_REGEXP,
@@ -147,13 +147,6 @@ public class AggregateCacheFilter extends AbstractFilter {
                     if (expiration > 0) {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
                         cachedElement.setTimeToIdle(1);
-                        Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(
-                                resource.getNode().getPath());
-                        if (cachesExpiration == null) {
-                            cachesExpiration = new HashMap<String, Integer>();
-                        }
-                        cachesExpiration.put(key, expiration.intValue());
-                        templatesCacheExpiration.put(resource.getNode().getPath(), cachesExpiration);
                         final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template",
                                                                                               "hidden.load");
                         if (cache.isKeyInCache(hiddenKey)) {
@@ -190,7 +183,7 @@ public class AggregateCacheFilter extends AbstractFilter {
     }
 
     private String aggregateContent(BlockingCache cache, String cachedContent, RenderContext renderContext) {
-        // Todo aggregate content
+        // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
         if (esiIncludeTags.size() > 0) {
@@ -203,7 +196,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                            aggregateContent(cache, content, renderContext));
                 } else {
-                    // Todo if missing data call RenderService after creating the right resource
+                    // if missing data call RenderService after creating the right resource
                     final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
                     try {
                         Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
@@ -269,13 +262,13 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     private static void displaySegments(Iterable<StartTag> segments) {
         for (StartTag segment : segments) {
-            System.out.println("-------------------------------------------------------------------------------");
+            System.out.println("\n-------------------------------------------------------------------------------");
             System.out.println(segment.getDebugInfo());
             System.out.println(segment.getElement().getContent());
             System.out.println(segment.getAttributeValue("src"));
             System.out.println(segment.isUnregistered());
         }
-        System.out.println("\n*******************************************************************************\n");
+        System.out.println("*******************************************************************************\n");
     }
 
     private static OutputDocument emptyEsiIncludeTagContainer(Iterable<StartTag> segments, Source source) {

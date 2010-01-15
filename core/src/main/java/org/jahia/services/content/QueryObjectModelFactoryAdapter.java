@@ -76,9 +76,9 @@ import javax.jcr.Value;
  */
 public class QueryObjectModelFactoryAdapter implements QueryObjectModelFactory {
 
-    private javax.jcr.query.qom.QueryObjectModelFactory queryObjectModelFactory;
+    private QueryObjectModelFactory queryObjectModelFactory;
 
-    public QueryObjectModelFactoryAdapter(javax.jcr.query.qom.QueryObjectModelFactory
+    public QueryObjectModelFactoryAdapter(QueryObjectModelFactory
             queryObjectModelFactory) {
         this.queryObjectModelFactory = queryObjectModelFactory;
     }

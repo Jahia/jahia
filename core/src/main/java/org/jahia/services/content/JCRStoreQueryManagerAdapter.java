@@ -31,10 +31,19 @@
  */
 package org.jahia.services.content;
 
+import java.util.Locale;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
+import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
+
+import org.apache.jackrabbit.core.query.QueryManagerImpl;
+import org.jahia.query.QueryService;
 
 
 /**
@@ -44,14 +53,15 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
  */
 public class JCRStoreQueryManagerAdapter implements QueryManager {
 
-    private org.apache.jackrabbit.core.query.QueryManagerImpl queryManager;
+    private QueryManagerImpl queryManager;
     private QueryObjectModelFactoryAdapter qomFactory;
+    private Locale currentLocale;
 
     /**
      *
      * @param queryManager
      */
-    public JCRStoreQueryManagerAdapter(org.apache.jackrabbit.core.query.QueryManagerImpl queryManager) {
+    public JCRStoreQueryManagerAdapter(QueryManagerImpl queryManager) {
         this.queryManager = queryManager;
         qomFactory = new QueryObjectModelFactoryAdapter(this.queryManager.getQOMFactory());
     }
@@ -60,18 +70,32 @@ public class JCRStoreQueryManagerAdapter implements QueryManager {
         return qomFactory;
     }
 
-    public Query createQuery(java.lang.String s, java.lang.String s1)
-    throws javax.jcr.query.InvalidQueryException, javax.jcr.RepositoryException {
-        return this.queryManager.createQuery(s,s1);
+    public Query createQuery(String statement, String language)
+    throws InvalidQueryException, RepositoryException {
+        Query query = this.queryManager.createQuery(statement,language);
+        if (Query.JCR_SQL2.equals(statement)
+                && query instanceof QueryObjectModel) {
+            query = QueryService.getInstance().modifyAndOptimizeQuery(
+                    (QueryObjectModel) query, getCurrentLocale());
+        }
+        return query;
     }
 
-    public Query getQuery(javax.jcr.Node node)
-    throws javax.jcr.query.InvalidQueryException, javax.jcr.RepositoryException {
+    public Query getQuery(Node node)
+    throws InvalidQueryException, RepositoryException {
         return this.queryManager.getQuery(node);
     }
 
-    public String[] getSupportedQueryLanguages() throws javax.jcr.RepositoryException {
+    public String[] getSupportedQueryLanguages() throws RepositoryException {
         return this.queryManager.getSupportedQueryLanguages();
+    }
+
+    public Locale getCurrentLocale() {
+        return currentLocale;
+    }
+
+    public void setCurrentLocale(Locale currentLocale) {
+        this.currentLocale = currentLocale;
     }
 
 }

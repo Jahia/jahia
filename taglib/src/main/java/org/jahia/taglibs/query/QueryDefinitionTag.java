@@ -32,15 +32,14 @@
 package org.jahia.taglibs.query;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
 import org.jahia.query.qom.QOMBuilder;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.*;
-import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
@@ -68,8 +67,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(QueryDefinitionTag.class);
 
-    private JahiaData jData;
-
     protected QOMBuilder qomBuilder;
 
     private QueryObjectModelFactory queryFactory;
@@ -89,9 +86,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
 
     public int doStartTag () throws JspException {
-
-        ServletRequest request = pageContext.getRequest();
-        jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         setProperties(new Properties());
         return EVAL_BODY_BUFFERED;
     }
@@ -127,7 +121,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
-        jData = null;
         queryFactory = null;
         valueFactory = null;
         queryObjectModel = null;
@@ -139,7 +132,8 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     public QueryObjectModelFactory getQueryFactory() {
         if (queryFactory == null){
             try {
-                qomBuilder = new QOMBuilder(jData.getProcessingContext().getUser());
+                RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);                
+                qomBuilder = new QOMBuilder(renderContext.getMainResource().getLocale());
                 queryFactory = qomBuilder.getQomFactory();
             } catch ( Exception t ){
                 logger.debug(t);
@@ -250,14 +244,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
     public void setProperties(Properties properties) {
         this.properties = properties;
-    }
-
-    public JahiaData getJData() {
-        return jData;
-    }
-
-    public void setJData(JahiaData jData) {
-        this.jData = jData;
     }
 
     public void andConstraint(Constraint c) throws Exception {

@@ -38,9 +38,9 @@ import org.jahia.params.ParamBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.exceptions.JahiaException;
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
@@ -48,11 +48,11 @@ import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.ServletException;
 import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
-import java.net.URL;
 import java.net.URLConnection;
 import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
@@ -67,7 +67,9 @@ import junit.framework.TestCase;
  * Time: 4:07:40 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class TestServlet  extends HttpServlet {
+    private transient static Logger logger = Logger.getLogger(TestServlet.class);
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
@@ -95,7 +97,7 @@ public class TestServlet  extends HttpServlet {
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
             ctx.setTheUser(admin);
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error("Error getting user", e);
         }
 
         String pathInfo = httpServletRequest.getPathInfo();
@@ -109,7 +111,7 @@ public class TestServlet  extends HttpServlet {
                 runner.addFormatter(unitResultFormatter);
                 runner.run();
             } catch (Exception e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error("Error executing test", e);
             }
         } else {
             PrintWriter pw = httpServletResponse.getWriter();
@@ -123,12 +125,14 @@ public class TestServlet  extends HttpServlet {
                     String n = jarEntry.getName();
                     if (n.endsWith(".class")) {
                         try {
-                            Class c = Class.forName(n.replace('/','.').substring(0, n.lastIndexOf('.')));
+                            Class<?> c = Class.forName(n.replace('/','.').substring(0, n.lastIndexOf('.')));
                             if (TestCase.class.isAssignableFrom(c)) {
+                                pw.println(c.getName());
+                            } else if (isMethodAnnotationPresent(c, org.junit.Test.class)) {
                                 pw.println(c.getName());
                             }
                         } catch (ClassNotFoundException e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            logger.error("Error finding class", e);
                         }
 
                     }
@@ -138,4 +142,14 @@ public class TestServlet  extends HttpServlet {
 
     }
 
+    private boolean isMethodAnnotationPresent(Class<?> checkedClass, Class<? extends Annotation> annotationClass) {
+        boolean isPresent = false;
+        for (Method method : checkedClass.getMethods()) {
+            if (method.isAnnotationPresent(annotationClass)) {
+                isPresent = true;
+                break;
+            }
+        }
+        return isPresent;
+    }
 }

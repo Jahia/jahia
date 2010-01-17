@@ -31,19 +31,15 @@
  */
 package org.jahia.services.content;
 
-import java.util.Locale;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 
 import org.apache.jackrabbit.core.query.QueryManagerImpl;
-import org.jahia.query.QueryService;
 
 
 /**
@@ -55,7 +51,6 @@ public class JCRStoreQueryManagerAdapter implements QueryManager {
 
     private QueryManagerImpl queryManager;
     private QueryObjectModelFactoryAdapter qomFactory;
-    private Locale currentLocale;
 
     /**
      *
@@ -73,11 +68,6 @@ public class JCRStoreQueryManagerAdapter implements QueryManager {
     public Query createQuery(String statement, String language)
     throws InvalidQueryException, RepositoryException {
         Query query = this.queryManager.createQuery(statement,language);
-        if (Query.JCR_SQL2.equals(statement)
-                && query instanceof QueryObjectModel) {
-            query = QueryService.getInstance().modifyAndOptimizeQuery(
-                    (QueryObjectModel) query, getCurrentLocale());
-        }
         return query;
     }
 
@@ -89,13 +79,4 @@ public class JCRStoreQueryManagerAdapter implements QueryManager {
     public String[] getSupportedQueryLanguages() throws RepositoryException {
         return this.queryManager.getSupportedQueryLanguages();
     }
-
-    public Locale getCurrentLocale() {
-        return currentLocale;
-    }
-
-    public void setCurrentLocale(Locale currentLocale) {
-        this.currentLocale = currentLocale;
-    }
-
 }

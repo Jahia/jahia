@@ -33,7 +33,6 @@ package org.jahia.registries;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.query.QueryService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.applications.ApplicationsManagerService;
@@ -62,6 +61,7 @@ import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.query.QueryService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.SearchService;
 import org.jahia.services.sites.JahiaSitesService;

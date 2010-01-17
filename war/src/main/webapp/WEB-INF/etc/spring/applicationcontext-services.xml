@@ -87,6 +87,13 @@
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="settingsBean" ref="settingsBean"/>
     </bean>
+    <bean id="QueryService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.query.QueryServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="sessionFactory" ref="jcrSessionFactory" />
+            </bean>
+        </property>
+    </bean>    
     <bean id="ApplicationsManagerPortletProvider" class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start" destroy-method="stop"/>
     <bean id="ApplicationsManagerService" parent="proxyTemplate">
         <property name="target">
@@ -265,14 +272,6 @@
         <property name="cacheService" ref="JahiaCacheService" />
     </bean>
 
-    <bean id="QueryService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.query.QueryService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="sessionFactory" ref="jcrSessionFactory" />
-            </bean>
-        </property>
-    </bean>
-
     <bean id="VersionService" class="org.jahia.version.VersionService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="jahiaVersionManager" ref="org.jahia.hibernate.manager.JahiaVersionManager"/>
         <property name="patchManager" ref="org.jahia.hibernate.manager.JahiaInstalledPatchManager"/>
@@ -445,5 +444,5 @@
             <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
             </bean>
         </property>
-    </bean>            
+    </bean>    
 </beans>

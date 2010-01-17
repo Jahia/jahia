@@ -34,6 +34,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.query.qom.QueryExecute;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.query.QueryServiceImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.ContentHandler;
 
@@ -42,9 +43,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.observation.EventJournal;
-import javax.jcr.observation.EventListener;
-import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.*;
 import javax.jcr.query.qom.QueryObjectModel;
@@ -317,7 +315,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
     }
 
-    class QueryWrapper implements Query {
+    public class QueryWrapper implements Query {
         private String statement;
         private String language;
         private long limit = -1;
@@ -354,11 +352,16 @@ public class JCRWorkspaceWrapper implements Workspace {
                     JCRStoreProvider p = service.getProvider("/"+statement);
                     providers = Collections.singletonList(p);
                 }
-            }
+            } 
             for (JCRStoreProvider jcrStoreProvider : providers) {
                 QueryManager qm = jcrStoreProvider.getQueryManager(session);
                 if (qm != null) {
-                    queries.put(jcrStoreProvider, qm.createQuery(statement,language));
+                    Query query = qm.createQuery(statement,language);
+                    if (Query.JCR_SQL2.equals(language)) {
+                        query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
+                                (QueryObjectModel) query, session.getLocale(), qm.getQOMFactory());
+                    }
+                    queries.put(jcrStoreProvider, query);
                 }
             }
         }
@@ -417,6 +420,10 @@ public class JCRWorkspaceWrapper implements Workspace {
 
         public String[] getBindVariableNames() throws RepositoryException {
             return vars.keySet().toArray(new String[vars.size()]);
+        }
+
+        public Map<JCRStoreProvider, Query> getQueries() {
+            return queries;
         }
     }
 

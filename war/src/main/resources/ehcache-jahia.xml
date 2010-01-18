@@ -223,4 +223,25 @@
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true"/>
+    <cache
+            name="nodeusersacls"
+            overflowToDisk="true"
+            maxElementsInMemory="300"
+            diskPersistent="false"
+            eternal="true"/>
+    <cache
+            name="CJHTMLCache"
+            overflowToDisk="true"
+            maxElementsInMemory="10000"
+            diskPersistent="true"
+            timeToIdleSeconds="10"
+            timeToLiveSeconds="14400"
+            maxElementsOnDisk="50000"
+            eternal="false"/>
+    <cache
+            name="CJHTMLCachedependencies"
+            overflowToDisk="true"
+            maxElementsInMemory="500"
+            diskPersistent="true"
+            eternal="true"/>
 </ehcache>

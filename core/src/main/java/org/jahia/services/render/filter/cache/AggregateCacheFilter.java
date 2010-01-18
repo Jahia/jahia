@@ -49,6 +49,7 @@ import javax.jcr.RepositoryException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Module content caching filter.
@@ -61,8 +62,8 @@ public class AggregateCacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
 
-    public static final String ESI_INCLUDE_STARTTAG_REGEXP = "<!-- cache:include src=\\\"(.*)\\\" -->";
-    public static final String ESI_INCLUDE_STOPTAG_REGEXP = "<!-- /cache:include -->";
+    public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->");
+    public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
 
     public static final Map<String, String> notCacheableFragment = new HashMap<String, String>(512);
 
@@ -127,10 +128,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                         }
                     }
                     // append cache:include tag
-                    String cachedRenderContent = renderContent;
-                    cachedRenderContent = cachedRenderContent.replaceAll(ESI_INCLUDE_STOPTAG_REGEXP, "</esi:include>");
-                    cachedRenderContent = cachedRenderContent.replaceAll(ESI_INCLUDE_STARTTAG_REGEXP,
-                                                                         "<esi:include src=\"$1\">");
+                    String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(renderContent).replaceAll("</esi:include>");
+                    cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
                     Source source = new Source(cachedRenderContent);
                     // This will remove all blank line and drastically reduce data in memory
                     source = new Source((new SourceFormatter(source)).toString());
@@ -192,32 +191,44 @@ public class AggregateCacheFilter extends AbstractFilter {
                 StartTag segment = (StartTag) esiIncludeTag;
                 String cacheKey = segment.getAttributeValue("src");
                 if (cache.isKeyInCache(cacheKey)) {
-                    String content = (String) ((CacheEntry) cache.get(cacheKey).getValue()).getObject();
-                    outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
-                                           aggregateContent(cache, content, renderContext));
-                } else {
-                    // if missing data call RenderService after creating the right resource
-                    final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
-                    try {
-                        Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
-                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
-                                "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get(
-                                "language"))).getNode(keyAttrbs.get("path"));
-                        String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
-                                "templateType"), keyAttrbs.get("template"), keyAttrbs.get("template")), renderContext);
-                        outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
-                    } catch (ParseException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (RenderException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
+                    final Element element = cache.get(cacheKey);
+                    if (element != null && element.getValue() != null) {
+                        String content = (String) ((CacheEntry) element.getValue()).getObject();
+                        outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
+                                               aggregateContent(cache, content, renderContext));
+                    } else {
+                        cache.put(new Element(cacheKey,null));
+                        generateContent(renderContext, outputDocument, segment, cacheKey);
                     }
+                } else {
+                    generateContent(renderContext, outputDocument, segment, cacheKey);
+
                 }
             }
             return outputDocument.toString();
         }
         return cachedContent;
+    }
+
+    private void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
+                                 String cacheKey) {
+        // if missing data call RenderService after creating the right resource
+        final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
+        try {
+            Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
+            final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
+                    "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get(
+                    "language"))).getNode(keyAttrbs.get("path"));
+            String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
+                    "templateType"), keyAttrbs.get("template"), keyAttrbs.get("template")), renderContext);
+            outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
+        } catch (ParseException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RenderException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     private String surroundWithCacheTag(String key, String output) {

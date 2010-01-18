@@ -950,11 +950,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zis.closeEntry();
         }
         zis.reallyClose();
-        try {
-            ServicesRegistry.getInstance().getCacheKeyGeneratorService().start();
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-        }
         return userProps;
     }
 

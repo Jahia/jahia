@@ -38,7 +38,6 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
-import org.jahia.operations.valves.SkeletonAggregatorValve;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;

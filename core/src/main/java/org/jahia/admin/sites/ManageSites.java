@@ -1051,14 +1051,7 @@ public class ManageSites extends AbstractAdministrationModule {
      */
     private void changeDefaultSite(JahiaSite site) {
         //Site changes flush the ESI cache
-        ServicesRegistry.getInstance().getJahiaSitesService().setDefaultSite(site);
-        if (jParams.settings().isOutputContainerCacheActivated()) {
-            try {
-                ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flush(true);
-            } catch (JahiaInitializationException e) {
-                logger.info("could not do triggering of Skeleton And Container cache flush due to Default site change. Exception : " + e);
-            }
-        }
+        ServicesRegistry.getInstance().getJahiaSitesService().setDefaultSite(site);        
     }
 
     /**
@@ -1782,8 +1775,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 changeDefaultSite(null);
             }
         }
-
-        ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
 
         // purge options
 //        if (deleteTemplates) {

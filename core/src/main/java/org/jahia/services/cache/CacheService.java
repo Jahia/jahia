@@ -86,7 +86,6 @@ public abstract class CacheService extends JahiaService {
 
     public abstract void syncClusterNow();
 
-    public abstract SkeletonCache<GroupCacheKey, SkeletonCacheEntry> getSkeletonCacheInstance() throws JahiaInitializationException;
     public abstract Map<String, CacheProvider> getCacheProviders();
 
     public abstract void setCacheProviders(Map<String, CacheProvider> cacheProviders);

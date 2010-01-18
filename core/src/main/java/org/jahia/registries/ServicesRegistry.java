@@ -37,7 +37,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;
-import org.jahia.services.cache.CacheKeyGeneratorService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.cluster.ClusterService;
@@ -464,10 +463,6 @@ public class ServicesRegistry {
 
     public QueryService getQueryService() {
         return (QueryService) getService("QueryService");
-    }
-
-    public CacheKeyGeneratorService getCacheKeyGeneratorService() {
-        return (CacheKeyGeneratorService) getService("CacheKeyGeneratorService");
     }
 
     public JahiaOpenSearchService getOpenSearchService() {

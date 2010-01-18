@@ -31,7 +31,6 @@
  */
 package org.jahia.operations.valves;
 
-import java.util.Enumeration;
 
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
@@ -55,15 +54,12 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaUserRequestWrapper;
 import org.jahia.services.applications.pluto.JahiaPortletUtil;
-import org.jahia.services.cache.CacheKeyGeneratorService;
 import org.jahia.services.cache.CacheService;
 
 public class PlutoProcessActionValve implements Valve {
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(PlutoProcessActionValve.class);
-    private CacheService cacheInstance = null;
-    private CacheKeyGeneratorService cacheKeyGeneratorService = null;
 
     public PlutoProcessActionValve() {
     }
@@ -185,31 +181,8 @@ public class PlutoProcessActionValve implements Valve {
         if (entryPointInstance != null && entryPointInstance.getCacheScope() != null && entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
             cacheKey += "_" + jParams.getUser().getUserKey();
         }
-        // Try to flush the entry in cache
-//        cacheInstance.getContainerHTMLCacheInstance().remove(cacheKeyGeneratorService.computeContainerEntryKey(
-//                null, cacheKey, processingContext.getUser(),
-//                processingContext.getLocale().toString(),
-//                processingContext.getOperationMode(),
-//                processingContext.getScheme()));
     }
 
-    /**
-     * Acces method for the CacheInstance
-     *
-     * @param cacheInstance
-     */
-    public void setCacheInstance(CacheService cacheInstance) {
-        this.cacheInstance = cacheInstance;
-    }
-
-    /**
-     * Acces method for the CacheKeyGeneratorService
-     *
-     * @param cacheKeyGeneratorService
-     */
-    public void setCacheKeyGeneratorService(CacheKeyGeneratorService cacheKeyGeneratorService) {
-        this.cacheKeyGeneratorService = cacheKeyGeneratorService;
-    }
 
     /**
      * Set public render parameter or the portal URL

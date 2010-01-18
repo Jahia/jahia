@@ -43,22 +43,6 @@ when we flush this entry we will flush the whole cache-->
         </property>
     </bean>
 
-    <bean id="CacheKeyGeneratorService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.cache.CacheKeyGeneratorService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="jahiaACLManagerService">
-                    <ref bean="JahiaACLManagerService"/>
-                </property>
-                <property name="groupManagerService">
-                    <ref bean="JahiaGroupManagerService"/>
-                </property>
-                <property name="cacheService">
-                    <ref local="JahiaCacheService"/>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
 	<bean id="ResponseCacheControlFilter" class="org.jahia.bin.filters.ResponseCacheControlFilter">
 		<!-- turns this filter on/off -->
 		<property name="enabled" value="true"/>

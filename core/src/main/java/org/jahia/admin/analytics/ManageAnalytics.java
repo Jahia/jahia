@@ -391,8 +391,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             sMgr = sReg.getJahiaSitesService();
             try {
                 sMgr.updateSite(site);
-                //sReg.getCacheService().flushAllCaches();
-                sReg.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
                 displayAnalyticsParams(request, response, session);
             } catch (JahiaException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -490,8 +488,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             sMgr = sReg.getJahiaSitesService();
             try {
                 sMgr.updateSite(site);
-                //sReg.getCacheService().flushAllCaches();
-                sReg.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());// todo may  be not necessary
                 displayAnalyticsParams(request, response, session);
             } catch (JahiaException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

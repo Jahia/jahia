@@ -32,7 +32,6 @@
 package org.jahia.taglibs.utility.session;
 
 import org.jahia.data.JahiaData;
-import org.jahia.operations.valves.SkeletonAggregatorValve;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.apache.log4j.Logger;
 

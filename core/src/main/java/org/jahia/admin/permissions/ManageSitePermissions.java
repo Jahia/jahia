@@ -221,14 +221,7 @@ public class ManageSitePermissions extends AbstractAdministrationModule {
             }
         }
         if (jahiaAclNameList.size() > 0) {            
-            try {
-                ServicesRegistry.getInstance()
-                        .getCacheService()
-                        .getSkeletonCacheInstance()
-                        .flushSkeletonsForSite(jahiaSite.getID());
-            } catch (JahiaInitializationException e) {
-                logger.error("Your jahia is not correctly initialized", e);
-            }
+            // Todo flush html caches
         }
         displayPermissions (request, response, session);
     }

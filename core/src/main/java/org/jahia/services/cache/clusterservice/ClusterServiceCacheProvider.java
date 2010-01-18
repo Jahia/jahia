@@ -40,6 +40,9 @@ import org.jahia.services.cache.reference.ReferenceCacheImpl;
 import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.cluster.ClusterListener;
 import org.jahia.services.cluster.ClusterMessage;
+import org.jahia.services.render.filter.cache.CacheKeyGenerator;
+import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jgroups.Address;
@@ -128,21 +131,13 @@ public class ClusterServiceCacheProvider implements CacheProvider, ClusterListen
                     cacheImpl.onRemove(clusterCacheMessage);
                 }
 
-            } else if (clusterCacheMessage.isKeyGeneratorRestart()) {
-                try {
-                    ServicesRegistry.getInstance()
-                            .getCacheKeyGeneratorService().start();
-                } catch (JahiaInitializationException e) {
-                    logger.error("Error starting cache key generator service", e);
-                }
-            } else if (clusterCacheMessage.isKeyGeneratorAclUpdate()) {
-                try {
-                    ServicesRegistry.getInstance()
-                            .getCacheKeyGeneratorService().rightsUpdated();
-                } catch (JahiaInitializationException e) {
-                    logger.error("Error updating rights in cache key generator service", e);
-                }
-            }
+            } else if (clusterCacheMessage.isKeyGeneratorRestart() || clusterCacheMessage.isKeyGeneratorAclUpdate()) {
+                    CacheKeyGenerator cacheKeyGenerator = ModuleCacheProvider.getInstance().getKeyGenerator();
+                    if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
+                        DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
+                        generator.flushUsersGroupsKey();
+                    }
+                }        
         }
     }
 

@@ -285,4 +285,38 @@ FRAG2(frag_size=60000)"
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
+
+    <cache
+            name="nodeusersacls"
+            overflowToDisk="true"
+            maxElementsInMemory="300"
+            diskPersistent="false"
+            eternal="true">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true,
+                                   replicateUpdatesViaCopy=false, replicateRemovals=true"/>
+    </cache>
+    <cache
+            name="CJHTMLCache"
+            overflowToDisk="true"
+            maxElementsInMemory="10000"
+            diskPersistent="true"
+            timeToIdleSeconds="10"
+            timeToLiveSeconds="14400"
+            maxElementsOnDisk="50000"
+            eternal="false">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true,
+                                   replicateUpdatesViaCopy=false, replicateRemovals=true"/>
+    </cache>
+    <cache
+            name="CJHTMLCachedependencies"
+            overflowToDisk="true"
+            maxElementsInMemory="500"
+            diskPersistent="true"
+            eternal="true">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true,
+                                   replicateUpdatesViaCopy=false, replicateRemovals=true"/>
+    </cache>
 </ehcache>

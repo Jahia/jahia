@@ -34,7 +34,6 @@ package org.jahia.taglibs.internal.gwt;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.operations.valves.SkeletonAggregatorValve;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
 import javax.servlet.jsp.JspWriter;

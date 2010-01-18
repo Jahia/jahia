@@ -92,7 +92,6 @@ public class FlushAjaxActionImpl extends AjaxAction {
         try {
             final ObjectKey key = jahiaData.getProcessingContext().getPage().getContentPage().getObjectKey();
             final List<Locale> localeArrayList = jahiaData.getProcessingContext().getSite().getLanguageSettingsAsLocales(false);
-            ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushPage(key, localeArrayList);
             return "Page Flushed ";
         } catch (JahiaException e) {
             logger.error("Error while flushing page", e);
@@ -103,13 +102,7 @@ public class FlushAjaxActionImpl extends AjaxAction {
     public String flushSite(JahiaData jahiaData, Map gwtPropertiesMap) {
         final int id = jahiaData.getProcessingContext().getSiteID();
         logger.debug("Flush Site "+ id);
-        try {
-            ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(id);
-            return "Site Flushed ";
-        } catch (JahiaException e) {
-            logger.error("Error while flushing site", e);
-        }
-        return "Site not flushed";
+        return "Site Flushed ";
     }
 
     /**

@@ -271,9 +271,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                 logger.debug("Setting language mix for site to disabled");
                 site.setMixLanguagesActive(false);
             }
-            if (flushCache) {
-                ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
-            }
 
             // second let's process the rank modifications of each language
             Iterator siteLangSettings = site.getLanguageSettings().iterator();
@@ -387,8 +384,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                 request.setAttribute("jahiaDisplayMessage", dspMsg);
             }
             displayLanguageList(request, response, session);
-
-            ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
         } catch ( JahiaException je ){
           String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
                                              getLocale(request, jParams));

@@ -190,30 +190,6 @@ public class CacheFactory extends CacheService {
         return true;
     }
 
-
-
-    public SkeletonCache<GroupCacheKey, SkeletonCacheEntry> getSkeletonCacheInstance() throws JahiaInitializationException {
-        // if the Html cache already exists, then return the instance
-        SkeletonCache<GroupCacheKey, SkeletonCacheEntry> cache = (SkeletonCache<GroupCacheKey, SkeletonCacheEntry>) getCache (SkeletonCache.SKELETON_CACHE);
-        if (cache != null)
-            return cache;
-
-        // At this point, the HTML cache does not exist, create it
-        String providerName = cacheProviderForCache.get(SkeletonCache.SKELETON_CACHE);
-        if(providerName == null)
-            providerName = DEFAULT_CACHE;
-        CacheProvider provider = cacheProviders.get(providerName);
-        cache = new SkeletonCache<GroupCacheKey, SkeletonCacheEntry> (provider.newCacheImplementation(SkeletonCache.SKELETON_CACHE));
-        if (cacheLimits.containsKey(cache.getName())) {
-            Long cacheLimit = (Long) cacheLimits.get(cache.getName());
-            cache.setCacheLimit(cacheLimit.longValue());
-        } else {
-            cache.setCacheLimit(freeMemoryLimit);
-        }
-        caches.put (cache.getName(), cache);
-        return cache;
-    }
-
     /** <p>Retrieves the specified <code>region</code> cache.</p>
      *
      * @param name the cache region name, <code>null</code> is not allowed

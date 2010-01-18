@@ -158,7 +158,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                     if (expiration != 0) {
                         cache.put(cachedElement);
                     } else {
-                        cache.put(new Element(key, null));
+                        cachedElement = new Element(key, null);
+                        cache.put(cachedElement);
                         notCacheableFragment.put(key, key);
                     }
                     if (debugEnabled) {
@@ -174,6 +175,10 @@ public class AggregateCacheFilter extends AbstractFilter {
                                                       cachedElement);
                     }
                 }
+                if (displayCacheInfo && !renderContent.contains("<body") && renderContent.trim().length() > 0) {
+                        return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, renderContent),
+                                                      null);
+                    }
                 return surroundWithCacheTag(key, renderContent);
 
             }
@@ -254,6 +259,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
         stringBuilder.append(key);
         stringBuilder.append("</span><br/>");
+        if(cachedElement!=null && cachedElement.getValue()!=null) {
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
         stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getCreationTime())));
         stringBuilder.append("</span><br/>");
@@ -266,6 +272,9 @@ public class AggregateCacheFilter extends AbstractFilter {
         stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
         stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
         stringBuilder.append("</form>");
+        } else {
+            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment Not Cacheable</span><br/>");
+        }
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();

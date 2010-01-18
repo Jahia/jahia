@@ -43,6 +43,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="org.apache.commons.io.FileUtils" %>
+<%@ page import="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -100,6 +101,7 @@
         depCache.flush();
         depCache.clearStatistics();
         depCache.removeAll();
+        ((DefaultCacheKeyGenerator)cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
     }
     List keys = cache.getKeys();
     Collections.sort(keys);

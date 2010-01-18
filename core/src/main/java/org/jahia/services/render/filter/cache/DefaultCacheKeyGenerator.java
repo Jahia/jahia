@@ -138,11 +138,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     }
                 }
                 if (b.toString().equals(
-                        JahiaGroupManagerService.GUEST_GROUPNAME) && !principal.getUsername().equals(
+                        JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
                         JahiaUserManagerService.GUEST_USERNAME)) {
                     b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
                 }
                 String userKey = b.toString();
+                if("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                    userKey = userName; 
+                }
                 final Element element = new Element(userName, userKey);
                 element.setEternal(true);
                 cache.put(element);
@@ -231,6 +234,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public void flushUsersGroupsKey() {
         this.aclGroups = null;
+        cache.removeAll();
         cache.flush();
     }
 

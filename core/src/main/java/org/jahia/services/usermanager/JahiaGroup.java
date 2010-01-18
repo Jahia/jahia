@@ -55,6 +55,7 @@ package org.jahia.services.usermanager;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
 import java.io.Serializable;
 import java.security.Principal;
@@ -296,7 +297,7 @@ public abstract class JahiaGroup implements Group, Serializable {
             }
         }
         
-        if (result == false) {
+        if (!result) {
             /** @todo this is a temporary solution until we have implicit
              *  group implementation. Then we will have guest_provider, users_provider
              *  groups that are contained within the global users and guest groups
@@ -309,7 +310,7 @@ public abstract class JahiaGroup implements Group, Serializable {
                 JahiaUser extUser = ServicesRegistry.getInstance ().getJahiaUserManagerService ()
                         .lookupUser(principal.getName ());
                 if (extUser != null) {
-                    if (!(extUser instanceof JahiaDBUser)) {
+                    if (!(extUser instanceof JCRUser)) {
                         result = true;
                     }
                 }

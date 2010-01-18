@@ -79,7 +79,7 @@ public class WrapperFilterTest extends TestCase {
         resource.pushWrapper("wrapper.fullpage");
 
         RenderChain chain = new RenderChain();
-        AttributesFilter attributesFilter = new AttributesFilter();
+        BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
         chain.addFilter(attributesFilter);
 

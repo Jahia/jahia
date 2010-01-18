@@ -882,32 +882,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getProperties() throws RepositoryException {
-        List<JCRPropertyWrapperImpl> res = new ArrayList<JCRPropertyWrapperImpl>();
         PropertyIterator pi = objectNode.getProperties();
-        while (pi.hasNext()) {
-            Property property = pi.nextProperty();
-            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(property.getName());
-            res.add(new JCRPropertyWrapperImpl(this, property, session, provider, epd));
-        }
-
         final Locale locale = getSession().getLocale();
         if (locale != null) {
             try {
-                pi = getI18N(locale).getProperties();
-                while (pi.hasNext()) {
-                    final Property property = pi.nextProperty();
-                    final String name = property.getName();
-                    if (name.endsWith("_" + locale.toString())) {
-                        final String name1 = property.getName();
-                        final String s = name1.substring(0, name1.length() - locale.toString().length() - 1);
-                        res.add(new JCRPropertyWrapperImpl(this, property, session, provider, getApplicablePropertyDefinition(s), s));
-                    }
-                }
+                PropertyIterator i18nPi = getI18N(locale).getProperties();
+                return new LazyPropertyIterator(this, pi, i18nPi, locale);
             } catch (ItemNotFoundException e) {
             }
         }
-
-        return new PropertyIteratorImpl(res, res.size());
+        return new LazyPropertyIterator(this, pi);
     }
 
     /**

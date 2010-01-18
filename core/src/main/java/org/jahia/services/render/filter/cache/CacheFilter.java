@@ -66,6 +66,9 @@ public class CacheFilter extends AbstractFilter {
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
+            final Script script = (Script) renderContext.getRequest().getAttribute("script");
+            chain.pushAttribute(this,renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
+
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -92,8 +95,7 @@ public class CacheFilter extends AbstractFilter {
             else {
                 if(debugEnabled) logger.debug("Generating content for node : " + key);
                 String renderContent = chain.doFilter(renderContext, resource);
-                final Script script = (Script) renderContext.getRequest().getAttribute("script");
-
+                
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("cache.expiration");
                 Long expiration = cacheAttribute != null ?Long.valueOf(cacheAttribute):Long.valueOf(script.getTemplate().getProperties().getProperty("cache.expiration","-1"));
                 Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();

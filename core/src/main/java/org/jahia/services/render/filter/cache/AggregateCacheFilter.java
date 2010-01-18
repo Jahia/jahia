@@ -70,6 +70,9 @@ public class AggregateCacheFilter extends AbstractFilter {
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
+            final Script script = (Script) renderContext.getRequest().getAttribute("script");
+            chain.pushAttribute(this,renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
+
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -106,7 +109,6 @@ public class AggregateCacheFilter extends AbstractFilter {
                 }
                 String renderContent = chain.doFilter(renderContext, resource);
                 if (cacheable) {
-                    final Script script = (Script) renderContext.getRequest().getAttribute("script");
 
                     String cacheAttribute = (String) renderContext.getRequest().getAttribute("cache.expiration");
                     Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(

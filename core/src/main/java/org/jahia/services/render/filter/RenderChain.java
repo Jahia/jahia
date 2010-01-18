@@ -4,9 +4,8 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * RenderChain.
@@ -20,7 +19,8 @@ public class RenderChain implements RenderFilter {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
     private int index = 0;
 
-    
+    final Map<RenderFilter, Map<String, Object>> oldPropertiesMap = new HashMap<RenderFilter, Map<String, Object>>();
+
     /**
      * Initializes an instance of this class.
      */
@@ -68,9 +68,15 @@ public class RenderChain implements RenderFilter {
      */
     public String doFilter(RenderContext renderContext, Resource resource) throws RenderFilterException {
         if (filters.size() >= index) {
-            RenderFilter f = filters.get(index++);
+            RenderFilter filter = filters.get(index++);
 
-            return f.doFilter(renderContext, resource, this);
+            oldPropertiesMap.put(filter, new HashMap<String, Object>());
+
+            try {
+                return filter.doFilter(renderContext, resource, this);
+            } finally {
+                popAttributes(filter, renderContext.getRequest());
+            }
         } else {
             throw new RenderFilterException("No content");
         }
@@ -83,5 +89,16 @@ public class RenderChain implements RenderFilter {
 
     public void setRenderService(RenderService service) {
         // do nothing
+    }
+
+    public void pushAttribute(RenderFilter filter, HttpServletRequest request, String key, Object value) {
+        oldPropertiesMap.get(filter).put(key, request.getAttribute(key));
+        request.setAttribute(key, value);
+    }
+
+    private void popAttributes(RenderFilter filter, HttpServletRequest request) {
+        for (Map.Entry<String,Object> entry : oldPropertiesMap.get(filter).entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
     }
 }

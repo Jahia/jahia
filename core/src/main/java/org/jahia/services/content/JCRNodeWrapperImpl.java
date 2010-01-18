@@ -34,22 +34,17 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
-import org.apache.jackrabbit.core.id.*;
-import org.apache.jackrabbit.spi.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.data.files.JahiaFile;
-import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRVersion;
@@ -58,7 +53,6 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.urls.URI;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -85,6 +79,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected static final Logger logger = Logger.getLogger(JCRNodeWrapper.class);
 
     protected Node objectNode = null;
+    protected Map<Locale,Node> i18NobjectNodes = null;
 
     protected String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
 
@@ -828,13 +823,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Node getI18N(Locale locale) throws RepositoryException {
         //getSession().getLocale()
+        if (i18NobjectNodes == null) {
+            i18NobjectNodes = new HashMap<Locale, Node>();
+        }
+        if (i18NobjectNodes.containsKey(locale)) {
+            Node node = i18NobjectNodes.get(locale);
+            if (node == null) {
+                throw new ItemNotFoundException(locale.toString());
+            }
+            return node;
+        }
         NodeIterator ni = objectNode.getNodes("j:translation");
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             if (locale.toString().equals(n.getProperty("jcr:language").getString())) {
+                i18NobjectNodes.put(locale, n);
                 return n;
             }
         }
+        i18NobjectNodes.put(locale, null);
         throw new ItemNotFoundException(locale.toString());
     }
 
@@ -856,6 +863,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
 
+            i18NobjectNodes.put(locale, t);
             return t;
         }
     }
@@ -882,16 +890,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getProperties() throws RepositoryException {
-        PropertyIterator pi = objectNode.getProperties();
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            try {
-                PropertyIterator i18nPi = getI18N(locale).getProperties();
-                return new LazyPropertyIterator(this, pi, i18nPi, locale);
-            } catch (ItemNotFoundException e) {
-            }
+            return new LazyPropertyIterator(this, locale);
         }
-        return new LazyPropertyIterator(this, pi);
+        return new LazyPropertyIterator(this);
     }
 
     /**

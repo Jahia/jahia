@@ -90,6 +90,10 @@ public class HtmlCacheEventListener extends DefaultEventListener {
             Event event = (Event) events.next();
             try {
                 String path = event.getPath();
+                boolean flushParent = false;
+                if(path.contains("j:template")) {
+                    flushParent = true;
+                }
                 final int type = event.getType();
                 if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                     path = path.substring(0,path.lastIndexOf("/"));
@@ -104,28 +108,39 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 }
                 path = StringUtils.substringBeforeLast(path, "/j:translation");
                 flushDependenciesOfPath(depCache, flushed, path);
-                final String finalPath = path;
-                // Flushed shared node associated with this event
-                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        try {
-                            JCRNodeWrapper node = session.getNode(finalPath);
-                            NodeIterator nodeIterator = node.getSharedSet();
-                            while (nodeIterator.hasNext()) {
-                                JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
-                                flushDependenciesOfPath(depCache, flushed, wrapper.getPath());
-                            }
-                        } catch (RepositoryException e) {
-                            logger.debug(e.getMessage(), e);
-                        }
-                        return null;
-                    }
-                });
+                flushSharedNode(depCache, flushed, path);
+                if(flushParent) {
+                    path = StringUtils.substringBeforeLast(path, "/");
+                    flushDependenciesOfPath(depCache, flushed, path);
+                    flushSharedNode(depCache, flushed, path);
+                }
+
+
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
 
         }
+    }
+
+    private void flushSharedNode(final Cache depCache, final Set<String> flushed, final String finalPath)
+            throws RepositoryException {
+        // Flushed shared node associated with this event
+        jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                try {
+                    JCRNodeWrapper node = session.getNode(finalPath);
+                    NodeIterator nodeIterator = node.getSharedSet();
+                    while (nodeIterator.hasNext()) {
+                        JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
+                        flushDependenciesOfPath(depCache, flushed, wrapper.getPath());
+                    }
+                } catch (RepositoryException e) {
+                    logger.debug(e.getMessage(), e);
+                }
+                return null;
+            }
+        });
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {

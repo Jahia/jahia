@@ -107,43 +107,51 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 final String queryString = renderContext.getRequest().getQueryString();
                 args.add(queryString != null ? queryString : "");
             } else if ("acls".equals(field)) {
-                try {
-                    // Search for user specific acl
-                    final QueryManager queryManager = resource.getNode().getSession().getWorkspace().getQueryManager();
-                    JahiaUser principal = renderContext.getUser();
-                    final String userName = principal.getUsername();
-                    if (hasUserAcl(userName, queryManager)) {
-                        args.add((String) cache.get(userName).getValue());
-                    }
-                    // else use user groupmembership
-                    else {
-                        Set<JahiaGroup> aclGroups = getAllAclsGroups(queryManager);
-                        StringBuilder b = new StringBuilder();
-                        for (JahiaGroup g : aclGroups) {
-                            if (g != null && g.isMember(principal)) {
-                                if (b.length() > 0) {
-                                    b.append("|");
-                                }
-                                b.append(g.getGroupname());
-                            }
-                        }
-                        if (b.toString().equals(
-                                JahiaGroupManagerService.GUEST_GROUPNAME) && !principal.getUsername().equals(
-                                JahiaUserManagerService.GUEST_USERNAME)) {
-                            b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
-                        }
-                        String userKey = b.toString();
-                        final Element element = new Element(userName, userKey);
-                        element.setEternal(true);
-                        cache.put(element);
-                        args.add(userKey);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                args.add(appendAcls(resource, renderContext));
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);
+    }
+
+    private String appendAcls(Resource resource, RenderContext renderContext) {
+        try {
+            if((Boolean)renderContext.getRequest().getAttribute("cache.perUser")) {
+                return "_perUser_";
+            }
+            // Search for user specific acl
+            final QueryManager queryManager = resource.getNode().getSession().getWorkspace().getQueryManager();
+            JahiaUser principal = renderContext.getUser();
+            final String userName = principal.getUsername();
+            if (hasUserAcl(userName, queryManager)) {
+                return (String) cache.get(userName).getValue();
+            }
+            // else use user groupmembership
+            else {
+                Set<JahiaGroup> aclGroups = getAllAclsGroups(queryManager);
+                StringBuilder b = new StringBuilder();
+                for (JahiaGroup g : aclGroups) {
+                    if (g != null && g.isMember(principal)) {
+                        if (b.length() > 0) {
+                            b.append("|");
+                        }
+                        b.append(g.getGroupname());
+                    }
+                }
+                if (b.toString().equals(
+                        JahiaGroupManagerService.GUEST_GROUPNAME) && !principal.getUsername().equals(
+                        JahiaUserManagerService.GUEST_USERNAME)) {
+                    b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
+                }
+                String userKey = b.toString();
+                final Element element = new Element(userName, userKey);
+                element.setEternal(true);
+                cache.put(element);
+                return userKey;
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return "";
     }
 
     private boolean hasUserAcl(String userName, QueryManager queryManager) throws RepositoryException {

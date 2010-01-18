@@ -80,9 +80,10 @@ public class AggregateCacheFilter extends AbstractFilter {
             Element element = null;
             final BlockingCache cache = cacheProvider.getCache();
             final boolean cacheable = !notCacheableFragment.containsKey(key);
+            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername());
             if (cacheable) {
                 try {
-                    element = cache.get(key);
+                    element = cache.get(perUserKey);
                 } catch (LockTimeoutException e) {
                     logger.warn(e.getMessage(), e);
                 }
@@ -141,7 +142,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     final String output = outputDocument.toString();
                     cachedRenderContent = surroundWithCacheTag(key, output);
                     CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
-                    Element cachedElement = new Element(key, cacheEntry);
+                    Element cachedElement = new Element(perUserKey, cacheEntry);
                     if (expiration > 0) {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
                         cachedElement.setTimeToIdle(1);
@@ -188,7 +189,7 @@ public class AggregateCacheFilter extends AbstractFilter {
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                String cacheKey = segment.getAttributeValue("src");
+                String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",renderContext.getUser().getUsername());
                 if (cache.isKeyInCache(cacheKey)) {
                     final Element element = cache.get(cacheKey);
                     if (element != null && element.getValue() != null) {

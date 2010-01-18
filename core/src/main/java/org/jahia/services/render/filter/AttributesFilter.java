@@ -43,6 +43,7 @@ public class AttributesFilter extends AbstractFilter {
         pushAttribute(request, "workspace", node.getSession().getWorkspace().getName(), old);
         pushAttribute(request, "currentResource", resource, old);
         pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()), old);
+        pushAttribute(request, "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")), old);
 
         // Resolve params
         Map<String,Object> params = new HashMap<String,Object>();

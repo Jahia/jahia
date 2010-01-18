@@ -93,10 +93,13 @@
     Ehcache cache = cacheProvider.getCache();
 	Ehcache depCache = cacheProvider.getDependenciesCache();
     if (pageContext.getRequest().getParameter("flush") != null) {
+        System.out.println("Flushing cache content");
         cache.flush();
         cache.clearStatistics();
+        cache.removeAll();
         depCache.flush();
         depCache.clearStatistics();
+        depCache.removeAll();
     }
     List keys = cache.getKeys();
     Collections.sort(keys);

@@ -65,7 +65,7 @@ public class AttributesFilter extends AbstractFilter {
                 if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(key))) {
                     params.put(key, property.getString());
                 }
-            } else if (type.isNodeType("jmix:cache")) {
+            } else if (type.isNodeType("jmix:cache") && property.getName().equals("j:expiration")) {
                 pushAttribute(request, "cache.expiration", property.getString(), old);    
             }
 

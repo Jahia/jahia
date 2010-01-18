@@ -70,7 +70,6 @@ public class AggregateCacheFilter extends AbstractFilter {
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
-            Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);

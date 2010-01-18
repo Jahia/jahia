@@ -146,7 +146,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     if (expiration > 0) {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
                         cachedElement.setTimeToIdle(1);
-                        final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template",
+                        final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
                                                                                               "hidden.load");
                         if (cache.isKeyInCache(hiddenKey)) {
                             Element hiddenElement = cache.get(hiddenKey);

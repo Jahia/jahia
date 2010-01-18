@@ -98,6 +98,8 @@
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
+[jnt:shortcuts] > jnt:content, jmix:interactiveContent
+
 [jnt:navLink] > jnt:content, mix:title
  page navLink primary
 

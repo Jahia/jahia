@@ -51,7 +51,7 @@
         <div class="container container_16">
             <div class="grid_16">
                 <div id="search-bar"><!--start search-bar-->
-                    <template:area path="simpleSearch" nodeTypes="jnt:simpleSearchForm"/>
+                    <template:area path="simpleSearch"/>
                 </div>
                 <!--stop search-bar-->
                 <div id="breadcrumbs"><!--start breadcrumbs-->

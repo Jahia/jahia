@@ -1,9 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:gridPage] > jmix:layout, jmix:pageMixin, jmix:templateMixin mixin
-- column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' < '1col16','2col412','2col124','2col106','2col610','2col88','3col448','3col466','3col484','3col664','3col844'
-
 [jnt:row]  > jnt:content, jmix:containerContent
 - column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' < '1col16','2col412','2col124','2col106','2col610','2col88','3col448','3col466','3col484','3col664','3col844'
  + * (nt:base) = nt:base version

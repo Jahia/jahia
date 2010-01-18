@@ -22,7 +22,7 @@
                                 </login-to-jahia>
                             </site_components>
                         </contents>
-                        <home column="2col106" j:template="grid" jcr:mixinTypes="jmix:gridPage" jcr:primaryType="jnt:page">
+                        <home j:template="default" jcr:primaryType="jnt:page">
                             <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation"
                                            jcr:title_en="Home" jcr:language="en"/>
                             <maincontent jcr:primaryType="jnt:contentList"/>
@@ -34,17 +34,21 @@
                                 <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
                             </topMenu>
                             <footer jcr:primaryType="jnt:contentList"/>
-                            <col1 jcr:primaryType="jnt:contentList"/>
-                            <col2 jcr:primaryType="jnt:contentList">
-                                <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
-                            </col2>
+                            <maincontent jcr:primaryType="jnt:contentList">
+                                <row1 jcr:primaryType="jnt:row" column="2col106" >
+                                    <col1 jcr:primaryType="jnt:contentList"/>
+                                    <col2 jcr:primaryType="jnt:contentList">
+                                        <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
+                                    </col2>
+                                </row1>
+                            </maincontent>
                         </home>
                     </j:target>
                 </defaultSite>
             </jnt_virtualsite>
             <jnt_page jcr:primaryType="jnt:reusableComponentsFolder">
                 <simple jcr:primaryType="jnt:reusableComponent">
-                    <j:target column="2col106" j:template="grid" jcr:mixinTypes="jmix:gridPage" jcr:primaryType="jnt:page">
+                    <j:target j:template="default" jcr:primaryType="jnt:page">
                         <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation"
                                        jcr:title_en="Home" jcr:language="en"/>
                         <maincontent jcr:primaryType="jnt:contentList"/>
@@ -56,10 +60,14 @@
                             <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
                         </topMenu>
                         <footer jcr:primaryType="jnt:contentList"/>
-                        <col1 jcr:primaryType="jnt:contentList"/>
-                        <col2 jcr:primaryType="jnt:contentList">
-                            <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
-                        </col2>
+                        <maincontent jcr:primaryType="jnt:contentList">
+                            <row1 jcr:primaryType="jnt:row" column="2col106" >
+                                <col1 jcr:primaryType="jnt:contentList"/>
+                                <col2 jcr:primaryType="jnt:contentList">
+                                    <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
+                                </col2>
+                            </row1>
+                        </maincontent>
                     </j:target>
                 </simple>
             </jnt_page>

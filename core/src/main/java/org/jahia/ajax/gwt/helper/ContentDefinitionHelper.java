@@ -539,7 +539,6 @@ public class ContentDefinitionHelper {
 
 
             addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:contentMixin");
-            addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:publicationMixin");
         } catch (NoSuchNodeTypeException e) {
 
         }

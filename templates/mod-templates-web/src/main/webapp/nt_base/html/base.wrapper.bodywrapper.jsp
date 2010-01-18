@@ -9,25 +9,7 @@
 
 	<div class="grid_16">
 		      <div id="headerPart1"><!--start headerPart1-->
-				<div id="languages"><!--start languages-->
-					<ul>
-                        <li><a href="#">FR</a></li>
-                        <li><a href="#">UK</a></li>
-                        <li> <a href="#">DE</a></li>
-					</ul>
-				</div><!--stop languages-->
-				<div id="topshortcuts"><!--start topshortcuts-->
-                    <ul>
-                    <li class="topshortcuts-login"><a href="javascript:;" onclick="ShowHideLayer(0);"><span>Login</span></a></li>
-                    <li class="topshortcuts-mysettings"><a href="#"><span>My settings</span></a></li>
-                    <li class="topshortcuts-print"><a href="#" onclick="javascript:window.print()"><span>Imprimer cette page</span></a></li>
-                    <li class="topshortcuts-typoincrease"><a href="javascript:ts('body',1)"><span>Agrandir</span></a></li>
-                    <li class="topshortcuts-typoreduce"><a  href="javascript:ts('body',-1)"><span>Réduire</span></a></li>
-                    <li class="topshortcuts-home"><a href="index.html"><span>Home</span></a></li>
-                    <li class="topshortcuts-contact"><a href="contact.html"><span>Contact</span></a></li>
-                    <li class="topshortcuts-sitemap"><a href="sitemap.html"><span>Sitemap</span></a></li>
-                    </ul>
-				</div><!--stop topshortcuts-->
+                   <template:area path="header"/>
                    <div class="clear"></div><div id="box0" class="collapsible"><!--start collapsible loginFormTop-->
                 	<div class="boxloginFormTop"><!--start box 4 default-->
 								<div class="boxloginFormTop-topright"></div>

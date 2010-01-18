@@ -163,9 +163,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         }
 
         if (isLogged() || gwtForGuest) {
-            buf.append(("<!-- cache:vars var=\"" + SkeletonAggregatorValve.GWT_VARIABLE + "\" -->"));
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
-            buf.append("<!-- /cache:vars -->\n");
         }
 
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");

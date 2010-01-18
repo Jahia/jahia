@@ -64,17 +64,9 @@ public class UserPropertyTag extends AbstractJahiaTag {
                 buff.append("\">");
             }
             if (propertyName != null) {
-                buff.append("<!-- cache:vars var=\"")
-                        .append(SkeletonAggregatorValve.ESI_VARIABLE_USER).append(".").append(propertyName)
-                        .append("\" -->")
-                        .append(jData.getProcessingContext().getUser().getProperty(propertyName))
-                        .append("<!-- /cache:vars -->");
+                buff.append(jData.getProcessingContext().getUser().getProperty(propertyName));
             } else {
-                buff.append("<!-- cache:vars var=\"")
-                        .append(SkeletonAggregatorValve.ESI_VARIABLE_USERNAME)
-                        .append("\" -->")
-                        .append(jData.getGui().drawUsername(true))
-                        .append("<!-- /cache:vars -->");
+                buff.append(jData.getGui().drawUsername(true));
             }
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("</div>");

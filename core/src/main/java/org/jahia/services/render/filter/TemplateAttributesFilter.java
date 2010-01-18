@@ -2,10 +2,6 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.operations.valves.EngineValve;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -47,11 +43,16 @@ public class TemplateAttributesFilter extends AbstractFilter {
             }
         }
 
-        overrideProperties(node, params, moduleParams, "jmix:layout");
-        overrideProperties(node, params, moduleParams, "jmix:cache");
+        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType("jmix:layout");
+        ExtendedNodeType[] mixins = layout.getMixinSubtypes();
+        for (ExtendedNodeType mixin : mixins) {
+            overrideProperties(node, params, moduleParams, mixin);
+        }
+        ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
+        overrideProperties(node, params, moduleParams, cache);
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            chain.pushAttribute(this, request, entry.getKey(), entry.getValue());
+            chain.pushAttribute(request, entry.getKey(), entry.getValue());
         }
 
         String out;
@@ -60,19 +61,15 @@ public class TemplateAttributesFilter extends AbstractFilter {
         return out;
     }
 
-    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams, String name) throws RepositoryException {
-        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType(name);
-        ExtendedNodeType[] mixins = layout.getMixinSubtypes();
-        for (ExtendedNodeType mixin : mixins) {
-            Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
-            for (String key : props.keySet()) {
-                String pkey = StringUtils.substringAfter(key, ":");
-                if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
-                    if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
-                        params.put(pkey, node.getProperty(key).getString());
-                    } else {
-                        params.put(pkey, null);
-                    }
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams, ExtendedNodeType mixin) throws RepositoryException {
+        Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
+        for (String key : props.keySet()) {
+            String pkey = StringUtils.substringAfter(key, ":");
+            if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
+                if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
+                    params.put(pkey, node.getProperty(key).getString());
+                } else {
+                    params.put(pkey, null);
                 }
             }
         }

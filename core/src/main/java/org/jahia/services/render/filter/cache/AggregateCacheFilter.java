@@ -71,7 +71,7 @@ public class AggregateCacheFilter extends AbstractFilter {
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
-            chain.pushAttribute(this,renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
 
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -109,8 +109,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                 }
                 String renderContent = chain.doFilter(renderContext, resource);
                 if (cacheable) {
-
-                    String cacheAttribute = (String) renderContext.getRequest().getAttribute("cache.expiration");
+                    String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                     Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
                             script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
                     final String currentPath = cacheProvider.getKeyGenerator().getPath(key);
@@ -147,12 +146,10 @@ public class AggregateCacheFilter extends AbstractFilter {
                     Element cachedElement = new Element(perUserKey, cacheEntry);
                     if (expiration > 0) {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
-                        cachedElement.setTimeToIdle(1);
                         final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
                                                                                               "hidden.load");
                         if (cache.isKeyInCache(hiddenKey)) {
                             Element hiddenElement = cache.get(hiddenKey);
-                            hiddenElement.setTimeToIdle(1);
                             hiddenElement.setTimeToLive(expiration.intValue() + 1);
                             cache.put(hiddenElement);
                         }

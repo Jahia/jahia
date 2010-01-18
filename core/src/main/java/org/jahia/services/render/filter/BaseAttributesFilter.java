@@ -29,12 +29,12 @@ public class BaseAttributesFilter extends AbstractFilter {
 
         final Script script = service.resolveScript(resource, context);
 
-        chain.pushAttribute(this,request, "script", script);
-        chain.pushAttribute(this,request, "scriptInfo", script.getTemplate().getInfo());
-        chain.pushAttribute(this,request, "currentNode", node);
-        chain.pushAttribute(this,request, "workspace", node.getSession().getWorkspace().getName());
-        chain.pushAttribute(this,request, "currentResource", resource);
-        chain.pushAttribute(this,request, "url",new URLGenerator(context, resource, service.getStoreService()));
+        chain.pushAttribute(request, "script", script);
+        chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+        chain.pushAttribute(request, "currentNode", node);
+        chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
+        chain.pushAttribute(request, "currentResource", resource);
+        chain.pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()));
 
         setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
 

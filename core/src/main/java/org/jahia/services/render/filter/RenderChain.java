@@ -19,7 +19,7 @@ public class RenderChain implements RenderFilter {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
     private int index = 0;
 
-    final Map<RenderFilter, Map<String, Object>> oldPropertiesMap = new HashMap<RenderFilter, Map<String, Object>>();
+    final Map<String, Object> oldPropertiesMap = new HashMap<String, Object>();
 
     /**
      * Initializes an instance of this class.
@@ -70,12 +70,12 @@ public class RenderChain implements RenderFilter {
         if (filters.size() >= index) {
             RenderFilter filter = filters.get(index++);
 
-            oldPropertiesMap.put(filter, new HashMap<String, Object>());
-
             try {
                 return filter.doFilter(renderContext, resource, this);
             } finally {
-                popAttributes(filter, renderContext.getRequest());
+                if (filter == filters.get(0)) {
+                    popAttributes(renderContext.getRequest());
+                }
             }
         } else {
             throw new RenderFilterException("No content");
@@ -91,13 +91,13 @@ public class RenderChain implements RenderFilter {
         // do nothing
     }
 
-    public void pushAttribute(RenderFilter filter, HttpServletRequest request, String key, Object value) {
-        oldPropertiesMap.get(filter).put(key, request.getAttribute(key));
+    public void pushAttribute(HttpServletRequest request, String key, Object value) {
+        oldPropertiesMap.put(key, request.getAttribute(key));
         request.setAttribute(key, value);
     }
 
-    private void popAttributes(RenderFilter filter, HttpServletRequest request) {
-        for (Map.Entry<String,Object> entry : oldPropertiesMap.get(filter).entrySet()) {
+    private void popAttributes(HttpServletRequest request) {
+        for (Map.Entry<String,Object> entry : oldPropertiesMap.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
     }

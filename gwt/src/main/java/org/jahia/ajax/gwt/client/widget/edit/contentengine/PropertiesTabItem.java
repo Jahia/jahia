@@ -39,7 +39,6 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             }
 
             propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
-            propertiesEditor.setHeight(504);
 
             postCreate();
 

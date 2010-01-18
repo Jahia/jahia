@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -14,12 +15,14 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
 
     protected EditEngineTabItem(AbstractContentEngine engine) {
         this.engine = engine;
+        setLayout(new FitLayout());
         setStyleName("x-panel-mc");
     }
 
     protected EditEngineTabItem(String title, AbstractContentEngine engine) {
         super(title);
         this.engine = engine;
+        setLayout(new FitLayout());
         setStyleName("x-panel-mc");
     }
 

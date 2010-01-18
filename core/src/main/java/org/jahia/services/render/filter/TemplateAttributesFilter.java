@@ -47,8 +47,8 @@ public class TemplateAttributesFilter extends AbstractFilter {
             }
         }
 
-        overrideProperties(node, params, "jmix:layout");
-        overrideProperties(node, params, "jmix:cache");
+        overrideProperties(node, params, moduleParams, "jmix:layout");
+        overrideProperties(node, params, moduleParams, "jmix:cache");
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             chain.pushAttribute(this, request, entry.getKey(), entry.getValue());
@@ -60,16 +60,18 @@ public class TemplateAttributesFilter extends AbstractFilter {
         return out;
     }
 
-    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, String ll) throws RepositoryException {
-        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType(ll);
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams, String name) throws RepositoryException {
+        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType(name);
         ExtendedNodeType[] mixins = layout.getMixinSubtypes();
         for (ExtendedNodeType mixin : mixins) {
-            if (node.isNodeType(mixin.getName())) {
-                Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
-                for (String key : props.keySet()) {
-                    if (node.hasProperty(key)) {
-                        String pkey = StringUtils.substringAfter(key, ":");
+            Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
+            for (String key : props.keySet()) {
+                String pkey = StringUtils.substringAfter(key, ":");
+                if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
+                    if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
                         params.put(pkey, node.getProperty(key).getString());
+                    } else {
+                        params.put(pkey, null);
                     }
                 }
             }

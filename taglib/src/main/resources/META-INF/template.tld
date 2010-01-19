@@ -685,7 +685,7 @@
         </description>
         <name>addResources</name>
         <tag-class>org.jahia.taglibs.template.include.AddResourcesTag</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <description>Node to include in the page</description>
             <name>node</name>
@@ -699,15 +699,23 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript)</description>
+            <description>
+            	Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript).
+            	If the type is inlineCss or inlineJavascript the content of the tag body will be used as the asset itself and
+            	the resources attribute can be left empty. 
+            </description>
             <name>type</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The list of resources they will be included in the define order</description>
+            <description>
+            	The list of resources they will be included in the define order.
+            	If the type is inlineCss or inlineJavascript the content of the tag body will be used as the asset itself and
+            	the resources attribute can be left empty. 
+           	</description>
             <name>resources</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -806,4 +814,13 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <tag-file>
+    	<description>
+    		Includes external resources (CSS, JavaScript, inline CSS styles, inline JavaScript), which are required for current page
+    		and were registered using addResources tag.
+    	</description>
+    	<name>includeResources</name>
+    	<path>/META-INF/tags/includeResources.tag</path>
+    </tag-file>
 </taglib>

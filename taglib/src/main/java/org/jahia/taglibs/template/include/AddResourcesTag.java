@@ -56,8 +56,6 @@ import java.util.List;
 public class AddResourcesTag extends BodyTagSupport {
     private static final long serialVersionUID = -552052631291168495L;
     private transient static Logger logger = Logger.getLogger(AddResourcesTag.class);
-    private String nodetype;
-    private JCRNodeWrapper node;
     private boolean insert;
     private String type;
     private String resources;
@@ -74,14 +72,16 @@ public class AddResourcesTag extends BodyTagSupport {
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
         addResources(renderContext, templatesPackage, type, resources);
-        nodetype = null;
-        node = null;
         return super.doEndTag();
     }
 
     private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
                               String resources) {
-        final Set<String> links = renderContext.getExternalLinks(type);
+        if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
+            return;
+        }
+        
+        final Set<String> links = renderContext.getStaticAssets(type);
         String[] strings = resources.split(",");
 
         List<String> lookupPaths = new LinkedList<String>();
@@ -96,7 +96,7 @@ public class AddResourcesTag extends BodyTagSupport {
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
                 if (links == null || !links.contains(resource)) {
-                    renderContext.addExternalLink(type, resource, insert);
+                    renderContext.addStaticAsset(type, resource, insert);
                 }
             } else {
                 for (String lookupPath : lookupPaths){
@@ -110,7 +110,7 @@ public class AddResourcesTag extends BodyTagSupport {
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
                             // we found it --> add it and stop
-                            renderContext.addExternalLink(type, pathWithContext, insert);
+                            renderContext.addStaticAsset(type, pathWithContext, insert);
                             found = true;
                             break;
                         }
@@ -126,15 +126,15 @@ public class AddResourcesTag extends BodyTagSupport {
     }
 
     public void setNodetype(String nodetype) {
-        this.nodetype = nodetype;
+        // do nothing;
     }
 
     public void setNode(JCRNodeWrapper node) {
-        this.node = node;
+        // do nothing;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = type != null ? type.toLowerCase() : null;
     }
 
     public void setResources(String resources) {
@@ -144,4 +144,16 @@ public class AddResourcesTag extends BodyTagSupport {
     public void setInsert(boolean insert) {
         this.insert = insert;
     }
+
+    @Override
+    public int doAfterBody() throws JspException {
+        if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            renderContext.addStaticAsset(type, getBodyContent().getString(), insert);
+            getBodyContent().clearBody();
+        }
+        return super.doAfterBody();
+    }
+    
+    
 }

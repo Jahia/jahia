@@ -31,6 +31,9 @@
  */
 package org.jahia.services.render;
 
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections.map.LazyMap;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -58,8 +61,13 @@ public class RenderContext {
     private boolean isEditMode = false;
 
     private Set<String> displayedModules = new HashSet<String>();
-    private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
-    
+    @SuppressWarnings("unchecked")
+    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new Factory() {
+        public Object create() {
+            return new LinkedHashSet<String>();
+        }
+    });
+
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private JCRNodeWrapper siteNode;
     
@@ -125,32 +133,29 @@ public class RenderContext {
         return templatesCacheExpiration;
     }
 
-    public void addExternalLink(String externalLinkType,String externalLink) {
-        addExternalLink(externalLinkType, externalLink, false);
+    public void addStaticAsset(String assetType,String asset) {
+        addStaticAsset(assetType, asset, false);
     }
 
-    public void addExternalLink(String externalLinkType,String externalLink, boolean insert) {
-        Set<String> externalLinkList = getExternalLinks(externalLinkType);
-        if (externalLinkList == null) {
-            externalLinkList = new LinkedHashSet<String>();
-        }
+    public void addStaticAsset(String assetType,String asset, boolean insert) {
+        Set<String> assets = getStaticAssets(assetType);
         if (insert) {
             LinkedHashSet<String> my = new LinkedHashSet<String>();
-            my.add(externalLink);
-            my.addAll(externalLinkList);
-            externalLinkList = my;
+            my.add(asset);
+            my.addAll(assets);
+            assets = my;
         } else {
-            externalLinkList.add(externalLink);
+            assets.add(asset);
         }
-        externalLinks.put(externalLinkType, externalLinkList);
+        staticAssets.put(assetType, assets);
     }
 
-    public Set<String> getExternalLinks(String externalLinkType) {
-        return externalLinks.get(externalLinkType);
+    public Set<String> getStaticAssets(String assetType) {
+        return staticAssets.get(assetType);
     }
 
-    public Map<String, Set<String>> getExternalLinks() {
-        return externalLinks;
+    public Map<String, Set<String>> getStaticAssets() {
+        return staticAssets;
     }
 
     public void setMainResource(Resource mainResource) {

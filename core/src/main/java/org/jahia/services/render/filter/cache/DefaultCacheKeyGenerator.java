@@ -40,6 +40,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -80,6 +81,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private Set<JahiaGroup> aclGroups = null;
     private EhCacheProvider cacheProvider;
     private Cache cache;
+    private JCRSessionFactory sessionFactory;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -121,7 +123,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 return "_perUser_";
             }
             // Search for user specific acl
-            final QueryManager queryManager = resource.getNode().getSession().getWorkspace().getQueryManager();
+            final QueryManager queryManager = sessionFactory.getCurrentUserSession("default").getWorkspace().getQueryManager();
             JahiaUser principal = renderContext.getUser();
             final String userName = principal.getUsername();
             if (hasUserAcl(userName, queryManager)) {
@@ -260,5 +262,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             cacheManager.addCache(CACHE_NAME);
         }
         cache = cacheManager.getCache(CACHE_NAME);
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }

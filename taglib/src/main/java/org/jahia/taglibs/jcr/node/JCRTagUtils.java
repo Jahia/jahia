@@ -33,6 +33,7 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
 import org.apache.log4j.Logger;
+import org.drools.util.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
@@ -44,11 +45,14 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -94,13 +98,36 @@ public class JCRTagUtils {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
     }
 
-    public static boolean isNodeType(JCRNodeWrapper node, String type) {        
+    /**
+     * Returns <code>true</code> if the current node has the specified type or at least one of the specified node types.
+     * 
+     * @param node current node to check the type
+     * @param type the node type name to match or a comma-separated list of node
+     *            types (at least one should be matched)
+     * @return <code>true</code> if the current node has the specified type or at least one of the specified node types
+     */
+    public static boolean isNodeType(JCRNodeWrapper node, String type) {
+        if (node == null) {
+            throw new IllegalArgumentException("The specified node is null");
+        }
+        
+        boolean hasType = false;
         try {
-            return node != null && node.isNodeType(type);
+            if (type.contains(",")) {
+                for (String typeToCheck : StringUtils.split(type, ',')) {
+                    if (node.isNodeType(typeToCheck.trim())) {
+                        hasType = true;
+                        break;
+                    }
+                }
+            } else {
+                hasType = node.isNodeType(type);
+            }
         } catch (RepositoryException e) {
             logger.error(e, e);
-            return false;
         }
+        
+        return hasType;
     }
 
     public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
@@ -113,6 +140,76 @@ public class JCRTagUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the current node has at least one child node
+     * of the specified type.
+     * 
+     * @param node current node whose children will be queried
+     * @param type the node type name to match or a comma-separated list of node
+     *            types (at least one should be matched)
+     * @return <code>true</code> if the current node has at least one child node
+     *         of the specified type
+     */
+    public static boolean hasChildrenOfType(JCRNodeWrapper node, String type) {
+        boolean hasChildrenOfType = false;
+        if (type.contains(",")) {
+            String[] typesToCheck = StringUtils.split(type, ',');
+            try {
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && !hasChildrenOfType;) {
+                    Node child = iterator.nextNode();
+                    for (String matchType : typesToCheck) {
+                        if (child.isNodeType(matchType)) {
+                            hasChildrenOfType = true;
+                            break;
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+            }
+        } else {
+            hasChildrenOfType = getNodes(node, type).getSize() > 0;
+        }
+        return hasChildrenOfType;
+    }
+
+    /**
+     * Returns an iterator with the child nodes of the current node, which match
+     * the specified node type name. This is an advanced version of the
+     * {@link #getNodes(JCRNodeWrapper, String)} method to handle multilpe node
+     * types.
+     * 
+     * @param node current node whose children will be queried
+     * @param type the node type name to match or a comma-separated list of node
+     *            types (at least one should be matched)
+     * @return an iterator with the child nodes of the current node, which match
+     *         the specified node type name
+     */
+    public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
+        NodeIterator children = null;
+        if (type.contains(",")) {
+            String[] typesToCheck = StringUtils.split(type, ',');
+            List<Node> matchingChildren = new LinkedList<Node>();
+            try {
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+                    Node child = iterator.nextNode();
+                    for (String matchType : typesToCheck) {
+                        if (child.isNodeType(matchType)) {
+                            matchingChildren.add(child);
+                            break;
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            children = new NodeIteratorImpl(matchingChildren.iterator(), matchingChildren.size());
+        } else {
+            children = getNodes(node, type);
+        }
+        return children;
     }
 
     public static Map getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {

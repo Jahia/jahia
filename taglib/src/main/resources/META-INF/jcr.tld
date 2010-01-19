@@ -419,7 +419,7 @@
     </function>
     <function>
         <description>
-            Test the nodeType of a node
+            Evaluates to true if the current node has the specified type or at least one of the specified node types (comma-separated).
         </description>
         <name>isNodeType</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
@@ -434,6 +434,19 @@
 		<example>
 			${jcr:propertyTypeName(myProperty.type)}
 		</example>
+    </function>
+    <function>
+        <description>
+        	Returns an iterator with the child nodes of the current node, which match
+     		the specified node type name. This is an advanced version of the
+     		getNodes(JCRNodeWrapper, String) method to handle multilpe node types.
+     	</description>
+        <name>getChildrenOfType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>javax.jcr.NodeIterator getChildrenOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:getChildrenOfType(currentNode,'jnt:page,jnt:folder')}
+        </example>
     </function>
     <function>
         <description>Returns childNodes of a certain type</description>
@@ -473,6 +486,15 @@
         <function-signature>java.util.Map getUserMembership(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
             ${jcr:getUserMembership(currentNode)}
+        </example>
+    </function>
+    <function>
+        <description>Returns true if the current node has at least one child node of the specified type.</description>
+        <name>hasChildrenOfType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean hasChildrenOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:hasChildrenOfType(currentNode,'jnt:page,jnt:folder')}
         </example>
     </function>
 </taglib>

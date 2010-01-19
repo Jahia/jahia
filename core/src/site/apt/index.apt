@@ -6,5 +6,7 @@ Jahia Crazy Jane - Core Module
 
  * {{{interceptors.html}Interceptors}}
 
+ * {{{cache/cache.html}Caches}}
+
  * {{{ckeditor/index.html}CKEditor Integration}}
  

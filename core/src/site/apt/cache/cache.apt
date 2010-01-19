@@ -1,0 +1,47 @@
+Crazy Jane - Core Module - Caches
+
+ Caches in Crazy Jane are coded as rendering filters. The default filter is the AggregateCacheFilter. This filter will
+cache each module separately and then will aggregate each modules on rendeirng to deliver the page to the client.
+As an example imagine a last news module sthat display the latest 5 news of a site. The aggregate on rendering will ask
+for the module last news to render this one will ask for the rendering of each news, this news will be cache separately
+and the last news module will only contains its own html and references to the displayed news. When subsequent rendering
+is asked the last news modules will search for the expected news in the cache if they are found it will aggregate the
+content in the output otherwise it will ask for rendering only the missing part.
+
+[../images/cache_flow.jpg]
+
+* What cache framework is Crazy Jane using ?
+
+ We are using {{{http://www.ehcache.org}EHCache}}. You can configure it in the file WEB-INF/classes/ehcache-jahia.xml or
+ WEB-INF/classes/ehcache-jahia_cluster.xml.
+
+* Key Generation for the fragment
+
+ The key generator must implement CacheKeyGenerator interface, the default implementation use "workspace", "language",
+ "node path", "template", "templateType", "acls", "queryString" for building the key.
+
+* Invalidation or expiration ?
+
+ Crazy Jane is using both mode for its caches, by default a fragment will have its expirations set to 4 hours. If during this
+ time the element is updated or deleted or child node is added/removed the element will be invalidated from the cache.
+
+* Overriding the default expiration ?
+
+ You can override the default expiration in two ways. The easiest and more end user friendly, is to allow the users to
+ specify the expiration time directly from the end user interface. For doing so just apply the mixin type <<<jmix:cache>>>
+ to your definition.
+
+-------------------------------
+[jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache
+  - maxNews (long) = 10 indexed=no
+  - filter (reference, category[autoSelectParent=false])
+-------------------------------
+
+ You can also hardcode an expiration on a per template basis in a template properties file.
+ Example from the jnt_banner/html/banner.properties file in default module.
+
+-------------------------------
+#Make banner non cacheable
+cache.expiration = 0
+-------------------------------
+

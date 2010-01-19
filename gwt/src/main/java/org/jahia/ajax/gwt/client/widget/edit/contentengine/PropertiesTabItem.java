@@ -50,7 +50,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      */
     public PropertiesEditor getPropertiesEditorByLang(GWTLanguageSwitcherLocaleBean locale) {
         if (langPropertiesEditorMap == null || locale == null) {
-            return null;
+            return getPropertiesEditor();
         }
         return langPropertiesEditorMap.get(locale.getCountryIsoCode());
     }
@@ -104,12 +104,6 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      */
     public void postCreate() {
         add(propertiesEditor);
-    }
-
-    @Override
-    public boolean isProcessed() {
-        // is processed is handled only for non-multilang engines
-        return !isMultiLang() && super.isProcessed();
     }
 
     public boolean isMultiLang() {

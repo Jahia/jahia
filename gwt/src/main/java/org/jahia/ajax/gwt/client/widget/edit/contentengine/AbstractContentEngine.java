@@ -44,11 +44,11 @@ public abstract class AbstractContentEngine extends Window {
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
     protected GWTJahiaNode parentNode;
+    protected GWTLanguageSwitcherLocaleBean defaultLanguageBean;
     protected ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
 
-    private List<String> processedLangCodes = new ArrayList<String>();
 
     protected AbstractContentEngine(Linker linker) {
         this.linker = linker;
@@ -116,12 +116,7 @@ public abstract class AbstractContentEngine extends Window {
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTLanguageSwitcherLocaleBean>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTLanguageSwitcherLocaleBean> event) {
-                if (processedLangCodes.contains(getSelectedLanguageCode())) {
-                    return;
-                }
-                processedLangCodes.add(getSelectedLanguageCode());
                 onLanguageChange();
-                layout();
             }
         });
         getHeader().addTool(languageSwitcher);
@@ -143,8 +138,9 @@ public abstract class AbstractContentEngine extends Window {
         if (languageSwitcher != null && !languageSwitcher.isVisible()) {
             //languageSwitcher.getStore().removeAll();
             if (languages != null && !languages.isEmpty()) {
-                languageSwitcher.getStore().add(languages);
+                languageSwitcher.getStore().add(languages);                
                 languageSwitcher.setVisible(true);
+                languageSwitcher.setValue(defaultLanguageBean);
             } else {
                 languageSwitcher.setVisible(false);
             }
@@ -207,18 +203,20 @@ public abstract class AbstractContentEngine extends Window {
 
     /**
      * Get Selected Lang
+     *
      * @return
      */
     public GWTLanguageSwitcherLocaleBean getSelectedLang() {
         if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
             Log.debug("language switcher value is null");
-            return null;
+            return defaultLanguageBean;
         }
         return languageSwitcher.getSelection().get(0);
     }
 
     /**
      * Get Selected Language Code
+     *
      * @return
      */
     public String getSelectedLanguageCode() {

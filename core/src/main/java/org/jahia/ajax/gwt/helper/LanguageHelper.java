@@ -27,6 +27,7 @@ public class LanguageHelper {
 
     /**
      * Get available languages for the current site
+     *
      * @param jParams
      * @return
      */
@@ -53,6 +54,20 @@ public class LanguageHelper {
             logger.error("Error while creating change site link", e);
         }
         return items;
+    }
+
+    /**
+     * Get current lang
+     * @param jParams
+     * @return
+     */
+    public GWTLanguageSwitcherLocaleBean getCurrentLang(ParamBean jParams) {
+        String langCode = jParams.getLocale().toString();
+        GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
+        item.setCountryIsoCode(langCode);
+        item.setDisplayName(getDisplayName(langCode));
+        item.setIconStyle(getLangIconStyle(langCode));
+        return item;
     }
 
     /**

@@ -146,6 +146,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * load node
      */
     private void loadNode(final boolean updateAvailableLanguages) {
+
         contentService.getProperties(contentPath, getSelectedLanguageCode(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
@@ -155,11 +156,14 @@ public class EditContentEngine extends AbstractContentEngine {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();
+                defaultLanguageBean = result.getCurrentLocale();
 
                 // set selectedNode as processed
                 if (getSelectedLanguageCode() != null) {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
                 }
+
+                
                 if (updateAvailableLanguages) {
                     setAvailableLanguages(result.getAvailabledLanguages());
                 }
@@ -194,6 +198,7 @@ public class EditContentEngine extends AbstractContentEngine {
             node = result.getNode();
             nodeTypes = result.getNodeTypes();
             properties = result.getProperties();
+            defaultLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
         }
     }
@@ -241,6 +246,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
 
+                    // get node name
                     if (item instanceof ContentTabItem) {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                             node.setName(((TextField<?>) ((FormPanel) item.getItem(0)).getItem(0)).getRawValue());

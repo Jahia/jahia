@@ -50,6 +50,7 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
     private List<GWTJahiaNodeType> nodeTypes;
     private Map<String, GWTJahiaNodeProperty> properties;
     private List<GWTLanguageSwitcherLocaleBean> availabledLanguages;
+    private GWTLanguageSwitcherLocaleBean currentLocale;
 
     public GWTJahiaGetPropertiesResult() {
     }
@@ -89,5 +90,13 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
 
     public void setAvailabledLanguages(List<GWTLanguageSwitcherLocaleBean> availabledLanguages) {
         this.availabledLanguages = availabledLanguages;
+    }
+
+    public GWTLanguageSwitcherLocaleBean getCurrentLocale() {
+        return currentLocale;
+    }
+
+    public void setCurrentLocale(GWTLanguageSwitcherLocaleBean currentLocale) {
+        this.currentLocale = currentLocale;
     }
 }

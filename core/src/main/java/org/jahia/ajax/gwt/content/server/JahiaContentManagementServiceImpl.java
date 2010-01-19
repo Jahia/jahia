@@ -345,12 +345,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // get properties
         final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, locale);
 
-        // get available lang
-        final List<GWTLanguageSwitcherLocaleBean> availableLang = languages.getLanguages(jParams);
-
         final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);
-        result.setAvailabledLanguages(availableLang);
+        result.setAvailabledLanguages(languages.getLanguages(jParams));
+        result.setCurrentLocale(languages.getCurrentLang(jParams));
         return result;
     }
 

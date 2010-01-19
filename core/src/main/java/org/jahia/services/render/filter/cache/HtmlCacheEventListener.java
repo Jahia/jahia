@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -97,6 +98,8 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 final int type = event.getType();
                 if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                     path = path.substring(0,path.lastIndexOf("/"));
+                } else if (type==Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
+                    flushParent = true;
                 }
                 if(path.contains("j:acl") || path.contains("jnt:group") || type == Event.NODE_MOVED) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
@@ -135,6 +138,8 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                         JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
                         flushDependenciesOfPath(depCache, flushed, wrapper.getPath());
                     }
+                } catch (PathNotFoundException e) {
+                    logger.trace(e.getMessage(), e);
                 } catch (RepositoryException e) {
                     logger.debug(e.getMessage(), e);
                 }

@@ -202,9 +202,11 @@ public class AggregateCacheFilter extends AbstractFilter {
                                                aggregateContent(cache, content, renderContext));
                     } else {
                         cache.put(new Element(cacheKey,null));
+                        logger.debug("Missing content : "+cacheKey);
                         generateContent(renderContext, outputDocument, segment, cacheKey);
                     }
                 } else {
+                    logger.debug("Missing content : "+cacheKey);
                     generateContent(renderContext, outputDocument, segment, cacheKey);
 
                 }

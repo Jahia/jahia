@@ -333,7 +333,9 @@ public class ContentManagerHelper {
         }
 
         if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
-            targetNode.orderBefore(srcNode.getName(), null);
+            if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                targetNode.orderBefore(srcNode.getName(), null);
+            }
         } else {
             if (!srcNode.isCheckedOut()) {
                 srcNode.checkout();
@@ -343,7 +345,9 @@ public class ContentManagerHelper {
             }
             String newname = findAvailableName(targetNode, srcNode.getName());
             session.move(sourcePath, targetNode.getPath() + "/" + newname);
-            targetNode.orderBefore(newname, null);
+            if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                targetNode.orderBefore(newname, null);
+            }
         }
         session.save();
     }
@@ -357,7 +361,9 @@ public class ContentManagerHelper {
             targetParent.checkout();
         }
         if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
-            targetParent.orderBefore(srcNode.getName(), targetNode.getName());
+            if (targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
+                targetParent.orderBefore(srcNode.getName(), targetNode.getName());
+            }
         } else {
             if (!srcNode.isCheckedOut()) {
                 srcNode.checkout();
@@ -367,7 +373,9 @@ public class ContentManagerHelper {
             }
             String newname = findAvailableName(targetParent, srcNode.getName());
             session.move(sourcePath, targetParent.getPath() + "/" + newname);
-            targetParent.orderBefore(newname, targetNode.getName());
+            if (targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
+                targetParent.orderBefore(newname, targetNode.getName());
+            }
         }
         session.save();
     }
@@ -427,8 +435,9 @@ public class ContentManagerHelper {
                             name = findAvailableName(targetParent, name);
                             if (targetParent.isWriteable()) {
                                 res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference), false));
-                                if (moveOnTop)
+                                if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                     targetParent.orderBefore(name, targetNode.getName());
+                                }
                             } else {
                                 missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());
                             }

@@ -70,11 +70,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
                                                                                             "path", "template",
                                                                                             "templateType", "acls",
-                                                                                            "queryString"));
+                                                                                            "wrapped","queryString"));
     private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}");
 
     private JahiaGroupManagerService groupManagerService;
     private Set<JahiaGroup> aclGroups = null;
@@ -108,6 +108,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(queryString != null ? queryString : "");
             } else if ("acls".equals(field)) {
                 args.add(appendAcls(resource, renderContext));
+            } else if ("wrapped".equals(field)) {
+                args.add(String.valueOf(resource.hasWrapper()));
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);

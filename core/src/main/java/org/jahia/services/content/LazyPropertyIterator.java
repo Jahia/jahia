@@ -3,6 +3,7 @@ package org.jahia.services.content;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.*;
 
 /**
@@ -145,6 +146,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     public boolean containsKey(Object o) {
         try {
             return node.hasProperty( (String) o );       
+        } catch (ConstraintViolationException e) {
+            return false;
         } catch (RepositoryException e) {
             throw new RuntimeException("containsKey",e);
         }
@@ -165,8 +168,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
             }
         } catch (PathNotFoundException e) {
             return null;
+        } catch (ConstraintViolationException e) {
+            return null;
         } catch (RepositoryException e) {
-            throw new RuntimeException("containsKey",e);
+            throw new RuntimeException("get",e);
         }
     }
 

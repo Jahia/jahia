@@ -196,12 +196,8 @@ think twice before changing it! -->
         <appender-ref ref="profilerLogs"/>
     </category>
 
-    <category name="org.jahia.services.render.filter.cache.CacheFilter">
-        <priority value="debug"/>
-    </category>
-
-    <category name="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
-        <priority value="debug"/>
+    <category name="org.jahia.services.render.filter.cache">
+        <priority value="info"/>
     </category>
 
     <category name="org">

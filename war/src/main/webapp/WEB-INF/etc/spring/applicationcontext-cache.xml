@@ -91,6 +91,7 @@ when we flush this entry we will flush the whole cache-->
     </bean>-->
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
+    	<property name="skipOnTemplateTypes" value="json"/>
     </bean>
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>

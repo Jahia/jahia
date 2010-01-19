@@ -131,8 +131,8 @@ public class CacheFilter extends AbstractFilter {
                     cachesExpiration.put(key,expiration.intValue());
                     templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
                     final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template", "hidden.load");
-                    if(cacheProvider.getCache().isKeyInCache(hiddenKey)) {
-                        Element hiddenElement = cacheProvider.getCache().get(hiddenKey);
+                    Element hiddenElement = cacheProvider.getCache().isKeyInCache(hiddenKey) ? cacheProvider.getCache().get(hiddenKey) : null;
+                    if(hiddenElement != null) {
                         hiddenElement.setTimeToIdle(1);
                         hiddenElement.setTimeToLive(expiration.intValue()+1);
                         cacheProvider.getCache().put(hiddenElement);

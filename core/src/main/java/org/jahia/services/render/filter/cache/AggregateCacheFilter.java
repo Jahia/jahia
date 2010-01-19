@@ -36,6 +36,8 @@ import net.htmlparser.jericho.*;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -64,6 +66,7 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->");
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
 
     public static final Map<String, String> notCacheableFragment = new HashMap<String, String>(512);
 
@@ -98,6 +101,10 @@ public class AggregateCacheFilter extends AbstractFilter {
                 String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
                 cachedContent = aggregateContent(cache, cachedContent, renderContext);
 
+                if (renderContext.getMainResource() == resource) {
+                    cachedContent = removeEsiTags(cachedContent);
+                }
+                
                 if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
                     return appendDebugInformation(renderContext, key, cachedContent, element);
                 } else {
@@ -148,8 +155,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
                         final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
                                                                                               "hidden.load");
-                        if (cache.isKeyInCache(hiddenKey)) {
-                            Element hiddenElement = cache.get(hiddenKey);
+                        Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                        if (hiddenElement != null) {
                             hiddenElement.setTimeToLive(expiration.intValue() + 1);
                             cache.put(hiddenElement);
                         }
@@ -177,9 +184,12 @@ public class AggregateCacheFilter extends AbstractFilter {
                 if (displayCacheInfo && !renderContent.contains("<body") && renderContent.trim().length() > 0) {
                         return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, renderContent),
                                                       null);
-                    }
-                return surroundWithCacheTag(key, renderContent);
-
+                }
+                if (renderContext.getMainResource() == resource) {
+                    return removeEsiTags(renderContent);
+                } else {
+                    return surroundWithCacheTag(key, renderContent);
+                }
             }
         }
         return chain.doFilter(renderContext, resource);
@@ -298,5 +308,9 @@ public class AggregateCacheFilter extends AbstractFilter {
             outputDocument.replace(segment.getElement().getContent(), "");
         }
         return outputDocument;
+    }
+
+    private static String removeEsiTags(String content) {
+        return StringUtils.isNotEmpty(content) ? CLEANUP_REGEXP.matcher(content).replaceAll("") : content;
     }
 }

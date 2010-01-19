@@ -110,11 +110,13 @@ public interface JahiaContentManagementServiceAsync {
 
     void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
+    void getProperties(String path,String langCode,AsyncCallback<GWTJahiaGetPropertiesResult> async) ;
+
     void getProperties(String path, AsyncCallback<GWTJahiaGetPropertiesResult> async);
 
     void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
-    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, AsyncCallback async);
 
     void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
 

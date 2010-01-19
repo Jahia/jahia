@@ -159,6 +159,7 @@ public class ManagerLinker implements Linker {
 
     public void onTableItemDoubleClicked(Object item) {
         if (m_leftComponent != null) {
+           
             m_leftComponent.openAndSelectItem(item);
         }
     }

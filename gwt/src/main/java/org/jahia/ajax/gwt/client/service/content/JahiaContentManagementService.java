@@ -114,15 +114,17 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 
-     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException;
-
+    public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException;
+    
     public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
+            
+    public GWTJahiaGetPropertiesResult getProperties(String path,String langCode) throws GWTJahiaServiceException;
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException;
 
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty>  newProps) throws GWTJahiaServiceException;
 
-    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException;
 

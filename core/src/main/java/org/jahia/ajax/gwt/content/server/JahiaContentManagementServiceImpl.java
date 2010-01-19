@@ -37,6 +37,7 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -53,6 +54,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
@@ -86,6 +88,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ContentDefinitionHelper contentDefinition;
     private ContentHubHelper contentHub;
     private PropertiesHelper properties;
+    private LanguageHelper languages;
+
     private TemplateHelper template;
     private ZipHelper zip;
     private ACLHelper acl;
@@ -130,6 +134,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setSearch(SearchHelper search) {
         this.search = search;
+    }
+
+    public void setLanguages(LanguageHelper languages) {
+        this.languages = languages;
     }
 
     public void setTemplate(TemplateHelper template) {
@@ -187,7 +195,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *          if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
-        return navigation.getNode(path, "default", retrieveParamBean());
+        return navigation.getNode(path, "default", retrieveParamBean().getLocale());
     }
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
@@ -284,7 +292,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e, e);
         }
     }
 
@@ -300,28 +308,95 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.copy(pathsToCopy, destinationPath, newName, true, false, true);
     }
 
+    public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {
+        if (langCode == null) {
+            return getProperties(path);
+        }
+        return getProperties(path, LanguageCodeConverters.getLocaleFromCode(langCode));
+    }
+
+
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
-        ParamBean jParams = retrieveParamBean();
-        GWTJahiaNode node = navigation.getNode(path, "default", jParams);
+        return getProperties(path, retrieveParamBean().getLocale());
+    }
+
+    /**
+     * Get GWTJahiaGetPropertiesResult
+     *
+     * @param path
+     * @param locale
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
+        final ParamBean jParams = retrieveParamBean();
+        final GWTJahiaNode node = navigation.getNode(path, "default", locale);
         try {
-            JCRNodeWrapper nodeWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNode(node.getPath());
+            JCRSessionWrapper sessionWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession("default", locale);
+            JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(node.getPath());
             jParams.setAttribute("contextNode", nodeWrapper);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
         }
-        List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), jParams);
-        Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, jParams);
-        GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
+
+        // get node type
+        final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), jParams);
+
+        // get properties
+        final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, locale);
+
+        // get available lang
+        final List<GWTLanguageSwitcherLocaleBean> availableLang = languages.getLanguages(jParams);
+
+        final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);
+        result.setAvailabledLanguages(availableLang);
         return result;
     }
 
+    /**
+     * Save properties of for the given nodes
+     *
+     * @param nodes
+     * @param newProps
+     * @throws GWTJahiaServiceException
+     */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
-        properties.saveProperties(nodes, newProps, retrieveParamBean());
+        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), retrieveParamBean().getLocale());
     }
 
-    public void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
-        saveProperties(nodes, newProps);
+    /**
+     * Save properties by langCode
+     * @param nodes
+     * @param newProps
+     * @param local
+     * @throws GWTJahiaServiceException
+     */
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, String local) throws GWTJahiaServiceException {
+        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), LanguageCodeConverters.languageCodeToLocale(local));
+    }
+
+    /**
+     * Save properties and acl for the given nodes
+     *
+     * @param nodes
+     * @param acl
+     * @param langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties
+     * @throws GWTJahiaServiceException
+     */
+    public void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
+        Iterator<String> langCode = langCodeProperties.keySet().iterator();
+        // save properties per lang
+        while (langCode.hasNext()) {
+            String currentLangCode = langCode.next();
+            List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+            saveProperties(nodes, props, currentLangCode);
+        }
+
+        // save shared properties
+         saveProperties(nodes, sharedProperties);
+
+        // save acl
         if (acl != null) {
             for (GWTJahiaNode node : nodes) {
                 setACL(node.getPath(), acl);
@@ -329,6 +404,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Create node
+     *
+     * @param parentPath
+     * @param name
+     * @param nodeType
+     * @param mixin
+     * @param acl
+     * @param props
+     * @param captcha
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         if (captcha != null && !contentManager.checkCaptcha(context, captcha)) {
@@ -346,6 +434,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return res;
     }
 
+    /**
+     * Move and create node
+     *
+     * @param path
+     * @param name
+     * @param nodeType
+     * @param mixin
+     * @param acl
+     * @param properties
+     * @param captcha
+     * @throws GWTJahiaServiceException
+     */
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
@@ -360,6 +460,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Create Folder
+     *
+     * @param parentPath
+     * @param name
+     * @throws GWTJahiaServiceException
+     */
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
         contentManager.createFolder(parentPath, name, retrieveParamBean());
     }
@@ -561,8 +668,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return this.template.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, contextParams, editMode, retrieveParamBean());
     }
 
-    public String getNodeURL(String path, String locale,  int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path,LanguageCodeConverters.languageCodeToLocale(locale),  mode, retrieveParamBean());
+    public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException {
+        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), mode, retrieveParamBean());
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
@@ -575,7 +682,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : pathes) {
             try {
-                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, workspace, jParams);
+                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, workspace, jParams.getLocale());
                 gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
@@ -643,6 +750,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return map;
     }
+
 
 // -------------------------- OTHER METHODS --------------------------
 

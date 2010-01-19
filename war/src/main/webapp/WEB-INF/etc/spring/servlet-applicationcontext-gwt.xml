@@ -68,6 +68,7 @@
         <property name="versioning" ref="VersioningHelper"/>
         <property name="navigation" ref="NavigationHelper"/>
         <property name="properties" ref="PropertiesHelper"/>
+        <property name="languages" ref="LanguagesHelper"/>
         <property name="publication" ref="PublicationHelper"/>
         <property name="search" ref="SearchHelper"/>
         <property name="template" ref="TemplateHelper"/>
@@ -169,6 +170,8 @@
             </map>
         </property>
     </bean>
+
+    <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>
 
     <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper" >
         <property name="sessionFactory"  ref="jcrSessionFactory"/>

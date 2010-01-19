@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
@@ -88,10 +89,10 @@ public class PropertiesHelper {
         this.navigation = navigation;
     }
 
-    public Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public Map<String, GWTJahiaNodeProperty> getProperties(String path, Locale locale) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
-            objectNode = sessionFactory.getCurrentUserSession(null, jParams.getLocale()).getNode(path);
+            objectNode = sessionFactory.getCurrentUserSession(null, locale).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -211,8 +212,7 @@ public class PropertiesHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, ProcessingContext context) throws GWTJahiaServiceException {
-        Locale locale = context.getCurrentLocale();
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user, Locale locale) throws GWTJahiaServiceException {
         String workspace = "default";
 
         for (GWTJahiaNode aNode : nodes) {
@@ -251,7 +251,7 @@ public class PropertiesHelper {
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
                 if (!aNode.getName().equals(objectNode.getName())) {
-                    contentManager.rename(objectNode.getPath(), aNode.getName(), context.getUser());
+                    contentManager.rename(objectNode.getPath(), aNode.getName(), user);
                 }
             } catch (RepositoryException e) {
                 logger.error("error", e);

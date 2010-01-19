@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 import java.io.Serializable;
 
 /**
@@ -38,43 +40,48 @@ import java.io.Serializable;
  * User: rincevent
  * Date: 4 mars 2009
  * Time: 15:59:05
- * To change this template use File | Settings | File Templates.
  */
-public class GWTLanguageSwitcherLocaleBean implements Serializable {
-    private String displayName;
-    private String countryIsoCode;
-    private String language;
+public class GWTLanguageSwitcherLocaleBean extends BaseModelData {
+
 
     public GWTLanguageSwitcherLocaleBean(String displayName, String countryIsoCode) {
-        this.displayName = displayName;
-        this.countryIsoCode = countryIsoCode;
+        setDisplayName(displayName);
+        setCountryIsoCode(countryIsoCode);
     }
 
     public GWTLanguageSwitcherLocaleBean() {
-        //To change body of created methods use File | Settings | File Templates.
+
     }
 
     public String getDisplayName() {
-        return displayName;
+        return get("displayName");
     }
 
     public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+        set("displayName", displayName);
     }
 
     public String getCountryIsoCode() {
-        return countryIsoCode;
+        return get("countryIsoCode");
     }
 
     public void setCountryIsoCode(String countryIsoCode) {
-        this.countryIsoCode = countryIsoCode;
+        set("countryIsoCode", countryIsoCode);
     }
 
     public void setLanguage(String language) {
-        this.language = language;
+        set("language", language);
     }
 
     public String getLanguage() {
-        return language;
+        return get("language");
+    }
+
+    public String getIconStyle() {
+        return get("iconStyle");
+    }
+
+    public void setIconStyle(String iconStyle) {
+        set("iconStyle", iconStyle);
     }
 }

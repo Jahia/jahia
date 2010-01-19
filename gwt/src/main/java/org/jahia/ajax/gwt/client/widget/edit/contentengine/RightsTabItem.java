@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -26,7 +27,7 @@ public class RightsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create() {
+    public void create(GWTLanguageSwitcherLocaleBean locale) {
         if (engine.getNode() != null) {
             setProcessed(true);
             final GWTJahiaNode node = engine.getNode();

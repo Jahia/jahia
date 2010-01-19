@@ -308,13 +308,13 @@ public class NavigationHelper {
         String[] keys = repositoryKey.split(";");
         for (String key : keys) {
             if (key.startsWith("/")) {
-                GWTJahiaNode root = getNode(key, workspace, jParams);
+                GWTJahiaNode root = getNode(key, workspace, jParams.getLocale());
                 if (root != null) {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
                 for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
-                    GWTJahiaNode root = getNode(node.getPath() + "/files", workspace, jParams);
+                    GWTJahiaNode root = getNode(node.getPath() + "/files", workspace, jParams.getLocale());
                     if (root != null) {
                         root.setDisplayName(jParams.getUser().getName());
                         userNodes.add(root);
@@ -340,26 +340,26 @@ public class NavigationHelper {
                     }
                 });
             } else if (key.equals(JCRClientUtils.MY_EXTERNAL_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/mounts", workspace, jParams);
+                GWTJahiaNode root = getNode("/mounts", workspace, jParams.getLocale());
                 if (root != null) {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.SHARED_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/shared/files", workspace, jParams);
+                GWTJahiaNode root = getNode("/shared/files", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("shared");
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.WEBSITE_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/files", workspace,
-                        jParams);
+                        jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName(jParams.getSite().getSiteKey());
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.MY_MASHUP_REPOSITORY)) {
                 for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
-                    GWTJahiaNode root = getNode(node.getPath() + "/mashups", workspace, jParams);
+                    GWTJahiaNode root = getNode(node.getPath() + "/mashups", workspace, jParams.getLocale());
                     if (root != null) {
                         root.setDisplayName(jParams.getUser().getName());
                         userNodes.add(root);
@@ -367,21 +367,21 @@ public class NavigationHelper {
                     break; // one node should be enough
                 }
             } else if (key.equals(JCRClientUtils.SHARED_MASHUP_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/shared/mashups", workspace, jParams);
+                GWTJahiaNode root = getNode("/shared/mashups", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("shared");
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/mashups", workspace,
-                        jParams);
+                        jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName(jParams.getSite().getSiteKey());
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.ALL_FILES)) {
                 addShareSiteUserFolder(jParams, userNodes, workspace, "/files");
-                GWTJahiaNode root = getNode("/mounts", workspace, jParams);
+                GWTJahiaNode root = getNode("/mounts", workspace, jParams.getLocale());
                 if (root != null) {
                     userNodes.add(root);
                 }
@@ -390,19 +390,19 @@ public class NavigationHelper {
             } else if (key.equals(JCRClientUtils.ALL_MASHUPS)) {
                 addShareSiteUserFolder(jParams, userNodes, workspace, "/mashups");
             } else if (key.equals(JCRClientUtils.CATEGORY_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/categories", workspace, jParams);
+                GWTJahiaNode root = getNode("/categories", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("categories");
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.TAG_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/tags", workspace, jParams);
+                GWTJahiaNode root = getNode("/sites/" + jParams.getSite().getSiteKey() + "/tags", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("tags");
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/portletdefinitions", workspace, jParams);
+                GWTJahiaNode root = getNode("/portletdefinitions", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("Portlet Definition");
 
@@ -411,13 +411,13 @@ public class NavigationHelper {
                 }
 
             } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/sites", workspace, jParams);
+                GWTJahiaNode root = getNode("/sites", workspace, jParams.getLocale());
                 if (root != null) {
                     root.setDisplayName("sites");
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/", workspace, jParams);
+                GWTJahiaNode root = getNode("/", workspace, jParams.getLocale());
                 if (root != null) {
                     userNodes.add(root);
                 }
@@ -425,11 +425,11 @@ public class NavigationHelper {
                 GWTJahiaNode root = null;
                 final String s = nodeTypes.replaceAll(":", "_");
                 try {
-                    root = getNode("/reusableComponents/" + s, workspace, jParams);
+                    root = getNode("/reusableComponents/" + s, workspace, jParams.getLocale());
                 } catch (GWTJahiaServiceException e) {
                     if (forceCreate) {
                         contentManager.createNode("/reusableComponents", s, "jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), jParams);
-                        root = getNode("/reusableComponents/" + s, workspace, jParams);
+                        root = getNode("/reusableComponents/" + s, workspace, jParams.getLocale());
                     }
                 }
                 if (root != null) {
@@ -474,7 +474,7 @@ public class NavigationHelper {
     private void addShareSiteUserFolder(ProcessingContext jParams, List<GWTJahiaNode> userNodes, String workspace, String folderName) throws GWTJahiaServiceException {
         GWTJahiaNode root = null;
         try {
-            root = getNode("/shared" + folderName, workspace, jParams);
+            root = getNode("/shared" + folderName, workspace, jParams.getLocale());
             root.setDisplayName("shared");
             userNodes.add(root);
         } catch (GWTJahiaServiceException e) {
@@ -482,7 +482,7 @@ public class NavigationHelper {
         }
 
         try {
-            root = getNode("/sites/" + jParams.getSite().getSiteKey() + folderName, workspace, jParams);
+            root = getNode("/sites/" + jParams.getSite().getSiteKey() + folderName, workspace, jParams.getLocale());
             root.setDisplayName(jParams.getSite().getSiteKey());
             userNodes.add(root);
         } catch (GWTJahiaServiceException e) {
@@ -491,7 +491,7 @@ public class NavigationHelper {
 
         for (JCRNodeWrapper node : jcrService.getUserFolders(null, jParams.getUser())) {
             try {
-                root = getNode(node.getPath() + folderName, workspace, jParams);
+                root = getNode(node.getPath() + folderName, workspace, jParams.getLocale());
                 root.setDisplayName(jParams.getUser().getName());
                 userNodes.add(root);
             } catch (GWTJahiaServiceException e) {
@@ -518,13 +518,12 @@ public class NavigationHelper {
      *
      * @param path      the path to test an dget the node if existing
      * @param workspace the workspace
-     * @param jParams   the jparams
      * @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
      */
-    public GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public GWTJahiaNode getNode(String path, String workspace, Locale locale) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path), true);
+            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, locale).getNode(path), true);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }

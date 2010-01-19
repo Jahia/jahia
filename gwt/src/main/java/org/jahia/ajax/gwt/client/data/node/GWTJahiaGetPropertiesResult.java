@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.data.node;
 
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
@@ -48,6 +49,7 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
 	private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
     private Map<String, GWTJahiaNodeProperty> properties;
+    private List<GWTLanguageSwitcherLocaleBean> availabledLanguages;
 
     public GWTJahiaGetPropertiesResult() {
     }
@@ -79,5 +81,13 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
 
 	public void setNode(GWTJahiaNode node) {
     	this.node = node;
+    }
+
+    public List<GWTLanguageSwitcherLocaleBean> getAvailabledLanguages() {
+        return availabledLanguages;
+    }
+
+    public void setAvailabledLanguages(List<GWTLanguageSwitcherLocaleBean> availabledLanguages) {
+        this.availabledLanguages = availabledLanguages;
     }
 }

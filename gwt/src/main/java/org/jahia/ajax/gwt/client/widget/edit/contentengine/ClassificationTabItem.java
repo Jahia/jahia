@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -27,7 +28,7 @@ public class ClassificationTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create() {
+    public void create(GWTLanguageSwitcherLocaleBean locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             setProcessed(true);
             classificationEditor = new ClassificationEditor(engine.getNode());

@@ -50,7 +50,7 @@ import java.util.TreeSet; /**
  * Time: 9:03:31 PM
  */
 public class LanguageItemsResolver extends DefaultItemsResolver {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SitesItemsResolver.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageItemsResolver.class);
 
     public List<Item> getItems(JahiaData jahiaData) {
         List<Item> items = new ArrayList<Item>();

@@ -1,12 +1,14 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -18,6 +20,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +44,11 @@ public abstract class AbstractContentEngine extends Window {
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
     protected GWTJahiaNode parentNode;
+    protected ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
+
+    private List<String> processedLangCodes = new ArrayList<String>();
 
     protected AbstractContentEngine(Linker linker) {
         this.linker = linker;
@@ -59,6 +65,10 @@ public abstract class AbstractContentEngine extends Window {
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         setHeading(heading);
 
+        // init language switcher
+        initLanguageSwitcher();
+
+        // init tabs
         tabs = new TabPanel();
 
         tabs.setBodyBorder(false);
@@ -95,8 +105,62 @@ public abstract class AbstractContentEngine extends Window {
         setFooter(true);
     }
 
+    /**
+     * init language switcher
+     */
+    private void initLanguageSwitcher() {
+        languageSwitcher = new ComboBox<GWTLanguageSwitcherLocaleBean>();
+        languageSwitcher.setStore(new ListStore<GWTLanguageSwitcherLocaleBean>());
+        languageSwitcher.setDisplayField("displayName");
+        languageSwitcher.setVisible(false);
+        languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTLanguageSwitcherLocaleBean>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTLanguageSwitcherLocaleBean> event) {
+                if (processedLangCodes.contains(getSelectedLanguageCode())) {
+                    return;
+                }
+                processedLangCodes.add(getSelectedLanguageCode());
+                onLanguageChange();
+                layout();
+            }
+        });
+        getHeader().addTool(languageSwitcher);
+    }
+
+    /**
+     * Called when a new language has been selected
+     */
+    protected void onLanguageChange() {
+
+    }
+
+    /**
+     * Set availableLanguages
+     *
+     * @param languages
+     */
+    protected void setAvailableLanguages(List<GWTLanguageSwitcherLocaleBean> languages) {
+        if (languageSwitcher != null && !languageSwitcher.isVisible()) {
+            //languageSwitcher.getStore().removeAll();
+            if (languages != null && !languages.isEmpty()) {
+                languageSwitcher.getStore().add(languages);
+                languageSwitcher.setVisible(true);
+            } else {
+                languageSwitcher.setVisible(false);
+            }
+        } else {
+            Log.debug("Language switcher disabled.");
+        }
+    }
+
+    /**
+     * init tabs
+     */
     protected abstract void initTabs();
 
+    /**
+     * init footer
+     */
     protected abstract void initFooter();
 
     /**
@@ -108,7 +172,7 @@ public abstract class AbstractContentEngine extends Window {
         if (currentTab instanceof EditEngineTabItem) {
             EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
             if (!engineTabItem.isProcessed()) {
-                engineTabItem.create();
+                engineTabItem.create(getSelectedLang());
             }
         }
     }
@@ -139,5 +203,29 @@ public abstract class AbstractContentEngine extends Window {
 
     public boolean isExistingNode() {
         return existingNode;
+    }
+
+    /**
+     * Get Selected Lang
+     * @return
+     */
+    public GWTLanguageSwitcherLocaleBean getSelectedLang() {
+        if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
+            Log.debug("language switcher value is null");
+            return null;
+        }
+        return languageSwitcher.getSelection().get(0);
+    }
+
+    /**
+     * Get Selected Language Code
+     * @return
+     */
+    public String getSelectedLanguageCode() {
+        if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
+            Log.debug("language switcher value is null");
+            return null;
+        }
+        return getSelectedLang().getCountryIsoCode();
     }
 }

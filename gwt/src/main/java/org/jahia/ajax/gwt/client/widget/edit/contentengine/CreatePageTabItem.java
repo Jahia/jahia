@@ -3,10 +3,13 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -45,6 +48,10 @@ public class CreatePageTabItem extends EditEngineTabItem {
     public void create() {
 
         setProcessed(true);
+
+        BorderLayout l = new BorderLayout();
+        setLayout(l);
+
         definitionService.getNodeTypeWithReusableComponents("jnt:page", new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNode>>>() {
             public void onFailure(Throwable caught) {
                 Log.error("",caught);
@@ -111,12 +118,35 @@ public class CreatePageTabItem extends EditEngineTabItem {
 
                 form.add(set);
 
-                add(form);
+                BorderLayoutData layoutData = new BorderLayoutData(Style.LayoutRegion.CENTER);
+                add(form, layoutData);
                 layout();
             }
         });
 
 
+        BorderLayoutData layoutData = new BorderLayoutData(Style.LayoutRegion.EAST, 200);
+        LayoutContainer layoutContainer = new LayoutContainer();
+        layoutContainer.add(new VisibilityPanel());
+        layoutContainer.add(new TagPanel());
+        add(layoutContainer, layoutData);
+
+    }
+
+    class VisibilityPanel extends LayoutContainer {
+        VisibilityPanel() {
+            FieldSet f = new FieldSet();
+            f.setHeading("Visibility");
+            add(f);
+        }
+    }
+    
+    class TagPanel extends LayoutContainer {
+        TagPanel() {
+            FieldSet f = new FieldSet();
+            f.setHeading("Tags");
+            add(f);
+        }
     }
 
     public String getContentTitle() {

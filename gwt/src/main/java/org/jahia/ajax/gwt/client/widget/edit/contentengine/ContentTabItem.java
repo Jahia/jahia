@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -24,9 +25,14 @@ public class ContentTabItem extends PropertiesTabItem {
     @Override
     public void postCreate() {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+            VerticalPanel p = new VerticalPanel();
+
             FormPanel formPanel = getNamePanel();
-            add(formPanel);
+            p.add(formPanel);
             isNodeNameFieldDisplayed = true;
+            p.add(propertiesEditor);
+            add(p);
+            return;
         }
         super.postCreate();
     }

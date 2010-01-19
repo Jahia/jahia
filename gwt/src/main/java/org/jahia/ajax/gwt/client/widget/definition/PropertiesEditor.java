@@ -198,6 +198,7 @@ public class PropertiesEditor extends FormPanel {
 
             if (field != null) {
                 if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
+                    setPadding(0);
                     fieldSet = new FieldSet();
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.add(field);

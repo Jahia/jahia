@@ -48,7 +48,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
-import org.jahia.services.render.filter.AttributesFilter;
+import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
@@ -134,7 +134,7 @@ public class CacheFilterTest extends TestCase {
                 RenderService.getInstance().resolveScript(resource, context));
 
         // test on a resource from the default Jahia module
-        AttributesFilter attributesFilter = new AttributesFilter();
+        BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
@@ -172,7 +172,7 @@ public class CacheFilterTest extends TestCase {
                 RenderService.getInstance().resolveScript(resource, context));
 
         // test on a resource from the default Jahia module
-        AttributesFilter attributesFilter = new AttributesFilter();
+        BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
@@ -212,7 +212,7 @@ public class CacheFilterTest extends TestCase {
                 RenderService.getInstance().resolveScript(resource, context));
 
         // test on a resource from the default Jahia module
-        AttributesFilter attributesFilter = new AttributesFilter();
+        BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
         CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");

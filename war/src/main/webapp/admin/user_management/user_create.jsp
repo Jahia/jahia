@@ -273,7 +273,9 @@
             <span class="first-child">
                 <c:set var="label"><fmt:message key='org.jahia.admin.select.label'/></c:set>
                 <c:set var="title"><fmt:message key='org.jahia.admin.users.ManageUsers.setHomePage.label'/></c:set>
+                <%--
                 <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}" title="${title}"/>
+                 --%>
             </span>
         </span>
         <span class="dex-PushButton">

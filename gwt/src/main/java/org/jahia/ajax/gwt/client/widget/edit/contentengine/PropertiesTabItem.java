@@ -74,7 +74,9 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 Log.debug("remove old properties editor from parents");
                 propertiesEditor.removeFromParent();
             }
-            //setProcessed(true);
+            if (!isMultiLang()) {
+                setProcessed(true);
+            }
             propertiesEditor = getPropertiesEditorByLang(locale);
 
             if (propertiesEditor == null) {

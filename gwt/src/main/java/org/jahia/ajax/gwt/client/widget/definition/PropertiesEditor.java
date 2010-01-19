@@ -286,6 +286,10 @@ public class PropertiesEditor extends FormPanel {
         }
     }
 
+    /**
+     * Get properties
+     * @return
+     */
     public List<GWTJahiaNodeProperty> getProperties() {
         List<GWTJahiaNodeProperty> newProps = new ArrayList<GWTJahiaNodeProperty>();
 

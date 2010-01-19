@@ -27,7 +27,6 @@ public class ContentTabItem extends PropertiesTabItem {
     public void postCreate() {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
             VerticalPanel p = new VerticalPanel();
-
             FormPanel formPanel = getNamePanel();
             p.add(formPanel);
             isNodeNameFieldDisplayed = true;
@@ -38,6 +37,10 @@ public class ContentTabItem extends PropertiesTabItem {
         super.postCreate();
     }
 
+    /**
+     * Get Form panel that contains the name of the nodes
+     * @return
+     */
     private FormPanel getNamePanel() {
         FormPanel formPanel = new FormPanel();
         formPanel.setFieldWidth(550);

@@ -757,6 +757,12 @@
     </tag-file>
     
     <tag-file>
+        <description>Renders the trigger link and the tree control to select an item.</description>
+        <name>treeItemSelector</name>
+        <path>/META-INF/tags/treeItemSelector.tag</path>
+    </tag-file>
+
+    <tag-file>
         <name>userGroupSelector</name>
         <path>/META-INF/tags/userGroupSelector.tag</path>
     </tag-file>

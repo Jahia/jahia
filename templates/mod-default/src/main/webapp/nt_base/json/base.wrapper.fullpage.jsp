@@ -30,11 +30,4 @@
     between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
-<json:object>
-<c:forEach items="${currentNode.propertiesAsString}" var="prop">
-	<json:property name="${prop.key}" value="${prop.value}"/>
-</c:forEach>
-</json:object>
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><c:set target="${renderContext}" property="contentType" value="application/json;charset=UTF-8"/>${wrappedContent}

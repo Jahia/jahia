@@ -16,7 +16,9 @@
 <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
 <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
 <input type="hidden" name="j:picture" id="myAvatar" value="${not empty picture ? picture.string : ''}"/>
+<%--
 <ui:fileSelector fieldId="myAvatar" filters="*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff" onSelect="function (path, url, uuid) { document.getElementById('myAvatar').value=uuid; document.getElementById('myAvatarPreview').src=url; document.getElementById('myAvatarPreview').width=120; document.getElementById('myAvatarPreview').height=120; return false; }"/>
+ --%>
 <div class="user-profile">
     <div class="user-photo">
         <c:if test="${not empty picture}">

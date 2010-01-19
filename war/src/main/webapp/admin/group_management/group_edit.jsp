@@ -204,7 +204,9 @@
                                                 <span class="dex-PushButton">
                                                     <span class="first-child">
                                                         <c:set var="label"><fmt:message key='org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroup.label'/></c:set>
+                                                        <%-- 
                                                         <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" label="${label}" title="${label}" class="ico-home-add"/>
+                                                        --%>
                                                     </span>
                                                 </span>
                                                 <span class="dex-PushButton">

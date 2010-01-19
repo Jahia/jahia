@@ -1,5 +1,3 @@
-<%@ page import="org.jahia.utils.FileUtils" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

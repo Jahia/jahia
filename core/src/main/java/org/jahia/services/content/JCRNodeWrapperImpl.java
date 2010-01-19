@@ -350,7 +350,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getUrl() {
         if (objectNode != null) {
-            return provider.getHttpPath() + provider.decodeInternalName(getPath());
+            return provider.getHttpPath()+"/"+getSession().getWorkspace().getName() + provider.decodeInternalName(getPath());
         }
         return "";
     }

@@ -32,6 +32,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -107,13 +108,14 @@ public class FilesServlet extends HttpServlet {
             p = p.substring(req.getContextPath().length());
         }
         if (p.startsWith(req.getServletPath())) {
-            p = p.substring(req.getServletPath().length());
+            p = p.substring(req.getServletPath().length()+1);
         }
-        p = Text.unescape(p.replaceAll("___",":"));
+        String workspace = StringUtils.substringBefore(p,"/");
+        p = Text.unescape("/"+StringUtils.substringAfter(p,"/").replaceAll("___",":"));
 
         JCRNodeWrapper n;
         try {
-            n = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(p);
+            n = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(p);
         } catch (RepositoryException e) {
             logger.error("Error accesing path : "+p+" for user "+jahiaUser,e);
             res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());

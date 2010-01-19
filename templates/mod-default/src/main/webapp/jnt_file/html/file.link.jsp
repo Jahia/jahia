@@ -6,5 +6,5 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
-<a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${pageContext.request.contextPath}/files${currentNode.path}"
+<a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${currentNode.url}"
    title="${displayDate}">${currentNode.name}</a>

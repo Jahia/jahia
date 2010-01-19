@@ -8,8 +8,8 @@
 <fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
 <c:choose>
     <c:when test="${fn:startsWith(currentNode.fileContent.contentType,'image/')}">
-        <img src="${pageContext.request.contextPath}/files${currentNode.path}"
-             alt="${displayDate}"/>
+        <img src="${currentNode.url}"
+             alt="${fn:escapeXml(currentNode.name)}"/>
     </c:when>
     <c:otherwise>
         <a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${pageContext.request.contextPath}/files${currentNode.path}"

@@ -63,7 +63,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         String frozenPrimaryType = getPropertyAsString("jcr:frozenPrimaryType");
         if (frozenPrimaryType.equals(Constants.JAHIANT_FILE)) {
             try {
-                return getProvider().getHttpPath() + this.getPropertyAsString("j:fullpath") + "?v=" + getParent().getName();
+                return getProvider().getHttpPath()+"/"+getSession().getWorkspace().getName() + this.getPropertyAsString("j:fullpath") + "?v=" + getParent().getName();
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving fullpath property", e);
             }

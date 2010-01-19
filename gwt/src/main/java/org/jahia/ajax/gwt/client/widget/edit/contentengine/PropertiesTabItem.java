@@ -108,8 +108,8 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
     @Override
     public boolean isProcessed() {
-        // to do: implemented by lang
-        return false;
+        // is processed is handled only for non-multilang engines
+        return !isMultiLang() && super.isProcessed();
     }
 
     public boolean isMultiLang() {

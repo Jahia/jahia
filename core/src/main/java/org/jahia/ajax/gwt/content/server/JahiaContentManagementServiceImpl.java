@@ -37,7 +37,6 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -49,7 +48,6 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -646,7 +644,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
         try {
-            return navigation.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path), retrieveParamBean());
+            return navigation.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path));
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

@@ -473,6 +473,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return versions;
     }
 
+    public void setCurrentVersion(String currentVersion) {
+        set("currentVersion", currentVersion);
+    }
+
+    public String getCurrentVersion() {
+        return get("currentVersion");
+    }
+
     public void setSelectedVersion(String selectedVersion) {
         this.selectedVersion = selectedVersion;
     }

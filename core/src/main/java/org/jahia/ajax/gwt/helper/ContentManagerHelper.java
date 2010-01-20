@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.helper;
 
 import com.ibm.icu.text.Normalizer;
 import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -194,7 +193,7 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
-        return navigation.getGWTJahiaNode(childNode, true);
+        return navigation.getGWTJahiaNode(childNode);
     }
 
     public String generateNameFromTitle(List<GWTJahiaNodeProperty> props) {
@@ -251,7 +250,7 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed");
         }
-        return navigation.getGWTJahiaNode(childNode, true);
+        return navigation.getGWTJahiaNode(childNode);
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -434,7 +433,7 @@ public class ContentManagerHelper {
                         try {
                             name = findAvailableName(targetParent, name);
                             if (targetParent.isWriteable()) {
-                                res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference), false));
+                                res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference)));
                                 if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                     targetParent.orderBefore(name, targetNode.getName());
                                 }

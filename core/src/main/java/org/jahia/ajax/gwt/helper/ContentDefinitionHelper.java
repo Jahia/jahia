@@ -387,7 +387,7 @@ public class ContentDefinitionHelper {
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
             }
         } catch (PathNotFoundException e) {
         }
@@ -398,7 +398,7 @@ public class ContentDefinitionHelper {
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper, false));
+                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
             }
         } catch (PathNotFoundException e) {
         }
@@ -443,11 +443,11 @@ public class ContentDefinitionHelper {
                 JCRNodeWrapper node = (JCRNodeWrapper) ((JCRValueWrapper) val).getNode();
                 // check if the referenced node exists
                 if (node != null) {
-                    convertedValue = new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode(node, false), GWTJahiaNodePropertyType.WEAKREFERENCE);
+                    convertedValue = new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode(node), GWTJahiaNodePropertyType.WEAKREFERENCE);
                 }  
                 return convertedValue;
             case PropertyType.REFERENCE:
-                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
+                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode()));
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();

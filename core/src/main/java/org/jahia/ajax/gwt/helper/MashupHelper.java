@@ -208,7 +208,7 @@ public class MashupHelper {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException("A system error happened");
             }
-            return navigation.getGWTJahiaNode(node, true);
+            return navigation.getGWTJahiaNode(node);
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("error");

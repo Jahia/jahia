@@ -560,7 +560,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
                     logger.error(e, e);
                 }
             }
-            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), navigation.getGWTJahiaNode(referencedNode,true), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
+            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), navigation.getGWTJahiaNode(referencedNode), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
         } else {
             return null;
         }

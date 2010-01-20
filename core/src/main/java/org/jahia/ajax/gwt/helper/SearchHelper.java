@@ -137,7 +137,7 @@ public class SearchHelper {
             }
             q.storeAsNode(path);
             user.getSession().save();
-            return navigation.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path), true);
+            return navigation.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -160,7 +160,7 @@ public class SearchHelper {
             q.storeAsNode(path + "/" + name);
             parent.saveSession();
 
-            return navigation.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path + "/" + name), true);
+            return navigation.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path + "/" + name));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");

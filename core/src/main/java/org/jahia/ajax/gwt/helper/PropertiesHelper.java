@@ -42,7 +42,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -54,7 +53,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -154,7 +152,7 @@ public class PropertiesHelper {
                     GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
                     nodeProp.setName(propName);
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
-                    GWTJahiaNode linkNode = navigation.getGWTJahiaNode((JCRNodeWrapper) node, false);
+                    GWTJahiaNode linkNode = navigation.getGWTJahiaNode((JCRNodeWrapper) node);
                     if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
                         linkNode.set("linkType", "internal");
                     } else if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
@@ -184,7 +182,7 @@ public class PropertiesHelper {
                     if (node.hasProperty(Constants.NODE)) {
                         JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty("j:node").getValue();
                         Node pageNode = weekReference.getNode();
-                        linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode, false));
+                        linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode));
                         linkNode.set(Constants.ALT, pageNode.getName());
                         linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());
                         linkNode.set(Constants.JCR_TITLE, ((JCRNodeWrapper) pageNode).getUrl());

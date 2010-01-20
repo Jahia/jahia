@@ -84,7 +84,7 @@ public class EditContentEngine extends AbstractContentEngine {
         super(linker);
         contentPath = node.getPath();
         nodeName = node.getName();
-        heading = "Edit " + nodeName;
+        heading = "Edit " + nodeName + " ("+node.getCurrentVersion()+")";
         loadNode(true);
         init();
 

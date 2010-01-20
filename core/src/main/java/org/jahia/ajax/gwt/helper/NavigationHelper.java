@@ -49,12 +49,10 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.FileUtils;
 
 import javax.jcr.*;
@@ -184,7 +182,7 @@ public class NavigationHelper {
                 // in case of a folder, it allows to know if the node is selectable
                 boolean matchFilters = matchesMimeTypeFilters(f.isFile(), f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
                 if (f.isCollection() || matchFilters) {
-                    GWTJahiaNode theNode = getGWTJahiaNode(f, true);
+                    GWTJahiaNode theNode = getGWTJahiaNode(f);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
                     try {
                         theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
@@ -327,7 +325,7 @@ public class NavigationHelper {
                             "/users").getNodes();
                     while (ni.hasNext()) {
                         Node node = (Node) ni.next();
-                        GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"), true);
+                        GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"));
                         jahiaNode.setDisplayName(node.getName());
                         userNodes.add(jahiaNode);
                     }
@@ -523,7 +521,7 @@ public class NavigationHelper {
      */
     public GWTJahiaNode getNode(String path, String workspace, Locale locale) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, locale).getNode(path), true);
+            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, locale).getNode(path));
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
@@ -531,7 +529,7 @@ public class NavigationHelper {
 
     public GWTJahiaNode getParentNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path).getParent(), true);
+            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path).getParent());
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -614,7 +612,7 @@ public class NavigationHelper {
                     String path = n.getPath();
                     if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
                         foundPaths.add(path);
-                        GWTJahiaNode node = getGWTJahiaNode(n, true);
+                        GWTJahiaNode node = getGWTJahiaNode(n);
                         node.setMatchFilters(matchFilter);
                         result.add(node);
                     }
@@ -624,11 +622,15 @@ public class NavigationHelper {
         return result;
     }
 
-    public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f, boolean versioned) {
+    public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node) {
+        return getGWTJahiaNode(node, true);
+    }
+
+    public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, boolean versioned) {
         List<String> inherited = new ArrayList<String>();
         List<String> list = null;
         try {
-            list = f.getNodeTypes();
+            list = node.getNodeTypes();
             for (String s : list) {
                 ExtendedNodeType[] inh = NodeTypeRegistry.getInstance().getNodeType(s).getSupertypes();
                 for (ExtendedNodeType extendedNodeType : inh) {
@@ -645,26 +647,26 @@ public class NavigationHelper {
         // get uuid
         String uuid = null;
         try {
-            uuid = f.getUUID();
+            uuid = node.getUUID();
         } catch (RepositoryException e) {
-            logger.debug("Unable to get uuid for node " + f.getName(), e);
+            logger.debug("Unable to get uuid for node " + node.getName(), e);
         }
 
         // get description
         String description = "";
         try {
-            if (f.hasProperty("jcr:description")) {
-                Value dValue = f.getProperty("jcr:description").getValue();
+            if (node.hasProperty("jcr:description")) {
+                Value dValue = node.getProperty("jcr:description").getValue();
                 if (dValue != null) {
                     description = dValue.getString();
                 }
             }
         } catch (RepositoryException e) {
-            logger.debug("Unable to get description property for node " + f.getName(), e);
+            logger.debug("Unable to get description property for node " + node.getName(), e);
         }
 
         String aclContext = "sharedOnly";
-        Node i = f;
+        Node i = node;
         try {
             while (!i.isNode() || !i.isNodeType("jnt:virtualsite")) {
                 i = i.getParent();
@@ -673,25 +675,25 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
         }
 
-        if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.getFileContent().getContentLength(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+        if (node.isFile() || node.isPortlet()) {
+            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.getFileContent().getContentLength(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned());
         } else {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned());
 
-            n.setCollection(f.isCollection());
+            n.setCollection(node.isCollection());
 
-            if (sessionFactory.getMountPoints().containsKey(f.getPath())) {
+            if (sessionFactory.getMountPoints().containsKey(node.getPath())) {
                 n.setDeleteable(false);
             }
 
             boolean hasChildren = false;
             boolean hasFolderChildren = false;
-            if (f instanceof JCRMountPointNode) {
+            if (node instanceof JCRMountPointNode) {
                 hasChildren = true;
                 hasFolderChildren = true;
             } else {
                 // TODO consider current node types, mime types and filters when checking for children
-                for (JCRNodeWrapper w : f.getChildren()) {
+                for (JCRNodeWrapper w : node.getChildren()) {
                     try {
                         hasChildren = true;
                         if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
@@ -706,22 +708,22 @@ public class NavigationHelper {
             n.setHasChildren(hasChildren);
             n.setHasFolderChildren(hasFolderChildren);
         }
-        n.setLastModifiedBy(f.getModificationUser());
-        n.setCreated(f.getCreationDateAsDate());
-        n.setCreatedBy(f.getCreationUser());
-        n.setLastPublished(f.getLastPublishedAsDate());
-        n.setLastPublishedBy(f.getPublicationUser());
+        n.setLastModifiedBy(node.getModificationUser());
+        n.setCreated(node.getCreationDateAsDate());
+        n.setCreatedBy(node.getCreationUser());
+        n.setLastPublished(node.getLastPublishedAsDate());
+        n.setLastPublishedBy(node.getPublicationUser());
 
 
         try {
-            if (f.hasProperty("j:tags")) {
+            if (node.hasProperty("j:tags")) {
                 StringBuilder b = new StringBuilder();
-                Value[] values = f.getProperty("j:tags").getValues();
+                Value[] values = node.getProperty("j:tags").getValues();
                 for (Value value : values) {
-                    Node node = ((JCRValueWrapper) value).getNode();
-                    if (node != null) {
+                    Node tag = ((JCRValueWrapper) value).getNode();
+                    if (tag != null) {
                         b.append(", ");
-                        b.append(node.getName());
+                        b.append(tag.getName());
                     }
                 }
                 if (b.length() > 0) {
@@ -732,11 +734,11 @@ public class NavigationHelper {
             logger.error("Error when getting tags", e);
         }
 
-        setIcon(f, n);
+        setIcon(node, n);
 
-        List<String> names = f.getThumbnails();
+        List<String> names = node.getThumbnails();
         if (names.contains("thumbnail")) {
-            n.setPreview(f.getThumbnailUrl("thumbnail"));
+            n.setPreview(node.getThumbnailUrl("thumbnail"));
             n.setDisplayable(true);
         } else {
             StringBuilder buffer = new StringBuilder();
@@ -747,36 +749,41 @@ public class NavigationHelper {
             n.setPreview(buffer.toString());
         }
         for (String name : names) {
-            n.getThumbnailsMap().put(name, f.getThumbnailUrl(name));
+            n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
         }
         try {
-            if (f.hasProperty("j:height")) {
-                n.setHeight(Long.valueOf(f.getProperty("j:height").getLong()).intValue());
+            if (node.hasProperty("j:height")) {
+                n.setHeight(Long.valueOf(node.getProperty("j:height").getLong()).intValue());
             }
-            if (f.hasProperty("j:width")) {
-                n.setWidth(Long.valueOf(f.getProperty("j:width").getLong()).intValue());
+            if (node.hasProperty("j:width")) {
+                n.setWidth(Long.valueOf(node.getProperty("j:width").getLong()).intValue());
             }
             // add node template
-            if (f.hasProperty("j:template")) {
-                n.setTemplate(f.getProperty("j:template").getValue().getString());
+            if (node.hasProperty("j:template")) {
+                n.setTemplate(node.getProperty("j:template").getValue().getString());
             }
 
-            if (f.hasProperty("jcr:title")) {
-                n.setDisplayName(f.getProperty("jcr:title").getString());
+            if (node.hasProperty("jcr:title")) {
+                n.setDisplayName(node.getProperty("jcr:title").getString());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         n.setNormalizedName(removeDiacritics(n.getName()));
-        if (versioned) {
-            List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = getVersions(f, null);
-            if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
-                n.setVersions(gwtJahiaNodeVersions);
+        if (versioned && node.isVersioned()) {
+            try {
+                n.setCurrentVersion(node.getBaseVersion().getName());
+                List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = getVersions(node);
+                if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
+                    n.setVersions(gwtJahiaNodeVersions);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
         try {
-            if (f.isNodeType("jnt:nodeReference") && f.hasProperty("j:node")) {
-                n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) f.getProperty("j:node").getNode(), versioned));
+            if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
+                n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -818,29 +825,22 @@ public class NavigationHelper {
      * Get list of version as gwt bean list
      *
      * @param node
-     * @param jParams
      * @return
      */
-    public List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, ProcessingContext jParams) {
+    public List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node) throws RepositoryException {
         List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
-        try {
-            if (node.isVersioned()) {
-                VersionHistory vh = node.getVersionHistory();
-                VersionIterator vi = vh.getAllVersions();
-                while (vi.hasNext()) {
-                    Version v = vi.nextVersion();
-                    if (!v.getName().equals("jcr:rootVersion")) {
+        VersionHistory vh = node.getVersionHistory();
+        VersionIterator vi = vh.getAllVersions();
+        while (vi.hasNext()) {
+            Version v = vi.nextVersion();
+            if (!v.getName().equals("jcr:rootVersion")) {
 //                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                        GWTJahiaNode n = getGWTJahiaNode(node, false);
-                        n.setUrl(node.getUrl() + "?v=" + v.getName());
-                        GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
-                        jahiaNodeVersion.setNode(n);
-                        versions.add(jahiaNodeVersion);
-                    }
-                }
+                GWTJahiaNode n = getGWTJahiaNode(node, false);
+                n.setUrl(node.getUrl() + "?v=" + v.getName());
+                GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
+                jahiaNodeVersion.setNode(n);
+                versions.add(jahiaNodeVersion);
             }
-        } catch (RepositoryException e) {
-            logger.error(e, e);
         }
         return versions;
     }

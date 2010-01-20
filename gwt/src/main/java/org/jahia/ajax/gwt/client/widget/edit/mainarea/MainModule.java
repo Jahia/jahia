@@ -103,6 +103,7 @@ public class MainModule extends ContentPanel implements Module {
                 List<String> list = new ArrayList<String>(1);
                 list.add(path);
                 editLinker.getMainModule().unmask();                
+                editLinker.onModuleSelection(MainModule.this);
             }
 
             public void onFailure(Throwable caught) {
@@ -172,7 +173,7 @@ public class MainModule extends ContentPanel implements Module {
         mask("Loading","x-mask-loading");
         this.path = path;
         this.template = template;
-        refresh();        
+        refresh();
     }
 
     public static void staticGoTo(String path, String template) {

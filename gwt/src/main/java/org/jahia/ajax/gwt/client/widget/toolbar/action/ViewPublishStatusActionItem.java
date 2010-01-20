@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
@@ -82,10 +83,11 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
         };
 
         String lastUnpublished = null;
-
+        boolean allPublished = true;
         for (Module module : list) {
             GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
             if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+                allPublished = false;
                 LayoutContainer infoLayer = new LayoutContainer();
                 RootPanel.get().add(infoLayer);
                 infoLayer.el().makePositionable(true);
@@ -143,6 +145,36 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
 
             }
         }
+
+        if (allPublished) {
+            LayoutContainer infoLayer = new LayoutContainer();
+            RootPanel.get().add(infoLayer);
+            infoLayer.el().makePositionable(true);
+            El el = mainPanel.el();
+
+            infoLayer.setLayout(new CenterLayout());
+            HtmlContainer box = new HtmlContainer("Everything published");
+            box.addStyleName("x-view-item");
+            box.setStyleAttribute("background-color", "white");
+            box.setStyleAttribute("text-color", "black");
+            box.setStyleAttribute("font-weight", "bold");
+            box.setStyleAttribute("text-align", "center");
+            box.setWidth(150);
+            infoLayer.add(box);
+
+            infoLayer.setBorders(true);
+            infoLayer.setStyleAttribute("background-color", "white");
+            infoLayer.setStyleAttribute("opacity", "0.7");
+
+            position(infoLayer, el, 0, bottom, left, right);
+
+            infoLayer.show();
+            containers.put(infoLayer, el);
+            infoLayer.sinkEvents(Event.ONCLICK);
+            infoLayer.addListener(Events.OnClick, removeListener);
+        }
+
+
         ((EditLinker) linker).getMainModule().addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {

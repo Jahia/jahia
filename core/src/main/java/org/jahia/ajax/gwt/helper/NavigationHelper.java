@@ -830,9 +830,9 @@ public class NavigationHelper {
                 while (vi.hasNext()) {
                     Version v = vi.nextVersion();
                     if (!v.getName().equals("jcr:rootVersion")) {
-                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                        GWTJahiaNode n = getGWTJahiaNode(orig, false);
-                        n.setUrl(orig.getUrl() + "?v=" + v.getName());
+//                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
+                        GWTJahiaNode n = getGWTJahiaNode(node, false);
+                        n.setUrl(node.getUrl() + "?v=" + v.getName());
                         GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
                         jahiaNodeVersion.setNode(n);
                         versions.add(jahiaNodeVersion);

@@ -39,6 +39,7 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
@@ -123,7 +124,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 return "_perUser_";
             }
             // Search for user specific acl
-            final QueryManager queryManager = sessionFactory.getCurrentUserSession("default").getWorkspace().getQueryManager();
+            final QueryManager queryManager = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE).getWorkspace().getQueryManager();
             JahiaUser principal = renderContext.getUser();
             final String userName = principal.getUsername();
             if (hasUserAcl(userName, queryManager)) {

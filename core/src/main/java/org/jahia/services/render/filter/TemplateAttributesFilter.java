@@ -8,9 +8,13 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.Script;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +58,10 @@ public class TemplateAttributesFilter extends AbstractFilter {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             chain.pushAttribute(request, entry.getKey(), entry.getValue());
         }
+
+        Script script = (Script) request.getAttribute("script");
+        chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
+                new LocalizationContext(new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()), resource.getLocale()));
 
         String out;
         out = chain.doFilter(context, resource);

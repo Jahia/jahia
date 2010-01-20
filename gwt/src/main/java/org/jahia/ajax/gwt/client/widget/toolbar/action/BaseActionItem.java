@@ -260,4 +260,16 @@ public abstract class BaseActionItem implements ActionItem {
 
     }
 
+    protected void updateTitle(String title) {
+        if (textToolitem != null) {
+            ((Button) textToolitem).setText(getGwtToolbarItem().getTitle());
+        }
+        if (menuItem != null) {
+            menuItem.setText(title);
+        }
+        if (contextMenuItem != null) {
+            contextMenuItem.setText(title);
+        }
+    }
+
 }

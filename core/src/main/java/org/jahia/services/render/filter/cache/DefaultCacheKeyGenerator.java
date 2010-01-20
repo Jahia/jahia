@@ -39,9 +39,10 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -72,7 +73,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
                                                                                             "path", "template",
                                                                                             "templateType", "acls",
-                                                                                            "wrapped","queryString"));
+                                                                                            "wrapped", "queryString"));
     private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
@@ -82,7 +83,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private Set<JahiaGroup> aclGroups = null;
     private EhCacheProvider cacheProvider;
     private Cache cache;
-    private JCRSessionFactory sessionFactory;
+    private JCRTemplate template;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -120,19 +121,18 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private String appendAcls(Resource resource, RenderContext renderContext) {
         try {
-            if((Boolean)renderContext.getRequest().getAttribute("cache.perUser")) {
+            if ((Boolean) renderContext.getRequest().getAttribute("cache.perUser")) {
                 return "_perUser_";
             }
             // Search for user specific acl
-            final QueryManager queryManager = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE).getWorkspace().getQueryManager();
             JahiaUser principal = renderContext.getUser();
             final String userName = principal.getUsername();
-            if (hasUserAcl(userName, queryManager)) {
+            if (hasUserAcl(userName)) {
                 return (String) cache.get(userName).getValue();
             }
             // else use user groupmembership
             else {
-                Set<JahiaGroup> aclGroups = getAllAclsGroups(queryManager);
+                Set<JahiaGroup> aclGroups = getAllAclsGroups();
                 StringBuilder b = new StringBuilder();
                 for (JahiaGroup g : aclGroups) {
                     if (g != null && g.isMember(principal)) {
@@ -142,14 +142,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         b.append(g.getGroupname());
                     }
                 }
-                if (b.toString().equals(
-                        JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
+                if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
                         JahiaUserManagerService.GUEST_USERNAME)) {
                     b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
                 }
                 String userKey = b.toString();
-                if("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                    userKey = userName; 
+                if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                    userKey = userName;
                 }
                 final Element element = new Element(userName, userKey);
                 element.setEternal(true);
@@ -162,30 +161,37 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return "";
     }
 
-    private boolean hasUserAcl(String userName, QueryManager queryManager) throws RepositoryException {
-        if(cache.getSize()==0) {
-            Query query = queryManager.createQuery(
-                "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
-                Query.JCR_SQL2);
-            QueryResult queryResult = query.execute();
-            NodeIterator rowIterator = queryResult.getNodes();
-            while (rowIterator.hasNext()) {
-                Node node = (Node) rowIterator.next();
-                String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(),":");
-                if(!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/"+s+"/j:acl")) {
-                    final Element element = new Element(s, s);
-                    element.setEternal(true);
-                    cache.put(element);
+    private boolean hasUserAcl(final String userName) throws RepositoryException {
+        if (cache.getSize() == 0) {
+            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Query query = session.getWorkspace().getQueryManager().createQuery(
+                            "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
+                            Query.JCR_SQL2);
+                    QueryResult queryResult = query.execute();
+                    NodeIterator rowIterator = queryResult.getNodes();
+                    while (rowIterator.hasNext()) {
+                        Node node = (Node) rowIterator.next();
+                        String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
+                        if (!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/" + s + "/j:acl")) {
+                            final Element element = new Element(s, s);
+                            element.setEternal(true);
+                            cache.put(element);
+                        }
+                    }
+                    return null;
                 }
-            }
+            });
         }
         return cache.isKeyInCache(userName);
     }
 
-    private Set<JahiaGroup> getAllAclsGroups(QueryManager queryManager) throws RepositoryException {
+    private Set<JahiaGroup> getAllAclsGroups() throws RepositoryException {
         if (aclGroups == null) {
             aclGroups = new LinkedHashSet<JahiaGroup>();
-            Query groupQuery = queryManager.createQuery(
+            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
                     "select u.[j:principal] as name from [jnt:ace] as u where u.[j:principal] like 'g%'",
                     Query.JCR_SQL2);
             QueryResult groupQueryResult = groupQuery.execute();
@@ -199,6 +205,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     aclGroups.add(group);
                 }
             }
+                    return null;
+                }
+            });
         }
         return aclGroups;
     }
@@ -265,7 +274,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         cache = cacheManager.getCache(CACHE_NAME);
     }
 
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public void setTemplate(JCRTemplate template) {
+        this.template = template;
     }
 }

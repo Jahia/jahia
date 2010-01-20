@@ -82,7 +82,7 @@ when we flush this entry we will flush the whole cache-->
         	<bean class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
                 <property name="groupManagerService" ref="JahiaGroupManagerService"/>
                 <property name="cacheProvider" ref="ehCacheProvider"/>
-                <property name="sessionFactory" ref="jcrSessionFactory"/>
+                <property name="template" ref="jcrTemplate"/>
         	</bean>
         </property>
 	</bean>

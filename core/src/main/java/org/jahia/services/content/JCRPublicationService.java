@@ -11,6 +11,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.*;
+import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.jcr.version.Version;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -266,10 +267,11 @@ public class JCRPublicationService extends JahiaService {
 
                 Date pubDate = liveNode.getProperty("jcr:lastModified").getDate().getTime();
                 Date stagingDate = node.getProperty("jcr:lastModified").getDate().getTime();
-//                System.out.println("-live-> "+ pubDate + "  ,-stag-> "+ stagingDate);
-
+                System.out.println(node.getName());
+                System.out.println("staging version = " + node.getBaseVersion().getName());
+                System.out.println("live version = " + liveNode.getBaseVersion().getName());
+//                print(node.getVersionHistory());
                 if (pubDate.getTime() == stagingDate.getTime()) {
-//                    System.out.println("--- node " + path + " is uptodate");
                     continue;
                 }
 
@@ -278,47 +280,22 @@ public class JCRPublicationService extends JahiaService {
                 // Node has been modified, check in now
                 Version newVersion = sourceVersionManager.checkin(path);
 
-//                System.out.println("---BEFORE PUBLISH");
-//                System.out.println("STAG "+logVersion(path, sourceVersionManager));
-//                System.out.println("LIVE "+logVersion(destinationPath, destinationVersionManager));
-//                System.out.println("-----------------");
-
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
+
                 while (ni.hasNext()) {
+                    // Conflict : node has been modified in live. Resolve conflict without doing anything
                     Node failed = ni.nextNode();
-//                    System.out.println("### FAILED : live node modified. Resolve merging. "+failed.getPath() + " : "+ failed.getBaseVersion().getName());
                     destinationVersionManager.checkout(failed.getPath());
                     destinationVersionManager.doneMerge(failed.getPath(), newVersion);
                     destinationVersionManager.checkin(failed.getPath());
-
-//                    System.out.println("---AFTER MERGE");
-//                    System.out.println("STAG "+logVersion(path, sourceVersionManager));
-//                    System.out.println("LIVE "+logVersion(destinationPath, destinationVersionManager));
-//                    System.out.println("-----------------");
+                    // Then retry the merge (should be ok now)
                     path = failed.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
                     destinationVersionManager.merge(path, node.getSession().getWorkspace().getName(), false, true);
-
-//                        System.out.println("-------------------------------------------------------------");
-//                        System.out.println("-------------------------------------------------------------");
-//                        System.out.println("---------------------------------MERGE FAIL------------------");
-//                        System.out.println("-------------------------------------------------------------");
-//                        System.out.println("-------------------------------------------------------------");
-//                        System.out.println("---AFTER FAILED MERGE");
-//                        System.out.println("STAG "+logVersion(path, sourceVersionManager));
-//                        System.out.println("LIVE "+logVersion(destinationPath, destinationVersionManager));
-//                        System.out.println("-----------------");
+                    // Update the staging node to the new merged version.
+                    node.update(destinationSession.getWorkspace().getName());
                 }
-                // do not do unnecessary checkout
-//                sourceVersionManager.checkout(path);
-
-//                System.out.println("---END MERGE");
-//                System.out.println("STAG "+logVersion(path, sourceVersionManager));
-//                System.out.println("LIVE "+logVersion(destinationPath, destinationVersionManager));
-//                System.out.println("-----------------");
-
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
-//                System.out.println("------------- not found yet ???????");
                 node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
             }
         }
@@ -493,7 +470,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             sourceSession.save();
-            l.add(node);
+//            l.add(node);
             mergeToLiveWorkspace(l, sourceSession, destinationSession);
         } finally {
             JahiaAccessManager.setPublication(null);
@@ -614,5 +591,27 @@ public class JCRPublicationService extends JahiaService {
      */
     public void stop() throws JahiaException {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    public void print(VersionHistory vh) throws RepositoryException {
+        Version root = vh.getRootVersion();
+
+        print(root, 0);
+    }
+
+    public void print(Version v, int indent) throws RepositoryException {
+        System.out.print(StringUtils.leftPad("", indent)+"---- "+ v.getName());
+        Version[] preds = v.getPredecessors();
+        System.out.print("(");
+        for (Version pred : preds) {
+            System.out.print(" "+pred.getName());
+        }
+        System.out.print(")");
+        System.out.println("");
+        Version[] succ = v.getSuccessors();
+        for (Version version : succ) {
+            print(version, indent + 2);
+        }
     }
 }

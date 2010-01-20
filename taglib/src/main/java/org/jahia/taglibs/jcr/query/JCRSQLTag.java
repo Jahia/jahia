@@ -34,19 +34,18 @@ package org.jahia.taglibs.jcr.query;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.QueryResultAdapter;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.security.Principal;
 import java.util.Locale;
@@ -69,18 +68,11 @@ public class JCRSQLTag extends AbstractJahiaTag {
 
     public int doStartTag() throws JspException {
         try {
-            final ProcessingContext ctx = getProcessingContext();
-            if (ctx != null) {
-                pageContext.setAttribute(var, findQueryResult(ctx.getUser(), statement), scope);
-            } else {
-                logger.error("ProcessingContext instance is null.");
-            }
-            return EVAL_BODY_INCLUDE;
-
-        } catch (final Exception e) {
-            logger.error(e.getMessage(), e);
+            pageContext.setAttribute(var, findQueryResult(getUser(), statement), scope);
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
         }
-        return SKIP_BODY;
+        return EVAL_BODY_INCLUDE;
     }
 
     /**
@@ -92,46 +84,37 @@ public class JCRSQLTag extends AbstractJahiaTag {
      *            a query expression to perform the query
      * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
+     * @throws RepositoryException 
+     * @throws InvalidQueryException 
      */
-    private QueryResult findQueryResult(Principal p, String query) {
+    private QueryResult findQueryResult(Principal p, String query) throws InvalidQueryException, RepositoryException {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by " + getQueryLanguage() + "[ " + query + " ]");
         }
         if (p instanceof JahiaGroup) {
-            logger.warn("method not implemented for JahiaGroup");
-        } else {
-            try {
-                String workspace = null;
-                Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
-                Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-                if (currentResource != null) {
-                    workspace = currentResource.getWorkspace();
-                    locale = currentResource.getLocale();
-                }
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-                QueryManager queryManager = session.getWorkspace().getQueryManager();
-
-                if (queryManager != null) {
-                    Query q = queryManager.createQuery(query, getQueryLanguage());
-                    if (limit > 0) { q.setLimit(limit);}
-                    // execute query
-                    queryResult = q.execute();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(getQueryLanguage() + "[" + query + "] --> found [" + queryResult + "] values.");
-                    }
-                }
-            } catch (javax.jcr.PathNotFoundException e) {
-                logger.debug("javax.jcr.PathNotFoundException: SQL2[" + query + "]");
-            } catch (javax.jcr.ItemNotFoundException e) {
-                logger.debug(e, e);
-            } catch (javax.jcr.query.InvalidQueryException e) {
-                logger.error("InvalidQueryException ---> [" + query + "] is not valid.", e);
-            }
-            catch (RepositoryException e) {
-                logger.error(e, e);
-            }
+            throw new UnsupportedOperationException("method not implemented for JahiaGroup");
+            
         }
+
+        String workspace = null;
+        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+        if (currentResource != null) {
+            workspace = currentResource.getWorkspace();
+            locale = currentResource.getLocale();
+        }
+        Query q = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getWorkspace()
+                .getQueryManager().createQuery(query, getQueryLanguage());
+        if (limit > 0) {
+            q.setLimit(limit);
+        }
+        // execute query
+        queryResult = q.execute();
+        if (logger.isDebugEnabled()) {
+            logger.debug(getQueryLanguage() + "[" + query + "] --> found [" + queryResult + "] values.");
+        }
+
         return queryResult != null ? queryResult : new QueryResultAdapter();
     }
 

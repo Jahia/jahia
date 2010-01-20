@@ -31,11 +31,8 @@
  */
 package org.jahia.taglibs.query;
 
-import javax.servlet.jsp.JspException;
-
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.FullTextSearch;
-import javax.jcr.query.qom.Selector;
 
 import org.apache.log4j.Logger;
 
@@ -53,19 +50,14 @@ public class FullTextSearchTag extends ConstraintTag {
 
     private String propertyName;
 
-    private String selectorName;
-
-    private String isMetadata;
-
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
+    @Override
+    protected void resetState() {
         fullTextSearch = null;
+        searchExpression = null;
         propertyName = null;
-        selectorName = null;
-        isMetadata = null;
-        return eval;
+        super.resetState();
     }
-
+    
     public Constraint getConstraint() {
         if (fullTextSearch != null) {
             return fullTextSearch;
@@ -74,12 +66,7 @@ public class FullTextSearchTag extends ConstraintTag {
             return null;
         }
         try {
-            String selector = selectorName;
-            if (selector == null && this.getQueryModelDefTag().getSource() instanceof Selector) {
-                selector = ((Selector) this.getQueryModelDefTag().getSource()).getSelectorName();
-            }
-
-            fullTextSearch = this.getQueryFactory().fullTextSearch(selector, this.propertyName,
+            fullTextSearch = this.getQueryFactory().fullTextSearch(getSelectorName(), this.propertyName,
                     this.getQueryFactory().literal(this.getValueFactory().createValue(this.searchExpression)));
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
@@ -87,36 +74,12 @@ public class FullTextSearchTag extends ConstraintTag {
         return fullTextSearch;
     }
 
-    public String getSearchExpression() {
-        return searchExpression;
-    }
-
     public void setSearchExpression(String searchExpression) {
         this.searchExpression = searchExpression;
     }
 
-    public String getPropertyName() {
-        return propertyName;
-    }
-
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
-    }
-
-    public String getSelectorName() {
-        return selectorName;
-    }
-
-    public void setSelectorName(String selectorName) {
-        this.selectorName = selectorName;
-    }
-
-    public String getMetadata() {
-        return isMetadata;
-    }
-
-    public void setMetadata(String metadata) {
-        isMetadata = metadata;
     }
 
 }

@@ -45,6 +45,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -286,7 +287,25 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected ProcessingContext getProcessingContext() {
         return Utils.getProcessingContext(pageContext);
     }
-
+    
+    /**
+     * Returns an instance of the current {@link RenderContext}.
+     * 
+     * @return an instance of the current {@link RenderContext}
+     */
+    protected final RenderContext getRenderContext() {
+        return (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+    }
+    
+    /**
+     * Returns the {@link Resource}, currently being rendered.
+     * 
+     * @return the {@link Resource}, currently being rendered
+     */
+    protected final Resource getCurrentResource() {
+        return (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+    }
+    
     /**
      * Returns current {@link JahiaData} instance.
      *
@@ -464,4 +483,13 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     }
 
+    /**
+     * Returns the current user.
+     * 
+     * @return the current user
+     */
+    protected final JahiaUser getUser() {
+        RenderContext ctx = getRenderContext();
+        return ctx != null ? ctx.getUser() : null;
+    }
 }

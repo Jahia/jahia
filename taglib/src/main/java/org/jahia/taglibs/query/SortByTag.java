@@ -31,42 +31,42 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.apache.log4j.Logger;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Used to specify query sorting parameters.
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
  */
-public class SortByTag extends AbstractJahiaTag {
+public class SortByTag extends QueryDefinitionDependentTag {
 
     private static final long serialVersionUID = 7747723525104918964L;
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(SortByTag.class);
-
-    private QueryDefinitionTag queryModelDefTag = null;
+    private static Logger logger = Logger.getLogger(SortByTag.class);
 
     private String propertyName;
 
     private String order;
 
-    private String selectorName;
-
     public int doStartTag() throws JspException {
-        queryModelDefTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
-        if (queryModelDefTag == null || queryModelDefTag.getQueryFactory()==null) {
-            return SKIP_BODY;
+        QueryDefinitionTag queryModelDefTag = getQueryDefinitionTag();
+        try {
+            if (queryModelDefTag == null || queryModelDefTag.getQueryFactory()==null) {
+                return SKIP_BODY;
+            }
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
         }
         if (this.propertyName == null || this.propertyName.trim().equals("")){
             return EVAL_BODY_BUFFERED;
         }
         try {
-            this.queryModelDefTag.addOrdering(getSelectorName(),getPropertyName(), getOrder());
+            queryModelDefTag.addOrdering(getSelectorName(),getPropertyName(), getOrder());
         } catch ( Exception t ){
             logger.debug("Error creating ordering clause",t);
             throw new JspException("Error creating Ordering node in SortBy Tag",t);
@@ -75,7 +75,6 @@ public class SortByTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() throws JspException {
-        queryModelDefTag = null;
         propertyName = null;
         propertyName = null;
         order = null;
@@ -96,13 +95,5 @@ public class SortByTag extends AbstractJahiaTag {
 
     public void setOrder(String order) {
         this.order = order;
-    }
-
-    public String getSelectorName() {
-        return selectorName;
-    }
-
-    public void setSelectorName(String selectorName) {
-        this.selectorName = selectorName;
     }
 }

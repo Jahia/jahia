@@ -24,13 +24,13 @@
     </form>
 </div>
 <jcr:jqom var="results">
-    <query:selector nodeTypeName="jnt:job" selectorName="jobSelector"/>
-    <query:childNode selectorName="jobSelector" path="${currentNode.path}"/>
+    <query:selector nodeTypeName="jnt:job"/>
+    <query:childNode path="${currentNode.path}"/>
     <c:if test="${not empty param.jobsSearchKeyword}">
-        <query:fullTextSearch selectorName="jobSelector" searchExpression="${param.jobsSearchKeyword}"
+        <query:fullTextSearch searchExpression="${param.jobsSearchKeyword}"
                               propertyName="description"/>
     </c:if>
-    <query:sortBy propertyName="jcr:created" order="desc" selectorName="jobSelector"/>
+    <query:sortBy propertyName="jcr:created" order="desc"/>
 </jcr:jqom>
 <!--stop jobsSearchForm -->
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>

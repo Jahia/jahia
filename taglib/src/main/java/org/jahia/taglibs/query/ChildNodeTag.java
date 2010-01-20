@@ -33,7 +33,6 @@ package org.jahia.taglibs.query;
 
 import javax.jcr.query.qom.ChildNode;
 import javax.jcr.query.qom.Constraint;
-import javax.servlet.jsp.JspException;
 
 /**
  * Tag used to create a ChildNode Constraint
@@ -41,62 +40,34 @@ import javax.servlet.jsp.JspException;
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class ChildNodeTag extends ConstraintTag  {
 
     private ChildNode childNode;
-    private String selectorName;
     private String path;
 
-    public ChildNodeTag(){
-    }
-
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
-        childNode = null;
-        selectorName = null;
+    @Override
+    protected void resetState() {
         path = null;
-        return eval;
+        childNode = null;
+        super.resetState();
     }
-
-    public String getSelectorName() {
-        return selectorName;
-    }
-
-    public void setSelectorName(String selectorName) {
-        this.selectorName = selectorName;
-    }
-
-    public ChildNode getChildNode() {
-        return childNode;
-    }
-
-    public void setChildNode(ChildNode childNode) {
-        this.childNode = childNode;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
+    
     public void setPath(String path) {
         this.path = path;
     }
 
     public Constraint getConstraint() throws Exception {
-        if ( childNode != null ){
+        if ( childNode != null ) {
             return childNode;
         }
-        if ("".equals(path.trim())){
+        if (path.trim().length() == 0) {
             return null;
         }
-        if (selectorName==null || "".equals(selectorName.trim())){
-            childNode = this.getQueryFactory().childNode(null,path);
-        } else {
-            childNode = this.getQueryFactory().childNode(selectorName.trim(),path);
-        }
+
+        childNode = this.getQueryFactory().childNode(getSelectorName(), path);
+        
         return childNode;
     }
 

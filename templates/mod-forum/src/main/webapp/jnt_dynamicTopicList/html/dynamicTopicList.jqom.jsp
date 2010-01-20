@@ -7,8 +7,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="forum.css" nodetype="jnt:dynamicTopicList"/>
 <jcr:jqom var="topics">
-    <query:selector nodeTypeName="jnt:topic" selectorName="topicList"/>
-    <query:descendantNode selectorName="topicList" path="/"/>
+    <query:selector nodeTypeName="jnt:topic"/>
+    <query:descendantNode path="/"/>
 </jcr:jqom>
 <c:if test="${topics.nodes.size == 0}">
     No Topics Found

@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,31 +29,53 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.taglibs.query;
 
-import javax.servlet.jsp.JspException;
-import javax.jcr.query.qom.QueryObjectModelConstants;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.PropertyExistence;
 
 /**
- * Tag used to create a Less Than ConstraintImpl
- *
- * User: hollis
- * Date: 7 nov. 2007
- * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
+ * Used to create a {@link PropertyExistence} constraint for the query.
+ * 
+ * @author Sergiy Shyrkov
  */
-@SuppressWarnings("serial")
-public class LessThanTag extends ComparisonTag  {
+public class PropertyExistenceTag extends ConstraintTag {
 
-    public LessThanTag(){
-        super();
-        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
+    private static final long serialVersionUID = 4083757150830520963L;
+
+    private String propertyName;
+
+    private Constraint constraint;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.taglibs.query.ConstraintTag#getConstraint()
+     */
+    @Override
+    public Constraint getConstraint() throws Exception {
+        if (constraint == null) {
+            constraint = getQueryFactory().propertyExistence(getSelectorName(), propertyName);
+        }
+        return constraint;
     }
 
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
-        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
-        return eval;
+    /**
+     * Sets the value of node property name to check for existence.
+     * 
+     * @param propertyName the value of node property name to check for
+     *            existence
+     */
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    @Override
+    protected void resetState() {
+        propertyName = null;
+        constraint = null;
+        super.resetState();
     }
 
 }

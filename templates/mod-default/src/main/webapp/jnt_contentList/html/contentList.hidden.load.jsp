@@ -6,13 +6,13 @@
 <c:choose>
 <c:when test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
   <jcr:jqom var="sortedChildren">
-    <query:selector nodeTypeName="nt:base" selectorName="children"/>
-    <query:childNode selectorName="children" path="${currentNode.realNode.path}"/>
+    <query:selector nodeTypeName="nt:base"/>
+    <query:childNode path="${currentNode.realNode.path}"/>
     <c:forTokens var="prefix" items="first,second,third" delims=",">
       <jcr:nodeProperty node="${currentNode}" name="${prefix}Field" var="sortPropertyName"/>
       <c:if test="${!empty sortPropertyName}">
         <jcr:nodeProperty node="${currentNode}" name="${prefix}Direction" var="order"/>
-        <query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}" selectorName="children"/>
+        <query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}"/>
       </c:if>
     </c:forTokens>
   </jcr:jqom>

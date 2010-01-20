@@ -34,18 +34,18 @@ package org.jahia.taglibs.jcr.query;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.QueryResultAdapter;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.taglibs.query.QueryDefinitionTag;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.security.Principal;
@@ -70,7 +70,7 @@ public class JQOMTag extends QueryDefinitionTag {
     }
 
     // Body is evaluated one time, so just writes it on standard output
-    public int doAfterBody() {
+    public int doAfterBody() throws JspException {
         int result = super.doAfterBody();
 
         if (this.getQomBeanName() != null && getId() != null) {
@@ -79,22 +79,24 @@ public class JQOMTag extends QueryDefinitionTag {
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe) {
-            logger.error("Error:", ioe);
+            throw new JspTagException(ioe);
         }
         return result;
     }
 
     public int doEndTag() throws JspException {
-        QueryObjectModel queryModel = this.getQomBeanName() == null ? this.getQueryObjectModel()
-                : (QueryObjectModel) pageContext.getAttribute(this.getQomBeanName(), PageContext.REQUEST_SCOPE);
+        QueryObjectModel queryModel;
+        try {
+            queryModel = this.getQomBeanName() == null ? this.getQueryObjectModel()
+                    : (QueryObjectModel) pageContext.getAttribute(this.getQomBeanName(), PageContext.REQUEST_SCOPE);
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
+        }
 
-        final ProcessingContext ctx = getProcessingContext();
-        if (ctx == null) {
-            logger.error("ProcessingContext instance is null.");
-        } else if (queryModel == null) {
-            logger.error("QueryObjectModel instance is null.");
-        } else {
-            pageContext.setAttribute(var, findQueryResultByQOM(ctx.getUser(), queryModel), scope);
+        try {
+            pageContext.setAttribute(var, findQueryResultByQOM(getUser(), queryModel), scope);
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
         }
 
         int result = super.doEndTag();
@@ -111,37 +113,32 @@ public class JQOMTag extends QueryDefinitionTag {
      *            a QueryObjectModel to perform the JCR query
      * @return the {@link javax.jcr.NodeIterator} instance with the results of
      *         the query; returns empty iterator if nothing is found
+     * @throws RepositoryException 
+     * @throws InvalidQueryException 
      */
-    private QueryResult findQueryResultByQOM(Principal p, QueryObjectModel queryModel) {
+    private QueryResult findQueryResultByQOM(Principal p, QueryObjectModel queryModel) throws InvalidQueryException, RepositoryException {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by qom [ " + queryModel.getStatement() + " ]");
         }
         if (p instanceof JahiaGroup) {
-            logger.warn("method not implemented for JahiaGroup");
-        } else {
-            try {
-                String workspace = null;
-                Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
-                Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-                if (currentResource != null) {
-                    workspace = currentResource.getWorkspace();
-                    locale = currentResource.getLocale();
-                }                
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-                queryResult = session.getWorkspace().execute(queryModel);                
-                // execute query
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Query[" + queryModel.getStatement() + "] --> found [" + queryResult + "] values.");
-                }
-            } catch (javax.jcr.ItemNotFoundException e) {
-                logger.debug(e, e);
-            } catch (javax.jcr.query.InvalidQueryException e) {
-                logger.error("InvalidQueryException ---> [" + queryModel.getStatement() + "] is not valid.", e);
-            } catch (RepositoryException e) {
-                logger.error(e, e);
-            }
+            throw new UnsupportedOperationException("method not implemented for JahiaGroup");
         }
+
+        String workspace = null;
+        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+        Resource currentResource = getCurrentResource();
+        if (currentResource != null) {
+            workspace = currentResource.getWorkspace();
+            locale = currentResource.getLocale();
+        }
+        queryResult = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getWorkspace().execute(
+                queryModel);
+        // execute query
+        if (logger.isDebugEnabled()) {
+            logger.debug("Query[" + queryModel.getStatement() + "] --> found [" + queryResult + "] values.");
+        }
+
         return queryResult != null ? queryResult : new QueryResultAdapter();
     }
 

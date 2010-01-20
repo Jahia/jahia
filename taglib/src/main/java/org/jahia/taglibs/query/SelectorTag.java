@@ -32,9 +32,12 @@
 package org.jahia.taglibs.query;
 
 import javax.jcr.query.qom.Selector;
-import org.jahia.taglibs.AbstractJahiaTag;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * Tag used to create a Query Object Model Selector.
@@ -44,70 +47,49 @@ import javax.servlet.jsp.JspException;
  * User: hollis
  * Date: 8 nov. 2007
  * Time: 13:08:23
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class SelectorTag extends AbstractJahiaTag {
+public class SelectorTag extends QueryDefinitionDependentTag {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(SelectorTag.class);
-
-    private QueryDefinitionTag queryDefinitionTag = null;
+    private static Logger logger = Logger.getLogger(SelectorTag.class);
 
     private String nodeTypeName;
-    private String selectorName;
-
     public int doStartTag() throws JspException {
-        queryDefinitionTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
-        if (queryDefinitionTag == null) {
-            return SKIP_BODY;
+        QueryDefinitionTag queryDefinitionTag = getQueryDefinitionTag();
+        
+        if (StringUtils.isEmpty(nodeTypeName)) {
+            throw new JspTagException("Attribute nodeTypeName is required for tag " + this.getClass().getName());
         }
-        if ( nodeTypeName != null && !"".equals(nodeTypeName.trim())
-                && selectorName != null && !"".equals(selectorName.trim()) ){
-            try {
-                Selector selector = queryDefinitionTag.getQueryFactory().selector(nodeTypeName, selectorName);
-                if (selector != null){
-                    queryDefinitionTag.setSource(selector);
-                }
-            } catch ( Exception t ){
-                logger.debug("Exception occured creating Selector Node",t);
-                throw new JspException("Exception occured creating Selector Node",t);
+        nodeTypeName = nodeTypeName.trim();
+        if (getSelectorName() == null) {
+            setSelectorName(nodeTypeName);
+        }
+
+        try {
+            Selector selector = queryDefinitionTag.getQueryFactory().selector(nodeTypeName, getSelectorName());
+            if (selector != null) {
+                queryDefinitionTag.setSource(selector);
             }
+        } catch (Exception t) {
+            logger.debug("Exception occurred creating Selector Node", t);
+            throw new JspException("Exception occurred creating Selector Node", t);
         }
+
         return EVAL_BODY_BUFFERED;
     }
 
     public int doEndTag() throws JspException {
-        queryDefinitionTag = null;
-        nodeTypeName = null;
-        selectorName = null;
+        resetState();
         return EVAL_PAGE;
     }
-
-    /**
-     * The node Type name
-     *
-     * @return
-     */
-    public String getNodeTypeName() {
-        return nodeTypeName;
+    
+    @Override
+    protected void resetState() {
+        nodeTypeName = null;
+        super.resetState();
     }
 
     public void setNodeTypeName(String nodeTypeName) {
         this.nodeTypeName = nodeTypeName;
     }
-
-    /**
-     * The selector name
-     *
-     * @return
-     */
-    public String getSelectorName() {
-        return selectorName;
-    }
-
-    public void setSelectorName(String selectorName) {
-        this.selectorName = selectorName;
-    }
-
 }

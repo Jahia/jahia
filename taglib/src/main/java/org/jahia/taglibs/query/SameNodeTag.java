@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,31 +29,52 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.taglibs.query;
 
-import javax.servlet.jsp.JspException;
-import javax.jcr.query.qom.QueryObjectModelConstants;
+import javax.jcr.query.qom.Constraint;
 
 /**
- * Tag used to create a Like ConstraintImpl
- *
- * User: hollis
- * Date: 7 nov. 2007
- * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
+ * Adds the same node constraint to the current query, i.e. tests whether the
+ * selectorName node is reachable by the absolute path specified.
+ * 
+ * @author Sergiy Shyrkov
  */
-@SuppressWarnings("serial")
-public class LikeTag extends ComparisonTag  {
+public class SameNodeTag extends ConstraintTag {
 
-    public LikeTag(){
-        super();
-        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
+    private static final long serialVersionUID = 4083757150830520963L;
+
+    private Constraint constraint;
+
+    private String path;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.taglibs.query.ConstraintTag#getConstraint()
+     */
+    @Override
+    public Constraint getConstraint() throws Exception {
+        if (constraint == null) {
+            constraint = getQueryFactory().sameNode(getSelectorName(), path);
+        }
+        return constraint;
     }
 
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
-        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
-        return eval;
+    @Override
+    protected void resetState() {
+        path = null;
+        constraint = null;
+        super.resetState();
+    }
+
+    /**
+     * Sets the absolute path value to test.
+     * 
+     * @param path the absolute path value to test
+     */
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

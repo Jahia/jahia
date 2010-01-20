@@ -31,12 +31,13 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.query.qom.QueryModelTools;
-import org.jahia.taglibs.AbstractJahiaTag;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.utility.ParamParent;
 
 import javax.servlet.jsp.JspException;
-import java.util.Properties;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * This tag is used to set properties to the parent QueryDefinitionTag
@@ -44,33 +45,22 @@ import java.util.Properties;
  * User: hollis
  * Date: 8 nov. 2007
  * Time: 13:08:23
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class SetPropertyTag extends AbstractJahiaTag implements ParamParent {
-
-    private QueryDefinitionTag queryModelDefTag = null;
+public class SetPropertyTag extends QueryDefinitionDependentTag implements ParamParent {
 
     private String name;
     private String value;
     private String operation = QueryDefinitionTag.SET_ACTION;
 
     public int doStartTag() throws JspException {
-        queryModelDefTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
-        if (queryModelDefTag == null) {
-            return SKIP_BODY;
-        }
+        QueryDefinitionTag queryModelDefTag = getQueryDefinitionTag();
 
         if ( name == null || name.trim().equals("") ){
             return SKIP_BODY;
         }
-        Properties properties = queryModelDefTag.getProperties();
-        if (properties==null){
-            properties = new Properties();
-            queryModelDefTag.setProperties(properties);
-        }
         if ( QueryDefinitionTag.REMOVE_ACTION.equalsIgnoreCase(operation) ){
-            properties.remove(name);
+            queryModelDefTag.getProperties().remove(name);
         } else if ( value != null ){
             addParam(value);
         }
@@ -78,7 +68,6 @@ public class SetPropertyTag extends AbstractJahiaTag implements ParamParent {
     }
 
     public int doEndTag() throws JspException {
-        queryModelDefTag = null;
         name = null;
         value = null;
         operation = QueryDefinitionTag.SET_ACTION;
@@ -111,14 +100,29 @@ public class SetPropertyTag extends AbstractJahiaTag implements ParamParent {
 
     public void addParam(Object value) {
         if (value != null) {
-            if (QueryDefinitionTag.SET_ACTION.equalsIgnoreCase(operation)) {
-                queryModelDefTag.getProperties().setProperty(name, (String)value);
-            } else {
-                QueryModelTools.appendPropertyValue(queryModelDefTag
-                        .getProperties(), name, (String)value);
+            try {
+                if (QueryDefinitionTag.SET_ACTION.equalsIgnoreCase(operation)) {
+                        getQueryDefinitionTag().getProperties().setProperty(name, (String)value);
+                } else {
+                    appendPropertyValue(getQueryDefinitionTag().getProperties(), name, (String)value);
+                }
+            } catch (JspTagException e) {
+                throw new IllegalArgumentException(e);
             }
         }
     }
+
+    private static void appendPropertyValue(Properties properties, String propertyName, String value) {
+        if (properties == null || StringUtils.isEmpty(value) || StringUtils.isEmpty(propertyName)) {
+            return;
+        }
+        String propValue = properties.getProperty(propertyName);
+        if (StringUtils.isEmpty(propValue)) {
+            properties.setProperty(propertyName, value);
+        } else {
+            propValue += "," + value;
+        }
+}
 
 
 }

@@ -42,9 +42,9 @@
         <c:set var="doSearch" value="true"/>
     </c:if>
     <jcr:jqom var="results">
-        <query:selector nodeTypeName="jnt:press" selectorName="pressSelector"/>
+        <query:selector nodeTypeName="jnt:press"/>
         <jcr:nodeProperty node="${currentNode}" name="searchPath" var="path"/>
-        <query:descendantNode selectorName="pressSelector" path="${path.node.path}"/>
+        <query:descendantNode path="${path.node.path}"/>
         <c:if test="${doSearch == 'true'}">
 
             <c:if test="${!empty param.pressdatefrom}">
@@ -65,7 +65,7 @@
                 <query:fullTextSearch searchExpression="${param.pressword}"/>
             </c:if>
         </c:if>
-        <query:sortBy propertyName="date" order="desc" selectorName="pressSelector"/>
+        <query:sortBy propertyName="date" order="desc"/>
     </jcr:jqom>
     <ul class="pressRealeseList"><!--start pressRealeses List -->
         <c:forEach items="${results.nodes}" var="node">

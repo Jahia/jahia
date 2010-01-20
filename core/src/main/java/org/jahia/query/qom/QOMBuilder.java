@@ -31,7 +31,6 @@
  */
 package org.jahia.query.qom;
 
-import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.query.QueryService;
@@ -52,7 +51,6 @@ import java.util.Locale;
  * @author Benjamin Papez
  */
 public class QOMBuilder implements QueryObjectModelFactory {
-    private static transient Logger logger = Logger.getLogger(QOMBuilder.class);
     private QueryManager queryManager;
     private QueryObjectModelFactory qomFactory;
     private Constraint c;
@@ -64,13 +62,10 @@ public class QOMBuilder implements QueryObjectModelFactory {
     /**
      * QOMBuilder constructor
      * @param locale current locale used to limit/modify the query to return only nodes for the current locale
+     * @throws RepositoryException in case the query manager cannot be retrieved
      */
-    public QOMBuilder(Locale locale) {
-        try {
-            queryManager = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving query manager", e);
-        }
+    public QOMBuilder(Locale locale) throws RepositoryException {
+        queryManager = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
         qomFactory = queryManager.getQOMFactory();
         orderings = new ArrayList<Ordering>();
         columns = new ArrayList<Column>();

@@ -31,18 +31,16 @@
  */
 package org.jahia.taglibs.query;
 
-import org.apache.log4j.Logger;
 import org.jahia.query.qom.QOMBuilder;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.*;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +52,6 @@ import java.util.Properties;
  * User: hollis
  * Date: 6 nov. 2007
  * Time: 15:42:29
- * To change this template use File | Settings | File Templates.
  */
 public class QueryDefinitionTag extends AbstractJahiaTag {
 
@@ -63,9 +60,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     public static final String SET_ACTION = "set";
     public static final String APPEND_ACTION = "append";
     public static final String REMOVE_ACTION = "remove";
-
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(QueryDefinitionTag.class);
 
     protected QOMBuilder qomBuilder;
 
@@ -76,49 +70,37 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
     private QueryObjectModel queryObjectModel;
 
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    public static void setLogger(Logger logger) {
-        QueryDefinitionTag.logger = logger;
-    }
-
-
-    public int doStartTag () throws JspException {
-        setProperties(new Properties());
-        return EVAL_BODY_BUFFERED;
-    }
-
-    // Body is evaluated one time, so just writes it on standard output
-    public int doAfterBody () {
-
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (IOException ioe) {
-            logger.error("Error", ioe);
-        }
-        return EVAL_PAGE;
-    }
-
     /**
      *
      * @return
      * @throws JspException
      */
-    public int doEndTag ()
-        throws JspException {
+    public int doEndTag () throws JspException {
 
-        if (getId() != null) {
-            QueryObjectModel queryObjectModel = this.getQueryObjectModel();
-            if (queryObjectModel != null) {
-                pageContext.setAttribute(getId(), queryObjectModel,
-                        PageContext.REQUEST_SCOPE);
-            } else {
-                pageContext.removeAttribute(getId(), PageContext.REQUEST_SCOPE);
+        try {
+            if (getId() != null) {
+                QueryObjectModel queryObjectModel;
+                try {
+                    queryObjectModel = this.getQueryObjectModel();
+                } catch (RepositoryException e) {
+                    throw new JspTagException(e);
+                }
+                if (queryObjectModel != null) {
+                    pageContext.setAttribute(getId(), queryObjectModel,
+                            PageContext.REQUEST_SCOPE);
+                } else {
+                    pageContext.removeAttribute(getId(), PageContext.REQUEST_SCOPE);
+                }
             }
+        } finally {
+            resetState();
         }
-
+        
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         queryFactory = null;
@@ -126,35 +108,28 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         queryObjectModel = null;
         id = null;
         properties = null;
-        return EVAL_PAGE;
+        
+        super.resetState();
     }
 
-    public QueryObjectModelFactory getQueryFactory() {
+
+
+    public QueryObjectModelFactory getQueryFactory() throws RepositoryException {
         if (queryFactory == null){
-            try {
-                RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);                
-                qomBuilder = new QOMBuilder(renderContext.getMainResource().getLocale());
-                queryFactory = qomBuilder.getQomFactory();
-            } catch ( Exception t ){
-                logger.debug(t);
-            }
+            qomBuilder = new QOMBuilder(getRenderContext().getMainResource().getLocale());
+            queryFactory = qomBuilder.getQomFactory();
         }
         return queryFactory;
     }
 
     public ValueFactory getValueFactory() {
         if (valueFactory == null){
-            try {
-                valueFactory = ServicesRegistry.getInstance().getQueryService()
-                    .getValueFactory();
-            } catch ( Exception t ){
-                logger.debug(t);
-            }
+            valueFactory = ServicesRegistry.getInstance().getQueryService().getValueFactory();
         }
         return valueFactory;
     }
 
-    public QueryObjectModel getQueryObjectModel() {
+    public QueryObjectModel getQueryObjectModel() throws RepositoryException {
         if (queryObjectModel == null){
             queryObjectModel = this.createQueryObjectModel();
         }
@@ -165,15 +140,11 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         this.queryObjectModel = queryObjectModel;
     }
 
-    public QueryObjectModel createQueryObjectModel() {
+    public QueryObjectModel createQueryObjectModel() throws RepositoryException {
         QueryObjectModelFactory queryFactory = this.getQueryFactory();
         QueryObjectModel queryObjectModel = null;
         if ( queryFactory != null ){
-            try {
-                queryObjectModel = qomBuilder.createQOM();
-            } catch ( Exception t ){
-                logger.warn(t);
-            }
+            queryObjectModel = qomBuilder.createQOM();
         }
         return queryObjectModel;
     }
@@ -187,7 +158,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     }
 
     public Source getSource() {
-        return this.qomBuilder.getSource();
+        return qomBuilder != null ? qomBuilder.getSource() : null;
     }
 
     public void setSource(Source source) {
@@ -239,11 +210,10 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     }
 
     public Properties getProperties() {
+        if (properties == null) {
+            properties = new Properties();
+        }
         return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
     }
 
     public void andConstraint(Constraint c) throws Exception {

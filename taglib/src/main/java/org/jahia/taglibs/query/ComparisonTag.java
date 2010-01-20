@@ -31,100 +31,217 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.query.qom.QueryModelTools;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LIKE;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO;
+
+import java.util.Map;
 
 import javax.jcr.query.qom.Comparison;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.Literal;
 import javax.jcr.query.qom.PropertyValue;
-import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.servlet.jsp.JspException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import javax.servlet.jsp.JspTagException;
+
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Created by IntelliJ IDEA.
+ * Creates a query constraint, using property comparison.
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("serial")
-public class ComparisonTag extends ConstraintTag  {
+public class ComparisonTag extends ConstraintTag {
 
-    private Comparison comparison;
+    /**
+     * Tag used to create an Equal To ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class EqualToTag extends ComparisonTag  {
 
-    private String propertyName;
+        private static final long serialVersionUID = 8865525184678009416L;
 
-    private String operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-    private List<String> value;
-
-    public ComparisonTag(){        
-    }
-
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
-        comparison = null;
-        operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-        value = null;
-        propertyName = null;
-        return eval;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_EQUAL_TO;
+        }
     }
     
+    /**
+     * Tag used to create a Greater Than Or Equal To ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class GreaterThanOrEqualToTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = -5107469694370118296L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO;
+        }
+
+    }
+    
+    /**
+     * Tag used to create a Greater Than ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class GreaterThanTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = -2438321416967009003L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_GREATER_THAN;
+        }
+    }
+    
+    /**
+     * Tag used to create a Less Than Or Equal To ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class LessThanOrEqualToTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = 3486347263065135691L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO;
+        }
+    }
+    
+    /**
+     * Tag used to create a Less Than ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class LessThanTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = 5372749170431370477L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_LESS_THAN;
+        }
+    }
+    
+    /**
+     * Tag used to create a Like ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class LikeTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = -1074263299926419105L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_LIKE;
+        }
+    }
+    
+    /**
+     * Tag used to create an NotImpl Equal To ConstraintImpl
+     *
+     * User: hollis
+     * Date: 7 nov. 2007
+     * Time: 15:33:24
+     */
+    public static class NotEqualToTag extends ComparisonTag  {
+
+        private static final long serialVersionUID = 7245404863830970391L;
+
+        @Override
+        public String getOperator() {
+            return JCR_OPERATOR_NOT_EQUAL_TO;
+        }
+    }
+    
+    private static final long serialVersionUID = -4684686849914698282L;
+    
+    private static final Map<String, String> OPERATORS;
+    
+    static {
+        FastHashMap ops = new FastHashMap(8);
+        ops.put("=", JCR_OPERATOR_EQUAL_TO);
+        ops.put(">", JCR_OPERATOR_GREATER_THAN);
+        ops.put(">=", JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO);
+        ops.put("<", JCR_OPERATOR_LESS_THAN);
+        ops.put("<=", JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO);
+        ops.put("like", JCR_OPERATOR_LIKE);
+        ops.put("!=", JCR_OPERATOR_NOT_EQUAL_TO);
+        ops.put("<>", JCR_OPERATOR_NOT_EQUAL_TO);
+        ops.setFast(true);
+        OPERATORS = ops;
+    }
+
+    private Comparison comparison;
+    private String operator = JCR_OPERATOR_EQUAL_TO;
+    private String propertyName;
+    private String value;
+
+    public Constraint getConstraint() throws Exception {
+        if (comparison != null) {
+            return comparison;
+        }
+        if (StringUtils.isEmpty(propertyName)) {
+            throw new JspTagException("Attribute propertyName is empty or null");
+        }
+        PropertyValue propValue = getQueryFactory().propertyValue(getSelectorName(), propertyName);
+        Literal literal = (Literal) getQueryFactory().literal(getValueFactory().createValue(value));
+        comparison = getQueryFactory().comparison(propValue, getOperator(), literal);
+        return comparison;
+    }
+
     public String getOperator() {
+        if (!operator.startsWith("{http://www.jcp.org/jcr/1.0}")) {
+            String resolvedOperator = OPERATORS.get(operator.toLowerCase().trim());
+            if (resolvedOperator != null) {
+                operator = resolvedOperator;
+            }
+        }
         return operator;
+    }
+
+    @Override
+    protected void resetState() {
+        comparison = null;
+        operator = JCR_OPERATOR_EQUAL_TO;
+        value = null;
+        propertyName = null;
+        super.resetState();
     }
 
     public void setOperator(String operator) {
         this.operator = operator;
     }
 
-    public String getValue() {
-        if ( value == null ){
-            value = new ArrayList<String>();
-            return "";
-        }
-        StringBuffer buffer = new StringBuffer();
-        Iterator<String> it = value.iterator();
-        while (it.hasNext()){
-            buffer.append(it.next());
-            if ( it.hasNext() ){
-                buffer.append(",");
-            }
-        }
-        return buffer.toString();
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
     public void setValue(String value) {
-        this.value = new ArrayList<String>();
-        StringTokenizer tokenizer = new StringTokenizer(value,",");
-        while (tokenizer.hasMoreElements()){
-            this.value.add(tokenizer.nextToken().trim());
-        }
-    }
-
-    public Constraint getConstraint() throws Exception {
-        if ( comparison != null ){
-            return comparison;
-        }
-        if ( !QueryModelTools.isNotEmptyStringOrNull(this.getPropertyName()) ){
-          throw new Exception("propertyName is empty or null");
-        }
-        PropertyValue propValue = this.getQueryFactory()
-                .propertyValue(null,this.getPropertyName().trim());
-        Literal literal = (Literal)this.getQueryFactory()
-                .literal(this.getValueFactory().createValue(this.getValue()));
-        comparison = this.getQueryFactory().comparison( propValue, this.getOperator(), literal );
-        return comparison;
+        this.value = value;
     }
 }

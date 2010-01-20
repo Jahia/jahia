@@ -45,6 +45,7 @@
 <ui:categorySelector fieldId=""/>
 <ui:fileSelector fieldId=""/>
 <ui:pageSelector fieldId=""/>
+<ui:treeItemSelector fieldId=""/>
 <ui:rssButton targetURL=""/>
 <ui:subscribeButton source=""/>
 <ui:mediaGallery name="" inputName=""/>

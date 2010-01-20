@@ -31,37 +31,38 @@
  */
 package org.jahia.taglibs.query;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.apache.log4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
+ * Base query constraint tag class.
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:36:14
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public abstract class ConstraintTag extends AbstractJahiaTag {
+public abstract class ConstraintTag extends QueryDefinitionDependentTag {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(ConstraintTag.class);
+    private static Logger logger = Logger.getLogger(ConstraintTag.class);
 
-    private QueryDefinitionTag queryModelDefTag = null;
     private ConstraintTag compoundConstraintTag = null;
     private QueryObjectModelFactory queryFactory = null;
     private ValueFactory valueFactory = null;
 
-    public int doStartTag() {
-        queryModelDefTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
-        if (queryModelDefTag == null) {
-            return SKIP_BODY;
+    public int doStartTag() throws JspException {
+        QueryDefinitionTag queryModelDefTag = getQueryDefinitionTag();
+
+        try {
+            this.queryFactory = queryModelDefTag.getQueryFactory();
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
         }
-        this.queryFactory = queryModelDefTag.getQueryFactory();
         this.valueFactory = queryModelDefTag.getValueFactory();
         if (this.queryFactory == null || this.valueFactory == null){
             logger.warn("QueryFactory or ValueFactory is null!");
@@ -78,7 +79,7 @@ public abstract class ConstraintTag extends AbstractJahiaTag {
             Constraint c = getConstraint();
             if ( c != null ){
                 if ( compoundConstraintTag == null ){
-                    queryModelDefTag.andConstraint(c);
+                    getQueryDefinitionTag().andConstraint(c);
                 } else {
                     compoundConstraintTag.addChildConstraint(c);
                 }
@@ -86,20 +87,18 @@ public abstract class ConstraintTag extends AbstractJahiaTag {
         } catch ( Exception t ){
             logger.debug(t);
             throw new JspException("Error with constraint",t);
+        } finally {
+            resetState();
         }
-        queryModelDefTag = null;
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
         compoundConstraintTag = null;
         queryFactory = null;
         valueFactory = null;
-        return EVAL_PAGE;
-    }
-
-    public QueryDefinitionTag getQueryModelDefTag() {
-        return queryModelDefTag;
-    }
-
-    public void setQueryModelDefTag(QueryDefinitionTag queryModelDefTag) {
-        this.queryModelDefTag = queryModelDefTag;
+        super.resetState();
     }
 
     public QueryObjectModelFactory getQueryFactory(){

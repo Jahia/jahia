@@ -848,6 +848,9 @@ public class QueryServiceImpl extends QueryService {
         
         private AbstractQOMNode getNewPropertyBasedNodeIfRequired (String selectorName, String propertyName, AbstractQOMNode node) throws RepositoryException {
             Selector selector = getSelector(getOriginalSource(), selectorName);
+            if (selector == null) {
+                return node;
+            }
 
             try {
                 List<String> languageCodes = getLanguagesPerSelector().get(selector.getSelectorName());
@@ -868,7 +871,7 @@ public class QueryServiceImpl extends QueryService {
                                     selector.getSelectorName());
                             String translationSelectorName = null;
                             if (translationSelector == null) {
-                                translationSelectorName = "translationAdded" + selector.getSelectorName();
+                                translationSelectorName = selector.getSelectorName() + "translationAdded";
                                 translationSelector = qomFactory.selector(Constants.JAHIANT_TRANSLATION,
                                         translationSelectorName);
                                 getSelectorsJoinedWithTranslation()
@@ -893,7 +896,7 @@ public class QueryServiceImpl extends QueryService {
                             }
                         } else if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
                             if (!(isFulltextIncludingMultilingualProperties && !getSelectorsJoinedWithTranslation()
-                                    .get(selector.getSelectorName()).getSelectorName().startsWith("translationAdded"))) {
+                                    .get(selector.getSelectorName()).getSelectorName().endsWith("translationAdded"))) {
                                 getModificationInfo().setModificationNecessary(true);
                             }
                         }

@@ -33,7 +33,6 @@ package org.jahia.taglibs.query;
 
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.DescendantNode;
-import javax.servlet.jsp.JspException;
 
 /**
  * Tag used to create a DescendantNode Constraint
@@ -41,62 +40,34 @@ import javax.servlet.jsp.JspException;
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class DescendantNodeTag extends ConstraintTag  {
 
     private DescendantNode descendantNode;
-    private String selectorName;
     private String path;
 
-    public DescendantNodeTag(){
-    }
-
-    public int doEndTag() throws JspException {
-        int eval = super.doEndTag();
-        descendantNode = null;
-        selectorName = null;
+    @Override
+    protected void resetState() {
         path = null;
-        return eval;
+        descendantNode = null;
+        super.resetState();
     }
-
-    public String getSelectorName() {
-        return selectorName;
-    }
-
-    public void setSelectorName(String selectorName) {
-        this.selectorName = selectorName;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
+    
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public DescendantNode getDescendantNode() {
-        return descendantNode;
-    }
-
-    public void setDescendantNode(DescendantNode descendantNode) {
-        this.descendantNode = descendantNode;
     }
 
     public Constraint getConstraint() throws Exception {
         if ( descendantNode != null ){
             return descendantNode;
         }
-        if ("".equals(path.trim())){
+        if (path.trim().length() == 0){
             return null;
         }
-        if (selectorName==null || "".equals(selectorName.trim())){
-            descendantNode = this.getQueryFactory().descendantNode(null, path);
-        } else {
-            descendantNode = this.getQueryFactory().descendantNode(selectorName.trim(),path);
-        }
+        
+        descendantNode = this.getQueryFactory().descendantNode(getSelectorName(), path);
+
         return descendantNode;
     }
 

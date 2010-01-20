@@ -1,5 +1,6 @@
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
@@ -241,8 +242,9 @@ public class JCRPublicationService extends JahiaService {
     private void publish(List<JCRNodeWrapper> toPublish, List<JCRNodeWrapper> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper sourceNode = toPublish.iterator().next();
         try {
-            sourceNode.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-        } catch (ItemNotFoundException e) {
+//            sourceNode.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            destinationSession.getNode(sourceNode.getPath());
+        } catch (PathNotFoundException e) {
             cloneToLiveWorkspace(toPublish, pruneNodes, sourceSession, destinationSession);
             return;
         }
@@ -293,7 +295,7 @@ public class JCRPublicationService extends JahiaService {
 //                    System.out.println("STAG "+logVersion(path, sourceVersionManager));
 //                    System.out.println("LIVE "+logVersion(destinationPath, destinationVersionManager));
 //                    System.out.println("-----------------");
-
+                    path = failed.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
                     destinationVersionManager.merge(path, node.getSession().getWorkspace().getName(), false, true);
 
 //                        System.out.println("-------------------------------------------------------------");
@@ -330,7 +332,10 @@ public class JCRPublicationService extends JahiaService {
         String destinationParentPath = null;
 //        do {
 //            try {
-                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
+
+//                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
+        destinationParentPath = parent.getPath();
+
 //                break;
 //            } catch (ItemNotFoundException e) {
 //                sourceNode = parent;
@@ -371,7 +376,61 @@ public class JCRPublicationService extends JahiaService {
         }
         try {
             JahiaAccessManager.setDeniedPathes(deniedPath);
-            destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, false);
+            try {
+                String correspondingNodePath = sourceNode.getCorrespondingNodePath(destinationWorkspaceName);
+                if (sourceNode.isNodeType("mix:shareable")) {
+                    // Shareable node - todo : check if we need to move or clone
+
+                    String oldPath = null;
+                    if (sourceNode.hasProperty("j:movedFrom")) {
+                        Property movedFrom = sourceNode.getProperty("j:movedFrom");
+                        List<Value> values = new ArrayList<Value>(Arrays.asList(movedFrom.getValues()));
+                        for (Value value : values) {
+                            String v = value.getString();
+                            if (v.endsWith(":::" + destinationPath)) {
+                                oldPath = StringUtils.substringBefore(v,":::");
+                                values.remove(value);
+                                break;
+                            }
+                        }
+                        if (oldPath != null) {
+                            sourceNode.checkout();
+                            if (values.isEmpty()) {
+                                movedFrom.remove();
+                            } else {
+                                movedFrom.setValue(values.toArray(new Value[values.size()]));
+                            }
+                            sourceSession.save();
+                        }
+                    }
+
+                    // Clone the node node in live space
+                    destinationSession.getWorkspace().clone(destinationWorkspaceName, correspondingNodePath, destinationPath, false);
+
+                    if (oldPath != null) {
+                        try {
+                            JCRNodeWrapper node = destinationSession.getNode(oldPath);
+                            node.checkout();
+                            JCRNodeWrapper oldParent = node.getParent();
+                            oldParent.checkout();
+                            node.remove();
+                            destinationSession.save();
+                            oldParent.checkin();
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                } else {
+                    // Non shareable node has been moved
+                    destinationVersionManager.checkout(StringUtils.substringBeforeLast(correspondingNodePath,"/"));
+                    destinationVersionManager.checkout(correspondingNodePath);
+                    destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, true);
+                    destinationVersionManager.checkin(StringUtils.substringBeforeLast(correspondingNodePath,"/"));
+                }
+            } catch (ItemNotFoundException e) {
+                destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, false);
+            }
         } finally {
             JahiaAccessManager.setDeniedPathes(null);
         }
@@ -529,6 +588,7 @@ public class JCRPublicationService extends JahiaService {
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {
                 long s = stageNode.getLastModifiedAsDate().getTime();
+//                long p = stageNode.getLastPublishedAsDate().getTime();
                 long p = publishedNode.getLastModifiedAsDate().getTime();
                 if (s > p) {
                     info.setStatus(PublicationInfo.MODIFIED);

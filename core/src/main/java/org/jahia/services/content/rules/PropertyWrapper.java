@@ -214,6 +214,9 @@ public class PropertyWrapper implements Updateable {
             }
 
             if (values.length > 0) {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
                 if (!propDef.isMultiple()) {
                     property = node.setProperty(name, values[0]);
                 } else {

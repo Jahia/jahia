@@ -150,9 +150,24 @@ public class JCRWorkspaceWrapper implements Workspace {
                 source = source.substring(provider.getMountPoint().length());
             }
             JCRNodeWrapper sourceNode = session.getNode(source);
-            if (sourceNode.isNodeType("mix:shareable")) {
+            if (sourceNode.isNodeType("jmix:shareable")) {
                 JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(dest,"/"));
                 parentNode.clone(sourceNode, StringUtils.substringAfterLast(dest,"/"));
+                List<Value> values = new ArrayList<Value>();
+                String v = sourceNode.getPath() + ":::" + dest;
+                if (sourceNode.hasProperty("j:movedFrom")) {
+                    values.addAll(Arrays.asList(sourceNode.getProperty("j:movedFrom").getValues()));
+                    for (Value value : values) {
+                        String s = value.getString();
+                        if (s.endsWith(":::"+sourceNode.getPath())) {
+                            v = StringUtils.substringBefore(s,":::") + ":::" + dest;
+                            values.remove(value);
+                            break;
+                        }
+                    }
+                }
+                values.add(getSession().getValueFactory().createValue(v));
+                sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
                 sourceNode.remove();
             } else {
                 if (sessionMove) {

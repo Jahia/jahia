@@ -52,7 +52,7 @@ import java.util.Properties;
  */
 public class JCRFrozenNode extends JCRNodeDecorator {
     private transient static Logger logger = Logger.getLogger(JCRFrozenNode.class);
-    protected Exception exception = null;
+
 
     public JCRFrozenNode(JCRNodeWrapper node) {
         super(node);

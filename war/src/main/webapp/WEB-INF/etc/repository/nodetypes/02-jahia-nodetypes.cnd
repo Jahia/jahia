@@ -345,6 +345,7 @@
  - j:node (weakreference)
 
 [jmix:shareable] > mix:shareable mixin
+ - j:movedFrom (string) multiple
 
 [jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  + j:node (mix:shareable)

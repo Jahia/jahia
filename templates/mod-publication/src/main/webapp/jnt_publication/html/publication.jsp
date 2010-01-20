@@ -13,7 +13,7 @@
                         <img src="${preview.node.url}" alt="${preview.node.propertiesAsString['jcr:title']}">
                     </c:if>
                     <c:if test="${empty preview}">
-                    <img src="/templates/web-templates/theme/${requestScope.currentTheme}/img/no_preview.png'/>" alt="no preview"/>
+                    <img src="${url.currentModule}/images/no_preview.png" alt="no preview"/>
                     </c:if>
                 </a>
             </div>

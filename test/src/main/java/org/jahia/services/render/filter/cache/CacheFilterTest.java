@@ -137,10 +137,10 @@ public class CacheFilterTest extends TestCase {
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
-        CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
+        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
@@ -175,9 +175,9 @@ public class CacheFilterTest extends TestCase {
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
-        CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
+        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
@@ -215,9 +215,9 @@ public class CacheFilterTest extends TestCase {
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
 
-        CacheFilter cacheFilter = (CacheFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
+        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        CacheKeyGenerator generator = (CacheKeyGenerator) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheKeyGenerator");
+        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         final String key = (String) generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);

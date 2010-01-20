@@ -167,7 +167,11 @@ public class ContentDefinitionHelper {
                                     final Map<String, Object> props = choiceListValue.getProperties();
                                     if (props != null) {
                                         for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
-                                            displayBean.set(objectEntry.getKey(), objectEntry.getValue());
+                                            if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
+                                                logger.error("Null value : "+objectEntry.getKey() +" / "+ objectEntry.getValue());
+                                            } else {
+                                                displayBean.set(objectEntry.getKey(), objectEntry.getValue());
+                                            }
                                         }
                                     }
                                     displayBeans.add(displayBean);

@@ -48,6 +48,7 @@ public class GWTJahiaValueDisplayBean extends BaseModelData implements Serializa
 
     public GWTJahiaValueDisplayBean(String value, String display) {
         super() ;
+        setAllowNestedValues(false);
         set("value", value);
         set("display", display);
     }

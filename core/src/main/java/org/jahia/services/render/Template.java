@@ -18,6 +18,10 @@ public interface Template {
 
     String getDisplayName();
 
+    String getFileExtension();
+
+    public String getPath();    
+
     /**
      * Return printable information about the script : type, localization, file, .. in order to help
      * template developer to find the original source of the script

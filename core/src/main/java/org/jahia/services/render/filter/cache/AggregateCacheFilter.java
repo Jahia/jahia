@@ -43,6 +43,7 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.*;
+import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.utils.LanguageCodeConverters;

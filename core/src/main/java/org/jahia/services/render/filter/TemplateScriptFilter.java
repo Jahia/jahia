@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.Script;
+import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.profiler.Profiler;
@@ -37,7 +37,7 @@ public class TemplateScriptFilter extends AbstractFilter {
         renderContext.getResourcesStack().push(resource);
         String output;
         try {
-            output = script.execute();
+            output = script.execute(resource, renderContext);
         } catch (RenderException e) {
             output = handleError(script.getTemplate().getInfo(), e, renderContext, resource);
         } finally {

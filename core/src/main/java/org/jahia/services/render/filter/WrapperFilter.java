@@ -3,6 +3,7 @@ package org.jahia.services.render.filter;
 import org.jahia.services.render.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
+import org.jahia.services.render.scripting.Script;
 
 /**
  * WrapperFilter
@@ -28,7 +29,7 @@ public class WrapperFilter extends AbstractFilter {
                 if (service.hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                     Script script = service.resolveScript(wrappedResource, renderContext);
                     renderContext.getRequest().setAttribute("wrappedContent", output);
-                    output = script.execute();
+                    output = script.execute(resource, renderContext);
                 } else {
                     logger.warn("Cannot get wrapper "+wrapper);
                 }

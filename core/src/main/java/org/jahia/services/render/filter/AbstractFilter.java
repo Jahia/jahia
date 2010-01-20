@@ -43,7 +43,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.Script;
+import org.jahia.services.render.scripting.Script;
 
 /**
  * Base filter implementation that is also supports conditional execution, i.e.

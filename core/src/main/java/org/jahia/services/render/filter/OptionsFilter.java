@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
+import org.jahia.services.render.scripting.Script;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -56,9 +57,9 @@ public class OptionsFilter extends AbstractFilter {
                     script = service.resolveScript(wrappedResource, renderContext);
                     request.setAttribute("optionsAutoRendering", true);
                     if ("before".equals(request.getAttribute("renderOptions"))) {
-                        output = script.execute() + output;
+                        output = script.execute(resource, renderContext) + output;
                     } else {
-                        output = output + script.execute();
+                        output = output + script.execute(resource, renderContext);
                     }
                 } catch (TemplateNotFoundException e) {
                     logger.debug("Cannot find wrapper " + wrapper, e);

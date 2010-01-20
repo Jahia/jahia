@@ -1,11 +1,16 @@
-package org.jahia.services.render;
+package org.jahia.services.render.scripting;
 
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
+import org.jahia.services.render.TemplateNotFoundException;
+import org.jahia.services.render.scripting.Script;
 
 import java.util.SortedSet;
 
 /**
- * Created by IntelliJ IDEA.
+ * A ScriptResolver is responsible for resolving the script to be used to render the resource.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 7:22:55 PM

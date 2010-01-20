@@ -2,7 +2,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.Script;
+import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.AccessDeniedException;
 

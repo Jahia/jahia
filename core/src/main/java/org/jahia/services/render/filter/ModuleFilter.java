@@ -6,7 +6,7 @@ import java.util.List;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.Script;
+import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
 /**

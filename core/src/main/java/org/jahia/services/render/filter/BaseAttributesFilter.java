@@ -8,6 +8,7 @@ import org.jahia.operations.valves.EngineValve;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
 import org.apache.log4j.Logger;
+import org.jahia.services.render.scripting.Script;
 
 import javax.servlet.http.HttpServletRequest;
 

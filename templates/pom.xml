@@ -86,6 +86,7 @@
         <module>mod-templates-intranet</module>
         <module>mod-topstories</module>
         <module>mod-wiki</module>
+        <module>mod-scriptlanguages</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
     </modules>

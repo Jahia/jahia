@@ -352,7 +352,18 @@
                 <property name="storeService" ref="JCRStoreService" />
                 <property name="scriptResolvers">
                     <list>
-                        <bean class="org.jahia.services.render.RequestDispatcherScriptResolver"/>
+                        <bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
+                            <property name="scriptExtensionsOrdering">
+                                <list>
+                                    <value>jsp</value>
+                                    <value>groovy</value>
+                                    <value>js</value>
+                                    <value>php</value>
+                                    <value>vm</value>
+                                    <value>fm</value>
+                                </list>
+                            </property>
+                        </bean>                        
                     </list>
                 </property>
                 <property name="filters" >

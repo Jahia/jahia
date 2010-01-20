@@ -1,0 +1,187 @@
+Jahia Script Languages Examples
+
+* Introduction
+
+ Jahia now has the possibility to use other languages than JSP to render content. This document describes both the
+ dispatching works and show examples of displaying content using different scripting languages.
+
+* How it works
+
+ All the template examples are in the module called mod-scriptlanguages. What we have done is define new node types for
+ each template language. These appear in the editorial content user interface and can be drag & dropped onto a page. But
+ you could also choose to provide different templates for the same nodes, and then let end-users select the template
+ they like in the language prefer.
+
+ So in effect we have the following template structure :
+
+----------------------------------------
+   FULL_NODETYPE_NAME / html / NODETYPENAME.TEMPLATE_LANGUAGE_EXTENSION
+----------------------------------------
+
+ So for example for Javascript, we have the following :
+
+ In definitions.cnd :
+
+----------------------------------------
+[jnt:javascriptNode] > jnt:content, mix:title, jmix:structuredContent
+- javascriptText (string) i18n
+----------------------------------------
+
+ And the Javascript template file will therefore be located, once deployed,  in :
+
+----------------------------------------
+   templates/scriptlanguages/jnt_javascriptNode/html/javascriptNode.js
+----------------------------------------
+
+ The file extension is the important part, it will be used to resolve the engine that will be called to render the
+ template file.
+
+ Jahia will therefore look for template languages using an order specified in it's configuration. This configuration
+ can be found in the WEB-INF/etc/spring/applicationcontext-services.xml file, in the following section :
+
+----------------------------------------
+    <bean id="RenderService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="storeService" ref="JCRStoreService" />
+                <property name="scriptResolvers">
+                    <list>
+                        <bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
+                            <property name="scriptExtensionsOrdering">
+                                <list>
+                                    <value>jsp</value>
+                                    <value>groovy</value>
+                                    <value>js</value>
+                                    <value>php</value>
+                                    <value>vm</value>
+                                    <value>fm</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+----------------------------------------
+
+ By default Jahia will look for JSP, then Groovy, then Javascript, PHP, Velocity and finally FreeMarker template files.
+ Note that this default configuration is not recommended for production, because resolving all these different
+ languages is not as efficient as limiting to the ones that will be used by the integrators. So it is a recommended
+ practice to remove the languages you will not be using.
+
+* Language examples
+
+ Here below we will show examples of how to display the content of a JCR node using different scripting languages.
+
+** Javascript
+
+----------------------------------------
+out.println('This is an example of a template using Javascript.<br/>');
+
+out.println(currentNode.getProperty('javascriptText').getValue().getString());
+----------------------------------------
+
+** PHP
+
+ The PHP example is a little more complex since we have added exception handling, but it is not required, only to
+ illustrate that Java exceptions may be code inside the PHP code.
+
+ The integration with PHP is not done through the JSR-223 API because it might need to integrate with existing PHP tools,
+ which will have more advanced requirements. We have integrated the Quercus PHP Java implementation that provides
+ advanced functions. Note that PHP to Java compilation is not supported, since we only provide the open-source
+ implementation. You can find more information concerning the commercial implementation's advanced features here :
+ {{http://www.caucho.com/products/quercus/}}
+
+----------------------------------------
+<?php
+echo "This is a PHP module ! Here below we are displaying a JCR node in PHP...<br/>";
+
+try {
+    echo $currentNode->getProperty("phpText")->getValue()->getString();
+} catch (Exception $e) {
+    echo 'Caught exception: ',  $e->getMessage(), "\n";
+}
+
+?>
+----------------------------------------
+
+** Velocity
+
+----------------------------------------
+This is an example of templating with Velocity.<br/>
+
+$currentNode.getProperty('velocityText').getValue().getString()
+----------------------------------------
+
+** FreeMarker
+
+----------------------------------------
+This is an example of a template using FreeMarker.<br/>
+
+${currentNode.getProperty('freeMarkerText').getValue().getString()}
+----------------------------------------
+
+* Bindings
+
+ By default, the following bindings are available to the template languages. These are default objects that can be
+ referenced directly, as it was the case with the "currentNode" object in the above language examples.
+
+*----------------+------------------------------------------+-------------------------------------------------------+
+|Name            |Java type                                 |Description                                            |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|out             |java.io.PrintWriter                       |The default script output Writer, passed as a parameter|
+|                |                                          |since Javascript doesn't have console output.          |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|script          |org.jahia.services.render.scripting.Script|The resolved Script that will be used to render the    |
+|                |                                          |current module. You can use this to get information on |
+|                |                                          |the template using Script.getTemplate()                |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|scriptInfo      |java.lang.String                          |Shortcut to Script.getTemplate().getInfo()             |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|currentNode     |org.jahia.services.content.JCRNodeWrapper |The current JCR node for the module being rendered.    |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|workspace       |java.lang.String                          |The current workspace name                             |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|renderContext   |org.jahia.services.render.RenderContext   |Template rendering context with the information about  |
+|                |                                          |current request/response pair and optional template    |
+|                |                                          |parameters.                                            |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|currentResource |org.jahia.services.render.Resource        |The requested resource we are currently rendering      |
+*----------------+------------------------------------------+-------------------------------------------------------+
+|url             |org.jahia.services.render.URLGenerator    |The current URL generator instance                     |
+*----------------+------------------------------------------+-------------------------------------------------------+
+
+* Adding more template languages
+
+ For most languages (except PHP and JSP), Jahia uses the JSR-223 scripting API to dispatch to script language engines,
+ it is possible to add more languages at deployment time. For example JRuby or Jython could be added, if there is a
+ need.
+
+ All you need to do is download the JAR of the language, make sure it is in the supported languages on the scripting
+ project (see {{https://scripting.dev.java.net/}}) or provide an implementation that provides it's own ScriptEngineFactory
+ implementation. Once the implementation is installed, you need to modify the applicationcontext-services.xml file
+ to add the extension for the new language to make sure Jahia will look for files using that extension.
+
+ For more information, see the JSR-223 specification at {{http://www.jcp.org/en/jsr/detail?id=223}}
+
+* To do
+
+ Here we list the known issues and work that still needs to be done on scripting language integration.
+
+** JCR-stored templates
+
+ For the moment we can only dispatch to templates on the file system. It would be nice to be able to store them in the
+ JCR or in other resources, such as deployed JAR files.
+
+** General problems
+
+ * Performance needs to be checked, as we are iterating over file types, then iterating over parent definitions,
+   wrappers, filters, etc to resolve the actual template file we will be using.
+
+** Problems with Quercus (PHP Engine) integration
+
+ * Had to subclass the servlet to inject attributes into environment
+
+ * Seems POST request confuses Quercus when we edit a PHP node
+
+ * Had trouble with the working directory when trying to integrate with phpBB.
+
+ * URLs will need to be rewritten somehow.

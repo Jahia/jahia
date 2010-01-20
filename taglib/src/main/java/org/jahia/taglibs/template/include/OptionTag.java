@@ -37,6 +37,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
+import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -80,7 +81,7 @@ public class OptionTag extends BodyTagSupport {
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
                 wrappedResource.setWrappedMixinType(mixinNodeType);
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
-                pageContext.getOut().write(script.execute());
+                pageContext.getOut().write(script.execute(wrappedResource, renderContext));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

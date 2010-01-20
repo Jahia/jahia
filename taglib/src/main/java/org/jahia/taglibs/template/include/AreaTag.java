@@ -39,6 +39,7 @@ import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.render.*;
+import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;

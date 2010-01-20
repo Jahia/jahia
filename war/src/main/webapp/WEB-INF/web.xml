@@ -785,6 +785,63 @@
     
 <!-- End of Shindig servlets -->
 
+<!-- Apache Chemistry CMIS Servlet -->
+<!--
+    <servlet>
+        <servlet-name>cmis</servlet-name>
+        <servlet-class>org.apache.chemistry.atompub.server.servlet.CMISServlet</servlet-class>
+        <init-param>
+            <param-name>class</param-name>
+            <param-value>org.jahia.services.cmis.JcrRepositoryFactory</param-value>
+        </init-param>
+    </servlet>
+-->
+<!-- End of Apache Chemistry CMIS Servlet -->
+
+<!-- Quercus PHP servlet -->
+    <servlet>
+      <servlet-name>Quercus Servlet</servlet-name>
+      <servlet-class>org.jahia.services.render.scripting.JahiaQuercusServletImpl</servlet-class>
+
+      <!--
+        Specifies the encoding Quercus should use to read in PHP scripts.
+      -->
+      <!--
+      <init-param>
+        <param-name>script-encoding</param-name>
+        <param-value>UTF-8</param-value>
+      </init-param>
+      -->
+
+      <!--
+        Tells Quercus to use the following JDBC database and to ignore the
+        arguments of mysql_connect().
+      -->
+      <!--
+      <init-param>
+        <param-name>database</param-name>
+        <param-value>jdbc/test</param-value>
+      </init-param>
+      -->
+
+      <!--
+      <init-param>
+        <param-name>ini-file</param-name>
+        <param-value>WEB-INF/php.ini</param-value>
+      </init-param>
+      -->
+
+      <!--
+        Location of the license to enable php to java compilation.
+      -->
+      <init-param>
+        <param-name>license-directory</param-name>
+        <param-value>WEB-INF/licenses</param-value>
+      </init-param>
+    </servlet>
+<!-- End of Quercus PHP servlet -->
+
+
     <!-- [INSERT FRAGMENT HERE] -->
 
     <!-- Servlet mappings -->
@@ -975,7 +1032,20 @@
       <url-pattern>/oauth/*</url-pattern>
     </servlet-mapping>
 <!-- End of Shindig servlet mappings -->
-    
+
+<!-- Apache Chemistry CMIS Servlet mapping -->
+<!--
+    <servlet-mapping>
+        <servlet-name>cmis</servlet-name>
+        <url-pattern>/cmis/*</url-pattern>
+    </servlet-mapping>
+-->
+<!-- Quercus PHP mapping -->
+    <servlet-mapping>
+      <servlet-name>Quercus Servlet</servlet-name>
+      <url-pattern>*.php</url-pattern>
+    </servlet-mapping>
+
     <!-- Session timeout value is set in minutes. Comment this section out
          in order to set the timeout time back to the server's value  -->
     <!--

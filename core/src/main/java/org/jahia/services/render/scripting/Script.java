@@ -29,7 +29,12 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render;
+package org.jahia.services.render.scripting;
+
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
 
 /**
  * A template script, used to render a resource
@@ -39,15 +44,16 @@ package org.jahia.services.render;
 public interface Script {
     /**
      * Execute the script and return the result as a string
+     * @param resource resource to display
+     * @param context
      * @return the rendered resource
-     * @throws RenderException
+     * @throws org.jahia.services.render.RenderException
      */
-    public String execute() throws RenderException ;
+    public String execute(Resource resource, RenderContext context) throws RenderException;
 
     /**
-     * Return template information associated to this script
-     * @return
+     * Provides access to the template associated with this script
+     * @return the Template instance that will be executed
      */
     public Template getTemplate();
-
 }

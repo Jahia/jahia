@@ -43,6 +43,7 @@ import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.util.ReaderInputStream;
+import org.jahia.services.render.scripting.Script;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;

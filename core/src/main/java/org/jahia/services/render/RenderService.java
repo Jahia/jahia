@@ -39,7 +39,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.filter.TemplateScriptFilter;
+import org.jahia.services.render.scripting.Script;
+import org.jahia.services.render.scripting.ScriptResolver;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -142,7 +143,7 @@ public class RenderService extends JahiaService {
 
     /**
      * This resolves the executable script from the resource object. This should be able to find the proper script
-     * depending of the template / template type. Currently resolves only simple RequestDispatcherScript.
+     * depending of the template / template type. Currently resolves only simple JSPScript.
      * <p/>
      * If template cannot be resolved, fall back on default template
      *

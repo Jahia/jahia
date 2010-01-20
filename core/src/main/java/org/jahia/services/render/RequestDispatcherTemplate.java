@@ -23,6 +23,7 @@ import javax.servlet.RequestDispatcher;
 public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTemplate>, Template {
     private static Logger logger = Logger.getLogger(RequestDispatcherTemplate.class);
     private String path;
+    private String fileExtension;
     private String key;
     private JahiaTemplatesPackage ownerPackage;
     private String displayName;    
@@ -35,8 +36,12 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
         this.key = key;
         this.ownerPackage = ownerPackage;
         this.displayName = displayName;
+        int lastDotPos = path.lastIndexOf(".");
+        if (lastDotPos > 0) {
+            this.fileExtension = path.substring(lastDotPos+1);
+        }
 
-        String propName = StringUtils.substringBeforeLast(path, ".jsp") + ".properties";
+        String propName = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".properties";
 
         if (!propCache.containsKey(propName)) {
             properties = new Properties();            
@@ -60,6 +65,10 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
         return path;
     }
 
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
     public String getKey() {
         return key;
     }
@@ -79,7 +88,7 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
      * @return
      */
     public String getInfo() {
-        return "JSP dispatch : " + path;
+        return "Path dispatch : " + path;
     }
 
     /**

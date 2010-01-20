@@ -4,6 +4,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;

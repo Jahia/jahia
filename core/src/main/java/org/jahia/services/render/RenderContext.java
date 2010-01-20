@@ -37,6 +37,7 @@ import org.apache.commons.collections.map.LazyMap;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -188,5 +189,9 @@ public class RenderContext {
 
     public Stack<Resource> getResourcesStack() {
         return resourcesStack;
+    }
+
+    public Locale getFallbackLocale() {
+        return site.isMixLanguagesActive()? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()):null;
     }
 }

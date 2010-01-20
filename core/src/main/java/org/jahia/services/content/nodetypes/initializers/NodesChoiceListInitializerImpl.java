@@ -37,9 +37,10 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
@@ -49,8 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Choice list initializer that looks up child nodes of the specified one 
- * filtering them out by the specified type, if any is provided. 
+ * Choice list initializer that looks up child nodes of the specified one
+ * filtering them out by the specified type, if any is provided.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -65,7 +66,8 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
     }
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+                                                     ExtendedNodeType realNodeType, String param,
+                                                     List<ChoiceListValue> values) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (param != null) {
             String[] s = param.split(";");
@@ -75,8 +77,11 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
             }
             try {
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null,
-                                                                                                 context.getLocale());
-                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite",context.getSiteKey()));
+                                                                                                 context.getLocale(),
+                                                                                                 context.getSite().isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
+                                                                                                         context.getSite().getDefaultLanguage()) : null);
+                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite",
+                                                                                   context.getSiteKey()));
                 final NodeIterator nodeIterator = node.getNodes();
                 while (nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();

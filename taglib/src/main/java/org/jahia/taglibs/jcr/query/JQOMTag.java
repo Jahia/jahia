@@ -36,6 +36,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.QueryResultAdapter;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.taglibs.query.QueryDefinitionTag;
@@ -127,12 +128,13 @@ public class JQOMTag extends QueryDefinitionTag {
 
         String workspace = null;
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         Resource currentResource = getCurrentResource();
         if (currentResource != null) {
             workspace = currentResource.getWorkspace();
             locale = currentResource.getLocale();
         }
-        queryResult = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getWorkspace().execute(
+        queryResult = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getWorkspace().execute(
                 queryModel);
         // execute query
         if (logger.isDebugEnabled()) {

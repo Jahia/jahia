@@ -38,6 +38,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.comparator.LanguageCodesComparator;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.Node;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import java.util.*;
@@ -137,7 +138,8 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
             JCRNodeWrapper node = (JCRNodeWrapper) jData.getProcessingContext().getAttribute("currentNode");
             if (node != null) {
                 try {
-                    return node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode)) != null;
+                    final Node localizedNode = node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode));
+                    return localizedNode.getProperty("jcr:language").getString().equals(languageCode);
                 }catch(javax.jcr.RepositoryException e){
                     logger.debug("lang["+languageCode+"] not published" );
                     return false;

@@ -108,7 +108,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             try {
                 JCRSessionWrapper session = ServicesRegistry.getInstance()
                 .getJCRStoreService().getSessionFactory()
-                        .getCurrentUserSession(null, context.getMainResource().getLocale());
+                        .getCurrentUserSession(null, context.getMainResource().getLocale(),context.getFallbackLocale());
                 QueryManager qm = session.getWorkspace().getQueryManager();
                 Query query = qm.createQuery(xpathQuery, Query.XPATH);
                 

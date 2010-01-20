@@ -96,8 +96,10 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     private boolean eventsDisabled = false;
+    private Locale fallbackLocale;
 
-    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, boolean eventsDisabled, JCRSessionFactory sessionFactory) {
+    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
+                             boolean eventsDisabled, JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
         this.credentials = credentials;
         if (workspace == null) {
@@ -106,6 +108,7 @@ public class JCRSessionWrapper implements Session {
             this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
         }
         this.locale = locale;
+        this.fallbackLocale = fallbackLocale;
         // disable interceptors 
         if (locale == null) {
             interceptorsEnabled = false;
@@ -693,5 +696,9 @@ public class JCRSessionWrapper implements Session {
 
     public boolean isEventsDisabled() {
         return eventsDisabled;
+    }
+
+    public Locale getFallbackLocale() {
+        return fallbackLocale;
     }
 }

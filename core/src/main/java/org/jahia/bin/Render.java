@@ -254,7 +254,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return;
         }
         if (path.endsWith(".do")) {
-            Resource resource = resolveResource(workspace, locale, path);
+            Resource resource = resolveResource(workspace, locale, path,null, false);
             renderContext.setMainResource(resource);
             renderContext.setSite(Jahia.getThreadParamBean().getSite());
             renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + Jahia.getThreadParamBean().getSite().getSiteKey()));
@@ -428,16 +428,23 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @param workspace The workspace where to get the node
      * @param locale    current locale
      * @param path      The path of the node, in the specified workspace
+     * @param defaultLanguage
+     * @param mixLanguagesActive
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-	protected Resource resolveResource(String workspace, Locale locale, String path) throws RepositoryException {
+	protected Resource resolveResource(String workspace, Locale locale, String path, String defaultLanguage,
+                                       boolean mixLanguagesActive) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-
+        JCRSessionWrapper session;
+        if (defaultLanguage != null && mixLanguagesActive) {
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        } else {
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+        }
         JCRNodeWrapper node = null;
 
         String ext = null;
@@ -561,10 +568,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = resolveResource(workspace, locale, path);
+                final JahiaSite site = paramBean.getSite();
+                Resource resource = resolveResource(workspace, locale, path, site.getDefaultLanguage(), site.isMixLanguagesActive());
                 renderContext.setMainResource(resource);
-                renderContext.setSite(paramBean.getSite());
-                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + paramBean.getSite().getSiteKey()));
+                renderContext.setSite(site);
+                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + site.getSiteKey()));
                 resource.pushWrapper("wrapper.fullpage");
                 resource.pushWrapper("wrapper.bodywrapper");
 

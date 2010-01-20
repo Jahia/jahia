@@ -38,6 +38,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -78,6 +79,7 @@ public class JCRNodeTag extends AbstractJahiaTag {
         ProcessingContext ctx = getProcessingContext();
         String workspace = null;
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
         if (currentResource != null) {
             workspace = currentResource.getWorkspace();
@@ -88,7 +90,7 @@ public class JCRNodeTag extends AbstractJahiaTag {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper node;
                 if (path.startsWith("/")) {
-                    node = service.getSessionFactory().getCurrentUserSession(workspace, locale).getNode(path);
+                    node = service.getSessionFactory().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getNode(path);
                 } else {
                     node = currentResource.getNode().getNode(path);
                 }

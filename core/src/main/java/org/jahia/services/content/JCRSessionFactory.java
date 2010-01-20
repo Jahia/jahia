@@ -89,10 +89,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale) throws RepositoryException {
-        return getCurrentUserSession(workspace, locale, false);
+        return getCurrentUserSession(workspace, locale, false,null);
     }
 
-    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, boolean eventsDisabled)
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale,Locale fallbackLocale) throws RepositoryException {
+        return getCurrentUserSession(workspace, locale, false, fallbackLocale);
+    }
+
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, boolean eventsDisabled, Locale fallbackLocale)
             throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
         Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
@@ -130,17 +134,23 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             localeString = locale.toString();
         }
 
-        JCRSessionWrapper s = wsMap.get(workspace + "-" + localeString + "-" + eventsDisabled);
+        String fallbackLocaleString = "default";
+        if (fallbackLocale != null) {
+            fallbackLocaleString = fallbackLocale.toString();
+        }
+
+        final String key = workspace + "-" + localeString + "-" + eventsDisabled + "-" + fallbackLocale;
+        JCRSessionWrapper s = wsMap.get(key);
 
         if (s == null || !s.isLive()) {
             if (!JahiaLoginModule.GUEST.equals(username)) {
-                s = login(JahiaLoginModule.getCredentials(username), workspace, locale, eventsDisabled);
+                s = login(JahiaLoginModule.getCredentials(username), workspace, locale, eventsDisabled, fallbackLocale);
                 // should be done somewhere else, call can be quite expensive
                 mountPoints.get("/").deployExternalUser(username, user.getProviderName());
             } else {
-                s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, eventsDisabled);
+                s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, eventsDisabled, fallbackLocale);
             }
-            wsMap.put(workspace + "-" + localeString+ "-" + eventsDisabled, s);
+            wsMap.put(key, s);
         } else {
             s.refresh(true);
         }
@@ -160,7 +170,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     protected JCRSessionWrapper getSystemSession(String username, String workspace, Locale locale, boolean eventsDisabled) throws RepositoryException {
-        return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, eventsDisabled);
+        return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, eventsDisabled,null);
     }
 
     public String[] getDescriptorKeys() {
@@ -173,10 +183,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public JCRSessionWrapper login(Credentials credentials, String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
-        return login(credentials, workspace, null, false);
+        return login(credentials, workspace, null, false,null);
     }
 
-    private JCRSessionWrapper login(Credentials credentials, String workspace, Locale locale, boolean eventsDisabled)
+    private JCRSessionWrapper login(Credentials credentials, String workspace, Locale locale, boolean eventsDisabled, Locale fallbackLocale)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         if (!(credentials instanceof SimpleCredentials)) {
             throw new LoginException("Only SimpleCredentials supported in this implementation");
@@ -222,7 +232,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     user = userService.lookupUser(jahiaPrincipal.getName());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, eventsDisabled, this);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, eventsDisabled, this, fallbackLocale);
         }
         throw new LoginException("Can't login");
     }

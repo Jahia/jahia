@@ -36,6 +36,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.QueryResultAdapter;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -98,13 +99,14 @@ public class JCRSQLTag extends AbstractJahiaTag {
         }
 
         String workspace = null;
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
         Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
         if (currentResource != null) {
             workspace = currentResource.getWorkspace();
             locale = currentResource.getLocale();
         }
-        Query q = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getWorkspace()
+        Query q = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getWorkspace()
                 .getQueryManager().createQuery(query, getQueryLanguage());
         if (limit > 0) {
             q.setLimit(limit);

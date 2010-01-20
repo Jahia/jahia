@@ -17,6 +17,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     private PropertyIterator propertyIterator;
     private PropertyIterator i18nPropertyIterator;
     private Property tempNext = null;
+    private String fallbackLocale;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
@@ -46,7 +47,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         if (i18nPropertyIterator == null) {
             try {
                 if (locale != null) {
-                    i18nPropertyIterator = node.getI18N(locale).getProperties();
+                    final Node localizedNode = node.getI18N(locale);
+                    fallbackLocale = localizedNode.getProperty("jcr:language").getString();
+                    i18nPropertyIterator = localizedNode.getProperties();
                 } else {
                     i18nPropertyIterator = new PropertyIteratorImpl(Collections.<JCRPropertyWrapperImpl>emptyList(),0);
                 }
@@ -79,9 +82,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    if (name.endsWith("_" + locale.toString())) {
+                    if (name.endsWith("_" + fallbackLocale)) {
                         final String name1 = property.getName();
-                        final String s = name1.substring(0, name1.length() - locale.toString().length() - 1);
+                        final String s = name1.substring(0, name1.length() - fallbackLocale.length() - 1);
                         return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), node.getApplicablePropertyDefinition(s), s);
                     }
                 } while (true);
@@ -120,9 +123,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    if (name.endsWith("_" + locale.toString())) {
+                    if (name.endsWith("_" + fallbackLocale)) {
                         final String name1 = property.getName();
-                        final String s = name1.substring(0, name1.length() - locale.toString().length() - 1);
+                        final String s = name1.substring(0, name1.length() - fallbackLocale.length() - 1);
                         tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), node.getApplicablePropertyDefinition(s), s);
                         return true;
                     }

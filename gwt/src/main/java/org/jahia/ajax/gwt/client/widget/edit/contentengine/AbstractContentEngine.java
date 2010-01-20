@@ -123,6 +123,9 @@ public abstract class AbstractContentEngine extends Window {
                 onLanguageChange();
             }
         });
+        languageSwitcher.setTypeAhead(true);
+        languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
+        languageSwitcher.setForceSelection(true);
         getHeader().addTool(languageSwitcher);
     }
 

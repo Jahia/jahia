@@ -1,8 +1,8 @@
 Crazy Jane - Core Module - Caches
 
  Caches in Crazy Jane are coded as rendering filters. The default filter is the AggregateCacheFilter. This filter will
-cache each module separately and then will aggregate each modules on rendeirng to deliver the page to the client.
-As an example imagine a last news module sthat display the latest 5 news of a site. The aggregate on rendering will ask
+cache each module separately and then will aggregate each modules on rendering to deliver the page to the client.
+As an example imagine a last news module that display the latest 5 news of a site. The aggregate on rendering will ask
 for the module last news to render this one will ask for the rendering of each news, this news will be cache separately
 and the last news module will only contains its own html and references to the displayed news. When subsequent rendering
 is asked the last news modules will search for the expected news in the cache if they are found it will aggregate the

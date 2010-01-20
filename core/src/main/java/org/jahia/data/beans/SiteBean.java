@@ -39,11 +39,8 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageMapping;
-import org.jahia.services.sites.SiteLanguageSettings;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 /**
  * <p>Title: Site JavaBean compliant JahiaSite facade</p>
@@ -76,19 +73,7 @@ public class SiteBean {
     }
 
     public String[] getActiveLanguageCodes() {
-        List<String> codes = new LinkedList<String>();
-        try {
-            for (SiteLanguageSettings lang : jahiaSite
-                    .getLanguageSettings(true)) {
-                codes.add(lang.getCode());
-            }
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving language settings for site "
-                    + getId(), je);
-            return null;
-        }
-        String[] languages = new String[codes.size()];
-        return codes.toArray(languages);
+        return jahiaSite.getLanguages().toArray(new String[jahiaSite.getLanguages().size()]);
     }
 
     public PageBean getPage(int pageID) {
@@ -147,22 +132,8 @@ public class SiteBean {
         return jahiaSite.getHomePageID();
     }
 
-    public List<SiteLanguageMapping> getLanguageMappings() {
-        try {
-            return jahiaSite.getLanguageMappings();
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving language mappings for site " + getId() + ":", je);
-            return null;
-        }
-    }
-
-    public List<SiteLanguageSettings> getLanguageSettings() {
-        try {
-            return jahiaSite.getLanguageSettings();
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving language settings for site " + getId() + ":", je);
-            return null;
-        }
+    public Set<String> getLanguages() {
+        return jahiaSite.getLanguages();
     }
 
     public String getServerName() {

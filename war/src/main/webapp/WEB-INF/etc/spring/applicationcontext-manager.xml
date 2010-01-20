@@ -178,21 +178,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaSiteLanguageListManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageListManager">
-                <property name="jahiaSiteLanguageListDAO" ref="jahiaSiteLanguageListDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager">
-                <property name="jahiaSiteLanguageMappingDAO" ref="jahiaSiteLanguageMappingDAO" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaLanguagesStatesManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaLanguagesStatesManager">

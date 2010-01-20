@@ -44,8 +44,6 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
-import org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
@@ -106,10 +104,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     private Properties mSettings = new Properties ();
 
-    public static final String LANGUAGES_PROP_SEPARATOR = ",";
-
     private Boolean mixLanguagesActive;
-    private List<SiteLanguageMapping> siteLanguageMappings;
+    private Set<String> languages;
+    private Set<String> mandatoryLanguages;
+    private String defaultLanguage;
 
     /**
      * Constructor, the purpose of this empty constructor is to enable
@@ -719,123 +717,41 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * Returns a List of site language settings. The order of this List
      * corresponds to the ranking of the languages.
      *
-     * @return a List containing SiteLanguageSettings elements.
+     * @return a List containing String elements.
      *
-     * @throws JahiaException if an error occured while retrieving the
-     *                        list of languages
      */
-    public List<SiteLanguageSettings> getLanguageSettings ()
-            throws JahiaException {
-        return getLanguageSettings (false);
+    public Set<String> getLanguages () {
+        return languages;
     }
 
     /**
-     * Returns a List of site language settings. The order of this List
-     * corresponds to the ranking of the languages.
-     * If activeOnly is true, return the active language only.
+     * Returns an List of site language  ( as Locale ).
      *
-     * @return a List containing SiteLanguageSettings elements.
+     * @return an List of Locale elements.
      *
-     * @throws JahiaException if an error occured while retrieving the
-     *                        list of languages
      */
-    @SuppressWarnings("unchecked")
-    public List<SiteLanguageSettings> getLanguageSettings (boolean activeOnly)
-            throws JahiaException {
-        List<SiteLanguageSettings> siteLanguageSettings = new ArrayList<SiteLanguageSettings>();
-        JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager)
-                SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
-        ArrayList<SiteLanguageSettings> v = new ArrayList<SiteLanguageSettings>(listManager.getSiteLanguages (getID ()));
-        if ( !activeOnly ){
-            if ( v != null ){
-                return (List<SiteLanguageSettings>) v.clone();
-            }
-        } else {
-            if (v != null) {
-                for (int i = 0; i < v.size (); i++) {
-                    SiteLanguageSettings curSetting = (SiteLanguageSettings)
-                            v.get (i);
-                    if (curSetting.isActivated ()) {
-                        siteLanguageSettings.add(curSetting);
-                    }
-                }
-            }
-        }
-        return siteLanguageSettings;
-    }
+    public List<Locale> getLanguagesAsLocales() {
 
-    /**
-     * Returns an List of site language settings ( as Locale ).
-     * If activeOnly is true, return the active language only.
-     *
-     * @param activeOnly
-     *
-     * @return an List of SiteLanguageSettings elements.
-     *
-     * @throws JahiaException if an error occured while retrieving the
-     *                        list of languages
-     */
-    public List<Locale> getLanguageSettingsAsLocales (boolean activeOnly)
-            throws JahiaException {
-        List<SiteLanguageSettings> siteLanguageSettings = this.getLanguageSettings ();
         List<Locale> localeList = new ArrayList<Locale>();
-        if (siteLanguageSettings != null) {
-            for (int i = 0; i < siteLanguageSettings.size (); i++) {
-                SiteLanguageSettings curSetting = (SiteLanguageSettings)
-                        siteLanguageSettings.get (i);
-                if (!activeOnly || curSetting.isActivated ()) {
-                    Locale tempLocale =
-                            LanguageCodeConverters.languageCodeToLocale (curSetting.getCode ());
-                    localeList.add (tempLocale);
-                }
+        if (languages != null) {
+            for (String language : languages) {
+                Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
+                localeList.add(tempLocale);
             }
+
         }
         return localeList;
-    }
-
-
-    /**
-     * Returns a List of site language mappings.
-     *
-     * @return a List containing SiteLanguageMappings elements.
-     *
-     * @throws JahiaException if an error occured while retrieving the
-     *                        list of languages
-     */
-    public List<SiteLanguageMapping> getLanguageMappings ()
-            throws JahiaException {
-        if (siteLanguageMappings==null) {
-            JahiaSiteLanguageMappingManager mappingManager = (JahiaSiteLanguageMappingManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageMappingManager.class.getName());
-            siteLanguageMappings = mappingManager.getSiteLanguageMappings (getID ());
-        }
-        return siteLanguageMappings;
-    }
-
-    public void setSiteLanguageMappings(List<SiteLanguageMapping> siteLanguageMappings) {
-        this.siteLanguageMappings = siteLanguageMappings;
     }
 
     /**
      * Sets the language settings for this site. This directly interfaces with
      * the persistant storage to store the modifications if there were any.
      *
-     * @param siteLanguagesSettings a List of SiteLanguageSettings objects.
-     *
      * @throws JahiaException when an error occured while storing the modified
      *                        site language settings values.
      */
-    public void setLanguageSettings (List<SiteLanguageSettings> siteLanguagesSettings)
-            throws JahiaException {
-        JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
-        for (SiteLanguageSettings curLanguageSettings : siteLanguagesSettings) {
-            if (curLanguageSettings.isInPersistantStorage()) {
-                if (curLanguageSettings.isDataModified()) {
-                    listManager.updateSiteLanguageSettings(curLanguageSettings);
-                }
-            } else {
-                listManager.addSiteLanguageSettings(curLanguageSettings);
-            }
-        }
+    public void setLanguages (Set<String> languages) {
+        this.languages = languages;
     }
 
     /**
@@ -844,58 +760,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * @param mixLanguagesActive
      */
     public void setMixLanguagesActive (boolean mixLanguagesActive) {
-        try {
-            // delete old value first
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            manager.remove (this, MIX_LANGUAGES_ACTIVE);
-            String value = Boolean.valueOf(mixLanguagesActive).toString();
-            manager.save (this, MIX_LANGUAGES_ACTIVE, value);
-            this.mixLanguagesActive = Boolean.valueOf(mixLanguagesActive);
-            this.mSettings.setProperty(MIX_LANGUAGES_ACTIVE,value);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        this.mixLanguagesActive = mixLanguagesActive;
     }
 
     public boolean isMixLanguagesActive () {
-
-        if (this.mixLanguagesActive != null) {
-            return mixLanguagesActive.booleanValue ();
-        }
-
-        try {
-            JahiaSitePropertyManager sitePropertyManager = (JahiaSitePropertyManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSitePropertyManager.class.getName());
-            String value = sitePropertyManager.getProperty (this,
-                            MIX_LANGUAGES_ACTIVE);
-            if (value == null || value.trim ().equals ("")) {
-                return false;
-            }
-            Boolean mixLanguagesActive = Boolean.valueOf (value);
-
-            this.mixLanguagesActive = mixLanguagesActive;
-
-            return mixLanguagesActive.booleanValue ();
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-    }
-
-    /**
-     * The context from which to get the JahiaSite
-     * @param context
-     * @return
-     */
-    public static boolean isMixLanguagesActiveForSite (ProcessingContext context) {
-
-        if (context==null || context.getSite()==null){
-            return false;
-        }
-        return context.getSite().isMixLanguagesActive();
+        return mixLanguagesActive;
     }
 
     public void setSettings (Properties props) {
@@ -923,6 +792,22 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     public String getUUID() throws JahiaException {
         return (String) getSettings().get("uuid");
+    }
+
+    public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
+        this.mandatoryLanguages = mandatoryLanguages;
+    }
+
+    public Set<String> getMandatoryLanguages() {
+        return mandatoryLanguages;
+    }
+
+    public void setDefaultLanguage(String defaultLanguage) {
+        this.defaultLanguage = defaultLanguage;
+    }
+
+    public String getDefaultLanguage() {
+        return defaultLanguage;
     }
 
     public static class TitleComparator implements Comparator<JahiaSite> {

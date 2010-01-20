@@ -2,18 +2,12 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
-import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.comparator.LanguageSettingsComparator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,20 +30,18 @@ public class LanguageHelper {
 
         try {
             final JahiaSite currentSite = jParams.getSite();
-            final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
+            final Set<String> languageSettings = currentSite.getLanguages();
             if (languageSettings != null && languageSettings.size() > 0) {
-                final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(new LanguageSettingsComparator());
+                final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
-                for (SiteLanguageSettings lang : orderedLangs) {
+                for (String lang : orderedLangs) {
                     GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
-                    item.setCountryIsoCode(lang.getCode());
-                    item.setDisplayName(getDisplayName(lang.getCode()));
-                    item.setIconStyle(getLangIconStyle(lang.getCode()));
+                    item.setCountryIsoCode(lang);
+                    item.setDisplayName(getDisplayName(lang));
+                    item.setIconStyle(getLangIconStyle(lang));
                     items.add(item);
                 }
             }
-        } catch (JahiaException e) {
-            logger.error("JahiaException: Error while creating change site link", e);
         } catch (Exception e) {
             logger.error("Error while creating change site link", e);
         }

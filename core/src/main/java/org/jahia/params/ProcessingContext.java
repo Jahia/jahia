@@ -133,8 +133,6 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageMapping;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserAliasing;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -823,7 +821,7 @@ public class ProcessingContext {
         }
         if ((locales.size() == 1 && (locales.get(0)).toString().equals(
                 ContentField.SHARED_LANGUAGE))
-                && this.getSite().getLanguageSettings().isEmpty()) {
+                && this.getSite().getLanguages().isEmpty()) {
             // let's add the default locale as english a last resort locale
             // SettingsBean settings = org.jahia.settings.SettingsBean.getInstance();
             final SettingsBean settings = org.jahia.settings.SettingsBean.getInstance();
@@ -866,94 +864,7 @@ public class ProcessingContext {
                 locales.addAll(newLocaleList);
             }
         }
-        // now let's insert the locale mappings in the list so that we
-        // make sure we match all the site defined languages.
-        setLocaleList(insertLocaleMappings(locales));
-    }
-
-    /**
-     * Inserts all the mappings just after the languages if we have them for the languages. Basically if we have the following mappings : fr ->
-     * fr_CH en -> en_US and in the locale list we have : <p/> fr en en_US the locale list will be completed to become : fr fr_CH en en_US
-     *
-     * @param source the source array list without the mappings inserted.
-     * @return an array list of Locales including the mappings. This is only possible if the site has already been resolved. Otherwise the
-     *         locale list is returned unmodified.
-     */
-    private List<Locale> insertLocaleMappings(final List<Locale> source) {
-        final List<Locale> result = new ArrayList<Locale>();
-        if (getSite() == null) {
-            logger.debug("Site unknown, can't add mappings...");
-            return source;
-        }
-        List<SiteLanguageMapping> languageMappings;
-        try {
-            languageMappings = getSite().getLanguageMappings();
-        } catch (JahiaException je) {
-            logger.debug("Error while retrieving site mappings, returning unmodified locale list.", je);
-            return source;
-        }
-
-        // we quickly build a Map of the mappings in order to be able
-        // to do faster lookups.
-        final Map<String, SiteLanguageMapping> languageMappingsMap = new HashMap<String, SiteLanguageMapping>();
-        for (SiteLanguageMapping curMapping : languageMappings) {
-            languageMappingsMap.put(curMapping.getFromLanguageCode(), curMapping);
-        }
-
-        // now let's build the new array list by inserting the mappings
-        // immediately after the language, or not at all if the next entry is
-        // already the mapped target language or if it was previously in the
-        // list in a higher priority level.
-        final Set<String> previousLocales = new HashSet<String>();
-        final ListIterator<Locale> sourceIter = source.listIterator();
-        while (sourceIter.hasNext()) {
-            final Locale curSourceLocale = (Locale) sourceIter.next();
-            // let's copy the locale to the result.
-            result.add(curSourceLocale);
-            previousLocales.add(curSourceLocale.toString());
-            if (curSourceLocale.getCountry().length() == 0) {
-                // no country, let's see if we have a mapping for this locale.
-                if (languageMappingsMap.containsKey(curSourceLocale.getLanguage())) {
-                    final SiteLanguageMapping curMapping = (SiteLanguageMapping) languageMappingsMap
-                            .get(curSourceLocale.getLanguage());
-                    final Locale targetLocale = LanguageCodeConverters.languageCodeToLocale(curMapping.getToLanguageCode());
-                    // yes, let's see if we can insert it by testing the next
-                    // element if it exists to see if it matches the target
-                    // locale of this mapping.
-                    if (sourceIter.hasNext()) {
-                        final Locale nextSourceLocale = (Locale) sourceIter
-                                .next();
-                        if ((!nextSourceLocale.equals(targetLocale))
-                                && (!previousLocales.contains(targetLocale
-                                .toString()))) {
-                            result.add(targetLocale);
-                            previousLocales.add(targetLocale.toString());
-                        } else {
-                            logger
-                                    .debug("Not inserting locale "
-                                            + targetLocale.toString()
-                                            + " since it already exists in locale list...");
-                        }
-                        // let's restore the position to the current element.
-                        sourceIter.previous();
-                    } else {
-                        // we are at the end of the list, and we never had it
-                        // before, let's add it.
-                        if (!previousLocales.contains(targetLocale.toString())) {
-                            result.add(targetLocale);
-                            previousLocales.add(targetLocale.toString());
-                        } else {
-                            logger
-                                    .debug("Not inserting locale "
-                                            + targetLocale.toString()
-                                            + " since it already exists in locale list...");
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
+        setLocaleList(locales);
     }
 
     /**
@@ -1024,8 +935,7 @@ public class ProcessingContext {
         List<Locale> siteLanguages = Collections.emptyList();
         try {
             if (this.getSite() != null) {
-                siteLanguages = this.getSite().getLanguageSettingsAsLocales(
-                    true);
+                siteLanguages = this.getSite().getLanguagesAsLocales();
             }
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales",
@@ -1063,16 +973,14 @@ public class ProcessingContext {
         }
 
         // STEP 4 : retrieve the site settings locales
-        try {
             if (getSite() != null) {
-            final List<SiteLanguageSettings> siteLanguageSettings = getSite()
-                    .getLanguageSettings();
+            final Set<String> siteLanguageSettings = getSite()
+                    .getLanguages();
             if (siteLanguageSettings != null) {
                 boolean firstSiteActiveLanguage = true;
-                for (SiteLanguageSettings curSetting : siteLanguageSettings) {
-                    if (curSetting.isActivated()) {
+                for (String curSetting : siteLanguageSettings) {
                         final Locale tempLocale = LanguageCodeConverters
-                                .languageCodeToLocale(curSetting.getCode());
+                                .languageCodeToLocale(curSetting);
                         if (!newLocaleList.contains(tempLocale)) {
                             newLocaleList.add(tempLocale);
                         }
@@ -1080,20 +988,14 @@ public class ProcessingContext {
                             ProcessingContext.getDefaultParameterValues()
                                     .setProperty(
                                             ProcessingContext.LANGUAGE_CODE,
-                                            curSetting.getCode());
+                                            curSetting);
                             firstSiteActiveLanguage = false;
                         }
-                    } else if (logger.isDebugEnabled()) {
-                        logger.debug("Not adding language "
-                                + curSetting.getCode()
-                                + " because it is currently deactivated.");
                     }
                 }
             }
-            }
-        } catch (JahiaException je) {
-            logger.debug("Cannot retrieve site language settings", je);
-        }
+
+
 
         testLocaleList(newLocaleList, allowMixLanguages);
         return getLocaleList();
@@ -3054,7 +2956,7 @@ public class ProcessingContext {
                 && !getContentPage().hasEntries(ContentPage.ACTIVE_PAGE_INFOS,
                 getLocale().toString())) {
             final List<Locale> siteLanguages = getSite()
-                    .getLanguageSettingsAsLocales(true);
+                    .getLanguagesAsLocales();
             boolean skip = getSite().isMixLanguagesActive();
             for (int i = 0, siteLanguagesSize = siteLanguages.size(); i < siteLanguagesSize && !skip; i++) {
                 final Locale locale = siteLanguages.get(i);

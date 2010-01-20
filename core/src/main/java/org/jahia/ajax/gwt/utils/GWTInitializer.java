@@ -44,7 +44,6 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -212,15 +211,13 @@ public class GWTInitializer {
     public static void addLanguageSwitcherLinks(ProcessingContext processingContext, Map<String, String> params, URLGenerator urlGenerator) {
         try {
             final JahiaSite currentSite = processingContext.getSite();
-            final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
+            final Set<String> languageSettings = currentSite.getLanguages();
             if (languageSettings != null && languageSettings.size() > 0) {
-                for (SiteLanguageSettings lang : languageSettings) {
-                    params.put(lang.getCode(), urlGenerator.getLanguages().get(lang.getCode()));
+                for (String lang : languageSettings) {
+                    params.put(lang, urlGenerator.getLanguages().get(lang));
                 }
             }
-        } catch (JahiaException e) {
-            logger.error("JahiaException: Error while creating change site link", e);
-        } catch (Exception e) {
+        }catch (Exception e) {
             logger.error("Error while creating change site link", e);
         }
     }

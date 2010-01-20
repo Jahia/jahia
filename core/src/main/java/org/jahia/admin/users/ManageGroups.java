@@ -464,8 +464,7 @@ public class ManageGroups extends AbstractAdministrationModule {
 
         if (homePageID != -1) {
             try {
-                List<Locale> locales = jahiaSite
-                        .getLanguageSettingsAsLocales(false);
+                List<Locale> locales = jahiaSite.getLanguagesAsLocales();
                 EntryLoadRequest loadRequest = jParams.getEntryLoadRequest();
                 if (!locales.contains(jParams.getLocale())) {
                     loadRequest = new EntryLoadRequest(EntryLoadRequest.STAGED);

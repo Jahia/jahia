@@ -632,7 +632,10 @@ public class JCRStoreProvider {
                             siteNode.setProperty("j:serverName", site.getServerName());
                             siteNode.setProperty("j:siteId", site.getID());
                             siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
-
+                            siteNode.setProperty("j:defaultLanguage", site.getDefaultLanguage());
+                            siteNode.setProperty("j:mixLanguage",site.isMixLanguagesActive());
+                            siteNode.setProperty("j:languages",site.getLanguages().toArray(new String[site.getLanguages().size()]));
+                            siteNode.setProperty("j:mandatoryLanguages",site.getMandatoryLanguages().toArray(new String[site.getMandatoryLanguages().size()]));
 //                            try {
 //                                Node home = siteNode.getNode("home");
 //                                home.setProperty("j:template", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()).getHomePageName());

@@ -46,7 +46,6 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.toolbar.bean.Toolbar;
 import org.jahia.services.toolbar.bean.Visibility;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -627,9 +626,9 @@ public class JahiaACLManagerService extends JahiaService {
         if ("languages".equals(groupName)) {
             // build languages permission list based on the current site languages  
             try {
-                List<Locale> locales = (List<Locale>) ServicesRegistry
+                List<Locale> locales = ServicesRegistry
                         .getInstance().getJahiaSitesService().getSite(siteID)
-                        .getLanguageSettingsAsLocales(false);
+                        .getLanguagesAsLocales();
                 permissionList = new ArrayList<String>(locales.size());
                 for (Locale locale : locales) {
                     permissionList
@@ -725,15 +724,11 @@ public class JahiaACLManagerService extends JahiaService {
     }
 
     public boolean hasWriteAccesOnAllLangs(final ProcessingContext jParams) throws JahiaException {
-        final List<SiteLanguageSettings> siteLangs = jParams.getSite().getLanguageSettings(true);
+        final Set<String> siteLangs = jParams.getSite().getLanguages();
         boolean result = true;
-        for (Iterator<SiteLanguageSettings> it = siteLangs.iterator(); it.hasNext();) {
-            final String languageCode = it.next().getCode();
-            result = result && getSiteActionPermission("engines.languages." +
-                    languageCode,
-                    jParams.getUser(),
-                    JahiaBaseACL.READ_RIGHTS,
-                    jParams.getSiteID()) > 0;
+        for (String siteLang : siteLangs) {
+            result = result && getSiteActionPermission("engines.languages." + siteLang, jParams.getUser(),
+                                                       JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0;
         }
         return result;
     }

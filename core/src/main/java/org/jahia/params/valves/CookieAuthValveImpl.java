@@ -163,22 +163,14 @@ public class CookieAuthValveImpl implements Valve {
                                 .getSite());
                 if (processingContext.getSite() != null) {
                     List<Locale> siteLocales;
-                    try {
-                        siteLocales = processingContext.getSite()
-                                .getLanguageSettingsAsLocales(true);
-                        if (siteLocales.contains(preferredUserLocale)) {
-                            processingContext.getSessionState().setAttribute(
-                                    ProcessingContext.SESSION_LOCALE,
-                                    preferredUserLocale);
-                            processingContext
-                                    .setCurrentLocale(preferredUserLocale);
-                            processingContext.setLocaleList(null);
-                        }
-                    } catch (JahiaException e) {
-                        logger.warn(
-                                "Unable to switch to the user's preferred language. Cause: "
-                                        + e.getMessage(), e);
+                    siteLocales = processingContext.getSite().getLanguagesAsLocales();
+                    if (siteLocales.contains(preferredUserLocale)) {
+                        processingContext.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE,
+                                                                         preferredUserLocale);
+                        processingContext.setCurrentLocale(preferredUserLocale);
+                        processingContext.setLocaleList(null);
                     }
+
                 }
             }
             

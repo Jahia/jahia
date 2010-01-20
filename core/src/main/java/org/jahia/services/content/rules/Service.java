@@ -159,7 +159,7 @@ public class Service extends JahiaService {
 
                 Locale locale;
                 if (uri.endsWith(".zip")) {
-                    locale = (Locale) site.getLanguageSettingsAsLocales(true).iterator().next();
+                    locale = site.getLanguagesAsLocales().iterator().next();
                 } else {
                     locale = LanguageCodeConverters.languageCodeToLocale(st.nextToken().replace("-", "_"));
                 }

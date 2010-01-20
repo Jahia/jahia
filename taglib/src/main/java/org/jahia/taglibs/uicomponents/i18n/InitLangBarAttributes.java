@@ -32,13 +32,10 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.comparator.LanguageCodesComparator;
-import org.jahia.utils.comparator.LanguageSettingsComparator;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.ServletRequest;
@@ -71,7 +68,6 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
     public static final String CUSTOM_DISPLAY_TYPE_BEANS = "customLanguageLinksDisplayTypeBeans";
 
     public static final Map<String, LanguageLinkDisplayBean> DISPLAY_TYPE_BEANS = new HashMap<String, LanguageLinkDisplayBean>(3);
-    private static final LanguageSettingsComparator languageSettingsComparator = new LanguageSettingsComparator();
     private static final LanguageCodesComparator languageCodesComparator = new LanguageCodesComparator();
     private String order;
     private boolean activeLanguagesOnly = true;
@@ -85,13 +81,12 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
     }
 
     public int doEndTag() throws JspException {
-        try {
             final ServletRequest request = pageContext.getRequest();
 
 
             final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
             final JahiaSite currentSite = jData.getProcessingContext().getSite();
-            final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(activeLanguagesOnly);
+            final Set<String> languageSettings = currentSite.getLanguages();
 
             if (languageSettings.size() < 2) {
                 return EVAL_PAGE;
@@ -99,12 +94,11 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
             final List<String> currentCodes = new ArrayList<String>(languageSettings.size());
             if (order == null || order.length() == 0 || JAHIA_ADMIN_RANKING.equals(order)) {
-                final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(languageSettingsComparator);
+                final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
-                for (final SiteLanguageSettings settings : orderedLangs) {
-                    final String languageCode = settings.getCode();
-                    if (isCurrentLangAllowed(jData, languageCode)) {
-                        currentCodes.add(languageCode);
+                for (final String settings : orderedLangs) {
+                    if (isCurrentLangAllowed(jData, settings)) {
+                        currentCodes.add(settings);
                     }
                 }
 
@@ -113,12 +107,10 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
                 languageCodesComparator.setPattern(languageCodes);
                 final TreeSet<String> orderedLangs = new TreeSet<String>(languageCodesComparator);
                 final Set<String> codes = new HashSet<String>(languageSettings.size());
-                for (final Object lang : languageSettings) {
-                    final SiteLanguageSettings settings = (SiteLanguageSettings) lang;
-                    final String languageCode = settings.getCode();
+                for (final String lang : languageSettings) {
                     // Only add the language in Live/Preview mode if the current page has an active verison in live mode for that language                                        
-                    if (isCurrentLangAllowed(jData, languageCode)) {
-                        codes.add(languageCode);
+                    if (isCurrentLangAllowed(jData, lang)) {
+                        codes.add(lang);
                     }
                 }
                 orderedLangs.addAll(codes);
@@ -128,10 +120,6 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
             }
 
             request.setAttribute(CURRENT_LANGUAGES_CODES, currentCodes);
-
-        } catch (final JahiaException je) {
-            logger.error("Error while generating the language switching links !", je);
-        }
         activeLanguagesOnly = true;
         order = null;
         return EVAL_PAGE;

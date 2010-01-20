@@ -239,11 +239,7 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
             // property is not set --> get list of site languages
             List<Locale> siteLocales = Collections.emptyList();
             final JahiaSite site = Jahia.getThreadParamBean().getSite();
-            try {
-                siteLocales = site.getLanguageSettingsAsLocales(true);
-            } catch (JahiaException e) {
-                logger.warn("Unable to retrieve language settings for site: " + site, e);
-            }
+            siteLocales = site.getLanguagesAsLocales();
 
             List<Locale> availableBundleLocales = getAvailableBundleLocales();
             for (Locale siteLocale : siteLocales) {

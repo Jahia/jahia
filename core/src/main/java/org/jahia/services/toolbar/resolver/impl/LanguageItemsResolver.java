@@ -3,16 +3,12 @@ package org.jahia.services.toolbar.resolver.impl;
 import org.jahia.services.toolbar.bean.Item;
 import org.jahia.services.toolbar.bean.Selected;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.comparator.LanguageSettingsComparator;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.TreeSet; /**
+import java.util.*;
+/**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -57,22 +53,22 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
 
         try {
             final JahiaSite currentSite = jahiaData.getProcessingContext().getSite();
-            final List<SiteLanguageSettings> languageSettings = currentSite.getLanguageSettings(true);
+            final Set<String> languageSettings = currentSite.getLanguages();
             final Locale selectedLang = jahiaData.getProcessingContext().getLocale();
             if (languageSettings != null && languageSettings.size() > 0) {
-                final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(new LanguageSettingsComparator());
+                final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
-                for (SiteLanguageSettings lang : orderedLangs) {
-                    Item item = createJsRedirectItem(getDisplayName(lang.getCode()), lang.getCode());
+                for (String lang : orderedLangs) {
+                    Item item = createJsRedirectItem(getDisplayName(lang), lang);
                     // add to itemsgroup
                     if (item != null) {
-                        String minIconStyle = getLangIconStyle(lang.getCode());
-                        String maxIconStyle = getLangIconStyle(lang.getCode());
+                        String minIconStyle = getLangIconStyle(lang);
+                        String maxIconStyle = getLangIconStyle(lang);
                         item.setMediumIconStyle(maxIconStyle);
                         item.setMinIconStyle(minIconStyle);
 
                         if (selectedLang != null) {
-                            if (selectedLang.getLanguage().equals(LanguageCodeConverters.languageCodeToLocale(lang.getCode()))) {
+                            if (selectedLang.getLanguage().equals(LanguageCodeConverters.languageCodeToLocale(lang))) {
                                 Selected s = new Selected();
                                 s.setValue(true);
                                 item.setSelected(s);

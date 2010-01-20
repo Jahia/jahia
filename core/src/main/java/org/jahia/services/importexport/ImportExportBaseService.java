@@ -40,8 +40,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.hibernate.model.JahiaAclName;
@@ -59,8 +57,6 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.sites.SiteLanguageMapping;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -409,21 +405,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        try {
-            List<SiteLanguageSettings> v = s.getLanguageSettings(true);
-            for (Iterator<SiteLanguageSettings> iterator = v.iterator(); iterator.hasNext();) {
-                SiteLanguageSettings sls = (SiteLanguageSettings) iterator.next();
-                p.setProperty("language." + sls.getCode() + ".activated", "" + sls.isActivated());
-                p.setProperty("language." + sls.getCode() + ".mandatory", "" + sls.isMandatory());
-                p.setProperty("language." + sls.getCode() + ".rank", "" + sls.getRank());
-            }
-            List<SiteLanguageMapping> l = s.getLanguageMappings();
-            for (Iterator<SiteLanguageMapping> iterator = l.iterator(); iterator.hasNext();) {
-                SiteLanguageMapping slm = (SiteLanguageMapping) iterator.next();
-                p.setProperty("languageMapping." + slm.getFromLanguageCode(), slm.getToLanguageCode());
-            }
-        } catch (JahiaException e) {
+        Set<String> v = s.getLanguages();
+        for (String sls : v) {
+            p.setProperty("language." + sls + ".activated", "true");
+            p.setProperty("language." + sls + ".mandatory", "" + s.getMandatoryLanguages().contains(sls));
         }
+
 
         Properties settings = s.getSettings();
 
@@ -680,12 +667,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         if (name.indexOf("_") != -1) {
                             languageCode = name.substring(7, name.lastIndexOf("."));
                         } else {
-                            try {
-                                languageCode = site.getLanguageSettingsAsLocales(true).iterator().next().toString();
-                            } catch (JahiaException e) {
-                                logger.error("Cannot get site language", e);
-                                break;
-                            }
+                            languageCode = site.getLanguagesAsLocales().iterator().next().toString();
                         }
                         zipentry.getSize();
 
@@ -801,23 +783,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Properties p = new Properties();
         p.load(is);
         Set<Object> keys = p.keySet();
-
-        Map<String, SiteLanguageSettings> m = new HashMap<String, SiteLanguageSettings>();
-        Map<String, SiteLanguageSettings> old = new HashMap<String, SiteLanguageSettings>();
-
-        try {
-            List<SiteLanguageSettings> languageSettings = site.getLanguageSettings(false);
-            for (Iterator<SiteLanguageSettings> iterator = languageSettings.iterator(); iterator.hasNext();) {
-                SiteLanguageSettings setting = (SiteLanguageSettings) iterator.next();
-                old.put(setting.getCode(), setting);
-            }
-        } catch (JahiaException e) {
-            logger.error("Cannot get languages", e);
-        }
         boolean isMultiLang = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages", 0);
         boolean siteSettings = false;
-        for (Iterator<Object> iterator = keys.iterator(); iterator.hasNext();) {
-            String property = (String) iterator.next();
+        final Set<String> languages = site.getLanguages();
+        languages.clear();
+        final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
+        mandatoryLanguages.clear();
+        for (Object key : keys) {
+            String property = (String) key;
             String value = p.getProperty(property);
             StringTokenizer st = new StringTokenizer(property, ".");
             String firstKey = st.nextToken();
@@ -829,32 +802,31 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (firstKey.equals("language")) {
                 String lang = st.nextToken();
                 String t = st.nextToken();
-                SiteLanguageSettings set;
 
-                if (!m.containsKey(lang)) {
-                    if (isMultiLang || m.isEmpty()) {
-                        set = new SiteLanguageSettings(site.getID(), lang, true, m.size() + 1, false);
-                        m.put(lang, set);
+                if (!languages.contains(lang)) {
+                    if (isMultiLang || languages.isEmpty()) {
+                        siteSettings = true;
+                        languages.add(lang);
+                        if(languages.isEmpty()) {
+                            site.setDefaultLanguage(lang);
+                        }
                     } else {
                         logger.warn("Multilanguage is not authorized by license, " + lang + " will be ignored");
                         continue;
                     }
-                } else {
-                    set = m.get(lang);
                 }
-                if ("rank".equals(t)) {
-                    set.setRank(Integer.parseInt(value));
-                } else if ("mandatory".equals(t)) {
-//                            set.setMandatory(Boolean.valueOf(value).booleanValue());
-                } else if ("activated".equals(t)) {
-                    set.setActivated(Boolean.valueOf(value).booleanValue());
+                if ("mandatory".equals(t)) {
+                    mandatoryLanguages.add(lang);
+                    siteSettings = true;
                 }
             } else if (firstKey.equals("mixLanguage")) {
                 site.setMixLanguagesActive(Boolean.getBoolean(value));
-            } else if (firstKey.startsWith("prod_") || firstKey.startsWith("html_") || firstKey.startsWith("wai_") || firstKey.startsWith("url_")) {
+            } else if (firstKey.startsWith("prod_") || firstKey.startsWith("html_") || firstKey.startsWith(
+                    "wai_") || firstKey.startsWith("url_")) {
                 siteSettings = true;
                 site.getSettings().put(firstKey, value);
-            } else if (firstKey.startsWith("defaultSite") && "true".equals(value) && sitesService.getDefaultSite() == null) {
+            } else if (firstKey.startsWith("defaultSite") && "true".equals(
+                    value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
             } else if (firstKey.startsWith("jahiaGAprofile")) {
                 siteSettings = true;
@@ -862,41 +834,21 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.startsWith("profileCnt")) {
                 siteSettings = true;
                 site.getSettings().put("profileCnt_" + site.getSiteKey(), value);
-            } else if (firstKey.endsWith("gaUserAccount") || firstKey.endsWith("gaProfile") ||
-                    firstKey.endsWith("gaLogin") || firstKey.endsWith("gaPassword") ||
-                    firstKey.endsWith("trackedUrls") || firstKey.endsWith("trackingEnabled") ||
-                    firstKey.endsWith("profileId")
-                    ) {
+            } else if (firstKey.endsWith("gaUserAccount") || firstKey.endsWith("gaProfile") || firstKey.endsWith(
+                    "gaLogin") || firstKey.endsWith("gaPassword") || firstKey.endsWith(
+                    "trackedUrls") || firstKey.endsWith("trackingEnabled") || firstKey.endsWith("profileId")) {
                 siteSettings = true;
                 String profileName = firstKey.split("_")[0];
                 site.getSettings().put(profileName + "_" + site.getSiteKey() + "_" + firstKey.split("_")[2], value);
             }
         }
-
+        site.setLanguages(languages);
+        site.setMandatoryLanguages(mandatoryLanguages);
         if (siteSettings) {
             try {
                 sitesService.updateSite(site);
             } catch (JahiaException e) {
                 logger.error("Cannot update site", e);
-            }
-        }
-
-        JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
-        List<SiteLanguageSettings> list = listManager.getSiteLanguages(site.getID());
-        for (SiteLanguageSettings languageSettings : list) {
-            if (!m.containsKey(languageSettings.getCode())) {
-                listManager.removeSiteLanguageSettings(languageSettings.getID());
-            }
-        }
-        for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
-            String code = iterator.next();
-            SiteLanguageSettings set = m.get(code);
-            if (old.containsKey(code)) {
-                // set proper ID for update
-                set.setID(old.get(code).getID());
-                listManager.updateSiteLanguageSettings(set);
-            } else {
-                listManager.addSiteLanguageSettings(set);
             }
         }
     }

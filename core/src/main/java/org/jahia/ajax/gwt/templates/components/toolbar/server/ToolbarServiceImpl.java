@@ -56,7 +56,6 @@ import org.jahia.services.toolbar.bean.*;
 import org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup;
 import org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.content.ContentPageKey;
 import org.jahia.analytics.data.GAdataCollector;
@@ -727,37 +726,47 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             ParamBean paramBean = retrieveParamBean();
             JahiaSite currentSite = paramBean.getSite();
 
-            List<SiteLanguageSettings> languages = currentSite.getLanguageSettings();
-            Iterator it = languages.iterator();
             String lan = "";
-            while (it.hasNext()) {
-                lan = lan + "#" + ((SiteLanguageSettings) it.next()).getCode();
+            Set<String> languages = currentSite.getLanguages();
+            for (String language : languages) {
+                lan = lan + "#" + language;
             }
             gaSiteProperties.put("siteLanguages", lan);
             gaSiteProperties.put("uuid", uuid);
             /*gaSiteProperties.put("gaProfileCustom", currentSite.getSettings().getProperty("gaProfileCustom"));
             gaSiteProperties.put("gaProfileDefault", currentSite.getSettings().getProperty("gaProfileDefault"));*/
-            it = ((currentSite.getSettings()).keySet()).iterator();
             // logger.info("###############################################################################");
             // logger.info("----------------------GA settings-----------------------");
-            while (it.hasNext()) {
-                String key = (String) it.next();
+            final Properties settings = currentSite.getSettings();
+            for (Object o : (settings.keySet())) {
+                String key = (String) o;
                 if (key.startsWith("jahiaGAprofile")) {
                     // logger.info("--------------------------------------------------");
                     //logger.info("profile = " + currentSite.getSettings().get(key));// profile name
-                    gaSiteProperties.put("jahiaGAprofileName" + currentSite.getSettings().get(key), (String) currentSite.getSettings().get(key));
+                    gaSiteProperties.put("jahiaGAprofileName" + settings.get(key),
+                                         (String) settings.get(key));
                     //logger.info("gaUserAccount = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaUserAccount", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
+                    gaSiteProperties.put(settings.get(key) + "#gaUserAccount",
+                                         settings.getProperty(settings.get(
+                                                 key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
                     // logger.info("gaProfile = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaProfile", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
+                    gaSiteProperties.put(settings.get(key) + "#gaProfile",
+                                         settings.getProperty(settings.get(
+                                                 key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
                     //logger.info("gaLogin = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaLogin", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
+                    gaSiteProperties.put(settings.get(key) + "#gaLogin",
+                                         settings.getProperty(settings.get(
+                                                 key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
                     //logger.info("gaPassword = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
                     //gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaPassword", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
                     //logger.info("trackedUrls = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#trackedUrls", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
+                    gaSiteProperties.put(settings.get(key) + "#trackedUrls",
+                                         settings.getProperty(settings.get(
+                                                 key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
                     //logger.info("trackingEnabled = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#trackingEnabled", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
+                    gaSiteProperties.put(settings.get(key) + "#trackingEnabled",
+                                         settings.getProperty(settings.get(
+                                                 key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
                     //logger.info("--------------------------------------------------");
 
                 }

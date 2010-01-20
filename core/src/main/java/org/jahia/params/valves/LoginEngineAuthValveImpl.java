@@ -135,26 +135,14 @@ public class LoginEngineAuthValveImpl implements Valve {
 
                 // do a switch to the user's preferred language
                 if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                    Locale preferredUserLocale = UserPreferencesHelper
-                            .getPreferredLocale(theUser, jParams
-                                    .getSite());
+                    Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, jParams.getSite());
                     if (jParams.getSite() != null) {
-                        List<Locale> siteLocales;
-                        try {
-                            siteLocales = jParams.getSite()
-                                    .getLanguageSettingsAsLocales(true);
-                            if (siteLocales.contains(preferredUserLocale)) {
-                                jParams.getSessionState().setAttribute(
-                                        ProcessingContext.SESSION_LOCALE,
-                                        preferredUserLocale);
-                                jParams
-                                        .setCurrentLocale(preferredUserLocale);
-                                jParams.setLocaleList(null);
-                            }
-                        } catch (JahiaException e) {
-                            logger.warn(
-                                    "Unable to switch to the user's preferred language. Cause: "
-                                            + e.getMessage(), e);
+                        List<Locale> siteLocales = jParams.getSite().getLanguagesAsLocales();
+                        if (siteLocales.contains(preferredUserLocale)) {
+                            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE,
+                                                                   preferredUserLocale);
+                            jParams.setCurrentLocale(preferredUserLocale);
+                            jParams.setLocaleList(null);
                         }
                     }
                 }

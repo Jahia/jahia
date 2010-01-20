@@ -490,14 +490,14 @@ public abstract class ContentField extends ContentObject
 
         Set<String> activateLanguageCodes = new HashSet<String> (languageCodes);
         if (stateModifContext.isAllLanguages ()) {
-            activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
+            activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguagesAsLocales()));
         }
 
         if (isShared())  {
             if (getStagingLanguages(false,true).isEmpty()) {
                 return activationResults;
             } else {
-                activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
+                activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguagesAsLocales()));
             }
         } else {
             activateLanguageCodes.retainAll(getStagingLanguages(false,true));

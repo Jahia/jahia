@@ -52,7 +52,6 @@ import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -1569,12 +1568,12 @@ public class ContentPage extends ContentObject implements
         if (!this.hasActiveEntries() && !this.hasStagingEntries()) {
             try {
                 // Deleted
-                List<SiteLanguageSettings> langs = this.getSite().getLanguageSettings();
-                for (SiteLanguageSettings siteLanguageMapping : langs) {
+                Set<String> langs = this.getSite().getLanguages();
+                for (String siteLanguageMapping : langs) {
                     ContentObjectEntryState entryState =
                             new ContentObjectEntryState(
                                     ContentObjectEntryState.WORKFLOW_STATE_ACTIVE,
-                                    0, siteLanguageMapping.getCode());
+                                    0, siteLanguageMapping);
                     EntryLoadRequest loadRequest = new EntryLoadRequest(entryState);
                     ContentDefinition definition =
                             ContentDefinition.getContentDefinitionInstance(
@@ -1582,7 +1581,7 @@ public class ContentPage extends ContentObject implements
 
                     String title = definition != null ? definition.getTitle(this, entryState) : "";
                     if (title != null) {
-                        titles.put(siteLanguageMapping.getCode(), title);
+                        titles.put(siteLanguageMapping, title);
                     }
                 }
             } catch (Exception t) {

@@ -859,7 +859,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                 (aclService.getSiteActionPermission("admin.JahiaAdministration", theUser, JahiaBaseACL.READ_RIGHTS, siteID) > 0)) {
             try {
                 currentSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                List<Locale> languageSettingsAsLocales = currentSite.getLanguageSettingsAsLocales(true);
+                List<Locale> languageSettingsAsLocales = currentSite.getLanguagesAsLocales();
                 final Locale localeSession = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
                 if (languageSettingsAsLocales != null && languageSettingsAsLocales.size() > 0 && !languageSettingsAsLocales.contains(localeSession)) {
                     Locale locale = languageSettingsAsLocales.get(0);

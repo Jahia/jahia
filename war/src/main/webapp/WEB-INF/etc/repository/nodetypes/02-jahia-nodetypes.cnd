@@ -287,6 +287,10 @@
  - j:description (string) protected
  - j:siteId (long) protected
  - j:installedModules (string) multiple
+ - j:languages (string) multiple
+ - j:mandatoryLanguages (string) multiple
+ - j:defaultLanguage (string)
+ - j:mixLanguage (boolean) = false
  + * (jmix:hierarchyNode)
 
 //---------------------------------------------------------

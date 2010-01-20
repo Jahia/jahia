@@ -229,7 +229,7 @@ public class Logout_Engine implements JahiaEngine {
                     jParams.getEntryLoadRequest()
                             .getFirstLocale(true).toString())) {
                 List<Locale> siteLanguages =
-                        jParams.getSite().getLanguageSettingsAsLocales(true);
+                        jParams.getSite().getLanguagesAsLocales();
                 for (Locale locale : siteLanguages) {
                     if (logoutPage.hasEntry(ContentPage.ACTIVE_PAGE_INFOS,
                             locale.toString())) {

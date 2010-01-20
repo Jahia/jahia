@@ -73,7 +73,7 @@ public class JahiaLanguagesStatesManager {
         final Map<String, Integer> results = new HashMap<String, Integer>(l.size());
         List<String> activeLocales = null;
         if (activeLanguagesOnly) {
-            List<Locale> locales = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID).getLanguageSettingsAsLocales(true);
+            List<Locale> locales = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID).getLanguagesAsLocales();
             activeLocales = new LinkedList<String>();
             for (Locale locale : locales) {
                 activeLocales.add(locale.toString());

@@ -39,7 +39,6 @@ import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.fields.LoadFlags;
-import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.hibernate.manager.*;
@@ -56,8 +55,6 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
@@ -943,17 +940,6 @@ public abstract class ContentObject extends JahiaObject {
             return true;
         }
 
-        Set<String> deactivatedLanguageCodes = new HashSet<String>();
-        JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(getSiteID());
-        if (jahiaSite != null) {
-            List<SiteLanguageSettings> siteLanguageSettings = jahiaSite.getLanguageSettings();
-            for (SiteLanguageSettings curSettings : siteLanguageSettings ) {
-                if (!curSettings.isActivated()) {
-                    deactivatedLanguageCodes.add(curSettings.getCode());
-                }
-            }
-        }
-
         Set<ContentObjectEntryState> entryStates = getActiveAndStagingEntryStates();
         List<ContentObjectEntryState> stagedEntryStates = new ArrayList<ContentObjectEntryState>();
         List<ContentObjectEntryState> activeEntryStates = new ArrayList<ContentObjectEntryState>();
@@ -995,8 +981,7 @@ public abstract class ContentObject extends JahiaObject {
                     // remove them only if within the subset. We also handle the
                     // case of deactivated language codes here, meaning that deactivated
                     // languages will be included in the removal automatically.
-                    if (activationLanguageCodes.contains(entryState.getLanguageCode()) ||
-                        deactivatedLanguageCodes.contains(entryState.getLanguageCode()) ) {
+                    if (activationLanguageCodes.contains(entryState.getLanguageCode())) {
                         languageCodes.remove(entryState.getLanguageCode());
                     }
                 }

@@ -3,7 +3,6 @@ package org.jahia.services.sites.jcr;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.data.events.JahiaEvent;
 import org.jahia.hibernate.dao.JahiaSitePropertyDAO;
 import org.jahia.hibernate.model.JahiaSiteProp;
 import org.jahia.registries.ServicesRegistry;
@@ -65,7 +64,7 @@ public class JCRSitesProvider {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:siteId]=" + id, Query.JCR_SQL2);
                     NodeIterator ni = q.execute().getNodes();
-                    while (ni.hasNext()) {
+                    if (ni.hasNext()) {
                         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
                         return getSite(nodeWrapper);
                     }
@@ -103,7 +102,7 @@ public class JCRSitesProvider {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:serverName]='" + name + "'", Query.JCR_SQL2);
                     NodeIterator ni = q.execute().getNodes();
-                    while (ni.hasNext()) {
+                    if (ni.hasNext()) {
                         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
                         return getSite(nodeWrapper);
                     }
@@ -144,7 +143,7 @@ public class JCRSitesProvider {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode("/sites");
                     if (!node.isCheckedOut()) {
-                        node.checkout();
+                        session.checkout(node);
                     }
                     JCRNodeWrapper s = node.getNode(site.getSiteKey());
                     node.setProperty("j:defaultSite", s);
@@ -195,7 +194,7 @@ public class JCRSitesProvider {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
-                        sites.checkout();
+                        session.checkout(sites);
                     }
                     JCRNodeWrapper site = sites.getNode(siteKey);
                     site.remove();
@@ -208,7 +207,7 @@ public class JCRSitesProvider {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
-                        sites.checkout();
+                        session.checkout(sites);
                     }
                     JCRNodeWrapper site = sites.getNode(siteKey);
                     site.remove();
@@ -221,23 +220,67 @@ public class JCRSitesProvider {
         }
     }
 
+    public void updateSite(final JahiaSite site) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper sites = session.getNode("/sites");
+                    if (!sites.isCheckedOut()) {
+                        session.checkout(sites);
+                    }
+                    JCRNodeWrapper siteNode = sites.getNode(site.getSiteKey());
+                    if (!siteNode.isCheckedOut()) {
+                        session.checkout(siteNode);
+                    }
+                    siteNode.setProperty("j:title", site.getTitle());
+                    siteNode.setProperty("j:description", site.getDescr());
+                    siteNode.setProperty("j:serverName", site.getServerName());
+//                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
+                    String defaultLanguage = site.getDefaultLanguage();
+                    if(defaultLanguage!=null)
+                    siteNode.setProperty("j:defaultLanguage", defaultLanguage);
+                    siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
+                    siteNode.setProperty("j:languages", site.getLanguages().toArray(
+                            new String[site.getLanguages().size()]));
+                    siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(
+                            new String[site.getMandatoryLanguages().size()]));
+                    session.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 
     private JahiaSite getSite(JCRNodeWrapper node) throws RepositoryException {
         int siteId = (int) node.getProperty("j:siteId").getLong();
 
         Properties props = new Properties();
 
-        Iterator<JahiaSiteProp> iterator = sitePropertyDAO.getSitePropById(siteId).iterator();
-
-        while ( iterator.hasNext() ){
-            JahiaSiteProp jahiaSiteProp = iterator.next();
-            props.put(jahiaSiteProp.getComp_id().getName(),jahiaSiteProp.getValue() == null ? "" : jahiaSiteProp.getValue());
+        for (JahiaSiteProp siteProp : sitePropertyDAO.getSitePropById(siteId)) {
+            props.put(siteProp.getComp_id().getName(),
+                      siteProp.getValue() == null ? "" : siteProp.getValue());
         }
 
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), null, props);
         Value[] s = node.getProperty("j:installedModules").getValues();
         site.setTemplatePackageName(s[0].getString());
+        site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());
+        site.setDefaultLanguage(node.getProperty("j:defaultLanguage").getString());
+        Value[] languages = node.getProperty("j:languages").getValues();
+        Set<String> languagesList = new LinkedHashSet<String>();
+        for (Value language : languages) {
+            languagesList.add(language.getString());
+        }
+        site.setLanguages(languagesList);
+        languages = node.getProperty("j:mandatoryLanguages").getValues();
+        languagesList = new LinkedHashSet<String>();
+        for (Value language : languages) {
+            languagesList.add(language.getString());
+        }
+        site.setMandatoryLanguages(languagesList);
         return site;
     }
 

@@ -33,8 +33,6 @@ package org.jahia.engines.importexport;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
@@ -47,16 +45,9 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockPrerequisites;
-import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
-import org.jahia.services.version.EntryLoadRequest;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.ItemNotFoundException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;

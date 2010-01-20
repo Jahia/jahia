@@ -271,8 +271,7 @@ public class JahiaPageBaseService extends JahiaPageService {
             languageCode = jParam.getEntryLoadRequest().getFirstLocale(true).
                     toString();
         } else {
-            languageCode = site.getLanguageSettingsAsLocales(true).get(0).
-                    toString();
+            languageCode = site.getDefaultLanguage();
         }
 
         JahiaPageInfo pageInfo = new JahiaPageInfo(pageID, siteID, parentID,

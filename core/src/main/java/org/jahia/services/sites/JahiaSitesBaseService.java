@@ -41,7 +41,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
@@ -60,7 +59,6 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.pages.JahiaPageBaseService;
-import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -209,7 +207,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
 
     private synchronized void addToCache(JahiaSite site) {
-        siteCacheByID.put(new Integer(site.getID()), site);
+        siteCacheByID.put(site.getID(), site);
         if (site.getServerName() != null) {
             siteCacheByName.put(site.getServerName(), site);
         }
@@ -317,7 +315,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);
         }
-
+        // create site language
+        site.setDefaultLanguage(selectedLocale.toString());
+        site.setLanguages(new LinkedHashSet<String>(Arrays.asList(selectedLocale.toString())));
+        site.setMandatoryLanguages(site.getLanguages());
+        site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
         if (getSiteByKey (site.getSiteKey ()) == null) {
             siteProvider.addSite(site, jParams.getUser());
@@ -394,12 +396,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 initialZip = fileImport;
                 initialZipName = fileImportName;
             }
-            {
-                // create site language
-                SiteLanguageSettings newLanguage =
-                        new SiteLanguageSettings(site.getID(), selectedLocale.toString(), true, 1, false);
-                JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
-                listManager.addSiteLanguageSettings(newLanguage);
 
                 // create the default homepage...
                 EntryLoadRequest saveRequest = new EntryLoadRequest(EntryLoadRequest.STAGED);
@@ -410,7 +406,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         jParams.getSubstituteEntryLoadRequest();
                 jParams.setSubstituteEntryLoadRequest(saveRequest);
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
-            }
 
             if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page
@@ -539,7 +534,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
         //todo update jahia site name/description
 //        siteManager.updateJahiaSite(site);
-        
+        siteProvider.updateSite(site);
         site.setSettings(props);
         sitePropertyManager.save(site);
         siteCacheByName.flush();

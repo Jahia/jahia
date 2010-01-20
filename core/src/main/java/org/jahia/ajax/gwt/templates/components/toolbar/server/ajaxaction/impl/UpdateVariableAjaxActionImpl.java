@@ -130,13 +130,6 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
 
     private String flushPage(JahiaData jahiaData) {
        logger.debug("Flush Page "+jahiaData.getProcessingContext().getPageID());
-        try {
-            final ObjectKey key = jahiaData.getProcessingContext().getPage().getContentPage().getObjectKey();
-            final List<Locale> localeArrayList = jahiaData.getProcessingContext().getSite().getLanguageSettingsAsLocales(false);
-            return "Page Flushed ";
-        } catch (JahiaException e) {
-            logger.error("Error while flushing page", e);
-        }
         return "Page not flushed";
     }
 

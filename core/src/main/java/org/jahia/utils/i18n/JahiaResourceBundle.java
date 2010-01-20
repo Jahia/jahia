@@ -49,6 +49,8 @@ import java.util.*;
 public class JahiaResourceBundle extends ResourceBundle {
     private transient static Logger logger = Logger.getLogger(JahiaResourceBundle.class);
     private static final Locale EMPTY_LOCALE = new Locale("", "");
+    private static Map<ClassLoader, Map<String, Map<Locale, ResourceBundle>>> map = new HashMap<ClassLoader, Map<String, Map<Locale, ResourceBundle>>>();
+
     private final String basename;
     private final Locale locale;
     private final JahiaTemplatesPackage templatesPackage;
@@ -205,10 +207,25 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     private static ResourceBundle lookupBundle(String baseName,
             Locale preferredLocale, ClassLoader loader) {
+
+        if (map.get(loader) == null) {
+            map.put(loader, new HashMap<String, Map<Locale, ResourceBundle>>());
+        }
+        if (map.get(loader).get(baseName) == null) {
+            map.get(loader).put(baseName, new HashMap<Locale, ResourceBundle>());
+        }
+
+        ResourceBundle bundle;
+        if (map.get(loader).get(baseName).containsKey(preferredLocale)) {
+            bundle = map.get(loader).get(baseName).get(preferredLocale);
+        } else {
+            bundle = loader != null ? ResourceBundle.getBundle(
+                           baseName, preferredLocale, loader) : ResourceBundle.getBundle(
+                           baseName, preferredLocale);
+            map.get(loader).get(baseName).put(preferredLocale, bundle);
+        }
+
         ResourceBundle match = null;
-        ResourceBundle bundle = loader != null ? ResourceBundle.getBundle(
-                baseName, preferredLocale, loader) : ResourceBundle.getBundle(
-                baseName, preferredLocale);
 
         if (!SettingsBean.getInstance().isConsiderDefaultJVMLocale()) {
             Locale availableLocale = bundle.getLocale();

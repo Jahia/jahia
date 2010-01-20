@@ -42,7 +42,7 @@
     </parent>
     <groupId>org.jahia.templates</groupId>
     <artifactId>mod-scriptlanguages</artifactId>
-    <name>Jahia Script Language examples</name>
+    <name>Script Language Examples</name>
     <packaging>war</packaging>
     <description>This module provides examples of using different scripting languages for templating.</description>
     <repositories>

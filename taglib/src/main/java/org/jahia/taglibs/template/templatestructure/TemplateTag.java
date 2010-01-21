@@ -153,22 +153,6 @@ public class TemplateTag extends AbstractJahiaTag {
         this.doctype = doctype;
     }
 
-    /**
-     * Defines what resource bundle file to use if the default template one is not suitable for this template.
-     *
-     * @param resourceBundle The name of the resource bundle to use for this template
-     * @jsp:attribute name="resourceBundle" required="false" rtexprvalue="true"
-     * description="Sets The name of the resource bundle to use for this template"
-     * <p><attriInfo>
-     * </attriInfo>"
-     */
-    public void setResourceBundle(String resourceBundle) {
-        super.setResourceBundle(resourceBundle);
-        if (resourceBundle != null && resourceBundle.length() > 0) {
-            pageContext.getRequest().setAttribute(PARENT_BUNDLE_REQUEST_ATTRIBUTE, resourceBundle);
-        }
-    }
-
     public int doStartTag() throws JspException {
         if (doctype == null) {
             doctype = DefaultIncludeProvider.XHTML_TRANSITIONAL;

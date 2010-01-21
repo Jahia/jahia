@@ -34,9 +34,7 @@ package org.jahia.taglibs.uicomponents.i18n;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
-import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -104,7 +102,6 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
     public int doStartTag() {
         try {
-            final JahiaData jData = getJahiaData();
             final ProcessingContext jParams = getProcessingContext();
             final StringBuilder buff = new StringBuilder();
 
@@ -121,25 +118,21 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                     buff.append("'>");
                 }
                 buff.append("<a href='");
-                try {
-                    final String link;
-                    if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 ||
-                            InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
-                        link = generateCurrentNodeLangSwitchLink(jData,languageCode);
+                final String link;
+                if (onLanguageSwitch == null || onLanguageSwitch.length() == 0
+                        || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
+                    link = generateCurrentNodeLangSwitchLink(languageCode);
 
-                    } else if (isRedirectToHomePageActivated) {
-                        link = generateNodeLangSwitchLink(jData,languageCode,rootPage);
+                } else if (isRedirectToHomePageActivated) {
+                    link = generateNodeLangSwitchLink(rootPage, languageCode);
 
-                    } else {
-                        throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
-                    }
+                } else {
+                    throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
+                }
 
-                    buff.append(StringEscapeUtils.escapeXml(link));
-                    if (urlVar != null && urlVar.length() > 0) {
-                        pageContext.setAttribute(urlVar, link);
-                    }
-                } catch (final JahiaException je) {
-                    logger.error("Error while writing the language switch link !", je);
+                buff.append(StringEscapeUtils.escapeXml(link));
+                if (urlVar != null && urlVar.length() > 0) {
+                    pageContext.setAttribute(urlVar, link);
                 }
                 buff.append("' ");
                 buff.append("title='");

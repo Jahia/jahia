@@ -49,14 +49,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.util.*;
 
 /**
@@ -71,11 +68,6 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 public class AbstractJahiaTag extends BodyTagSupport {
-
-    public static final String PARENT_TAG_REQUEST_ATTRIBUTE = "parentContainerTag";
-    public static final String PARENT_BUNDLE_REQUEST_ATTRIBUTE = "parentBundleTag";
-    public static final String TEMPLATE_PATH = "/templates/";
-    public static final String COMMON_TAG_BUNDLE1 = "CommonTag";
 
     private static final transient Logger logger = Logger.getLogger(AbstractJahiaTag.class);
 
@@ -144,45 +136,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     public void setCssClassName(String cssClassName) {
         this.cssClassName = cssClassName;
-    }
-
-    protected final Tag findAncestorWithClass(final Tag tag,
-                                              final Class<?> aClass,
-                                              final ServletRequest request) {
-        if (tag == null || aClass == null ||
-                (!Tag.class.isAssignableFrom(aClass) && !(aClass.isInterface()))) {
-            return null;
-        }
-
-        Tag result = TagSupport.findAncestorWithClass(this, aClass);
-        if (result == null) {
-            Stack<Tag> stack = (Stack<Tag>) pageContext.getRequest().getAttribute(PARENT_TAG_REQUEST_ATTRIBUTE);
-            if (stack != null) {
-                Tag[] tags = stack.toArray(new Tag[stack.size()]);
-                int pos = stack.indexOf(this);
-                for (int i = pos; i >= 0; i--) {
-                    Tag ancestor = tags[i];
-                    if (aClass.isInstance(ancestor) && ancestor != this) {
-                        return ancestor;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public void pushTag() {
-        Stack<Tag> stack = (Stack<Tag>) pageContext.getRequest().getAttribute(PARENT_TAG_REQUEST_ATTRIBUTE);
-        if (stack == null) {
-            stack = new Stack<Tag>();
-            pageContext.getRequest().setAttribute(PARENT_TAG_REQUEST_ATTRIBUTE, stack);
-        }
-        stack.push(this);
-    }
-
-    public void popTag() {
-        Stack<Tag> stack = (Stack<Tag>) pageContext.getRequest().getAttribute(PARENT_TAG_REQUEST_ATTRIBUTE);
-        stack.pop();
     }
 
     protected String getMessage(final String key, final String defaultValue) {
@@ -443,38 +396,37 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     /**
-     * Generate langSwichingLink
-     * @param jData
-     * @return
-     * @throws JahiaException
+     * Generates the language switching link for the specified language.
+     * 
+     * @param langCode the language to generate a link for
+     * @return the language switching link for the specified language
      */
-    public String generateCurrentNodeLangSwitchLink(JahiaData jData, String langCode) throws JahiaException {
-        if (jData.getProcessingContext().getAttribute("renderContext") != null) {
-            URLGenerator url = (URLGenerator) jData.getProcessingContext().getAttribute("url");
-            return url.getLanguages().get(langCode);
+    protected final String generateCurrentNodeLangSwitchLink(String langCode) {
+        RenderContext ctx = getRenderContext();
+        if (ctx != null) {
+            return ctx.getURLGenerator().getLanguages().get(langCode);
         } else {
-            logger.error("Unable to get lang["+langCode+"] link for current resource");
+            logger.error("Unable to get lang[" + langCode + "] link for current resource");
             return "";
         }
-
     }
 
     /**
-     * Get language switcher that redirect to the home page
-     * @param jData
-     * @return
-     * @throws JahiaException
+     * Generates the language switching link for the specified node and language.
+     * 
+     * @param node the node to generate the link for  
+     * @param langCode the language to generate a link for
+     * @return the language switching link for the specified language
      */
-    public String generateNodeLangSwitchLink(JahiaData jData,String langCode, JCRNodeWrapper node) throws JahiaException {
+    protected final String generateNodeLangSwitchLink(JCRNodeWrapper node, String langCode) {
         if(node == null){
-            logger.warn("Home page node not specified. Language link will target current node.");
-            return generateCurrentNodeLangSwitchLink(jData,langCode);
+            logger.warn("Node not specified. Language link will be generated for current node.");
+            return generateCurrentNodeLangSwitchLink(langCode);
         }
-
-        if (jData.getProcessingContext().getAttribute("renderContext") != null) {
-            RenderContext context = (RenderContext)jData.getProcessingContext().getAttribute("renderContext");
+        RenderContext ctx = getRenderContext();
+        if (ctx != null) {
             Resource resource = new Resource(node,"html",null,null);
-            URLGenerator url = new URLGenerator(context,resource, JCRStoreService.getInstance());
+            URLGenerator url = new URLGenerator(ctx,resource, JCRStoreService.getInstance());
             return url.getLanguages().get(langCode);
         } else {
             logger.error("Unable to get lang["+langCode+"] link for home page");

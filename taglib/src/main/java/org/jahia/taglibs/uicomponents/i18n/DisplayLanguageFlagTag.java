@@ -32,13 +32,10 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
@@ -84,12 +81,9 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     }
 
     public int doStartTag() throws JspTagException {
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
 
-        final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, jParams);
+        final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, getProcessingContext());
         final boolean isRedirectToHomePageActivated = InitLangBarAttributes.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
 
         if (!isCurrentBrowsingLanguage) {
@@ -102,23 +96,19 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 buff.append("'>");
             }
             buff.append("<a href='");
-            try {
-                final String link;
-                if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 ||
-                        InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
-                    link = generateCurrentNodeLangSwitchLink(jData,languageCode);
+            final String link;
+            if (onLanguageSwitch == null || onLanguageSwitch.length() == 0
+                    || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
+                link = generateCurrentNodeLangSwitchLink(languageCode);
 
-                } else if (isRedirectToHomePageActivated) {
-                    link = generateNodeLangSwitchLink(jData,languageCode,rootPage);
+            } else if (isRedirectToHomePageActivated) {
+                link = generateNodeLangSwitchLink(rootPage, languageCode);
 
-                } else {
-                    throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
-                }
-
-                buff.append(link);
-            } catch (final JahiaException je) {
-                logger.error("Error while writing the language switch link !", je);
+            } else {
+                throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
             }
+
+            buff.append(link);
             buff.append("' ");
             buff.append("title='");
             if (isRedirectToHomePageActivated) {

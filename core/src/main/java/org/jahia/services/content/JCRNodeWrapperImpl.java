@@ -550,27 +550,28 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         if (propertiesAsString == null) {
             Map<String, String> res = new HashMap<String, String>();
-    
-            PropertyIterator pi = getProperties();
-            if (pi != null) {
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (p.getType() == PropertyType.BINARY) {
-                        continue;
-                    }
-                    if (!p.isMultiple()) {
-                        res.put(p.getName(), p.getString());
-                    } else {
-                        Value[] vs = p.getValues();
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < vs.length; i++) {
-                            Value v = vs[i];
-                            b.append(v.getString());
-                            if (i + 1 < vs.length) {
-                                b.append(" ");
-                            }
+            if (checkValidity()) {
+                PropertyIterator pi = getProperties();
+                if (pi != null) {
+                    while (pi.hasNext()) {
+                        Property p = pi.nextProperty();
+                        if (p.getType() == PropertyType.BINARY) {
+                            continue;
                         }
-                        res.put(p.getName(), b.toString());
+                        if (!p.isMultiple()) {
+                            res.put(p.getName(), p.getString());
+                        } else {
+                            Value[] vs = p.getValues();
+                            StringBuffer b = new StringBuffer();
+                            for (int i = 0; i < vs.length; i++) {
+                                Value v = vs[i];
+                                b.append(v.getString());
+                                if (i + 1 < vs.length) {
+                                    b.append(" ");
+                                }
+                            }
+                            res.put(p.getName(), b.toString());
+                        }
                     }
                 }
             }
@@ -882,31 +883,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        if (locale != null) {
-            if (epd != null && epd.isInternationalized()) {
-                try {
-                    final Node localizedNode = getI18N(locale);
-                    String localeString = localizedNode.getProperty("jcr:language").getString();
-                    return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name + "_" + localeString), session, provider, getApplicablePropertyDefinition(name), name);
-                } catch (ItemNotFoundException e) {
-                    return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+        if (checkValidity()) {
+            final Locale locale = getSession().getLocale();
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+            if (locale != null) {
+                if (epd != null && epd.isInternationalized()) {
+                    try {
+                        final Node localizedNode = getI18N(locale);
+                        String localeString = localizedNode.getProperty("jcr:language").getString();
+                        return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name + "_" + localeString),
+                                                          session, provider, getApplicablePropertyDefinition(name),
+                                                          name);
+                    } catch (ItemNotFoundException e) {
+                        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+                    }
                 }
             }
+            return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+        } else {
+            throw new PathNotFoundException(
+                    "Property " + name + " not found on node " + objectNode.getPath() + " for this language " + getSession().getLocale());
         }
-        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getProperties() throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
-            return new LazyPropertyIterator(this, locale);
+        if (checkValidity()) {
+            final Locale locale = getSession().getLocale();
+            if (locale != null) {
+                return new LazyPropertyIterator(this, locale);
+            }
+            return new LazyPropertyIterator(this);
+        } else {
+            return new PropertyIteratorImpl(new ArrayList<JCRPropertyWrapperImpl>(), 0);
         }
-        return new LazyPropertyIterator(this);
     }
 
     /**
@@ -914,30 +926,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public PropertyIterator getProperties(String s) throws RepositoryException {
         List<JCRPropertyWrapperImpl> res = new ArrayList<JCRPropertyWrapperImpl>();
-        PropertyIterator pi = objectNode.getProperties(s);
-        while (pi.hasNext()) {
-            Property property = pi.nextProperty();
-            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(property.getName());
-            res.add(new JCRPropertyWrapperImpl(this, property, session, provider, epd));
-        }
+        if (checkValidity()) {
+            PropertyIterator pi = objectNode.getProperties(s);
+            while (pi.hasNext()) {
+                Property property = pi.nextProperty();
+                ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(property.getName());
+                res.add(new JCRPropertyWrapperImpl(this, property, session, provider, epd));
+            }
 
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
-            try {
-                pi = getI18N(locale).getProperties(s);
-                while (pi.hasNext()) {
-                    final Property property = pi.nextProperty();
-                    final String name = property.getName();
-                    if (name.endsWith("_" + locale.toString())) {
-                        final String name1 = property.getName();
-                        final String s1 = name1.substring(0, name1.length() - locale.toString().length() - 1);
-                        res.add(new JCRPropertyWrapperImpl(this, property, session, provider, getApplicablePropertyDefinition(s1), s1));
+            final Locale locale = getSession().getLocale();
+            if (locale != null) {
+                try {
+                    pi = getI18N(locale).getProperties(s);
+                    while (pi.hasNext()) {
+                        final Property property = pi.nextProperty();
+                        final String name = property.getName();
+                        if (name.endsWith("_" + locale.toString())) {
+                            final String name1 = property.getName();
+                            final String s1 = name1.substring(0, name1.length() - locale.toString().length() - 1);
+                            res.add(new JCRPropertyWrapperImpl(this, property, session, provider,
+                                                               getApplicablePropertyDefinition(s1), s1));
+                        }
                     }
+                } catch (ItemNotFoundException e) {
                 }
-            } catch (ItemNotFoundException e) {
             }
         }
-
         return new PropertyIteratorImpl(res.iterator(), res.size());
     }
 
@@ -946,13 +960,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getPropertyAsString(String name) {
-        try {
-            if (hasProperty(name)) {
-                Property p = getProperty(name);
-                return p.getString();
+        if (checkValidity()) {
+            try {
+                if (hasProperty(name)) {
+                    Property p = getProperty(name);
+                    return p.getString();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Repository error", e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
         }
         return null;
     }
@@ -2203,5 +2219,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), session);
         }
         throw new UnsupportedRepositoryOperationException();
+    }
+
+    public boolean checkValidity() {
+        final JCRSessionWrapper jcrSessionWrapper = getSession();
+        final Locale locale = jcrSessionWrapper.getLocale();
+        try {
+            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName()) && locale != null
+                && jcrSessionWrapper.getFallbackLocale() == null && objectNode.hasNode("j:translation")) {
+                getI18N(locale, false);
+            }
+        } catch (RepositoryException e) {
+            return false;
+        }
+        return true;
     }
 }

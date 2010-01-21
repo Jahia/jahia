@@ -38,6 +38,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.pages.ContentPage;
@@ -219,6 +220,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         site.setDefaultLanguage(request.getParameter("defaultLanguage"));
         final String[] deletedLanguages = request.getParameterValues("deletedLanguages");
         if(deletedLanguages!=null && deletedLanguages.length > 0) {
+            flushCache = true;
             final List<String> deletedLanguageList = Arrays.asList(deletedLanguages);
             mandatoryLanguagesSet.removeAll(deletedLanguageList);
             site.getLanguages().removeAll(deletedLanguageList);
@@ -235,6 +237,9 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label", getLocale(request, jParams));
             request.setAttribute("jahiaDisplayMessage", dspMsg);
+        }
+        if(flushCache) {
+            ModuleCacheProvider.getInstance().flushCaches();
         }
         displayLanguageList(request, response, session);
     } // end addComponent

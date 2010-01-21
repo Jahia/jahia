@@ -147,4 +147,11 @@ public class ModuleCacheProvider implements InitializingBean {
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
+
+    public void flushCaches() {
+        blockingCache.removeAll();
+        blockingCache.flush();
+        dependenciesCache.removeAll();
+        dependenciesCache.flush();
+    }
 }

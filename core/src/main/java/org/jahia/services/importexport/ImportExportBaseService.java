@@ -806,10 +806,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (!languages.contains(lang)) {
                     if (isMultiLang || languages.isEmpty()) {
                         siteSettings = true;
-                        languages.add(lang);
                         if(languages.isEmpty()) {
                             site.setDefaultLanguage(lang);
                         }
+                        languages.add(lang);
                     } else {
                         logger.warn("Multilanguage is not authorized by license, " + lang + " will be ignored");
                         continue;

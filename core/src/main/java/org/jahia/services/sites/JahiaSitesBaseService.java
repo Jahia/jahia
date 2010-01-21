@@ -538,7 +538,8 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         site.setSettings(props);
         sitePropertyManager.save(site);
         siteCacheByName.flush();
-        addToCache(site);
+        siteCacheByID.flush();
+        siteCacheByKey.flush();
     }
     
     /**

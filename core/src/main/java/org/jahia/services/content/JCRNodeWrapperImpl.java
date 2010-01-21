@@ -487,8 +487,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (ni.hasNext()) {
             Node node = ni.nextNode();
             if (session.getLocale() == null || !node.getName().equals("j:translation")) {
-                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
-                list.add(child);
+                try {
+                    JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+                    list.add(child);
+                } catch (PathNotFoundException e) {
+                    if(logger.isDebugEnabled())
+                    logger.debug(e.getMessage(), e);
+                }
             }
         }
         return new NodeIteratorImpl(list.iterator(), list.size());
@@ -1813,7 +1818,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNode(String s) throws RepositoryException {
         // add mountpoints here
-        return objectNode.hasNode(provider.encodeInternalName(s));
+        final boolean b = objectNode.hasNode(provider.encodeInternalName(s));
+        if(b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s) ){
+            final JCRNodeWrapperImpl wrapper;
+            try {
+                wrapper = (JCRNodeWrapperImpl) getNode(s);
+            } catch (RepositoryException e) {
+                return false;
+            }
+            return wrapper.checkValidity();
+        }
+        return b;
     }
 
     /**

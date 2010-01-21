@@ -85,7 +85,6 @@ public class HtmlCacheEventListener extends DefaultEventListener {
      */
     public void onEvent(EventIterator events) {
         final Cache depCache = cacheProvider.getDependenciesCache();
-//        final BlockingCache htmlCache = cacheProvider.getCache();
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
@@ -149,6 +148,9 @@ public class HtmlCacheEventListener extends DefaultEventListener {
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {
+        if(logger.isDebugEnabled()) {
+            logger.debug("Flushing caches for path : "+path);
+        }
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
         if(element!=null) {
             flushed.add(path);

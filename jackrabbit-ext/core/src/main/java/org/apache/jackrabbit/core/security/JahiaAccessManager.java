@@ -296,7 +296,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             e.printStackTrace();
         }
         cache.put(absPath.toString() + " : " + permissions, false);
-        return true;
+        return false;
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {

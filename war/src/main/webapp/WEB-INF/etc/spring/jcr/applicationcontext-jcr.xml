@@ -131,6 +131,10 @@
                 <entry key="live">
                     <list>
                         <bean class="org.jahia.services.content.CacheListener"/>
+                        <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
+                            <property name="cacheProvider" ref="ModuleCacheProvider"/>
+                            <property name="jcrTemplate" ref="jcrTemplate"/>
+                        </bean>
                     </list>
                 </entry>
             </map>

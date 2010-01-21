@@ -470,7 +470,11 @@ public class JCRWorkspaceWrapper implements Workspace {
 
             return new NodeIterator() {
                 public Node nextNode() {
-                    return provider.getNodeWrapper(ni.nextNode(), session);
+                    try {
+                        return provider.getNodeWrapper(ni.nextNode(), session);
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
                 }
 
                 public void skip(long l) {

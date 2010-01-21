@@ -561,8 +561,13 @@ public class JCRStoreProvider {
         }
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {
-        return service.decorate(new JCRNodeWrapperImpl(objectNode, session, this));
+    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) throws RepositoryException {
+        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, session, this);
+        if(w.checkValidity()) {
+            return service.decorate(w);
+        } else {
+            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
+        }
     }
 
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {

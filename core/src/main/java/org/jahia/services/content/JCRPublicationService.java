@@ -237,7 +237,7 @@ public class JCRPublicationService extends JahiaService {
         } else {
             publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
         }
-
+        JCRObservationManager.consume(destinationSession);
     }
 
     private void publish(List<JCRNodeWrapper> toPublish, List<JCRNodeWrapper> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {

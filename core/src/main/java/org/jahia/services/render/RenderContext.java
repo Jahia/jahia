@@ -75,6 +75,7 @@ public class RenderContext {
     private String contentType;
 
     private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
+    private boolean liveMode = false;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -193,5 +194,13 @@ public class RenderContext {
 
     public Locale getFallbackLocale() {
         return site.isMixLanguagesActive()? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()):null;
+    }
+
+    public void setLiveMode(boolean liveMode) {
+        this.liveMode = liveMode;
+    }
+
+    public boolean isLiveMode() {
+        return liveMode;
     }
 }

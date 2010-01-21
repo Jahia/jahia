@@ -73,7 +73,7 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (!renderContext.isEditMode()) {
+        if (renderContext.isLiveMode()) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
 

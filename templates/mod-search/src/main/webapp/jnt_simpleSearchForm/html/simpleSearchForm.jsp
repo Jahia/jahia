@@ -38,7 +38,7 @@
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 
 <s:form method="get">
-   	<div class="form-container">
+   	<p class="field simpleSearchForm">
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">
 		<label for="searchTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
@@ -46,6 +46,6 @@
 		<fmt:message key='search.startSearching' var="startSearching"/>
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
        	<s:site value="${renderContext.siteNode.name}" display="false"/>
-    	<input type="submit" class="submit" value="<fmt:message key='search.submit'/>" title="<fmt:message key='search.submit'/>"/>
-	</div>
+    	<input type="submit" class="button" value="<fmt:message key='search.submit'/>" title="<fmt:message key='search.submit'/>"/>
+	</p>
 </s:form><br class="clear"/>

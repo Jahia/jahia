@@ -37,7 +37,7 @@ public class LanguageHelper {
                     GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
                     item.setCountryIsoCode(langCode);
                     item.setDisplayName(getDisplayName(langCode));
-                    item.setImage(getLangIcon(LanguageCodeConverters.languageCodeToLocale(langCode)));
+                    item.setImage(getLangIcon(langCode));
                     items.add(item);
                 }
             }
@@ -57,7 +57,7 @@ public class LanguageHelper {
         GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
         item.setCountryIsoCode(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setImage(getLangIcon(jParams.getLocale()));
+        item.setImage(getLangIcon(langCode));
         return item;
     }
 
@@ -67,8 +67,8 @@ public class LanguageHelper {
      * @param locale
      * @return
      */
-    public static String getLangIcon(Locale locale) {
-        return "/images/flags/plain/flag_" + locale.getCountry()+".png";
+    public static String getLangIcon(String locale) {
+        return "/css/images/flags/"+ locale+"_on.png";
     }
 
     /**

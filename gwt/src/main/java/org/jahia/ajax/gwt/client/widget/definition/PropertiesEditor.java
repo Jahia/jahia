@@ -54,8 +54,6 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
-    //    private ComboBox<GWTJahiaNodeType> combo;
-    //    private GWTJahiaNodeType nodeType;
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = false;
     private List<String> excludedItems;
@@ -183,6 +181,7 @@ public class PropertiesEditor extends FormPanel {
             }
 
             final Field field = FormFieldCreator.createField(definition, currentProperties.get(definition.getName()));
+            field.setBorders(false);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
                 templateField.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {

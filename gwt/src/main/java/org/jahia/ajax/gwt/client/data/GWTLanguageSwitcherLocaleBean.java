@@ -33,8 +33,6 @@ package org.jahia.ajax.gwt.client.data;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-import java.io.Serializable;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rincevent
@@ -77,11 +75,11 @@ public class GWTLanguageSwitcherLocaleBean extends BaseModelData {
         return get("language");
     }
 
-    public String getIconStyle() {
-        return get("iconStyle");
+    public String getImage() {
+        return get("image");
     }
 
-    public void setIconStyle(String iconStyle) {
-        set("iconStyle", iconStyle);
+    public void setImage(String image) {
+        set("image", image);
     }
 }

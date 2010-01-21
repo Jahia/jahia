@@ -49,8 +49,9 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      * @return
      */
     public PropertiesEditor getPropertiesEditorByLang(GWTLanguageSwitcherLocaleBean locale) {
-        if (langPropertiesEditorMap == null || locale == null) {
-            return getPropertiesEditor();
+        if (locale == null) {
+            Log.error("Locale is null");
+            return null;
         }
         return langPropertiesEditorMap.get(locale.getCountryIsoCode());
     }
@@ -80,6 +81,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             propertiesEditor = getPropertiesEditorByLang(locale);
 
             if (propertiesEditor == null) {
+                Log.debug("Create new Properties editor for lang: "+locale.getCountryIsoCode());
                 if (engine.isExistingNode() && engine.getNode().getNodeTypes().contains("jmix:shareable")) {
                     Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
                     label.setStyleAttribute("color", "rgb(200,80,80)");

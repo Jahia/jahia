@@ -677,12 +677,14 @@
                 <ref bean="org.jahia.toolbar.item.cut"/>
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
-                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
+                <ref bean="org.jahia.toolbar.item.ClipBoard"/>                
+                <ref bean="org.jahia.toolbar.item.translate"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.lock"/>
                 <ref bean="org.jahia.toolbar.item.unlock"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
+
             </list>
         </property>
     </bean>
@@ -2506,6 +2508,15 @@
         <property name="titleKey" value="toolbar.manager.button.zip"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-zip"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-zip"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.translate" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.TranslateActionItem"/>
+        </property>
+        <property name="titleKey" value="toolbar.manager.button.translate"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-translate"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-translate"/>
 
     </bean>
     <!-- end of new content action buttons -->

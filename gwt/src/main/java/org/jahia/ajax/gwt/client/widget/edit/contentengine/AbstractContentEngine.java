@@ -49,7 +49,6 @@ public abstract class AbstractContentEngine extends Window {
     protected GWTJahiaNode parentNode;
     protected GWTLanguageSwitcherLocaleBean defaultLanguageBean;
     protected ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher;
-    protected Button languageSwitcherMenu;
     protected ButtonBar buttonBar;
     protected String heading;
 
@@ -123,6 +122,7 @@ public abstract class AbstractContentEngine extends Window {
                 onLanguageChange();
             }
         });
+        languageSwitcher.setTemplate(getLangSwitchingTemplate());
         languageSwitcher.setTypeAhead(true);
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);
@@ -236,4 +236,16 @@ public abstract class AbstractContentEngine extends Window {
         }
         return getSelectedLang().getCountryIsoCode();
     }
+
+    /**
+     * LangSwithcing template
+     * @return
+     */
+    private static native String getLangSwitchingTemplate()  /*-{
+    return  [
+    '<tpl for=".">',
+    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+    '</tpl>'
+    ].join("");
+  }-*/;
 }

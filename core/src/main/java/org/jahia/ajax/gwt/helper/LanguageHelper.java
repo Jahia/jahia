@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
@@ -34,11 +33,11 @@ public class LanguageHelper {
             if (languageSettings != null && languageSettings.size() > 0) {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
-                for (String lang : orderedLangs) {
+                for (String langCode : orderedLangs) {
                     GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
-                    item.setCountryIsoCode(lang);
-                    item.setDisplayName(getDisplayName(lang));
-                    item.setIconStyle(getLangIconStyle(lang));
+                    item.setCountryIsoCode(langCode);
+                    item.setDisplayName(getDisplayName(langCode));
+                    item.setImage(getLangIcon(LanguageCodeConverters.languageCodeToLocale(langCode)));
                     items.add(item);
                 }
             }
@@ -58,18 +57,18 @@ public class LanguageHelper {
         GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
         item.setCountryIsoCode(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setIconStyle(getLangIconStyle(langCode));
+        item.setImage(getLangIcon(jParams.getLocale()));
         return item;
     }
 
     /**
      * Get icon style depending and the selected language
      *
-     * @param langCode
+     * @param locale
      * @return
      */
-    public static String getLangIconStyle(String langCode) {
-        return "gwt-toolbar-icon-lang-" + langCode;
+    public static String getLangIcon(Locale locale) {
+        return "/images/flags/plain/flag_" + locale.getCountry()+".png";
     }
 
     /**

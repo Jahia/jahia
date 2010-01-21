@@ -31,6 +31,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +96,17 @@ public class EditActions {
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
             new EditContentEngine(linker.getSelectedNode(), linker).show();
+        }
+    }
+
+
+    /**
+     * Show transla engine
+     * @param linker
+     */
+    public static void showTranslateEngine(Linker linker) {
+        if (linker.getMainNode() != null) {
+            new TranslateContentEngine(linker.getSelectedNode(), linker).show();
         }
     }
 

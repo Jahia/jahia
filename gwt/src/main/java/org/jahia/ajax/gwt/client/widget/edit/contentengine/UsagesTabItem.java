@@ -19,7 +19,7 @@ import java.util.Arrays;
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
-    public UsagesTabItem(EditContentEngine engine) {
+    public UsagesTabItem(AbstractContentEngine engine) {
         super(Messages.get("fm_usages", "Usages"), engine);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
     }

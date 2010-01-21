@@ -44,7 +44,3 @@
 <%@ taglib uri="http://www.jahia.org/tags/search" prefix="s" %>
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
-<utility:useConstants var="queryConstants" className="org.jahia.query.qom.JahiaQueryObjectModelConstants"
-                      scope="application"/>
-<utility:useConstants var="fieldTypeConstants" className="org.jahia.data.fields.FieldTypes"
-                      scope="application"/>

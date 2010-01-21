@@ -765,39 +765,7 @@ background-color:#eaeaea;
 	clear:both;
 	padding:10px 0 0 0;
 }
-#bodywrapper #illustration2{
-	clear:both;
-	height:294px;
-	width:640px;
-	background:transparent url(../img/illustration2.png) no-repeat top left ;
-	overflow:hidden;
-	display:block;
-}
-#bodywrapper .illustration2-text{
-	padding:70px 320px 30px 30px;
-	line-height:normal
-}
-#bodywrapper .illustration2-text,
-#bodywrapper .illustration2-text h2,
-#bodywrapper .illustration2-text h3,
-#bodywrapper .illustration2-text h4,
-#bodywrapper .illustration2-text h5{
-	color:#fff;
-	margin:0;
-}
-#bodywrapper .illustration2-text a,
-#bodywrapper .illustration2-text a:link,
-#bodywrapper .illustration2-text a:visited {
-	color:#fff;
-	text-decoration:underline;
-	background:none;
-}
-#bodywrapper .illustration2-text a:hover,
-#bodywrapper .illustration2-texta:active {
-	color:#fff;
-	text-decoration:none;
-	background:none;
-}
+
 /******************************************************************************
 * breadcrumb
 ******************************************************************************/

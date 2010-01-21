@@ -509,7 +509,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         UsersImportHandler usersImportHandler = new UsersImportHandler(site);
 
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,true);
+        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,true,null);
         List<String[]> catProps = null;
         List<String[]> userProps = null;
 
@@ -959,7 +959,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             switch (format) {
                 case XMLFormatDetectionHandler.JCR_DOCVIEW: {
                     if (JcrSessionFilter.getCurrentUser() != null) {
-                        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, true);
+                        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, true,null);
                         session.importXML(parentNodePath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                         session.save();
                     } else {
@@ -998,7 +998,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException, JahiaException {
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,true);
+        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,true,null);
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
 

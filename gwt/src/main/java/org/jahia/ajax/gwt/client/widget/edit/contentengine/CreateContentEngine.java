@@ -189,10 +189,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                        nodeName = ((TextField<?>) ((FormPanel) item.getItem(0)).getItem(0)).getRawValue();
-                        if (nodeName.equals("Automatically Created (you can type your name here if you want)")) {
-                            nodeName = targetName;
-                        }
+                       String nodeNameValue = ((ContentTabItem) item).getName().getValue();
+                       nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue)?targetName:nodeNameValue;
                     }
                 }
             } else if (item instanceof RightsTabItem) {

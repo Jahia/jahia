@@ -16,6 +16,11 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
  */
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
+    private TextField<String> name = new TextField<String>();
+
+    public TextField<String> getName() {
+        return name;
+    }
 
     public ContentTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
@@ -49,7 +54,6 @@ public class ContentTabItem extends PropertiesTabItem {
         formPanel.setBorders(false);
         formPanel.setBodyBorder(false);
         formPanel.setHeaderVisible(false);
-        TextField<String> name = new TextField<String>();
         name.setFieldLabel("Name");
         name.setName("name");
         if (engine.isExistingNode()) {

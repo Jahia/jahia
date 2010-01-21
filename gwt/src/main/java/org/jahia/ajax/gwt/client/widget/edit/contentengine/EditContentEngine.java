@@ -249,7 +249,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     // get node name
                     if (item instanceof ContentTabItem) {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                            node.setName(((TextField<?>) ((FormPanel) item.getItem(0)).getItem(0)).getRawValue());
+                            nodeName = ((ContentTabItem) item).getName().getValue();
                         }
                     }
 

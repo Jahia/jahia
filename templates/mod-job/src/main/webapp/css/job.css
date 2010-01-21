@@ -1,0 +1,121 @@
+/*****************************************************************************	*
+*  jobsSearchForm Form
+******************************************************************************/
+#bodywrapper div.jobsSearchForm{
+	clear:both;
+	margin:1em auto;
+	background:#fff url(img/jobform.png) repeat-x bottom left;
+	border:1px solid #ccc;
+	padding:0.5em 0;
+}
+#bodywrapper div.jobsSearchForm p{
+	clear:both;
+}
+#bodywrapper .jobsSearchForm legend{
+	display:none;
+}
+#bodywrapper .jobsSearchForm fieldset{
+	border:none;
+}
+#bodywrapper .jobsSearchForm label{
+	float:left; 
+	width:200px;
+	margin:0 1em 0 1em;
+	padding:2px;
+	text-align:right;
+}
+
+#bodywrapper .jobsSearchForm .divButton{
+	text-align:center;
+	margin:0.5em 0;
+}
+#bodywrapper .jobsSearchForm .Form input.button {
+	margin-left:0.5em;
+}
+#bodywrapper .jobsSearchForm {
+	margin-bottom:1em;
+	clear:both;
+	width:100%;
+	position:relative
+}
+/******************************************************************************
+*  job item
+******************************************************************************/
+#bodywrapper .jobLabel {
+font-weight:bold;
+}
+
+#bodywrapper .jobInfo{
+	border:1px solid #ccc;
+	float:right;
+	padding:10px;
+	margin:0 0 0.5em 0.5em ;
+	width:200px;
+}
+#bodywrapper .jobInfo p{
+	margin:0;
+	padding:0;
+}
+#bodywrapper .jobAction{
+	font-size:85%;
+	font-weight:bold;
+	clear:both;
+}
+#bodywrapper .jobAction a,
+#bodywrapper .jobAction a:link,
+#bodywrapper .jobAction a:visited {
+	margin-right:0.5em
+}
+#bodywrapper .jobAction a:hover,
+#bodywrapper .jobAction a:active {
+	text-decoration:underline;
+}
+#bodywrapper a.jobApply{
+	float:right;
+	background:transparent url(img/jobapply.png) no-repeat 0% 50%;
+	padding-left:16px;
+}
+#bodywrapper a.returnJobsList{
+	float:left;
+	background:transparent url(img/returnjobslist.png) no-repeat 0% 50%;
+	padding-left:16px;
+}
+/*****************************************************************************	*
+*  jobsApplyForm
+******************************************************************************/
+#bodywrapper div.jobsApplyForm{
+	clear:both;
+	margin:1em auto;
+	background:#fff url(img/jobform.png) repeat-x bottom left;
+	border:1px solid #ccc;
+	padding:0.5em 0;
+}
+#bodywrapper .jobsApplyForm legend{
+	display:none;
+}
+#bodywrapper .jobsApplyForm fieldset{
+	border:none;
+}
+#bodywrapper .jobsApplyForm label{
+	float:left; 
+	width:200px;
+	margin:0 1em 0 1em;
+	padding:2px;
+	text-align:right;
+}
+
+
+#bodywrapper .jobsApplyForm .divButton{
+	text-align:center;
+	margin:0.5em 0;
+}
+#bodywrapper .jobsApplyForm input.button {
+	margin-left:0.5em;
+}
+
+#bodywrapper .jobsApplyForm {
+	margin-bottom:1em;
+	clear:both;
+	width:100%;
+	position:relative
+}

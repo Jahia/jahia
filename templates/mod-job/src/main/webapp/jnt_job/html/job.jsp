@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="job.css"/>
 <c:set var="values" value="${currentNode.propertiesAsString}"/>
 <div class="spacer">
     <h2>${fn:escapeXml(values['jcr:title'])}</h2>
@@ -79,7 +80,9 @@
                             <textarea name="text" id="job-application-text"></textarea>
                         </p>
                     </fieldset>
-                    <input type="submit" class="button" value="Apply"/>
+                    <div class="divButton">
+                    	<input type="submit" class="button" value="Apply"/>
+                    </div>
                 </form>
             </div>
         </div>

@@ -5,12 +5,13 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<template:addResources type="css" resources="job.css"/>
 <!--start jobsSearchForm -->
 <div class="jobsSearchForm">
     <form action="${url.base}${renderContext.mainResource.node.path}.html" method="get">
         <fieldset>
             <legend><fmt:message key='jnt_jobOffers.search.form.label'/></legend>
-            <p class="jobsSearchKeyword">
+            <p class="field jobsSearchKeyword">
                 <label for="jobsSearchKeyword"><fmt:message key='job.keywordSearch'/></label>
                 <input type="text" name="jobsSearchKeyword" id="jobsSearchKeyword" class="field jobsSearchKeyword"
                        value="${param.jobsSearchKeyword}" tabindex="4"/>
@@ -36,17 +37,10 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <c:set var="listTitle" value="${fn:escapeXml(title.string)}"/>
 <c:if test="${empty listTitle}"><c:set var="listTitle"><fmt:message key="jobList"/></c:set></c:if>
-<div class="box4">
-    <div class="box4-topright"></div>
-    <div class="box4-topleft"></div>
-    <h3 class="box4-header"><span class="jobsTitle">${listTitle}</span></h3>
 
-    <div class="box4-bottomright"></div>
-    <div class="box4-bottomleft"></div>
-    <div class="clear"></div>
-</div>
+<h3>${listTitle}</h3>
 
-<table width="100%" class="tab" summary="">
+<table width="100%" class="table" summary="">
     <colgroup>
         <col span="1" width="60%" class="col1"/>
         <col span="1" width="20%" class="col2"/>

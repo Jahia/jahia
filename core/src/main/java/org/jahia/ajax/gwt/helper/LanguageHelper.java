@@ -1,7 +1,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
@@ -24,8 +24,8 @@ public class LanguageHelper {
      * @param jParams
      * @return
      */
-    public List<GWTLanguageSwitcherLocaleBean> getLanguages(ParamBean jParams) {
-        List<GWTLanguageSwitcherLocaleBean> items = new ArrayList<GWTLanguageSwitcherLocaleBean>();
+    public List<GWTJahiaLanguage> getLanguages(ParamBean jParams) {
+        List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
             final JahiaSite currentSite = jParams.getSite();
@@ -34,7 +34,7 @@ public class LanguageHelper {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
                 for (String langCode : orderedLangs) {
-                    GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
+                    GWTJahiaLanguage item = new GWTJahiaLanguage();
                     item.setCountryIsoCode(langCode);
                     item.setDisplayName(getDisplayName(langCode));
                     item.setImage(getLangIcon(langCode));
@@ -52,9 +52,9 @@ public class LanguageHelper {
      * @param jParams
      * @return
      */
-    public GWTLanguageSwitcherLocaleBean getCurrentLang(ParamBean jParams) {
+    public GWTJahiaLanguage getCurrentLang(ParamBean jParams) {
         String langCode = jParams.getLocale().toString();
-        GWTLanguageSwitcherLocaleBean item = new GWTLanguageSwitcherLocaleBean();
+        GWTJahiaLanguage item = new GWTJahiaLanguage();
         item.setCountryIsoCode(langCode);
         item.setDisplayName(getDisplayName(langCode));
         item.setImage(getLangIcon(langCode));

@@ -3,7 +3,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -11,8 +10,7 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -46,7 +44,7 @@ public class CreatePageTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTLanguageSwitcherLocaleBean locale) {
+    public void create(GWTJahiaLanguage locale) {
 
         setProcessed(true);
 

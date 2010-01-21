@@ -2,7 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
@@ -25,7 +25,7 @@ public class UsagesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTLanguageSwitcherLocaleBean locale) {
+    public void create(GWTJahiaLanguage locale) {
         setLayout(new FitLayout());
         if (engine.getNode() != null) {
             Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));

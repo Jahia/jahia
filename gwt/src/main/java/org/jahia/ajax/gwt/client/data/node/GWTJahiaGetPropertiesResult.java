@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.data.node;
 
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
@@ -49,8 +49,8 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
 	private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
     private Map<String, GWTJahiaNodeProperty> properties;
-    private List<GWTLanguageSwitcherLocaleBean> availabledLanguages;
-    private GWTLanguageSwitcherLocaleBean currentLocale;
+    private List<GWTJahiaLanguage> availabledLanguages;
+    private GWTJahiaLanguage currentLocale;
 
     public GWTJahiaGetPropertiesResult() {
     }
@@ -84,19 +84,19 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
     	this.node = node;
     }
 
-    public List<GWTLanguageSwitcherLocaleBean> getAvailabledLanguages() {
+    public List<GWTJahiaLanguage> getAvailabledLanguages() {
         return availabledLanguages;
     }
 
-    public void setAvailabledLanguages(List<GWTLanguageSwitcherLocaleBean> availabledLanguages) {
+    public void setAvailabledLanguages(List<GWTJahiaLanguage> availabledLanguages) {
         this.availabledLanguages = availabledLanguages;
     }
 
-    public GWTLanguageSwitcherLocaleBean getCurrentLocale() {
+    public GWTJahiaLanguage getCurrentLocale() {
         return currentLocale;
     }
 
-    public void setCurrentLocale(GWTLanguageSwitcherLocaleBean currentLocale) {
+    public void setCurrentLocale(GWTJahiaLanguage currentLocale) {
         this.currentLocale = currentLocale;
     }
 }

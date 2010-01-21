@@ -1,7 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-       
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -30,7 +30,7 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
     /**
      * Create the tab item
      */
-    public abstract void create(GWTLanguageSwitcherLocaleBean locale);
+    public abstract void create(GWTJahiaLanguage locale);
 
     
 }

@@ -53,15 +53,11 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 
@@ -140,7 +136,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         }
 //        Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
 //        Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
-        Map<String, GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>();
+        Map<String, GWTJahiaLanguage> availableLanguages = new HashMap<String, GWTJahiaLanguage>();
 //        Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
 //        for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
 //            final Locale value = stringLocaleEntry.getValue();

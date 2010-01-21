@@ -5,13 +5,10 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -47,8 +44,8 @@ public abstract class AbstractContentEngine extends Window {
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
     protected GWTJahiaNode parentNode;
-    protected GWTLanguageSwitcherLocaleBean defaultLanguageBean;
-    protected ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher;
+    protected GWTJahiaLanguage defaultLanguageBean;
+    protected ComboBox<GWTJahiaLanguage> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
 
@@ -112,13 +109,13 @@ public abstract class AbstractContentEngine extends Window {
      * init language switcher
      */
     private void initLanguageSwitcher() {
-        languageSwitcher = new ComboBox<GWTLanguageSwitcherLocaleBean>();
-        languageSwitcher.setStore(new ListStore<GWTLanguageSwitcherLocaleBean>());
+        languageSwitcher = new ComboBox<GWTJahiaLanguage>();
+        languageSwitcher.setStore(new ListStore<GWTJahiaLanguage>());
         languageSwitcher.setDisplayField("displayName");
         languageSwitcher.setVisible(false);
-        languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTLanguageSwitcherLocaleBean>() {
+        languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<GWTLanguageSwitcherLocaleBean> event) {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
                 onLanguageChange();
             }
         });
@@ -141,14 +138,14 @@ public abstract class AbstractContentEngine extends Window {
      *
      * @param languages
      */
-    protected void setAvailableLanguages(List<GWTLanguageSwitcherLocaleBean> languages) {
+    protected void setAvailableLanguages(List<GWTJahiaLanguage> languages) {
         if (languageSwitcher != null && !languageSwitcher.isVisible()) {
             //languageSwitcher.getStore().removeAll();
             if (languages != null && !languages.isEmpty()) {
                 languageSwitcher.getStore().add(languages);
                 languageSwitcher.setVisible(true);
 
-                List<GWTLanguageSwitcherLocaleBean> selected = new ArrayList<GWTLanguageSwitcherLocaleBean>();
+                List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
                 selected.add(defaultLanguageBean);
                 languageSwitcher.setSelection(selected);
             } else {
@@ -216,7 +213,7 @@ public abstract class AbstractContentEngine extends Window {
      *
      * @return
      */
-    public GWTLanguageSwitcherLocaleBean getSelectedLang() {
+    public GWTJahiaLanguage getSelectedLang() {
         if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
             Log.debug("language switcher value is null");
             return defaultLanguageBean;

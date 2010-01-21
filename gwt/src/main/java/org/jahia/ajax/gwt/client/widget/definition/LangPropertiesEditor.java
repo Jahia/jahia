@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -44,10 +44,10 @@ public class LangPropertiesEditor extends LayoutContainer {
     private List<GWTJahiaNodeType> mixin;
     private Map<String, GWTJahiaNodeProperty> properties;
     private GWTJahiaNode node;
-    private ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher;
+    private ComboBox<GWTJahiaLanguage> languageSwitcher;
     private VerticalPanel mainPanel;
     private boolean editable = true;
-    private GWTLanguageSwitcherLocaleBean displayedLocale = null;
+    private GWTJahiaLanguage displayedLocale = null;
 
     public LangPropertiesEditor(GWTJahiaNode node, String dataType, boolean editable) {
         this.node = node;
@@ -145,15 +145,15 @@ public class LangPropertiesEditor extends LayoutContainer {
      *
      * @return
      */
-    private ComboBox<GWTLanguageSwitcherLocaleBean> createLanguageSwitcher() {
-        ComboBox<GWTLanguageSwitcherLocaleBean> languageSwitcher = new ComboBox<GWTLanguageSwitcherLocaleBean>();
-        languageSwitcher.setStore(new ListStore<GWTLanguageSwitcherLocaleBean>());
+    private ComboBox<GWTJahiaLanguage> createLanguageSwitcher() {
+        ComboBox<GWTJahiaLanguage> languageSwitcher = new ComboBox<GWTJahiaLanguage>();
+        languageSwitcher.setStore(new ListStore<GWTJahiaLanguage>());
         languageSwitcher.setDisplayField("displayName");
         languageSwitcher.setVisible(false);
         languageSwitcher.setTemplate(getLangSwitchingTemplate());
-        languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTLanguageSwitcherLocaleBean>() {
+        languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<GWTLanguageSwitcherLocaleBean> event) {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
                 if (!event.getSelectedItem().getCountryIsoCode().equalsIgnoreCase(displayedLocale.getCountryIsoCode())) {
                     onLanguageSelectionChanged(event.getSelectedItem().getCountryIsoCode());
                 }
@@ -189,7 +189,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 if (displayedLocale == null) {
                     displayedLocale = result.getCurrentLocale();
                     languageSwitcher.setVisible(true);
-                    List<GWTLanguageSwitcherLocaleBean> selected = new ArrayList<GWTLanguageSwitcherLocaleBean>();
+                    List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
                     selected.add(result.getCurrentLocale());
                     languageSwitcher.getStore().add(result.getAvailabledLanguages());
                     languageSwitcher.setSelection(selected);

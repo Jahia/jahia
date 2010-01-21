@@ -2,8 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Label;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -48,7 +47,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      * @param locale
      * @return
      */
-    public PropertiesEditor getPropertiesEditorByLang(GWTLanguageSwitcherLocaleBean locale) {
+    public PropertiesEditor getPropertiesEditorByLang(GWTJahiaLanguage locale) {
         if (locale == null) {
             Log.error("Locale is null");
             return null;
@@ -61,7 +60,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      *
      * @param locale
      */
-    private void setPropertiesEditorByLang(GWTLanguageSwitcherLocaleBean locale) {
+    private void setPropertiesEditorByLang(GWTJahiaLanguage locale) {
         if (langPropertiesEditorMap == null || locale == null) {
             return;
         }
@@ -69,7 +68,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTLanguageSwitcherLocaleBean locale) {
+    public void create(GWTJahiaLanguage locale) {
         if (engine.getMixin() != null) {
             if (propertiesEditor != null) {
                 Log.debug("remove old properties editor from parents");

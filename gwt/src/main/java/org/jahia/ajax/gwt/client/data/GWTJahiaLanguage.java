@@ -29,15 +29,57 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.language;
+package org.jahia.ajax.gwt.client.data;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * Created by IntelliJ IDEA.
  * User: rincevent
- * Date: 7 nov. 2008
- * Time: 16:01:50
- * To change this template use File | Settings | File Templates.
+ * Date: 4 mars 2009
+ * Time: 15:59:05
  */
-public interface LanguageSelectedListener {
-    public void onLanguageSelected(String languageSelected);
+public class GWTJahiaLanguage extends BaseModelData {
+
+
+    public GWTJahiaLanguage(String displayName, String countryIsoCode) {
+        setDisplayName(displayName);
+        setCountryIsoCode(countryIsoCode);
+    }
+
+    public GWTJahiaLanguage() {
+
+    }
+
+    public String getDisplayName() {
+        return get("displayName");
+    }
+
+    public void setDisplayName(String displayName) {
+        set("displayName", displayName);
+    }
+
+    public String getCountryIsoCode() {
+        return get("countryIsoCode");
+    }
+
+    public void setCountryIsoCode(String countryIsoCode) {
+        set("countryIsoCode", countryIsoCode);
+    }
+
+    public void setLanguage(String language) {
+        set("language", language);
+    }
+
+    public String getLanguage() {
+        return get("language");
+    }
+
+    public String getImage() {
+        return get("image");
+    }
+
+    public void setImage(String image) {
+        set("image", image);
+    }
 }

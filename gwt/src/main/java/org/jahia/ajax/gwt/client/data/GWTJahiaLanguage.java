@@ -82,4 +82,12 @@ public class GWTJahiaLanguage extends BaseModelData {
     public void setImage(String image) {
         set("image", image);
     }
+
+    public Boolean isCurrent() {
+        return get("current");
+    }
+
+    public void setCurrent(Boolean current) {
+        set("current", current);
+    }
 }

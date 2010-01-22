@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -101,7 +102,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        tabs.add(new ContentTabItem(this, false));
+        tabs.add(new ContentTabItem(this));
         tabs.add(new LayoutTabItem(this));
         tabs.add(new MetadataTabItem(this));
         tabs.add(new ClassificationTabItem(this));
@@ -157,11 +158,29 @@ public class CreateContentEngine extends AbstractContentEngine {
         definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 mixin = result;
-                fillCurrentTab();
+                contentService.getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+                    public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
+                        if (gwtJahiaLanguages != null && gwtJahiaLanguages.isEmpty()) {
+                            setAvailableLanguages(gwtJahiaLanguages);
+                            for (GWTJahiaLanguage gwtJahiaLanguage : gwtJahiaLanguages) {
+                                if (gwtJahiaLanguage.isCurrent()) {
+                                    defaultLanguageBean = gwtJahiaLanguage;
+                                    break;
+                                }
+                            }
+                        }
+                        fillCurrentTab();
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        Log.error("Unable to load avalibale mixin", throwable);
+                    }
+                });
+
             }
 
             public void onFailure(Throwable caught) {
-
+                Log.error("Unable to load avalibale mixin", caught);
             }
         });
     }

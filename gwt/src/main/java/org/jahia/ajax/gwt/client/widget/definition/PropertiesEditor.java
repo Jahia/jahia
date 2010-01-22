@@ -181,7 +181,6 @@ public class PropertiesEditor extends FormPanel {
             }
 
             final Field field = FormFieldCreator.createField(definition, currentProperties.get(definition.getName()));
-            field.setBorders(false);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
                 templateField.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {

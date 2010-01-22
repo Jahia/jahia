@@ -143,11 +143,12 @@ public abstract class AbstractContentEngine extends Window {
             //languageSwitcher.getStore().removeAll();
             if (languages != null && !languages.isEmpty()) {
                 languageSwitcher.getStore().add(languages);
-                languageSwitcher.setVisible(true);
-
                 List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
                 selected.add(defaultLanguageBean);
                 languageSwitcher.setSelection(selected);
+                if (languages.size() > 1) {
+                    languageSwitcher.setVisible(true);
+                }
             } else {
                 languageSwitcher.setVisible(false);
             }
@@ -236,6 +237,7 @@ public abstract class AbstractContentEngine extends Window {
 
     /**
      * LangSwithcing template
+     *
      * @return
      */
     private static native String getLangSwitchingTemplate()  /*-{

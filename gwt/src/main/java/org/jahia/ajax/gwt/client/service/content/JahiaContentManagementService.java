@@ -36,6 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -218,6 +219,8 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
 
+
+    public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

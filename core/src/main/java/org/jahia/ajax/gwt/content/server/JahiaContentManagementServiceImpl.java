@@ -37,6 +37,7 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -745,6 +746,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         return map;
+    }
+
+    /**
+     * Get site languages
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException {
+        return languages.getLanguages(retrieveParamBean());
     }
 
 

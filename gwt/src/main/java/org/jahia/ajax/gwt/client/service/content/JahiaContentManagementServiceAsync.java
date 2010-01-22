@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -212,4 +213,11 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
+
+    /**
+     * Get site languages
+     * @param async
+     */
+    void getSiteLanguages(AsyncCallback<List<GWTJahiaLanguage>> async);
+
 }

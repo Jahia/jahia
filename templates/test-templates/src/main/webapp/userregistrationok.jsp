@@ -75,7 +75,7 @@ DIV#errors li { color : #B42C29; }
                         <h2><fmt:message key="newUserRegistration.success.title"/></h2>
                         <div><fmt:message key="newUserRegistration.success.intro"/>"</div>
                         <div>
-                            <a href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
+                            <a href="${url.current}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
                         </div>                        
                     </div>
                     <br class="clear"/>

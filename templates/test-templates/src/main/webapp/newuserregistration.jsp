@@ -120,7 +120,7 @@ DIV#errors li { color : #B42C29; }
                         </div>                                                  	
                         </form>
                         <div>
-                            <a href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
+                            <a href="${url.current}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
                         </div>                        
                     </div>
                     <br class="clear"/>

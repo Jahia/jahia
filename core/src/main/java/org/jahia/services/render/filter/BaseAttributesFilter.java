@@ -37,7 +37,7 @@ public class BaseAttributesFilter extends AbstractFilter {
         chain.pushAttribute(request, "currentResource", resource);
         chain.pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()));
 
-        setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
+        // setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
 
         String out;
         out = chain.doFilter(context, resource);

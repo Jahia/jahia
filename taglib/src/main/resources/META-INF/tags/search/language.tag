@@ -54,9 +54,9 @@
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? fn:replace(value , ' ', '') : ''}"/>
     <c:set var="value" value="${functions:default(paramValues['src_languages.values'], not empty value ? fn:split(value, ',') : null)}"/>
-    <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : jahia.processingContext.locale},"/>
+    <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.mainResource.locale},"/>
     <c:if test="${empty valueOptions}">
-        <c:set var="valueOptions" value="${fn:join(jahia.site.activeLanguageCodes, ',')}"/>
+        <c:set var="valueOptions" value="${fn:join(renderContext.site.activeLanguageCodes, ',')}"/>
     </c:if>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : false}"/>
     <c:set target="${attributes}" property="name" value="src_languages.values"/>
@@ -64,7 +64,7 @@
    		<c:if test="${allowAll}">
    			<option value=""><fmt:message key="searchForm.any"/></option>
    		</c:if>
-        <c:set var="currentLocale" value="${jahia.processingContext.locale}"/>
+        <c:set var="currentLocale" value="${renderContext.mainResource.locale}"/>
         <%
         for (String lang : ((String)jspContext.getAttribute("valueOptions")).split(",")) {
             jspContext.setAttribute("selectedLang", "," + lang + ",");

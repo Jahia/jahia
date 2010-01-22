@@ -533,7 +533,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * -1: if not defined
      * 0: not active
      * 1. active
-     */
+         */
     public int getUserDefaultHomepageDefActiveState () {
 
         try {
@@ -723,6 +723,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     public Set<String> getLanguages () {
         return languages;
     }
+
+    public String[] getActiveLanguageCodes() {
+        return getLanguages().toArray(new String[getLanguages().size()]);
+    }
+
 
     /**
      * Returns an List of site language  ( as Locale ).

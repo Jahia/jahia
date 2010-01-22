@@ -34,6 +34,7 @@ package org.jahia.bin;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.JahiaData;
@@ -545,8 +546,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             path = path.substring(index);
 
             RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
-            if ("live".equals(workspace) && renderContext.isEditMode()) {
+            final boolean isLive = Constants.LIVE_WORKSPACE.equals(workspace);
+            if (isLive && renderContext.isEditMode()) {
                 throw new AccessDeniedException();
+            }
+            if (isLive) {
+                renderContext.setLiveMode(true);
             }
 
 

@@ -246,12 +246,14 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        JCRObservationManager.setCurrentSession(this);
-        for (Session session : sessions.values()) {
-            session.save();
-        }
-
-        JCRObservationManager.consume(this);
+        JCRObservationManager.doWorkspaceWriteCall(this, new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
+                for (Session session : sessions.values()) {
+                    session.save();
+                }
+                return null;
+            }
+        });
     }
 
     public void refresh(boolean b) throws RepositoryException {

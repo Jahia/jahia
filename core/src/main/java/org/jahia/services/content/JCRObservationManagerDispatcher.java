@@ -34,12 +34,24 @@ public class JCRObservationManagerDispatcher extends DefaultEventListener {
     /**
      * This method is called when a bundle of events is dispatched.
      *
+     *
+     *
+     * The workspace-write methods are: •	Workspace.move, copy, clone, restore, importXML, createActivity,
+     * merge.
+     • Methods of org.xml.sax.ContentHandler acquired through Workspace.getContentHandler.
+     • Node.checkin, checkout, checkpoint, restore, restoreByLabel, update, merge, cancelMerge, doneMerge,
+     * createConfiguration, and followLifecycleTransition.
+     • LockManager.lock, and unlock. •	VersionHistory.addVersionLabel, removeVersionLabel and
+     * removeVersion.
+     • Session.save.
+     • Workspace.createWorkspace and deleteWorkspace (these create or delete another workspace, though they do not affect this workspace).
+     *
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
         while (events.hasNext()) {
             Event event = (Event) events.next();
-            
+
             JCRObservationManager.addEvent(event);
         }
     }

@@ -1533,8 +1533,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void checkpoint() {
         try {
-            objectNode.checkin();
-            objectNode.checkout();
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    objectNode.checkin();
+                    objectNode.checkout();
+                    return null;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Error setting checkpoint", e);
         }
@@ -1845,28 +1850,37 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
-        JCRVersion result = (JCRVersion) provider.getNodeWrapper(versionManager.checkin(objectNode.getPath()), session);
-        if (session.getLocale() != null) {
-            versionManager.checkin(getI18N(session.getLocale()).getPath());
-        }
+        return JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback<JCRVersion>(){
+            public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+                JCRVersion result = (JCRVersion) provider.getNodeWrapper(versionManager.checkin(objectNode.getPath()), session);
+                if (session.getLocale() != null) {
+                    versionManager.checkin(getI18N(session.getLocale()).getPath());
+                }
 
-        return result;
+                return result;
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
-        versionManager.checkout(objectNode.getPath());
-        if (session.getLocale() != null) {
-            try {
-                versionManager.checkout(getI18N(session.getLocale()).getPath());
-            } catch (ItemNotFoundException e) {
-                // no i18n node
+        JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback(){
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+                versionManager.checkout(objectNode.getPath());
+                if (session.getLocale() != null) {
+                    try {
+                        versionManager.checkout(getI18N(session.getLocale()).getPath());
+                    } catch (ItemNotFoundException e) {
+                        // no i18n node
+                    }
+                }
+                return null;
             }
-        }
+        });
     }
 
     /**

@@ -131,7 +131,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     void move(String source, String dest, boolean sessionMove) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        JCRStoreProvider provider = service.getProvider(source);
+        final JCRStoreProvider provider = service.getProvider(source);
         JCRStoreProvider destProvider = service.getProvider(dest);
         if (destProvider != provider) {
             try {
@@ -171,6 +171,14 @@ public class JCRWorkspaceWrapper implements Workspace {
                 if (sessionMove) {
                     session.getProviderSession(provider).move(source, dest);
                 } else {
+                    final String fSource = source;
+                    final String fDest = dest;
+                    JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            session.getProviderSession(provider).getWorkspace().move(fSource, fDest);
+                            return null;
+                        }
+                    });
                     session.getProviderSession(provider).getWorkspace().move(source, dest);
                 }
             }

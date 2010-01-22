@@ -172,6 +172,15 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
+    public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, JCRCallback<X> callback) throws RepositoryException {
+        setCurrentSession(session);
+        X res = callback.doInJCR(session);
+        consume(session);
+        return res;
+    }
+
+
+
     class EventConsumer {
         private JCRSessionWrapper session;
         private EventListener listener;

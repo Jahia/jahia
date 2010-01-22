@@ -224,10 +224,6 @@
         <path>/META-INF/tags/search/lastModifiedBy.tag</path>
     </tag-file>
     <tag-file>
-        <name>openSearchLink</name>
-        <path>/META-INF/tags/search/openSearchLink.tag</path>
-    </tag-file>
-    <tag-file>
         <name>pagePath</name>
         <path>/META-INF/tags/search/pagePath.tag</path>
     </tag-file>

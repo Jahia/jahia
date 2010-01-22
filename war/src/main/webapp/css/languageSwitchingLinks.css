@@ -903,7 +903,7 @@ span.flag_united_kingdom {
 }
 
 span.flag_serbia_and_montenegro {
-    background: url("images/flags/plain/flag_serbia_and_montenegro.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
 }
 
 span.flag_new_zealand {
@@ -959,7 +959,7 @@ span.flag_united_states {
 }
 
 span.flag_mexico {
-    background: url(images/flags/plain/flag_tant;
+    background: url("images/flags/plain/flag_mexico.png") no-repeat 0 0;
 }
 
 span.flag_sudan {
@@ -971,7 +971,7 @@ span.flag_indonesia {
 }
 
 span.flag_uruguay {
-    background: url("images/flags/plain/flag_uruguay.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_uruquay.png") no-repeat 0 0;
 }
 
 span.flag_latvia {
@@ -1023,11 +1023,11 @@ span.flag_netherlands {
 }
 
 span.flag_ecuador {
-    background: url("images/flags/plain/flag_ecuador.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_equador.png") no-repeat 0 0;
 }
 
 span.flag_taiwan {
-    background: url(images/flags/plain/flag_tant) no-repeat 0 0;
+    background: url("images/flags/plain/flag_taiwan.png") no-repeat 0 0;
 }
 
 span.flag_jordan {
@@ -1063,7 +1063,7 @@ span.flag_thailand {
 }
 
 span.flag_greece {
-    background: url(images/flags/plain/flag_tant) no-repeat 0 0;
+    background: url("images/flags/plain/flag_greece.png") no-repeat 0 0;
 }
 
 span.flag_italy {
@@ -1095,7 +1095,7 @@ span.flag_belgium {
 }
 
 span.flag_india {
-    background: url(images/flags/plain/flag_ant) no-repeat 0 0;
+    background: url("images/flags/plain/flag_india.png") no-repeat 0 0;
 }
 
 span.flag_spain {
@@ -1339,7 +1339,7 @@ span.flag_en_GB {
 }
 
 span.flag_sr_CS {
-    background: url("images/flags/plain/flag_serbia_and_montenegro.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
 }
 
 span.flag_en_NZ {
@@ -1407,7 +1407,7 @@ span.flag_in_ID {
 }
 
 span.flag_es_UY {
-    background: url("images/flags/plain/flag_uruguay.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_uruquay.png") no-repeat 0 0;
 }
 
 span.flag_lv_LV {
@@ -1459,7 +1459,7 @@ span.flag_nl_NL {
 }
 
 span.flag_es_EC {
-    background: url("images/flags/plain/flag_ecuador.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_equador.png") no-repeat 0 0;
 }
 
 span.flag_zh_TW {

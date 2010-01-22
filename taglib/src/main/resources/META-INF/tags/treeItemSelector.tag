@@ -76,8 +76,9 @@
 	<c:set var="org.jahia.tags.treeItemSelector.resources" value="true" scope="request"/>
 </c:if>
 <c:set var="root" value="${functions:default(root, renderContext.siteNode.path)}"/>
-<c:set var="fancyboxOptions" value="${functions:default(fancyboxOptions, '{}')}"/>
-<c:set var="treeviewOptions" value="${functions:default(treeviewOptions, '{}')}"/>
+<c:set var="emptyOptions" value="{}"/>
+<c:set var="fancyboxOptions" value="${functions:default(fancyboxOptions, emptyOptions)}"/>
+<c:set var="treeviewOptions" value="${functions:default(treeviewOptions, emptyOptions)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>

@@ -48,7 +48,7 @@ import org.jahia.services.JahiaService;
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
  * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
  * 
- * Queries can be created with the API by using the QueryObjectModel {@link org.jahia.query.qom.QOMBuilder}.
+ * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
  * It is also possible to use SQL-2 and the deprecated XPATH language. 
  * 

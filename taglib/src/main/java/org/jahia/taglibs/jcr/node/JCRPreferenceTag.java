@@ -32,7 +32,6 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -42,14 +41,12 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.servlet.jsp.JspException;
 
 /**
- * Created by IntelliJ IDEA.
- *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 8 déc. 2009
  */
 public class JCRPreferenceTag extends AbstractJahiaTag {
-    private transient static Logger logger = Logger.getLogger(JCRPreferenceTag.class);
+    private static final long serialVersionUID = 9045514505202851314L;
     private String var;
     private String name;
     private String defaultValue;
@@ -75,15 +72,27 @@ public class JCRPreferenceTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
-        final JahiaPreferencesService service = ServicesRegistry.getInstance().getJahiaPreferencesService();
-        JCRNodeWrapper value = service.getGenericPreferenceNode(name,
-                                                                Jahia.getThreadParamBean().getUser());
-        if (value == null && defaultValue !=null) {
-            service.setGenericPreferenceValue(name, defaultValue,
-                                              Jahia.getThreadParamBean());
-            value = service.getGenericPreferenceNode(name, Jahia.getThreadParamBean().getUser());
+        try {
+            final JahiaPreferencesService service = ServicesRegistry.getInstance().getJahiaPreferencesService();
+            JCRNodeWrapper value = service.getGenericPreferenceNode(name,
+                                                                    Jahia.getThreadParamBean().getUser());
+            if (value == null && defaultValue !=null) {
+                service.setGenericPreferenceValue(name, defaultValue,
+                                                  Jahia.getThreadParamBean());
+                value = service.getGenericPreferenceNode(name, Jahia.getThreadParamBean().getUser());
+            }
+            pageContext.setAttribute(var, value);
+        } finally {
+            resetState();
         }
-        pageContext.setAttribute(var, value);
         return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        defaultValue = null;
+        name = null;
+        var = null;
+        super.resetState();
     }
 }

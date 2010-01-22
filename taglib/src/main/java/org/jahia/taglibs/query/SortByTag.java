@@ -31,11 +31,12 @@
  */
 package org.jahia.taglibs.query;
 
-import org.apache.log4j.Logger;
-
 import javax.jcr.RepositoryException;
+import javax.jcr.query.qom.PropertyValue;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Used to specify query sorting parameters.
@@ -43,44 +44,37 @@ import javax.servlet.jsp.JspTagException;
  * Date: 7 nov. 2007
  * Time: 15:33:24
  */
-public class SortByTag extends QueryDefinitionDependentTag {
+public class SortByTag extends QOMBuildingTag {
 
     private static final long serialVersionUID = 7747723525104918964L;
-
-    private static Logger logger = Logger.getLogger(SortByTag.class);
 
     private String propertyName;
 
     private String order;
 
-    public int doStartTag() throws JspException {
-        QueryDefinitionTag queryModelDefTag = getQueryDefinitionTag();
+    @Override
+    public int doEndTag() throws JspException {
         try {
-            if (queryModelDefTag == null || queryModelDefTag.getQueryFactory()==null) {
-                return SKIP_BODY;
-            }
+            PropertyValue value = getQOMFactory().propertyValue(getSelectorName(), propertyName);
+            getQOMBuilder().getOrderings().add(
+                    StringUtils.equalsIgnoreCase("desc", order) ? getQOMFactory().descending(value) : getQOMFactory()
+                            .ascending(value));
         } catch (RepositoryException e) {
             throw new JspTagException(e);
+        } finally {
+            resetState();
         }
-        if (this.propertyName == null || this.propertyName.trim().equals("")){
-            return EVAL_BODY_BUFFERED;
-        }
-        try {
-            queryModelDefTag.addOrdering(getSelectorName(),getPropertyName(), getOrder());
-        } catch ( Exception t ){
-            logger.debug("Error creating ordering clause",t);
-            throw new JspException("Error creating Ordering node in SortBy Tag",t);
-        }
-        return EVAL_BODY_BUFFERED;
-    }
-
-    public int doEndTag() throws JspException {
-        propertyName = null;
-        propertyName = null;
-        order = null;
         return EVAL_PAGE;
     }
 
+    @Override
+    protected void resetState() {
+        propertyName = null;
+        propertyName = null;
+        order = null;
+        super.resetState();
+    }
+    
     public String getPropertyName() {
         return propertyName;
     }

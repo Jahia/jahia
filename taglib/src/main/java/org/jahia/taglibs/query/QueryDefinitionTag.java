@@ -31,197 +31,101 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.query.qom.QOMBuilder;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.taglibs.AbstractJahiaTag;
-
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.query.qom.*;
+import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.query.QOMBuilder;
+import org.jahia.taglibs.AbstractJCRTag;
 
 /**
- * This is the base tag for declaring Query object Model specified by the JSR-283.
- *
- * User: hollis
- * Date: 6 nov. 2007
- * Time: 15:42:29
+ * This is the base tag for declaring Query object Model specified by the
+ * JSR-283.
+ * 
+ * User: hollis Date: 6 nov. 2007 Time: 15:42:29
  */
-public class QueryDefinitionTag extends AbstractJahiaTag {
+public class QueryDefinitionTag extends AbstractJCRTag {
 
     private static final long serialVersionUID = -2792055054804614561L;
-    
-    public static final String SET_ACTION = "set";
-    public static final String APPEND_ACTION = "append";
-    public static final String REMOVE_ACTION = "remove";
 
-    protected QOMBuilder qomBuilder;
-
-    private QueryObjectModelFactory queryFactory;
-    private ValueFactory valueFactory;
-
-    private Properties properties;
+    private QOMBuilder qomBuilder;
 
     private QueryObjectModel queryObjectModel;
 
+    private int scope = PageContext.PAGE_SCOPE;
+
+    private String var;
+
     /**
-     *
      * @return
      * @throws JspException
      */
-    public int doEndTag () throws JspException {
-
+    @Override
+    public int doEndTag() throws JspException {
         try {
-            if (getId() != null) {
-                QueryObjectModel queryObjectModel;
-                try {
-                    queryObjectModel = this.getQueryObjectModel();
-                } catch (RepositoryException e) {
-                    throw new JspTagException(e);
-                }
-                if (queryObjectModel != null) {
-                    pageContext.setAttribute(getId(), queryObjectModel,
-                            PageContext.REQUEST_SCOPE);
-                } else {
-                    pageContext.removeAttribute(getId(), PageContext.REQUEST_SCOPE);
-                }
-            }
+            pageContext.setAttribute(getVar(), getQueryObjectModel(), getScope());
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
         } finally {
             resetState();
         }
-        
+
         return EVAL_PAGE;
     }
-    
-    @Override
-    protected void resetState() {
-        // let's reinitialize the tag variables to allow tag object reuse in
-        // pooling.
-        queryFactory = null;
-        valueFactory = null;
-        queryObjectModel = null;
-        id = null;
-        properties = null;
-        
-        super.resetState();
-    }
 
-
-
-    public QueryObjectModelFactory getQueryFactory() throws RepositoryException {
-        if (queryFactory == null){
-            qomBuilder = new QOMBuilder(getRenderContext().getMainResource().getLocale());
-            queryFactory = qomBuilder.getQomFactory();
+    /**
+     * Returns current QOM builder instance.
+     * 
+     * @return an instance of current {@link QOMBuilder}
+     * @throws JspTagException 
+     */
+    public QOMBuilder getQOMBuilder() throws JspTagException {
+        if (qomBuilder == null) {
+            try {
+                qomBuilder = new QOMBuilder(getJCRSession().getWorkspace().getQueryManager().getQOMFactory(), getJCRSession().getValueFactory());
+            } catch (RepositoryException e) {
+                throw new JspTagException(e);
+            }
         }
-        return queryFactory;
+        return qomBuilder;
     }
 
-    public ValueFactory getValueFactory() {
-        if (valueFactory == null){
-            valueFactory = ServicesRegistry.getInstance().getQueryService().getValueFactory();
-        }
-        return valueFactory;
-    }
-
-    public QueryObjectModel getQueryObjectModel() throws RepositoryException {
-        if (queryObjectModel == null){
-            queryObjectModel = this.createQueryObjectModel();
-        }
-        return queryObjectModel;
-    }
-
-    public void setQueryObjectModel(QueryObjectModel queryObjectModel) {
-        this.queryObjectModel = queryObjectModel;
-    }
-
-    public QueryObjectModel createQueryObjectModel() throws RepositoryException {
-        QueryObjectModelFactory queryFactory = this.getQueryFactory();
-        QueryObjectModel queryObjectModel = null;
-        if ( queryFactory != null ){
+    protected QueryObjectModel getQueryObjectModel() throws RepositoryException {
+        if (queryObjectModel == null) {
             queryObjectModel = qomBuilder.createQOM();
         }
         return queryObjectModel;
     }
 
-    public Constraint getConstraint() {
-        return this.qomBuilder.getConstraint();
+    protected int getScope() {
+        return scope;
     }
 
-    public void setConstraint(Constraint constraint) {
-        this.qomBuilder.setConstraint(constraint);
+    protected String getVar() {
+        return var;
     }
 
-    public Source getSource() {
-        return qomBuilder != null ? qomBuilder.getSource() : null;
+    @Override
+    protected void resetState() {
+        // let's reinitialize the tag variables to allow tag object reuse in
+        // pooling.
+        qomBuilder = null;
+        queryObjectModel = null;
+        id = null;
+        var = null;
+        scope = PageContext.PAGE_SCOPE;
+        super.resetState();
     }
 
-    public void setSource(Source source) {
-        this.qomBuilder.setSource(source);
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
     }
 
-    public Ordering[] getOrderings() {
-        Ordering[] orderings = new Ordering[]{};
-        if (this.qomBuilder.getOrderings() != null && !this.qomBuilder.getOrderings().isEmpty()){
-            orderings = this.qomBuilder.getOrderings().toArray(orderings);
-        }
-        return orderings;
-    }
-
-    public void setOrderings(Ordering[] orderings) {
-        List<Ordering> orderingsList = new ArrayList<Ordering>();
-        if (orderings != null){
-            orderingsList = Arrays.asList(orderings);
-        }
-        this.qomBuilder.setOrderings(orderingsList);
-    }
-
-    public void addOrdering(String selectorName, String propertyName, String order) throws RepositoryException {
-        Ordering ordering = null;
-        QueryObjectModelFactory queryFactory = getQueryFactory();
-        PropertyValue propValue = queryFactory.propertyValue(selectorName, propertyName.trim());
-
-        if (order != null && order.length() > 0 && "desc".equals(order)) {
-            ordering = queryFactory.descending(propValue);
-        } else {
-            ordering = queryFactory.ascending(propValue);
-        }
-        this.qomBuilder.addOrdering(ordering);
-    }
-
-    public Column[] getColumns() {
-        if (this.qomBuilder.getColumns()== null || this.qomBuilder.getColumns().isEmpty()){
-            return new Column[]{};
-        }
-        return this.qomBuilder.getColumns().toArray(new Column[] {});
-    }
-
-    public void setColumns(Column[] columns) {
-        List<Column> columnsList = new ArrayList<Column>();
-        if (columns != null){
-            columnsList = Arrays.asList(columns);
-        }
-        this.qomBuilder.setColumns(columnsList);
-    }
-
-    public Properties getProperties() {
-        if (properties == null) {
-            properties = new Properties();
-        }
-        return properties;
-    }
-
-    public void andConstraint(Constraint c) throws Exception {
-        this.qomBuilder.andConstraint(c);
-    }
-
-    public void orConstraint(Constraint c) throws Exception {
-        this.qomBuilder.orConstraint(c);
+    public void setVar(String var) {
+        this.var = var;
     }
 
 }

@@ -33,20 +33,15 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.AbstractJCRTag;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.Locale;
 
 /**
  * Tag exposing a JCR node.
@@ -55,7 +50,9 @@ import java.util.Locale;
  * Date: 27 mai 2009
  * Time: 14:06:08
  */
-public class JCRNodeTag extends AbstractJahiaTag {
+public class JCRNodeTag extends AbstractJCRTag {
+
+    private static final long serialVersionUID = 5546424686123575512L;
 
     private final static Logger logger = Logger.getLogger(JCRNodeTag.class);
 
@@ -77,20 +74,12 @@ public class JCRNodeTag extends AbstractJahiaTag {
 
     public int doStartTag() throws JspException {
         ProcessingContext ctx = getProcessingContext();
-        String workspace = null;
-        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-        if (currentResource != null) {
-            workspace = currentResource.getWorkspace();
-            locale = currentResource.getLocale();
-        }
+        Resource currentResource = getCurrentResource();
         if (ctx != null) {
             try {
-                JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper node;
                 if (path.startsWith("/")) {
-                    node = service.getSessionFactory().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getNode(path);
+                    node = getJCRSession().getNode(path);
                 } else {
                     node = currentResource.getNode().getNode(path);
                 }
@@ -107,9 +96,15 @@ public class JCRNodeTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() throws JspException {
-        path = null;
-        scope = PageContext.PAGE_SCOPE;
+        resetState();
         return EVAL_PAGE;
     }
-
+    
+    @Override
+    protected void resetState() {
+        path = null;
+        scope = PageContext.PAGE_SCOPE;
+        var = null;
+        super.resetState();
+    }
 }

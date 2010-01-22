@@ -31,11 +31,7 @@
  */
 package org.jahia.taglibs.query;
 
-import javax.jcr.query.qom.Selector;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
@@ -48,41 +44,28 @@ import javax.servlet.jsp.JspTagException;
  * Date: 8 nov. 2007
  * Time: 13:08:23
  */
-@SuppressWarnings("serial")
-public class SelectorTag extends QueryDefinitionDependentTag {
+public class SelectorTag extends QOMBuildingTag {
 
-    private static Logger logger = Logger.getLogger(SelectorTag.class);
+    private static final long serialVersionUID = -4715677329006113172L;
 
     private String nodeTypeName;
-    public int doStartTag() throws JspException {
-        QueryDefinitionTag queryDefinitionTag = getQueryDefinitionTag();
-        
-        if (StringUtils.isEmpty(nodeTypeName)) {
-            throw new JspTagException("Attribute nodeTypeName is required for tag " + this.getClass().getName());
-        }
-        nodeTypeName = nodeTypeName.trim();
-        if (getSelectorName() == null) {
-            setSelectorName(nodeTypeName);
-        }
-
-        try {
-            Selector selector = queryDefinitionTag.getQueryFactory().selector(nodeTypeName, getSelectorName());
-            if (selector != null) {
-                queryDefinitionTag.setSource(selector);
-            }
-        } catch (Exception t) {
-            logger.debug("Exception occurred creating Selector Node", t);
-            throw new JspException("Exception occurred creating Selector Node", t);
-        }
-
-        return EVAL_BODY_BUFFERED;
-    }
 
     public int doEndTag() throws JspException {
-        resetState();
+        try {
+            if (getSelectorName() == null) {
+                setSelectorName(nodeTypeName);
+            }
+
+            getQOMBuilder().setSource(getQOMFactory().selector(nodeTypeName, getSelectorName()));
+        } catch (RepositoryException e) {
+            throw new JspTagException(e);
+        } finally {
+            resetState();
+        }
+
         return EVAL_PAGE;
     }
-    
+
     @Override
     protected void resetState() {
         nodeTypeName = null;

@@ -46,7 +46,6 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
-import javax.validation.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +56,7 @@ import java.util.Map;
  * @author cmailleux
  */
 public class JCRPropertyInitializerTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 3235254134426302521L;
     private transient static Logger logger = Logger.getLogger(JCRPropertyInitializerTag.class);
     private JCRNodeWrapper node;
     private String nodeType;
@@ -124,6 +124,8 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            resetState();
         }
         return EVAL_PAGE;
     }
@@ -145,5 +147,14 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
      */
     public void setVar(String var) {
         this.var = var;
+    }
+    
+    @Override
+    protected void resetState() {
+        name = null;
+        node = null;
+        nodeType = null;
+        var = null;
+        super.resetState();
     }
 }

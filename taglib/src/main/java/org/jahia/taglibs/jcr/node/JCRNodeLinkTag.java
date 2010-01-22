@@ -33,9 +33,7 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.AbstractJCRTag;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 
@@ -52,7 +50,9 @@ import java.io.IOException;
  * Date: 27 mai 2009
  * Time: 16:14:28
  */
-public class JCRNodeLinkTag extends AbstractJahiaTag {
+public class JCRNodeLinkTag extends AbstractJCRTag {
+
+    private static final long serialVersionUID = -8322805743385450335L;
 
     private final static Logger logger = Logger.getLogger(JCRNodeTag.class);
 
@@ -71,9 +71,8 @@ public class JCRNodeLinkTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         ProcessingContext ctx = getProcessingContext();
         if (ctx != null) {
-            JahiaUser user = ctx.getUser();
             try {
-                node = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(path);
+                node = getJCRSession().getNode(path);
                 if (node.isFile()) {
                     StringBuilder link = new StringBuilder("<a href=\"");
                     if (absolute) {
@@ -107,10 +106,15 @@ public class JCRNodeLinkTag extends AbstractJahiaTag {
                 logger.error(e.toString(), e);
             }
         }
-        path = null;
-        absolute = false;
-        node = null;
+        resetState();
         return EVAL_PAGE;
     }
 
+    @Override
+    protected void resetState() {
+        absolute = false;
+        node = null;
+        path = null;
+        super.resetState();
+    }
 }

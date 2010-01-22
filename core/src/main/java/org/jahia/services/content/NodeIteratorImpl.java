@@ -33,7 +33,9 @@ package org.jahia.services.content;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Jahia's wrapper of the JCR <code>javax.jcr.NodeIterator</code>.
@@ -41,6 +43,8 @@ import java.util.Iterator;
  * @author toto 
  */
 public class NodeIteratorImpl extends RangeIteratorImpl implements NodeIterator {
+    
+    public static final NodeIteratorImpl EMPTY = new NodeIteratorImpl(new LinkedList<Node>().iterator(), 0);
 
     public NodeIteratorImpl(Iterator<? extends Node> iterator, long size) {
         super(iterator, size);

@@ -56,6 +56,7 @@ import java.util.Map;
  * @author cmailleux
  */
 public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 1707457930932639809L;
     private transient static Logger logger = Logger.getLogger(JCRPropertyCustomRendererTag.class);
     private JCRNodeWrapper node;
     private String name;
@@ -119,8 +120,7 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
-        node = null;
-        name = null;
+        resetState();
         return EVAL_PAGE;
     }
 
@@ -145,5 +145,14 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
 
     public void setRenderer(String renderer) {
         this.renderer = renderer;
+    }
+    
+    @Override
+    protected void resetState() {
+        name = null;
+        node = null;
+        renderer = null;
+        var = null;
+        super.resetState();
     }
 }

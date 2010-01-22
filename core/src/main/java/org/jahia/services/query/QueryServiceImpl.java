@@ -100,7 +100,6 @@ import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -113,7 +112,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
  * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
  * 
- * Queries can be created with the API by using the QueryObjectModel {@link org.jahia.query.qom.QOMBuilder}.
+ * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
  * It is also possible to use SQL-2 and the deprecated XPATH language. 
  * 
@@ -131,20 +130,20 @@ public class QueryServiceImpl extends QueryService {
     private static QueryService singletonInstance = null;
 
     /**
-     * The initiatlization mode for the first QOM traversing iteration
+     * The initialization mode for the first QOM traversing iteration
      */    
-    public static int INITIALIZE_MODE = 1;
+    private static int INITIALIZE_MODE = 1;
     
     /**
      * The check for modification mode for the second QOM traversing iteration
      */
-    public static int CHECK_FOR_MODIFICATION_MODE = 2;
+    private static int CHECK_FOR_MODIFICATION_MODE = 2;
     
     /**
      * The optional modification mode for the third QOM traversing iteration only called
      * if query modification is necessary.
      */
-    public static int MODIFY_MODE = 3;
+    private static int MODIFY_MODE = 3;
 
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
 
@@ -159,26 +158,26 @@ public class QueryServiceImpl extends QueryService {
      * 
      * @return The unique service instance.
      */
-    public synchronized static QueryService getInstance() {
+    public static QueryService getInstance() {
         if (singletonInstance == null) {
-            singletonInstance = new QueryServiceImpl();
+            synchronized (QueryServiceImpl.class) {
+                if (singletonInstance == null) {
+                    singletonInstance = new QueryServiceImpl();
+                }
+            }
         }
         return singletonInstance;
     }
 
     /**
-     * Initializes the servlet dispatching service with parameters loaded from
-     * the Jahia configuration file.
-     * 
-     * @throws org.jahia.exceptions.JahiaInitializationException
-     *             thrown in the case of an error during this initialization,
-     *             that will be treated as a critical error in Jahia and
-     *             probably stop execution of Jahia once and for all.
+     * Initializes the service.
      */
-    public void start() throws JahiaInitializationException {
+    public void start() {
+        // do nothing
     }
 
     public void stop() {
+        // do nothing
     }
 
     /**

@@ -44,9 +44,9 @@ public class RangeIteratorImpl implements RangeIterator {
 
     private long size;
     private long pos=0;
-    private Iterator iterator;
+    private Iterator<?> iterator;
 
-    public RangeIteratorImpl(Iterator iterator, long size) {
+    public RangeIteratorImpl(Iterator<?> iterator, long size) {
         this.iterator = iterator;
         this.size = size;
     }

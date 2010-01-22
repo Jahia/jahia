@@ -31,14 +31,8 @@
  */
 package org.jahia.taglibs.query;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-
-import org.apache.log4j.Logger;
 
 /**
  * Base query constraint tag class.
@@ -46,73 +40,27 @@ import org.apache.log4j.Logger;
  * Date: 7 nov. 2007
  * Time: 15:36:14
  */
-@SuppressWarnings("serial")
-public abstract class ConstraintTag extends QueryDefinitionDependentTag {
+public abstract class ConstraintTag extends QOMBuildingTag {
 
-    private static Logger logger = Logger.getLogger(ConstraintTag.class);
+    private static final long serialVersionUID = 4590901723948727733L;
 
-    private ConstraintTag compoundConstraintTag = null;
-    private QueryObjectModelFactory queryFactory = null;
-    private ValueFactory valueFactory = null;
-
-    public int doStartTag() throws JspException {
-        QueryDefinitionTag queryModelDefTag = getQueryDefinitionTag();
-
+    @Override
+    public final int doEndTag() throws JspException {
         try {
-            this.queryFactory = queryModelDefTag.getQueryFactory();
-        } catch (RepositoryException e) {
-            throw new JspTagException(e);
-        }
-        this.valueFactory = queryModelDefTag.getValueFactory();
-        if (this.queryFactory == null || this.valueFactory == null){
-            logger.warn("QueryFactory or ValueFactory is null!");
-            return SKIP_BODY;
-        }
-        compoundConstraintTag = (ConstraintTag) findAncestorWithClass(this,
-                ConstraintTag.class);
-
-        return EVAL_BODY_BUFFERED;
-    }
-
-    public int doEndTag() throws JspException {
-        try {
-            Constraint c = getConstraint();
-            if ( c != null ){
-                if ( compoundConstraintTag == null ){
-                    getQueryDefinitionTag().andConstraint(c);
-                } else {
-                    compoundConstraintTag.addChildConstraint(c);
-                }
+            CompoundConstraintTag compoundConstraintTag = (CompoundConstraintTag) findAncestorWithClass(this, CompoundConstraintTag.class);
+            if (compoundConstraintTag != null) {
+                // this constraint is nested within a compound constraint tag (AND or OR) 
+                compoundConstraintTag.addConstraint(getConstraint());
+            } else {
+                getQOMBuilder().andConstraint(getConstraint());
             }
-        } catch ( Exception t ){
-            logger.debug(t);
-            throw new JspException("Error with constraint",t);
+        } catch (Exception e) {
+            throw new JspException(e);
         } finally {
             resetState();
         }
         return EVAL_PAGE;
     }
-    
-    @Override
-    protected void resetState() {
-        compoundConstraintTag = null;
-        queryFactory = null;
-        valueFactory = null;
-        super.resetState();
-    }
 
-    public QueryObjectModelFactory getQueryFactory(){
-        return this.queryFactory;
-    }
-
-    public ValueFactory getValueFactory() {
-        return valueFactory;
-    }
-
-    public abstract Constraint getConstraint() throws Exception;
-
-    public void addChildConstraint(Constraint constraint){
-        // by default do nothing
-    }
-
+    protected abstract Constraint getConstraint() throws Exception;
 }

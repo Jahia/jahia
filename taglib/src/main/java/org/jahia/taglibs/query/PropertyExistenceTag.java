@@ -39,6 +39,8 @@ import javax.jcr.query.qom.PropertyExistence;
  * Used to create a {@link PropertyExistence} constraint for the query.
  * 
  * @author Sergiy Shyrkov
+ * 
+ * @since 6.5
  */
 public class PropertyExistenceTag extends ConstraintTag {
 
@@ -46,19 +48,9 @@ public class PropertyExistenceTag extends ConstraintTag {
 
     private String propertyName;
 
-    private Constraint constraint;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.taglibs.query.ConstraintTag#getConstraint()
-     */
     @Override
     public Constraint getConstraint() throws Exception {
-        if (constraint == null) {
-            constraint = getQueryFactory().propertyExistence(getSelectorName(), propertyName);
-        }
-        return constraint;
+        return getQOMFactory().propertyExistence(getSelectorName(), propertyName);
     }
 
     /**
@@ -74,7 +66,6 @@ public class PropertyExistenceTag extends ConstraintTag {
     @Override
     protected void resetState() {
         propertyName = null;
-        constraint = null;
         super.resetState();
     }
 

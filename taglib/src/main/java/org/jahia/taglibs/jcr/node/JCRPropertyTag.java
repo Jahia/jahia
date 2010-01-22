@@ -108,8 +108,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                 } else {
                     try {
                         curNode = curNode.getParent();
-                    }
-                    catch (ItemNotFoundException e2) {
+                    } catch (ItemNotFoundException e2) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
                         }
@@ -141,9 +140,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
-        node = null;
-        name = null;
-        inherited = false;
+        resetState();
         return EVAL_PAGE;
     }
 
@@ -175,5 +172,14 @@ public class JCRPropertyTag extends AbstractJahiaTag {
 
     public void setInherited(boolean inherited) {
         this.inherited = inherited;
+    }
+    
+    @Override
+    protected void resetState() {
+        node = null;
+        name = null;
+        inherited = false;
+        var = null;
+        super.resetState();
     }
 }

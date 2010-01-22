@@ -31,7 +31,6 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
 import org.apache.log4j.Logger;
 import org.drools.util.StringUtils;
 import org.jahia.bin.Jahia;
@@ -88,7 +87,7 @@ public class JCRTagUtils {
     }
 
     /**
-     * Get the label value dependind on the local
+     * Get the label value depending on the locale
      *
      * @param nodeObject
      * @param locale as a string
@@ -139,7 +138,7 @@ public class JCRTagUtils {
         } catch (RepositoryException e) {
             logger.error("Error while retrieving nodes", e);
         }
-        return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
+        return NodeIteratorImpl.EMPTY;
     }
 
     /**
@@ -178,7 +177,7 @@ public class JCRTagUtils {
     /**
      * Returns an iterator with the child nodes of the current node, which match
      * the specified node type name. This is an advanced version of the
-     * {@link #getNodes(JCRNodeWrapper, String)} method to handle multilpe node
+     * {@link #getNodes(JCRNodeWrapper, String)} method to handle multiple node
      * types.
      * 
      * @param node current node whose children will be queried
@@ -212,9 +211,9 @@ public class JCRTagUtils {
         return children;
     }
 
-    public static Map getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {
+    public static Map<String, String> getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {
         NodeIterator nodeNames = getNodes(nodeContainingNodeNames,type);
-        Map props = new LinkedHashMap();
+        Map<String, String> props = new LinkedHashMap<String, String>();
         while (nodeNames.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeNames.next();
             final String name = nodeWrapper.getName();

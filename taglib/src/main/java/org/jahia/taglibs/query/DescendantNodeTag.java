@@ -32,7 +32,6 @@
 package org.jahia.taglibs.query;
 
 import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.DescendantNode;
 
 /**
  * Tag used to create a DescendantNode Constraint
@@ -41,16 +40,15 @@ import javax.jcr.query.qom.DescendantNode;
  * Date: 7 nov. 2007
  * Time: 15:33:24
  */
-@SuppressWarnings("serial")
 public class DescendantNodeTag extends ConstraintTag  {
 
-    private DescendantNode descendantNode;
+    private static final long serialVersionUID = 5648996340664258872L;
+    
     private String path;
 
     @Override
     protected void resetState() {
         path = null;
-        descendantNode = null;
         super.resetState();
     }
     
@@ -58,17 +56,8 @@ public class DescendantNodeTag extends ConstraintTag  {
         this.path = path;
     }
 
+    @Override
     public Constraint getConstraint() throws Exception {
-        if ( descendantNode != null ){
-            return descendantNode;
-        }
-        if (path.trim().length() == 0){
-            return null;
-        }
-        
-        descendantNode = this.getQueryFactory().descendantNode(getSelectorName(), path);
-
-        return descendantNode;
+        return getQOMFactory().descendantNode(getSelectorName(), path);
     }
-
 }

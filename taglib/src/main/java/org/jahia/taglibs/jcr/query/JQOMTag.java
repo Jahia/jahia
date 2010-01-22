@@ -31,16 +31,6 @@
  */
 package org.jahia.taglibs.jcr.query;
 
-import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.QueryResultAdapter;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.taglibs.query.QueryDefinitionTag;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
@@ -48,9 +38,9 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.jahia.taglibs.query.QueryDefinitionTag;
 
 /**
  * Tag implementation for exposing a result of a QueryObjectModel query into the template
@@ -60,112 +50,70 @@ import java.util.Locale;
 public class JQOMTag extends QueryDefinitionTag {
     private static final Logger logger = Logger.getLogger(JQOMTag.class);
 
-    private int scope = PageContext.PAGE_SCOPE;
-
-    private String var;
-
     private String qomBeanName;
-
-    public int doStartTag() throws JspException {
-        return super.doStartTag();
-    }
-
-    // Body is evaluated one time, so just writes it on standard output
-    public int doAfterBody() throws JspException {
-        int result = super.doAfterBody();
-
-        if (this.getQomBeanName() != null && getId() != null) {
-            pageContext.removeAttribute(getId(), PageContext.REQUEST_SCOPE);
-        }
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (IOException ioe) {
-            throw new JspTagException(ioe);
-        }
-        return result;
-    }
+    private long limit;
+    private long offset;
 
     public int doEndTag() throws JspException {
-        QueryObjectModel queryModel;
         try {
-            queryModel = this.getQomBeanName() == null ? this.getQueryObjectModel()
-                    : (QueryObjectModel) pageContext.getAttribute(this.getQomBeanName(), PageContext.REQUEST_SCOPE);
+            QueryObjectModel queryModel = qomBeanName == null ? getQueryObjectModel() : (QueryObjectModel) pageContext.getAttribute(qomBeanName, PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute(getVar(), findQueryResultByQOM(queryModel), getScope());
         } catch (RepositoryException e) {
             throw new JspTagException(e);
+        } finally {
+            resetState();
         }
-
-        try {
-            pageContext.setAttribute(var, findQueryResultByQOM(getUser(), queryModel), scope);
-        } catch (RepositoryException e) {
-            throw new JspTagException(e);
-        }
-
-        int result = super.doEndTag();
-        resetState();
-        return result;
+        
+        return EVAL_PAGE;
     }
 
     /**
-     * Find Node iterator by principal and QueryObjectModel.
+     * Executes the query of the provided QueryObjectModel.
      * 
-     * @param p
-     *            the principal
      * @param queryModel
      *            a QueryObjectModel to perform the JCR query
-     * @return the {@link javax.jcr.NodeIterator} instance with the results of
-     *         the query; returns empty iterator if nothing is found
+     * @return the {@link QueryResult} instance with the results of
+     *         the query
      * @throws RepositoryException 
      * @throws InvalidQueryException 
      */
-    private QueryResult findQueryResultByQOM(Principal p, QueryObjectModel queryModel) throws InvalidQueryException, RepositoryException {
+    private QueryResult findQueryResultByQOM(QueryObjectModel queryModel) throws InvalidQueryException, RepositoryException {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by qom [ " + queryModel.getStatement() + " ]");
         }
-        if (p instanceof JahiaGroup) {
-            throw new UnsupportedOperationException("method not implemented for JahiaGroup");
+        if (limit > 0) {
+            queryModel.setLimit(limit);
         }
-
-        String workspace = null;
-        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-        Resource currentResource = getCurrentResource();
-        if (currentResource != null) {
-            workspace = currentResource.getWorkspace();
-            locale = currentResource.getLocale();
+        if (offset > 0) {
+            queryModel.setOffset(offset);
         }
-        queryResult = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getWorkspace().execute(
-                queryModel);
         // execute query
+        queryResult = queryModel.execute();
         if (logger.isDebugEnabled()) {
             logger.debug("Query[" + queryModel.getStatement() + "] --> found [" + queryResult + "] values.");
         }
 
-        return queryResult != null ? queryResult : new QueryResultAdapter();
-    }
-
-    public String getQomBeanName() {
-        return qomBeanName;
+        return queryResult;
     }
 
     @Override
     protected void resetState() {
-        super.resetState();
-        scope = PageContext.PAGE_SCOPE;
         qomBeanName = null;
-        var = null;
-    }
-
-    public void setScope(String scope) {
-        this.scope = Util.getScope(scope);
-    }
-
-    public void setVar(String var) {
-        this.var = var;
+        limit = 0;
+        offset = 0;
+        super.resetState();
     }
 
     public void setQomBeanName(String qomBeanName) {
         this.qomBeanName = qomBeanName;
     }
 
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
+    
+    public void setOffset(long offset) {
+        this.offset = offset;
+    }
 }

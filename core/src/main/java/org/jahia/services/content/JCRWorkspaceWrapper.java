@@ -32,10 +32,8 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.query.qom.QueryExecute;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.query.QueryServiceImpl;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.query.QueryManagerImpl;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.*;
@@ -45,14 +43,14 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.*;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionManager;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Jahia specific wrapper around <code>javax.jcr.Workspace</code> to be able to inject
@@ -184,7 +182,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public QueryManager getQueryManager() {
-        return new QueryManagerImpl();
+        return new QueryManagerImpl(session, service);
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
@@ -232,284 +230,6 @@ public class JCRWorkspaceWrapper implements Workspace {
 
     public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
-    }
-
-    /**
-     *
-     * @param queryObjectModel
-     * @return
-     * @throws javax.jcr.query.InvalidQueryException
-     * @throws RepositoryException
-     */
-    public QueryResult execute(QueryObjectModel queryObjectModel) throws InvalidQueryException,
-                    RepositoryException {
-
-        List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
-        for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
-            QueryManager qm = jcrStoreProvider.getQueryManager(session);
-            if (qm != null && qm instanceof org.jahia.query.qom.QueryManagerImpl)  {
-                QueryObjectModel qom = ((org.jahia.query.qom.QueryManagerImpl)qm).getQOMFactory()
-                        .createQuery(queryObjectModel.getSource(),
-                        queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
-                if (qom != null){
-                    qom.execute();
-                }
-            } else if (qm != null && qm instanceof JCRStoreQueryManagerAdapter) {
-                QueryObjectModel qom = qm.getQOMFactory().createQuery(queryObjectModel.getSource(),
-                        queryObjectModel.getConstraint(), queryObjectModel.getOrderings(),
-                        queryObjectModel.getColumns());
-                if (qom != null) {
-                    QueryResult result = qom.execute();
-                    if (result != null) {
-                        results.add(new QueryResultWrapper(jcrStoreProvider, result, session.getUser()));
-                    }
-                }
-            }
-        }
-        return new QueryResultAdapter(results);
-    }
-
-    class QueryManagerImpl extends org.jahia.query.qom.QueryManagerImpl {
-
-        QueryManagerImpl() {
-            super();
-        }
-
-        public QueryExecute getQueryExecute() {
-            return new QueryExecute(){
-                public QueryResult execute(QueryObjectModel queryObjectModel) throws RepositoryException {
-                    List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
-                    for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
-                        QueryManager qm = jcrStoreProvider.getQueryManager(session);
-                        if (qm != null
-                                && qm instanceof JCRStoreQueryManagerAdapter) {
-                            QueryObjectModel qom = qm.getQOMFactory().createQuery(
-                                            queryObjectModel.getSource(),
-                                            queryObjectModel.getConstraint(),
-                                            queryObjectModel.getOrderings(),
-                                            queryObjectModel.getColumns());
-                            if (qom != null) {
-                                QueryResult result = qom.execute();
-                                if (result != null) {
-                                    results.add(new QueryResultWrapper(jcrStoreProvider, result, session.getUser()));
-                                }
-                            }
-                        }
-
-                    }
-                    return new QueryResultAdapter(results);
-                }
-            };
-        }
-
-        public Query createQuery(String statement, String language) throws InvalidQueryException, RepositoryException {
-            return new QueryWrapper(statement, language,session.getUser());
-        }
-
-        public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
-            return new QueryWrapper(node,session.getUser());
-        }
-
-        public QueryObjectModelFactory getQOMFactory() {
-            return service.getProvider("/").getQueryManager(session).getQOMFactory();
-        }        
-        
-        public QueryObjectModelFactory getQOMFactory(String path) {
-            return service.getProvider(path).getQueryManager(session).getQOMFactory();
-        }
-
-        public String[] getSupportedQueryLanguages() throws RepositoryException {
-            List<String> res = new ArrayList<String>();
-            for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
-                QueryManager qm = jcrStoreProvider.getQueryManager(session);
-                if (qm != null) {
-                    res.addAll(Arrays.asList(qm.getSupportedQueryLanguages()));
-                }
-            }
-            return res.toArray(new String[res.size()]);
-        }
-    }
-
-    public class QueryWrapper implements Query {
-        private String statement;
-        private String language;
-        private long limit = -1;
-        private long offset = 0;
-        private Map<JCRStoreProvider, Query> queries;
-        private Map<String, Value> vars;
-        private Node node;
-        private JahiaUser user;
-
-        QueryWrapper(String statement, String language, JahiaUser user) throws InvalidQueryException, RepositoryException  {
-            this.statement = statement;
-            this.language = language;
-            this.user = user;
-            this.vars = new HashMap<String, Value>();
-            init();
-        }
-
-        QueryWrapper(Node node, JahiaUser user) throws InvalidQueryException, RepositoryException {
-            this.node = node;
-            this.statement = node.getProperty("jcr:statement").getString();
-            this.language = node.getProperty("jcr:language").getString();
-            this.user = user;
-            this.vars = new HashMap<String, Value>();
-            init();
-        }
-
-        private void init() throws InvalidQueryException, RepositoryException {
-            queries = new HashMap<JCRStoreProvider, Query>();
-
-            Collection<JCRStoreProvider> providers = service.getProviders().values();
-
-            if (language.equals(Query.XPATH)) {
-                if (!statement.startsWith("//")) {
-                    JCRStoreProvider p = service.getProvider("/"+statement);
-                    providers = Collections.singletonList(p);
-                }
-            } 
-            for (JCRStoreProvider jcrStoreProvider : providers) {
-                QueryManager qm = jcrStoreProvider.getQueryManager(session);
-                if (qm != null) {
-                    Query query = qm.createQuery(statement,language);
-                    if (Query.JCR_SQL2.equals(language)) {
-                        query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                                (QueryObjectModel) query, session.getLocale(), qm.getQOMFactory());
-                    }
-                    queries.put(jcrStoreProvider, query);
-                }
-            }
-        }
-
-        public QueryResult execute() throws RepositoryException {
-            QueryResultAdapter results = new QueryResultAdapter();
-            for (Map.Entry<JCRStoreProvider,Query> entry : queries.entrySet()) {
-                // should gather results
-                final Query query = entry.getValue();
-                if (limit > 0) {query.setLimit(limit);}
-                if (offset > 0) {query.setOffset(offset);}
-                QueryResultWrapper subResults = new QueryResultWrapper(entry.getKey(), query.execute(), user);
-                results.addResult(subResults);
-            }
-            return results;
-        }
-
-        public String getStatement() {
-            return statement;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public String getStoredQueryPath() throws ItemNotFoundException, RepositoryException {
-            if (node == null) {
-                throw new ItemNotFoundException();
-            }
-            return node.getPath();
-        }
-
-        public Node storeAsNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, UnsupportedRepositoryOperationException, RepositoryException {
-            String path = StringUtils.substringBeforeLast(s,"/");
-            String name = StringUtils.substringAfterLast(s,"/");
-            Node n = (Node) session.getItem(path);
-            node = n.addNode(name, "jnt:query");
-
-            node.setProperty("jcr:statement", statement);
-            node.setProperty("jcr:language", language);
-
-            return node;
-        }
-
-        public void setLimit(long limit) {
-            this.limit = limit;
-        }
-
-        public void setOffset(long offset) {
-            this.offset = offset;
-        }
-
-        public void bindValue(String varName, Value value) throws IllegalArgumentException, RepositoryException {
-            vars.put(varName, value);
-        }
-
-        public String[] getBindVariableNames() throws RepositoryException {
-            return vars.keySet().toArray(new String[vars.size()]);
-        }
-
-        public Map<JCRStoreProvider, Query> getQueries() {
-            return queries;
-        }
-    }
-
-    public class QueryResultWrapper implements QueryResult {
-        private JCRStoreProvider provider;
-        private QueryResult result;
-        private JahiaUser user;
-
-        QueryResultWrapper(JCRStoreProvider provider, QueryResult result, JahiaUser user) {
-            this.provider = provider;
-            this.result = result;
-            this.user = user;
-        }
-
-        public JCRStoreProvider getProvider() {
-            return provider;
-        }
-
-        public String[] getColumnNames() throws RepositoryException {
-            return result.getColumnNames();
-        }
-
-        public RowIterator getRows() throws RepositoryException {
-            return result.getRows();
-        }
-
-        public NodeIterator getNodes() throws RepositoryException {
-            final NodeIterator ni = result.getNodes();
-
-            return new NodeIterator() {
-                public Node nextNode() {
-                    try {
-                        return provider.getNodeWrapper(ni.nextNode(), session);
-                    } catch (RepositoryException e) {
-                        return null;
-                    }
-                }
-
-                public void skip(long l) {
-                    ni.skip(l);
-                }
-
-                public long getSize() {
-                    return ni.getSize();
-                }
-
-                public long getPosition() {
-                    return ni.getPosition();
-                }
-
-                public boolean hasNext() {
-                    return ni.hasNext();
-                }
-
-                public Object next() {
-                    return nextNode();
-                }
-
-                public void remove() {
-                    ni.remove();
-                }
-            };
-        }
-
-        public String[] getSelectorNames() throws RepositoryException {
-            throw new UnsupportedRepositoryOperationException();
-        }
-        
-        JCRSessionWrapper getSession() {
-            return session;
-        }
     }
 
 }

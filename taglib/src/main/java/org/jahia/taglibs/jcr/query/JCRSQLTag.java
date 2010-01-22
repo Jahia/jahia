@@ -31,16 +31,6 @@
  */
 package org.jahia.taglibs.jcr.query;
 
-import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.QueryResultAdapter;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.taglibs.AbstractJahiaTag;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
@@ -48,19 +38,22 @@ import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import java.security.Principal;
-import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.taglibs.AbstractJCRTag;
 
 /**
  * Tag implementation for exposing a result of SQL-2 JCR query into the template scope.
  */
-public class JCRSQLTag extends AbstractJahiaTag {
+public class JCRSQLTag extends AbstractJCRTag {
     private static final long serialVersionUID = 4183406665401018247L;
     private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
     private String statement;
     private long limit;
+    private long offset;
 
     public int doEndTag() {
         resetState();
@@ -69,7 +62,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
 
     public int doStartTag() throws JspException {
         try {
-            pageContext.setAttribute(var, findQueryResult(getUser(), statement), scope);
+            pageContext.setAttribute(var, executeQuery(), scope);
         } catch (RepositoryException e) {
             throw new JspTagException(e);
         }
@@ -77,55 +70,42 @@ public class JCRSQLTag extends AbstractJahiaTag {
     }
 
     /**
-     * Find Node iterator by principal and query expression.
+     * Executes the query.
      *
-     * @param p
-     *            the principal
-     * @param query
-     *            a query expression to perform the query
-     * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
-     *         returns empty iterator if nothing is found
-     * @throws RepositoryException 
-     * @throws InvalidQueryException 
+     * @return the QueryResult instance with the results of the query
+     * @throws RepositoryException in case of JCR errors 
+     * @throws InvalidQueryException in case of bad query statement
      */
-    private QueryResult findQueryResult(Principal p, String query) throws InvalidQueryException, RepositoryException {
+    private QueryResult executeQuery() throws InvalidQueryException, RepositoryException {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
-            logger.debug("Find node by " + getQueryLanguage() + "[ " + query + " ]");
-        }
-        if (p instanceof JahiaGroup) {
-            throw new UnsupportedOperationException("method not implemented for JahiaGroup");
-            
+            logger.debug("Executing " + getQueryLanguage() + "query: " + statement);
         }
 
-        String workspace = null;
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
-        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-        if (currentResource != null) {
-            workspace = currentResource.getWorkspace();
-            locale = currentResource.getLocale();
-        }
-        Query q = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,renderContext.getFallbackLocale()).getWorkspace()
-                .getQueryManager().createQuery(query, getQueryLanguage());
+        Query q = getJCRSession().getWorkspace().getQueryManager().createQuery(statement, getQueryLanguage());
         if (limit > 0) {
             q.setLimit(limit);
+        }
+        if (offset > 0) {
+            q.setOffset(offset);
         }
         // execute query
         queryResult = q.execute();
         if (logger.isDebugEnabled()) {
-            logger.debug(getQueryLanguage() + "[" + query + "] --> found [" + queryResult + "] values.");
+            logger.debug(getQueryLanguage() + "[" + statement + "] --> found [" + queryResult + "] values.");
         }
 
-        return queryResult != null ? queryResult : new QueryResultAdapter();
+        return queryResult;
     }
 
     @Override
     protected void resetState() {
-        super.resetState();
         scope = PageContext.PAGE_SCOPE;
         statement = null;
         var = null;
+        limit = 0;
+        offset = 0;
+        super.resetState();
     }
 
     public void setScope(String scope) {
@@ -155,5 +135,9 @@ public class JCRSQLTag extends AbstractJahiaTag {
      */
     protected String getQueryLanguage() {
         return Query.JCR_SQL2;
+    }
+
+    public void setOffset(long offset) {
+        this.offset = offset;
     }
 }

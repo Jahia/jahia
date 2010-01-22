@@ -31,12 +31,10 @@
  */
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.commons.xml.Exporter;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.jaas.JahiaLoginModule;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
@@ -271,10 +269,8 @@ public class JCRSessionWrapper implements Session {
         return false;
     }
 
-    public ValueFactory getValueFactory() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return new ValueFactoryImpl() {
-
-        };
+    public ValueFactory getValueFactory() {
+        return ValueFactoryImpl.getInstance();
     }
     
     /**

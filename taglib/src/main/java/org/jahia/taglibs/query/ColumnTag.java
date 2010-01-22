@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,41 +29,70 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.taglibs.query;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.qom.Constraint;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
 /**
- * User: hollis Date: 7 nov. 2007 Time: 15:33:24
+ * Defines a column to include in the tabular view of query results.<br>
+ * If propertyName is not specified, a column is included for each single-valued
+ * non-residual property of the node type specified by the nodeType attribute of
+ * the selector selectorName.<br>
+ * If propertyName is specified, columnName is required and used to name the
+ * column in the tabular results.<br>
+ * If propertyName is not specified, columnName must not be specified, and the
+ * included columns will be named "selectorName.propertyName".
+ * 
+ * @author Sergiy Shyrkov
+ * 
+ * @since 6.5
  */
-public class FullTextSearchTag extends ConstraintTag {
+public class ColumnTag extends QOMBuildingTag {
 
-    private static final long serialVersionUID = 1268507900538446511L;
+    private static final long serialVersionUID = -2970406105716054811L;
 
-    private String searchExpression;
+    private String columnName;
 
     private String propertyName;
 
     @Override
+    public int doEndTag() throws JspException {
+        try {
+            try {
+                getQOMBuilder().getColumns().add(getQOMFactory().column(getSelectorName(), propertyName, columnName));
+            } catch (RepositoryException e) {
+                throw new JspTagException(e);
+            }
+        } finally {
+            resetState();
+        }
+        return EVAL_PAGE;
+    }
+
+    @Override
     protected void resetState() {
-        searchExpression = null;
+        columnName = null;
         propertyName = null;
         super.resetState();
     }
-    
-    @Override
-    public Constraint getConstraint() throws InvalidQueryException, RepositoryException, JspTagException {
-        return getQOMFactory().fullTextSearch(getSelectorName(), propertyName,
-                getQOMFactory().literal(getQOMBuilder().getValueFactory().createValue(searchExpression)));
+
+    /**
+     * Sets the name of the column to include into results.
+     * 
+     * @param columnName the name of the column to include into results
+     */
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
-    public void setSearchExpression(String searchExpression) {
-        this.searchExpression = searchExpression;
-    }
-
+    /**
+     * Sets the name of the property to include into results.
+     * 
+     * @param propertyName the name of the property to include into results
+     */
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }

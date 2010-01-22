@@ -31,24 +31,15 @@
  */
 package org.jahia.taglibs.query;
 
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LIKE;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO;
+import static javax.jcr.query.qom.QueryObjectModelConstants.*;
 
 import java.util.Map;
 
-import javax.jcr.query.qom.Comparison;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.Literal;
 import javax.jcr.query.qom.PropertyValue;
-import javax.servlet.jsp.JspTagException;
 
 import org.apache.commons.collections.FastHashMap;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Creates a query constraint, using property comparison.
@@ -56,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
  * Date: 7 nov. 2007
  * Time: 15:33:24
  */
+@SuppressWarnings("unchecked")
 public class ComparisonTag extends ConstraintTag {
 
     /**
@@ -196,25 +188,18 @@ public class ComparisonTag extends ConstraintTag {
         OPERATORS = ops;
     }
 
-    private Comparison comparison;
     private String operator = JCR_OPERATOR_EQUAL_TO;
     private String propertyName;
     private String value;
 
+    @Override
     public Constraint getConstraint() throws Exception {
-        if (comparison != null) {
-            return comparison;
-        }
-        if (StringUtils.isEmpty(propertyName)) {
-            throw new JspTagException("Attribute propertyName is empty or null");
-        }
-        PropertyValue propValue = getQueryFactory().propertyValue(getSelectorName(), propertyName);
-        Literal literal = (Literal) getQueryFactory().literal(getValueFactory().createValue(value));
-        comparison = getQueryFactory().comparison(propValue, getOperator(), literal);
-        return comparison;
+        PropertyValue propValue = getQOMFactory().propertyValue(getSelectorName(), propertyName);
+        Literal literal = (Literal) getQOMFactory().literal(getQOMBuilder().getValueFactory().createValue(value));
+        return getQOMFactory().comparison(propValue, getOperator(), literal);
     }
 
-    public String getOperator() {
+    protected String getOperator() {
         if (!operator.startsWith("{http://www.jcp.org/jcr/1.0}")) {
             String resolvedOperator = OPERATORS.get(operator.toLowerCase().trim());
             if (resolvedOperator != null) {
@@ -226,7 +211,6 @@ public class ComparisonTag extends ConstraintTag {
 
     @Override
     protected void resetState() {
-        comparison = null;
         operator = JCR_OPERATOR_EQUAL_TO;
         value = null;
         propertyName = null;

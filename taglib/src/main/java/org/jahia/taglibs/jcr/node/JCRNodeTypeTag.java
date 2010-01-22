@@ -49,6 +49,7 @@ import javax.servlet.jsp.PageContext;
  * @since Jahia 6.1
  */
 public class JCRNodeTypeTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 8871438422796392031L;
     private transient static Logger logger = Logger.getLogger(JCRNodeTypeTag.class);
     private String var;
     private String name;
@@ -95,8 +96,15 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
+        resetState();
+        return super.doEndTag();
+    }
+    
+    @Override
+    protected void resetState() {
         var = null;
         name = null;
-        return super.doEndTag();
+        scope = PageContext.PAGE_SCOPE;
+        super.resetState();
     }
 }

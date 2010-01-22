@@ -39,32 +39,23 @@ import javax.jcr.query.qom.Constraint;
  * selectorName node is reachable by the absolute path specified.
  * 
  * @author Sergiy Shyrkov
+ * 
+ * @since 6.5
  */
 public class SameNodeTag extends ConstraintTag {
 
     private static final long serialVersionUID = 4083757150830520963L;
 
-    private Constraint constraint;
-
     private String path;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.taglibs.query.ConstraintTag#getConstraint()
-     */
     @Override
     public Constraint getConstraint() throws Exception {
-        if (constraint == null) {
-            constraint = getQueryFactory().sameNode(getSelectorName(), path);
-        }
-        return constraint;
+        return getQOMFactory().sameNode(getSelectorName(), path);
     }
 
     @Override
     protected void resetState() {
         path = null;
-        constraint = null;
         super.resetState();
     }
 

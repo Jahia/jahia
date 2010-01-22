@@ -255,7 +255,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return;
         }
         if (path.endsWith(".do")) {
-            Resource resource = resolveResource(workspace, locale, path,null, false);
+            Resource resource = resolveResource(workspace, locale, path);
             renderContext.setMainResource(resource);
             renderContext.setSite(Jahia.getThreadParamBean().getSite());
             renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + Jahia.getThreadParamBean().getSite().getSiteKey()));
@@ -429,91 +429,92 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @param workspace The workspace where to get the node
      * @param locale    current locale
      * @param path      The path of the node, in the specified workspace
-     * @param defaultLanguage
-     * @param mixLanguagesActive
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-	protected Resource resolveResource(String workspace, Locale locale, String path, String defaultLanguage,
-                                       boolean mixLanguagesActive) throws RepositoryException {
+	protected Resource resolveResource(final String workspace, final Locale locale, final String path) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
-        JCRSessionWrapper session;
-        if (defaultLanguage != null && mixLanguagesActive) {
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        } else {
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-        }
-        JCRNodeWrapper node = null;
 
-        String ext = null;
-        String tpl = null;
-
-        while (true) {
-            int i = path.lastIndexOf('.');
-            if (i > path.lastIndexOf('/')) {
-                if (ext == null) {
-                    ext = path.substring(i + 1);
-                } else if (tpl == null) {
-                    tpl = path.substring(i + 1);
-                } else {
-                    tpl = path.substring(i + 1) + "." + tpl;
-                }
-                path = path.substring(0, i);
-            } else {
-                throw new PathNotFoundException("not found");
-            }
-            try {
-                node = session.getNode(path);
-                break;
-            } catch (PathNotFoundException e) {
-                try {
-                    // node unreadable ?
-                    final String p = path;
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            return session.getNode(p);
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Resource>() {
+            public Resource doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                String ext = null;
+                String tpl = null;
+                String nodePath = path;
+                JCRNodeWrapper node;
+                while (true) {
+                    int i = nodePath.lastIndexOf('.');
+                    if (i > nodePath.lastIndexOf('/')) {
+                        if (ext == null) {
+                            ext = nodePath.substring(i + 1);
+                        } else if (tpl == null) {
+                            tpl = nodePath.substring(i + 1);
+                        } else {
+                            tpl = nodePath.substring(i + 1) + "." + tpl;
                         }
-                    }, null, workspace);
-                    throw new AccessDeniedException(path);
-                } catch (PathNotFoundException e1) {
-                    // continue
-                }
-            }
-        }
-        Resource r = new Resource(node, ext, null, tpl);
-        if (logger.isDebugEnabled()) {
-        	logger.debug("Resolved resource: " + r);
-        }
-
-        Node current = r.getNode();
-        try {
-            while (true) {
-                if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
-                    String sitename = current.getName();
-                    try {
-                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
-                        ProcessingContext ctx = Jahia.getThreadParamBean();
-                        ctx.setSite(site);
-                        ctx.setContentPage(site.getHomeContentPage());
-                        ctx.setThePage(site.getHomePage());
-                        ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
-                        ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
+                        nodePath = nodePath.substring(0, i);
+                    } else {
+                        throw new PathNotFoundException("not found");
                     }
+                    node = session.getNode(nodePath);
                     break;
                 }
-                current = current.getParent();
+                Node current = node;
+
+                ProcessingContext ctx = Jahia.getThreadParamBean();
+
+                try {
+                    while (true) {
+                        if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
+                            String sitename = current.getName();
+                            try {
+                                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
+                                ctx.setSite(site);
+                                ctx.setContentPage(site.getHomeContentPage());
+                                ctx.setThePage(site.getHomePage());
+                                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
+                                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
+                            } catch (JahiaException e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                            break;
+                        }
+                        current = current.getParent();
+                    }
+                } catch (ItemNotFoundException e) {
+                     ctx.setSite(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite());
+                }
+
+                JCRSessionWrapper userSession;
+
+                JahiaSite site = Jahia.getThreadParamBean().getSite();
+                if (site != null) {
+                    String defaultLanguage = site.getDefaultLanguage();
+                    boolean mixLanguagesActive = site.isMixLanguagesActive();
+
+                    if (defaultLanguage != null && mixLanguagesActive) {
+                        userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+                    } else {
+                        userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+                    }
+                } else {
+                    userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+                }
+                try {
+                    node = userSession.getNode(nodePath);
+                } catch (PathNotFoundException e) {
+                    throw new AccessDeniedException(path);
+                }
+
+                Resource r = new Resource(node, ext, null, tpl);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Resolved resource: " + r);
+                }
+                return r;
             }
-        } catch (ItemNotFoundException e) {
-            // no site
-        }
-
-
-        return r;
+        }, null, workspace);
     }
 
 	public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -547,9 +548,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
             final boolean isLive = Constants.LIVE_WORKSPACE.equals(workspace);
-            if (isLive && renderContext.isEditMode()) {
-                throw new AccessDeniedException();
-            }
+//            if (isLive && renderContext.isEditMode()) {
+//                throw new AccessDeniedException();
+//            }
             if (isLive) {
                 renderContext.setLiveMode(true);
             }
@@ -573,8 +574,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
+                Resource resource = resolveResource(workspace, locale, path);
                 final JahiaSite site = paramBean.getSite();
-                Resource resource = resolveResource(workspace, locale, path, site.getDefaultLanguage(), site.isMixLanguagesActive());
                 renderContext.setMainResource(resource);
                 renderContext.setSite(site);
                 renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + site.getSiteKey()));

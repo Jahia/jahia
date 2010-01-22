@@ -45,7 +45,7 @@
                     <c:forTokens items="${currentNode.path}" delims="/" var="itemPath" varStatus="status">
                         <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
                         <jcr:node var="node" path="${currentPath}"/>
-                        <c:if test="${jcr:isNodeType(node, 'jnt:page')}">
+                        <c:if test="${(not empty node) and (jcr:isNodeType(node, 'jnt:page'))}">
                         <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}<c:if test="${not status.last}"></a> /</c:if>
                         </c:if>
                     </c:forTokens>

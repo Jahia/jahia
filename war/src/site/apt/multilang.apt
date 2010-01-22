@@ -1,0 +1,31 @@
+Jahia Crazy Jane - Web Module - Multi Language
+
+ When creating a site you will be asked to associate it with at least one language, this will define the language
+ you can access on your site. After the creation of the site you can go to your site adminsitration panel in the
+ administration center, to add / remove languages from your site define which ones are mandatory and which one is the
+ default language.
+
+* Can I mix languages in my site ?
+
+ Yes, just click on the mix language button to activate it.
+
+ If a node has not been translated in the currently selected language, Crazy Jane will fallback to default language to
+ display it.
+
+ A node is considered translated as soon as one of its internationalizable properties exist in the selected language.
+
+ If a node has no internationalizable properties then it is the same one for all languages.
+
+* What happen if I delete a language in my site ?
+
+ Deleting a language in Crazy Jane is a non destructive action, this will only remove the langauge from the available
+ languages in your site, this will note erase any content from your repository (as your content could be reused
+ anywhere in this language).
+
+ So if you restore this language in the available list of language, you will retrieve your site as it was before the
+ language deletion.
+
+* Does my new language directly appears in live mode ?
+
+ No, every new language will not appear in live mode until the content you are accessing is existing in the chosen
+ language. Unless you have activated the mixing language options.

@@ -24,6 +24,10 @@ under the License.
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
     <body>
         <menu ref="parent"/>
+        <menu name="Overview">
+            <item name="Introduction" href="./index.html"/>
+            <item name="Internationalized Web Site" ref="./multilang.apt"/>
+        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

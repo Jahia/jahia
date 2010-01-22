@@ -28,6 +28,11 @@ public class ContentTabItem extends PropertiesTabItem {
         setMultiLang(true);
     }
 
+    public ContentTabItem(AbstractContentEngine engine,boolean multilangue) {
+        this(engine);
+        setMultiLang(multilangue);
+    }
+
     @Override
     public void postCreate() {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {

@@ -69,6 +69,10 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
     @Override
     public void create(GWTJahiaLanguage locale) {
+        // do not re-process the view if it's laready done and the tabItem is not multilang
+        if(!isMultiLang() && isProcessed()){
+            return;
+        }
         if (engine.getMixin() != null) {
             if (propertiesEditor != null) {
                 Log.debug("remove old properties editor from parents");
@@ -80,7 +84,6 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             propertiesEditor = getPropertiesEditorByLang(locale);
 
             if (propertiesEditor == null) {
-                Log.debug("Create new Properties editor for lang: "+locale.getCountryIsoCode());
                 if (engine.isExistingNode() && engine.getNode().getNodeTypes().contains("jmix:shareable")) {
                     Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
                     label.setStyleAttribute("color", "rgb(200,80,80)");

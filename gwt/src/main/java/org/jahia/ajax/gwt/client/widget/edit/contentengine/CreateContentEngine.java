@@ -13,6 +13,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -39,7 +40,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
-    
+
 
     /**
      * Open Edit content engine for a new node creation
@@ -100,7 +101,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        tabs.add(new ContentTabItem(this));
+        tabs.add(new ContentTabItem(this, false));
         tabs.add(new LayoutTabItem(this));
         tabs.add(new MetadataTabItem(this));
         tabs.add(new ClassificationTabItem(this));
@@ -118,7 +119,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(true);
         ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
-            ok.addSelectionListener(new CreateSelectionListener());
+        ok.addSelectionListener(new CreateSelectionListener());
 
         buttonBar.add(ok);
 
@@ -139,6 +140,13 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         });
         buttonBar.add(cancel);
+    }
+
+    /**
+     * on language chnage, fill currentAzble
+     */
+    protected void onLanguageChange() {
+        fillCurrentTab();
     }
 
 
@@ -189,8 +197,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                       String nodeNameValue = ((ContentTabItem) item).getName().getValue();
-                       nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue)?targetName:nodeNameValue;
+                        String nodeNameValue = ((ContentTabItem) item).getName().getValue();
+                        nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue) ? targetName : nodeNameValue;
                     }
                 }
             } else if (item instanceof RightsTabItem) {

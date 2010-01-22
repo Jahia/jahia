@@ -57,7 +57,7 @@ public class LanguageHelper {
         GWTJahiaLanguage item = new GWTJahiaLanguage();
         item.setCountryIsoCode(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setImage(getLangIcon(langCode));
+        item.setImage(jParams.getContextPath()+"/"+getLangIcon(langCode));
         return item;
     }
 
@@ -68,7 +68,7 @@ public class LanguageHelper {
      * @return
      */
     public static String getLangIcon(String locale) {
-        return "/css/images/flags/"+ locale+"_on.png";
+        return "css/images/flags/"+ locale+"_on.png";
     }
 
     /**

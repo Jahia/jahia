@@ -34,7 +34,6 @@ package org.jahia.services.query;
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
-import org.jahia.services.content.JCRWorkspaceWrapper.QueryWrapper;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;

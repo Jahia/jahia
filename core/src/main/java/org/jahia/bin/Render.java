@@ -438,7 +438,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Resource>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Resource>() {
             public Resource doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String ext = null;
                 String tpl = null;
@@ -514,7 +514,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
                 return r;
             }
-        }, null, workspace);
+        });
     }
 
 	public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {

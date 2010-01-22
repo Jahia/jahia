@@ -54,7 +54,7 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
-        return doExecuteWithSystemSession(callback,  null, null, null, false);
+        return doExecuteWithSystemSession(null, null, null, false, callback);
     }
 
     /**
@@ -65,16 +65,16 @@ public class JCRTemplate {
      * by JcrSessionFilter.getCurrentUser() will be taken.
      * The locale will be "default". 
      * 
-     * @param callback
-     *            the <code>JCRCallback</code> that executes the client
-     *            operation 
      * @param username
      *            the user name to open the session with
+     * @param callback
+     *            the <code>JCRCallback</code> that executes the client
+     *            operation
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithSystemSession(JCRCallback<X> callback, String username) throws RepositoryException {
-        return doExecuteWithSystemSession(callback,  username, null, null, false);
+    public <X> X doExecuteWithSystemSession(String username, JCRCallback<X> callback) throws RepositoryException {
+        return doExecuteWithSystemSession(username, null, null, false, callback);
     }
 
     /**
@@ -86,18 +86,18 @@ public class JCRTemplate {
      * obtained by JcrSessionFilter.getCurrentUser() will be taken.
      * The locale will be "default".
      * 
-     * @param callback
-     *            the <code>JCRCallback</code> that executes the client
-     *            operation 
      * @param username
      *            the user name to open the session with
      * @param workspace
      *            the workspace name to log into
+     * @param callback
+     *            the <code>JCRCallback</code> that executes the client
+     *            operation
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithSystemSession(JCRCallback<X> callback, String username, String workspace) throws RepositoryException {
-        return doExecuteWithSystemSession(callback,  username, workspace, null, false);
+    public <X> X doExecuteWithSystemSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
+        return doExecuteWithSystemSession(username, workspace, null, false, callback);
     }
 
     /**
@@ -109,19 +109,19 @@ public class JCRTemplate {
      * obtained by JcrSessionFilter.getCurrentUser() will be taken.
      * The locale will be "default".
      * 
-     * @param callback
-     *            the <code>JCRCallback</code> that executes the client
-     *            operation
      * @param username
      *            the user name to open the session with
      * @param workspace
      *            the workspace name to log into
      * @param locale
      * @param eventsDisabled
+     * @param callback
+     *            the <code>JCRCallback</code> that executes the client
+     *            operation
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithSystemSession(JCRCallback<X> callback, String username, String workspace, Locale locale, boolean eventsDisabled) throws RepositoryException {
+    public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, boolean eventsDisabled, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = sessionFactory.getSystemSession(username, workspace, locale, eventsDisabled);
@@ -133,7 +133,7 @@ public class JCRTemplate {
         }
     }
 
-    private <X> X doExecute(JCRCallback<X> callback, boolean useSystemSession, JahiaUser user, String workspace, Locale locale) throws RepositoryException {
+    private <X> X doExecute(boolean useSystemSession, JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = (useSystemSession ? sessionFactory.getSystemSession(user != null ? user.getName() : null,

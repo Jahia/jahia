@@ -277,7 +277,7 @@ public class RulesListener extends DefaultEventListener {
             }
             final String finalusername = username;
             JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Object>() {
+                    username, workspace, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                             Iterator<Event> it = events.iterator();
 
@@ -421,7 +421,7 @@ public class RulesListener extends DefaultEventListener {
                             }
                             return null;
                         }
-                    }, username, workspace);
+                    });
         } catch (Exception e) {
             logger.error("Error when executing event", e);
         }

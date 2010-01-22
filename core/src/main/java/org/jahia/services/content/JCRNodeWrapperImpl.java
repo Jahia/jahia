@@ -2217,7 +2217,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             try {
                 final String path = sharedNode.getCorrespondingNodePath("live");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback(){
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback(){
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         n.checkout();
@@ -2225,7 +2225,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         session.save();
                         return null;
                     }
-                },null,"live");
+                });
             } catch (ItemNotFoundException e) {
             } catch (RepositoryException e) {
                 e.printStackTrace();

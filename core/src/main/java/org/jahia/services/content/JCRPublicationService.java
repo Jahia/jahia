@@ -224,16 +224,16 @@ public class JCRPublicationService extends JahiaService {
         sourceNode.getSession().save();
         system = true;
         if (system) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(destinationSession.getUserID(), sourceWorkspace, new JCRCallback<Object>() {
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    return JCRTemplate.getInstance().doExecuteWithSystemSession(sourceSession.getUserID(), destinationWorkspace, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper destinationSession) throws RepositoryException {
                             publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
                             return null;
                         }
-                    }, sourceSession.getUserID(), destinationWorkspace);
+                    });
                 }
-            }, destinationSession.getUserID(), sourceWorkspace);
+            });
         } else {
             publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
         }

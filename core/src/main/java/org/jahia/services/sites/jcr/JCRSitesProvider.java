@@ -203,7 +203,7 @@ public class JCRSitesProvider {
                 }
             });
             // Now let's delete the live workspace site.
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
@@ -214,7 +214,7 @@ public class JCRSitesProvider {
                     session.save();
                     return null;
                 }
-            }, null, Constants.LIVE_WORKSPACE);
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

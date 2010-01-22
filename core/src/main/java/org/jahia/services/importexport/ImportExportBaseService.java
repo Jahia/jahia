@@ -964,7 +964,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         session.save();
                     } else {
                         final File contentFile = tempFile;
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, true, new JCRCallback<Boolean>() {
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 try {
                                     session.importXML(parentNodePath, new FileInputStream(contentFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
@@ -974,7 +974,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 }
                                 return Boolean.TRUE;
                             }
-                        }, null,null,null,true);
+                        });
                     }
                     break;
                 }

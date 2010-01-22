@@ -34,7 +34,6 @@ package org.jahia.taglibs.uicomponents.i18n;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
-import org.jahia.params.ProcessingContext;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -102,10 +101,9 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
     public int doStartTag() {
         try {
-            final ProcessingContext jParams = getProcessingContext();
             final StringBuilder buff = new StringBuilder();
 
-            final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, jParams);
+            final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode);
             final boolean isRedirectToHomePageActivated = InitLangBarAttributes.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
 
             if (!isCurrentBrowsingLanguage) {
@@ -154,7 +152,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
             } else if (NAME_CURRENT_LOCALE.equals(linkKind)) {
                 final Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-                final String value = locale.getDisplayName(jParams.getLocale());
+                final String value = locale.getDisplayName(getRenderContext().getMainResource().getLocale());
                 attributeValue = value;
                 buff.append(value);
 
@@ -249,9 +247,8 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         titleKey = null;
     }
 
-    protected boolean isCurrentBrowsingLanguage(final String languageCode,
-                                                final ProcessingContext jParams) {
-        final String currentLanguageCode = jParams.getLocale().toString();
+    protected boolean isCurrentBrowsingLanguage(final String languageCode) {
+        final String currentLanguageCode = getRenderContext().getMainResource().getLocale().toString();
         return currentLanguageCode.equals(languageCode);
     }
 

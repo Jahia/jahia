@@ -32,13 +32,14 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author Xavier Lawrence
@@ -83,7 +84,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     public int doStartTag() throws JspTagException {
         final StringBuilder buff = new StringBuilder();
 
-        final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode, getProcessingContext());
+        final boolean isCurrentBrowsingLanguage = isCurrentBrowsingLanguage(languageCode);
         final boolean isRedirectToHomePageActivated = InitLangBarAttributes.GO_TO_HOME_PAGE.equals(onLanguageSwitch);
 
         if (!isCurrentBrowsingLanguage) {
@@ -97,8 +98,8 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             }
             buff.append("<a href='");
             final String link;
-            if (onLanguageSwitch == null || onLanguageSwitch.length() == 0
-                    || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
+            if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(
+                    onLanguageSwitch)) {
                 link = generateCurrentNodeLangSwitchLink(languageCode);
 
             } else if (isRedirectToHomePageActivated) {
@@ -117,18 +118,26 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             buff.append(getMessage(titleKey, title));
             buff.append("'>");
         }
-        buff.append("<span class='flag flag_");
-        buff.append(languageCode);
-        if (!isCurrentBrowsingLanguage) {
-            buff.append("_off");
+        buff.append("<span class='flag ");
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
+        if (locale.getCountry() != null && locale.getCountry().length()>0) {
+            buff.append("flag_").append(languageCode);
         } else {
-            buff.append("_on");
+            buff.append("flag_").append(languageCode);
+
+            if (!isCurrentBrowsingLanguage) {
+                buff.append("_off");
+            } else {
+                buff.append("_on");
+            }
         }
         buff.append("'>&nbsp;</span>");
 
         if (!isCurrentBrowsingLanguage) {
             buff.append("</a>");
-            if (isRedirectToHomePageActivated) buff.append("</div>");
+            if (isRedirectToHomePageActivated) {
+                buff.append("</div>");
+            }
         }
 
         try {
@@ -152,9 +161,8 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
-    protected boolean isCurrentBrowsingLanguage(final String languageCode,
-                                                final ProcessingContext jParams) {
-        final String currentLanguageCode = jParams.getLocale().toString();
+    protected boolean isCurrentBrowsingLanguage(final String languageCode) {
+        final String currentLanguageCode = getRenderContext().getMainResource().getLocale().toString();
         return currentLanguageCode.equals(languageCode);
     }
 }

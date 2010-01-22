@@ -45,7 +45,9 @@ public class URLGenerator {
         this.resource = resource;
         this.jcrStoreService = jcrStoreService;
         initURL();
-        context.setURLGenerator(this);
+        if(context.getURLGenerator()==null) {
+            context.setURLGenerator(this);
+        }
     }
 
     /**

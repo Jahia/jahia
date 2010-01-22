@@ -216,7 +216,9 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         final String[] mandatoryLanguages = request.getParameterValues("mandatoryLanguages");
         final Set<String> mandatoryLanguagesSet = site.getMandatoryLanguages();
         mandatoryLanguagesSet.clear();
-        mandatoryLanguagesSet.addAll(Arrays.asList(mandatoryLanguages));
+        if(mandatoryLanguages!=null && mandatoryLanguages.length > 0) {
+            mandatoryLanguagesSet.addAll(Arrays.asList(mandatoryLanguages));
+        }
         site.setDefaultLanguage(request.getParameter("defaultLanguage"));
         final String[] deletedLanguages = request.getParameterValues("deletedLanguages");
         if(deletedLanguages!=null && deletedLanguages.length > 0) {

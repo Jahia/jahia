@@ -31,12 +31,12 @@
  */
 package org.jahia.taglibs.uicomponents.i18n;
 
-import org.jahia.data.JahiaData;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.comparator.LanguageCodesComparator;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.comparator.LanguageCodesComparator;
 
 import javax.jcr.Node;
 import javax.servlet.ServletRequest;
@@ -49,8 +49,8 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class InitLangBarAttributes extends AbstractJahiaTag {
 
-    private static final transient org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(InitLangBarAttributes.class);
+    private static final transient org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
+            InitLangBarAttributes.class);
 
 
     // onLanguageSwitch attribute authorized values
@@ -65,63 +65,55 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
     // Default Jahia CSS class name when mode "goToHomePage" is activated
     public static final String REDIRECT_DEFAULT_STYLE = "redirectJahiaStyle";
 
-    // Request attribute name used to pass the custom display beans
-    public static final String CUSTOM_DISPLAY_TYPE_BEANS = "customLanguageLinksDisplayTypeBeans";
-
-    public static final Map<String, LanguageLinkDisplayBean> DISPLAY_TYPE_BEANS = new HashMap<String, LanguageLinkDisplayBean>(3);
     private static final LanguageCodesComparator languageCodesComparator = new LanguageCodesComparator();
     private String order;
-    private boolean activeLanguagesOnly = true;
 
     public void setOrder(String order) {
         this.order = order;
     }
 
-    public void setActiveLanguagesOnly(boolean activeLanguagesOnly) {
-        this.activeLanguagesOnly = activeLanguagesOnly;
-    }
 
     public int doEndTag() throws JspException {
-            final ServletRequest request = pageContext.getRequest();
+        final ServletRequest request = pageContext.getRequest();
 
 
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final JahiaSite currentSite = jData.getProcessingContext().getSite();
-            final Set<String> languageSettings = currentSite.getLanguages();
+        final RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+        final JahiaSite currentSite = renderContext.getSite();
+        final Set<String> languageSettings = currentSite.getLanguages();
 
-            if (languageSettings.size() < 2) {
-                return EVAL_PAGE;
-            }
+        if (languageSettings.size() < 2) {
+            return EVAL_PAGE;
+        }
+        final boolean mixLanguageActive = currentSite.isMixLanguagesActive();
+        final List<String> currentCodes = new ArrayList<String>(languageSettings.size());
+        if (order == null || order.length() == 0 || JAHIA_ADMIN_RANKING.equals(order)) {
+            final TreeSet<String> orderedLangs = new TreeSet<String>();
+            orderedLangs.addAll(languageSettings);
+            for (final String settings : orderedLangs) {
 
-            final List<String> currentCodes = new ArrayList<String>(languageSettings.size());
-            if (order == null || order.length() == 0 || JAHIA_ADMIN_RANKING.equals(order)) {
-                final TreeSet<String> orderedLangs = new TreeSet<String>();
-                orderedLangs.addAll(languageSettings);
-                for (final String settings : orderedLangs) {
-                    if (isCurrentLangAllowed(jData, settings)) {
-                        currentCodes.add(settings);
-                    }
-                }
-
-            } else {
-                final List<String> languageCodes = toListOfTokens(order, ",");
-                languageCodesComparator.setPattern(languageCodes);
-                final TreeSet<String> orderedLangs = new TreeSet<String>(languageCodesComparator);
-                final Set<String> codes = new HashSet<String>(languageSettings.size());
-                for (final String lang : languageSettings) {
-                    // Only add the language in Live/Preview mode if the current page has an active verison in live mode for that language                                        
-                    if (isCurrentLangAllowed(jData, lang)) {
-                        codes.add(lang);
-                    }
-                }
-                orderedLangs.addAll(codes);
-                for (String code : orderedLangs) {
-                    currentCodes.add(code);
+                if (mixLanguageActive || isCurrentLangAllowed(renderContext, settings)) {
+                    currentCodes.add(settings);
                 }
             }
 
-            request.setAttribute(CURRENT_LANGUAGES_CODES, currentCodes);
-        activeLanguagesOnly = true;
+        } else {
+            final List<String> languageCodes = toListOfTokens(order, ",");
+            languageCodesComparator.setPattern(languageCodes);
+            final TreeSet<String> orderedLangs = new TreeSet<String>(languageCodesComparator);
+            final Set<String> codes = new HashSet<String>(languageSettings.size());
+            for (final String lang : languageSettings) {
+                // Only add the language in Live/Preview mode if the current page has an active verison in live mode for that language
+                if (mixLanguageActive || isCurrentLangAllowed(renderContext, lang)) {
+                    codes.add(lang);
+                }
+            }
+            orderedLangs.addAll(codes);
+            for (String code : orderedLangs) {
+                currentCodes.add(code);
+            }
+        }
+
+        request.setAttribute(CURRENT_LANGUAGES_CODES, currentCodes);
         order = null;
         return EVAL_PAGE;
     }
@@ -133,20 +125,18 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
      * @param languageCode
      * @return
      */
-    private boolean isCurrentLangAllowed(JahiaData jData, String languageCode) {
-        if (jData.gui().isNormalMode()) {
-            JCRNodeWrapper node = (JCRNodeWrapper) jData.getProcessingContext().getAttribute("currentNode");
+    private boolean isCurrentLangAllowed(RenderContext renderContext, String languageCode) {
+        if (renderContext.isLiveMode()) {
+            JCRNodeWrapper node = renderContext.getMainResource().getNode();
             if (node != null) {
                 try {
                     final Node localizedNode = node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode));
                     return localizedNode.getProperty("jcr:language").getString().equals(languageCode);
-                }catch(javax.jcr.RepositoryException e){
-                    logger.debug("lang["+languageCode+"] not published" );
+                } catch (javax.jcr.RepositoryException e) {
+                    logger.debug("lang[" + languageCode + "] not published");
                     return false;
-                }
-
-                catch (Exception e) {
-                    logger.error(e,e);
+                } catch (Exception e) {
+                    logger.error(e, e);
                     return false;
                 }
             } else {

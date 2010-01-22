@@ -12,7 +12,7 @@
 <%@ attribute name="rootPage" type="org.jahia.services.content.JCRNodeWrapper" required="false" rtexprvalue="true" %>
 
 
-<uiComponents:initLangBarAttributes order="${order}" activeLanguagesOnly="${activeLanguagesOnly}"/>
+<uiComponents:initLangBarAttributes order="${order}"/>
 
 <c:if test='${display != null}'>
     <c:if test='${fn:toLowerCase(display) == "comboBox"}'>

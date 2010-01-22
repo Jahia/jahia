@@ -528,6 +528,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
+        if (objectNode.hasNode(s)) {
+            return provider.getNodeWrapper(objectNode.getNode(s), session);
+        }        
         List<JCRNodeWrapper> c = getChildren();
         for (JCRNodeWrapper jcrNodeWrapper : c) {
             if (jcrNodeWrapper.getName().equals(s)) {
@@ -1820,9 +1823,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         // add mountpoints here
         final boolean b = objectNode.hasNode(provider.encodeInternalName(s));
         if(b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s) ){
-            final JCRNodeWrapperImpl wrapper;
+            final JCRNodeWrapper wrapper;
             try {
-                wrapper = (JCRNodeWrapperImpl) getNode(s);
+                wrapper = (JCRNodeWrapper) getNode(s);
             } catch (RepositoryException e) {
                 return false;
             }
@@ -2203,10 +2206,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void makeShareable() throws RepositoryException {
-
-    }
-
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
                    ConstraintViolationException, LockException,
                    RepositoryException {
@@ -2215,7 +2214,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 sharedNode.checkout();
             }
             sharedNode.addMixin("jmix:shareable");
-//            sharedNode.setProperty("j:originalParent", sharedNode.getParent());
+
+            try {
+                final String path = sharedNode.getCorrespondingNodePath("live");
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback(){
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper n = session.getNode(path);
+                        n.checkout();
+                        n.addMixin("jmix:shareable");
+                        session.save();
+                        return null;
+                    }
+                },null,"live");
+            } catch (ItemNotFoundException e) {
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
         }
 
         // ugly save needed by jackrabbit : todo remove it

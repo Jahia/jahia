@@ -690,4 +690,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         return node.clone(sharedNode, name);
     }
+
+    public boolean checkValidity() {
+        return node.checkValidity();
+    }
 }

@@ -749,4 +749,5 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
                    ConstraintViolationException, LockException,
                    RepositoryException;
 
+    boolean checkValidity();
 }

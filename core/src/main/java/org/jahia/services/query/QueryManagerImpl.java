@@ -33,7 +33,6 @@
 package org.jahia.services.query;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -80,8 +79,7 @@ public class QueryManagerImpl implements QueryManager {
             this.provider = provider;
         }
 
-        public Object invoke(Object proxy, Method method, Object[] args) throws IllegalArgumentException,
-                IllegalAccessException, InvocationTargetException, RepositoryException {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
             if ("createQuery".equals(method.getName())) {
                 final QueryObjectModel qom = ServicesRegistry.getInstance().getQueryService().modifyAndOptimizeQuery(
                         (Source) args[0], (Constraint) args[1], (Ordering[]) args[2], (Column[]) args[3],
@@ -110,8 +108,7 @@ public class QueryManagerImpl implements QueryManager {
             this.provider = provider;
         }
 
-        public Object invoke(Object proxy, Method method, Object[] args) throws IllegalArgumentException,
-                IllegalAccessException, InvocationTargetException, RepositoryException {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
             Object result = method.invoke(underlying, args);
             if ("execute".equals(method.getName())) {
                 result = new QueryResultWrapper(underlying.execute(), provider, session);

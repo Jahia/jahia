@@ -165,9 +165,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -257,9 +267,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$EqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The property name. Required</description>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -321,9 +341,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$GreaterThanTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The property name. Required</description>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -341,9 +371,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$GreaterThanOrEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The property name. Required</description>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -360,10 +400,20 @@
         <name>lessThan</name>
         <tag-class>org.jahia.taglibs.query.ComparisonTag$LessThanTag</tag-class>
         <body-content>empty</body-content>
-         <attribute>
-            <description>The property name. Required</description>
+        <attribute>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -381,9 +431,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$LessThanOrEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The property name. Required</description>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -401,9 +461,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$LikeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The property name. Required</description>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -433,9 +503,19 @@
         <tag-class>org.jahia.taglibs.query.ComparisonTag$NotEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+        	<description>
+        		The sequence (a comma-separated string) of dynamic operand types to
+     			be applied on the operand1 (left operand of the comparison)
+     		</description>
+        	<name>operandTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <description>The property name.</description>
             <name>propertyName</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>

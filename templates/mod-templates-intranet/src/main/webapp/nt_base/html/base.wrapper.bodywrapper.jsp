@@ -113,7 +113,9 @@
     </div>
     <!--stop bottomheader-->
     <div id="content"><!--start content-->
+        <div class="container container_16">
             ${wrappedContent}
+        </div>    
         <div class="clear"></div>
     </div>
     <!--stop content-->

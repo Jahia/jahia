@@ -33,9 +33,6 @@
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -43,8 +40,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @hibernate.class table="jahia_ctn_entries" batch-size="50" lazy="true" 
  * @hibernate.cache usage="nonstrict-read-write"
  */
-@Entity
-@Table (name = "jahia_ctn_entries")
 public class JahiaContainer implements Serializable, Cloneable {
 // ------------------------------ FIELDS ------------------------------
 

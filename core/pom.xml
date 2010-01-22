@@ -379,11 +379,6 @@
             <version>2.1_3</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.3.0.ga</version>
-        </dependency>
         <!-- Jackrabbit dependencies -->
         <dependency>
           <groupId>javax.jcr</groupId>
@@ -1119,7 +1114,7 @@
             <artifactId>chemistry-atompub-server</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
--->
+-->        
         <!-- End of Chemistry dependencies -->
 
         <dependency>

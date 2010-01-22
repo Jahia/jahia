@@ -1,12 +1,12 @@
-Crazy Jane - Core Module - Caches
+Jahia 6.5 - Core Module - Caches
 
- Caches in Crazy Jane are coded as rendering filters. The default filter is the AggregateCacheFilter. This filter will
-cache each module separately and then will aggregate each modules on rendering to deliver the page to the client.
-As an example imagine a last news module that display the latest 5 news of a site. The aggregate on rendering will ask
-for the module last news to render this one will ask for the rendering of each news, this news will be cache separately
+ Caches in Jahia 6.5 are coded as rendering filters. The default filter is the AggregateCacheFilter. This filter
+caches each module separately and then aggregates all modules on rendering time to deliver the full page to the client.
+As an example imagine a "last news module" that display the latest 5 news of a site. The aggregate on rendering will ask
+for the module last news for the rendering of each discrete news, those news will be cached separately
 and the last news module will only contains its own html and references to the displayed news. When subsequent rendering
-is asked the last news modules will search for the expected news in the cache if they are found it will aggregate the
-content in the output otherwise it will ask for rendering only the missing part.
+is asked the last news modules searchs for the expected news in the cache. If they are found it aggregates the
+content in the output, otherwise it ask for rendering only the missing part.
 
 [../images/cache_flow.jpg]
 
@@ -22,14 +22,15 @@ content in the output otherwise it will ask for rendering only the missing part.
 
 * Invalidation or expiration ?
 
- Crazy Jane is using both mode for its caches, by default a fragment will have its expirations set to 4 hours. If during this
- time the element is updated or deleted or child node is added/removed the element will be invalidated from the cache.
+ Crazy Jane is using both modes for its caches, by default a fragment will have its expiration set to 4 hours. If during this
+ time the element is updated or deleted or child node is added/removed the element will be invalidated from the cache on the fly.
 
 * Overriding the default expiration ?
 
- You can override the default expiration in two ways. The easiest and more end user friendly, is to allow the users to
- specify the expiration time directly from the end user interface. For doing so just apply the mixin type <<<jmix:cache>>>
- to your definition.
+ You can override the default expiration in two ways. The easiest and more end-user friendly method, is to allow the users to
+ specify the expiration time directly from the end user interface. User need specific permissions to access to this parameter.
+ To enable manual set-up of expiracy delay in the engines, you must apply the mixin type <<<jmix:cache>>>
+ to the targeted object definition.
 
 -------------------------------
 [jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache
@@ -45,3 +46,4 @@ content in the output otherwise it will ask for rendering only the missing part.
 cache.expiration = 0
 -------------------------------
 
+Expiration delays are expressed in seconds.

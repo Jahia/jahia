@@ -263,19 +263,9 @@ public class JCRPublicationService extends JahiaService {
 
                 VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
-                Node liveNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
-
-                Date pubDate = liveNode.getProperty("jcr:lastModified").getDate().getTime();
-                Date stagingDate = node.getProperty("jcr:lastModified").getDate().getTime();
-                System.out.println(node.getName());
-                System.out.println("staging version = " + node.getBaseVersion().getName());
-                System.out.println("live version = " + liveNode.getBaseVersion().getName());
-//                print(node.getVersionHistory());
-                if (pubDate.getTime() == stagingDate.getTime()) {
-                    continue;
-                }
-
                 logger.info("Merge : "+path);
+
+                String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
                 // Node has been modified, check in now
                 Version newVersion = sourceVersionManager.checkin(path);
@@ -294,9 +284,23 @@ public class JCRPublicationService extends JahiaService {
                     // Update the staging node to the new merged version.
                     node.update(destinationSession.getWorkspace().getName());
                 }
+
+                // todo : handle shareable node move
+//                if (oldPath != null) {
+//                    try {
+//                        JCRNodeWrapper snode = destinationSession.getNode(oldPath);
+//                        snode.checkout();
+//                        JCRNodeWrapper oldParent = snode.getParent();
+//                        oldParent.checkout();
+//                        snode.remove();
+//                        destinationSession.save();
+//                    } catch (RepositoryException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
-                node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+//                node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
             }
         }
     }
@@ -307,18 +311,8 @@ public class JCRPublicationService extends JahiaService {
         JCRNodeWrapper parent = sourceNode.getParent();
         String destinationWorkspaceName = destinationSession.getWorkspace().getName();
         String destinationParentPath = null;
-//        do {
-//            try {
-
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
         destinationParentPath = parent.getPath();
-
-//                break;
-//            } catch (ItemNotFoundException e) {
-//                sourceNode = parent;
-//                parent = sourceNode.getParent();
-//            }
-//        } while (true);
 
         VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
 
@@ -337,9 +331,6 @@ public class JCRPublicationService extends JahiaService {
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
             destinationVersionManager.checkout(destinationParentPath);
-//            System.out.println("---BEFORE CLONE, PARENT NODE");
-//            System.out.println("LIVE "+logVersion(destinationParentPath, destinationVersionManager));
-//            System.out.println("-----------------");
         }
         List<String> deniedPath = new ArrayList<String>();
         for (JCRNodeWrapper node : pruneNodes) {
@@ -358,46 +349,24 @@ public class JCRPublicationService extends JahiaService {
                 if (sourceNode.isNodeType("mix:shareable")) {
                     // Shareable node - todo : check if we need to move or clone
 
-                    String oldPath = null;
-                    if (sourceNode.hasProperty("j:movedFrom")) {
-                        Property movedFrom = sourceNode.getProperty("j:movedFrom");
-                        List<Value> values = new ArrayList<Value>(Arrays.asList(movedFrom.getValues()));
-                        for (Value value : values) {
-                            String v = value.getString();
-                            if (v.endsWith(":::" + destinationPath)) {
-                                oldPath = StringUtils.substringBefore(v,":::");
-                                values.remove(value);
-                                break;
-                            }
-                        }
-                        if (oldPath != null) {
-                            sourceNode.checkout();
-                            if (values.isEmpty()) {
-                                movedFrom.remove();
-                            } else {
-                                movedFrom.setValue(values.toArray(new Value[values.size()]));
-                            }
-                            sourceSession.save();
-                        }
-                    }
+                    String oldPath = handleSharedMove(sourceSession, sourceNode, destinationPath);
 
                     // Clone the node node in live space
                     destinationSession.getWorkspace().clone(destinationWorkspaceName, correspondingNodePath, destinationPath, false);
 
-                    if (oldPath != null) {
-                        try {
-                            JCRNodeWrapper node = destinationSession.getNode(oldPath);
-                            node.checkout();
-                            JCRNodeWrapper oldParent = node.getParent();
-                            oldParent.checkout();
-                            node.remove();
-                            destinationSession.save();
-                            oldParent.checkin();
-                        } catch (RepositoryException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
+                    // todo : handle shareable node move
+//                    if (oldPath != null) {
+//                        try {
+//                            JCRNodeWrapper node = destinationSession.getNode(oldPath);
+//                            node.checkout();
+//                            JCRNodeWrapper oldParent = node.getParent();
+//                            oldParent.checkout();
+//                            node.remove();
+//                            destinationSession.save();
+//                        } catch (RepositoryException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
                 } else {
                     // Non shareable node has been moved
                     destinationVersionManager.checkout(StringUtils.substringBeforeLast(correspondingNodePath,"/"));
@@ -413,15 +382,32 @@ public class JCRPublicationService extends JahiaService {
         }
 
         destinationVersionManager.checkin(destinationParentPath);
+    }
 
-        // do not do unnecessary checkout
-//        recurseCheckout(sourceNode, sourceVersionManager);
-
-//        System.out.println("---END CLONE");
-//        System.out.println("STAG "+logVersion(sourceNode.getParent().getPath(), sourceVersionManager));
-//        System.out.println("LIVE "+logVersion(destinationParentPath, destinationVersionManager));
-//        System.out.println("-----------------");
-
+    private String handleSharedMove(JCRSessionWrapper sourceSession, JCRNodeWrapper sourceNode, String destinationPath) throws RepositoryException {
+        String oldPath = null;
+        if (sourceNode.hasProperty("j:movedFrom")) {
+            Property movedFrom = sourceNode.getProperty("j:movedFrom");
+            List<Value> values = new ArrayList<Value>(Arrays.asList(movedFrom.getValues()));
+            for (Value value : values) {
+                String v = value.getString();
+                if (v.endsWith(":::" + destinationPath)) {
+                    oldPath = StringUtils.substringBefore(v,":::");
+                    values.remove(value);
+                    break;
+                }
+            }
+            if (oldPath != null) {
+                sourceNode.checkout();
+                if (values.isEmpty()) {
+                    movedFrom.remove();
+                } else {
+                    movedFrom.setValue(values.toArray(new Value[values.size()]));
+                }
+                sourceSession.save();
+            }
+        }
+        return oldPath;
     }
 
     private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {

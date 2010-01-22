@@ -71,8 +71,7 @@ public class NodePropertyDescriptorTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         NodePropertyDescriptor descriptor = null;
         try {
-            descriptor = SearchCriteriaFactory.getPropertyDescriptor(
-                    nodeType, name, Utils.getProcessingContext(pageContext));
+            descriptor = SearchCriteriaFactory.getPropertyDescriptor(nodeType, name, getCurrentResource().getLocale());
             if (descriptor != null) {
                 pageContext.setAttribute(var, descriptor);
             }

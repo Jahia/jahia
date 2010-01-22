@@ -163,8 +163,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
 
         OSQuery query = new OSQuery();
         query.setRole("request");
-        query.setSearchTerms(SearchCriteriaFactory.getInstance(
-                getProcessingContext()).getTerms().get(0).getTerm());
+        query.setSearchTerms(SearchCriteriaFactory.getInstance(getRenderContext()).getTerms().get(0).getTerm());
         osm.addQuery(query);
 
         List<OpenSearchModule> modules = feed.getModules();
@@ -214,8 +213,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
     private boolean isFileSearchMode() {
         boolean isFileSearch = false;
         try {
-            String documentType = SearchCriteriaFactory.getInstance(
-                    getProcessingContext()).getNodeType();
+            String documentType = SearchCriteriaFactory.getInstance(getRenderContext()).getNodeType();
             if (!StringUtils.isEmpty(documentType)) {
                 isFileSearch = NodeTypeRegistry.getInstance().getNodeType(
                         documentType).isNodeType(Constants.NT_HIERARCHYNODE);

@@ -116,10 +116,9 @@
         </attribute>
         <attribute>
             <description>
-                If specified, the results will represent the result of the specified stored query execution,
-                rather than the results of the submitted search parameters
+                If specified, the SearchCriteria bean will be taken from the page scope bean with the corresponding name.
             </description>
-            <name>storedQuery</name>
+            <name>searchCriteriaBeanName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>

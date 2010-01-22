@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,18 +31,14 @@
  */
 package org.jahia.taglibs.search;
 
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.utility.Utils;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
 
@@ -64,7 +60,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private List<Hit<?>> hits;
 
-    private String storedQuery;
+    private String searchCriteriaBeanName;
 
     private String var = DEF_VAR;
 
@@ -80,15 +76,8 @@ public class ResultsTag extends AbstractJahiaTag {
     @Override
     public int doStartTag() throws JspException {
 
-        SearchCriteria criteria = null;
-        ProcessingContext ctx = Utils.getProcessingContext(pageContext);
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-        try {
-            criteria = // TODO implement new: storedQuery != null ? getStoredQueryCriteria() : 
-                    getSearchCriteria(ctx);
-        } catch (JahiaException e) {
-            throw new JspTagException(e);
-        }
+        RenderContext renderContext = getRenderContext();
+        SearchCriteria criteria = searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName) : SearchCriteriaFactory.getInstance(renderContext);
 
         if (null == criteria) {
             return SKIP_BODY;
@@ -115,12 +104,6 @@ public class ResultsTag extends AbstractJahiaTag {
         return hits;
     }
 
-    private SearchCriteria getSearchCriteria(ProcessingContext ctx)
-            throws JahiaException {
-        return SearchCriteriaFactory.getInstance(ctx);
-    }
-
-
     public String getVar() {
         return var;
     }
@@ -131,7 +114,7 @@ public class ResultsTag extends AbstractJahiaTag {
         countVar = DEF_COUNT_VAR;
         count = 0;
         hits = null;
-        storedQuery = null;
+        searchCriteriaBeanName = null;
         super.resetState();
     }
 
@@ -139,8 +122,8 @@ public class ResultsTag extends AbstractJahiaTag {
         this.countVar = countVar;
     }
 
-    public void setStoredQuery(String storedQuery) {
-        this.storedQuery = storedQuery;
+    public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
+        this.searchCriteriaBeanName = searchCriteriaBeanName;
     }
 
     public void setVar(String var) {

@@ -31,42 +31,36 @@
  */
 package org.jahia.services.search;
 
-import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.PropertyDefinition;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
-import org.jahia.services.search.SearchCriteria.HierarchicalValue;
 import org.jahia.services.search.SearchCriteria.Term;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.CompactWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
  * Factory for retrieving {@link SearchCriteria} object data.
@@ -91,31 +85,11 @@ public class SearchCriteriaFactory {
 
     private static final String PARAM_NAME_PREFIX = "src_";
 
-    private static final XStream SERIALIZER;
-
-    static {
-        SERIALIZER = new XStream(new XppDriver() {
-            @Override
-            public HierarchicalStreamWriter createWriter(Writer out) {
-                return new CompactWriter(out, xmlFriendlyReplacer());
-            }
-        });
-        SERIALIZER.alias("search-criteria", SearchCriteria.class);
-        SERIALIZER.alias("date-value", DateValue.class);
-        SERIALIZER.alias("node-property", NodeProperty.class);
-        SERIALIZER.alias("hierarchical-value", HierarchicalValue.class);
-        SERIALIZER.alias("term", Term.class);
-    }
-
     static {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, DateValue.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
                 NodeProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
-    }
-
-    public static SearchCriteria deserialize(String serializedSearch) {
-        return (SearchCriteria) SERIALIZER.fromXML(serializedSearch);
     }
 
     /**
@@ -128,21 +102,21 @@ public class SearchCriteriaFactory {
      * @return the {@link SearchCriteria} bean with the current search
      *         parameters
      */
-    public static SearchCriteria getInstance(ProcessingContext ctx) {
+    @SuppressWarnings("unchecked")
+    public static SearchCriteria getInstance(RenderContext ctx) {
 
-        SearchCriteria searchParams = (SearchCriteria) ctx
-                .getAttribute(ATTR_QUERY_PARAMS);
+        SearchCriteria searchParams = (SearchCriteria) ctx.getRequest().getAttribute(ATTR_QUERY_PARAMS);
 
-        if (null == searchParams && isRequestDataPresent(ctx)) {
+        if (null == searchParams && isRequestDataPresent(ctx.getRequest())) {
             searchParams = new SearchCriteria();
             try {
                 Map<String, Object> properties = new HashMap<String, Object>();
-
-                for (Map.Entry<String, Object> param : (Set<Map.Entry<String, Object>>) ctx
-                        .getParameterMap().entrySet()) {
-                    if (param.getKey().startsWith(PARAM_NAME_PREFIX)) {
-                        properties.put(param.getKey().substring(
-                                PARAM_NAME_PREFIX.length()), param.getValue());
+                Enumeration<String> params = ctx.getRequest().getParameterNames();
+                while (params.hasMoreElements()) {
+                    String param = params.nextElement();
+                    if (param.startsWith(PARAM_NAME_PREFIX)) {
+                        properties.put(param.substring(
+                                PARAM_NAME_PREFIX.length()), ctx.getRequest().getParameter(param));
                     }
                 }
                 new BeanUtilsBean(CONVERTER_UTILS_BEAN, new PropertyUtilsBean())
@@ -164,9 +138,9 @@ public class SearchCriteriaFactory {
             }
 
             // initialize node properties
-            initNodeProperties(searchParams, ctx);
+            initNodeProperties(searchParams, ctx.getMainResource().getLocale());
 
-            ctx.setAttribute(ATTR_QUERY_PARAMS, searchParams);
+            ctx.getRequest().setAttribute(ATTR_QUERY_PARAMS, searchParams);
         }
 
         return searchParams;
@@ -174,7 +148,7 @@ public class SearchCriteriaFactory {
 
     private static NodePropertyDescriptor getPropertyDescriptor(
             ExtendedItemDefinition itemDef, ExtendedNodeType nodeType,
-            ProcessingContext ctx) throws RepositoryException {
+            Locale locale) throws RepositoryException {
 
         ExtendedPropertyDefinition propDefExt = (ExtendedPropertyDefinition) itemDef;
         PropertyDefinition propDef = JCRContentUtils.getPropertyDefinition(
@@ -195,9 +169,8 @@ public class SearchCriteriaFactory {
             break;
         }
 
-        NodePropertyDescriptor descriptor = new NodePropertyDescriptor(
-                itemDef.getName(), itemDef.getLabel(ctx != null ? ctx
-                        .getLocale() : Locale.getDefault()), type);
+        NodePropertyDescriptor descriptor = new NodePropertyDescriptor(itemDef.getName(), itemDef
+                .getLabel(locale != null ? locale : Locale.getDefault()), type);
 
         descriptor.setMultiple(propDef.isMultiple());
         if (propDef.getValueConstraints().length > 0) {
@@ -216,7 +189,7 @@ public class SearchCriteriaFactory {
     }
 
     public static NodePropertyDescriptor getPropertyDescriptor(
-            String nodeType, String propertyName, ProcessingContext ctx)
+            String nodeType, String propertyName, Locale locale)
             throws RepositoryException {
         PropertyDefinition propDef = JCRContentUtils.getPropertyDefinition(
                 nodeType, propertyName);
@@ -224,14 +197,14 @@ public class SearchCriteriaFactory {
         if (propDef != null) {
             descriptor = getPropertyDescriptor(
                     (ExtendedItemDefinition) propDef, NodeTypeRegistry
-                            .getInstance().getNodeType(nodeType), ctx);
+                            .getInstance().getNodeType(nodeType), locale);
         }
 
         return descriptor;
     }
 
     private static void initNodeProperties(SearchCriteria searchParams,
-            ProcessingContext ctx) {
+            Locale locale) {
 
         List<NodeProperty> props = new LinkedList<NodeProperty>();
         for (Map.Entry<String, Map<String, NodeProperty>> docTypeEntry : searchParams
@@ -246,7 +219,7 @@ public class SearchCriteriaFactory {
                     try {
                         // retrieve property descriptor
                         NodePropertyDescriptor descriptor = getPropertyDescriptor(
-                                prop.getNodeType(), prop.getName(), ctx);
+                                prop.getNodeType(), prop.getName(), locale);
                         // set additional properties
                         prop.setConstrained(descriptor.isConstrained());
                         prop.setMultiple(descriptor.isMultiple());
@@ -266,10 +239,12 @@ public class SearchCriteriaFactory {
 
     }
 
-    private static boolean isRequestDataPresent(ProcessingContext ctx) {
+    @SuppressWarnings("unchecked")
+    private static boolean isRequestDataPresent(HttpServletRequest request) {
         boolean present = false;
-        for (String param : (Set<String>) ctx.getParameterMap().keySet()) {
-            if (param.startsWith(PARAM_NAME_PREFIX)) {
+        Enumeration<String> params = request.getParameterNames();
+        while (params.hasMoreElements()) {
+            if (params.nextElement().startsWith(PARAM_NAME_PREFIX)) {
                 present = true;
                 break;
             }
@@ -277,9 +252,4 @@ public class SearchCriteriaFactory {
 
         return present;
     }
-
-    public static String serialize(SearchCriteria params) {
-        return SERIALIZER.toXML(params);
-    }
-
 }

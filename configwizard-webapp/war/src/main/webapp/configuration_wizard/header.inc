@@ -55,7 +55,7 @@ append("/").toString());
 final String readmefilePath = response.encodeURL(new StringBuffer().append(request.getContextPath()).append("/html/startup/readme.html").toString());
 final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
 <fmt:setLocale value="<%=locale%>" />
-<fmt:setBundle basename="JahiaMessageResources" />
+<fmt:setBundle basename="JahiaInternalResources" />
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=locale%>" lang="<%=locale%>">
 <%
     String copyright=JahiaConfigurationWizard.COPYRIGHT;

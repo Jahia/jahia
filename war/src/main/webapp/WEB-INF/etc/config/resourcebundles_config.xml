@@ -6,10 +6,7 @@
         <key>JahiaInternalResources</key>
         <file>JahiaInternalResources</file>
     </resource-bundle>
-    <resource-bundle>
-        <key>JahiaMessageResources</key>
-        <file>JahiaMessageResources</file>
-    </resource-bundle>
+ 
     <resource-bundle>
         <key>JahiaTypesResources</key>
         <file>JahiaTypesResources</file>

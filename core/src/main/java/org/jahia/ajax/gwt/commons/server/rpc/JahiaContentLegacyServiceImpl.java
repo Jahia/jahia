@@ -266,7 +266,7 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
 
     public static List<Locale> getAvailableBundleLocales() {
         return LanguageCodeConverters.getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
+                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null);
     }
 
     public static List<GWTJahiaBasicDataBean> getAvailableBundleLanguageBeans() {

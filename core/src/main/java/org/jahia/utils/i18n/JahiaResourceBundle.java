@@ -56,9 +56,8 @@ public class JahiaResourceBundle extends ResourceBundle {
     private final JahiaTemplatesPackage templatesPackage;
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
-    public static final String JAHIA_MESSAGE_RESOURCES = "JahiaMessageResources";
+    //public static final String JAHIA_MESSAGE_RESOURCES = "JahiaMessageResources";
 
-    
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null);
@@ -69,19 +68,19 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName,
-            ClassLoader classLoader) {
+                               ClassLoader classLoader) {
         this(null, locale, templatesPackageName, classLoader);
     }
 
     public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName) {
         this(basename, locale, templatesPackageName, null);
     }
-    
+
     public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName,
-            ClassLoader classLoader) {
+                               ClassLoader classLoader) {
         this.basename = basename;
         this.locale = locale;
-        this.templatesPackage = templatesPackageName != null  ? ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatesPackageName) : null;
+        this.templatesPackage = templatesPackageName != null ? ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatesPackageName) : null;
     }
 
     @Override
@@ -94,7 +93,7 @@ public class JahiaResourceBundle extends ResourceBundle {
             } catch (MissingResourceException e) {
                 logger.debug("Not found '" + s
                         + "' in the base resource bundle '" + basename + "'");
-            }            
+            }
         }
         if (o == null && templatesPackage != null) {
             final List<String> stringList = templatesPackage.getResourceBundleHierarchy();
@@ -115,9 +114,9 @@ public class JahiaResourceBundle extends ResourceBundle {
             }
         }
         if (o == null) {
-            throw new MissingResourceException("Cannot find resource "+s, basename, s);
+            throw new MissingResourceException("Cannot find resource " + s, basename, s);
         }
-        
+
         return o;
     }
 
@@ -135,9 +134,9 @@ public class JahiaResourceBundle extends ResourceBundle {
         String templatesPackageName = templatesPackage != null ? templatesPackage
                 .getName()
                 : (Jahia.getThreadParamBean() != null
-                        && Jahia.getThreadParamBean().getSite() != null ? Jahia
-                        .getThreadParamBean().getSite()
-                        .getTemplatePackageName() : null);
+                && Jahia.getThreadParamBean().getSite() != null ? Jahia
+                .getThreadParamBean().getSite()
+                .getTemplatePackageName() : null);
         return templatesPackageName != null ? JahiaTemplatesRBLoader
                 .getInstance(Thread.currentThread().getContextClassLoader(),
                         templatesPackageName) : null;
@@ -145,68 +144,70 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Shortcut methods to call a resource key from the engine resource bundle
-     * @param key, the key to search inside the JahiaInternalResources bundle
-     * @param locale, the locale in which we want to find the key
+     *
+     * @param key,          the key to search inside the JahiaInternalResources bundle
+     * @param locale,       the locale in which we want to find the key
      * @param defaultValue, the defaultValue (surrounded by ???) if not found
      * @return the resource in locale language or defaultValue surrounded by (???)
      */
     public static String getJahiaInternalResource(String key, Locale locale, String defaultValue) {
         final ResourceBundle resourceBundle = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale);
-        try{
-            return resourceBundle.getString(key);
+        try {
+            String value = resourceBundle.getString(key);
+            logger.error(key + "," + value);
+            return value;
         } catch (MissingResourceException e) {
             return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
         }
     }
 
     public static String getJahiaInternalResource(String key, Locale locale) {
-        return getJahiaInternalResource(key, locale,null);
+        return getJahiaInternalResource(key, locale, null);
     }
 
-    public static String getMessageResource(String key, Locale locale,String defaultValue) {
-        final ResourceBundle resourceBundle = lookupBundle(JAHIA_MESSAGE_RESOURCES, locale);
-        try{
-            return resourceBundle.getString(key);
+    public static String getMessageResource(String key, Locale locale, String defaultValue) {
+        final ResourceBundle resourceBundle = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale);
+        try {
+            String value = resourceBundle.getString(key);
+            logger.error(key + "=" + value);
+            return value;
         } catch (MissingResourceException e) {
             return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
         }
     }
 
     public static String getMessageResource(String key, Locale locale) {
-        return getMessageResource(key, locale,null);
+        return getMessageResource(key, locale, null);
     }
 
     public static String getInternalOrMessageResource(String key, Locale locale) {
-        String value = null ;
-        try{
-            value = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale).getString(key) ;
-        } catch (MissingResourceException e) {}
-        if (value != null) {
-            return value ;
+        String value = null;
+        try {
+            value = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale).getString(key);
+        } catch (MissingResourceException e) {
         }
-        try{
-            value = lookupBundle(JAHIA_MESSAGE_RESOURCES, locale).getString(key) ;
-        } catch (MissingResourceException e) {}
         if (value != null) {
-            return value ;
+            logger.error(key + "=" + value);
+            return value;
         }
-        return MISSING_RESOURCE + key + MISSING_RESOURCE ;
+
+        return MISSING_RESOURCE + key + MISSING_RESOURCE;
     }
 
     public static String getString(String bundle, String key, Locale locale, String templatePackageName) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, Thread.currentThread().getContextClassLoader()).getString(key);
     }
-    
+
     public static String getString(String bundle, String key, Locale locale, String templatePackageName, ClassLoader loader) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, loader).getString(key);
     }
-    
+
     private static ResourceBundle lookupBundle(String baseName, Locale locale) {
         return lookupBundle(baseName, locale, null);
     }
 
     private static ResourceBundle lookupBundle(String baseName,
-            Locale preferredLocale, ClassLoader loader) {
+                                               Locale preferredLocale, ClassLoader loader) {
 
         if (map.get(loader) == null) {
             map.put(loader, new HashMap<String, Map<Locale, ResourceBundle>>());
@@ -220,8 +221,8 @@ public class JahiaResourceBundle extends ResourceBundle {
             bundle = map.get(loader).get(baseName).get(preferredLocale);
         } else {
             bundle = loader != null ? ResourceBundle.getBundle(
-                           baseName, preferredLocale, loader) : ResourceBundle.getBundle(
-                           baseName, preferredLocale);
+                    baseName, preferredLocale, loader) : ResourceBundle.getBundle(
+                    baseName, preferredLocale);
             map.get(loader).get(baseName).put(preferredLocale, bundle);
         }
 
@@ -234,7 +235,7 @@ public class JahiaResourceBundle extends ResourceBundle {
             } else if (preferredLocale.getLanguage().equals(
                     availableLocale.getLanguage())
                     && (availableLocale.getCountry().length() == 0 || preferredLocale
-                            .getCountry().equals(availableLocale.getCountry()))) {
+                    .getCountry().equals(availableLocale.getCountry()))) {
                 match = bundle;
             }
             if (match == null && !EMPTY_LOCALE.equals(preferredLocale)) {
@@ -256,18 +257,20 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     public String getString(String key, String defaultValue) {
-        String message ;
+        String message;
         try {
             message = getString(key);
+            logger.error(key + "," + getString(key));
+
         } catch (MissingResourceException e) {
             message = defaultValue;
         }
         return message;
     }
-     
+
     /**
      * Returns names of bundles where the key is looked up.
-     * 
+     *
      * @return list of bundles where the key is looked up
      */
     public List<String> getLookupBundles() {
@@ -286,5 +289,5 @@ public class JahiaResourceBundle extends ResourceBundle {
         return bundles;
     }
 
-    
+
 }

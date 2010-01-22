@@ -151,24 +151,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         return jData;
     }
 
-    /**
-     * internal method to render bundle resources
-     *
-     * @param label the keylabel
-     * @param l     the locale
-     * @return a string empty if resource is non existent
-     */
-    protected String getJahiaEngineRessource(String label, Locale l) {
-        try {
-            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
-        } catch (Exception e) {
-            try {
-                return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
-            } catch (Exception e1) {
-                return "";
-            }
-        }
-    }
 
     /**
      * Get current locale
@@ -193,34 +175,12 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     protected String getLocaleJahiaAdminResource(String label) {
         Locale l = getUILocale();
         try {
-            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
+            return JahiaResourceBundle.getJahiaInternalResource(label,l);
         } catch (Exception e) {
-            try {
-                return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
-            } catch (Exception e1) {
-                return "";
-            }
+            return "";
         }
     }
 
-    /**
-     * internal method to render bundle resources
-     *
-     * @param label the key label
-     * @return a string empty if resource is non existent
-     */
-    protected String getLocaleJahiaEnginesResource(String label) {
-        Locale l = getUILocale();
-        try {
-            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
-        } catch (Exception e) {
-            try {
-                return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
-            } catch (Exception e1) {
-                return "";
-            }
-        }
-    }
 
     /**
      * Get localized message.

@@ -327,14 +327,14 @@ public class LanguageCodeConverters {
 
     public static List<Locale> getAvailableBundleLocales() {
         return getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
+                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null);
     }
 
     public static List<Locale> getAvailableBundleLocalesSorted(
             Locale currentLocale) {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null)) {
+                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null)) {
             sortedLocales.put(locale.getDisplayName(currentLocale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());

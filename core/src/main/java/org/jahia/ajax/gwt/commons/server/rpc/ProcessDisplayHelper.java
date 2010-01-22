@@ -267,11 +267,7 @@ public class ProcessDisplayHelper {
         try {
             return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
-            try {
-                return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
-            } catch (Exception e1) {
-                return "";
-            }
+             return "";
         }
     }
 

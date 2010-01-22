@@ -70,62 +70,62 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     public static final int BAD_LOCATION = 3;
     public static final int UNKNOWN_ERROR = 9;
 
-    private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class) ;
+    private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("Entered GWT upload servlet") ;
+        logger.debug("Entered GWT upload servlet");
 
         FileItemFactory factory = new DiskFileItemFactory();
-		ServletFileUpload upload = new ServletFileUpload(factory);
+        ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setSizeMax(Jahia.getSettings().getJahiaFileUploadMaxSize());
         upload.setHeaderEncoding("UTF-8");
-        Map<String, FileItem> uploads = new HashMap<String, FileItem>() ;
-        String location = null ;
+        Map<String, FileItem> uploads = new HashMap<String, FileItem>();
+        String location = null;
         String type = null;
-        boolean unzip = false ;
+        boolean unzip = false;
 
         final PrintWriter printWriter = response.getWriter();
         try {
-			List<FileItem> items = upload.parseRequest(request) ;
+            List<FileItem> items = upload.parseRequest(request);
             for (FileItem item : items) {
                 if ("unzip".equals(item.getFieldName())) {
-                    unzip = true ;
+                    unzip = true;
                 } else if ("uploadLocation".equals(item.getFieldName())) {
-                    location = item.getString("UTF-8") ;
+                    location = item.getString("UTF-8");
                 } else if ("asyncupload".equals(item.getFieldName())) {
-                    String name = item.getName() ;
+                    String name = item.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name), item) ;
+                        uploads.put(extractFileName(name), item);
                     }
                     type = "async";
                 } else if (!item.isFormField() && item.getFieldName().startsWith("uploadedFile")) {
-                    String name = item.getName() ;
+                    String name = item.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name), item) ;
+                        uploads.put(extractFileName(name), item);
                     }
                     type = "sync";
                 }
             }
-		} catch (FileUploadBase.SizeLimitExceededException e) {
+        } catch (FileUploadBase.SizeLimitExceededException e) {
             Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
-            String locMsg = null ;
+            String locMsg = null;
             try {
-                ResourceBundle res = ResourceBundle.getBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, locale) ;
-                locMsg = MessageFormat.format(res.getString("org.jahia.engines.filemanager.Filemanager_Engine.fileSizeError.label"),
-                                              Jahia.getSettings().getJahiaFileUploadMaxSize()) ;
+                String msg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.filemanager.Filemanager_Engine.fileSizeError.label", locale);
+                locMsg = MessageFormat.format(msg,
+                        Jahia.getSettings().getJahiaFileUploadMaxSize());
             } catch (Exception ex) {
-                logger.debug("Error while using default engine resource bundle (" + JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES + ") with locale " + locale, ex);
+                logger.debug("Error while using default engine resource bundle (internal) with locale " + locale, ex);
             }
             if (locMsg == null) {
-                locMsg = "File upload exceeding limit of " + Jahia.getSettings().getJahiaFileUploadMaxSize() + " bytes" ;
+                locMsg = "File upload exceeding limit of " + Jahia.getSettings().getJahiaFileUploadMaxSize() + " bytes";
             }
-            logger.error(locMsg, e) ;
-            printWriter.write("UPLOAD-ISSUE: "+locMsg+"\n");
-			return ;
+            logger.error(locMsg, e);
+            printWriter.write("UPLOAD-ISSUE: " + locMsg + "\n");
+            return;
         } catch (FileUploadException e) {
-            logger.error("UPLOAD-ISSUE", e) ;
-            printWriter.write("UPLOAD-ISSUE"+"\n");
-			return;
+            logger.error("UPLOAD-ISSUE", e);
+            printWriter.write("UPLOAD-ISSUE" + "\n");
+            return;
         }
 
         if (type == null || type.equals("sync")) {
@@ -133,18 +133,18 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
             final JahiaUser user = (JahiaUser) request.getSession().getAttribute(ParamBean.SESSION_USER);
 
-            boolean failed = false ;
-            final List<String> pathsToUnzip = new ArrayList<String>() ;
-            for (String filename: uploads.keySet()) {
-                try  {
+            boolean failed = false;
+            final List<String> pathsToUnzip = new ArrayList<String>();
+            for (String filename : uploads.keySet()) {
+                try {
                     final FileItem item = uploads.get(filename);
                     final int i = writeToDisk(user, item, location, filename);
                     switch (i) {
                         case OK:
                             if (unzip && filename.toLowerCase().endsWith(".zip")) {
-                                pathsToUnzip.add(new StringBuilder(location).append("/").append(filename).toString()) ;
+                                pathsToUnzip.add(new StringBuilder(location).append("/").append(filename).toString());
                             }
-                            printWriter.write("OK: " + filename+"\n");
+                            printWriter.write("OK: " + filename + "\n");
                             break;
                         case EXISTS:
                             File f = File.createTempFile("upload", ".tmp");
@@ -154,15 +154,15 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                             printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + filename + "\n");
                             break;
                         case READONLY:
-                            printWriter.write("READONLY: " +  item.getFieldName()+"\n");
+                            printWriter.write("READONLY: " + item.getFieldName() + "\n");
                             break;
                         default:
-                            printWriter.write("UPLOAD-FAILED: " +  item.getFieldName()+"\n");
+                            printWriter.write("UPLOAD-FAILED: " + item.getFieldName() + "\n");
                             break;
                     }
-                }  catch (IOException e) {
-                    logger.error("Upload failed for file \n", e) ;
-                    failed = true ;
+                } catch (IOException e) {
+                    logger.error("Upload failed for file \n", e);
+                    failed = true;
                 }
             }
 
@@ -171,7 +171,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 try {
                     ZipHelper zip = ZipHelper.getInstance();
                     zip.unzip(pathsToUnzip, true);
-               } catch (GWTJahiaServiceException e) {
+                } catch (GWTJahiaServiceException e) {
                     logger.error("Auto-unzipping failed", e);
                 }
             }
@@ -182,20 +182,20 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 printWriter.write("<html><body>");
                 File f = File.createTempFile("upload", ".tmp");
                 IOUtils.copy(fileItem.getInputStream(), new FileOutputStream(f));
-                printWriter.write("<div id=\"uploaded\" key=\""+f.getName() + "\" name=\""+fileItem.getName()+"\"></div>\n");
+                printWriter.write("<div id=\"uploaded\" key=\"" + f.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
                 printWriter.write("</body></html>");
                 asyncItems.put(f.getName(), new Item(fileItem.getContentType(), fileItem.getSize(), f));
             }
         }
-	}
+    }
 
     private String extractFileName(String rawFileName) {
         if (rawFileName.indexOf("\\") >= 0) {
-            return rawFileName.substring(rawFileName.lastIndexOf("\\")+1) ;
+            return rawFileName.substring(rawFileName.lastIndexOf("\\") + 1);
         } else if (rawFileName.indexOf("/") >= 0) {
-            return rawFileName.substring(rawFileName.lastIndexOf("/")+1) ;
+            return rawFileName.substring(rawFileName.lastIndexOf("/") + 1);
         } else {
-            return rawFileName ;
+            return rawFileName;
         }
     }
 
@@ -204,10 +204,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             logger.debug("item : " + item);
             logger.debug("destination : " + location);
             logger.debug("filename : " + filename);
-            logger.debug("size : " + item.getSize()) ;
+            logger.debug("size : " + item.getSize());
         }
         if (item == null || location == null || filename == null) {
-            return UNKNOWN_ERROR ;
+            return UNKNOWN_ERROR;
         }
 
 
@@ -220,20 +220,20 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
 
         if (!locationFolder.isWriteable()) {
-            logger.debug("destination is not writable for user " + user.getName()) ;
+            logger.debug("destination is not writable for user " + user.getName());
             return READONLY;
         }
-        JCRNodeWrapper result ;
+        JCRNodeWrapper result;
         try {
             if (locationFolder.hasNode(filename)) {
                 return EXISTS;
             }
-            InputStream is = item.getInputStream() ;
+            InputStream is = item.getInputStream();
             result = locationFolder.uploadFile(filename, is, item.getContentType());
-            is.close() ;
+            is.close();
             locationFolder.saveSession();
         } catch (RepositoryException e) {
-            logger.error("exception ",e) ;
+            logger.error("exception ", e);
             return UNKNOWN_ERROR;
         }
         return OK;

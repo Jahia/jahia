@@ -64,7 +64,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  * except that it checks a session variable (org.jahia.services.multilang.currentlocale) to
  * determine if a Locale has been chosen.
  * <p/>
- * <p>The value lookup is done in the 'JahiaMessageResources.properties' resource bundle.
+ * <p>The value lookup is done in the 'JahiaInternalResources.properties' resource bundle.
  * <p/>
  * <p>Similar in functionality to <a href='resourceBundle.html' target='tagFrame'>content:resourceBundle</a>.
  * <p/>

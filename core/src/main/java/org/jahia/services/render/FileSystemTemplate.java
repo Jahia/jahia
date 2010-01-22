@@ -20,8 +20,8 @@ import javax.servlet.RequestDispatcher;
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
  */
-public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTemplate>, Template {
-    private static Logger logger = Logger.getLogger(RequestDispatcherTemplate.class);
+public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Template {
+    private static Logger logger = Logger.getLogger(FileSystemTemplate.class);
     private String path;
     private String fileExtension;
     private String key;
@@ -31,7 +31,7 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
 
     private static Map<String,Properties> propCache = new HashMap<String, Properties>();
 
-    public RequestDispatcherTemplate(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
+    public FileSystemTemplate(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
         this.path = path;
         this.key = key;
         this.ownerPackage = ownerPackage;
@@ -109,7 +109,7 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
             return false;
         }
 
-        RequestDispatcherTemplate template = (RequestDispatcherTemplate) o;
+        FileSystemTemplate template = (FileSystemTemplate) o;
 
         if (displayName != null ? !displayName.equals(template.displayName) : template.displayName != null) {
             return false;
@@ -136,7 +136,7 @@ public class RequestDispatcherTemplate implements Comparable<RequestDispatcherTe
         return result;
     }
 
-    public int compareTo(RequestDispatcherTemplate template) {
+    public int compareTo(FileSystemTemplate template) {
         if (ownerPackage == null) {
             if (template.ownerPackage != null ) {
                 return 1;

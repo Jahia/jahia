@@ -6,7 +6,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
-import org.jahia.services.render.scripting.JSPScript;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
@@ -65,7 +64,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                         if (templatePath != null) {
                             JahiaTemplatesPackage module = aPackage;
                             String templateName = template;
-                            Template resolvedTemplate = new RequestDispatcherTemplate(templatePath, templateName, module, templateName);
+                            Template resolvedTemplate = new FileSystemTemplate(templatePath, templateName, module, templateName);
                             return resolvedTemplate;
                         }
                     }
@@ -81,7 +80,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                                                    currentTemplatePath);
                     if (templatePath != null) {
                         JahiaTemplatesPackage module = aPackage;
-                        Template resolvedTemplate = new RequestDispatcherTemplate(templatePath, template, module, template);
+                        Template resolvedTemplate = new FileSystemTemplate(templatePath, template, module, template);
                         return resolvedTemplate;
                     }
                 }
@@ -115,10 +114,8 @@ public class FileSystemScriptResolver implements ScriptResolver {
             Template resolvedTemplate = resolveTemplate(resource, context);
 
             // @todo remove this hardcoding of script instantiation and make it Spring-configured.
-            if (JSP_EXTENSION.equals(resolvedTemplate.getFileExtension())) {
-                return new JSPScript(resolvedTemplate);
-            } else if (PHP_EXTENSION.equals(resolvedTemplate.getFileExtension())) {
-                return new QuercusScript(resolvedTemplate);
+            if (JSP_EXTENSION.equals(resolvedTemplate.getFileExtension()) || PHP_EXTENSION.equals(resolvedTemplate.getFileExtension())) {
+                return new RequestDispatcherScript(resolvedTemplate);
             } else {
                 return new JSR223Script(resolvedTemplate);
             }
@@ -170,7 +167,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                                 key = "default";
                             }
                             if (!templates.containsKey(key)) {
-                                templates.put(key, new RequestDispatcherTemplate(path + "/" + file.getName(), key, tplPackage, filename));
+                                templates.put(key, new FileSystemTemplate(path + "/" + file.getName(), key, tplPackage, filename));
                             }
                         }
                     }
@@ -217,7 +214,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                         key = "default";
                     }
                     if (!templates.containsKey(key)) {
-                        templates.put(key, new RequestDispatcherTemplate(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, filename));
+                        templates.put(key, new FileSystemTemplate(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, filename));
                     }
                 }
             }

@@ -18,6 +18,7 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -169,7 +170,7 @@ public class EditModeDNDListener extends DNDListener {
                     if (type.getItems() == null || type.getItems().size() == 0) {
                         JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null,
                                 type.getName(), null, null,
-                                new ArrayList<GWTJahiaNodeProperty>(), null,
+                                new ArrayList<GWTJahiaNodeProperty>(),new HashMap<String,List<GWTJahiaNodeProperty>>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(
                                             Throwable throwable) {

@@ -76,7 +76,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
         if (engine.getMixin() != null) {
             if (propertiesEditor != null) {
                 Log.debug("remove old properties editor from parents");
-                propertiesEditor.removeFromParent();
+                propertiesEditor.setVisible(false);
             }
             if (!isMultiLang()) {
                 setProcessed(true);
@@ -94,9 +94,11 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
 
                 setPropertiesEditorByLang(locale);
-            }
 
-            postCreate();
+                postCreate();
+
+            }
+            propertiesEditor.setVisible(true);
 
             layout();
         }

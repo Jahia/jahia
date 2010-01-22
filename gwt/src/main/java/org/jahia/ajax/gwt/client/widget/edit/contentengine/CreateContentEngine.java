@@ -160,14 +160,14 @@ public class CreateContentEngine extends AbstractContentEngine {
                 mixin = result;
                 contentService.getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
                     public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-                        if (gwtJahiaLanguages != null && gwtJahiaLanguages.isEmpty()) {
-                            setAvailableLanguages(gwtJahiaLanguages);
+                        if (gwtJahiaLanguages != null && !gwtJahiaLanguages.isEmpty()) {
                             for (GWTJahiaLanguage gwtJahiaLanguage : gwtJahiaLanguages) {
                                 if (gwtJahiaLanguage.isCurrent()) {
                                     defaultLanguageBean = gwtJahiaLanguage;
                                     break;
                                 }
                             }
+                            setAvailableLanguages(gwtJahiaLanguages);                            
                         }
                         fillCurrentTab();
                     }
@@ -200,20 +200,33 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     protected void save(final boolean closeAfterSave) {
         String nodeName = targetName;
-        List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
-        List<String> mixin = new ArrayList<String>();
+        final List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+        final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+        final List<String> mixin = new ArrayList<String>();
 
         // new acl
         GWTJahiaNodeACL newNodeACL = null;
 
         for (TabItem item : tabs.getItems()) {
             if (item instanceof PropertiesTabItem) {
+                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
                 if (pe != null) {
-                    props.addAll(pe.getProperties());
+                    // props.addAll(pe.getProperties());
                     mixin.addAll(pe.getAddedTypes());
                     mixin.addAll(pe.getTemplateTypes());
                 }
+
+                // handle multilang
+                if (propertiesTabItem.isMultiLang()) {
+                    // for now only contentTabItem  has multilang. properties
+                    langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap());
+                } else {
+                    if (pe != null) {
+                        props.addAll(pe.getProperties());
+                    }
+                }
+
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                         String nodeNameValue = ((ContentTabItem) item).getName().getValue();
@@ -231,7 +244,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         }
 
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, null, new AsyncCallback<Object>() {
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props,langCodeProperties, null, new AsyncCallback<Object>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);
@@ -250,7 +263,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
             });
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, null, new AsyncCallback<GWTJahiaNode>() {
+            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props,langCodeProperties, null, new AsyncCallback<GWTJahiaNode>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);

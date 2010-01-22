@@ -364,6 +364,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Save properties by langCode
+     *
      * @param nodes
      * @param newProps
      * @param local
@@ -391,7 +392,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // save shared properties
-         saveProperties(nodes, sharedProperties);
+        saveProperties(nodes, sharedProperties);
 
         // save acl
         if (acl != null) {
@@ -432,6 +433,36 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
+     * Create node with multilangue
+     * @param parentPath
+     * @param name
+     * @param nodeType
+     * @param mixin
+     * @param acl
+     * @param props
+     * @param langCodeProperties
+     * @param captcha
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+        GWTJahiaNode node = createNode(parentPath, name, nodeType, mixin, acl, props, captcha);
+        // save shared properties
+        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
+            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            nodes.add(node);
+            Iterator<String> langCode = langCodeProperties.keySet().iterator();
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
+                saveProperties(nodes, properties, currentLangCode);
+            }
+        }
+        return node;
+    }
+
+    /**
      * Move and create node
      *
      * @param path
@@ -443,10 +474,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param captcha
      * @throws GWTJahiaServiceException
      */
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, context);
+
         try {
             contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
         } catch (RepositoryException e) {
@@ -454,6 +486,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         if (acl != null) {
             setACL(jahiaNode.getPath(), acl);
+        }
+
+        // save shared properties
+        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
+            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            nodes.add(jahiaNode);            
+            Iterator<String> langCode = langCodeProperties.keySet().iterator();
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+                saveProperties(nodes, props, currentLangCode);
+            }
         }
     }
 
@@ -750,6 +795,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Get site languages
+     *
      * @return
      * @throws GWTJahiaServiceException
      */

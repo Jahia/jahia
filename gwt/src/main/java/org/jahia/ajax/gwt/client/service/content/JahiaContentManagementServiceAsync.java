@@ -121,7 +121,10 @@ public interface JahiaContentManagementServiceAsync {
 
     void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
 
-    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha, AsyncCallback<GWTJahiaNode> async);
+
+
+    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha, AsyncCallback asyncCallback);
 
     void createFolder(String parentPath, String name, AsyncCallback async);
 

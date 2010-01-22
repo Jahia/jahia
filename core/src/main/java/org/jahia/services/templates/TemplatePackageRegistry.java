@@ -305,13 +305,11 @@ class TemplatePackageRegistry {
         }
 
         // handle resource bundles
-        // TODO adjust resource bundle handling after module selection will be implemented for a virtual site
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
         	sourcePack.getResourceBundleHierarchy().clear();
-            for (JahiaTemplatesPackage otherPack : registry.values()) {
-            	if (otherPack.getResourceBundleName() != null && !otherPack.isDefault()) {
-            		sourcePack.getResourceBundleHierarchy().add("templates." + otherPack.getRootFolder() + "." + otherPack.getResourceBundleName());
-            	}
+            sourcePack.getResourceBundleHierarchy().add("templates." + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            for (String s : sourcePack.getDepends()) {
+                sourcePack.getResourceBundleHierarchy().add("templates." + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
             }
             if (!sourcePack.isDefault()) {
             	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");

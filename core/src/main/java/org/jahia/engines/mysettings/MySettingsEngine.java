@@ -243,7 +243,7 @@ public class MySettingsEngine implements JahiaEngine {
                         .getMessages()) {
                     localizedMessages.add(MessageFormat.format(
                             JahiaResourceBundle
-                                    .getMessageResource(engineMessage.getKey(),
+                                    .getJahiaInternalResource(engineMessage.getKey(),
                                             jParams.getLocale()), engineMessage
                                     .getValues()));
                 }

@@ -670,7 +670,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             theUser = uMgr.lookupUser(jahiaLoginUsername);
 
             if (theUser == null) {
-                String s = JahiaResourceBundle.getMessageResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                String s = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
                         request.getLocale());
                 logger.warn(s);
                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", s);
@@ -697,19 +697,19 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                             JahiaSite firstAdminSite = adminGrantedSites.get(0);
                             entrySiteID = firstAdminSite.getID();
                         } else {
-                            String dspMsg = JahiaResourceBundle.getMessageResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator1.label",
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator1.label",
                                     request.getLocale());
                             dspMsg += " ";
                             dspMsg += jahiaLoginUsername;
                             dspMsg += " ";
-                            dspMsg += JahiaResourceBundle.getMessageResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
+                            dspMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
                                     request.getLocale());
                             request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                             logger.error("Login Error: User " + jahiaLoginUsername + " is not an system administrator.");
                         }
                     }
                 } else {
-                    String dspMsg = JahiaResourceBundle.getMessageResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
                             request.getLocale());
                     request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     logger.error("Login Error: User " + jahiaLoginUsername + " entered bad password.");
@@ -868,7 +868,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                 }
                 session.setAttribute(ProcessingContext.SESSION_SITE, currentSite);
             } catch (JahiaException je) {
-                String dspMsg = JahiaResourceBundle.getMessageResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
                         request.getLocale());
                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
             }

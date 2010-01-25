@@ -190,8 +190,8 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      */
     public String getLocaleMessageResource(EngineMessage message) {
         return message.getValues() == null ? JahiaResourceBundle
-                .getMessageResource(message.getKey(), getUILocale())
-                : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
+                .getJahiaInternalResource(message.getKey(), getUILocale())
+                : MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(message.getKey(),
                 getUILocale()), message.getValues());
     }
 

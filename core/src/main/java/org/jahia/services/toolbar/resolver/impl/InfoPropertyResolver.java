@@ -77,13 +77,13 @@ public class InfoPropertyResolver implements PropertyResolver {
             	    long now = System.currentTimeMillis();
             	    long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
             	    if (expirationTime > 0 && (now >= expirationTime || (expirationTime - now) <= 1000L * 60 * 60 * 24 * warningdays)) {
-            	        return JahiaResourceBundle.getMessageResource(
+            	        return JahiaResourceBundle.getJahiaInternalResource(
                                 "jahia.toolbar.license.expire", jData
                                         .getProcessingContext().getLocale())
                                 + " "
                                 + new SimpleDateFormat(
                                         JahiaResourceBundle
-                                                .getMessageResource(
+                                                .getJahiaInternalResource(
                                                         "jahia.toolbar.license.dateformat",
                                                         jData
                                                                 .getProcessingContext()

@@ -1038,7 +1038,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             return null;
         }
         for (int i=0; i < licenseErrorMessages.length; i++) {
-            final String resource = JahiaResourceBundle.getMessageResource(licenseErrorMessages[i].
+            final String resource = JahiaResourceBundle.getJahiaInternalResource(licenseErrorMessages[i].
                     getResourceKey(), LanguageCodeConverters.languageCodeToLocale(getSettings().
                     getDefaultLanguageCode()));
             if (resource != null) {

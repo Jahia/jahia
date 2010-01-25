@@ -180,6 +180,7 @@ public class Constants {
     
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";    
+    public static final String PUBLISHED = "j:published";    
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";
     public static final String FILTERS = "j:filters";

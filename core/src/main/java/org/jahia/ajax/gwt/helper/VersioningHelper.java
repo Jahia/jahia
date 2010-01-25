@@ -34,15 +34,12 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
-import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -55,12 +52,7 @@ import java.util.List;
 public class VersioningHelper {
     private static Logger logger = Logger.getLogger(VersioningHelper.class);
 
-    private JCRSessionFactory sessionFactory;
     private CacheService cacheService;
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -70,11 +62,12 @@ public class VersioningHelper {
      * Activate versionning
      *
      * @param pathes
+     * @param currentUserSession
      */
-    public void activateVersioning(List<String> pathes) {
+    public void activateVersioning(List<String> pathes, JCRSessionWrapper currentUserSession) {
         for (String path : pathes) {
             try {
-                JCRSessionWrapper s = sessionFactory.getCurrentUserSession();
+                JCRSessionWrapper s = currentUserSession;
                 JCRNodeWrapper node = s.getNode(path);
                 if (!node.isVersioned()) {
                     node.versionFile();
@@ -124,12 +117,12 @@ public class VersioningHelper {
      *
      * @param nodeUuid
      * @param versionUuid
-     * @param ctx
+     * @param currentUserSession
      */
-    public void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
+    public void restoreNode(String nodeUuid, String versionUuid, JCRSessionWrapper currentUserSession) {
         try {
-            JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNodeByUUID(nodeUuid);
-            Version version = (Version) sessionFactory.getCurrentUserSession().getNodeByUUID(versionUuid);
+            JCRNodeWrapper node = (JCRNodeWrapper) currentUserSession.getNodeByUUID(nodeUuid);
+            Version version = (Version) currentUserSession.getNodeByUUID(versionUuid);
             node.checkout();
             node.restore(version, true);
             node.checkpoint();

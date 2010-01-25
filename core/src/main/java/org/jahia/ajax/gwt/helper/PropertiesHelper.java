@@ -43,10 +43,7 @@ import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -65,15 +62,9 @@ import java.util.*;
 public class PropertiesHelper {
     private static Logger logger = Logger.getLogger(PropertiesHelper.class);
 
-    private JCRSessionFactory sessionFactory;
     private ContentDefinitionHelper contentDefinition;
     private ContentManagerHelper contentManager;
     private NavigationHelper navigation;
-
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
         this.contentDefinition = contentDefinition;
@@ -87,10 +78,10 @@ public class PropertiesHelper {
         this.navigation = navigation;
     }
 
-    public Map<String, GWTJahiaNodeProperty> getProperties(String path, Locale locale) throws GWTJahiaServiceException {
+    public Map<String, GWTJahiaNodeProperty> getProperties(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
-            objectNode = sessionFactory.getCurrentUserSession(null, locale).getNode(path);
+            objectNode = currentUserSession.getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -205,18 +196,17 @@ public class PropertiesHelper {
     /**
      * A batch-capable save properties method.
      *
+     * @param currentUserSession
      * @param nodes    the nodes to save the properties of
      * @param newProps the new properties
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user, Locale locale) throws GWTJahiaServiceException {
-        String workspace = "default";
-
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
-                objectNode = sessionFactory.getCurrentUserSession(workspace, locale).getNode(aNode.getPath());
+                objectNode = currentUserSession.getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -249,7 +239,7 @@ public class PropertiesHelper {
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
                 if (!aNode.getName().equals(objectNode.getName())) {
-                    contentManager.rename(objectNode.getPath(), aNode.getName(), user);
+                    contentManager.rename(objectNode.getPath(), aNode.getName(), currentUserSession);
                 }
             } catch (RepositoryException e) {
                 logger.error("error", e);

@@ -25,12 +25,7 @@ import java.util.Map;
 public class PublicationHelper {
     private static Logger logger = Logger.getLogger(PublicationHelper.class);
 
-    private JCRSessionFactory sessionFactory;
     private JCRPublicationService publicationService ;
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;

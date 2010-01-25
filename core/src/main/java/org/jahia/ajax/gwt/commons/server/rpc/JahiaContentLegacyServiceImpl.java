@@ -41,7 +41,6 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.bin.Jahia;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
@@ -123,7 +122,7 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
                 gwtJahiaUserProperty.setRealKey(property.getName());
                 if (gwtJahiaUserProperty.isJahiaMySettingsProperty()) {
                     // label from resource bundle
-                    gwtJahiaUserProperty.setLabel(getLocaleTemplateRessource("mySettings." + gwtJahiaUserProperty.getKey()));
+                    gwtJahiaUserProperty.setLabel(getLocaleTemplateResource("mySettings." + gwtJahiaUserProperty.getKey()));
                 } else {
                     gwtJahiaUserProperty.setLabel(gwtJahiaUserProperty.getKey());
                 }

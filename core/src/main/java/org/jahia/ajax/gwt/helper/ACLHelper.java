@@ -37,11 +37,11 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.ParentACLFinder;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -68,15 +68,15 @@ public class ACLHelper {
         this.jahiaUserManagerService = jahiaUserManagerService;
     }
 
-    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ProcessingContext jParams) {
-        return getGWTJahiaNodeACL(baseACL, false, jParams);
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, Locale uiLocale) {
+        return getGWTJahiaNodeACL(baseACL, false, uiLocale);
     }
 
-    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, boolean newAcl, ProcessingContext jParams) {
-        return getGWTJahiaNodeACL(baseACL, null,null, newAcl, jParams);
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, boolean newAcl, Locale uiLocale) {
+        return getGWTJahiaNodeACL(baseACL, null,null, newAcl, uiLocale);
     }
 
-    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ACLResourceInterface resource, ParentACLFinder finder, boolean newAcl, ProcessingContext jParams) {
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ACLResourceInterface resource, ParentACLFinder finder, boolean newAcl, Locale uiLocale) {
         GWTJahiaNodeACL gwtacl = new GWTJahiaNodeACL();
         List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
 
@@ -85,7 +85,7 @@ public class ACLHelper {
         Map<String, String> labels = new HashMap<String, String>();
         for (List<String> list : gwtacl.getAvailablePermissions().values()) {
             for (String s : list) {
-                labels.put(s, JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.rights.ManageRights."+s+".label", jParams.getLocale(), s));
+                labels.put(s, JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.rights.ManageRights."+s+".label", uiLocale, s));
             }
         }
         gwtacl.setPermissionLabels(labels);
@@ -169,8 +169,8 @@ public class ACLHelper {
 //        }
     }
 
-    public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand,ProcessingContext jParams) {
-        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(jParams.getSiteID(), JahiaGroupManagerService.USERS_GROUPNAME);
+    public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand, JahiaSite site) {
+        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(site.getID(), JahiaGroupManagerService.USERS_GROUPNAME);
         GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
         ace.setPrincipalType('g');
         ace.setPrincipal(usersGroup.getGroupname());

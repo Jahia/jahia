@@ -36,6 +36,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
@@ -51,6 +53,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -77,6 +81,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     /**
      * build JahiaData
      *
+     * @deprecated
      * @param pid
      * @param mode
      * @return
@@ -85,9 +90,19 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         return buildJahiaData(pid, mode, false);
     }
 
+    protected JCRSessionWrapper retrieveCurrentSession() throws GWTJahiaServiceException {
+        try {
+            return JCRSessionFactory.getInstance().getCurrentUserSession("default", getLocale(), null);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException("Cannot open user session");
+        }
+    }
+
     /**
      * build JahiaData
      *
+     * @deprecated
      * @param pid
      * @param mode
      * @return
@@ -101,25 +116,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
             logger.error(e, e);
         }
         return jData;
-    }
-
-    /**
-     * Create extra param
-     *
-     * @param relativeURL
-     * @return
-     */
-    protected String createExtraParam(String relativeURL) {
-        if (relativeURL != null && relativeURL.length() > 0) {
-            String urlParams = "?params=" + relativeURL;
-            int indexRequestParam = relativeURL.indexOf('?');
-            if (indexRequestParam > -1) {
-                urlParams = "?params=" + relativeURL.substring(0, indexRequestParam);
-            }
-            return urlParams;
-        } else {
-            return null;
-        }
     }
 
     protected String createExtraParam(String mode, int pid, String siteKey) {
@@ -136,21 +132,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         if (engineLocale != null && !engineLocale.equals(locale)) locale = engineLocale;
         return locale;
     }
-
-    /**
-     * Get jahiaData object from request attributes
-     *
-     * @return
-     */
-    protected JahiaData getJahiaDataRequestAttr() {
-        final HttpServletRequest request = getThreadLocalRequest();
-        JahiaData jData = (JahiaData) request.getAttribute(ORG_JAHIA_DATA_JAHIA_DATA);
-        if (jData == null) {
-            logger.debug("ParamBean is not set.");
-        }
-        return jData;
-    }
-
 
     /**
      * Get current locale
@@ -211,7 +192,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      * @param label
      * @return
      */
-    protected String getLocaleTemplateRessource(String label) {
+    protected String getLocaleTemplateResource(String label) {
         return getTemplateRessource(label, getLocale());
     }
 
@@ -321,6 +302,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     /**
      * Retrieve JahiaData object corresponding to the current request
      *
+     * @deprecated
      * @param page
      * @return
      */
@@ -356,6 +338,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     /**
      * Retrieve paramBean
      *
+     * @deprecated
      * @return
      */
     protected ParamBean retrieveParamBean() {
@@ -372,6 +355,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     /**
      * Get param bean by pageContext
      *
+     * @deprecated
      * @param page
      * @return
      */
@@ -382,6 +366,7 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     /**
      * Get a param bean by pid/mode
      *
+     * @deprecated
      * @param pid
      * @param mode
      * @return

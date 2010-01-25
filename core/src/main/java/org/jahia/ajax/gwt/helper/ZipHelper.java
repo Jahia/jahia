@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
@@ -58,12 +59,7 @@ import java.util.List;
 public class ZipHelper {
     private static Logger logger = Logger.getLogger(ZipHelper.class);
 
-    private JCRSessionFactory sessionFactory;
     private static ZipHelper instance;
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     /**
      * @param parentDirectory the directory to create the archive into
@@ -149,12 +145,12 @@ public class ZipHelper {
         }
     }
 
-    public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination) throws RepositoryException {
+    public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination, JCRSessionWrapper currentUserSession) throws RepositoryException {
         InputStream in = zipfile.getFileContent().downloadFile();
-        return doUnzipContent(in, destination.getPath());
+        return doUnzipContent(in, destination.getPath(), currentUserSession);
     }
 
-    private boolean doUnzipContent(final InputStream in, final String dest) throws RepositoryException {
+    private boolean doUnzipContent(final InputStream in, final String dest, JCRSessionWrapper currentUserSession) throws RepositoryException {
         List<String> errorFiles = new ArrayList<String>();
         boolean result = false;
         NoCloseZipInputStream zis = null;
@@ -178,7 +174,7 @@ public class ZipHelper {
                         parentName += "/" + filename.substring(0, endIndex);
                         filename = filename.substring(endIndex + 1);
                     }
-                    JCRNodeWrapper target = ensureDir(parentName);
+                    JCRNodeWrapper target = ensureDir(parentName, currentUserSession);
 
                     if (zipentry.isDirectory()) {
                         target.createCollection(filename);
@@ -218,15 +214,15 @@ public class ZipHelper {
         return result;
     }
 
-    private JCRNodeWrapper ensureDir(String path) throws RepositoryException {
+    private JCRNodeWrapper ensureDir(String path, JCRSessionWrapper currentUserSession) throws RepositoryException {
         try {
-            return sessionFactory.getCurrentUserSession().getNode(path);
+            return currentUserSession.getNode(path);
         } catch (PathNotFoundException e) {
             int endIndex = path.lastIndexOf('/');
             if (endIndex == -1) {
                 return null;
             }
-            JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex));
+            JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex), currentUserSession);
             if (parentDir == null) {
                 return null;
             }
@@ -234,7 +230,7 @@ public class ZipHelper {
         }
     }
 
-    public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException {
+    public void zip(List<String> paths, String archiveName, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         if (!archiveName.endsWith(".zip") && !archiveName.endsWith(".ZIP")) {
             archiveName = new StringBuilder(archiveName).append(".zip").toString();
         }
@@ -243,7 +239,7 @@ public class ZipHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToZip;
             try {
-                nodeToZip = sessionFactory.getCurrentUserSession().getNode(path);
+                nodeToZip = currentUserSession.getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -266,7 +262,7 @@ public class ZipHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = sessionFactory.getCurrentUserSession().getNode(parentPath);
+                parent = currentUserSession.getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -294,13 +290,13 @@ public class ZipHelper {
         }
     }
 
-    public void unzip(List<String> paths, boolean removeArchive) throws GWTJahiaServiceException {
+    public void unzip(List<String> paths, boolean removeArchive, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         List<JCRNodeWrapper> nodesToUnzip = new ArrayList<JCRNodeWrapper>();
         for (String path : paths) {
             JCRNodeWrapper nodeToUnzip;
             try {
-                nodeToUnzip = sessionFactory.getCurrentUserSession().getNode(path);
+                nodeToUnzip = currentUserSession.getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -323,7 +319,7 @@ public class ZipHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = sessionFactory.getCurrentUserSession().getNode(parentPath);
+                parent = currentUserSession.getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -331,7 +327,7 @@ public class ZipHelper {
             if (parent.isWriteable()) {
                 for (JCRNodeWrapper nodeToUnzip : nodesToUnzip) {
                     try {
-                        if (!unzipFile(nodeToUnzip, parent)) {
+                        if (!unzipFile(nodeToUnzip, parent, currentUserSession)) {
                             missedPaths.add(nodeToUnzip.getName());
                         } else if (removeArchive) {
                             try {

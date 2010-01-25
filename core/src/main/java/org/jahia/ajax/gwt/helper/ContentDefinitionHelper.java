@@ -47,6 +47,7 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -64,7 +65,6 @@ public class ContentDefinitionHelper {
 
     private NavigationHelper navigation;
     private ChoiceListInitializerService choiceListInitializerService;
-    private JCRSessionFactory sessionFactory;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -72,10 +72,6 @@ public class ContentDefinitionHelper {
 
     public void setChoiceListInitializerService(ChoiceListInitializerService choiceListInitializerService) {
         this.choiceListInitializerService = choiceListInitializerService;
-    }
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
     }
 
     private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
@@ -94,10 +90,10 @@ public class ContentDefinitionHelper {
         return gwt;
     }
 
-    public Map<GWTJahiaNodeType, List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String name, ProcessingContext context) throws GWTJahiaServiceException {
+    public Map<GWTJahiaNodeType, List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String name, ProcessingContext context, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(name);
-            List<GWTJahiaNode> nodes = getReusableComponents(type, context);
+            List<GWTJahiaNode> nodes = getReusableComponents(type, context.getSite(), currentUserSession);
             GWTJahiaNodeType gwtType = getGWTJahiaNodeType(context, type);
             Map<GWTJahiaNodeType, List<GWTJahiaNode>> result = new HashMap<GWTJahiaNodeType, List<GWTJahiaNode>>();
             result.put(gwtType, nodes);
@@ -264,7 +260,7 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes(ProcessingContext ctx) {
+    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes(ProcessingContext ctx, JCRSessionWrapper currentUserSession) {
         Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> map = new HashMap<GWTJahiaNodeType,Map<GWTJahiaNodeType, List<GWTJahiaNode>>>();
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
@@ -276,7 +272,7 @@ public class ContentDefinitionHelper {
                 NodeTypeIterator subtypes = mainType.getDeclaredSubtypes();
                 while (subtypes.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
-                    List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx);
+                    List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx.getSite(), currentUserSession);
                     l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
                 }
             }
@@ -294,13 +290,14 @@ public class ContentDefinitionHelper {
      * @param baseType   the node type name to find sub-types
      * @param parentNode the parent node, where the wizard was called
      * @param ctx        current processing context instance
+     * @param currentUserSession
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type or that are allowed to be
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
     public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType,
-                                                  GWTJahiaNode parentNode, ProcessingContext ctx) {
+                                                                                            GWTJahiaNode parentNode, ProcessingContext ctx, JCRSessionWrapper currentUserSession) {
         Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> map = new HashMap<GWTJahiaNodeType,Map<GWTJahiaNodeType, List<GWTJahiaNode>>>();
         List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
@@ -366,7 +363,7 @@ public class ContentDefinitionHelper {
                 while (subtypes.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     if(gwtNodeTypes.contains(getGWTJahiaNodeType(ctx, nodeType))) {
-                        List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx);
+                        List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx.getSite(), currentUserSession);
                         l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
                     }
                 }
@@ -378,11 +375,10 @@ public class ContentDefinitionHelper {
         return map;
     }
 
-    private List<GWTJahiaNode> getReusableComponents(ExtendedNodeType nodeType, ProcessingContext ctx) throws RepositoryException {
-        JCRSessionWrapper sessionWrapper = sessionFactory.getCurrentUserSession();
+    private List<GWTJahiaNode> getReusableComponents(ExtendedNodeType nodeType, JahiaSite site, JCRSessionWrapper currentUserSession) throws RepositoryException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {
-            JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
+            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
                     "_"));
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
@@ -393,7 +389,7 @@ public class ContentDefinitionHelper {
         }
 
         try {
-            JCRNodeWrapper node = sessionWrapper.getNode("/reusableComponents/" + ctx.getSite().getTemplatePackageName() + "/" +
+            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + site.getTemplatePackageName() + "/" +
                     nodeType.getName().replaceAll(":","_"));
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {

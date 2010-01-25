@@ -71,7 +71,7 @@ public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
     public GWTJahiaNodeACL getACL(int aclid, boolean newAcl, String sessionIdentifier)  throws GWTJahiaServiceException {
         try {
-            return acl.getGWTJahiaNodeACL(new JahiaBaseACL(aclid), newAcl, retrieveParamBean());
+            return acl.getGWTJahiaNodeACL(new JahiaBaseACL(aclid), newAcl, retrieveParamBean().getLocale());
         } catch (JahiaException e) {
             logger.error("unable to get acl",e);
             throw new GWTJahiaServiceException(e.getMessage());

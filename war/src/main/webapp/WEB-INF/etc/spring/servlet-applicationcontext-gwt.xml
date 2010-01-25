@@ -125,7 +125,6 @@
     <bean name="ContentDefinitionHelper" class="org.jahia.ajax.gwt.helper.ContentDefinitionHelper" >
         <property name="navigation" ref="NavigationHelper" />
         <property name="choiceListInitializerService" ref="choiceListInitializers"/>
-        <property name="sessionFactory" ref="jcrSessionFactory" />
     </bean>
 
     <bean name="ContentHubHelper" class="org.jahia.ajax.gwt.helper.ContentHubHelper" >
@@ -134,7 +133,6 @@
 
     <bean name="ContentManagerHelper" class="org.jahia.ajax.gwt.helper.ContentManagerHelper" >
         <property name="navigation"  ref="NavigationHelper"/>
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="captchaService"  ref="captchaService"/>
         <property name="importExport"  ref="ImportExportService"/>
         <property name="jcrService"  ref="JCRStoreService"/>
@@ -145,11 +143,9 @@
 
     <bean name="MashupHelper" class="org.jahia.ajax.gwt.helper.MashupHelper" >
         <property name="navigation"  ref="NavigationHelper"/>
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="acl" ref="ACLHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="applicationsManager" ref="ApplicationsManagerService"/>
-
     </bean>
 
     <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper" >
@@ -174,36 +170,29 @@
     <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>
 
     <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper" >
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="navigation"  ref="NavigationHelper"/>
     </bean>
 
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper" >
         <property name="navigation"  ref="NavigationHelper"/>
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="jcrService"  ref="JCRStoreService"/>
     </bean>
 
     <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper" >
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="renderService" ref="RenderService"/>
     </bean>
 
     <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper" >
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
         <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
 
-    <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance">
-        <property name="sessionFactory"  ref="jcrSessionFactory"/>
-    </bean>
+    <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance" />
 
 </beans>

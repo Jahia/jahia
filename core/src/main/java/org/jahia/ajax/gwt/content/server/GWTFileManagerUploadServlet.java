@@ -170,7 +170,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             if (unzip && pathsToUnzip.size() > 0) {
                 try {
                     ZipHelper zip = ZipHelper.getInstance();
-                    zip.unzip(pathsToUnzip, true);
+                    //todo : in which workspace do we upload ?
+                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession());
+                } catch (RepositoryException e) {
+                    logger.error("Auto-unzipping failed", e);
                 } catch (GWTJahiaServiceException e) {
                     logger.error("Auto-unzipping failed", e);
                 }

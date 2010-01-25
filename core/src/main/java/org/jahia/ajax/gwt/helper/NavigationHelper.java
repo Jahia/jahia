@@ -134,16 +134,15 @@ public class NavigationHelper {
      * @param filters
      * @param noFolders
      * @param viewTemplateAreas
-     * @param context
+     * @param user
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, boolean viewTemplateAreas, final JahiaUser user) throws GWTJahiaServiceException {
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
 
 
         String workspace = "default";
-        JahiaUser user = context.getUser();
         JCRNodeWrapper node = null;
         try {
             node = sessionFactory.getCurrentUserSession(workspace, locale).getNode(folder != null ? folder.getPath() : "/");
@@ -451,7 +450,7 @@ public class NavigationHelper {
                         GWTJahiaNode node = allNodes.get(i);
                         if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                             node.setExpandOnLoad(true);
-                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false, jParams);
+                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false, jParams.getUser());
                             for (int j = 0; j < list.size(); j++) {
                                 node.insert(list.get(j), j);
                                 allNodes.add(list.get(j));
@@ -499,12 +498,12 @@ public class NavigationHelper {
         }
     }
 
-    public List<GWTJahiaNode> getMountpoints(ProcessingContext context) {
+    public List<GWTJahiaNode> getMountpoints() {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [jnt:mountPoint]";
             Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return executeQuery(q, new String[0], new String[0], new String[0], context);
+            return executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -527,9 +526,9 @@ public class NavigationHelper {
         }
     }
 
-    public GWTJahiaNode getParentNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public GWTJahiaNode getParentNode(String path, String workspace, Locale locale) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path).getParent());
+            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, locale).getNode(path).getParent());
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -598,7 +597,7 @@ public class NavigationHelper {
         return result;
     }
 
-    public List<GWTJahiaNode> executeQuery(Query q, String[] nodeTypesToApply, String[] mimeTypesToMatch, String[] filtersToApply, ProcessingContext context) throws RepositoryException {
+    public List<GWTJahiaNode> executeQuery(Query q, String[] nodeTypesToApply, String[] mimeTypesToMatch, String[] filtersToApply) throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();

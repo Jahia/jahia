@@ -52,7 +52,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, ProcessingContext context) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), context);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0], context);
+            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -68,7 +68,7 @@ public class SearchHelper {
         String[] filtersToApply = navigation.getFiltersToApply(filters);
         try {
             Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), context);
-            return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, context);
+            return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -80,7 +80,7 @@ public class SearchHelper {
         try {
             String s = "select * from [nt:query]";
             Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0], context);
+            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -92,7 +92,7 @@ public class SearchHelper {
         try {
             String s = "select * from ["+nodeType+"]";
             Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0], context);
+            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

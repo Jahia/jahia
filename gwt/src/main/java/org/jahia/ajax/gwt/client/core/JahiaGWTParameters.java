@@ -44,28 +44,21 @@ import org.jahia.ajax.gwt.client.util.URL;
  */
 public class JahiaGWTParameters {
     public static final String SERVICE_ENTRY_POINT = "serviceEntryPoint";
-    public static final String PID = "pid";
     public static final String JAHIA_GWT_PARAMETERS = "jahiaGWTParameters";
-    public static final String OPERATION_MODE = "op";
     public static final String CURRENT_USER_NAME = "currentUser";
-    public static final String ALIASED_USER_NAME = "aliasedUser";
-    public static final String PREVIEW_DATE = "previewDate";
-    public static final String ENABLE_ADV_PREVIEW_SETTINGS = "enableAdvPreviewSettings";
     public static final String COPYRIGHT = "copyright";
     public static final String LANGUAGE = "lang";
-    public static final String ENGINE_LANGUAGE = "enginelang";
-    public static final String JAHIA_SERVER_PATH = "serverPath";
+    public static final String WORKSPACE = "workspace";
     public static final String PATH_INFO = "pathInfo";
     public static final String CONTEXT_PATH = "contextPath";
     public static final String SERVLET_PATH = "servletPath";
-    public static final String PAGE_WRITE = "hasWrite";
     public static final String QUERY_STRING = "queryString";
-    public static final String USER_ALLOWED_TO_UNLOCK_FILES = "allowFileUnlock";
     public static final String LIVE_URL = "liveUrl";
     public static final String EDIT_URL = "editUrl";
     public static final String PREVIEW_URL = "previewUrl";
     public static final String COMPARE_URL = "compareUrl";
     public static final String BASE_URL = "baseUrl";
+
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
     private static Dictionary jahiaParamDictionary = Dictionary.getDictionary(JAHIA_GWT_PARAMETERS);
@@ -85,10 +78,6 @@ public class JahiaGWTParameters {
     }
 
     public static int getPID() {
-        String value = jahiaParamDictionary.get(PID);
-        if (value != null) {
-            return Integer.parseInt(value);
-        }
         return -1;
     }
 
@@ -97,23 +86,11 @@ public class JahiaGWTParameters {
     }
 
     public static String getOperationMode() {
-        return jahiaParamDictionary.get(OPERATION_MODE);
+        return "normal";
     }
 
     public static String getCurrentUser() {
         return jahiaParamDictionary.get(CURRENT_USER_NAME);
-    }
-
-    public static String getAliasedUser() {
-        return getParam(ALIASED_USER_NAME);
-    }
-
-    public static String getPreviewDate() {
-        return getParam(PREVIEW_DATE);
-    }
-
-    public static String getEnableAdvPreviewSettings() {
-        return getParam(ENABLE_ADV_PREVIEW_SETTINGS);
     }
 
     public static String getPathInfo() {
@@ -128,26 +105,6 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(COPYRIGHT);
     }
 
-    public static boolean hasWriteAccess() {
-        String operationMode = getOperationMode();
-        if (operationMode != null && operationMode.equalsIgnoreCase("edit")) {
-            try {
-                String value = jahiaParamDictionary.get(PAGE_WRITE);
-                if (value != null && (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("t"))) {
-                    return true;
-                }
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-
-    public static String getJahiaServerPath() {
-        return jahiaParamDictionary.get(JAHIA_SERVER_PATH);
-    }
-
     public static String getLanguage() {
         return jahiaParamDictionary.get(LANGUAGE);
     }
@@ -158,13 +115,6 @@ public class JahiaGWTParameters {
 
     public static String getServletPath() {
         return jahiaParamDictionary.get(SERVLET_PATH);
-    }
-
-    public static String getEngineLanguage() {
-        if (jahiaParamDictionary.keySet().contains(ENGINE_LANGUAGE)) {
-            return jahiaParamDictionary.get(ENGINE_LANGUAGE);
-        }
-        return getLanguage();
     }
 
     public static String getParameter(String name) {
@@ -184,11 +134,5 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(name);
     }
 
-
-    public static boolean isUserAllowedToUnlockFiles() {
-        return Boolean.valueOf(
-                jahiaParamDictionary.get(USER_ALLOWED_TO_UNLOCK_FILES))
-                .booleanValue();
-    }
 
 }

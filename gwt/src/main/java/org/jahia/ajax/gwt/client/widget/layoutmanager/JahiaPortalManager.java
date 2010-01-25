@@ -218,10 +218,8 @@ public class JahiaPortalManager extends ContentPanel {
         bar.add(new FillToolItem());
         bar.add(portletPickerButton);
         bar.add(new SeparatorToolItem());
-        if (JahiaGWTParameters.hasWriteAccess()) {
-            bar.add(saveAsDefaultButton);
-            bar.add(new SeparatorToolItem());
-        }
+        bar.add(saveAsDefaultButton);
+        bar.add(new SeparatorToolItem());
         bar.add(restoreDefaultButton);
         bar.add(new SeparatorToolItem());
         bar.add(configPortalButton);

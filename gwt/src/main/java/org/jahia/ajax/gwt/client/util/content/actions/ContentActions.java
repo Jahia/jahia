@@ -848,7 +848,6 @@ public class ContentActions {
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             List<String> lockedBySystem = new LinkedList<String>();
-            boolean userAllowedToUnlockFiles = JahiaGWTParameters.isUserAllowedToUnlockFiles();
             for (GWTJahiaNode node : selectedItems) {
                 if (lock && !node.isLocked() || !lock && node.isLocked()) {
                     if (!lock
@@ -856,9 +855,6 @@ public class ContentActions {
                             && node.getLockOwner().equals(
                             JahiaGWTParameters.SYSTEM_USER)) {
                         lockedBySystem.add(node.getPath());
-                        if (!userAllowedToUnlockFiles) {
-                            continue;
-                        }
                     }
                     selectedPaths.add(node.getPath());
                 }
@@ -871,14 +867,10 @@ public class ContentActions {
                             file.contains("/") ? file.substring(file
                                     .lastIndexOf('/') + 1) : file);
                 }
-                if (userAllowedToUnlockFiles) {
-                    continueOperation = Window
-                            .confirm(Messages.getResource("fm_warningSystemLock") + "\n"
-                                    + lockedFiles.toString()
-                                    + "\n\n" + Messages.getResource("fm_confUnlock"));
-                } else {
-                    MessageBox.alert("Warning", Messages.getResource("fm_failLock") + "\n" + lockedFiles.toString(), null);
-                }
+                continueOperation = Window
+                        .confirm(Messages.getResource("fm_warningSystemLock") + "\n"
+                                + lockedFiles.toString()
+                                + "\n\n" + Messages.getResource("fm_confUnlock"));
             }
             if (continueOperation && !selectedPaths.isEmpty()) {
                 linker.loading(lock ? Messages.getResource("fm_locking") : Messages.getResource("fm_unlocking"));

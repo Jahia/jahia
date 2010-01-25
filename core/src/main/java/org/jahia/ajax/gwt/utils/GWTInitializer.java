@@ -33,14 +33,11 @@ package org.jahia.ajax.gwt.utils;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
@@ -73,15 +70,15 @@ public class GWTInitializer {
         } else {
             processingContext = null;
         }
-        return generateInitializerStructure(request, session, processingContext);
+        return generateInitializerStructure(request, session);
     }
 
     public static String getInitString(ParamBean paramBean) {
         try {
-            return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession(), paramBean);
+            return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession());
         } catch (JahiaSessionExpirationException e) {
             try {
-                return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession(true), paramBean);
+                return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession(true));
             } catch (JahiaSessionExpirationException e1) {
                 logger.error("Could not create a new session");
             }
@@ -89,14 +86,13 @@ public class GWTInitializer {
         return "";
     }
 
-    private static String generateInitializerStructure(HttpServletRequest request, HttpSession session, ProcessingContext processingContext) {
+    private static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         StringBuilder buf = new StringBuilder();
         Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_UI_LOCALE);
         if (locale == null) {
             locale = Locale.ENGLISH;
         }
 
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
@@ -109,47 +105,14 @@ public class GWTInitializer {
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();
 
+        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+
         String serviceEntrypoint = buildServiceBaseEntrypointUrl(request);
         params.put(JahiaGWTParameters.SERVICE_ENTRY_POINT, serviceEntrypoint);
-        if (processingContext != null) {
-            params.put(JahiaGWTParameters.PID, String.valueOf(processingContext.getPageID()));
-            params.put(JahiaGWTParameters.OPERATION_MODE, processingContext.getOperationMode());
-            params.put(JahiaGWTParameters.PATH_INFO, processingContext.getPathInfo());
-            params.put(JahiaGWTParameters.QUERY_STRING, processingContext.getQueryString());
-            params.put(JahiaGWTParameters.CONTEXT_PATH, processingContext.getContextPath());
-            params.put(JahiaGWTParameters.SERVLET_PATH, processingContext.getServletPath());
-
-            try {
-                JahiaPage page = processingContext.getPage();
-                if (page != null) {
-                    JahiaBaseACL jahiaBaseACL = page.getACL();
-                    if (jahiaBaseACL != null && jahiaBaseACL.getPermission(processingContext.getUser(), JahiaBaseACL.WRITE_RIGHTS)) {
-                        params.put(JahiaGWTParameters.PAGE_WRITE, "true");
-                    }
-                }
-            } catch (Exception e) {
-                logger.error(e, e);
-            }
-        } else {
-            params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath());
-            params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
-            params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
-            params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
-            params.put(JahiaGWTParameters.PID, String.valueOf(session.getAttribute(ParamBean.SESSION_LAST_REQUESTED_PAGE_ID)));
-            params.put(JahiaGWTParameters.OPERATION_MODE, String.valueOf(session.getAttribute(ParamBean.SESSION_JAHIA_RUNNING_MODE)));
-        }
-
-        if (processingContext != null) {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append(processingContext.getScheme());
-            buffer.append("://");
-            buffer.append(processingContext.getServerName());
-            buffer.append(":");
-            buffer.append(processingContext.getServerPort());
-            buffer.append(Jahia.getContextPath());
-            buffer.append(Jahia.getServletPath());
-            params.put(JahiaGWTParameters.JAHIA_SERVER_PATH, buffer.toString());
-        }
+        params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath());
+        params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
+        params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
+        params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
 
         JahiaUser user = (JahiaUser) session.getAttribute(ParamBean.SESSION_USER);
         if (user != null) {
@@ -164,30 +127,21 @@ public class GWTInitializer {
         } else {
             params.put(JahiaGWTParameters.CURRENT_USER_NAME, "guest");
         }
-        params.put(JahiaGWTParameters.USER_ALLOWED_TO_UNLOCK_FILES, Boolean
-                .toString(user != null && user.isRoot()));
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
-
-        Locale enginelocale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE_ENGINE);
-        if (enginelocale != null) {
-            params.put(JahiaGWTParameters.ENGINE_LANGUAGE, enginelocale.toString());
+        if (renderContext != null) {
+            params.put(JahiaGWTParameters.WORKSPACE, renderContext.getMainResource().getWorkspace());
         }
 
         // put live workspace url
-        if (request.getAttribute("renderContext") != null) {
+        if (request.getAttribute("url") != null) {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
             params.put(JahiaGWTParameters.BASE_URL, url.getBase());
             params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
             params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
             params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
             params.put(JahiaGWTParameters.COMPARE_URL, null);
-            addLanguageSwitcherLinks(processingContext,params,url);
-
-
-        } else {
-            if (jData != null && jData.gui() != null) {
-            }
+            addLanguageSwitcherLinks(renderContext,params,url);
         }
 
         // add jahia parameter dictionary
@@ -204,13 +158,13 @@ public class GWTInitializer {
 
     /**
      * Add lnaguage switcher link into page
-     * @param processingContext
+     * @param renderContext
      * @param params
      * @param urlGenerator
      */
-    public static void addLanguageSwitcherLinks(ProcessingContext processingContext, Map<String, String> params, URLGenerator urlGenerator) {
+    public static void addLanguageSwitcherLinks(RenderContext renderContext, Map<String, String> params, URLGenerator urlGenerator) {
         try {
-            final JahiaSite currentSite = processingContext.getSite();
+            final JahiaSite currentSite = renderContext.getSite();
             final Set<String> languageSettings = currentSite.getLanguages();
             if (languageSettings != null && languageSettings.size() > 0) {
                 for (String lang : languageSettings) {

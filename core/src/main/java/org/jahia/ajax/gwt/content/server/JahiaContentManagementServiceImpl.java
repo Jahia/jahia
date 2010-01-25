@@ -157,11 +157,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        return navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean());
+        return navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean().getUser());
     }
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean()));
+        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveParamBean().getUser()));
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
@@ -232,7 +232,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
-        final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
+        final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context.getLocale());
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, parentNode.getPath(), name, context);
         try {
             contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
@@ -246,7 +246,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> getMountpoints() throws GWTJahiaServiceException {
-        return navigation.getMountpoints(retrieveParamBean());
+        return navigation.getMountpoints();
     }
 
     public void storePasswordForProvider(String providerKey, String username, String password) {
@@ -476,7 +476,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
-        final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
+        final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context.getLocale());
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, context);
 
         try {

@@ -145,9 +145,6 @@ public class JCRObservationManager implements ObservationManager {
         map = events.get();
 
         JCRSessionWrapper session = currentSession.get();
-        if (session == null) {
-            logger.warn("Warning : no session set, events will be lost");
-        }
         if (session != null && !session.isEventsDisabled()) {
             if (!map.containsKey(session)) {
                 map.put(session, new ArrayList<Event>());

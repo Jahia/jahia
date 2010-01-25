@@ -56,7 +56,6 @@ public class JahiaResourceBundle extends ResourceBundle {
     private final JahiaTemplatesPackage templatesPackage;
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
-    //public static final String JAHIA_MESSAGE_RESOURCES = "JahiaMessageResources";
 
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
@@ -130,6 +129,10 @@ public class JahiaResourceBundle extends ResourceBundle {
         return lookupBundle(basename, locale, getClassLoader()).getKeys();
     }
 
+    /**
+     *
+     * @return
+     */
     private JahiaTemplatesRBLoader getClassLoader() {
         String templatesPackageName = templatesPackage != null ? templatesPackage
                 .getName()
@@ -154,58 +157,64 @@ public class JahiaResourceBundle extends ResourceBundle {
         final ResourceBundle resourceBundle = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale);
         try {
             String value = resourceBundle.getString(key);
-            logger.error(key + "," + value);
             return value;
         } catch (MissingResourceException e) {
             return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
         }
     }
 
+    /**
+     * Get message by key and local
+     * @param key
+     * @param locale
+     * @return
+     */
     public static String getJahiaInternalResource(String key, Locale locale) {
         return getJahiaInternalResource(key, locale, null);
     }
 
-    public static String getMessageResource(String key, Locale locale, String defaultValue) {
-        final ResourceBundle resourceBundle = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale);
-        try {
-            String value = resourceBundle.getString(key);
-            logger.error(key + "=" + value);
-            return value;
-        } catch (MissingResourceException e) {
-            return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
-        }
-    }
-
-    public static String getMessageResource(String key, Locale locale) {
-        return getMessageResource(key, locale, null);
-    }
-
-    public static String getInternalOrMessageResource(String key, Locale locale) {
-        String value = null;
-        try {
-            value = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale).getString(key);
-        } catch (MissingResourceException e) {
-        }
-        if (value != null) {
-            logger.error(key + "=" + value);
-            return value;
-        }
-
-        return MISSING_RESOURCE + key + MISSING_RESOURCE;
-    }
-
+    /**
+     * Get message depending on the key
+     * @param bundle
+     * @param key
+     * @param locale
+     * @param templatePackageName
+     * @return
+     */
     public static String getString(String bundle, String key, Locale locale, String templatePackageName) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, Thread.currentThread().getContextClassLoader()).getString(key);
     }
 
+    /**
+     * Get message depending on the key
+     * @param bundle
+     * @param key
+     * @param locale
+     * @param templatePackageName
+     * @param loader
+     * @return
+     */
     public static String getString(String bundle, String key, Locale locale, String templatePackageName, ClassLoader loader) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, loader).getString(key);
     }
 
+    /**
+     * find  ResourceBundle dependinng on a baseName
+     * @param baseName
+     * @param locale
+     * @return
+     */
     private static ResourceBundle lookupBundle(String baseName, Locale locale) {
         return lookupBundle(baseName, locale, null);
     }
 
+    /**
+     * find  ResourceBundle dependinng on a baseName
+     * @param baseName
+     * @param preferredLocale
+     * @param loader
+     * @return
+     */
     private static ResourceBundle lookupBundle(String baseName,
                                                Locale preferredLocale, ClassLoader loader) {
 
@@ -248,14 +257,33 @@ public class JahiaResourceBundle extends ResourceBundle {
         return match;
     }
 
+    /**
+     * Get message depending on a key. If not found, return the default value
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public String get(String key, String defaultValue) {
         return getString(key, defaultValue);
     }
 
+    /**
+     * Get formateed message
+     * @param key
+     * @param defaultValue
+     * @param arguments
+     * @return
+     */
     public String getFormatted(String key, String defaultValue, Object... arguments) {
         return MessageFormat.format(get(key, defaultValue), arguments);
     }
 
+    /**
+     * Get message depending on a key. If not found, return the default value
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public String getString(String key, String defaultValue) {
         String message;
         try {

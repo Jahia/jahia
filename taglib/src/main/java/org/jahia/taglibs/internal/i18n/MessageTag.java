@@ -181,7 +181,7 @@ public class MessageTag extends TagSupport {
         String resValue = null;
         try {
             if (key != null) {
-                resValue = JahiaResourceBundle.getInternalOrMessageResource(key, currentLocale);
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
             } else if (name != null) {
                 final EngineMessage message = (EngineMessage) pageContext.findAttribute(name);
                 if (message != null) {

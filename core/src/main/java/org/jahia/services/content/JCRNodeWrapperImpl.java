@@ -1533,7 +1533,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void checkpoint() {
         try {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     objectNode.checkin();
                     objectNode.checkout();
@@ -1850,7 +1850,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        return JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback<JCRVersion>(){
+        return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>(){
             public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
                 JCRVersion result = (JCRVersion) provider.getNodeWrapper(versionManager.checkin(objectNode.getPath()), session);
@@ -1867,7 +1867,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback(){
+        JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback(){
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
                 versionManager.checkout(objectNode.getPath());
@@ -1887,7 +1887,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void doneMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        VersionManager versionManager = session.getWorkspace().getVersionManager();
         versionManager.doneMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
     }
 
@@ -1895,15 +1895,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void cancelMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        VersionManager versionManager = session.getWorkspace().getVersionManager();
         versionManager.cancelMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
     }
 
     /**
      * {@inheritDoc}
      */
-    public void update(String s) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
-        objectNode.update(s);
+    public void update(final String srcWorkspace) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
+        JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_UPDATE, new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                objectNode.update(srcWorkspace);
+                return null;
+            }
+        });
     }
 
     /**

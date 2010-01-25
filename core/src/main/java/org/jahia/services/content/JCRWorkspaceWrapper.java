@@ -45,6 +45,7 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +85,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public void copy(String source, String dest) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        JCRStoreProvider provider = service.getProvider(source);
+        final JCRStoreProvider provider = service.getProvider(source);
         JCRStoreProvider destProvider = service.getProvider(dest);
         if (destProvider != provider) {
             throw new UnsupportedRepositoryOperationException();
@@ -93,12 +94,19 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            session.getProviderSession(provider).getWorkspace().copy(source, dest);
+            final String fSource = source;
+            final String fDest = dest;
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.getProviderSession(provider).getWorkspace().copy(fSource, fDest);
+                    return null;
+                }
+            });
         }
     }
 
-    public void copy(String srcWs, String source, String dest) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        JCRStoreProvider provider = service.getProvider(source);
+    public void copy(final String srcWs, String source, String dest) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        final JCRStoreProvider provider = service.getProvider(source);
         JCRStoreProvider destProvider = service.getProvider(dest);
         if (destProvider != provider) {
             throw new UnsupportedRepositoryOperationException();
@@ -107,13 +115,20 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            session.getProviderSession(provider).getWorkspace().copy(srcWs, source, dest);
+            final String fSource = source;
+            final String fDest = dest;
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.getProviderSession(provider).getWorkspace().copy(srcWs, fSource, fDest);
+                    return null;
+                }
+            });
         }
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void clone(String srcWs, String source, String dest, boolean removeExisting) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        JCRStoreProvider provider = service.getProvider(source);
+    public void clone(final String srcWs, String source, String dest, final boolean removeExisting) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        final JCRStoreProvider provider = service.getProvider(source);
         JCRStoreProvider destProvider = service.getProvider(dest);
         if (destProvider != provider) {
             throw new UnsupportedRepositoryOperationException();
@@ -122,7 +137,14 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            session.getProviderSession(provider).getWorkspace().clone(srcWs,source,dest,removeExisting);
+            final String fSource = source;
+            final String fDest = dest;
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_CLONE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.getProviderSession(provider).getWorkspace().clone(srcWs,fSource,fDest,removeExisting);
+                    return null;
+                }
+            });
         }
     }
 
@@ -173,13 +195,12 @@ public class JCRWorkspaceWrapper implements Workspace {
                 } else {
                     final String fSource = source;
                     final String fDest = dest;
-                    JCRObservationManager.doWorkspaceWriteCall(getSession(), new JCRCallback() {
+                    JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_MOVE, new JCRCallback() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             session.getProviderSession(provider).getWorkspace().move(fSource, fDest);
                             return null;
                         }
                     });
-                    session.getProviderSession(provider).getWorkspace().move(source, dest);
                 }
             }
         }
@@ -225,7 +246,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {      
-        return getSession().getProviderSession(service.getProvider("/")).getWorkspace().getVersionManager();
+        return new VersionManagerWrapper(getSession().getProviderSession(service.getProvider("/")).getWorkspace().getVersionManager());
     }
 
     public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
@@ -240,4 +261,149 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    class VersionManagerWrapper implements VersionManager {
+        private VersionManager versionManager;
+
+        VersionManagerWrapper(VersionManager versionManager) {
+            this.versionManager = versionManager;
+        }
+
+        public Version checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<Version>() {
+                public Version doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.checkin(absPath);
+                }
+            });
+        }
+
+        public void checkout(final String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.checkout(absPath);
+                    return null;
+                }
+            });
+        }
+
+        public Version checkpoint(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback<Version>() {
+                public Version doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.checkpoint(absPath);
+                }
+            });
+        }
+
+        public boolean isCheckedOut(String absPath) throws RepositoryException {
+            return versionManager.isCheckedOut(absPath);
+        }
+
+        public VersionHistory getVersionHistory(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {
+            return versionManager.getVersionHistory(absPath);
+        }
+
+        public Version getBaseVersion(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {
+            return versionManager.getBaseVersion(absPath);
+        }
+
+        public void restore(final Version[] versions, final boolean removeExisting) throws ItemExistsException, UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.restore(versions, removeExisting);
+                    return null;
+                }
+            });
+        }
+
+        public void restore(final String absPath, final String versionName, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.restore(absPath, versionName, removeExisting);
+                    return null;
+                }
+            });
+        }
+
+        public void restore(final Version version, final boolean removeExisting) throws VersionException, ItemExistsException, InvalidItemStateException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.restore(version, removeExisting);
+                    return null;
+                }
+            });
+        }
+
+        public void restore(final String absPath, final Version version, final boolean removeExisting) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.restore(absPath, version, removeExisting);
+                    return null;
+                }
+            });
+        }
+
+        public void restoreByLabel(final String absPath, final String versionLabel, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    versionManager.restoreByLabel(absPath, versionLabel, removeExisting);
+                    return null;
+                }
+            });
+        }
+
+        public NodeIterator merge(final String absPath, final String srcWorkspace, final boolean bestEffort) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_MERGE, new JCRCallback<NodeIterator>() {
+                public NodeIterator doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.merge(absPath, srcWorkspace, bestEffort);
+                }
+            });
+        }
+
+        public NodeIterator merge(final String absPath, final String srcWorkspace,final boolean bestEffort,final boolean isShallow) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_MERGE, new JCRCallback<NodeIterator>() {
+                public NodeIterator doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.merge(absPath, srcWorkspace, bestEffort, isShallow);
+                }
+            });
+        }
+
+        public void doneMerge(String absPath, Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
+            versionManager.doneMerge(absPath, version);
+        }
+
+        public void cancelMerge(String absPath, Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
+            versionManager.cancelMerge(absPath, version);
+        }
+
+        public Node createConfiguration(String s) throws UnsupportedRepositoryOperationException, RepositoryException {
+            return versionManager.createConfiguration(s);
+        }
+
+        public Node setActivity(Node activity) throws UnsupportedRepositoryOperationException, RepositoryException {
+            return versionManager.setActivity(activity);
+        }
+
+        public Node getActivity() throws UnsupportedRepositoryOperationException, RepositoryException {
+            return versionManager.getActivity();
+        }
+
+        public Node createActivity(final String title) throws UnsupportedRepositoryOperationException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_CREATE_ACTIVITY, new JCRCallback<Node>() {
+                public Node doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.createActivity(title);
+                }
+            });
+        }
+
+        public void removeActivity(Node node) throws UnsupportedRepositoryOperationException, VersionException, RepositoryException {
+            versionManager.removeActivity(node);
+        }
+
+        public NodeIterator merge(final Node activityNode) throws VersionException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_MERGE, new JCRCallback<NodeIterator>() {
+                public NodeIterator doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return versionManager.merge(activityNode);
+                }
+            });
+        }
+    }
 }

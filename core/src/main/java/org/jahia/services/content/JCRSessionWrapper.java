@@ -246,7 +246,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        JCRObservationManager.doWorkspaceWriteCall(this, new JCRCallback() {
+        JCRObservationManager.doWorkspaceWriteCall(this, JCRObservationManager.SESSION_SAVE, new JCRCallback() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
                 for (Session session : sessions.values()) {
                     session.save();

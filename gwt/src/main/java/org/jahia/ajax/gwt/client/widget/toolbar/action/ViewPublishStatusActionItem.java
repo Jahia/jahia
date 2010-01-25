@@ -35,7 +35,7 @@ import java.util.Map;
 public class ViewPublishStatusActionItem extends BaseActionItem {
     private transient Map<LayoutContainer, El> containers = new HashMap<LayoutContainer, El>();
     private transient ToggleButton button;
-
+                                          n
     public void onComponentSelection() {
         viewPublishedStatus(linker);
     }
@@ -86,14 +86,14 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
         boolean allPublished = true;
         for (Module module : list) {
             GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
-            if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+            if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                 allPublished = false;
                 LayoutContainer infoLayer = new LayoutContainer();
                 RootPanel.get().add(infoLayer);
                 infoLayer.el().makePositionable(true);
                 LayoutContainer container = module.getContainer();
                 El el = container.el();
-                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                         continue;
                     }
@@ -101,6 +101,10 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
 
                     infoLayer.setLayout(new CenterLayout());
                     HtmlContainer box = new HtmlContainer("Unpublished");
+                    if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
+                        box.setHtml("Unpublished - publish parent first");
+                    }
+
                     box.addStyleName("x-view-item");
                     box.setStyleAttribute("background-color", "white");
                     box.setStyleAttribute("text-color", "black");
@@ -122,6 +126,24 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                     box.addStyleName("x-view-item");
                     box.setStyleAttribute("background-color", "white");
                     box.setStyleAttribute("color", "red");
+                    box.setStyleAttribute("font-weight", "bold");
+                    box.setStyleAttribute("text-align", "center");
+                    box.setWidth(150);
+                    infoLayer.add(box);
+
+                    infoLayer.setBorders(true);
+                    infoLayer.setStyleAttribute("background-color", "red");
+                    infoLayer.setStyleAttribute("opacity", "0.7");
+                } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
+                    if (container instanceof ContentPanel) {
+                        el = ((ContentPanel) container).getHeader().el();
+                    }
+
+                    infoLayer.setLayout(new CenterLayout());
+                    HtmlContainer box = new HtmlContainer("Live modified");
+                    box.addStyleName("x-view-item");
+                    box.setStyleAttribute("background-color", "white");
+                    box.setStyleAttribute("color", "blue");
                     box.setStyleAttribute("font-weight", "bold");
                     box.setStyleAttribute("text-align", "center");
                     box.setWidth(150);

@@ -22,21 +22,13 @@ rule "Metadata update / content created"
     no-loop
     when
         A new node is created
-             - the node has the type mix:lastModified
-             - the node has the type jmix:originWS
+            - the node has the type mix:lastModified
+            - the node has the type jmix:originWS
         The node has a parent
     then
-        #Set not existing property jcr:createdBy of the node with the name of the current user
-        #Set the property jcr:created of the node with the current time
-        Set the property j:originWS of the node with the value "live"
-        Set not existing property jcr:lastModifiedBy of the parent with the name of the current user
-        Set not existing property jcr:lastModified of the parent with the current time
-        Get the ancestor "list" of type jnt:containerList
-        Set not existing property jcr:lastModified of the list with the current time
-        Set not existing property jcr:lastModifiedBy of the list with the name of the current user
-        Get the ancestor "page" of type jnt:page
-        Set not existing property jcr:lastModified of the page with the current time
-        Set not existing property jcr:lastModifiedBy of the page with the name of the current user
+      Set the property j:originWS of the node with the value "live"
+      Set the property jcr:lastModifiedBy of the parent with the name of the current user
+      Set the property jcr:lastModified of the parent with the current time
 end
 
 rule "Metadata update / property modified"
@@ -44,58 +36,9 @@ rule "Metadata update / property modified"
     no-loop
     when
         A property has been set on a node
-             - the node has the type mix:lastModified
+            - the node has the type mix:lastModified
         The property jcr:lastModified has not been modified yet on the node
     then
-        Set not existing property jcr:lastModified of the node with the current time
-        Set not existing property jcr:lastModifiedBy of the node with the name of the current user
-        Get the ancestor "list" of type jnt:containerList
-        Set not existing property jcr:lastModified of the list with the current time
-        Set not existing property jcr:lastModifiedBy of the list with the name of the current user
-        Get the ancestor "page" of type jnt:page
-        Set not existing property jcr:lastModified of the page with the current time
-        Set not existing property jcr:lastModifiedBy of the page with the name of the current user
-end
-
-rule "Metadata publication update / content validated"
-    salience -10
-    no-loop
-    when
-        A new node is created
-             - the node has the type jmix:lastPublished
-             - the node has the type jmix:originWS
-        The node has a parent
-        The node has a property j:originWS
-             - the value is not "live"
-    then
-        Log "Publication event fired"
-        Set and copy to staging the property j:lastPublishedBy of the node with the name of the current user
-        Set and copy to staging the property j:lastPublished of the node with the current time
-        Get the ancestor "list" of type jnt:containerList
-        Set and copy to staging the property j:lastPublished of the list with the current time
-        Set and copy to staging the property j:lastPublishedBy of the list with the name of the current user
-        Get the ancestor "page" of type jnt:page
-        Set and copy to staging the property j:lastPublished of the page with the current time
-        Set and copy to staging the property j:lastPublishedBy of the page with the name of the current user
-end
-
-rule "Metadata publication update / property modified"
-    salience -11
-    no-loop
-    when
-        A property has been set on a node
-             - the node has the type jmix:lastPublished
-             - the node has the type jmix:originWS
-        The property j:lastPublished has not been modified yet on the node
-        The property j:originWS has not the value "live" on the node
-    then
-        Log "Publication event fired"    
-        Set and copy to staging the property j:lastPublishedBy of the node with the name of the current user
-        Set and copy to staging the property j:lastPublished of the node with the current time
-        Get the ancestor "list" of type jnt:containerList
-        Set and copy to staging the property j:lastPublished of the list with the current time
-        Set and copy to staging the property j:lastPublishedBy of the list with the name of the current user
-        Get the ancestor "page" of type jnt:page
-        Set and copy to staging the property j:lastPublished of the page with the current time
-        Set and copy to staging the property j:lastPublishedBy of the page with the name of the current user
+        Set the property jcr:lastModified of the node with the current time
+        Set the property jcr:lastModifiedBy of the node with the name of the current user
 end

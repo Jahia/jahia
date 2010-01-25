@@ -45,10 +45,7 @@ import org.drools.compiler.PackageBuilderErrors;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
-import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.Node;
@@ -104,6 +101,10 @@ public class RulesListener extends DefaultEventListener {
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
+    }
+
+    public int getOperationTypes() {
+        return JCRObservationManager.SESSION_SAVE;
     }
 
     public String getPath() {
@@ -249,9 +250,14 @@ public class RulesListener extends DefaultEventListener {
 
 
     public void onEvent(EventIterator eventIterator) {
+        if (((JCREventIterator)eventIterator).getOperationType() != JCRObservationManager.SESSION_SAVE) {
+            return;
+        }
+
         final Map<String, NodeWrapper> eventsMap = new HashMap<String, NodeWrapper>();
 
         if (Boolean.TRUE.equals(inRules.get())) {
+            System.out.println(" inrules event, skip");
             return;
         }
 
@@ -368,12 +374,10 @@ public class RulesListener extends DefaultEventListener {
                             }
                             if (!list.isEmpty()) {
                                 long time = System.currentTimeMillis();
-                                if (logger.isDebugEnabled()) {
-                                    if (list.size() > 3) {
-                                        logger.debug("Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes");
-                                    } else {
-                                        logger.debug("Executing rules for " + list);
-                                    }
+                                if (list.size() > 3) {
+                                    logger.debug("Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes");
+                                } else {
+                                    logger.debug("Executing rules for " + list);
                                 }
                                 final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
@@ -382,12 +386,10 @@ public class RulesListener extends DefaultEventListener {
 
                                 executeRules(list, globals);
 
-                                if (logger.isDebugEnabled()) {
-                                    if (list.size() > 3) {
-                                        logger.debug("Rules executed for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) + "ms");
-                                    } else {
-                                        logger.debug("Rules executed for " + list + " in " + (System.currentTimeMillis() - time) + "ms");
-                                    }
+                                if (list.size() > 3) {
+                                    logger.info("Rules executed for " + workspace + " " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) + "ms");
+                                } else {
+                                    logger.info("Rules executed for " + workspace + " " + list + " in " + (System.currentTimeMillis() - time) + "ms");
                                 }
 
                                 if (s.hasPendingChanges()) {

@@ -159,7 +159,7 @@
             processorClass="org.jahia.bin.JahiaRequestProcessor" contentType="text/html; charset=UTF-8" 
             multipartClass="org.jahia.tools.files.JahiaMultipartRequestHandler"/>
     <!-- Message Resources -->
-    <message-resources parameter="ApplicationResources" null="false"/>
+    <message-resources parameter="JahiaInternalResources" null="false"/>
     <!-- Tiles PlugIns -->
     <plug-in className="org.apache.struts.tiles.TilesPlugin">
         <set-property property="definitions-config" value="/WEB-INF/etc/struts/jahia-tiles-defs.xml"/>

@@ -35,7 +35,7 @@ import java.util.Map;
 public class ViewPublishStatusActionItem extends BaseActionItem {
     private transient Map<LayoutContainer, El> containers = new HashMap<LayoutContainer, El>();
     private transient ToggleButton button;
-                                          n
+
     public void onComponentSelection() {
         viewPublishedStatus(linker);
     }

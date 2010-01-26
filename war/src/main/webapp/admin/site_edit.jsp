@@ -96,7 +96,7 @@
 </jsp:include>
 <div id="content" class="fit">
 <div class="head headtop">
-    <div class="object-title"><fmt:message key="org.jahia.admin.virtualSitesManagement.label"/>
+    <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
     </div>
 </div>
 <div class="content-item">
@@ -244,12 +244,12 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-siteDelete"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=delete&siteid=" + request.getAttribute("siteID"))%>'><fmt:message key="org.jahia.admin.delete.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=delete&siteid=" + request.getAttribute("siteID"))%>'><fmt:message key="label.delete"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="org.jahia.admin.save.label"/></a>
+              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="label.save"/></a>
             </span>
           </span>
 </div>

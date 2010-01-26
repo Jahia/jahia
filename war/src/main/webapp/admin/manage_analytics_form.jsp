@@ -216,12 +216,12 @@ function sendForm() {
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile)%>'><fmt:message key="org.jahia.admin.delete.label"/></a>
+                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile)%>'><fmt:message key="label.delete"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='org.jahia.admin.save.label'/></a>
+                    <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='label.save'/></a>
                   </span>
                 </span>
               </div>

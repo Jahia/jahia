@@ -375,7 +375,7 @@ public class ManageGroups extends AbstractAdministrationModule {
           groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
               jParams.getLocale());
           groupMessage += " [" + groupName + "] ";
-          groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.created.label",
+          groupMessage += JahiaResourceBundle.getJahiaInternalResource("message.successfully.created",
              jParams.getLocale());
           isError = false;
         }
@@ -722,7 +722,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
                 jParams.getLocale());
             groupMessage += " [" + groupName + "] ";
-            groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.created.label",
+            groupMessage += JahiaResourceBundle.getJahiaInternalResource("message.successfully.created",
                 jParams.getLocale());
             isError = false;
             Set sourceGroupMembers = getGroupMembers(sourceGroupName, jahiaSite.getID());

@@ -156,8 +156,8 @@ function testContextAvailability() {
 
 function changeButton() {
     var divElement = document.getElementById('connectButtonDiv');
-    divElement.innerHTML = "<a class='ico-next' href='javascript:loadFirstPage();' title='<fmt:message key="org.jahia.nextStep.button"/>'>" +
-                                                                                                                                     "<fmt:message key="org.jahia.nextStep.button"/></a>";
+    divElement.innerHTML = "<a class='ico-next' href='javascript:loadFirstPage();' title='<fmt:message key="label.nextStep"/>'>" +
+                                                                                                                                     "<fmt:message key="label.nextStep"/></a>";
     jahiaReady = true;
 }
 

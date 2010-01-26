@@ -56,7 +56,7 @@
         <%if(!isLynx){%>
          <div class="buttonList" style="padding-top: 8px; padding-bottom: 8px">
           <div class="button" title="<fmt:message key='org.jahia.admin.users.ManageUsers.applyModif.label'/>">
-            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>" ><fmt:message key="org.jahia.admin.ok.label"/></a>
+            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>" ><fmt:message key="label.ok"/></a>
           </div>
 
         </div>

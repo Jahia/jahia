@@ -93,7 +93,7 @@
     </div>
     <%if(!isConfigWizard){%>
     <div  class="object-shared">
-        <fmt:message key="org.jahia.step.label"/> 1 / 3
+        <fmt:message key="label.step"/> 1 / 3
     </div>
    <% } %>
 </div>
@@ -216,7 +216,7 @@
   	 <span class="dex-PushButton">
       <span class="first-child">
          <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">
-             <fmt:message key="org.jahia.admin.nextStep.button.label"/>
+             <fmt:message key="label.nextStep"/>
          </a>
       </span>
      </span>

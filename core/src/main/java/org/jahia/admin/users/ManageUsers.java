@@ -432,7 +432,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                     jParams.getLocale()));
             return false;
         } else if (siteUser.getMember(jahiaSite.getID(), username) != null) {
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                     jParams.getLocale());
             userMessage += " [" + username + "] ";
             userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
@@ -442,7 +442,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             JahiaUser user = userManager.lookupUser(username);
             String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
 
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                     jParams.getLocale());
             userMessage += " [" + username + "] ";
             userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
@@ -514,10 +514,10 @@ public class ManageUsers extends AbstractAdministrationModule {
             JahiaSiteUserManagerService siteUserManager =
                     ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
             siteUserManager.addMember(jahiaSite.getID(), usr);
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                     jParams.getLocale());
             userMessage += " [" + username + "] ";
-            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.created.label",
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("message.successfully.created",
                     jParams.getLocale());
             isError = false;
         }
@@ -743,7 +743,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                         .parseInt(homePageParam) : -1);
 
         if (!isSuperAdminProp) {
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                 jParams.getLocale());
             userMessage += " [" + username + "] ";
             userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.updated.label",
@@ -942,7 +942,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                         ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
                     siteUserManager.removeMember(jParams.getSiteID(),user);
 //                    userManager.deleteUser(user);
-                    userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                    userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                         jParams.getLocale());
                     userMessage += " [" + userName + "] ";
                     userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.removed.label",

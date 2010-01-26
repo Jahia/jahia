@@ -18,7 +18,7 @@
         <property name="permissionName" value="admin.sites.ManageSites" />
         <property name="name" value="sites" />
         <property name="icon" value="environment" />
-        <property name="label" value="org.jahia.admin.virtualSitesManagement.label" />
+        <property name="label" value="label.virtualSitesManagement" />
         <property name="urlAction" value="sites" />
         <property name="urlParams" value="&amp;sub=list" />
     </bean>
@@ -48,7 +48,7 @@
         <property name="permissionName" value="admin.users.ManageSuperAdminProps" />
         <property name="name" value="profile" />
         <property name="icon" value="businessman2" />
-        <property name="label" value="org.jahia.admin.editSuperAdminProperties.label" />
+        <property name="label" value="label.editSuperAdminProperties" />
         <property name="urlAction" value="users" />
         <property name="urlParams" value="&amp;sub=superAdminProps" />
         <property name="userManager" ref="JahiaUserManagerService" />
@@ -69,7 +69,7 @@
         <property name="permissionName" value="admin.permissions.ManageServerPermissions" />
         <property name="name" value="serverPermissions" />
         <property name="icon" value="policeman_usa" />
-        <property name="label" value="org.jahia.admin.serverpermissions.mainMenu.label" />
+        <property name="label" value="label.serverpermissions" />
         <property name="urlAction" value="serverPermissions" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -89,7 +89,7 @@
         <property name="permissionName" value="admin.server.ViewPatches" />
         <property name="name" value="patches" />
         <property name="icon" value="package_view" />
-        <property name="label" value="org.jahia.admin.patchmanagement.mainMenu.label" />
+        <property name="label" value="label.patchmanagement" />
         <property name="urlAction" value="patches" />
         <property name="urlParams" value="" />
     </bean>
@@ -136,7 +136,7 @@
         <property name="permissionName" value="admin.info.LicenseInfo" />
         <property name="name" value="info" />
         <property name="icon" value="about" />
-        <property name="label" value="org.jahia.admin.aboutJahia.label" />
+        <property name="label" value="label.aboutJahia" />
         <property name="urlAction" value="info" />
         <property name="urlParams" value="" />
     </bean>
@@ -149,7 +149,7 @@
         <property name="permissionName" value="admin.users.ManageUsers" />
         <property name="name" value="users" />
         <property name="icon" value="user1_into" />
-        <property name="label" value="org.jahia.admin.manageUsers.label" />
+        <property name="label" value="label.manageUsers" />
         <property name="urlAction" value="users" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -160,7 +160,7 @@
         <property name="permissionName" value="admin.users.ManageGroups" />
         <property name="name" value="groups" />
         <property name="icon" value="users_into" />
-        <property name="label" value="org.jahia.admin.manageGroups.label" />
+        <property name="label" value="label.manageGroups" />
         <property name="urlAction" value="groups" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -171,7 +171,7 @@
         <property name="permissionName" value="admin.languages.ManageSiteLanguages" />
         <property name="name" value="languages" />
         <property name="icon" value="signpost" />
-        <property name="label" value="org.jahia.admin.manageLanguages.label" />
+        <property name="label" value="label.manageLanguages" />
         <property name="urlAction" value="siteLanguages" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -182,7 +182,7 @@
         <property name="permissionName" value="admin.permissions.ManageSitePermissions" />
         <property name="name" value="sitePermissions" />
         <property name="icon" value="security_agent" />
-        <property name="label" value="org.jahia.admin.sitepermissions.mainMenu.label" />
+        <property name="label" value="label.sitepermissions" />
         <property name="urlAction" value="sitePermissions" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -205,7 +205,7 @@
         <property name="permissionName" value="admin.integrity.IntegrityChecks" />
         <property name="name" value="integrity" />
         <property name="icon" value="text_ok" />
-        <property name="label" value="org.jahia.admin.integrity.label" />
+        <property name="label" value="label.integrity.check" />
         <property name="urlType" value="struts" />
         <property name="urlAction" value="IntegrityChecks" />
         <property name="urlParams" value="&amp;group=integrity&amp;method=display" />

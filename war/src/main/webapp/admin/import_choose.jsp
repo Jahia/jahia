@@ -130,7 +130,7 @@ function sendForm(){
             <% } %>
             <div class="head">
                 <div class="object-title">
-                    <fmt:message key="org.jahia.admin.virtualSitesManagement.label.configwizard.variables"/>
+                    <fmt:message key="label.virtualSitesManagement.configwizard.variables"/>
                 </div>
             </div>
             <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
@@ -139,7 +139,7 @@ function sendForm(){
                     <% if(!isConfigWizard){%>
                     <th<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> width="5%">&nbsp;</th>
                     <th width="95%">
-                        <fmt:message key="org.jahia.admin.name.label"/>
+                        <fmt:message key="label.name"/>
                     </th>
 
                     <% } %>
@@ -327,7 +327,7 @@ function sendForm(){
     <%} %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-next" href='javascript:sendForm();'><internal:message key="org.jahia.nextStep.button"/></a>
+              <a class="ico-next" href='javascript:sendForm();'><internal:message key="label.nextStep"/></a>
             </span>
           </span>
 </div>

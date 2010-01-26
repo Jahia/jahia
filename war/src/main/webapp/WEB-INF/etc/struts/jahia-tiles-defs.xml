@@ -225,7 +225,7 @@ This is the centralized place where all tiles definitions should be defined.
   <definition name="default.layout" path="/views/administration/admin_default_layout.jsp">
       <put name="header" value="/views/administration/common/servermode_admin_header.jsp"/>
       <put name="footer" value="/views/administration/common/servermode_admin_footer.jsp"/>
-      <put name="dialogTitle" type="string" value="org.jahia.admin.serverSettings.label"/>
+      <put name="dialogTitle" type="string" value="label.serverSettings"/>
    </definition>
 
   <!-- HTML settings -->
@@ -237,7 +237,7 @@ This is the centralized place where all tiles definitions should be defined.
   <!-- Integrity checks -->
   <definition name="admin.integrity.main" extends="default.layout">
       <put name="body-content" value="/views/administration/integrity/main.jsp"/>
-      <put name="dialogTitle" type="string" value="org.jahia.admin.integrity.label"/>
+      <put name="dialogTitle" type="string" value="label.integrity.check"/>
    </definition>
 
 </tiles-definitions>

@@ -74,7 +74,7 @@ int stretcherToOpen   = 1; %>
               <thead>
                 <tr>
                   <th>
-                    <fmt:message key="org.jahia.admin.username.label"/>
+                    <fmt:message key="label.username"/>
                   </th>
                   <th style="text-align:right">
                     <fmt:message key="org.jahia.admin.homeSite.label"/>&nbsp;&nbsp;

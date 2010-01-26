@@ -498,7 +498,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
                 // pdisplay need refresh need refresh
                 if (gwtProcessJobInfo.isJobFinished()) {
-                    gwtJahiaStateInfo.setAlertMessage(getLocaleJahiaAdminResource("button.monitoring.jobfinished"));
+                    gwtJahiaStateInfo.setAlertMessage(getLocaleJahiaAdminResource("label.processManagering.jobfinished"));
 
                     // current user job ended
                     if (gwtProcessJobInfo.isCurrentUserJob() && !gwtProcessJobInfo.isSystemJob()) {
@@ -510,8 +510,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                     if (gwtJahiaStateInfo.isNeedRefresh() || gwtProcessJobInfo.isCurrentPageValidated()) {
                         gwtJahiaStateInfo.setNeedRefresh(true);
                         gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
-                        gwtJahiaStateInfo.setText(getLocaleJahiaAdminResource("button.monitoring.reloadPage"));
-                        gwtJahiaStateInfo.setRefreshMessage(getLocaleJahiaAdminResource("button.monitoring.reloadPage"));
+                        gwtJahiaStateInfo.setText(getLocaleJahiaAdminResource("label.processManagering.reloadPage"));
+                        gwtJahiaStateInfo.setRefreshMessage(getLocaleJahiaAdminResource("label.processManagering.reloadPage"));
                     }
 
                 } else {

@@ -53,7 +53,7 @@
     <h1>Jahia</h1>
 
     <h2 class="edit"><fmt:message
-            key="org.jahia.admin.manageLanguages.label"/>: <% if (currentSite != null) { %><fmt:message
+            key="label.manageLanguages"/>: <% if (currentSite != null) { %><fmt:message
             key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>&nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
@@ -103,7 +103,7 @@
                                             <fmt:message
                                                     key="org.jahia.admin.languages.ManageSiteLanguages.default.label"/>
                                         </th>
-                                        <th style="text-align:center"  ><fmt:message key="org.jahia.admin.delete.label"/></th>
+                                        <th style="text-align:center"  ><fmt:message key="label.delete"/></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -153,7 +153,7 @@
                                 </table>
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.options.label"/>
+                                        <fmt:message key="label.options"/>
                                     </div>
                                 </div>
                                 <%
@@ -235,7 +235,7 @@
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='org.jahia.admin.save.label'/></a>
+                    <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='label.save'/></a>
                   </span>
                 </span>
 </div>

@@ -129,9 +129,9 @@ function pasteSelectionClose()
         <td align="center" >
         <div class="buttonList" style="padding-top: 8px; padding-bottom: 8px">
         <div class="button" title="<fmt:message key='org.jahia.admin.users.ManageGroups.altApplyAndReturn.label'/>">
-<a href="javascript:pasteSelectionClose()" ><fmt:message key="org.jahia.admin.ok.label"/></a></div>
+<a href="javascript:pasteSelectionClose()" ><fmt:message key="label.ok"/></a></div>
          <div class="button" title="<fmt:message key='org.jahia.admin.users.GroupMembersTool.altCloseWithoutPaste.label'/>">
-		<a href="javascript:window.close();" ><fmt:message key="org.jahia.admin.cancel.label"/></a>
+		<a href="javascript:window.close();" ><fmt:message key="label.cancel"/></a>
 </div>
 <div class="button" title="<fmt:message key='org.jahia.admin.users.GroupMembersTool.altPasteWithoutClose.label'/>">
 		<a href="javascript:pasteSelection();" ><fmt:message key="org.jahia.admin.select.label"/></a>

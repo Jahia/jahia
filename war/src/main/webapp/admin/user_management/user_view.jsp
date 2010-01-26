@@ -65,7 +65,7 @@
     <table border="0" style="width:100%" class="evenOddTable">
       <thead>
         <tr>
-            <th><fmt:message key="org.jahia.admin.username.label"/></th>
+            <th><fmt:message key="label.username"/></th>
             <th align="right"><fmt:message key="org.jahia.admin.homeSite.label"/>&nbsp;&nbsp;</th>
         </tr>
       </thead>

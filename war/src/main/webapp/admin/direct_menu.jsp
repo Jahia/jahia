@@ -55,7 +55,7 @@
                        onMouseOver="MM_swapImage('users','','<%=URL%>/images/icons/admin_users_on.gif',1)">
                        <img align="left" name="users"
                              src="<%=URL%>/images/icons/admin_users_off.gif" width="16" height="16" border="0"
-                             alt="<fmt:message key="org.jahia.admin.manageUsers.label"/>"></a>
+                             alt="<fmt:message key="label.manageUsers"/>"></a>
                 </td>
                 <td>
                     <!-- <a href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>' -->

@@ -88,10 +88,10 @@ stretcherToOpen   = 0; %>
                           <fmt:message key="org.jahia.admin.passwordPolicies.active.label"/>
                         </th>
                         <th width="50%">
-                          <fmt:message key="org.jahia.admin.passwordPolicies.name.label"/>
+                          <fmt:message key="label.in"/>
                         </th>
                         <th width="43%" class="lastCol">
-                          <fmt:message key="org.jahia.admin.passwordPolicies.parameters.label"/>
+                          <fmt:message key="label.parameters"/>
                         </th>
                       </tr>
                     </thead>
@@ -112,7 +112,7 @@ stretcherToOpen   = 0; %>
                           <table width="100%">
                             <c:forEach items="${rule.conditionParameters}" var="condParam" varStatus="paramsStatus">
                               <tr>
-                                <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}.param.${condParam.name}'/>
+                                <c:set var="i18nKey" value='label.${condParam.name}'/>
                                 <td width="45%" align="right">
                                   <fmt:message key='<%= (String)pageContext.getAttribute("i18nKey") %>'/>:
                                 </td>
@@ -145,7 +145,7 @@ stretcherToOpen   = 0; %>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-restore" href="#reset" onclick="return doAction('reset')"><fmt:message key="org.jahia.admin.restore.label"/></a>
+              <a class="ico-restore" href="#reset" onclick="return doAction('reset')"><fmt:message key="label.restore"/></a>
             </span>
           </span>
           <span class="dex-PushButton">

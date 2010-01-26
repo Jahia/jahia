@@ -85,7 +85,7 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processRemove")%>' method="post">
     <% if (selUser.getProviderName().indexOf("LDAP") == -1) { %>
         <p>
-          <b><fmt:message key="org.jahia.admin.username.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
+          <b><fmt:message key="label.username"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
           <input type="hidden" name="username" value="<%= selUser.getUsername()%>">
         </p>
         <p>
@@ -123,12 +123,12 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
      <% if (selUser.getProviderName().indexOf("LDAP") == -1) { %>     
      <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><fmt:message key="org.jahia.admin.cancel.label"/></a>
+         <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><fmt:message key="label.cancel"/></a>
       </span>
      </span>
      <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-ok" href="javascript:document.mainForm.submit();" ><fmt:message key="org.jahia.admin.ok.label"/></a>
+         <a class="ico-ok" href="javascript:document.mainForm.submit();" ><fmt:message key="label.ok"/></a>
       </span>
      </span>      
       <% } %> 	      

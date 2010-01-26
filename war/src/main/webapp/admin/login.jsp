@@ -70,7 +70,7 @@ inputSize = 22;
   <table align="center" class="formTable" cellpadding="0" cellspacing="1" border="0">
     <tr>
       <th>
-        <fmt:message key="org.jahia.admin.username.label"/>
+        <fmt:message key="label.username"/>
       </th>
       <td>
         <input class="input" type="text" name="login_username" style="width: 150px" size="<%=inputSize%>" maxlength="250" value="${fn:escapeXml(jahiaLoginUsername)}" tabindex="1">
@@ -78,7 +78,7 @@ inputSize = 22;
     </tr>
     <tr>
       <th>
-        <fmt:message key="org.jahia.admin.password.label"/>
+        <fmt:message key="label.password"/>
       </th>
       <td>
         <input class="input" type="password" name="login_password" style="width: 150px" size="<%=inputSize%>" maxlength="250" tabindex="2" onkeydown="if (event.keyCode == 13) javascript:document.jahiaAdmin.submit();">

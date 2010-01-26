@@ -36,7 +36,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 	<head>
-		<title><internal:message key="org.jahia.engines.filemanager.Filemanager_Engine.name.label"/></title>
+		<title><internal:message key="label.documentManager"/></title>
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 	</head>

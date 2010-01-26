@@ -153,7 +153,7 @@
      <span class="dex-PushButton"> 
       <span class="first-child">
           <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">
-           <fmt:message key="org.jahia.admin.save.label"/>
+           <fmt:message key="label.save"/>
          </a>
       </span>
      </span> 

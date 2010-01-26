@@ -45,7 +45,7 @@
                          readOnly="<%= readOnly != null ? readOnly : Boolean.FALSE.toString() %>"
                          newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionIdentifier %>" templateUsage="false" aclContext="<%=aclContext%>"/>
 
-<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
+<internal:gwtResourceBundle resourceName="label.in"
                             aliasResourceName="ae_principal"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"
                             aliasResourceName="ae_restore_inheritance"/>
@@ -57,11 +57,11 @@
                             aliasResourceName="ae_restore_all_inheritance"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"
                             aliasResourceName="ae_break_all_inheritance"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.remove.label"
+<internal:gwtResourceBundle resourceName="label.remove"
                             aliasResourceName="ae_remove"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.save.label"
+<internal:gwtResourceBundle resourceName="label.save"
                             aliasResourceName="ae_save"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restore.label"
+<internal:gwtResourceBundle resourceName="label.restore"
                             aliasResourceName="ae_restore"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
                             aliasResourceName="um_adduser"/>

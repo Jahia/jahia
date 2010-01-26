@@ -114,7 +114,7 @@
                                         </div>
                                         <%if (!isConfigWizard) {%>
                                         <div class="object-shared">
-                                            <fmt:message key="org.jahia.step.label"/> 2 / 3
+                                            <fmt:message key="label.step"/> 2 / 3
                                         </div>
                                         <% } %>
                                     </div>
@@ -271,7 +271,7 @@
                   <span class="dex-PushButton">
                     <span class="first-child">
                     <a class="ico-ok" href="javascript:submitForm('save');" onclick="showWorkInProgress(); return true;">
-                        <fmt:message key="org.jahia.admin.save.label"/>
+                        <fmt:message key="label.save"/>
                     </a>
                   </span>
                 </span>
@@ -293,7 +293,7 @@
                     <span class="first-child">
                     <a class="ico-next" href="javascript:submitForm('save');" onclick="showWorkInProgress(); return true;">
 
-                        <internal:message key="org.jahia.nextStep.button"/>
+                        <internal:message key="label.nextStep"/>
 
                     </a>
                    </span>

@@ -114,7 +114,7 @@ int stretcherToOpen = 1; %>
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <fmt:message key="org.jahia.admin.manageGroups.label"/>
+                    <fmt:message key="label.manageGroups"/>
                   </div>
                 </div>
                 <div class="content-body">

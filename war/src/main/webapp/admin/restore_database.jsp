@@ -70,9 +70,9 @@
                         <td width="15">&nbsp;</td>
                         <td class="text" nowrap valign="top"><font size="1">[<%=backupHash.get("backup.date")%>, <%=backupHash.get("backup.type")%>, b=<%=backupHash.get("backup.build")%>, rel=<%=backupHash.get("backup.release")%>]</font></td>
                         <td width="15">&nbsp;</td>
-                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=restore&epoch=" + backupHash.get("backup.epoch") + "&build=" + backupHash.get("backup.build") + "&release=" + backupHash.get("backup.release"))%>' border="0"><font size="1"><fmt:message key="org.jahia.admin.restore.label"/></font></a></td>
+                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=restore&epoch=" + backupHash.get("backup.epoch") + "&build=" + backupHash.get("backup.build") + "&release=" + backupHash.get("backup.release"))%>' border="0"><font size="1"><fmt:message key="label.restore"/></font></a></td>
                         <td width="10">&nbsp;</td>
-                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=flush&epoch=" + backupHash.get("backup.epoch"))%>' border="0"><font size="1"><fmt:message key="org.jahia.admin.delete.label"/></font></a></td>
+                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=flush&epoch=" + backupHash.get("backup.epoch"))%>' border="0"><font size="1"><fmt:message key="label.delete"/></font></a></td>
                     </tr>
                     <tr>
                         <td><font size="5">&nbsp;</font></td>

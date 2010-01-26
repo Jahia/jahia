@@ -208,7 +208,7 @@
 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable" width="100%">
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.username.label"/>&nbsp;
+        <fmt:message key="label.username"/>&nbsp;
     </td>
     <td>
         <!-- This hidden field is here when one will decide that a user name can be changed -->
@@ -318,7 +318,7 @@
 <% if (!jUser.isPasswordReadOnly()) { %>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.password.label"/>&nbsp;
+        <fmt:message key="label.password"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwd"
@@ -449,21 +449,21 @@
             cancelURL = "javascript:window.close();";
         }
     %>
-        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="org.jahia.admin.cancel.label"/></a>
+        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="label.cancel"/></a>
     <% } else {
         String cancelURL = JahiaAdministration.composeActionURL(request, response, "displaymenu", "");
         if (isPopup) {
             cancelURL = "javascript:window.close();";
         }
     %>
-        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="org.jahia.admin.cancel.label"/></a>
+        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="label.cancel"/></a>
     <% } %>
       </span>
      </span>
      <span class="dex-PushButton"> 
       <span class="first-child">
          <a class="ico-ok"
-            href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><fmt:message key="org.jahia.admin.ok.label"/></a>
+            href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><fmt:message key="label.ok"/></a>
       </span>
      </span>
 

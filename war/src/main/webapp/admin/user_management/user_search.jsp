@@ -63,7 +63,7 @@ int stretcherToOpen   = 1;
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td colspan="2">
-                        <br><fmt:message key="org.jahia.admin.users.ManageUsers.search.label"/>&nbsp;:
+                        <br><fmt:message key="label.search"/>&nbsp;:
                         <input type="text" name="searchString" size="10"
                             <%
                             String searchString = request.getParameter("searchString");
@@ -74,19 +74,19 @@ int stretcherToOpen   = 1;
                     </td>
                 </tr>
                 <tr>
-                    <td>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.in.label"/>&nbsp;:</td>
+                    <td>&nbsp;&nbsp;<fmt:message key="label.in"/>&nbsp;:</td>
                     <td>
                         <input type="radio" name="searchIn" value="allProps" checked
-                               onclick="disableCheckBox(properties);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.allProp.label"/>
+                               onclick="disableCheckBox(properties);">&nbsp;<fmt:message key="label.allProperties"/>
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="top">
                         <input type="radio" name="searchIn" value="properties"
-                               onclick="enableCheckbox(properties);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.properties.label"/><br>
+                               onclick="enableCheckbox(properties);">&nbsp;<fmt:message key="label.properties"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="username" disabled><nobr> <fmt:message key="org.jahia.admin.username.label"/></nobr><br>
+                        <input type="checkbox" name="properties" value="username" disabled><nobr> <fmt:message key="label.username"/></nobr><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="checkbox" name="properties" value="firstname" disabled> <fmt:message key="org.jahia.admin.firstName.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -98,11 +98,11 @@ int stretcherToOpen   = 1;
                     </td>
                 </tr>
                 <tr>
-                    <td>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.on.label"/>&nbsp;:&nbsp;</td>
+                    <td>&nbsp;&nbsp;<fmt:message key="label.on"/>&nbsp;:&nbsp;</td>
                     <td>
                         <input type="radio" name="storedOn" value="everywhere"
                                <%if (providerList.size() > 1) { %> checked <% } %>
-                               onclick="disableCheckBox(providers);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.everyWhere.label"/>
+                               onclick="disableCheckBox(providers);">&nbsp;<fmt:message key="label.everyWhere"/>
                     </td>
                 </tr>
                 <tr>
@@ -110,7 +110,7 @@ int stretcherToOpen   = 1;
                     <td><nobr>
                         <input type="radio" name="storedOn" value="providers"
                                <%if (providerList.size() <= 1) { %> checked <% } %>
-                               onclick="enableCheckbox(providers);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.providers.label"/></nobr>&nbsp;:<br>
+                               onclick="enableCheckbox(providers);">&nbsp;<fmt:message key="label.providers"/></nobr>&nbsp;:<br>
 <%
                         Iterator providerEnum = providerList.iterator();
                         while (providerEnum.hasNext()) {
@@ -132,7 +132,7 @@ int stretcherToOpen   = 1;
 
                         <span class="dex-PushButton">
                           <span class="first-child">
-                              <a class="ico-search" href="javascript:submitForm('search');"><fmt:message key="org.jahia.admin.users.ManageUsers.search.label"/></a>
+                              <a class="ico-search" href="javascript:submitForm('search');"><fmt:message key="label.search"/></a>
                           </span>
                          </span>
                     </td>
@@ -157,7 +157,7 @@ int stretcherToOpen   = 1;
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{2}/);"
-                                           title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByProvider.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByProvider.label"/></a>
+                                           title="<fmt:message key='label.sortByProvider'/>"><fmt:message key="label.sortByProvider"/></a>
                                     </span>
                                 </span>
 
@@ -173,7 +173,7 @@ int stretcherToOpen   = 1;
                                     <span class="first-child">
                                         <a class="sort"
                                            href='<%= "javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>'
-                                           title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByProperty.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByProperty.label"/></a>
+                                           title="<fmt:message key='label.sortByProperty'/>"><fmt:message key="label.sortByProperty"/></a>
                                     </span>
                                 </span>
 

@@ -36,7 +36,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 	<head>
-		<title><internal:message key="org.jahia.engines.contentmanager.ContentManager_Engine.name.label"/></title>
+		<title><internal:message key="label.contentManager"/></title>
         <%--<script type="text/javascript">
             window.moveTo(0, 0);
             window.resizeTo(screen.availWidth, screen.availHeight);

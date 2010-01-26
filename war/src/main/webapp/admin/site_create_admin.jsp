@@ -93,7 +93,7 @@
 				
 				<%if(!isConfigWizard){%>
     <div  class="object-shared">
-        <fmt:message key="org.jahia.step.label"/> 1a / 3
+        <fmt:message key="label.step"/> 1a / 3
     </div>
    <% } %>
 
@@ -122,7 +122,7 @@
     <tr>
         <td class="asterisk">*&nbsp;</td>
         <td>
-            <fmt:message key="org.jahia.admin.username.label"/>&nbsp;:&nbsp;
+            <fmt:message key="label.username"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input  class="input" type="text" name="adminUsername" size="<%=inputSize%>" maxlength="255" value="<%=adminUsername%>">
@@ -167,7 +167,7 @@
     <tr>
         <td class="asterisk">*</td>
         <td>
-            <fmt:message key="org.jahia.admin.password.label"/>&nbsp;:&nbsp;
+            <fmt:message key="label.password"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="password" name="adminPassword" size="<%=inputSize%>" maxlength="255" value="<%=adminPassword%>">
@@ -210,7 +210,7 @@
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
       	 <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
-          <fmt:message key="org.jahia.admin.save.label"/>
+          <fmt:message key="label.save"/>
         </a>
       </span>
      </span>
@@ -226,7 +226,7 @@
 	<span class="dex-PushButton"> 
 	  <span class="first-child">
 	  	  <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
-          <internal:message key="org.jahia.nextStep.button"/>          
+          <internal:message key="label.nextStep"/>
         </a>
 	  </span>
 	</span>

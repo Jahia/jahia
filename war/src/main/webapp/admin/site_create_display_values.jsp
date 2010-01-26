@@ -153,7 +153,7 @@
                 </div>
 <%if(!isConfigWizard){%>
     <div  class="object-shared">
-        <fmt:message key="org.jahia.step.label"/> 3 / 3
+        <fmt:message key="label.step"/> 3 / 3
     </div>
    <% } %>
              </div>
@@ -253,7 +253,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="evenLine">
         <td class="t3" style="width: 40%; ">
-            <fmt:message key="org.jahia.admin.username.label"/>&nbsp;
+            <fmt:message key="label.username"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminUsername%>
@@ -293,7 +293,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <fmt:message key="org.jahia.admin.password.label"/>&nbsp;
+            <fmt:message key="label.password"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;********************

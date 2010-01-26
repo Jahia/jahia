@@ -69,7 +69,7 @@
             <div>
                 <div>
           <span class="tab-icon ico-server">
-            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=server")%>"><fmt:message key="org.jahia.admin.serverSettings.label"/></a>
+            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=server")%>"><fmt:message key="label.serverSettings"/></a>
           </span>
                 </div>
             </div>

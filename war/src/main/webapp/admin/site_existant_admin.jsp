@@ -84,7 +84,7 @@ if(siteJS.getID() != 0) { %>
                                         <fmt:message key="org.jahia.admin.site.ManageSites.selectTheAdministrator.label"/>
                                     </div>
                                     <div class="object-shared">
-                                        <fmt:message key="org.jahia.step.label"/> 1a / 3
+                                        <fmt:message key="label.step"/> 1a / 3
                                     </div>
                                 </div>
                                 <form name="jahiaAdmin"
@@ -151,7 +151,7 @@ if(siteJS.getID() != 0) { %>
   <span class="dex-PushButton">
     <span class="first-child">
     <a class="ico-ok"
-       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}" onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.save.label"/></a>
+       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}" onclick="showWorkInProgress(); return true;"><fmt:message key="label.save"/></a>
   </span>
   </span><% } %>
 </div>

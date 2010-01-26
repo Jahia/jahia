@@ -44,7 +44,7 @@
   <% if (! jsp.equals("congratulations.jsp") && ! jsp.equals("values.jsp") && ! jsp.startsWith("error")) { %>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-next ico-nav-next" href="#next" onclick="javascript:{setWaitingCursor(); submitFormular('<%=method%>','next'); return false;}" title="<fmt:message key="org.jahia.nextStep.button"/>"><fmt:message key="org.jahia.nextStep.button"/></a>
+      <a class="ico-next ico-nav-next" href="#next" onclick="javascript:{setWaitingCursor(); submitFormular('<%=method%>','next'); return false;}" title="<fmt:message key="label.nextStep"/>"><fmt:message key="label.nextStep"/></a>
     </span>
   </span>
   <% } else if (jsp.equals("values.jsp")) { %>

@@ -147,12 +147,12 @@ usrProviders = new ArrayList();
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + request.getParameter("siteid"))%>'><fmt:message key="org.jahia.admin.cancel.label"/></a>
+              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + request.getParameter("siteid"))%>'><fmt:message key="label.cancel"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-delete" href="#" onclick="javascript:{ showWorkInProgress(); document.mainForm.submit(); return false; }"><fmt:message key="org.jahia.admin.delete.label"/></a>
+              <a class="ico-delete" href="#" onclick="javascript:{ showWorkInProgress(); document.mainForm.submit(); return false; }"><fmt:message key="label.delete"/></a>
             </span>
           </span>
         </div>

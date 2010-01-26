@@ -253,7 +253,7 @@
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{2}/);"
-                                           title="<fmt:message key='org.jahia.admin.users.ManageGroups.altSortByProvider.label'/>"><fmt:message key="org.jahia.admin.users.ManageGroups.altSortByProvider.label"/></a>
+                                           title="<fmt:message key='label.sortByProvider'/>"><fmt:message key="label.sortByProvider"/></a>
                                     </span>
                                 </span>
                                 <span class="dex-PushButton">
@@ -267,7 +267,7 @@
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{24}/);"
-                                           title="<fmt:message key='org.jahia.admin.users.ManageGroups.altSortByProperty.label'/>"><fmt:message key="org.jahia.admin.users.ManageGroups.altSortByProperty.label"/></a>
+                                           title="<fmt:message key='label.sortByProperty'/>"><fmt:message key="label.sortByProperty"/></a>
                                     </span>
                                 </span>
                                                         </td>
@@ -330,14 +330,14 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel" href="<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>
-"><fmt:message key="org.jahia.admin.cancel.label"/></a>
+"><fmt:message key="label.cancel"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
 
               <a class="ico-ok"
-                 href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);javascript:document.mainForm.submit();"><fmt:message key="org.jahia.admin.ok.label"/></a>
+                 href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);javascript:document.mainForm.submit();"><fmt:message key="label.ok"/></a>
             </span>
           </span>
 </div>

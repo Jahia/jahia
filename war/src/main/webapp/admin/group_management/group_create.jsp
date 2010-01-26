@@ -152,12 +152,12 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><fmt:message key="org.jahia.admin.cancel.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><fmt:message key="label.cancel"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="org.jahia.admin.ok.label"/></a>
+              <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="label.ok"/></a>
             </span>
           </span>
 </div>

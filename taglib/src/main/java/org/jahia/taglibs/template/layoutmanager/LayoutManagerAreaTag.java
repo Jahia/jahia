@@ -64,11 +64,11 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             out.print("<div id='layout'  style='display:none;'>\n");
 
             // add resouces bundels
-            addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.principal.label"));
+            addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("label.in"));
             addGwtDictionaryMessage("mw_mashups", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
             addGwtDictionaryMessage("mw_select_portlet_def", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
             addGwtDictionaryMessage("mw_ok", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.ok.label"));
-            addGwtDictionaryMessage("mw_params", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.label"));
+            addGwtDictionaryMessage("mw_params", getJahiaInternalResourceValue("label.parameters"));
             addGwtDictionaryMessage("mw_edit_params", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.edit.label"));
             addGwtDictionaryMessage("mw_prop_load_error", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.props.load.error.label"));
             addGwtDictionaryMessage("mw_modes_permissions", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modesperm.label"));
@@ -79,7 +79,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("mw_roles_addgroup", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.addgroup.label"));
             addGwtDictionaryMessage("mw_roles_perm", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.label"));
             addGwtDictionaryMessage("mw_roles_perm_desc", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
-            addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.finish.label"));
+            addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("label.finish"));
             addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
             addGwtDictionaryMessage("mw_name",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationName.label"));
             addGwtDictionaryMessage("mw_description",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationDesc.label"));
@@ -103,12 +103,12 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("p_add_mashup_to_portal", getJahiaInternalResourceValue("org.jahia.myportal.addToPortal"));
             addGwtDictionaryMessage("p_delete_confirm", getJahiaInternalResourceValue("org.jahia.myportal.delete.confirm"));
 
-            addGwtDictionaryMessage("wizard_button_cancel", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.cancel"));
-            addGwtDictionaryMessage("wizard_button_finish", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.finish"));
+            addGwtDictionaryMessage("wizard_button_cancel", getJahiaInternalResourceValue("label.cancel"));
+            addGwtDictionaryMessage("wizard_button_finish", getJahiaInternalResourceValue("label.finish"));
             addGwtDictionaryMessage("wizard_button_next", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.next"));
             addGwtDictionaryMessage("wizard_button_prev", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.prev"));
-            addGwtDictionaryMessage("wizard_steps_of", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.of"));
-            addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.current"));
+            addGwtDictionaryMessage("wizard_steps_of", getJahiaInternalResourceValue("label.of"));
+            addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("label.step"));
             addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
 
             addGwtDictionaryMessage("mw_title", getJahiaInternalResourceValue("toolbar.manager.button.newMashup"));

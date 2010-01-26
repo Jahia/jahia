@@ -176,7 +176,7 @@ stretcherToOpen   = 1;
             </span>
             <span class="dex-PushButton">
               <span class="first-child">
-                <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key='org.jahia.admin.save.label'/></a>
+                <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key='label.save'/></a>
               </span>
             </span>
           </div>

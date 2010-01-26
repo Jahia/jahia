@@ -79,7 +79,7 @@
                              <div id="operationMenu">
                     <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message key="org.jahia.admin.delete.label"/></a>
+                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message key="label.delete"/></a>
                   </span>
                 </span>
 
@@ -115,7 +115,7 @@
                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
                                         </th>
                                         <th width="15%" class="lastCol">
-                                            <fmt:message key="org.jahia.admin.site.ManageSites.actions.label"/>
+                                            <fmt:message key="label.action"/>
                                         </th>
                                     </tr>
                                     </thead>
@@ -157,17 +157,17 @@
                                                    id="<%=jahiaGAprofile%>TrackingEnabled"/></td>
                                         <td class="lastCol">
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=displayEdit&profile="+jahiaGAprofile )%>'
-                                               title="<fmt:message key='org.jahia.admin.edit.label'/>"><img
+                                               title="<fmt:message key='label.edit'/>"><img
                                                     src="<%=URL%>images/icons/admin/adromeda/edit.png"
-                                                    alt="<fmt:message key='org.jahia.admin.edit.label'/>"
-                                                    title="<fmt:message key='org.jahia.admin.edit.label'/>"
+                                                    alt="<fmt:message key='label.edit'/>"
+                                                    title="<fmt:message key='label.edit'/>"
                                                     width="16"
                                                     height="16" border="0"/></a>&nbsp;
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile )%>'
-                                               title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
+                                               title="<fmt:message key='label.delete'/>"><img
                                                     src="<%=URL%>images/icons/admin/adromeda/delete.png"
-                                                    alt="<fmt:message key='org.jahia.admin.delete.label'/>"
-                                                    title="<fmt:message key='org.jahia.admin.delete.label'/>"
+                                                    alt="<fmt:message key='label.delete'/>"
+                                                    title="<fmt:message key='label.delete'/>"
                                                     width="16"
                                                     height="16" border="0"/></a>&nbsp;
                                         </td>
@@ -242,7 +242,7 @@
                             </span>
                            <span class="dex-PushButton">
                             <span class="first-child">
-                              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="org.jahia.admin.save.label"/></a>
+                              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="label.save"/></a>
                             </span>
                           </span>
 

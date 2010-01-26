@@ -56,7 +56,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.sitepermissions.title.label"/></h2>
+    <h2 class="edit"><fmt:message key="label.sitepermissions"/></h2>
 </div>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 
@@ -78,7 +78,7 @@
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <fmt:message key="org.jahia.admin.sitepermissions.mainMenu.label"/>
+        <fmt:message key="label.sitepermissions"/>
     </div>
 </div>
 <div class="content-item">
@@ -107,7 +107,7 @@
                 <div>
                               <span>
                                 <a href="#"
-                                   onclick="changePermissionGroup('administration')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.administration.label"/></a>
+                                   onclick="changePermissionGroup('administration')"><fmt:message key="label.administration"/></a>
                               </span>
                 </div>
             </div>
@@ -116,7 +116,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('data')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.data.label"/></a>
+                                <a href="#" onclick="changePermissionGroup('data')"><fmt:message key="label.edit"/></a>
                               </span>
                 </div>
             </div>
@@ -134,7 +134,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('actions')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.actions.label"/></a>
+                               <a href="#" onclick="changePermissionGroup('actions')"><fmt:message key="label.action"/></a>
                               </span>
                 </div>
             </div>

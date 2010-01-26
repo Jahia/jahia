@@ -112,7 +112,7 @@
 </jsp:include>
 <div id="content" class="fit">
 <div class="head headtop">
-    <div class="object-title"><fmt:message key="org.jahia.admin.virtualSitesManagement.label"/>
+    <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
     </div>
 </div>
 <div class="content-body">
@@ -160,7 +160,7 @@
                 &nbsp;
             </th>
             <th width="35%">
-                <fmt:message key="org.jahia.admin.name.label"/>
+                <fmt:message key="label.name"/>
             </th>
             <th width="12%" style="white-space: nowrap">
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
@@ -172,7 +172,7 @@
                 <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
             </th>
             <th width="15%" class="lastCol">
-                <fmt:message key="org.jahia.admin.site.ManageSites.actions.label"/>
+                <fmt:message key="label.action"/>
             </th>
         </tr>
         </thead>
@@ -197,7 +197,7 @@
                 </td>
                 <td>
                     <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
-                       title="<fmt:message key='org.jahia.admin.edit.label'/>"><%=site.getTitle() %>
+                       title="<fmt:message key='label.edit'/>"><%=site.getTitle() %>
                     </a>
                 </td>
                 <td>
@@ -222,16 +222,16 @@
                 </td>
                 <td class="lastCol">
                     <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
-                       title="<fmt:message key='org.jahia.admin.edit.label'/>"><img
+                       title="<fmt:message key='label.edit'/>"><img
                             src="<%=URL%>images/icons/admin/adromeda/edit.png"
-                            alt="<fmt:message key='org.jahia.admin.edit.label'/>"
-                            title="<fmt:message key='org.jahia.admin.edit.label'/>" width="16"
+                            alt="<fmt:message key='label.edit'/>"
+                            title="<fmt:message key='label.edit'/>" width="16"
                             height="16" border="0"/></a>&nbsp;<a href="#delete"
                                                                  onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
-                                                                 title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
+                                                                 title="<fmt:message key='label.delete'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
-                        alt="<fmt:message key='org.jahia.admin.delete.label'/>"
-                        title="<fmt:message key='org.jahia.admin.delete.label'/>" width="16"
+                        alt="<fmt:message key='label.delete'/>"
+                        title="<fmt:message key='label.delete'/>" width="16"
                         height="16" border="0"/></a>&nbsp;<% if (homeContentPage != null) { %>
                     &nbsp;<a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
                              title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"><img
@@ -365,7 +365,7 @@ else { %>
 </jsp:include>
 <div id="content" class="fit">
 <div class="head headtop">
-    <div class="object-title"><fmt:message key="org.jahia.admin.virtualSitesManagement.label"/>
+    <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
     </div>
 </div>
 
@@ -375,7 +375,7 @@ else { %>
         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
             <tr>
                 <td>
-                    <fmt:message key="org.jahia.admin.site.ManageSites.addSite.field"/>&nbsp;
+                    <fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/>&nbsp;
                 </td>
 
                 <td>
@@ -396,7 +396,7 @@ else { %>
         <div class="object-title">
             <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
 
-            <fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
+            <fmt:message key="label.virtualSitesManagement.default"/>
 
         </div>
     </div>
@@ -494,7 +494,7 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
+                1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="label.virtualSitesManagement.default"/>
             </div>
         </div>
         <div  class="content-item">
@@ -528,7 +528,7 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                2.&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.configwizard"/>
+                2.&nbsp;<fmt:message key="label.virtualSitesManagement.configwizard"/>
             </div>
         </div>
 
@@ -538,7 +538,7 @@ else { %>
                     <td>
                         <form name="blank"  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' method="post" >
                             <input type="radio" id="blank" name="blank" value="blank" onclick="setCheckedValue(document.forms['blank'].elements['blank'], 'blank'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');">
-                            <label for="blank"><fmt:message key="org.jahia.admin.site.ManageSites.addSite.field"/></label>
+                            <label for="blank"><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></label>
                         </form>
                     </td>
                 </tr>
@@ -613,7 +613,7 @@ else { %>
     <%if (isConfigWizard) { %>
 					<span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-next" href="javascript:submitform();"><internal:message key="org.jahia.nextStep.button"/>
+              <a class="ico-next" href="javascript:submitform();"><internal:message key="label.nextStep"/>
               </a>
             </span>
           </span>

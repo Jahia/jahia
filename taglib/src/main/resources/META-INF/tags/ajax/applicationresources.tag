@@ -44,9 +44,9 @@
 <utility:gwtResourceBundle resourceName="toolbar.advCompare.version1" aliasResourceName="advc_version1"/>
 <utility:gwtResourceBundle resourceName="toolbar.advCompare.version2" aliasResourceName="advc_version2"/>
 
-<utility:gwtResourceBundle resourceName="versioning.versionLabel" aliasResourceName="versioning_versionLabel"/>
-<utility:gwtResourceBundle resourceName="versioning.workflowState" aliasResourceName="versioning_workflowState"/>
+<utility:gwtResourceBundle resourceName="label.version" aliasResourceName="versioning_versionLabel"/>
+<utility:gwtResourceBundle resourceName="label.workflowState" aliasResourceName="versioning_workflowState"/>
 <utility:gwtResourceBundle resourceName="versioning.author" aliasResourceName="versioning_author"/>
 <utility:gwtResourceBundle resourceName="versioning.versionDate" aliasResourceName="versioning_versionDate"/>
-<utility:gwtResourceBundle resourceName="versioning.languageCode" aliasResourceName="versioning_languageCode"/>
+<utility:gwtResourceBundle resourceName="label.languagecode" aliasResourceName="versioning_languageCode"/>
 

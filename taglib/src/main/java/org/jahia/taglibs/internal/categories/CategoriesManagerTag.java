@@ -123,19 +123,19 @@ public class CategoriesManagerTag extends AbstractJahiaTag {
                 addGWTInternalMessage("org.jahia.admin.categories.ManageCategories.editCategory.propertyValue.label", "cat_prop_value");
                 addGWTInternalMessage("org.jahia.admin.categories.ManageCategories.editCategory.deleteProperty.label", "title_remove_prop");
                 addGWTInternalMessage("org.jahia.admin.categories.ManageCategories.editCategory.saveProperties.label", "title_new_prop");
-                addGWTInternalMessage("org.jahia.admin.save.label", "button_save");
+                addGWTInternalMessage("label.save", "button_save");
                 addGWTInternalMessage("org.jahia.admin.categories.ManageCategories.deleteCategoryAction.label", "button_remove");
                 addGWTInternalMessage("org.jahia.admin.update.label", "button_update");
-                addGWTInternalMessage("org.jahia.admin.cancel.label", "button_cancel");
+                addGWTInternalMessage("label.cancel", "button_cancel");
                 addGWTInternalMessage("org.jahia.admin.apply.label", "button_apply");
-                addGWTInternalMessage("org.jahia.engines.rights.ManageRights.principal.label", "ae_principal");
+                addGWTInternalMessage("label.in", "ae_principal");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.restoreInheritance.label", "ae_restore_inheritance");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.inheritedFrom.label", "ae_inherited_from");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label", "ae_restore_all_inheritance");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.breakAllInheritance.label", "ae_break_all_inheritance");
-                addGWTInternalMessage("org.jahia.engines.rights.ManageRights.remove.label", "ae_remove");
-                addGWTInternalMessage("org.jahia.engines.rights.ManageRights.save.label", "ae_save");
-                addGWTInternalMessage("org.jahia.engines.rights.ManageRights.restore.label", "ae_restore");
+                addGWTInternalMessage("label.remove", "ae_remove");
+                addGWTInternalMessage("label.save", "ae_save");
+                addGWTInternalMessage("label.restore", "ae_restore");
                 addGWTInternalMessage("org.jahia.engines.users.SelectUG_Engine.newUsers.label", "um_adduser");
                 addGWTInternalMessage("org.jahia.engines.users.SelectUG_Engine.newGroups.label", "um_addgroup");
             }

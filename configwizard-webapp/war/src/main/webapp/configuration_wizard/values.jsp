@@ -352,7 +352,7 @@
 <%--</tr>--%>
 <%--<tr>--%>
 <%--<td headers="t9" class="t3">--%>
-<%--<fmt:adminResourceBundle resourceName="org.jahia.admin.username.label"/>--%>
+<%--<fmt:adminResourceBundle resourceName="label.username"/>--%>
 <%--<fmt:message key="org.jahia.bin.JahiaConfigurationWizard.siteAdmin.label"/>--%>
 <%--</td>--%>
 <%--<td headers="t10" class="t4">--%>
@@ -361,7 +361,7 @@
 <%--</tr>--%>
 <%--<tr>--%>
 <%--<td headers="t9" class="t3">--%>
-<%--<fmt:adminResourceBundle resourceName="org.jahia.admin.password.label"/>--%>
+<%--<fmt:adminResourceBundle resourceName="label.password"/>--%>
 <%--<fmt:message key="org.jahia.bin.JahiaConfigurationWizard.siteAdmin.label"/>--%>
 <%--</td>--%>
 <%--<td headers="t10" class="t4">**************</td>--%>

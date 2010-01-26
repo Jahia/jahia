@@ -42,6 +42,6 @@
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<% String titleKey = request.getAttribute("dialogTitle") != null ? request.getAttribute("dialogTitle").toString() : "org.jahia.admin.serverSettings.label"; %>
+<% String titleKey = request.getAttribute("dialogTitle") != null ? request.getAttribute("dialogTitle").toString() : "label.serverSettings"; %>
 <h2 class="edit"><fmt:message key="<%=titleKey %>"/></h2>
 </div>

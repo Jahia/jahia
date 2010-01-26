@@ -187,7 +187,7 @@
 
 <div class="stretcher-head head">
     <div class="object-title">
-     <a href="#caches" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.cacheSection.label"/></a>
+     <a href="#caches" class="sectionLink"><fmt:message key="label.cache"/></a>
     </div>                
 </div>
 <div class="stretcher">

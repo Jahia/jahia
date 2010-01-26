@@ -68,7 +68,7 @@
     <h2 class="edit"><internal:message key="org.jahia.bin.JahiaConfigurationWizard.jahiaConfigurationWizard.label"/></h2>
     <span class="step">
         <% if (step != null && step.length() > 0) { %>
-            <internal:message key="org.jahia.step.label"/>&nbsp;<%=step%> / <%=steps%>
+            <internal:message key="label.step"/>&nbsp;<%=step%> / <%=steps%>
         <% } else { %>
             &nbsp;
         <% } %>

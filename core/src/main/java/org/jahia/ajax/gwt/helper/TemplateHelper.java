@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -39,8 +40,8 @@ public class TemplateHelper {
      * @param ctx             @return   @throws GWTJahiaServiceException
      * @param currentUserSession
      */
-    public String getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, ParamBean ctx, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        String res = null;
+    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, ParamBean ctx, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
             Resource r = new Resource(node, "html", null, template);
@@ -57,13 +58,14 @@ public class TemplateHelper {
             }
             r.pushWrapper(templateWrapper);
 //            renderContext.setTemplateWrapper(templateWrapper);
-            res = renderService.render(r, renderContext);
+            String res = renderService.render(r, renderContext);
+            result = new GWTRenderResult(res, new HashMap(renderContext.getStaticAssets()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {
             logger.error(e.getMessage(), e);
         }
-        return res;
+        return result;
     }
 
     public List<String[]> getTemplatesSet(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {

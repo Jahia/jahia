@@ -38,6 +38,7 @@ import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -50,7 +51,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -706,7 +706,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.uploadedFile(location, tmpName, operation, newName, retrieveCurrentSession());
     }
 
-    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
         return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, retrieveParamBean(), this.retrieveCurrentSession());
     }
 
@@ -740,8 +740,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param path the path to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree, String comments) throws GWTJahiaServiceException {
-        publication.publish(path, languages, allSubTree);
+    public void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
+        publication.publish(path, languages, allSubTree, reverse, retrieveCurrentSession());
     }
 
     /**
@@ -750,8 +750,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param paths the list of node paths to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> paths) throws GWTJahiaServiceException {
-        publication.publish(paths, null, retrieveParamBean().getUser(), false);
+    public void publish(List<String> paths, boolean reverse) throws GWTJahiaServiceException {
+        publication.publish(paths, null, retrieveParamBean().getUser(), false, retrieveCurrentSession());
     }
 
     /**

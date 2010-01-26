@@ -39,6 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
@@ -68,9 +69,9 @@ public class TemplateView extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, null, null, false, new AsyncCallback<String>() {
-                public void onSuccess(String result) {
-                    html = new HTML(result);
+            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, null, null, false, new AsyncCallback<GWTRenderResult>() {
+                public void onSuccess(GWTRenderResult result) {
+                    html = new HTML(result.getResult());
                     m_component.add(html);
                     m_component.layout();
                     Map<String, List<RootPanel>> jahiaTypedRootPanels = TemplatesDOMUtil.getAllJahiaTypedRootPanels(html.getElement());

@@ -37,6 +37,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -182,7 +183,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
 
-    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException;
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException;
 
     public String getNodeURL(String path, String locale,  int mode) throws GWTJahiaServiceException;
 
@@ -194,13 +195,13 @@ public interface JahiaContentManagementService extends RemoteService {
      * Publish the specified path.
      * @param path the path to publish, will not auto publish the parents
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree, String comments) throws GWTJahiaServiceException;
+    public void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified paths.
      * @param path the list of node paths to publish, will not auto publish the parents
      */
-    public void publish(List<String> path) throws GWTJahiaServiceException;
+    public void publish(List<String> path, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.

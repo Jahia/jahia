@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.core.client.GWT;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -23,6 +23,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * First module of any rendered element.
@@ -90,20 +91,21 @@ public class MainModule extends ContentPanel implements Module {
     }
 
     public void refresh() {
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<String>() {
-            public void onSuccess(String result) {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<GWTRenderResult>() {
+            public void onSuccess(GWTRenderResult result) {
                 int i = getVScrollPosition();
                 setHeading("Page : "+path);                
                 removeAll();
                 Selection.getInstance().hide();
                 Hover.getInstance().removeAll();
-                display(result);
+                display(result.getResult());
 
                 setVScrollPosition(i);
                 List<String> list = new ArrayList<String>(1);
                 list.add(path);
                 editLinker.getMainModule().unmask();                
                 editLinker.onModuleSelection(MainModule.this);
+                switchStaticAssets(result.getStaticAssets());
             }
 
             public void onFailure(Throwable caught) {
@@ -112,6 +114,45 @@ public class MainModule extends ContentPanel implements Module {
         });
 
     }
+
+    private void switchStaticAssets(Map<String, Set<String>> assets) {
+        removeAllAssets();
+        for (Map.Entry<String, Set<String>> entry : assets.entrySet()) {
+            for (String s : entry.getValue()) {
+                addAsset(entry.getKey().toLowerCase(), s);
+            }
+        }
+    }
+
+    private native void removeAllAssets() /*-{
+        var links = $doc.getElementsByTagName("link");
+        for (var i=links.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+            if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0)
+                links[i].parentNode.removeChild(links[i]) //remove element by calling parentNode.removeChild()
+        }
+        var scripts = $doc.getElementsByTagName("script");
+        for (var i=scripts.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+            if (scripts[i] && scripts[i].getAttribute("id")!=null && scripts[i].getAttribute("id").indexOf("staticAsset")==0)
+                scripts[i].parentNode.removeChild(scripts[i]) //remove element by calling parentNode.removeChild()
+        }
+    }-*/;
+
+    private native void addAsset(String filetype, String filename) /*-{
+        if (filetype=="javascript"){ //if filename is a external JavaScript file
+            var fileref=$doc.createElement('script')
+            fileref.setAttribute("type","text/javascript")
+            fileref.setAttribute("src", filename)
+            $doc.getElementsByTagName("head")[0].appendChild(fileref)
+        } else if (filetype=="css"){ //if filename is an external CSS file
+            var fileref=$doc.createElement("link")
+            fileref.setAttribute("rel", "stylesheet")
+            fileref.setAttribute("type", "text/css")
+            fileref.setAttribute("href", filename)
+            $doc.getElementsByTagName("head")[0].appendChild(fileref)
+            alert("css added "+filename)
+        }
+
+    }-*/;
 
     private void display(String result) {
         html = new HTML(result);

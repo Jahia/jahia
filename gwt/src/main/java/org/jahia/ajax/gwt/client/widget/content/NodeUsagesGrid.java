@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -77,9 +78,9 @@ public class NodeUsagesGrid {
                 Object url = tableEvent.getModel().get("url");
                 if (url != null && url instanceof String) {
                     instance.getRenderedContent((String) url, null, JahiaGWTParameters.getLanguage(), null,
-                                                "wrapper.previewwrapper", null, false, new AsyncCallback<String>() {
-                                public void onSuccess(String result) {
-                                    HTML html = new HTML(result);
+                                                "wrapper.previewwrapper", null, false, new AsyncCallback<GWTRenderResult>() {
+                                public void onSuccess(GWTRenderResult result) {
+                                    HTML html = new HTML(result.getResult());
                                     Window w = new Window();
                                     w.setScrollMode(Style.Scroll.AUTO);
                                     w.setModal(true);

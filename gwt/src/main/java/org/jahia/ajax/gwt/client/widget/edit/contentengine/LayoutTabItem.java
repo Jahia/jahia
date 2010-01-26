@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -80,9 +81,9 @@ public class LayoutTabItem extends PropertiesTabItem {
      */
     private void updatePreview(String template, Map<String, String> contextParams) {
         if (engine.getNode() != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, new AsyncCallback<String>() {
-                public void onSuccess(String result) {
-                    HTML html = new HTML(result);
+            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, new AsyncCallback<GWTRenderResult>() {
+                public void onSuccess(GWTRenderResult result) {
+                    HTML html = new HTML(result.getResult());
                     setHTML(html);
                     layout();
                 }

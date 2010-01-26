@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -174,7 +175,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void uploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
 
-    void getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode, AsyncCallback<String> async);
+    void getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode, AsyncCallback<GWTRenderResult> async);
 
     void getNodeURL(String path, String locale,  int mode,AsyncCallback<String> async);
 
@@ -187,14 +188,14 @@ public interface JahiaContentManagementServiceAsync {
      * @param path the path to publish, will not auto publish the parents
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(String path, Set<String> languages, boolean allSubTree, String comments, AsyncCallback async);
+    void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse, AsyncCallback async);
 
     /**
      * Publish the specified paths.
      * @param paths the list of node paths to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> paths, AsyncCallback async);
+    void publish(List<String> paths, boolean reverse, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.

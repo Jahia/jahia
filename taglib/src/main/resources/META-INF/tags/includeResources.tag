@@ -46,13 +46,13 @@
 	<script type="text/javascript">
 	/* <![CDATA[ */
 	</c:if>
-	<c:forEach var="resource" items="${resources}">
+	<c:forEach var="resource" items="${resources}" varStatus="var">
 		<c:choose>
 			<c:when test="${'css' == resourceType}">
-				<link rel="stylesheet" href="${resource}" media="screen" type="text/css"/>
+				<link id="staticAsset${resourceType}${var.index}" rel="stylesheet" href="${resource}" media="screen" type="text/css"/>
 			</c:when>
 			<c:when test="${'javascript' == resourceType}">
-				<script type="text/javascript" src="${resource}"></script>
+				<script id="staticAsset${resourceType}${var.index}" type="text/javascript" src="${resource}"></script>
 			</c:when>
 			<c:when test="${'inlinecss' == resourceType || 'inlinejavascript' == resourceType}">
 				${resource}

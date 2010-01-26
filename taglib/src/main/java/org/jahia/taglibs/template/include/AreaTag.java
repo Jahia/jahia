@@ -134,9 +134,9 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             if (renderContext == null) {
-                final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
-                renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
-                renderContext.setSite(jData.getProcessingContext().getSite());
+                // final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
+                // renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
+                // renderContext.setSite(jData.getProcessingContext().getSite());
             }
             // add custom parameters
             Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());

@@ -119,7 +119,7 @@ public class PlutoProcessActionValve implements Valve {
                 }
 
                 // copy jahia attibutes nested by the portlet
-                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams, portletWindow, request, true);
+                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams.getRequest(), portletWindow, request, true);
 
 
                 try {

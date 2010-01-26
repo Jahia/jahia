@@ -44,7 +44,9 @@ import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.beans.JahiaBean;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteriaFactory;
@@ -130,16 +132,19 @@ public class RssFeedViewTag extends AbstractJahiaTag {
         Link link = new Link();
         link.setType("application/opensearchdescription+xml");
         link.setTitle(title);
-        JahiaBean jahiaBean = getJahiaBean();
+        JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance()
+                .getJahiaTemplateManagerService().getTemplatePackage(
+                        getRenderContext().getSite().getTemplatePackageName());
+
         try {
             link
-                    .setHref(jahiaBean.getSite().getExternalUrl()
+                    .setHref(getRenderContext().getURLGenerator().getSiteURL(getRenderContext().getSite(), true)
                             + "?template="
                             + URLEncoder
                                     .encode(TemplateUtils.resolvePath("/opensearch/descriptor-"
                                             + (isFileSearchMode() ? "files"
                                                     : "pages")
-                                            + "-rss.jsp", getJahiaBean().getSite().getTemplatePackage()),
+                                            + "-rss.jsp", templatePackage),
                                             pageContext.getResponse()
                                                     .getCharacterEncoding() != null ? pageContext
                                                     .getResponse()
@@ -171,8 +176,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
         feed.setModules(modules);
 
         feed.setFeedType(type);
-        JahiaBean jBean = getJahiaBean();
-        String feedTitle = title != null ? title : jBean.getSite().getTitle()
+        String feedTitle = title != null ? title : getRenderContext().getSite().getTitle()
                 + " - "
                 + (isFileSearchMode() ? "document repository" : "content")
                 + " (RSS)";
@@ -183,7 +187,6 @@ public class RssFeedViewTag extends AbstractJahiaTag {
 
         List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
-        ParamBean ctx = (ParamBean) getProcessingContext();
         String serverUrl = getTargetUrl();
         for (Hit hit : results) {
             try {
@@ -203,7 +206,7 @@ public class RssFeedViewTag extends AbstractJahiaTag {
     }
 
     private String getTargetUrl() {
-        String serverUrl = getJahiaBean().getSite().getServerName();
+        String serverUrl = getRenderContext().getSite().getServerName();
         int port = SettingsBean.getInstance().getSiteURLPortOverride();
         port = port > 0 ? port : pageContext.getRequest().getServerPort();
         return pageContext.getRequest().getScheme() + "://" + serverUrl

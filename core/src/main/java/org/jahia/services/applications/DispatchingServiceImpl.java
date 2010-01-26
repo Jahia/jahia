@@ -37,9 +37,12 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -87,7 +90,10 @@ public class DispatchingServiceImpl extends DispatchingService {
 
     public void stop() {}
 
-    public String getAppOutput (int fieldID, String entryPointIDStr, ParamBean jParams)
+    public String getAppOutput (int fieldID, String entryPointIDStr, JahiaUser jahiaUser,
+                                HttpServletRequest httpServletRequest,
+                                HttpServletResponse httpServletResponse,
+                                ServletContext servletContext)
         throws JahiaException {
 
         String fieldIDStr = Integer.toString(fieldID);
@@ -124,28 +130,26 @@ public class DispatchingServiceImpl extends DispatchingService {
 
         // Now let's check the request URL to see if the target application is this one or not.
 
-        HttpServletRequest request = jParams.getRequest();
-
-        Object url = request.getAttribute("url");
-        request.setAttribute("url",null);  // todo : should we put something here ?
+        Object url = httpServletRequest.getAttribute("url");
+        httpServletRequest.setAttribute("url",null);  // todo : should we put something here ?
 
         String renderResult = null;
-        if(request!=null) {
+        if(httpServletRequest!=null) {
 
             // now we can render the output of the application.
 
             // we check the request, because we want to make sure this
             // method is called only once.
-            if (request.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr) == null) {
+            if (httpServletRequest.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr) == null) {
                 // process the action now
-                renderResult = dispatcher.render(entryPointInstance, entryPointInstance.getID(), jParams);
-                request.setAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr, renderResult);
+                renderResult = dispatcher.render(entryPointInstance, entryPointInstance.getID(), jahiaUser, httpServletRequest, httpServletResponse, servletContext);
+                httpServletRequest.setAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr, renderResult);
             } else {
-                renderResult = (String) request.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr);
+                renderResult = (String) httpServletRequest.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr);
             }
         }
 
-        request.setAttribute("url",url);
+        httpServletRequest.setAttribute("url",url);
 
         return renderResult;
 

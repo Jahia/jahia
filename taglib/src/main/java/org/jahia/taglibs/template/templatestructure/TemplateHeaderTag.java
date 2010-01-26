@@ -36,6 +36,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
@@ -131,11 +132,13 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         // retrieve parameters
         ServletRequest request = pageContext.getRequest();
-        JahiaData jData = getJahiaData();
-        JahiaPage page = jData.page();
+        //JahiaData jData = getJahiaData();
+        // JahiaPage page = jData.page();
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
         String pageTitle = title;
-        if (pageTitle == null && page != null) {
-            pageTitle = page.getTitle();
+        if (pageTitle == null && renderContext.getMainResource() != null) {
+            pageTitle = renderContext.getMainResource().getNode().getPropertyAsString("jcr:title");
+            /*
             if (pageTitle == null) {
                 PageProperty prop = null;
                 try {
@@ -149,6 +152,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
                     pageTitle = String.valueOf(page.getID());
                 }
             }
+            */
         }
 
         // write output to StringBuffer
@@ -192,7 +196,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         try {
             if (isLogged() || gwtForGuest) {
-                pageContext.getOut().append(DefaultIncludeProvider.getJSToolsImportJavaScript(getJahiaData()));
+                pageContext.getOut().append(DefaultIncludeProvider.getJSToolsImportJavaScript(getRenderContext()));
             }
             pageContext.getOut().println("</head>");
         } catch (IOException e) {

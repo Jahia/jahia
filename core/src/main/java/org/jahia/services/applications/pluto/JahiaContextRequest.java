@@ -52,21 +52,19 @@ import java.security.Principal;
  */
 public class JahiaContextRequest extends HttpServletRequestWrapper {
 
-    private ParamBean paramBean;
+    private JahiaUser jahiaUser;
     private String pathInfo = null;
     private String queryString = null;
     private String servletPath = null;
     private EntryPointInstance entryPointInstance;
 
-    public JahiaContextRequest(ParamBean paramBean, HttpServletRequest httpServletRequest) throws JahiaException {
+    public JahiaContextRequest(JahiaUser jahiaUser, HttpServletRequest httpServletRequest) throws JahiaException {
         super(httpServletRequest);
-        this.paramBean = paramBean;
+        this.jahiaUser = jahiaUser;
         if (Jahia.getServletPath() != null && !Jahia.getServletPath().equals(getServletPath())) {
-            String pageURL = paramBean.composePageUrl(paramBean.getPageID());
             setServletPath(Jahia.getServletPath());
-            pageURL = pageURL.substring(Jahia.getServletPath().length());
-            setPathInfo(paramBean.getPathInfo());
-            setQueryString(paramBean.getQueryString());
+            setPathInfo(httpServletRequest.getPathInfo());
+            setQueryString(httpServletRequest.getQueryString());
         }
     }
 
@@ -111,11 +109,11 @@ public class JahiaContextRequest extends HttpServletRequestWrapper {
     }
 
     public String getRemoteUser() {
-        return paramBean.getUser().getUserKey();
+        return jahiaUser.getUserKey();
     }
 
     public Principal getUserPrincipal() {
-        return paramBean.getUser();
+        return jahiaUser;
     }
 
     public void setEntryPointInstance(EntryPointInstance entryPointInstance) {
@@ -127,6 +125,6 @@ public class JahiaContextRequest extends HttpServletRequestWrapper {
         if (entryPointInstance == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(paramBean.getUser(), role);
+        return entryPointInstance.isUserInRole(jahiaUser, role);
     }
 }

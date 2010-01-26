@@ -34,9 +34,12 @@ package org.jahia.services.render;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
+import org.jahia.api.Constants;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +58,7 @@ public class RenderContext {
     private JahiaUser user;
     private JahiaSite site;
     private URLGenerator URLGenerator;
+    private Locale uiLocale;
 
     private Stack<Resource> resourcesStack = new Stack<Resource>();
 
@@ -131,6 +135,14 @@ public class RenderContext {
         isEditMode = editMode;
     }
 
+    public boolean isLoggedIn() {
+        final String theUserName = getUser().getUsername();
+        if (!Constants.GUEST_USERNAME.equals(theUserName)) {
+            return true;
+        }
+        return false;
+    }
+
     public Map<String, Map<String, Integer>> getTemplatesCacheExpiration() {
         return templatesCacheExpiration;
     }
@@ -190,6 +202,25 @@ public class RenderContext {
 
     public Stack<Resource> getResourcesStack() {
         return resourcesStack;
+    }
+
+    public Locale getMainResourceLocale() {
+        return getMainResource().getLocale();
+    }
+
+    public Locale getUILocale() {
+        if (uiLocale == null) {
+            Locale locale = null;
+            if(!getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
+                locale = UserPreferencesHelper.getPreferredLocale(getUser(), getSite());
+            }
+            if (locale == null) {
+                locale = getMainResourceLocale();
+            }
+            uiLocale = locale;
+            request.getSession(false).setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+        }
+        return uiLocale;
     }
 
     public Locale getFallbackLocale() {

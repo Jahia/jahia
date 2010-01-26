@@ -49,6 +49,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
+import javax.servlet.ServletRequest;
 import java.io.InputStream;
 import java.util.*;
 import java.math.BigDecimal;
@@ -131,8 +132,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getStorageName();
     }
 
-    public String getAbsoluteUrl(ParamBean jParams) {
-        return node.getAbsoluteUrl(jParams);
+    public String getAbsoluteUrl(ServletRequest request) {
+        return node.getAbsoluteUrl(request);
     }
 
     public String getUrl() {

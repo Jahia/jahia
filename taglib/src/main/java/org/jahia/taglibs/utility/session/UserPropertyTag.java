@@ -32,12 +32,14 @@
 package org.jahia.taglibs.utility.session;
 
 import org.jahia.data.JahiaData;
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
 /**
@@ -54,7 +56,7 @@ public class UserPropertyTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         try {
             final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             final StringBuffer buff = new StringBuffer();
 
             if (cssClassName != null && cssClassName.length() > 0) {
@@ -63,9 +65,9 @@ public class UserPropertyTag extends AbstractJahiaTag {
                 buff.append("\">");
             }
             if (propertyName != null) {
-                buff.append(jData.getProcessingContext().getUser().getProperty(propertyName));
+                buff.append(renderContext.getUser().getProperty(propertyName));
             } else {
-                buff.append(jData.getGui().drawUsername(true));
+                buff.append(renderContext.getUser().getUsername());
             }
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("</div>");

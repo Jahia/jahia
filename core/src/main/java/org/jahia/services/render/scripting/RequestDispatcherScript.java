@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.*;
+import java.util.Enumeration;
 
 /**
  * This class uses the standard request dispatcher to execute a JSP / Quercus script or any file handled by the
@@ -95,6 +96,21 @@ public class RequestDispatcherScript implements Script {
 
         Object oldModule = request.getAttribute("currentModule");
         request.setAttribute("currentModule",template.getModule());
+
+        if (logger.isDebugEnabled()) {
+            // Let's enumerate request attribute to see what we are exposing.
+            Enumeration attributeNamesEnum = request.getAttributeNames();
+            while (attributeNamesEnum.hasMoreElements()) {
+                String currentAttributeName = (String) attributeNamesEnum.nextElement();
+                String currentAttributeValue = request.getAttribute(currentAttributeName) . toString();
+                if (currentAttributeValue.length() < 80) {
+                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue);
+                } else {
+                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue.substring(0, 80) + " (first 80 chars)");
+                }
+            }
+        }
+
         try {
             rd.include(request, new HttpServletResponseWrapper(response) {
                 @Override

@@ -216,4 +216,9 @@ public class Constants {
 
     public static final String LIVE_WORKSPACE = "live";
     public static final String EDIT_WORKSPACE = "default";
+
+    public static final String GUEST_USERNAME = "guest";
+
+    public static final String SESSION_UI_LOCALE = "org.jahia.services.multilang.uilocale";
+    
 }

@@ -480,7 +480,7 @@ public class HTMLToolBox {
                     "\" queryString=\"" + processingContext.getQueryString() +
                     "\"></div>";
         } else {
-            portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, jParam);
+            portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, processingContext.getUser(), ((ParamBean)processingContext).getRealRequest(), ((ParamBean)processingContext).getResponse(), ((ParamBean)processingContext).getContext());
         }
 
         // remove <html> tags that can break the page

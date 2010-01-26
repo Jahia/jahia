@@ -33,6 +33,7 @@ package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -222,15 +223,19 @@ public class DisplayIconTag extends AbstractJahiaTag {
         // @todo FIXME : This code is repeated in a lot of button taglibs
         HttpServletRequest request = (HttpServletRequest) pageContext.
                                      getRequest();
+        /*
         JahiaData jData = (JahiaData) request.getAttribute(
             "org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
+            */
+        // final ProcessingContext jParams = jData.getProcessingContext();
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
+
 		final String contextPath = request.getContextPath();
 
         // now let's resolve the alt text if resource bundle keys are being
 		// used.
         if (altKey != null) {
-            _alt = JahiaResourceBundle.getString(altBundle, altKey, jParams.getLocale(), jParams.getSite().getTemplatePackageName());
+            _alt = JahiaResourceBundle.getString(altBundle, altKey, renderContext.getMainResourceLocale(), renderContext.getSite().getTemplatePackageName());
         }
 
         // Produce the HTML code
@@ -252,6 +257,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
 				}
 			}
 
+            /*
             if (wfState) {
     			imagePath = new StringBuffer(64).append(contextPath).append(
     					"/ajaxaction/GetWorkflowState?params=/op/edit/pid/").append(
@@ -259,8 +265,11 @@ public class DisplayIconTag extends AbstractJahiaTag {
     					jParams.getContentPage().getObjectKey()).append(
     					(_lang != null ? "&flaglang=" + _lang : "")).toString();
     		} else {
-    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,jParams.getLocale(),jParams.getSite().getTemplatePackageName());
+    		*/
+    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,renderContext.getMainResourceLocale(),renderContext.getSite().getTemplatePackageName());
+            /*
     		}
+    		*/
             if ( ("".equals(_resource)) && (imagePath == null)) {
                 str.append("<!-- couldn't find resource with key " + _src +
                            " -->");

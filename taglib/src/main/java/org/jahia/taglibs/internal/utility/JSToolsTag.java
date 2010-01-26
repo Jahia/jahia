@@ -68,7 +68,7 @@ public class JSToolsTag extends AbstractJahiaTag {
             pageContext.getOut().print(
                     DefaultIncludeProvider.getJSToolsImport(
                             (HttpServletRequest) pageContext.getRequest(),
-                            getJahiaData()));
+                            getRenderContext()));
         } catch (IOException ioe) {
             JahiaConsole.println("JSToolsTag: doStartTag ", ioe.toString());
         }

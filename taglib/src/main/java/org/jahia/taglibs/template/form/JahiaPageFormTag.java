@@ -40,6 +40,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.render.RenderContext;
 import org.jahia.utils.JahiaConsole;
 
 
@@ -85,14 +86,10 @@ public class JahiaPageFormTag extends TagSupport {
 
     public int doStartTag() {
         ServletRequest request = pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if ( jData == null )
-            return EVAL_BODY_INCLUDE;
-
-        JahiaPage page = jData.getProcessingContext().getPage();
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
 
         try {
-            String pageUrl = page.getURL(jData.getProcessingContext());
+            String pageUrl = renderContext.getURLGenerator().getCurrent();
             JspWriter out = pageContext.getOut();
             StringBuffer buff = new StringBuffer("<form name=\"");
             buff.append(this.name);
@@ -105,8 +102,6 @@ public class JahiaPageFormTag extends TagSupport {
             out.print(buff.toString());
         } catch (IOException ioe) {
             JahiaConsole.println(CLASS_NAME+"doStartTag", ioe.toString());
-        } catch (JahiaException je) {
-            JahiaConsole.println(CLASS_NAME+"doStartTag", je.toString());
         }
 
         /*

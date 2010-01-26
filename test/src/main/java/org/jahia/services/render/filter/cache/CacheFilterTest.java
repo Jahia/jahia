@@ -88,9 +88,11 @@ public class CacheFilterTest extends TestCase {
 
         paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
 
+        /*
         JahiaData jData = new JahiaData(paramBean, false);
         paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-
+        */
+        
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         JCRNodeWrapper shared = session.getNode("/shared");

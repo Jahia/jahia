@@ -73,9 +73,6 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
 
     private void processFaceting() {
         final ServletRequest request = pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request
-            .getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
         try {
             FacetBean facetBean = (FacetBean) pageContext
                 .findAttribute(getFacetBeanId());

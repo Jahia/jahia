@@ -86,7 +86,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             jParams.setAttribute("currentJahia", new JahiaBean(jParams));
             jParams.setAttribute("jahia", new JahiaBean(jParams));
             jParams.setAttribute("fieldId", windowID);
-            String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, jParams);
+            String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, jParams.getUser(), jParams.getRealRequest(), jParams.getResponse(), jParams.getContext());
             try {
                 JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
                 String nodeTypeName = node.getPrimaryNodeTypeName();

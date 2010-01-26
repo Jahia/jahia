@@ -43,9 +43,9 @@ public class IsPublicTag extends BodyTagSupport {
     public int doStartTag() throws JspException {
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         if (renderContext == null) {
-            final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
-            renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
-            renderContext.setSite(jData.getProcessingContext().getSite());
+            //final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
+            //renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
+            //renderContext.setSite(jData.getProcessingContext().getSite());
         }
         JahiaUser currentUser = renderContext.getUser();
         JahiaUser displayedUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(userKey);

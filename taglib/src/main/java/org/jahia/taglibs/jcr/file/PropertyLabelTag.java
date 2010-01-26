@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.data.JahiaData;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
+import org.jahia.services.render.RenderContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -86,13 +87,11 @@ public class PropertyLabelTag extends TagSupport {
     public int doStartTag() throws JspException {
         ExtendedItemDefinition itemDef = (ExtendedItemDefinition) TagUtils.getInstance().lookup(pageContext, name, property, scope);
 
-        ServletRequest request = pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
-        JahiaData jData = (JahiaData) request.getAttribute(
-            "org.jahia.data.JahiaData");
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
 
-        String typelabel = itemDef.getLabel(jData.getProcessingContext().getLocale());
+        String typelabel = itemDef.getLabel(renderContext.getMainResourceLocale());
 
         try {
             out.print(typelabel);

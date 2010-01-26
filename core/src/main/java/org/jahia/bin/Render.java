@@ -532,10 +532,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             Object old = req.getSession(true).getAttribute(ParamBean.SESSION_SITE);
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
-            
+
+            /*
             JahiaData jData = new JahiaData(paramBean, false);
             paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-
+            */
+            
             path = path.substring(path.indexOf('/', 1));
 
             int index = path.indexOf('/', 1);

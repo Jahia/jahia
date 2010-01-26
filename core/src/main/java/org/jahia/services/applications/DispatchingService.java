@@ -41,6 +41,11 @@ package org.jahia.services.applications;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
+import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This service generates the dispatching and aggregation on an application.
@@ -61,15 +66,17 @@ public abstract class DispatchingService extends JahiaService {
      * @param fieldID     identifier of Jahia's field
      * @param entryPointIDStr application identifier passed as a String (converted
      *                    from an integer)
-     * @param jParams     Jahia's ProcessingContext object, containing the standard request /
-     *                    response pair, the servlet context, and additional information
+     * @param jahiaUser the Jahia user that will be passed to the portlet when dispatching
+     * @param httpServletRequest the request object that will be passed to the portlet
+     * @param httpServletResponse
+     * @param servletContext
      *
      * @throws JahiaException generated if there was a problem dispatching,
      *                        during processing of the application, or when recuperating the application's
      *                        output.
      * @return String containing the output of the application
      */
-    public abstract String getAppOutput (int fieldID, String entryPointIDStr, ParamBean jParams)
+    public abstract String getAppOutput (int fieldID, String entryPointIDStr, JahiaUser jahiaUser, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ServletContext servletContext)
             throws JahiaException;
 
 } // end JahiaApplicationsService

@@ -32,6 +32,13 @@
 
 package org.jahia.taglibs.uicomponents.portlets;
 
+import org.apache.regexp.RE;
+import org.apache.regexp.RESyntaxException;
+import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.gui.HTMLToolBox;
 import org.jahia.gui.GuiBean;
@@ -40,8 +47,12 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+import java.io.IOException;
 
 /**
  * Custom tag for rendering a specified portlet.
@@ -74,9 +85,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
                         PageContext.REQUEST_SCOPE);
                 windowId = globalId;
             }
-            ProcessingContext processingContext = getProcessingContext();
-            HTMLToolBox htmlToolBox = new HTMLToolBox(new GuiBean(processingContext), processingContext);
-            htmlToolBox.drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), ajaxRendering, windowId, pageContext.getOut());
+            drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), ajaxRendering, windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
             logger.error(e, e);
@@ -117,4 +126,51 @@ public class PortletRenderTag extends AbstractJahiaTag {
     public void setWindowId(int windowId) {
         this.windowId = windowId;
     }
+
+    /**
+     * draw mashup node
+     *
+     * @param jcrPortletNode
+     * @param ajaxRendering
+     * @return
+     */
+    public void drawMashup(JCRPortletNode jcrPortletNode, boolean ajaxRendering, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
+
+        boolean computedAjaxRendering = ajaxRendering && Jahia.getSettings().isPortletAJAXRenderingActivated();
+
+        String appID = null;
+        try {
+            appID = jcrPortletNode.getUUID();
+        } catch (RepositoryException e) {
+            throw new JahiaException("Error rendering mashup", "Error rendering mashup",
+                    JahiaException.APPLICATION_ERROR, JahiaException.ERROR_SEVERITY, e);
+        }
+
+        logger.debug("Dispatching to portlet for appID=" + appID + "...");
+
+        String portletOutput = "";
+        if (computedAjaxRendering) {
+            portletOutput = "<div id=\"" + windowId + "\" windowID=\"" + windowId +
+                    "\" entryPointInstanceID=\"" + appID + "\" " +
+                    JahiaType.JAHIA_TYPE + "=\"" + JahiaType.PORTLET_RENDER +
+                    "\" pathInfo=\"" + getRenderContext().getRequest().getPathInfo() +
+                    "\" queryString=\"" + getRenderContext().getRequest().getQueryString() +
+                    "\"></div>";
+        } else {
+            portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, getRenderContext().getUser(), getRenderContext().getRequest(), getRenderContext().getResponse(), servletContext);
+        }
+
+        // remove <html> tags that can break the page
+        if (portletOutput != null) {
+            try {
+                portletOutput = (new RE("</?html>", RE.MATCH_CASEINDEPENDENT)).subst(portletOutput, "");
+            } catch (RESyntaxException e) {
+                logger.debug(".getValue, exception : " + e.toString());
+            }
+        } else {
+            portletOutput = "";
+        }
+        out.print(portletOutput);
+    }
+
 }

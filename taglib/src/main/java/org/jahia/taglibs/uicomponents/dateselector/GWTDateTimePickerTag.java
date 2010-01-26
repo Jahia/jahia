@@ -34,6 +34,7 @@ package org.jahia.taglibs.uicomponents.dateselector;
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +93,7 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
     public int doStartTag() {
         final StringBuffer buf = new StringBuffer();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
         if (datePattern == null || datePattern.length() == 0) {
             if (displayTime) {
                 datePattern = DATE_PATTERN_TIME;
@@ -152,7 +153,7 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
             if (value != null && value.length() > 0) {
                 buf.append("value=\"");
                 try {
-                    buf.append(new SimpleDateFormat(datePattern, jData.getProcessingContext().getLocale()).parse(value).getTime());
+                    buf.append(new SimpleDateFormat(datePattern, renderContext.getUILocale()).parse(value).getTime());
 
                 } catch (Exception e) {
                     buf.append(new Date().getTime());

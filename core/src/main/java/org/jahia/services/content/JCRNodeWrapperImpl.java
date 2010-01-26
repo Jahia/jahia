@@ -62,6 +62,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.*;
+import javax.servlet.ServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -338,9 +339,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public String getAbsoluteUrl(ParamBean jParams) {
+    public String getAbsoluteUrl(ServletRequest request) {
         if (objectNode != null) {
-            return provider.getAbsoluteContextPath(jParams.getRealRequest()) + getUrl();
+            return provider.getAbsoluteContextPath(request) + getUrl();
         }
         return "";
     }

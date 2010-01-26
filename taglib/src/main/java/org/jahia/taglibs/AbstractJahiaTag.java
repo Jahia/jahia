@@ -98,7 +98,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
             try {
                 resourceBundle = ServicesRegistry.getInstance()
                         .getJahiaTemplateManagerService().getTemplatePackage(
-                                getProcessingContext().getSite()
+                                getRenderContext().getSite()
                                         .getTemplatePackageName())
                         .getResourceBundleName();
             } catch (Exception e) {
@@ -160,7 +160,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
     
     protected String getJahiaInternalResourceValue(String key, boolean useUILocale) {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
         Locale currentLocale = request.getLocale();
         HttpSession session = pageContext.getSession();
@@ -177,11 +177,10 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
         try {
 
-            if (jData != null) {
+            if (getRenderContext() != null) {
                 resValue = JahiaResourceBundle.getJahiaInternalResource(key,
-                        useUILocale ? jData.getProcessingContext()
-                                .getUILocale() : jData.getProcessingContext()
-                                .getLocale());
+                        useUILocale ? getRenderContext()
+                                .getUILocale() : getRenderContext().getMainResourceLocale());
             } else {
                 // for any reason the jData wasn't loaded correctly
                 resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
@@ -207,7 +206,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         }
         if (bundle == null) {
             bundle = new JahiaResourceBundle(resourceBundle,
-                    getProcessingContext().getLocale(), getProcessingContext()
+                    getRenderContext().getMainResourceLocale(), getRenderContext()
                             .getSite().getTemplatePackageName()); 
         }
         return bundle;
@@ -218,9 +217,11 @@ public class AbstractJahiaTag extends BodyTagSupport {
      *
      * @return an {@link JahiaBean} instance with current Jahia data
      */
+    /*
     protected JahiaBean getJahiaBean() {
         return getJahiaBean(true);
     }
+    */
 
     /**
      * Returns an {@link JahiaBean} instance with current Jahia data.
@@ -228,9 +229,11 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @param createIfNotFound will create the bean if it is not found
      * @return an {@link JahiaBean} instance with current Jahia data
      */
+    /*
     protected JahiaBean getJahiaBean(boolean createIfNotFound) {
         return Utils.getJahiaBean(pageContext, createIfNotFound);
     }
+    */
 
     /**
      * Returns current {@link ProcessingContext} instance.
@@ -264,10 +267,13 @@ public class AbstractJahiaTag extends BodyTagSupport {
      *
      * @return current {@link JahiaData} instance
      */
+
+    /*
     protected JahiaData getJahiaData() {
         return (JahiaData) pageContext.getAttribute("org.jahia.data.JahiaData",
                 PageContext.REQUEST_SCOPE);
     }
+    */
 
     /**
      * @return jahia_gwt_dictionary as map
@@ -351,7 +357,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         final ResourceBundleMarker marker = ResourceBundleMarker.parseMarkerValue(value);
         if (marker == null) return value;
         try {
-            return marker.getValue(getProcessingContext().getLocale());
+            return marker.getValue(getRenderContext().getMainResourceLocale());
         } catch (JahiaException je) {
             return marker.getDefaultValue();
         }
@@ -386,7 +392,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     protected boolean isLogged() {
-        return getJahiaBean().getRequestInfo().isLogged();
+        return getRenderContext().isLoggedIn();
     }
 
     @Override

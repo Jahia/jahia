@@ -102,7 +102,7 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
      */
     public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException {
 
-        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
+        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams.getUser(), jParams.getRealRequest());
 
         PortalRequestContext portalContext = new PortalRequestContext(jParams.getContext(), jahiaContextRequest, jParams.getResponse());
 

@@ -106,7 +106,7 @@ public class FullScreenDispatcherEngine implements JahiaEngine {
         int fieldID = Integer.parseInt (fieldIDStr);
         String appOutput =
                 ServicesRegistry.getInstance ().getApplicationsDispatchService ()
-                .getAppOutput (fieldID, appIDStr, (ParamBean) jParams);
+                .getAppOutput (fieldID, appIDStr, jParams.getUser(), ((ParamBean) jParams).getRealRequest(), ((ParamBean)jParams).getResponse(), ((ParamBean) jParams).getContext());
         try {
             PrintWriter out = ((ParamBean)jParams).getResponse ().getWriter ();
             out.print (appOutput);

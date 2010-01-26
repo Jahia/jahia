@@ -33,6 +33,7 @@ package org.jahia.taglibs.uicomponents.loginform;
 
 import java.io.IOException;
 
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -42,6 +43,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 
 /**
  * @author Xavier Lawrence
@@ -51,8 +53,7 @@ public class IsLoginErrorTag extends ValueJahiaTag {
     private static final transient Logger logger = Logger.getLogger(IsLoginErrorTag.class);
 
     public int doStartTag() {
-        final ProcessingContext jParams = getProcessingContext();
-        final String valveResult = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
+        final String valveResult = (String) pageContext.findAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (valveResult != null && !LoginEngineAuthValveImpl.OK.equals(valveResult)) {
             if (getVar() != null) {
                 pageContext.setAttribute(getVar(), valveResult);
@@ -64,9 +65,8 @@ public class IsLoginErrorTag extends ValueJahiaTag {
     }
 
     public int doAfterBody() {
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if (!jData.gui().isLogged()) {
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+        if (!renderContext.isLoggedIn()) {
             final JspWriter out = bodyContent.getEnclosingWriter();
             try {
                 bodyContent.writeOut(out);

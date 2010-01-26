@@ -77,9 +77,6 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
 
     private void getFacetFilters() {
         final ServletRequest request = pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request
-            .getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
         final JspWriter out = pageContext.getOut();
         StringBuffer buff = new StringBuffer();
         try {

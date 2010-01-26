@@ -46,11 +46,14 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.applications.DispatchingProvider;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.portlet.MimeResponse;
 import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -81,27 +84,27 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
     public void processAction(EntryPointInstance entryPointInstance, int windowID, ParamBean jParams) throws JahiaException {
     }
 
-    public String render(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException {
+    public String render(EntryPointInstance entryPointInstance, String windowID, JahiaUser jahiaUser,
+                         HttpServletRequest httpServletRequest,
+                         HttpServletResponse httpServletResponse,
+                         ServletContext servletContext) throws JahiaException {
         String cacheKey = null;
 //        final ContainerHTMLCache cacheInstance = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         // Check if cache is available for this portlet
         if (entryPointInstance.getExpirationTime() != 0) {
             cacheKey = "portlet_instance_" + windowID;
             if (entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
-                cacheKey += "_" + jParams.getUser().getUserKey();
+                cacheKey += "_" + jahiaUser.getUserKey();
                 // Try to find the entry in cache
 //                final ContainerHTMLCacheEntry htmlCacheEntry2 =
 //                        cacheInstance.getFromContainerCache(null, jParams, cacheKey, false, 0, null, null);
 //                if (htmlCacheEntry2 != null) return htmlCacheEntry2.getBodyContent();
             }
         }
-        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
+        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest);
         jahiaContextRequest.setEntryPointInstance(entryPointInstance);
 
-        PortalRequestContext portalContext = new PortalRequestContext(jParams.getContext(), jahiaContextRequest, jParams.getResponse());
-
-        // Retrieve the portlet window config for the evaluated portlet ID.
-        ServletContext servletContext = jParams.getContext();
+        PortalRequestContext portalContext = new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
 
         final String defName = entryPointInstance.getDefName();
         PortletWindowConfig windowConfig = PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);
@@ -133,14 +136,14 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(), jParams.getRealRequest(), window);
+        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jahiaUser, httpServletRequest, window);
 
 
         // copy jahia attibutes nested by the portlet
-        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams, window, portalRequest, false);
+        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, httpServletRequest, window, portalRequest, false);
 
         // wrappe in a portal response
-        PortalServletResponse portalResponse = new JahiaPortalServletResponse(jParams.getResponse());
+        PortalServletResponse portalResponse = new JahiaPortalServletResponse(httpServletResponse);
 
         // Render the portlet and cache the response.
         try {

@@ -136,7 +136,7 @@ public class ContentApplicationField extends ContentField {
                 } else {
                     tmpValue = ServicesRegistry.getInstance ().
                             getApplicationsDispatchService ().
-                            getAppOutput (id, appID, (ParamBean) jParams);
+                            getAppOutput (id, appID, jParams.getUser(), ((ParamBean)jParams).getRealRequest(), ((ParamBean)jParams).getResponse(), ((ParamBean)jParams).getContext());
                 }
 
             } else {

@@ -73,24 +73,19 @@ public class JCRNodeTag extends AbstractJCRTag {
     }
 
     public int doStartTag() throws JspException {
-        ProcessingContext ctx = getProcessingContext();
         Resource currentResource = getCurrentResource();
-        if (ctx != null) {
-            try {
-                JCRNodeWrapper node;
-                if (path.startsWith("/")) {
-                    node = getJCRSession().getNode(path);
-                } else {
-                    node = currentResource.getNode().getNode(path);
-                }
-                pageContext.setAttribute(var, node, scope);
-            } catch (PathNotFoundException e) {
-                logger.debug("Item not found '" + path + "'", e);
-            } catch (RepositoryException e) {
-                logger.error("Could not retrieve JCR node using path '" + path + "'", e);
+        try {
+            JCRNodeWrapper node;
+            if (path.startsWith("/")) {
+                node = getJCRSession().getNode(path);
+            } else {
+                node = currentResource.getNode().getNode(path);
             }
-        } else {
-            logger.error("ProcesingContext is null");
+            pageContext.setAttribute(var, node, scope);
+        } catch (PathNotFoundException e) {
+            logger.debug("Item not found '" + path + "'", e);
+        } catch (RepositoryException e) {
+            logger.error("Could not retrieve JCR node using path '" + path + "'", e);
         }
         return EVAL_BODY_INCLUDE;
     }

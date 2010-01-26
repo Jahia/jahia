@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.data.JahiaData;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.RenderContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -89,11 +90,10 @@ public class NodeTypeLabelTag extends TagSupport {
         ServletRequest request = pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
-        JahiaData jData = (JahiaData) request.getAttribute(
-            "org.jahia.data.JahiaData");
+        RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
 
         try {
-            out.print(nodeType.getLabel(jData.getProcessingContext().getLocale()));
+            out.print(nodeType.getLabel(renderContext.getMainResourceLocale()));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

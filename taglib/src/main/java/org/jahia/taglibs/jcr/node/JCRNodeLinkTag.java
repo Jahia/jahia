@@ -69,31 +69,26 @@ public class JCRNodeLinkTag extends AbstractJCRTag {
     }
 
     public int doStartTag() throws JspException {
-        ProcessingContext ctx = getProcessingContext();
-        if (ctx != null) {
-            try {
-                node = getJCRSession().getNode(path);
-                if (node.isFile()) {
-                    StringBuilder link = new StringBuilder("<a href=\"");
-                    if (absolute) {
-                        link.append(node.getAbsoluteUrl((ParamBean) ctx));
-                    } else {
-                        link.append(node.getUrl());
-                    }
-                    link.append("\">");
-                    pageContext.getOut().print(link.toString());
+        try {
+            node = getJCRSession().getNode(path);
+            if (node.isFile()) {
+                StringBuilder link = new StringBuilder("<a href=\"");
+                if (absolute) {
+                    link.append(node.getAbsoluteUrl(pageContext.getRequest()));
                 } else {
-                    logger.warn("The path '" + path + "' is not a file");
+                    link.append(node.getUrl());
                 }
-            } catch (PathNotFoundException e) {
-                logger.error("The path '" + path + "' does not exist");
-            } catch (RepositoryException e) {
-                logger.error("Could not retrieve JCR node using path '" + path + "'", e);
-            } catch (IOException e) {
-                logger.error(e.toString(), e);
+                link.append("\">");
+                pageContext.getOut().print(link.toString());
+            } else {
+                logger.warn("The path '" + path + "' is not a file");
             }
-        } else {
-            logger.error("ProcessingContext is null");
+        } catch (PathNotFoundException e) {
+            logger.error("The path '" + path + "' does not exist");
+        } catch (RepositoryException e) {
+            logger.error("Could not retrieve JCR node using path '" + path + "'", e);
+        } catch (IOException e) {
+            logger.error(e.toString(), e);
         }
         return EVAL_BODY_INCLUDE;
     }

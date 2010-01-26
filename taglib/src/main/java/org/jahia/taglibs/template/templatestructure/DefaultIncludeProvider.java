@@ -31,7 +31,9 @@
  */
 package org.jahia.taglibs.template.templatestructure;
 
+import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.services.render.RenderContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletRequest;
@@ -76,8 +78,10 @@ public class DefaultIncludeProvider {
 
     public static String getHtmlTag(final String doctype, final ServletRequest request) {
         if (XHTML_STRICT.equals(doctype) || XHTML_TRANSITIONAL.equals(doctype)) {
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final String languageCode = jData.getProcessingContext().getLocale().toString();
+            // final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+            // final String languageCode = jData.getProcessingContext().getLocale().toString();
+            RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+            final String languageCode = renderContext.getMainResource().getLocale().toString(); 
             return "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"" + languageCode + "\">";
         } else {
             return "<html>";
@@ -92,11 +96,11 @@ public class DefaultIncludeProvider {
      * Translation of the tag <content:JSTools/>
      *
      * @param request the current request
-     * @param jData   jahia data
+     * @param renderContext the current rendering context object.
      * @return the script include
      */
-    public static String getJSToolsImport(final HttpServletRequest request, final JahiaData jData) {
-        return getJSToolsImportCss(request) + getJSToolsImportJavaScript(jData);
+    public static String getJSToolsImport(final HttpServletRequest request, final RenderContext renderContext) {
+        return getJSToolsImportCss(request) + getJSToolsImportJavaScript(renderContext);
     }
 
     /**
@@ -122,14 +126,14 @@ public class DefaultIncludeProvider {
     /**
      * Translation of the tag <content:JSTools/>
      *
-     * @param jData   jahia data
+     * @param renderContext the current rendering context object.
      * @return the script include
      */
-    public static String getJSToolsImportJavaScript(final JahiaData jData) {
-        if (jData.gui().isLogged()) {
+    public static String getJSToolsImportJavaScript(final RenderContext renderContext) {
+        if (renderContext.isLoggedIn()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("<script type=\"text/javascript\" src=\"");
-            buf.append(jData.getProcessingContext().settings().getJsHttpPath());
+            buf.append(Jahia.getSettings().getJsHttpPath());
             buf.append("\"></script>\n");
             return buf.toString();
         } else {

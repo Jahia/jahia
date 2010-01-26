@@ -48,6 +48,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+import javax.servlet.ServletRequest;
 import java.io.InputStream;
 import java.util.*;
 import java.math.BigDecimal;
@@ -365,10 +366,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * Get the absolute file content url
      *
-     * @param jParams The Jahia context parameters
+     * @param request the current request.
      * @return the absolute file content url
      */
-    String getAbsoluteUrl(ParamBean jParams);
+    String getAbsoluteUrl(ServletRequest request);
 
     /**
      * Get the file content url

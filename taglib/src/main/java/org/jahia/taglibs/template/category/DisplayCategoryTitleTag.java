@@ -55,14 +55,13 @@ public class DisplayCategoryTitleTag extends ValueJahiaTag {
     public int doStartTag() {
         if (categoryKeys != null && categoryKeys.length() > 0) {
             try {
-                final ProcessingContext jParams = getProcessingContext();
                 final StringBuilder result = new StringBuilder();
                 final StringTokenizer tokenizer = new StringTokenizer(categoryKeys, "$$$");
                 while (tokenizer.hasMoreTokens()) {
                     final String key = tokenizer.nextToken();
                     final Category cat = Category.getCategory(key);
                     if (result.length() > 0) result.append(", ");
-                    final String title = cat.getTitle(jParams.getLocale());
+                    final String title = cat.getTitle(getRenderContext().getMainResourceLocale());
                     if (title != null && title.length() > 0) {
                         result.append(title);
                     } else {

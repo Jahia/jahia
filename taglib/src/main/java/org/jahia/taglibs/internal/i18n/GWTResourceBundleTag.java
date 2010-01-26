@@ -32,6 +32,7 @@
 package org.jahia.taglibs.internal.i18n;
 
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.utility.i18n.GWTMessageTag;
 import org.apache.log4j.Logger;
@@ -53,9 +54,15 @@ public class GWTResourceBundleTag extends GWTMessageTag {
     @Override
     protected String getMessage(String titleKey) {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        ProcessingContext ctx = getProcessingContext();
 
-        Locale currentLocale = ctx != null ? ctx.getUILocale() : null;
+        Locale currentLocale = null;
+        RenderContext renderContext = getRenderContext();
+        if (renderContext != null) {
+            currentLocale = getRenderContext().getUILocale();
+        } else {
+            ProcessingContext ctx = getProcessingContext();
+            currentLocale = ctx != null ? ctx.getUILocale() : null;
+        }
         if (currentLocale == null) {
             HttpSession session = pageContext.getSession();
             if (session != null) {

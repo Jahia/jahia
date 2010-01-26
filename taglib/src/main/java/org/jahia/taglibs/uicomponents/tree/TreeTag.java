@@ -695,8 +695,8 @@ public class TreeTag extends AbstractJahiaTag {
         // now let's resolve the alt text if resource bundle keys are being used.
         if (altKey != null) {
             alt = JahiaResourceBundle.getString(bundleName, altKey,
-                    getProcessingContext().getLocale(),
-                    getProcessingContext().getSite().getTemplatePackageName());
+                    getRenderContext().getMainResourceLocale(),
+                    getRenderContext().getSite().getTemplatePackageName());
         }
 
         StringBuffer str = new StringBuffer();

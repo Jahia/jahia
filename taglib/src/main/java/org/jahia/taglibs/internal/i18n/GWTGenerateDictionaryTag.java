@@ -31,6 +31,7 @@
  */
 package org.jahia.taglibs.internal.i18n;
 
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.data.JahiaData;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -55,8 +56,18 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
         try {
             ServletRequest request = pageContext.getRequest();
             Locale currentLocale = request.getLocale();
-            JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            addMandatoryGwtMessages(jData, currentLocale);
+            RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
+            if (renderContext != null) {
+                addMandatoryGwtMessages(renderContext.getUILocale(), currentLocale);
+            } else {
+                // we fall back to JahiaData for the administration interface, where this tag is also used.
+                JahiaData jahiaData = (JahiaData) pageContext.findAttribute("org.jahia.data.JahiaData");
+                if (jahiaData != null) {
+                    addMandatoryGwtMessages(jahiaData.getProcessingContext().getUILocale(), currentLocale);
+                } else {
+                    addMandatoryGwtMessages(null, currentLocale);                    
+                }
+            }
             out.append("<script type='text/javascript'>\n");
             out.append(generateJahiaGwtDictionary());
             out.append("</script>\n");
@@ -69,12 +80,12 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
     /**
      * Add mandatory messages
      *
-     * @param jData
+     * @param uiLocale current UI locale
      * @param currentLocale
      */
-    private void addMandatoryGwtMessages(JahiaData jData, Locale currentLocale) {
-        addGwtDictionaryMessage("workInProgressTitle", getAdminMessage("org.jahia.admin.workInProgressTitle", jData, currentLocale));
-        addGwtDictionaryMessage("workInProgressProgressText", getAdminMessage("org.jahia.admin.workInProgressProgressText", jData, currentLocale));
+    private void addMandatoryGwtMessages(Locale uiLocale, Locale currentLocale) {
+        addGwtDictionaryMessage("workInProgressTitle", getAdminMessage("org.jahia.admin.workInProgressTitle", uiLocale, currentLocale));
+        addGwtDictionaryMessage("workInProgressProgressText", getAdminMessage("org.jahia.admin.workInProgressProgressText", uiLocale, currentLocale));
         addGwtDictionaryMessage("fm_copyright", Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber());
     }
 
@@ -82,13 +93,13 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
      * Get admin message
      *
      * @param resourceName
-     * @param jData
+     * @param uiLocale current UI locale
      * @param currentLocale
      * @return
      */
-    private String getAdminMessage(String resourceName, JahiaData jData, Locale currentLocale) {
-        if (jData != null) {
-            return JahiaResourceBundle.getJahiaInternalResource(resourceName, jData.getProcessingContext().getUILocale());
+    private String getAdminMessage(String resourceName, Locale uiLocale, Locale currentLocale) {
+        if (uiLocale != null) {
+            return JahiaResourceBundle.getJahiaInternalResource(resourceName, uiLocale);
         } else {
             // for any reason the jData wasn't loaded correctly
             return JahiaResourceBundle.getJahiaInternalResource(resourceName, currentLocale);

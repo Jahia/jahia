@@ -35,6 +35,12 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
+import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>Title: Application dispatching interface.</p>
@@ -71,7 +77,9 @@ public interface DispatchingProvider {
      * @throws JahiaException
      * @return String
      */
-    public String render (EntryPointInstance entryPointInstance, String windowID, ParamBean jParams)
+    public String render (EntryPointInstance entryPointInstance, String windowID, JahiaUser jahiaUser, HttpServletRequest httpServletRequest,
+                         HttpServletResponse httpServletResponse,
+                         ServletContext servletContext)
         throws JahiaException;
 
 }

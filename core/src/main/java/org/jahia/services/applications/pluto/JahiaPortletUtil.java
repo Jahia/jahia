@@ -36,6 +36,7 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.URLGenerator;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -93,29 +94,39 @@ public class JahiaPortletUtil {
 
 
     /**
-     * Copysome jahia attributes into attributes if the portlet request
+     * Copy some jahia attributes into attributes if the portlet request
      *
-     * @param jParams
+     * @param httpServletRequest the original request to copy from
      * @param window
      * @param portalRequest
      */
-    public static void copyJahiaAttributes(EntryPointInstance entryPointInstance, ParamBean jParams, PortletWindow window, HttpServletRequest portalRequest, boolean canModifySharedMap) {
+    public static void copyJahiaAttributes(EntryPointInstance entryPointInstance, HttpServletRequest httpServletRequest, PortletWindow window, HttpServletRequest portalRequest, boolean canModifySharedMap) {
         // todo we should only add these if we are dispatching in the same context as Jahia.
-        copyAttribute("org.jahia.data.JahiaData", jParams, portalRequest, window);
-        copyAttribute("currentRequest", jParams, portalRequest, window);
-        copyAttribute("currentSite", jParams, portalRequest, window);
-        copyAttribute("currentPage", jParams, portalRequest, window);
-        copyAttribute("currentUser", jParams, portalRequest, window);
-        copyAttribute("currentJahia", jParams, portalRequest, window);
-        copyAttribute("jahia", jParams, portalRequest, window);
-        copyAttribute("fieldId", jParams, portalRequest, window);
+        /*
+        copyAttribute("org.jahia.data.JahiaData", httpServletRequest, portalRequest, window);
+        copyAttribute("currentRequest", httpServletRequest, portalRequest, window);
+        copyAttribute("currentSite", httpServletRequest, portalRequest, window);
+        copyAttribute("currentPage", httpServletRequest, portalRequest, window);
+        copyAttribute("currentUser", httpServletRequest, portalRequest, window);
+        copyAttribute("currentJahia", httpServletRequest, portalRequest, window);
+        copyAttribute("jahia", httpServletRequest, portalRequest, window);
+        copyAttribute("fieldId", httpServletRequest, portalRequest, window);
+        */
+        copyAttribute("renderContext", httpServletRequest, portalRequest, window);
+        copyAttribute("script", httpServletRequest, portalRequest, window);
+        copyAttribute("scriptInfo", httpServletRequest, portalRequest, window);
+        copyAttribute("currentNode", httpServletRequest, portalRequest, window);
+        copyAttribute("workspace", httpServletRequest, portalRequest, window);
+        copyAttribute("currentResource", httpServletRequest, portalRequest, window);
+        copyAttribute("url", httpServletRequest, portalRequest, window);
+
         portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_EntryPointInstance", entryPointInstance);
 
         // copy  node properties
-        copyNodeProperties(entryPointInstance, jParams, window, portalRequest);
+        copyNodeProperties(entryPointInstance, window, portalRequest);
 
         // copy shared map
-        copySharedMapFromJahiaToPortlet(jParams, portalRequest, window, canModifySharedMap);
+        copySharedMapFromJahiaToPortlet(httpServletRequest, portalRequest, window, canModifySharedMap);
 
     }
 
@@ -123,38 +134,38 @@ public class JahiaPortletUtil {
      * Copy jahia request attibute in portlet request attribute
      *
      * @param attributeName
-     * @param processingContext
+     * @param httpServletRequest the original request to copy from.
      * @param portalRequest
      * @param window
      */
-    public static void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window) {
-        copyAttribute(attributeName, processingContext, portalRequest, window, null, false);
+    public static void copyAttribute(String attributeName, HttpServletRequest httpServletRequest, HttpServletRequest portalRequest, PortletWindow window) {
+        copyAttribute(attributeName, httpServletRequest, portalRequest, window, null, false);
     }
 
     /**
      * Copy jahia session or request attribute into the portalRequest.
      *
      * @param attributeName
-     * @param processingContext
+     * @param httpServletRequest the original request to copy from.
      * @param portalRequest
      * @param window
      * @param fromSession       true means that the attribute is in  Jahia Session else it's taked from the request
      */
-    public static void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window, Object defaultValue, boolean fromSession) {
+    public static void copyAttribute(String attributeName, HttpServletRequest httpServletRequest, HttpServletRequest portalRequest, PortletWindow window, Object defaultValue, boolean fromSession) {
         Object objectToCopy;
         if (fromSession) {
             // get from session
-            objectToCopy = processingContext.getSessionState().getAttribute(attributeName);
+            objectToCopy = httpServletRequest.getSession().getAttribute(attributeName);
             if (objectToCopy == null) {
                 objectToCopy = defaultValue;
-                processingContext.getSessionState().setAttribute(attributeName, objectToCopy);
+                httpServletRequest.getSession().setAttribute(attributeName, objectToCopy);
             }
         } else {
             // get from request
-            objectToCopy = processingContext.getAttribute(attributeName);
+            objectToCopy = httpServletRequest.getAttribute(attributeName);
             if (objectToCopy == null) {
                 objectToCopy = defaultValue;
-                processingContext.setAttribute(attributeName, objectToCopy);
+                httpServletRequest.setAttribute(attributeName, objectToCopy);
             }
         }
 
@@ -167,11 +178,10 @@ public class JahiaPortletUtil {
      * Copy node properties into request attribute
      *
      * @param entryPointInstance
-     * @param jParams
      * @param window
      * @param portalRequest
      */
-    public static void copyNodeProperties(EntryPointInstance entryPointInstance, ParamBean jParams, PortletWindow window, HttpServletRequest portalRequest) {
+    public static void copyNodeProperties(EntryPointInstance entryPointInstance, PortletWindow window, HttpServletRequest portalRequest) {
         // porlet properties
         try {
             Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointInstance.getID());
@@ -267,15 +277,15 @@ public class JahiaPortletUtil {
     /**
      * Handle shared map
      *
-     * @param processingContext
+     * @param originalRequest the original Jahia request to copy from.
      * @param portalRequest
      * @param window
      */
-    public static void copySharedMapFromJahiaToPortlet(ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window, boolean canModify) {
-        Map sharedMap = (Map) processingContext.getSessionState().getAttribute(JAHIA_SHARED_MAP);
+    public static void copySharedMapFromJahiaToPortlet(HttpServletRequest originalRequest, HttpServletRequest portalRequest, PortletWindow window, boolean canModify) {
+        Map sharedMap = (Map) originalRequest.getSession().getAttribute(JAHIA_SHARED_MAP);
         if (sharedMap == null) {
             sharedMap = new HashMap();
-            processingContext.getSessionState().setAttribute(JAHIA_SHARED_MAP, sharedMap);
+            originalRequest.getSession().setAttribute(JAHIA_SHARED_MAP, sharedMap);
         }
 
         // add in the request attribute

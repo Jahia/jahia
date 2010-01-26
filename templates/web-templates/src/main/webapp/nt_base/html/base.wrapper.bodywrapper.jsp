@@ -92,7 +92,7 @@
                     <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
                     <template:area path="${rootPage.path}/logo"/>
                 </div>
-                <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
+                <h1 class="hide">${renderContext.site.title} : ${renderContext.mainResource.node.properties['jcr:title']}</h1>
 
 
                 <template:area path="${rootPage.path}/topMenu" />

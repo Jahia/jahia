@@ -32,7 +32,6 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
@@ -44,7 +43,6 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -161,7 +159,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             useGwt = renderContext.isEditMode();
 
             ServletRequest request = pageContext.getRequest();
-            JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+            // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
             // check the gwtForGuest attribute from parent tag
             Tag parent = getParent();
@@ -175,9 +173,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append(" ").append(param).append("=\"").append(attributes.get(param)).append("\"");
             }
             buf.append(">");
-            if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
-                buf.append("<div class=\"markedForDelete\">");
-            }
+            //if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
+            //    buf.append("<div class=\"markedForDelete\">");
+            //}
 //            if (useGwt) {
 //                if (!isLogged() && gwtForGuest) {
 //                    if (gwtScript.equals("")) {
@@ -576,12 +574,13 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
         ServletRequest request = pageContext.getRequest();
         try {
-            JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
-                buf.append("</div>");
-            }
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+            //if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
+            //    buf.append("</div>");
+            //}
 
-            if (checkGAprofileOn(jData) && isLiveMode()) {
+            if (checkGAprofileOn(renderContext.getSite()) && isLiveMode()) {
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
             if (useGwt) {
@@ -667,16 +666,15 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     // check if there is at least one profile is enabled
-    private boolean checkGAprofileOn(JahiaData jData) {
+    private boolean checkGAprofileOn(JahiaSite jahiaSite) {
         boolean atLeast1TPon = false;
-        JahiaSite currentSite = jData.getProcessingContext().getSite();
         // google analytics
-        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((jahiaSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
             if (key.startsWith("jahiaGAprofile")) {
-                if (Boolean.valueOf(currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"))) {
+                if (Boolean.valueOf(jahiaSite.getSettings().getProperty(jahiaSite.getSettings().getProperty(key) + "_" + jahiaSite.getSiteKey() + "_trackingEnabled"))) {
                     atLeast1TPon = true;
                     break;
                 }
@@ -686,11 +684,10 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     // check if there is at least one profile is configured
-    private boolean checkGAprofilePresent(JahiaData jData) {
+    private boolean checkGAprofilePresent(JahiaSite jahiaSite) {
         boolean atLeast1TPconf = false;
-        JahiaSite currentSite = jData.getProcessingContext().getSite();
         // google analytics
-        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((jahiaSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();

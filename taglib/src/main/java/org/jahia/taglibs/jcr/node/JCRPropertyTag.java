@@ -75,6 +75,9 @@ public class JCRPropertyTag extends AbstractJahiaTag {
         JCRNodeWrapper curNode = node;
         while (true) {
             try {
+                if (curNode == null) {
+                    return returnValue;
+                }
                 Property property = curNode.getProperty(name);
                 if (property != null) {
                     if (var != null) {

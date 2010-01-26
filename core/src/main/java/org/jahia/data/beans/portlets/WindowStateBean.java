@@ -50,11 +50,11 @@ import org.jahia.params.ProcessingContext;
 
 public class WindowStateBean {
     private String name;
-    private ProcessingContext processingContext;
+    private HttpServletRequest httpServletRequest;
     private PortletWindowBean portletWindowBean;
 
-    public WindowStateBean (ProcessingContext processingContext, PortletWindowBean portletWindowBean) {
-        this.processingContext = processingContext;
+    public WindowStateBean (HttpServletRequest httpServletRequest, PortletWindowBean portletWindowBean) {
+        this.httpServletRequest = httpServletRequest;
         this.portletWindowBean = portletWindowBean;
     }
 
@@ -68,8 +68,7 @@ public class WindowStateBean {
 
     public String getURL () {
         // Retrieve the portal environment.
-        PortalRequestContext portalEnv = PortalRequestContext.getContext(
-                (HttpServletRequest) ((ParamBean) processingContext).getRequest());
+        PortalRequestContext portalEnv = PortalRequestContext.getContext(httpServletRequest);
 
         PortalURL portalUrl =  portalEnv.createPortalURL();
         String portletWindowID = portletWindowBean.getPortletWindow().getId().getStringId();

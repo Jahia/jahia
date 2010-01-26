@@ -37,6 +37,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.pluto.container.PortletContainer;
 import org.apache.pluto.container.PortletWindow;
@@ -58,6 +59,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.applications.ApplicationsManagerProvider;
+import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.web.context.ServletContextAware;
 
 /**
@@ -97,14 +99,17 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
      *
      * @param entryPointInstance
      * @param windowID
-     * @param jParams
      * @return
      */
-    public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException {
+    public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID,
+                                          JahiaUser jahiaUser,
+                                          HttpServletRequest httpServletRequest,
+                                          HttpServletResponse httpServletResponse,
+                                          ServletContext servletContext) throws JahiaException {
 
-        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams.getUser(), jParams.getRealRequest());
+        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest);
 
-        PortalRequestContext portalContext = new PortalRequestContext(jParams.getContext(), jahiaContextRequest, jParams.getResponse());
+        PortalRequestContext portalContext = new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
 
         PortletWindowConfig windowConfig = PortletWindowConfig.fromId(entryPointInstance.getContextName() + "." + entryPointInstance.getDefName() + "!" + windowID);
         windowConfig.setContextPath(entryPointInstance.getContextName());

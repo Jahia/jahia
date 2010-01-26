@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.applications;
+package org.jahia.services.applications;
 
 import java.util.List;
 
@@ -40,27 +40,37 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
+import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface ApplicationsManagerProvider {
     /**
      * Creates an instance of an application entry point definition. This
      * does not need to create the entry in the database, just the memory
      * instance, which is dependent on the provider.
+     *
      * @param entryPointDefinition EntryPointDefinition
      * @throws JahiaException
      * @returns the created instance for the entry point definition.
      */
-    public abstract EntryPointInstance createEntryPointInstance (
-        EntryPointDefinition entryPointDefinition)
-        throws JahiaException;
+    public abstract EntryPointInstance createEntryPointInstance(
+            EntryPointDefinition entryPointDefinition)
+            throws JahiaException;
 
-    public abstract PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException;
+    public abstract PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID,
+                                                   JahiaUser jahiaUser,
+                                                   HttpServletRequest httpServletRequest,
+                                                   HttpServletResponse httpServletResponse,
+                                                   ServletContext servletContext) throws JahiaException;
 
     public List<EntryPointDefinition> getAppEntryPointDefinitions(ApplicationBean appBean)
-        throws JahiaException;
+            throws JahiaException;
 
     public void start()
-        throws JahiaInitializationException;
+            throws JahiaInitializationException;
 
     public void stop();
 

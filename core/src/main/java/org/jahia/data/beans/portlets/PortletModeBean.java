@@ -51,11 +51,11 @@ import org.apache.pluto.driver.url.PortalURL;
 public class PortletModeBean {
 
     private String name;
-    private ProcessingContext processingContext;
+    private HttpServletRequest httpServletRequest;
     private PortletWindowBean portletWindowBean;
 
-    public PortletModeBean (ProcessingContext processingContext, PortletWindowBean portletWindowBean) {
-        this.processingContext = processingContext;
+    public PortletModeBean (HttpServletRequest httpServletRequest, PortletWindowBean portletWindowBean) {
+        this.httpServletRequest = httpServletRequest;
         this.portletWindowBean = portletWindowBean;
     }
 
@@ -69,7 +69,7 @@ public class PortletModeBean {
 
     public String getURL () {
         // Retrieve the portal environment.
-        PortalRequestContext portalEnv = PortalRequestContext.getContext(((ParamBean) processingContext).getRequest());
+        PortalRequestContext portalEnv = PortalRequestContext.getContext(httpServletRequest);
 
         PortalURL portalUrl =  portalEnv.createPortalURL();
         String portletWindowID = portletWindowBean.getPortletWindow().getId().getStringId();

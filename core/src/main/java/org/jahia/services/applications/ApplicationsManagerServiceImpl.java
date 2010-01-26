@@ -54,6 +54,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
 import org.xml.sax.SAXException;
 
@@ -64,6 +65,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -618,15 +622,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      *
      * @param entryPointInstance
      * @param windowID
-     * @param jParams
      * @return
      * @throws JahiaException
      */
-    public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams)
+    public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID,
+                                          JahiaUser jahiaUser,
+                                          HttpServletRequest httpServletRequest,
+                                          HttpServletResponse httpServletResponse,
+                                          ServletContext servletContext)
             throws JahiaException {
         ApplicationBean appBean = getApplicationByContext(entryPointInstance.getContextName());
         ApplicationsManagerProvider appProvider = getProvider(appBean);
-        return appProvider.getPortletWindow(entryPointInstance, windowID, jParams);
+        return appProvider.getPortletWindow(entryPointInstance, windowID, jahiaUser, httpServletRequest, httpServletResponse, servletContext);
 
     }
 

@@ -36,6 +36,7 @@ import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.beans.RequestBean;
+import org.jahia.data.beans.portlets.PortletModeBean;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
@@ -45,13 +46,16 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.render.RenderContext;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * <p>Title: Renders list of portlet modes</p>
@@ -92,9 +96,9 @@ public class PortletModesTag extends TagSupport {
     private String namePostFix = "";
     private String name = null;
     private RequestBean requestBean = null;
-    private ProcessingContext processingContext = null;
-    private GuiBean guiBean = null;
-    private HTMLToolBox htmlToolBox = null;
+    //private ProcessingContext processingContext = null;
+    //private GuiBean guiBean = null;
+    //private HTMLToolBox htmlToolBox = null;
     private String resourceBundle = "JahiaInternalResources";
     private String listCSSClass = "portletModes";
     private String currentCSSClass = "current";
@@ -191,10 +195,12 @@ public class PortletModesTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 
-        requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-        processingContext = requestBean.getProcessingContext();
-        guiBean = new GuiBean(processingContext);
-        htmlToolBox = new HTMLToolBox(guiBean, processingContext);
+        //requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
+        //processingContext = requestBean.getProcessingContext();
+        //guiBean = new GuiBean(processingContext);
+        //htmlToolBox = new HTMLToolBox(guiBean, processingContext);
+
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);        
         PortletWindowBean portletWindowBean = null;
         if (name != null) {
             portletWindowBean = (PortletWindowBean) pageContext.
@@ -203,7 +209,7 @@ public class PortletModesTag extends TagSupport {
             try {
                 EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(new JCRPortletNode(node));
                 if (entryPointInstance == null) {
-                    logger.error("User " + processingContext.getUser().getName() + " could not load the portlet instance :" + node.getUUID());
+                    logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getUUID());
                 }
 
                 if (entryPointInstance != null) {
@@ -229,12 +235,10 @@ public class PortletModesTag extends TagSupport {
                             }
                         }
                         EntryPointDefinition entryPointDefinition = appBean.getEntryPointDefinitionByName(defName);
-                        if (processingContext instanceof ParamBean) {
-                            PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, portletWindowID, (ParamBean) processingContext);
-                            portletWindowBean = new PortletWindowBean(processingContext, window);
-                            portletWindowBean.setEntryPointInstance(entryPointInstance);
-                            portletWindowBean.setEntryPointDefinition(entryPointDefinition);
-                        }
+                        PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, portletWindowID, renderContext.getUser(), renderContext.getRequest(), renderContext.getResponse(), pageContext.getServletContext());
+                        portletWindowBean = new PortletWindowBean(renderContext.getUser(), renderContext.getRequest(), window);
+                        portletWindowBean.setEntryPointInstance(entryPointInstance);
+                        portletWindowBean.setEntryPointDefinition(entryPointDefinition);
                     }
                 }
             } catch (RepositoryException e) {
@@ -254,9 +258,9 @@ public class PortletModesTag extends TagSupport {
         JspWriter out = pageContext.getOut();
         try {
 
-            htmlToolBox.drawPortletModeList(portletWindowBean, namePostFix,
+            drawPortletModeList(portletWindowBean, namePostFix,
                     resourceBundle, listCSSClass,
-                    currentCSSClass, out);
+                    currentCSSClass, renderContext.getMainResourceLocale(), out);
 
         } catch (IOException ioe) {
             logger.error("IO exception while trying to display action menu for object " + name, ioe);
@@ -271,15 +275,75 @@ public class PortletModesTag extends TagSupport {
         // pooling.
         namePostFix = "";
         name = null;
-        processingContext = null;
+        //processingContext = null;
         requestBean = null;
-        guiBean = null;
-        htmlToolBox = null;
+        //guiBean = null;
+        //htmlToolBox = null;
         resourceBundle = "JahiaInternalResources";
         listCSSClass = "portletModes";
         currentCSSClass = "current";
         node = null;
         return EVAL_PAGE;
+    }
+
+    public void drawPortletModeList(final PortletWindowBean portletWindowBean,
+                                    final String namePostFix,
+                                    final String resourceBundle,
+                                    final String listCSSClass,
+                                    final String currentCSSClass,
+                                    final Locale locale,
+                                    final JspWriter out)
+            throws IOException {
+        final List portletModeBeansIterList = portletWindowBean.getPortletModeBeans();
+        // draw mode links only if there is more than 1 mode
+        if (portletModeBeansIterList.size() < 2) {
+            return;
+        }
+
+        out.print("<ul class=\"");
+        out.print(listCSSClass);
+        out.print("\">\n");
+        final Iterator portletModeBeansIter = portletWindowBean.getPortletModeBeans().iterator();
+        while (portletModeBeansIter.hasNext()) {
+            final PortletModeBean curPortletModeBean = (PortletModeBean)
+                    portletModeBeansIter.next();
+            if (curPortletModeBean.getName().equals(portletWindowBean.
+                    getCurrentPortletModeBean().getName())) {
+                out.print("<li class=\"");
+                out.print(currentCSSClass);
+                out.print("\">\n");
+            } else {
+                out.print("<li>");
+            }
+            final StringBuffer buff = new StringBuffer();
+            buff.append("<a class=\"").append(curPortletModeBean.getName()).
+                    append("\" title=\"").append(curPortletModeBean.getName()).
+                    append("\" href=\"").append(curPortletModeBean.getURL()).
+                    append("\">").append("<span>").append(getResource(locale, resourceBundle,
+                    "org.jahia.taglibs.html.portlets.portletmodes." +
+                            curPortletModeBean.getName() + ".label" +
+                            namePostFix)).append("</span></a>");
+            out.print(buff.toString());
+            out.println("</li>");
+        }
+        out.println("</ul>");
+    }
+
+    public String getResource(Locale locale,
+                              final String resourceBundle,
+                              final String resourceName) {
+        ResourceBundle res;
+        String resValue = null;
+
+        try {
+            res = ResourceBundle.getBundle(resourceBundle, locale);
+            resValue = res.getString(resourceName);
+        } catch (MissingResourceException mre) {
+            logger.warn("Error accessing resource " + resourceName +
+                    " in bundle " + resourceBundle + " for locale " +
+                    locale + ":" + mre.getMessage());
+        }
+        return resValue;
     }
 
 }

@@ -36,11 +36,13 @@ import java.util.List;
 
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * <p>Title: Bean that contains all information relative to a portlet
@@ -57,15 +59,17 @@ import org.jahia.params.ProcessingContext;
 public class PortletWindowBean {
     private int ID;
     private EntryPointInstance entryPointInstance;
-    private ProcessingContext processingContext;
+    private JahiaUser jahiaUser;
+    private HttpServletRequest httpServletRequest;
     private EntryPointDefinition entryPointDefinition;
     private PortletWindow portletWindow;
 
     public PortletWindowBean() {
     }
 
-    public PortletWindowBean(ProcessingContext processingContext, PortletWindow portletWindow) {
-        this.processingContext = processingContext;
+    public PortletWindowBean(JahiaUser jahiaUser, HttpServletRequest httpServletRequest, PortletWindow portletWindow) {
+        this.jahiaUser = jahiaUser;
+        this.httpServletRequest = httpServletRequest;
         this.portletWindow = portletWindow;
     }
 
@@ -90,8 +94,8 @@ public class PortletWindowBean {
         if (entryPointDefinition != null) {
             for (PortletMode curPortletMode : entryPointDefinition.getPortletModes()) {
                 String modeName = curPortletMode.toString();
-                if (modeName != null && entryPointInstance.isModeAllowed(processingContext.getUser(), modeName)) {
-                    PortletModeBean curPortletModeBean = new PortletModeBean(processingContext, this);
+                if (modeName != null && entryPointInstance.isModeAllowed(jahiaUser, modeName)) {
+                    PortletModeBean curPortletModeBean = new PortletModeBean(httpServletRequest, this);
                     curPortletModeBean.setName(modeName);
                     portletModeBeans.add(curPortletModeBean);
                 }
@@ -108,7 +112,7 @@ public class PortletWindowBean {
         List<WindowStateBean> windowStateBeans = new ArrayList<WindowStateBean>();
         if (entryPointDefinition != null) {
             for (WindowState curWindowState : entryPointDefinition.getWindowStates()) {
-                WindowStateBean curWindowStateBean = new WindowStateBean(processingContext,
+                WindowStateBean curWindowStateBean = new WindowStateBean(httpServletRequest,
                         this);
                 curWindowStateBean.setName(curWindowState.toString());
                 windowStateBeans.add(curWindowStateBean);
@@ -122,7 +126,7 @@ public class PortletWindowBean {
      * @return
      */
     public PortletModeBean getCurrentPortletModeBean() {
-        PortletModeBean portletModeBean = new PortletModeBean(processingContext, this);
+        PortletModeBean portletModeBean = new PortletModeBean(httpServletRequest, this);
         portletModeBean.setName(portletWindow.getPortletMode().toString());
         return portletModeBean;
     }
@@ -132,7 +136,7 @@ public class PortletWindowBean {
      * @return
      */
     public WindowStateBean getCurrentWindowStateBean() {
-        WindowStateBean currentWindowStateBean = new WindowStateBean(processingContext, this);
+        WindowStateBean currentWindowStateBean = new WindowStateBean(httpServletRequest, this);
         currentWindowStateBean.setName(portletWindow.getWindowState().toString());
         return currentWindowStateBean;
     }
@@ -151,14 +155,6 @@ public class PortletWindowBean {
      */
     public void setEntryPointInstance(EntryPointInstance entryPointInstance) {
         this.entryPointInstance = entryPointInstance;
-    }
-
-    /**
-     * Get current ParamBean
-     * @return
-     */
-    public ProcessingContext getParamBean() {
-        return processingContext;
     }
 
     /**

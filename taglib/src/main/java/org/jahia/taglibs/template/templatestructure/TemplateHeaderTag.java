@@ -32,10 +32,6 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.PageProperty;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
@@ -125,7 +121,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(TemplateHeaderTag.class);
 
-    private boolean gwtForGuest;
+    private boolean includeGwt;
     
     private String title;
 
@@ -160,12 +156,9 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         buf.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\" />\n");  // should be fixed in GWT 1.6
         // check the gwtForGuest attribute from parent tag
         Tag parent = getParent();
-        gwtForGuest = false;
-        if (parent instanceof TemplateTag) {
-            gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
-        }
+        includeGwt = renderContext.isEditMode();
 
-        if (isLogged() || gwtForGuest) {
+        if (includeGwt) {
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
         }
 
@@ -195,7 +188,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         try {
-            if (isLogged() || gwtForGuest) {
+            if (includeGwt) {
                 pageContext.getOut().append(DefaultIncludeProvider.getJSToolsImportJavaScript(getRenderContext()));
             }
             pageContext.getOut().println("</head>");

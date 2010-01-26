@@ -64,16 +64,8 @@
     <c:choose>
         <c:when test="${col.value > 8}">
             <div class='grid_${col.value}'><!--start grid_${col.value}-->
-                <div class="box">
-                    <div class="boxshadow boxpadding40 boxmarginbottom16">
-                        <div class="box-inner">
-                            <div class="box-inner-border">
-                                <template:area path="${col.key}"/>
-                                <div class='clear'></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<template:area path="${col.key}"/>
+				<div class='clear'></div>
             </div>
             <!--stop grid_${col.value}-->
         </c:when>

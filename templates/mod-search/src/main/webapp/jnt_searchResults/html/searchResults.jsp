@@ -36,6 +36,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<template:addResources type="css" resources="searchresults.css"/>
 
 <style type="text/css">
 <!--
@@ -56,21 +57,21 @@
 <s:results>
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	<c:if test="${not empty title.string}">
-		<h2>${fn:escapeXml(title.string)}</h2>
+		<h3>${fn:escapeXml(title.string)}</h3>
 	</c:if>
-	<div>
+<div class="resultsList">
 		<c:if test="${count > 0}">
     	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
-        <ul>
+         <ol>
 			<s:resultIterator>
-				<li>
-					<div><a href="${hit.link}">${fn:escapeXml(hit.title)}</a></div>
-                    <div>${hit.excerpt}</div>
-                    <div>${hit.contentType}</div>
-                    <div><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
+				<li> 
+					<h4><a href="${hit.link}">${fn:escapeXml(hit.title)}</a></h4>
+                    <div class="resultslistDesc">${hit.excerpt}</div>
+                    <div class="resultsListFileType">${hit.contentType}</div>
+                    <div class="resultsListDate"><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
 				</li>
 			</s:resultIterator>
-        </ul>
+        </ol>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>

@@ -40,7 +40,7 @@
 <%@ attribute name="windowWidth" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
 <template:gwtJahiaModule id="pdisplay" jahiaType="pdisplay"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.createFolder"
+<internal:gwtResourceBundle resourceName="label.createFolder"
                             aliasResourceName="fm_newdir"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.popupinfo.mynextjobposition"
                             aliasResourceName="pd_popupinfo_mynextjobposition"/>

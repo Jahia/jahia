@@ -92,7 +92,7 @@
         <div id="actionBar">
           <span class="dex-PushButton">
              <span class="first-child">
-               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>'><fmt:message key="label.backToMenu"/></a>
              </span>
           </span>
           <span class="dex-PushButton">

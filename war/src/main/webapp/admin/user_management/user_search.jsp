@@ -92,7 +92,7 @@ int stretcherToOpen   = 1;
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="checkbox" name="properties" value="lastname" disabled> <fmt:message key="org.jahia.admin.lastName.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="email" disabled> <fmt:message key="org.jahia.admin.eMail.label"/><br>
+                        <input type="checkbox" name="properties" value="email" disabled> <fmt:message key="label.email"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="checkbox" name="properties" value="organization" disabled><nobr> <fmt:message key="org.jahia.admin.organization.label"/></nobr><br>
                     </td>

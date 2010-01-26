@@ -149,7 +149,7 @@
     <tr>
         <td>&nbsp;</td>
         <td>
-            <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;:&nbsp;
+            <fmt:message key="label.email"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="text" name="adminEmail" size="<%=inputSize%>" maxlength="255" value="<%=adminEmail%>">
@@ -176,7 +176,7 @@
     <tr>
         <td class="asterisk">*</td>
         <td>
-            <fmt:message key="org.jahia.admin.confirmPassword.label"/>&nbsp;:&nbsp;
+            <fmt:message key="label.comfirmPassword"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="password" name="adminConfirm" size="<%=inputSize%>" maxlength="255" value="<%=adminConfirm%>">

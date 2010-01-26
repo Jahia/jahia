@@ -652,7 +652,7 @@
     -->
     <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
-        <property name="titleKey" value="NewAction.label"/>
+        <property name="titleKey" value="label.new"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
         <property name="items">
@@ -665,7 +665,7 @@
 
     <bean id="org.jahia.toolbar.itemsgroup.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
-        <property name="titleKey" value="EditAction.label"/>
+        <property name="titleKey" value="label.edit"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-editaction-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-editaction-normal"/>
         <property name="items">
@@ -1200,7 +1200,7 @@
     <!-- Connected user -->
     <bean id="org.jahia.toolbar.item.User" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.InfoPanel">
-        <property name="titleKey" value="button.user"/>
+        <property name="titleKey" value="label.user"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-user-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-user-normal"/>
         <property name="descriptionKey" value="label.live"/>
@@ -1320,10 +1320,10 @@
     <!-- My settings-->
     <bean id="org.jahia.toolbar.item.MySettings" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="button.mySettings"/>
+        <property name="titleKey" value="label.mySettings"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-mysettings-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-mysettings-normal"/>
-        <property name="descriptionKey" value="button.mySettings"/>
+        <property name="descriptionKey" value="label.mySettings"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -1416,7 +1416,7 @@
     <!-- Mashup Manager -->
     <bean id="org.jahia.toolbar.item.MashupManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="button.mashupmanager"/>
+        <property name="titleKey" value="label.mashupmanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-mashupmanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-mashupmanager-normal"/>
         <property name="descriptionKey" value="label.documentManager"/>
@@ -1441,10 +1441,10 @@
     <!-- Category Manager -->
     <bean id="org.jahia.toolbar.item.CategoryManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="button.categorymanager"/>
+        <property name="titleKey" value="label.categorymanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-categorymanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-categorymanager-normal"/>
-        <property name="descriptionKey" value="button.categorymanager"/>
+        <property name="descriptionKey" value="label.categorymanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="siteActionPermission" value="engines.categorymanager"/>
@@ -1465,10 +1465,10 @@
     <!-- Tag Manager -->
     <bean id="org.jahia.toolbar.item.TagManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="button.tagmanager"/>
+        <property name="titleKey" value="label.tagmanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-tagmanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-tagmanager-normal"/>
-        <property name="descriptionKey" value="button.tagmanager"/>
+        <property name="descriptionKey" value="label.tagmanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="siteActionPermission" value="engines.categorymanager"/>
@@ -1489,10 +1489,10 @@
     <!-- Stie Manager -->
     <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="button.sitemanager"/>
+        <property name="titleKey" value="label.sitemanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-sitemanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-sitemanager-normal"/>
-        <property name="descriptionKey" value="button.sitemanager"/>
+        <property name="descriptionKey" value="label.sitemanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="siteActionPermission" value="engines.sitemanager"/>
@@ -1513,10 +1513,10 @@
     <!-- GWT Workflow Manager -->
     <bean id="org.jahia.toolbar.item.GWTWorkflow" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="button.workflow"/>
+        <property name="titleKey" value="label.workflow"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-workflow-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-workflow-normal"/>
-        <property name="descriptionKey" value="button.workflow"/>
+        <property name="descriptionKey" value="label.workflow"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="mode" value="edit,preview,compare"/>
@@ -1561,10 +1561,10 @@
     <!-- Logout -->
     <bean id="org.jahia.toolbar.item.Logout" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="button.logout"/>
+        <property name="titleKey" value="label.logout"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-logout-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-logout-normal"/>
-        <property name="descriptionKey" value="button.logout"/>
+        <property name="descriptionKey" value="label.logout"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -1585,7 +1585,7 @@
     <!-- Login -->
     <bean id="org.jahia.toolbar.item.Login" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="button.login"/>
+        <property name="titleKey" value="label.login"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>
         <property name="visibility">
@@ -1608,7 +1608,7 @@
     <!-- cache_on -->
     <bean id="org.jahia.toolbar.item.CacheOn" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="button.cacheon"/>
+        <property name="titleKey" value="label.cacheon"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>
         <property name="visibility">
@@ -1638,7 +1638,7 @@
     <!-- cache_off -->
     <bean id="org.jahia.toolbar.item.CacheDebug" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.RedirectWindow">
-        <property name="titleKey" value="button.cachedebug"/>
+        <property name="titleKey" value="label.cachedebug"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>
         <property name="visibility">
@@ -1675,7 +1675,7 @@
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-flushall-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-flushall-normal"/>
-        <property name="titleKey" value="button.flushAll"/>
+        <property name="titleKey" value="label.flushAll"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
@@ -1701,7 +1701,7 @@
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-flushall-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-flushall-normal"/>
-        <property name="titleKey" value="button.flushSite"/>
+        <property name="titleKey" value="label.flushSite"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
@@ -1727,7 +1727,7 @@
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-flushall-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-flushall-normal"/>
-        <property name="titleKey" value="button.flushPage"/>
+        <property name="titleKey" value="label.flushPage"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
@@ -1749,10 +1749,10 @@
     <!-- ACL diff -->
     <bean id="org.jahia.toolbar.item.acldiff" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.acldiff"/>
+        <property name="titleKey" value="label.acldiff"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-acldiff-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-acldiff-normal"/>
-        <property name="descriptionKey" value="button.acldiff"/>
+        <property name="descriptionKey" value="label.acldiff"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -1792,10 +1792,10 @@
     <!-- display time base publishing -->
     <bean id="org.jahia.toolbar.item.timebasepublishing" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.timebasepublishing"/>
+        <property name="titleKey" value="label.timebasepublishing"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-timebasepublishing-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-timebasepublishing-normal"/>
-        <property name="descriptionKey" value="button.timebasepublishing"/>
+        <property name="descriptionKey" value="label.timebasepublishing"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -1835,10 +1835,10 @@
     <!-- display inlineediting -->
     <bean id="org.jahia.toolbar.item.inlineediting" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.inlineediting"/>
+        <property name="titleKey" value="label.inlineediting"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-inlineediting-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-inlineediting-normal"/>
-        <property name="descriptionKey" value="button.inlineediting"/>
+        <property name="descriptionKey" value="label.inlineediting"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -1881,10 +1881,10 @@
 
     <bean id="org.jahia.toolbar.item.integrity" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.integrity"/>
+        <property name="titleKey" value="label.integrity"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-integrity-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-integrity-normal"/>
-        <property name="descriptionKey" value="button.integrity.description"/>
+        <property name="descriptionKey" value="label.integrity.description"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="classResolver"
@@ -1950,7 +1950,7 @@
     <!-- Site statistics -->
     <bean id="org.jahia.toolbar.item.SiteStat" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.statistics.site"/>
+        <property name="titleKey" value="label.statistics.site"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-sitestat-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-sitestat-normal"/>
         <property name="properties">
@@ -1965,7 +1965,7 @@
     <!-- Page statistics-->
     <bean id="org.jahia.toolbar.item.PageStat" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.statistics.page"/>
+        <property name="titleKey" value="label.statistics.page"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-sitestat-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-sitestat-normal"/>
         <property name="properties">
@@ -1998,7 +1998,7 @@
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-bookmarkadd-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-bookmarkadd-normal"/>
-        <property name="titleKey" value="button.bookmarkCurrentPage"/>
+        <property name="titleKey" value="label.bookmarkCurrentPage"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
@@ -2020,7 +2020,7 @@
     <!-- delete bookmark current page -->
     <bean id="org.jahia.toolbar.item.deleteBookmarkCurrentPage" class="org.jahia.services.toolbar.bean.Item"
           parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.deleteBookmarkCurrentPage"/>
+        <property name="titleKey" value="label.deleteBookmarkCurrentPage"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="classResolver"
@@ -2126,8 +2126,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreatePageActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.newpage"/>
-        <property name="descriptionKey" value="toolbar.edit.button.newpage"/>
+        <property name="titleKey" value="label.newpage"/>
+        <property name="descriptionKey" value="label.newpage"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
     </bean>
@@ -2138,8 +2138,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.publish"/>
-        <property name="descriptionKey" value="toolbar.edit.button.publish"/>
+        <property name="titleKey" value="label.publish"/>
+        <property name="descriptionKey" value="label.publish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
     </bean>
@@ -2148,8 +2148,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.publishall"/>
-        <property name="descriptionKey" value="toolbar.edit.button.publishall"/>
+        <property name="titleKey" value="label.publishall"/>
+        <property name="descriptionKey" value="label.publishall"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
     </bean>
@@ -2169,8 +2169,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.unpublish"/>
-        <property name="descriptionKey" value="toolbar.edit.button.unpublish"/>
+        <property name="titleKey" value="label.unpublish"/>
+        <property name="descriptionKey" value="label.unpublish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-unpublish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unpublish"/>
     </bean>
@@ -2180,10 +2180,10 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewPublishStatusActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.status"/>
+        <property name="titleKey" value="label.status"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-viewpublishstatus"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-viewpublishstatus"/>
-        <property name="descriptionKey" value="toolbar.edit.button.status"/>
+        <property name="descriptionKey" value="label.status"/>
     </bean>
 
     <!-- new edit mode buttons: lock -->
@@ -2224,7 +2224,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.remove"/>
+        <property name="titleKey" value="label.remove"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-remove"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-remove"/>
         <property name="descriptionKey" value="delete"/>
@@ -2235,7 +2235,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.copy"/>
+        <property name="titleKey" value="label.copy"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-copy"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-copy"/>
     </bean>
@@ -2253,7 +2253,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.createTag"/>
+        <property name="titleKey" value="label.createTag"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>
@@ -2262,7 +2262,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.newContentList"/>
+        <property name="titleKey" value="label.newContentList"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-addContentList"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContentList"/>
     </bean>
@@ -2271,7 +2271,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.newContent"/>
+        <property name="titleKey" value="label.newContent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-addContent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContent"/>
     </bean>
@@ -2280,7 +2280,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.createFolder"/>
+        <property name="titleKey" value="label.createFolder"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newfolder"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newfolder"/>
     </bean>
@@ -2289,7 +2289,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewGadgetActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.newGoogleGadgetMashup"/>
+        <property name="titleKey" value="label.newGoogleGadgetMashup"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newgooglegadgetmashup"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newgooglegadgetmashup"/>
     </bean>
@@ -2298,7 +2298,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewMashupActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.newMashup"/>
+        <property name="titleKey" value="label.newMashup"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newmashup"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newmashup"/>
     </bean>
@@ -2307,7 +2307,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.newRssMashup"/>
+        <property name="titleKey" value="label.newRssMashup"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newrssmashup"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newrssmashup"/>
     </bean>
@@ -2316,7 +2316,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.crop"/>
+        <property name="titleKey" value="label.crop"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-crop"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-crop"/>
     </bean>
@@ -2325,7 +2325,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.cut"/>
+        <property name="titleKey" value="label.cut"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-cut"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-cut"/>
     </bean>
@@ -2334,7 +2334,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.download"/>
+        <property name="titleKey" value="label.download"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-download"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-download"/>
     </bean>
@@ -2361,7 +2361,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MountActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.mount"/>
+        <property name="titleKey" value="label.mount"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-mount"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-mount"/>
     </bean>
@@ -2370,7 +2370,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.paste"/>
+        <property name="titleKey" value="label.paste"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-paste"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-paste"/>
     </bean>
@@ -2379,7 +2379,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteReferenceActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.pasteReference"/>
+        <property name="titleKey" value="label.pasteReference"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-pasteref"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-pasteref"/>
     </bean>
@@ -2388,7 +2388,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsReusableComponentActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.saveAsReusableComponent"/>
+        <property name="titleKey" value="label.saveAsReusableComponent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
     </bean>
@@ -2406,7 +2406,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RefreshActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.refresh"/>
+        <property name="titleKey" value="label.refresh"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
     </bean>
@@ -2417,7 +2417,7 @@
                 <property name="view" value="list"/>
             </bean>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.list"/>
+        <property name="titleKey" value="label.list"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-tableview"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-tableview"/>
     </bean>
@@ -2427,7 +2427,7 @@
                 <property name="view" value="thumbs"/>
             </bean>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.thumbs"/>
+        <property name="titleKey" value="label.thumbs"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-iconview"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-iconview"/>
     </bean>
@@ -2437,7 +2437,7 @@
                 <property name="view" value="detailed"/>
             </bean>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.detailed"/>
+        <property name="titleKey" value="label.detailed"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-iconview-detailed"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-iconview-detailed"/>
     </bean>
@@ -2446,7 +2446,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.rename"/>
+        <property name="titleKey" value="label.rename"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
     </bean>
@@ -2455,7 +2455,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ResizeActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.resize"/>
+        <property name="titleKey" value="label.resize"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-resize"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-resize"/>
     </bean>
@@ -2464,7 +2464,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RotateActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.rotate"/>
+        <property name="titleKey" value="label.rotate"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-rotate"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-rotate"/>
     </bean>
@@ -2473,7 +2473,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnmountActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.unmount"/>
+        <property name="titleKey" value="label.unmount"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-unmount"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unmount"/>
     </bean>
@@ -2482,7 +2482,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.upload"/>
+        <property name="titleKey" value="label.upload"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-upload"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-upload"/>
     </bean>
@@ -2491,7 +2491,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnzipActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.unzip"/>
+        <property name="titleKey" value="label.unzip"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-unzip"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unzip"/>
     </bean>
@@ -2500,7 +2500,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WebfolderActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.webfolder"/>
+        <property name="titleKey" value="label.webfolder"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-webfolder"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-webfolder"/>
         <property name="visibility">
@@ -2516,7 +2516,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ZipActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.zip"/>
+        <property name="titleKey" value="label.zip"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-zip"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-zip"/>
     </bean>
@@ -2525,7 +2525,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.TranslateActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.manager.button.translate"/>
+        <property name="titleKey" value="label.translate"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-translate"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-translate"/>
 

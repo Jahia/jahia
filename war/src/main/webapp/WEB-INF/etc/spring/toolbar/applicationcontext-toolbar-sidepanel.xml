@@ -12,7 +12,7 @@
                 		<list>
                 			<ref bean="org.jahia.toolbar.item.createPage"/>
 						    <bean class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.edit">
-						        <property name="titleKey" value="toolbar.manager.button.rename"/>
+						        <property name="titleKey" value="label.rename"/>
 						        <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
 						        <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
 						    </bean>

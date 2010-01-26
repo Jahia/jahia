@@ -89,7 +89,7 @@
                     <td valign="top">
                         <font class="text">
                             <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>'><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.backToLanguageList.label"/></a><br>
-                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a><br>
+                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a><br>
                         </font>
                     </td>
                 </tr>

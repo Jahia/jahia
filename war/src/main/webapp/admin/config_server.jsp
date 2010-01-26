@@ -40,15 +40,15 @@
 <!--
 function testSettings() {
     if (document.jahiaAdmin.host.value.length == 0) {
-    	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label" var="msg"/>
+    	<fmt:message key="message.mailServer_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.jahiaAdmin.host.focus();
     } else if (document.jahiaAdmin.to.value.length == 0) {
-        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label" var="msg"/>
+        <fmt:message key="message.mailAdmin_mustSet" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.jahiaAdmin.to.focus();
     } else if (document.jahiaAdmin.from.value.length == 0) {
-    	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label" var="msg"/>
+    	<fmt:message key="message.mailFrom_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.jahiaAdmin.from.focus();
     } else {
@@ -211,7 +211,7 @@ function testSettingsFailure(text, code, statusText) {
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
             </span>
           </span>
           <span class="dex-PushButton">

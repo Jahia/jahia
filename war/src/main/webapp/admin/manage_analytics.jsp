@@ -46,7 +46,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
+    <h2 class="edit"><fmt:message key="label.manageAnalytics"/>
         : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 
@@ -69,7 +69,7 @@
                         <div id="content" class="fit">
                             <div class="head headtop">
                                 <div class="object-title">
-                                    <fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
+                                    <fmt:message key="label.manageAnalytics"/>
                                 </div>
                             </div>
                             <!--div class="head headtop">
@@ -186,13 +186,13 @@
                                 </div>
                                 <tr>
                                     <td width="88%">
-                                        <fmt:message key="org.jahia.admin.ManageAnalytics.description.jahiaGAprofile.label"/>
+                                        <fmt:message key="label.jahiaGAprofile"/>
                                         <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0"
                                                width="100%">
                                             <tr class="evenLine">
                                                 <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/></td>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.ManageAnalytics.description.jahiaGAprofileName.label"/>
+                                                    <fmt:message key="label.jahiaGAprofileName"/>
                                                     </td>
                                             </tr>
                                             <tr class="oddLine">
@@ -225,7 +225,7 @@
                                         <span class="dex-PushButton">
                                             <span class="first-child">
                                               <a class="ico-add"
-                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><fmt:message key="org.jahia.admin.add.label"/></a>
+                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><fmt:message key="label.add"/></a>
                                             </span>
                                         </span>
                                     </td>
@@ -237,7 +237,7 @@
                             <span class="dex-PushButton">
                               <span class="first-child">
                                 <a class="ico-back"
-                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
                               </span>
                             </span>
                            <span class="dex-PushButton">

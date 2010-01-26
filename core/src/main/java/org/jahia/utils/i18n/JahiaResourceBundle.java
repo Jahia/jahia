@@ -57,6 +57,8 @@ public class JahiaResourceBundle extends ResourceBundle {
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
 
+    private static Map<String, String> resourceBundleMap = new HashMap<String, String>();
+
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null);
@@ -90,8 +92,8 @@ public class JahiaResourceBundle extends ResourceBundle {
             try {
                 o = lookupBundle(basename, locale, templatesRBLoader).getString(s);
             } catch (MissingResourceException e) {
-                logger.debug("Not found '" + s
-                        + "' in the base resource bundle '" + basename + "'");
+                /*logger.debug("Not found '" + s
+                        + "' in the base resource bundle '" + basename + "'");*/
             }
         }
         if (o == null && templatesPackage != null) {
@@ -107,14 +109,21 @@ public class JahiaResourceBundle extends ResourceBundle {
                         break;
                     }
                 } catch (MissingResourceException e1) {
-                    logger.debug("Try to find '" + s
-                            + "' in resource bundle '" + bundleToLookup + "'");
+                    /* logger.debug("Try to find '" + s
+           + "' in resource bundle '" + bundleToLookup + "'");*/
                 }
             }
         }
         if (o == null) {
             throw new MissingResourceException("Cannot find resource " + s, basename, s);
         }
+
+        if (!resourceBundleMap.containsKey(s)) {
+            logger.debug(s + " = " + o);
+        }
+
+        resourceBundleMap.put(s, o.toString());
+        System.err.println(s + "," + o);
 
         return o;
     }
@@ -130,7 +139,6 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     /**
-     *
      * @return
      */
     private JahiaTemplatesRBLoader getClassLoader() {
@@ -157,6 +165,12 @@ public class JahiaResourceBundle extends ResourceBundle {
         final ResourceBundle resourceBundle = lookupBundle(JAHIA_INTERNAL_RESOURCES, locale);
         try {
             String value = resourceBundle.getString(key);
+            if (!resourceBundleMap.containsKey(key)) {
+               // logger.debug(key + " = " + value);
+            }
+
+            resourceBundleMap.put(key, value);
+           // System.err.println(key + "," + value);
             return value;
         } catch (MissingResourceException e) {
             return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
@@ -165,6 +179,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Get message by key and local
+     *
      * @param key
      * @param locale
      * @return
@@ -175,6 +190,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Get message depending on the key
+     *
      * @param bundle
      * @param key
      * @param locale
@@ -187,6 +203,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Get message depending on the key
+     *
      * @param bundle
      * @param key
      * @param locale
@@ -200,6 +217,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * find  ResourceBundle dependinng on a baseName
+     *
      * @param baseName
      * @param locale
      * @return
@@ -210,6 +228,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * find  ResourceBundle dependinng on a baseName
+     *
      * @param baseName
      * @param preferredLocale
      * @param loader
@@ -259,6 +278,7 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Get message depending on a key. If not found, return the default value
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -269,17 +289,25 @@ public class JahiaResourceBundle extends ResourceBundle {
 
     /**
      * Get formateed message
+     *
      * @param key
      * @param defaultValue
      * @param arguments
      * @return
      */
     public String getFormatted(String key, String defaultValue, Object... arguments) {
-        return MessageFormat.format(get(key, defaultValue), arguments);
+        String value = MessageFormat.format(get(key, defaultValue), arguments);
+        if (!resourceBundleMap.containsKey(key)) {
+            logger.debug(key + " = " + value);
+        }
+        System.err.println(key + "," + value);
+
+        return value;
     }
 
     /**
      * Get message depending on a key. If not found, return the default value
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -288,7 +316,10 @@ public class JahiaResourceBundle extends ResourceBundle {
         String message;
         try {
             message = getString(key);
-            logger.error(key + "," + getString(key));
+            if (!resourceBundleMap.containsKey(key)) {
+                logger.debug(key + " = " + message);
+            }
+            System.err.println(key + "," + message);
 
         } catch (MissingResourceException e) {
             message = defaultValue;

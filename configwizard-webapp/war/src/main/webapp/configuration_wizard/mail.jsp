@@ -40,15 +40,15 @@
 <!--
 function testSettings() {
     if (document.mainForm.host.value.length == 0) {
-        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label" var="msg"/>
+        <fmt:message key="message.mailServer_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.host.focus();
     } else if (document.mainForm.to.value.length == 0) {
-        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label" var="msg"/>
+        <fmt:message key="message.mailAdmin_mustSet" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.to.focus();
     } else if (document.mainForm.from.value.length == 0) {
-        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label" var="msg"/>
+        <fmt:message key="message.mailFrom_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.from.focus();
     } else {

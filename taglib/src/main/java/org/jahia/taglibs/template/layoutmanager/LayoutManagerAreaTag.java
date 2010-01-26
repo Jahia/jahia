@@ -81,8 +81,8 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("mw_roles_perm_desc", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
             addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("label.finish"));
             addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
-            addGwtDictionaryMessage("mw_name",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationName.label"));
-            addGwtDictionaryMessage("mw_description",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationDesc.label"));
+            addGwtDictionaryMessage("mw_name",getJahiaInternalResourceValue("label.portletName"));
+            addGwtDictionaryMessage("mw_description",getJahiaInternalResourceValue("label.portletDescription"));
             addGwtDictionaryMessage("mw_finish_description",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
             addGwtDictionaryMessage("mw_no_role",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.any"));
             addGwtDictionaryMessage("p_add_mashups", getJahiaInternalResourceValue("org.jahia.myportal.addMashup"));
@@ -96,7 +96,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("p_portal_editable_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.editableLiveMode"));
             addGwtDictionaryMessage("p_add_mashup_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.addMashupLiveMode"));
             addGwtDictionaryMessage("p_save", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.save"));
-            addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("toolbar.manager.button.newMashup"));
+            addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("label.newMashup"));
             addGwtDictionaryMessage("p_my_portal", getJahiaInternalResourceValue("org.jahia.myportal.myPortal"));
             addGwtDictionaryMessage("p_mashup_added_myPortal", getJahiaInternalResourceValue("org.jahia.myportal.mashupAdded"));
             addGwtDictionaryMessage("p_mashup_added", getJahiaInternalResourceValue("org.jahia.myportal.mashupAddedLabel"));
@@ -111,7 +111,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("label.step"));
             addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
 
-            addGwtDictionaryMessage("mw_title", getJahiaInternalResourceValue("toolbar.manager.button.newMashup"));
+            addGwtDictionaryMessage("mw_title", getJahiaInternalResourceValue("label.newMashup"));
         } catch (Exception e) {
             logger.error(e, e);
         }

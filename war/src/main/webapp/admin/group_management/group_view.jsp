@@ -123,7 +123,7 @@ int stretcherToOpen   = 1; %>
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><fmt:message key="org.jahia.admin.backToGroupList.label"/></a>
+      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><fmt:message key="label.backToGroupList"/></a>
     </span>
   </span>
 </div>

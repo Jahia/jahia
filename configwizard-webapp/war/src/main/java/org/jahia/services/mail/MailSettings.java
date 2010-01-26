@@ -339,13 +339,13 @@ public class MailSettings implements Serializable {
         if (doValidation || !skipIfEmpty) {
             if (cfg.getHost().length() == 0) {
                 result = new MailSettingsValidationResult("host",
-                        "org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label");
+                        "message.mailServer_mustSet.label");
             } else if (cfg.getNotificationSeverity()!=0
                     && cfg.getTo().length() == 0) {
-                result = new MailSettingsValidationResult("to", "org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label");
+                result = new MailSettingsValidationResult("to", "message.mailAdmin_mustSet");
             } else if (cfg.getFrom().length() == 0) {
                 result = new MailSettingsValidationResult("from",
-                        "org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label");
+                        "message.mailFrom_mustSet.label");
             } else if (cfg.getNotificationSeverity()!=0
                     && !isValidEmailAddress(cfg.getTo(), true)) {
                 result = new MailSettingsValidationResult("to", "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label");

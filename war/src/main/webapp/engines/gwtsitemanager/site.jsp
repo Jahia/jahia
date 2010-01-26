@@ -35,7 +35,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <html>
 <head>
-    <title><internal:message key="button.sitemanager"/></title>
+    <title><internal:message key="label.sitemanager"/></title>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>

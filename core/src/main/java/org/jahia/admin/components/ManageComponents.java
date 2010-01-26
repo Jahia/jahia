@@ -244,8 +244,8 @@ public class ManageComponents extends AbstractAdministrationModule {
 
 
                         if (doPrepare && !doDeploy) {
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.portletReady.label", jParams.getLocale());
-                            String html = dspMsg + "<br/>" + JahiaResourceBundle.getJahiaInternalResource("toolbar.manager.button.download", jParams.getLocale()) + "<a href='" + url + "'> " + fileName + "</a>";
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getLocale());
+                            String html = dspMsg + "<br/>" + JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getLocale()) + "<a href='" + url + "'> " + fileName + "</a>";
                             response.getWriter().print(html);
                         } else {
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.portletDeployed.label", jParams.getLocale());

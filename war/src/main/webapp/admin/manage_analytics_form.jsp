@@ -66,7 +66,7 @@ function sendForm() {
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
+    <h2 class="edit"><fmt:message key="label.manageAnalytics"/>
         : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 <div id="main">
@@ -88,7 +88,7 @@ function sendForm() {
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
+        <fmt:message key="label.manageAnalytics"/>
     </div>
 </div>
 
@@ -211,7 +211,7 @@ function sendForm() {
  <div id="actionBar">
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=display")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=display")%>'><fmt:message key="label.backToMenu"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">

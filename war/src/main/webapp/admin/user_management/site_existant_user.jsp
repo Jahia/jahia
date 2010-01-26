@@ -146,7 +146,7 @@
   <div id="actionBar">
     <span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="label.backToMenu"/></a>
       </span>
      </span>
       <% if(selectedSite.intValue()>0) { %>

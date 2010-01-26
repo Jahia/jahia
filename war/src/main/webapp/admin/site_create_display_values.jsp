@@ -195,7 +195,7 @@
             <fmt:message key="org.jahia.admin.site.ManageSites.setAsDefaultSite.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
-            &nbsp;<c:if test="${defaultSite}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!defaultSite}"><fmt:message key="org.jahia.admin.no.label"/></c:if>
+            &nbsp;<c:if test="${defaultSite}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!defaultSite}"><fmt:message key="label.no"/></c:if>
         </td>
     </tr>
     <% if (ServicesRegistry.getInstance().getJahiaACLManagerService().getServerActionPermission("admin.pwdpolicy.ManagePasswordPolicies", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) { %>
@@ -204,7 +204,7 @@
             <fmt:message key="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
-            &nbsp;<c:if test="${enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.no.label"/></c:if>
+            &nbsp;<c:if test="${enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!enforcePasswordPolicy}"><fmt:message key="label.no"/></c:if>
         </td>
     </tr>
     <% } %>
@@ -277,7 +277,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;
+            <fmt:message key="label.email"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminEmail%>

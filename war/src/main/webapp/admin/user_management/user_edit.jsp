@@ -253,7 +253,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;
+        <fmt:message key="label.email"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" size="40" maxlength="255"
@@ -275,7 +275,7 @@
 </tr>
 <tr>
     <td align="right">
-        <label for="emailNotificationsDisabledView"><fmt:message key="org.jahia.admin.emailNotifications.label"/>&nbsp;</label>
+        <label for="emailNotificationsDisabledView"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
     </td>
     <td>
         <%
@@ -329,7 +329,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.confirmPassword.label"/>&nbsp;
+        <fmt:message key="label.comfirmPassword"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwdconfirm"

@@ -128,27 +128,27 @@ while (selectedNodeIter.hasNext()) {
                          mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}"
                          embedded="<%=embedded%>" multiple="<%=multiple%>"/>
 
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.createFolder"
+<internal:gwtResourceBundle resourceName="label.createFolder"
                             aliasResourceName="fm_newdir"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"
                             aliasResourceName="fm_newdirname"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newContent"
+<internal:gwtResourceBundle resourceName="label.newContent"
                             aliasResourceName="fm_newcontent"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newPage"
+<internal:gwtResourceBundle resourceName="label.newPage"
                             aliasResourceName="fm_newpage"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newMashup"
+<internal:gwtResourceBundle resourceName="label.newMashup"
                             aliasResourceName="fm_newmashup"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newRssMashup"
+<internal:gwtResourceBundle resourceName="label.newRssMashup"
                             aliasResourceName="fm_newrssmashup"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newGoogleGadgetMashup"
+<internal:gwtResourceBundle resourceName="label.newGoogleGadgetMashup"
                             aliasResourceName="fm_newgadgetmashup"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.copy"
+<internal:gwtResourceBundle resourceName="label.copy"
                             aliasResourceName="fm_copy"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.cut"
+<internal:gwtResourceBundle resourceName="label.cut"
                             aliasResourceName="fm_cut"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.paste"
+<internal:gwtResourceBundle resourceName="label.paste"
                             aliasResourceName="fm_paste"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.pasteReference"
+<internal:gwtResourceBundle resourceName="label.pasteReference"
                             aliasResourceName="fm_pasteref"/>
 <internal:gwtResourceBundle resourceName="label.lock"
                             aliasResourceName="fm_lock"/>
@@ -156,41 +156,41 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_unlock"/>
 <internal:gwtResourceBundle resourceName="label.remove"
                             aliasResourceName="fm_remove"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.rename"
+<internal:gwtResourceBundle resourceName="label.rename"
                             aliasResourceName="fm_rename"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.zip"
+<internal:gwtResourceBundle resourceName="label.zip"
                             aliasResourceName="fm_zip"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.unzip"
+<internal:gwtResourceBundle resourceName="label.unzip"
                             aliasResourceName="fm_unzip"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.download"
+<internal:gwtResourceBundle resourceName="label.download"
                             aliasResourceName="fm_download"/>
 <internal:gwtResourceBundle resourceName="label.preview"
                             aliasResourceName="fm_preview"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label"
                             aliasResourceName="fm_downloadMessage"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.upload"
+<internal:gwtResourceBundle resourceName="label.upload"
                             aliasResourceName="fm_upload"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.openIEFolder"
+<internal:gwtResourceBundle resourceName="label.openIEFolder"
                             aliasResourceName="fm_webfolder"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.webFolderMessage.label"
                             aliasResourceName="fm_webfolderMessage"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.thumbs"
+<internal:gwtResourceBundle resourceName="label.thumbs"
                             aliasResourceName="fm_thumbs"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.icons.detailed"
+<internal:gwtResourceBundle resourceName="label.icons.detailed"
                             aliasResourceName="fm_icons_detailed"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.list"
+<internal:gwtResourceBundle resourceName="label.list"
                             aliasResourceName="fm_list"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.crop"
+<internal:gwtResourceBundle resourceName="label.crop"
                             aliasResourceName="fm_crop"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.resize"
+<internal:gwtResourceBundle resourceName="label.resize"
                             aliasResourceName="fm_resize"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.rotate"
+<internal:gwtResourceBundle resourceName="label.rotate"
                             aliasResourceName="fm_rotate"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.rotateLeft"
+<internal:gwtResourceBundle resourceName="label.rotateLeft"
                             aliasResourceName="fm_rotateLeft"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.rotateRight"
+<internal:gwtResourceBundle resourceName="label.rotateRight"
                             aliasResourceName="fm_rotateRight"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.refresh"
+<internal:gwtResourceBundle resourceName="label.refresh"
                             aliasResourceName="fm_refresh"/>
 <internal:gwtResourceBundle resourceName="label.newCategory"
                             aliasResourceName="fm_newcategory"/>
@@ -300,11 +300,11 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_height"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.ratio.label"
                             aliasResourceName="fm_ratio"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.rename"
+<internal:gwtResourceBundle resourceName="label.rename"
                             aliasResourceName="fm_newname"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.mount"
+<internal:gwtResourceBundle resourceName="label.mount"
                             aliasResourceName="fm_mount"/>
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.unmount"
+<internal:gwtResourceBundle resourceName="label.unmount"
                             aliasResourceName="fm_unmount"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.mountpoint.label"
                             aliasResourceName="fm_mountpoint"/>
@@ -342,7 +342,7 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_information"/>
 <internal:gwtResourceBundle resourceName="label.properties"
                             aliasResourceName="fm_properties"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationsList.label"
+<internal:gwtResourceBundle resourceName="label.portletList"
                             aliasResourceName="fm_portlets"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.roles.label"
                             aliasResourceName="fm_roles"/>
@@ -498,11 +498,11 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_select_portlet"/>
 
 
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.portletReady.label"
+<internal:gwtResourceBundle resourceName="message.portletReady"
                             aliasResourceName="fm_portlet_ready"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deployNewComponents.label"
+<internal:gwtResourceBundle resourceName="label.deployNewPortlet"
                             aliasResourceName="fm_portlet_deploy"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deploy.preparewar.label"
+<internal:gwtResourceBundle resourceName="label.portletPrepareWar"
                             aliasResourceName="fm_portlet_preparewar"/>
 
 
@@ -579,9 +579,9 @@ while (selectedNodeIter.hasNext()) {
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
                             aliasResourceName="mw_save_as"/>
 
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"
+<internal:gwtResourceBundle resourceName="label.portletName"
                             aliasResourceName="mw_name"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationDesc.label"
+<internal:gwtResourceBundle resourceName="label.portletDescription"
                             aliasResourceName="mw_description"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
                             aliasResourceName="mw_finish_description"/>
@@ -640,4 +640,4 @@ while (selectedNodeIter.hasNext()) {
 <internal:gwtResourceBundle resourceName="label.addContent"
                             aliasResourceName="add_content_wizard_title"/>
 
-<internal:gwtResourceBundle resourceName="toolbar.manager.button.newMashup" aliasResourceName="mw_title"/>
+<internal:gwtResourceBundle resourceName="label.newMashup" aliasResourceName="mw_title"/>

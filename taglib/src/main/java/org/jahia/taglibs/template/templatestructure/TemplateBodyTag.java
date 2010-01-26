@@ -289,38 +289,38 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     private void addEditModeResources() {
         addGwtDictionaryMessage("fm_copyright", Jahia.COPYRIGHT_TXT + " " + Jahia.VERSION  + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber());
-        addGwtDictionaryMessage("fm_newdir", getJahiaInternalResourceValue("toolbar.manager.button.createFolder"));
+        addGwtDictionaryMessage("fm_newdir", getJahiaInternalResourceValue("label.createFolder"));
         addGwtDictionaryMessage("fm_newdirname", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"));
-        addGwtDictionaryMessage("fm_newcontent", getJahiaInternalResourceValue("toolbar.manager.button.newContent"));
-        addGwtDictionaryMessage("fm_newpage", getJahiaInternalResourceValue("toolbar.manager.button.newPage"));
-        addGwtDictionaryMessage("fm_newmashup", getJahiaInternalResourceValue("toolbar.manager.button.newMashup"));
-        addGwtDictionaryMessage("fm_newrssmashup", getJahiaInternalResourceValue("toolbar.manager.button.newRssMashup"));
-        addGwtDictionaryMessage("fm_newgadgetmashup", getJahiaInternalResourceValue("toolbar.manager.button.newGoogleGadgetMashup"));
-        addGwtDictionaryMessage("fm_copy", getJahiaInternalResourceValue("toolbar.manager.button.copy"));
-        addGwtDictionaryMessage("fm_cut", getJahiaInternalResourceValue("toolbar.manager.button.cut"));
-        addGwtDictionaryMessage("fm_paste", getJahiaInternalResourceValue("toolbar.manager.button.paste"));
-        addGwtDictionaryMessage("fm_pasteref", getJahiaInternalResourceValue("toolbar.manager.button.pasteReference"));
+        addGwtDictionaryMessage("fm_newcontent", getJahiaInternalResourceValue("label.newContent"));
+        addGwtDictionaryMessage("fm_newpage", getJahiaInternalResourceValue("label.newPage"));
+        addGwtDictionaryMessage("fm_newmashup", getJahiaInternalResourceValue("label.newMashup"));
+        addGwtDictionaryMessage("fm_newrssmashup", getJahiaInternalResourceValue("label.newRssMashup"));
+        addGwtDictionaryMessage("fm_newgadgetmashup", getJahiaInternalResourceValue("label.newGoogleGadgetMashup"));
+        addGwtDictionaryMessage("fm_copy", getJahiaInternalResourceValue("label.copy"));
+        addGwtDictionaryMessage("fm_cut", getJahiaInternalResourceValue("label.cut"));
+        addGwtDictionaryMessage("fm_paste", getJahiaInternalResourceValue("label.paste"));
+        addGwtDictionaryMessage("fm_pasteref", getJahiaInternalResourceValue("label.pasteReference"));
         addGwtDictionaryMessage("fm_lock", getJahiaInternalResourceValue("label.lock"));
         addGwtDictionaryMessage("fm_unlock", getJahiaInternalResourceValue("label.unlock"));
         addGwtDictionaryMessage("fm_remove", getJahiaInternalResourceValue("label.remove"));
-        addGwtDictionaryMessage("fm_rename", getJahiaInternalResourceValue("toolbar.manager.button.rename"));
-        addGwtDictionaryMessage("fm_zip", getJahiaInternalResourceValue("toolbar.manager.button.zip"));
-        addGwtDictionaryMessage("fm_unzip", getJahiaInternalResourceValue("toolbar.manager.button.unzip"));
-        addGwtDictionaryMessage("fm_download", getJahiaInternalResourceValue("toolbar.manager.button.download"));
+        addGwtDictionaryMessage("fm_rename", getJahiaInternalResourceValue("label.rename"));
+        addGwtDictionaryMessage("fm_zip", getJahiaInternalResourceValue("label.zip"));
+        addGwtDictionaryMessage("fm_unzip", getJahiaInternalResourceValue("label.unzip"));
+        addGwtDictionaryMessage("fm_download", getJahiaInternalResourceValue("label.download"));
         addGwtDictionaryMessage("fm_preview", getJahiaInternalResourceValue("label.preview"));
         addGwtDictionaryMessage("fm_downloadMessage", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label"));
-        addGwtDictionaryMessage("fm_upload", getJahiaInternalResourceValue("toolbar.manager.button.upload"));
-        addGwtDictionaryMessage("fm_webfolder", getJahiaInternalResourceValue("toolbar.manager.button.openIEFolder"));
+        addGwtDictionaryMessage("fm_upload", getJahiaInternalResourceValue("label.upload"));
+        addGwtDictionaryMessage("fm_webfolder", getJahiaInternalResourceValue("label.openIEFolder"));
         addGwtDictionaryMessage("fm_webfolderMessage", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.webFolderMessage.label"));
-        addGwtDictionaryMessage("fm_thumbs", getJahiaInternalResourceValue("toolbar.manager.button.thumbs"));
-        addGwtDictionaryMessage("fm_icons_detailed", getJahiaInternalResourceValue("toolbar.manager.button.icons.detailed"));
-        addGwtDictionaryMessage("fm_list", getJahiaInternalResourceValue("toolbar.manager.button.list"));
-        addGwtDictionaryMessage("fm_crop", getJahiaInternalResourceValue("toolbar.manager.button.crop"));
-        addGwtDictionaryMessage("fm_resize", getJahiaInternalResourceValue("toolbar.manager.button.resize"));
-        addGwtDictionaryMessage("fm_rotate", getJahiaInternalResourceValue("toolbar.manager.button.rotate"));
-        addGwtDictionaryMessage("fm_rotateLeft", getJahiaInternalResourceValue("toolbar.manager.button.rotateLeft"));
-        addGwtDictionaryMessage("fm_rotateRight", getJahiaInternalResourceValue("toolbar.manager.button.rotateRight"));
-        addGwtDictionaryMessage("fm_refresh", getJahiaInternalResourceValue("toolbar.manager.button.refresh"));
+        addGwtDictionaryMessage("fm_thumbs", getJahiaInternalResourceValue("label.thumbs"));
+        addGwtDictionaryMessage("fm_icons_detailed", getJahiaInternalResourceValue("label.icons.detailed"));
+        addGwtDictionaryMessage("fm_list", getJahiaInternalResourceValue("label.list"));
+        addGwtDictionaryMessage("fm_crop", getJahiaInternalResourceValue("label.crop"));
+        addGwtDictionaryMessage("fm_resize", getJahiaInternalResourceValue("label.resize"));
+        addGwtDictionaryMessage("fm_rotate", getJahiaInternalResourceValue("label.rotate"));
+        addGwtDictionaryMessage("fm_rotateLeft", getJahiaInternalResourceValue("label.rotateLeft"));
+        addGwtDictionaryMessage("fm_rotateRight", getJahiaInternalResourceValue("label.rotateRight"));
+        addGwtDictionaryMessage("fm_refresh", getJahiaInternalResourceValue("label.refresh"));
         addGwtDictionaryMessage("fm_newcategory", getJahiaInternalResourceValue("label.newCategory"));
 
         addGwtDictionaryMessage("fm_copying", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.copying.label"));
@@ -376,9 +376,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_width", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.width.label"));
         addGwtDictionaryMessage("fm_height", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.height.label"));
         addGwtDictionaryMessage("fm_ratio", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.ratio.label"));
-        addGwtDictionaryMessage("fm_newname", getJahiaInternalResourceValue("toolbar.manager.button.rename"));
-        addGwtDictionaryMessage("fm_mount", getJahiaInternalResourceValue("toolbar.manager.button.mount"));
-        addGwtDictionaryMessage("fm_unmount", getJahiaInternalResourceValue("toolbar.manager.button.unmount"));
+        addGwtDictionaryMessage("fm_newname", getJahiaInternalResourceValue("label.rename"));
+        addGwtDictionaryMessage("fm_mount", getJahiaInternalResourceValue("label.mount"));
+        addGwtDictionaryMessage("fm_unmount", getJahiaInternalResourceValue("label.unmount"));
         addGwtDictionaryMessage("fm_mountpoint", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mountpoint.label"));
         addGwtDictionaryMessage("fm_mountDisclaimerLabel", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer.label"));
         addGwtDictionaryMessage("fm_mountDisclaimer", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer"));
@@ -397,7 +397,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_nodes", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label"));
         addGwtDictionaryMessage("fm_information", getJahiaInternalResourceValue("label.information"));
         addGwtDictionaryMessage("fm_properties", getJahiaInternalResourceValue("label.properties"));
-        addGwtDictionaryMessage("fm_portlets", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationsList.label"));
+        addGwtDictionaryMessage("fm_portlets", getJahiaInternalResourceValue("label.portletList"));
         addGwtDictionaryMessage("fm_roles", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.roles.label"));
         addGwtDictionaryMessage("fm_modes", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.modes.label"));
         addGwtDictionaryMessage("fm_authorizations", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.authorizations.label"));
@@ -465,9 +465,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_repository_categoryRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"));
         addGwtDictionaryMessage("fm_repository_tagRepository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.tagRepository.label"));
 
-        addGwtDictionaryMessage("fm_portlet_ready", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.portletReady.label"));
-        addGwtDictionaryMessage("fm_portlet_deploy", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.deployNewComponents.label"));
-        addGwtDictionaryMessage("fm_portlet_preparewar", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.deploy.preparewar.label"));
+        addGwtDictionaryMessage("fm_portlet_ready", getJahiaInternalResourceValue("message.portletReady"));
+        addGwtDictionaryMessage("fm_portlet_deploy", getJahiaInternalResourceValue("label.deployNewPortlet"));
+        addGwtDictionaryMessage("fm_portlet_preparewar", getJahiaInternalResourceValue("label.portletPrepareWar"));
 
 
         addGwtDictionaryMessage("fm_login", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.login.label"));
@@ -508,8 +508,8 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("label.finish"));
         addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
 
-        addGwtDictionaryMessage("mw_name", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationName.label"));
-        addGwtDictionaryMessage("mw_description", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationDesc.label"));
+        addGwtDictionaryMessage("mw_name", getJahiaInternalResourceValue("label.portletName"));
+        addGwtDictionaryMessage("mw_description", getJahiaInternalResourceValue("label.portletDescription"));
         addGwtDictionaryMessage("mw_finish_description", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
         addGwtDictionaryMessage("mw_no_role", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.any"));
 

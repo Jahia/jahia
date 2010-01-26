@@ -699,6 +699,7 @@
                 <ref bean="org.jahia.toolbar.item.publish"/>
                 <ref bean="org.jahia.toolbar.item.publishall"/>
                 <ref bean="org.jahia.toolbar.item.unpublish"/>
+                <ref bean="org.jahia.toolbar.item.reversepublish"/>
                 <ref bean="org.jahia.toolbar.item.viewPublishStatus"/>
             </list>
         </property>
@@ -2149,6 +2150,16 @@
         </property>
         <property name="titleKey" value="toolbar.edit.button.publishall"/>
         <property name="descriptionKey" value="toolbar.edit.button.publishall"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.reversepublish" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReversePublishActionItem"/>
+        </property>
+        <property name="titleKey" value="toolbar.edit.button.publish"/>
+        <property name="descriptionKey" value="toolbar.edit.button.publish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
     </bean>

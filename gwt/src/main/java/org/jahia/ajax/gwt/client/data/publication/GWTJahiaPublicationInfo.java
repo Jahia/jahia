@@ -4,9 +4,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +21,7 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
     public static final int UNPUBLISHABLE = 3;
     public static final int LIVE_MODIFIED = 4;
 
-
+    private Set<Integer> subnodesStatus = new HashSet<Integer>();
 
     public GWTJahiaPublicationInfo() {
     }
@@ -50,12 +48,12 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
         set("status", status);
     }
 
-    public Integer getSubnodesStatus() {
-        return get("subnodesStatus");
+    public Set<Integer> getSubnodesStatus() {
+        return subnodesStatus;
     }
 
-    public void setSubnodesStatus(Integer status) {
-        set("subnodesStatus", status);
+    public void addSubnodesStatus(Integer status) {
+        subnodesStatus.add(status);
     }
 
     public Boolean isCanPublish() {

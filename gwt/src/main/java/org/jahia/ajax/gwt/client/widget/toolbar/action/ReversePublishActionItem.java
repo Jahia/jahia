@@ -1,9 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,9 +14,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 * Time: 6:58:56 PM
 * To change this template use File | Settings | File Templates.
 */
-public class PublishActionItem extends BaseActionItem {
+public class ReversePublishActionItem extends BaseActionItem implements IsSerializable {
     public void onComponentSelection() {
-        EditActions.publish(linker);
+        EditActions.reversePublish(linker); 
     }
 
     /**
@@ -36,8 +38,7 @@ public class PublishActionItem extends BaseActionItem {
         }
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-            setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED ||
-                    info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED)));
+            setEnabled(info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.LIVE_MODIFIED));
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }
     }

@@ -110,7 +110,7 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                     box.setStyleAttribute("text-color", "black");
                     box.setStyleAttribute("font-weight", "bold");
                     box.setStyleAttribute("text-align", "center");
-                    box.setWidth(150);
+                    box.setWidth(250);
                     infoLayer.add(box);
 
                     infoLayer.setBorders(true);
@@ -140,7 +140,7 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                     }
 
                     infoLayer.setLayout(new CenterLayout());
-                    HtmlContainer box = new HtmlContainer("Live modified");
+                    HtmlContainer box = new HtmlContainer("Modified in live");
                     box.addStyleName("x-view-item");
                     box.setStyleAttribute("background-color", "white");
                     box.setStyleAttribute("color", "blue");
@@ -150,7 +150,7 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                     infoLayer.add(box);
 
                     infoLayer.setBorders(true);
-                    infoLayer.setStyleAttribute("background-color", "red");
+                    infoLayer.setStyleAttribute("background-color", "blue");
                     infoLayer.setStyleAttribute("opacity", "0.7");
                 }
 

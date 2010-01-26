@@ -215,10 +215,10 @@ public class JCRPublicationService extends JahiaService {
             }
         }
         for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
-            if (!jcrNodeWrapper.isCheckedOut()) {
-                jcrNodeWrapper.checkout();
-            }
             if (!jcrNodeWrapper.hasProperty("j:published") || !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
+                if (!jcrNodeWrapper.isCheckedOut()) {
+                    jcrNodeWrapper.checkout();
+                }
                 jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
             }
         }
@@ -267,7 +267,7 @@ public class JCRPublicationService extends JahiaService {
                 Node liveNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
 
 
-                if (node.isNodeType("jmix:lastPublished")) {
+                if (node.isNodeType("jmix:lastPublished") && node.hasProperty("j:lastPublished")) {
                     Date modificationDate = node.getProperty("jcr:lastModified").getDate().getTime();
                     Date publicationDate = node.getProperty("j:lastPublished").getDate().getTime();
 //                print(node.getVersionHistory());
@@ -275,12 +275,15 @@ public class JCRPublicationService extends JahiaService {
                         continue;
                     }
                 }
-                if (!node.isCheckedOut()) {
-                    node.checkout();
+
+                if (!sourceSession.getWorkspace().getName().equals("live")) {
+                    if (!node.isCheckedOut()) {
+                        node.checkout();
+                    }
+                    node.setProperty("j:lastPublished", c);
+                    node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+                    sourceSession.save();
                 }
-                node.setProperty("j:lastPublished", c);
-                node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
-                sourceSession.save();
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
@@ -594,15 +597,23 @@ public class JCRPublicationService extends JahiaService {
                 logger.error("Null modifieddate for staged node " + stageNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {
-                long mod = stageNode.getLastModifiedAsDate().getTime();
-                long pub = stageNode.getLastPublishedAsDate().getTime();
-                long liveMod = publishedNode.getLastModifiedAsDate().getTime();
-                if (mod > pub) {
+                Date modProp = stageNode.getLastModifiedAsDate();
+                Date pubProp = stageNode.getLastPublishedAsDate();
+                Date liveModProp = publishedNode.getLastModifiedAsDate();
+                if (modProp == null || pubProp == null || liveModProp == null) {
+                    logger.warn(path + " : Some property is null : "+modProp + "/"+pubProp + "/"+ liveModProp);
                     info.setStatus(PublicationInfo.MODIFIED);
-                } else if (liveMod > pub) {
-                    info.setStatus(PublicationInfo.LIVE_MODIFIED);
                 } else {
-                    info.setStatus(PublicationInfo.PUBLISHED);
+                    long mod = modProp.getTime();
+                    long pub = pubProp.getTime();
+                    long liveMod = liveModProp.getTime();
+                    if (mod > pub) {
+                        info.setStatus(PublicationInfo.MODIFIED);
+                    } else if (liveMod > pub) {
+                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
+                    } else {
+                        info.setStatus(PublicationInfo.PUBLISHED);
+                    }
                 }
             }
         }

@@ -134,7 +134,33 @@ public class EditActions {
                         }
                     }
             );
+        }
+    }
 
+    /**
+     * Publish selected content
+     *
+     * @param linker
+     */
+    public static void reversePublish(final Linker linker) {
+        GWTJahiaNode selectedNode = linker.getSelectedNode();
+        if (selectedNode == null) {
+            selectedNode = linker.getMainNode();
+        }
+        if (selectedNode != null) {
+            final GWTJahiaNode s = selectedNode;
+
+            JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, "", true, new AsyncCallback() {
+                public void onFailure(Throwable caught) {
+                    Log.error("Cannot publish", caught);
+                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+                }
+
+                public void onSuccess(Object result) {
+                    Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
+                    linker.refresh();
+                }
+            });
         }
     }
 
@@ -268,7 +294,7 @@ public class EditActions {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
                     List<String> selectedPaths = new ArrayList<String>();
-                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, true, comments.getValue(), new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, true, comments.getValue(), false, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -400,7 +426,7 @@ public class EditActions {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
-                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, comments.getValue(), new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, comments.getValue(), false, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

@@ -6,6 +6,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -51,24 +52,16 @@ public class PublicationHelper {
     }
 
     public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
-
-
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
         for (String p : pubInfo.getReferences().keySet()) {
             PublicationInfo pi = pubInfo.getReferences().get(p);
             gwtInfo.add(convert(p, pi));
         }
 
-        int subStatus=0;
-
         for (Map.Entry<String, PublicationInfo> entry : pubInfo.getSubnodes().entrySet()) {
             PublicationInfo pi = entry.getValue();
-            if (pi.getStatus() > subStatus) {
-                subStatus = pi.getStatus();
-            }
+            gwtInfo.addSubnodesStatus(pi.getStatus());
         }
-
-        gwtInfo.setSubnodesStatus(subStatus);
 
         return gwtInfo;
     }
@@ -80,12 +73,17 @@ public class PublicationHelper {
      *
      * @param path          Path of the node to publish
      * @param languages     Set of languages to publish if null publish all languages
+     * @param reverse
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree) throws GWTJahiaServiceException {
+    public void publish(String path, Set<String> languages, boolean allSubTree, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+            if (reverse) {
+                publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
+            } else {
+                publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+            }
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -104,7 +102,7 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
+    public void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent, JCRSessionWrapper session) throws GWTJahiaServiceException {
         // TODO implement me!
     }
 

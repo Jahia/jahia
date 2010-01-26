@@ -59,6 +59,9 @@ public class FileSystemScriptResolver implements ScriptResolver {
                     SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                             st.getAlias().replace(":", "_"), context);
                     for (JahiaTemplatesPackage aPackage : sortedPackages) {
+                        if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
+                            continue;
+                        }
                         String currentTemplatePath = aPackage.getRootFolderPath();
                         String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
                         if (templatePath != null) {
@@ -75,6 +78,9 @@ public class FileSystemScriptResolver implements ScriptResolver {
                 SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                         resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
                 for (JahiaTemplatesPackage aPackage : sortedPackages) {
+                    if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
+                        continue;
+                    }
                     String currentTemplatePath = aPackage.getRootFolderPath();
                     String templatePath = getTemplatePath(resource.getTemplateType(), template, resource.getWrappedMixinType(),
                                                    currentTemplatePath);

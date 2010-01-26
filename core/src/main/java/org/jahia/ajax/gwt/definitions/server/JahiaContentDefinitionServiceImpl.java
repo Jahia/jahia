@@ -96,13 +96,14 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getAvailableMixin(type, retrieveParamBean());
     }
 
-    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) {
+    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException {
         ParamBean ctx = retrieveParamBean();
         try {
-            JCRNodeWrapper nodeWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNode(node.getPath());
+            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
             ctx.setAttribute("contextNode", nodeWrapper);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException(e.toString());
         }
         return contentDefinition.getAvailableMixin(getNodeType(node.getNodeTypes().iterator().next()), ctx);
     }

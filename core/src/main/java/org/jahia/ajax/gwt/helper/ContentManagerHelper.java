@@ -416,7 +416,7 @@ public class ContentManagerHelper {
 
         try {
             for (String aNode : pathsToCopy) {
-                JCRNodeWrapper node = jcrService.getSessionFactory().getCurrentUserSession().getNode(aNode);
+                JCRNodeWrapper node = currentUserSession.getNode(aNode);
                 String name = newName != null ? newName : node.getName();
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     if (targetParent.isCollection()) {

@@ -89,6 +89,6 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
 
-    List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node);
+    List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException;
 
 }

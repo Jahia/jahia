@@ -331,7 +331,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final ParamBean jParams = retrieveParamBean();
         final GWTJahiaNode node = navigation.getNode(path, retrieveCurrentSession());
         try {
-            JCRSessionWrapper sessionWrapper = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession("default", locale);
+            JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(node.getPath());
             jParams.setAttribute("contextNode", nodeWrapper);
         } catch (RepositoryException e) {

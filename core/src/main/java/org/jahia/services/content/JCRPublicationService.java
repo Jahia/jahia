@@ -214,7 +214,6 @@ public class JCRPublicationService extends JahiaService {
                 logger.warn("Cannot publish node at : " + node);
             }
         }
-        Calendar c = new GregorianCalendar();
         for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
             if (!jcrNodeWrapper.isCheckedOut()) {
                 jcrNodeWrapper.checkout();
@@ -222,8 +221,6 @@ public class JCRPublicationService extends JahiaService {
             if (!jcrNodeWrapper.hasProperty("j:published") || !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
                 jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
             }
-            jcrNodeWrapper.setProperty("j:lastPublished", c);
-            jcrNodeWrapper.setProperty("j:lastPublishedBy", destinationSession.getUserID());
         }
         sourceNode.getSession().save();
         system = true;
@@ -256,6 +253,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void mergeToLiveWorkspace(final List<JCRNodeWrapper> toPublish, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
+        Calendar c = new GregorianCalendar();
         for (final JCRNodeWrapper node : toPublish) {
             try {
                 final String path = node.getPath();
@@ -273,10 +271,16 @@ public class JCRPublicationService extends JahiaService {
                     Date modificationDate = node.getProperty("jcr:lastModified").getDate().getTime();
                     Date publicationDate = node.getProperty("j:lastPublished").getDate().getTime();
 //                print(node.getVersionHistory());
-                    if (publicationDate.getTime() == modificationDate.getTime()) {
+                    if (publicationDate.getTime() >= modificationDate.getTime()) {
                         continue;
                     }
                 }
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
+                node.setProperty("j:lastPublished", c);
+                node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+                sourceSession.save();
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
@@ -330,6 +334,16 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void cloneToLiveWorkspace(final List<JCRNodeWrapper> toPublish, final List<JCRNodeWrapper> pruneNodes, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
+        Calendar c = new GregorianCalendar();
+        for (JCRNodeWrapper node : toPublish) {
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+            node.setProperty("j:lastPublished", c);
+            node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+        }
+        sourceSession.save();
+
         final JCRNodeWrapper sourceNode = toPublish.iterator().next();
 
         JCRNodeWrapper parent = sourceNode.getParent();

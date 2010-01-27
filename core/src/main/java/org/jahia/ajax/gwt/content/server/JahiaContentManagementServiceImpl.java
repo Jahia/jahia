@@ -371,7 +371,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, String local) throws GWTJahiaServiceException {
-        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), retrieveCurrentSession());
+        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(local)));
     }
 
     /**

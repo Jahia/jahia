@@ -36,20 +36,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="searchresults.css"/>
 
-<style type="text/css">
-<!--
-.searchHighlightedText {
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
-	background:#FFFF00 none repeat scroll 0 0;
-	font-size:larger;
-	font-weight:bold;
-}
--->
-</style>
 <c:if test="${renderContext.editMode}">
 	<fieldset>
 		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType))}</legend>

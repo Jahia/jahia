@@ -2,25 +2,6 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
 
 img,body,html{border:0;}
 
-#bodywrapper input,
-#bodywrapper select,
-#bodywrapper textarea {
-	background-color:transparent;
-	background:#f6f6f6 url(../img/input_bg.png) repeat-x top left;
-	border:1px solid #ccc;
-	color:#666;
-	padding:4px 5px;
-	background-color:#f6f6f6;
-}
-
-
-#bodywrapper input.gobutton{
-	background:none;
-	border:none;
-	margin:5px 0;
-	padding:0;
-	width:auto;
-}
 /******************************************************************************
 * Body
 ******************************************************************************/
@@ -475,6 +456,25 @@ shortcuts
 }
 #bodywrapper p.field{
 	margin-bottom:0.2em
+}
+#bodywrapper input,
+#bodywrapper select,
+#bodywrapper textarea {
+	background-color:transparent;
+	background:#f6f6f6 url(../img/input_bg.png) repeat-x top left;
+	border:1px solid #ccc;
+	color:#666;
+	padding:4px 5px;
+	background-color:#f6f6f6;
+}
+
+
+#bodywrapper input.gobutton{
+	background:none;
+	border:none;
+	margin:5px 0;
+	padding:0;
+	width:auto;
 }
 /******************************************************************************
 *  Images

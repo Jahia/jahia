@@ -1,11 +1,21 @@
 /******************************************************************************
 *  Template search results
 ******************************************************************************/
+#bodywrapper  .searchHighlightedText {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:#FFFF00 none repeat scroll 0 0;
+	font-size:larger;
+	font-weight:bold;
+}
+
 #bodywrapper .resultsList ol {
 	margin:1em 1em 1em 3em;
 }
 #bodywrapper .resultsList li {
 	margin-bottom:1em;
+	padding:0.5em 0;
 	border-bottom:1px solid #ccc;
 	list-style:decimal
 }
@@ -20,12 +30,14 @@
 
 }
 #bodywrapper .resultsList .resultsListFileType {
-	font-size:80%;
-	padding: 0.2em;
-	color:#900;
-	background-color:#ccc;
 	display:inline;
-	margin:0 0.2em;
+	background-color:#FFE45C ;
+	border:1px solid #FED22F;
+	font-size-adjust:none;
+	padding:1px 8px;
+	text-align:center;
+	vertical-align:middle;
+	width:auto;
 }
 #bodywrapper .resultsList .resultsListDate {
 	font-size:80%;

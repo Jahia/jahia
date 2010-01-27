@@ -32,10 +32,13 @@
 
 --%>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
-<utility:gwtResourceBundle resourceName="label.save"/>
-<utility:gwtResourceBundle resourceName="label.cancel"/>
+<utility:gwtResourceBundle resourceName="label.save" aliasResourceName="cancel"/>
+
+<utility:gwtResourceBundle resourceName="label.cancel" aliasResourceName="save"/>
+
 <utility:gwtResourceBundle resourceName="label.enableAdvancedPreviewSettings"
                            aliasResourceName="advp_enable"/>
+
 <utility:gwtResourceBundle resourceName="label.username" aliasResourceName="advp_username"/>
 <utility:gwtResourceBundle resourceName="label.dateOfPreview" aliasResourceName="advp_dateofpreview"/>
 

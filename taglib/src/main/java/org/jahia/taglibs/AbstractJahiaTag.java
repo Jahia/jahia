@@ -157,7 +157,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected String getJahiaInternalResourceValue(String key) {
         return getJahiaInternalResourceValue(key, true);
     }
-    
+
     protected String getJahiaInternalResourceValue(String key, boolean useUILocale) {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
@@ -166,7 +166,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         HttpSession session = pageContext.getSession();
         if (session != null) {
             if (session.getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
-                            : ProcessingContext.SESSION_LOCALE) != null) {
+                    : ProcessingContext.SESSION_LOCALE) != null) {
                 currentLocale = (Locale) session
                         .getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
                                 : ProcessingContext.SESSION_LOCALE);
@@ -201,13 +201,13 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected ResourceBundle retrieveResourceBundle() {
         ResourceBundle bundle = null;
         final LocalizationContext localizationCtx = BundleSupport.getLocalizationContext(pageContext);
-        if (localizationCtx!=null) {
+        if (localizationCtx != null) {
             bundle = localizationCtx.getResourceBundle();
         }
         if (bundle == null) {
             bundle = new JahiaResourceBundle(resourceBundle,
                     getRenderContext().getMainResourceLocale(), getRenderContext()
-                            .getSite().getTemplatePackageName()); 
+                            .getSite().getTemplatePackageName());
         }
         return bundle;
     }
@@ -243,25 +243,25 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected ProcessingContext getProcessingContext() {
         return Utils.getProcessingContext(pageContext);
     }
-    
+
     /**
      * Returns an instance of the current {@link RenderContext}.
-     * 
+     *
      * @return an instance of the current {@link RenderContext}
      */
     protected final RenderContext getRenderContext() {
         return (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
     }
-    
+
     /**
      * Returns the {@link Resource}, currently being rendered.
-     * 
+     *
      * @return the {@link Resource}, currently being rendered
      */
     protected final Resource getCurrentResource() {
         return (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
     }
-    
+
     /**
      * Returns current {@link JahiaData} instance.
      *
@@ -308,14 +308,18 @@ public class AbstractJahiaTag extends BodyTagSupport {
         if (dictionaryMap != null) {
             Iterator<String> keys = dictionaryMap.keySet().iterator();
             while (keys.hasNext()) {
-                String name = keys.next().toString();
-                Object value = dictionaryMap.get(name);
-                if (value != null) {
-                    s.append(name).append(":\"").append(value.toString()).append("\"");
-                    if (keys.hasNext()) {
-                        s.append(",");
+                String name = keys.next();
+                if (name != null && name.indexOf(".") < 0) {
+                    Object value = dictionaryMap.get(name);
+                    if (value != null) {
+                        s.append(name).append(":\"").append(value.toString()).append("\"");
+                        if (keys.hasNext()) {
+                            s.append(",");
+                        }
+                        s.append("\n");
                     }
-                    s.append("\n");
+                }else{
+                    logger.error(name+" is not allowed as gwt resource bundles key because it contains '.' .");
                 }
             }
         }
@@ -403,7 +407,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     /**
      * Generates the language switching link for the specified language.
-     * 
+     *
      * @param langCode the language to generate a link for
      * @return the language switching link for the specified language
      */
@@ -419,23 +423,23 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     /**
      * Generates the language switching link for the specified node and language.
-     * 
-     * @param node the node to generate the link for  
+     *
+     * @param node     the node to generate the link for
      * @param langCode the language to generate a link for
      * @return the language switching link for the specified language
      */
     protected final String generateNodeLangSwitchLink(JCRNodeWrapper node, String langCode) {
-        if(node == null){
+        if (node == null) {
             logger.warn("Node not specified. Language link will be generated for current node.");
             return generateCurrentNodeLangSwitchLink(langCode);
         }
         RenderContext ctx = getRenderContext();
         if (ctx != null) {
-            Resource resource = new Resource(node,"html",null,null);
-            URLGenerator url = new URLGenerator(ctx,resource, JCRStoreService.getInstance());
+            Resource resource = new Resource(node, "html", null, null);
+            URLGenerator url = new URLGenerator(ctx, resource, JCRStoreService.getInstance());
             return url.getLanguages().get(langCode);
         } else {
-            logger.error("Unable to get lang["+langCode+"] link for home page");
+            logger.error("Unable to get lang[" + langCode + "] link for home page");
             return "";
         }
 
@@ -443,7 +447,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     /**
      * Returns the current user.
-     * 
+     *
      * @return the current user
      */
     protected final JahiaUser getUser() {

@@ -32,9 +32,9 @@
 package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tika.io.IOUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -432,9 +432,6 @@ public class RulesListener extends DefaultEventListener {
     public Map<String, Object> getGlobals(String username, List<Updateable> delayedUpdates) {
         Map<String, Object> globals = new HashMap<String, Object>();
 
-        globals.put("service", ruleService);
-        globals.put("imageService", ImageService.getInstance());
-        globals.put("extractionService", extractionService);
         globals.put("logger", logger);
         globals.put("user", new User(username));
         globals.put("workspace", workspace);
@@ -447,6 +444,10 @@ public class RulesListener extends DefaultEventListener {
 
     public void addRulesDescriptor(File file) {
         dslFiles.add(file);
+    }
+
+    public void setGlobalObjects(Map<String, Object> globalObjects) {
+        this.globalObjects = globalObjects;
     }
 
     public void addGlobalObject(String key, Object value) {

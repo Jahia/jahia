@@ -60,9 +60,6 @@ import java.util.Iterator;
 public class ImageService {
     private static ImageService instance;
 
-    private ImageService() {
-    }
-
     public static synchronized ImageService getInstance() {
         if (instance == null) {
             instance = new ImageService();

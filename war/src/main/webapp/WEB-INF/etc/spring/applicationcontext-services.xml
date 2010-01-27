@@ -398,55 +398,11 @@
 
     </bean>
 
-    <bean id="extraction" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">
-        <property name="textFilterClasses">
-            <value>org.apache.jackrabbit.extractor.MsWordTextExtractor,
-                   org.apache.jackrabbit.extractor.MsExcelTextExtractor,
-                   org.apache.jackrabbit.extractor.MsPowerPointTextExtractor,
-                   org.apache.jackrabbit.extractor.PdfTextExtractor,
-                   org.apache.jackrabbit.extractor.OpenOfficeTextExtractor,
-                   org.apache.jackrabbit.extractor.RTFTextExtractor,
-                   org.apache.jackrabbit.extractor.HTMLTextExtractor,
-                   org.apache.jackrabbit.extractor.XMLTextExtractor,
-                   org.apache.jackrabbit.extractor.PlainTextExtractor
-            </value>
-        </property>
-        <property name="extractors">
-            <map>
-                <entry key="application/msword">
-                    <bean class="org.jahia.services.content.rules.OfficeExtractor"/>
-                </entry>
-
-                <entry key="image/jpeg">
-                    <bean class="org.jahia.services.content.rules.ExifExtractor"/>
-                </entry>
-
-                <entry key="application/pdf">
-                    <bean class="org.jahia.services.content.rules.PdfExtractor"/>
-                </entry>
-            </map>
-        </property>
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-    </bean>
-
     <bean id="org.jahia.services.tasks.TaskService" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.tasks.TaskService">
             	<property name="groupManager" ref="JahiaGroupManagerService"/>
                 <property name="userManager" ref="JahiaUserManagerService"/>
-            </bean>
-        </property>
-    </bean>
-    
-    <bean id="org.jahia.services.content.rules.Service" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.content.rules.Service" factory-method="getInstance">            	
-            	<property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-                <property name="userManager" ref="JahiaUserManagerService"/>
-                <property name="siteUserManager" ref="JahiaSiteUserManagerService"/>
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="schedulerService" ref="SchedulerService" />
-                <property name="sitesService" ref="JahiaSitesService" />
             </bean>
         </property>
     </bean>

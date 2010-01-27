@@ -112,6 +112,13 @@
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}"/>
+                            <property name="globalObjects">
+                                <map>
+                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
+                                    <entry key="imageService" value-ref="org.jahia.services.content.rules.ImageService"/>
+                                    <entry key="extractionService" value-ref="org.jahia.services.content.rules.ExtractionService"/>
+                                </map>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
@@ -129,6 +136,13 @@
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}" />
+                            <property name="globalObjects">
+                                <map>
+                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
+                                    <entry key="imageService" value-ref="org.jahia.services.content.rules.ImageService"/>
+                                    <entry key="extractionService" value-ref="org.jahia.services.content.rules.ExtractionService"/>
+                                </map>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.content.CacheListener"/>
                         <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
@@ -217,5 +231,49 @@
                 <entry key="resourceBundle" value-ref="rbInitializer"/>
             </map>
         </property>
-    </bean>    
+    </bean>
+    
+    <bean id="org.jahia.services.content.rules.ImageService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.content.rules.ImageService" factory-method="getInstance"/>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.services.content.rules.Service" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.content.rules.Service" factory-method="getInstance">
+            	<property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+                <property name="userManager" ref="JahiaUserManagerService"/>
+                <property name="siteUserManager" ref="JahiaSiteUserManagerService"/>
+                <property name="cacheService" ref="JahiaCacheService" />
+                <property name="schedulerService" ref="SchedulerService" />
+                <property name="sitesService" ref="JahiaSitesService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.services.content.rules.ExtractionService" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">
+        <property name="textFilterClasses">
+            <value></value>
+        </property>
+        <property name="extractors">
+            <map>
+                <entry key="application/msword">
+                    <bean class="org.jahia.services.content.rules.OfficeExtractor"/>
+                </entry>
+
+                <entry key="image/jpeg">
+                    <bean class="org.jahia.services.content.rules.ExifExtractor"/>
+                </entry>
+
+                <entry key="application/pdf">
+                    <bean class="org.jahia.services.content.rules.PdfExtractor"/>
+                </entry>
+            </map>
+        </property>
+        <property name="jcrTemplate" ref="jcrTemplate"/>
+    </bean>
+
+
+
 </beans>

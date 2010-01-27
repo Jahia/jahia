@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="article.css"/>
 
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
 
@@ -14,7 +15,7 @@
 <c:forEach items="${currentNode.editableChildren}" var="paragraph">
     <template:module node="${currentNode.properties.paragraph}" template="default"/>
 </c:forEach>
-<div>
+<div class="tagthisarticle">
 	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
 	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>
 </div>

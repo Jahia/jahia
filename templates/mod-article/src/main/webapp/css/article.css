@@ -1,0 +1,12 @@
+#bodywrapper .tagthisarticle span span {
+background:transparent url(img/article-tag.gif) no-repeat scroll 0 70%;
+display:inline;
+margin-right:8px;
+padding:5px 0 5px 18px;
+}
+#bodywrapper .tagthisarticle  {
+margin:0.5em 0;
+}
+#bodywrapper .tagthisarticle form {
+margin:0.5em 0;
+}

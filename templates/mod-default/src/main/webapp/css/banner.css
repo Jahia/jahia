@@ -4,6 +4,7 @@
     width: 100%;
     overflow: hidden;
     display: block;
+	margin:0.5em 0;
 }
 
 #bodywrapper .banner-text {

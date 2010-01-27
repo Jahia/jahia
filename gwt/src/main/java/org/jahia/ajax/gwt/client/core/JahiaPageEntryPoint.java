@@ -62,8 +62,6 @@ public abstract class JahiaPageEntryPoint extends CommonEntryPoint {
         // init javascript api
         JavaScriptApi.init();
 
-        initJavaScriptApi();
-
         loadJahiaModules(RootPanel.getBodyElement());
 
         instance = this;
@@ -166,12 +164,6 @@ public abstract class JahiaPageEntryPoint extends CommonEntryPoint {
     private Map<String, List<RootPanel>> getRootPanels(Element element) {
         return TemplatesDOMUtil.getAllJahiaTypedRootPanels(element);
     }
-
-
-    private native void initJavaScriptApi() /*-{
-        // define a static JS function with a friendly name
-        $wnd.loadRSS = function (elementId, url, numberPage) {@org.jahia.ajax.gwt.client.module.RSSJahiaModule::loadRSS(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(elementId, url, numberPage); };
-    }-*/;
 
 
 }

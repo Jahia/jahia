@@ -90,11 +90,26 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         return buildJahiaData(pid, mode, false);
     }
 
+    /**
+     * Retrive current session
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     protected JCRSessionWrapper retrieveCurrentSession() throws GWTJahiaServiceException {
+        return retrieveCurrentSession(getLocale());
+    }
+
+    /**
+     * Retrieve current session by locale
+     * @param locale
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    protected JCRSessionWrapper retrieveCurrentSession(Locale locale) throws GWTJahiaServiceException {
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession("default", getLocale(), null);
+            return JCRSessionFactory.getInstance().getCurrentUserSession("default", locale, null);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e,e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }

@@ -342,7 +342,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), jParams);
 
         // get properties
-        final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, retrieveCurrentSession());
+        final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, retrieveCurrentSession(locale));
 
         final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);

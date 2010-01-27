@@ -236,7 +236,7 @@
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>&nbsp;
+            <fmt:message key="label.language"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=selectedLocale.getDisplayName(jParams.getUILocale())%>

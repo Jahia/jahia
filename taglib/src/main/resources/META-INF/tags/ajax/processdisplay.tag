@@ -63,7 +63,7 @@
                             aliasResourceName="pd_filter_owner"/>
 <internal:gwtResourceBundle resourceName="label.status"
                             aliasResourceName="pd_filter_status"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.type.all"
+<internal:gwtResourceBundle resourceName="label.all"
                             aliasResourceName="pd_type_all"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.type.workflow"
                             aliasResourceName="pd_type_workflow"/>

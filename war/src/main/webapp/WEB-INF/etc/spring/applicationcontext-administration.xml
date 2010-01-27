@@ -205,7 +205,7 @@
         <property name="permissionName" value="admin.integrity.IntegrityChecks" />
         <property name="name" value="integrity" />
         <property name="icon" value="text_ok" />
-        <property name="label" value="label.integrity.check" />
+        <property name="label" value="label.integrityCheck" />
         <property name="urlType" value="struts" />
         <property name="urlAction" value="IntegrityChecks" />
         <property name="urlParams" value="&amp;group=integrity&amp;method=display" />

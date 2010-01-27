@@ -237,7 +237,7 @@ This is the centralized place where all tiles definitions should be defined.
   <!-- Integrity checks -->
   <definition name="admin.integrity.main" extends="default.layout">
       <put name="body-content" value="/views/administration/integrity/main.jsp"/>
-      <put name="dialogTitle" type="string" value="label.integrity.check"/>
+      <put name="dialogTitle" type="string" value="label.integrityCheck"/>
    </definition>
 
 </tiles-definitions>

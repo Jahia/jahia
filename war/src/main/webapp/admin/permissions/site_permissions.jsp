@@ -125,7 +125,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('tools')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.tools.label"/></a>
+                                <a href="#" onclick="changePermissionGroup('tools')"><fmt:message key="label.tools"/></a>
                               </span>
                 </div>
             </div>
@@ -161,7 +161,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('integrity')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.integrity.label"/></a>
+                               <a href="#" onclick="changePermissionGroup('integrity')"><fmt:message key="label.integrityCheck"/></a>
                               </span>
                 </div>
             </div>

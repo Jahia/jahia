@@ -93,7 +93,7 @@
                                     <tr>
                                         <th>
                                             <fmt:message
-                                                    key="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>
+                                                    key="label.language"/>
                                         </th>
                                         <th style="text-align:center">
                                             <fmt:message

@@ -6,14 +6,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:nodeProperty node="${currentNode}" name="insertPosition" var="insertPosition"/>
 <jcr:nodeProperty node="${currentNode}" name="insertType" var="insertType"/>
-<jcr:nodeProperty node="${currentNode}" name="mainContentTitle" var="mainContentTitle"/>
 <jcr:nodeProperty node="${currentNode}" name="insertWidth" var="insertWidth"/>
 <jcr:nodeProperty node="${currentNode}" name="insertText" var="insertText"/>
-<jcr:nodeProperty node="${currentNode}" name="mainContentImage" var="mainContentImage"/>
-<jcr:nodeProperty node="${currentNode}" name="mainContentBody" var="mainContentBody"/>
-<jcr:nodeProperty node="${currentNode}" name="mainContentAlign" var="mainContentAlign"/>
+<jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
-<h3>${mainContentTitle.string}</h3>
+<h3><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
 
 <div class='${insertType.string}-top float${insertPosition.string}'
      style='width:${insertWidth.string}px'>
@@ -22,8 +19,12 @@
         ${insertText.string}
     </div>
 </div>
-<div class="float${mainContentAlign.string}"><img src="${mainContentImage.node.url}" alt="${mainContentImage.node.url}"/></div>
+<div class="float${currentNode.properties.align.string}">
+    <c:if test="${!empty image}">
+        <img src="${image.node.url}" alt="${image.node.url}" align="${currentNode.properties.align.string}"/>
+    </c:if>
+</div>
 <div>
-    ${mainContentBody.string}
+    ${currentNode.properties.body.string}
 </div>
 <div class="clear"></div>

@@ -118,7 +118,7 @@
         }
     </script>
     <form name="jahiaAdmin">
-        <nobr><b><fmt:message key="org.jahia.admin.selectWebsite.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
+        <nobr><b><fmt:message key="label.selectWebsite"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
             <select name="changesite" onChange="changeSiteNow();">
                 <% while (sitesEnum.hasNext()) {
                     JahiaSite site = (JahiaSite) sitesEnum.next(); %>

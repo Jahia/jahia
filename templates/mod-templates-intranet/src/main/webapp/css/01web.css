@@ -383,6 +383,14 @@ shortcuts
 	margin-bottom:2px;
 	padding-left:8px;
 }
+#bodywrapper div.intro{
+	font-size:16px;
+	font-style:italic;
+	line-height:22px;
+}
+#bodywrapper div.intro p{
+	padding:10px 0;
+}
 #bodywrapper p.intro {
 	font-size:1.3em;
 	line-height:1.4em;

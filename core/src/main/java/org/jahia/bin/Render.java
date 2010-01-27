@@ -461,36 +461,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     node = session.getNode(nodePath);
                     break;
                 }
-                Node current = node;
 
                 ProcessingContext ctx = Jahia.getThreadParamBean();
-
-                try {
-                    while (true) {
-                        if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
-                            String sitename = current.getName();
-                            try {
-                                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
-                                ctx.setSite(site);
-                                ctx.setContentPage(site.getHomeContentPage());
-                                ctx.setThePage(site.getHomePage());
-                                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
-                                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
-                            } catch (JahiaException e) {
-                                logger.error(e.getMessage(), e);
-                            }
-                            break;
-                        }
-                        current = current.getParent();
-                    }
-                } catch (ItemNotFoundException e) {
-                     ctx.setSite(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite());
-                }
-
+                JahiaSite site = node.resolveSite();
                 JCRSessionWrapper userSession;
 
-                JahiaSite site = Jahia.getThreadParamBean().getSite();
                 if (site != null) {
+                    ctx.setSite(site);
+                    ctx.setContentPage(site.getHomeContentPage());
+                    ctx.setThePage(site.getHomePage());
+                    ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
+                    ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
+
                     String defaultLanguage = site.getDefaultLanguage();
                     boolean mixLanguagesActive = site.isMixLanguagesActive();
 
@@ -542,6 +524,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             int index = path.indexOf('/', 1);
             String workspace = path.substring(1, index);
+            req.getSession().setAttribute("workspace", workspace);
             path = path.substring(index);
 
             index = path.indexOf('/', 1);

@@ -34,6 +34,7 @@ package org.jahia.services.content.decorator;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -694,5 +695,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean checkValidity() {
         return node.checkValidity();
+    }
+
+    public JahiaSite resolveSite() throws RepositoryException {
+        return node.resolveSite();
     }
 }

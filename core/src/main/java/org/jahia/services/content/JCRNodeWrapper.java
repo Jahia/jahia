@@ -35,6 +35,7 @@ import org.jahia.api.Constants;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -751,4 +752,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
                    RepositoryException;
 
     boolean checkValidity();
+
+    JahiaSite resolveSite() throws RepositoryException;
 }

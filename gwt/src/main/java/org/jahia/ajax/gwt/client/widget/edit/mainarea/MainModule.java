@@ -117,9 +117,10 @@ public class MainModule extends ContentPanel implements Module {
 
     private void switchStaticAssets(Map<String, Set<String>> assets) {
         removeAllAssets();
+        int i = 1;
         for (Map.Entry<String, Set<String>> entry : assets.entrySet()) {
             for (String s : entry.getValue()) {
-                addAsset(entry.getKey().toLowerCase(), s);
+                addAsset(entry.getKey().toLowerCase(), s, i++);
             }
         }
     }
@@ -137,19 +138,20 @@ public class MainModule extends ContentPanel implements Module {
         }
     }-*/;
 
-    private native void addAsset(String filetype, String filename) /*-{
+    private native void addAsset(String filetype, String filename, int i) /*-{
         if (filetype=="javascript"){ //if filename is a external JavaScript file
             var fileref=$doc.createElement('script')
+            fileref.setAttribute("id","staticAsset"+i)
             fileref.setAttribute("type","text/javascript")
             fileref.setAttribute("src", filename)
             $doc.getElementsByTagName("head")[0].appendChild(fileref)
         } else if (filetype=="css"){ //if filename is an external CSS file
             var fileref=$doc.createElement("link")
+            fileref.setAttribute("id","staticAsset"+i)
             fileref.setAttribute("rel", "stylesheet")
             fileref.setAttribute("type", "text/css")
             fileref.setAttribute("href", filename)
             $doc.getElementsByTagName("head")[0].appendChild(fileref)
-            alert("css added "+filename)
         }
 
     }-*/;

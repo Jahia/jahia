@@ -32,9 +32,14 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.sites.JahiaSite;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 

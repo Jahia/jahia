@@ -2,13 +2,18 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
+import org.jahia.services.sites.JahiaSite;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -47,8 +52,6 @@ public class TemplateHelper {
             Resource r = new Resource(node, "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
-            renderContext.setSite(ctx.getSite());
-            renderContext.setSiteNode(currentUserSession.getNode("/sites/" + ctx.getSite().getSiteKey()));
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
             if (contextParams != null) {
@@ -57,6 +60,21 @@ public class TemplateHelper {
                 }
             }
             r.pushWrapper(templateWrapper);
+
+            JahiaSite site = node.resolveSite();
+
+            if (site != null) {
+                ctx.setSite(site);
+                ctx.setContentPage(site.getHomeContentPage());
+                ctx.setThePage(site.getHomePage());
+                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
+                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
+
+                renderContext.setSite(ctx.getSite());
+                renderContext.setSiteNode(currentUserSession.getNode("/sites/" + ctx.getSite().getSiteKey()));
+            }
+
+
 //            renderContext.setTemplateWrapper(templateWrapper);
             String res = renderService.render(r, renderContext);
             result = new GWTRenderResult(res, new HashMap(renderContext.getStaticAssets()));

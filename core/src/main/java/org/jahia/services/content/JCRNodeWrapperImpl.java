@@ -45,11 +45,13 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
@@ -1851,6 +1853,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+        logger.info("Checkin "+getPath()  +" in "+getSession().getWorkspace().getName()+", was "+getBaseVersion().getName());
         return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>(){
             public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
@@ -1859,6 +1862,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     versionManager.checkin(getI18N(session.getLocale()).getPath());
                 }
 
+                logger.info(" now : "+getBaseVersion().getName());
                 return result;
             }
         });
@@ -1868,6 +1872,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+        if (!isCheckedOut()) {
+        logger.info("Checkout "+getPath() +" in "+getSession().getWorkspace().getName());
         JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback(){
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
@@ -1882,6 +1888,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return null;
             }
         });
+        }
     }
 
     /**
@@ -2283,4 +2290,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return true;
     }
+
+
+    public JahiaSite resolveSite() throws RepositoryException {
+        JCRNodeWrapper current = this;
+        try {
+            while (true) {
+                if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
+                    String sitename = current.getName();
+                    try {
+                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
+                    } catch (JahiaException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    break;
+                }
+                current = current.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+        }
+
+        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+    }
+
 }

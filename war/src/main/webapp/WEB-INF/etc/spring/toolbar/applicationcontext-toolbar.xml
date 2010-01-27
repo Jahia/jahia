@@ -2126,8 +2126,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreatePageActionItem"/>
         </property>
-        <property name="titleKey" value="label.newpage"/>
-        <property name="descriptionKey" value="label.newpage"/>
+        <property name="titleKey" value="label.newPage"/>
+        <property name="descriptionKey" value="label.newPage"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
     </bean>

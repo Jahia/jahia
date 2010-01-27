@@ -269,14 +269,20 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public Version checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+            System.out.println("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
             return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<Version>() {
                 public Version doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return versionManager.checkin(absPath);
+                    try {
+                        return versionManager.checkin(absPath);
+                    } finally {
+                        System.out.println(" now "+getBaseVersion(absPath).getName());
+                    }
                 }
             });
         }
 
         public void checkout(final String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+            System.out.println("Checkout "+absPath +" in "+getName());
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     versionManager.checkout(absPath);

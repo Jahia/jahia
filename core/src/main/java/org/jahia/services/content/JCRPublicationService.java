@@ -254,53 +254,64 @@ public class JCRPublicationService extends JahiaService {
 
     private void mergeToLiveWorkspace(final List<JCRNodeWrapper> toPublish, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
         Calendar c = new GregorianCalendar();
+        final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
+        final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
+
+        List<JCRNodeWrapper> modified = new ArrayList<JCRNodeWrapper>();
         for (final JCRNodeWrapper node : toPublish) {
+            if (!node.hasProperty("j:lastPublished")) {
+                modified.add(node);
+            } else if (node.isNodeType("jmix:lastPublished")) {
+                Date modificationDate = node.getProperty("jcr:lastModified").getDate().getTime();
+                Date publicationDate = node.getProperty("j:lastPublished").getDate().getTime();
+                if (publicationDate.getTime() < modificationDate.getTime()) {
+                    modified.add(node);
+                }
+            }
+        }
+        for (JCRNodeWrapper node : modified) {
+            System.out.println("-- setting last published : "+node.getPath());
+//            if (!sourceSession.getWorkspace().getName().equals("live")) {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
+                node.setProperty("j:lastPublished", c);
+                node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+//            }
+        }
+        if (modified.isEmpty()) {
+            return;
+        }
+
+        sourceSession.save();
+
+        for (JCRNodeWrapper node : modified) {
+            // Node has been modified, check in now
+            sourceVersionManager.checkin(node.getPath());
+        }
+        
+        for (final JCRNodeWrapper node : modified) {
             try {
                 final String path = node.getPath();
                 final String destinationPath = node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
 
                 // Item exists at "destinationPath" in live space, update it
-                final VersionManager sourceVersionManager = node.getSession().getWorkspace().getVersionManager();
-
-                final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
                 Node liveNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
-
-
-                if (node.isNodeType("jmix:lastPublished") && node.hasProperty("j:lastPublished")) {
-                    Date modificationDate = node.getProperty("jcr:lastModified").getDate().getTime();
-                    Date publicationDate = node.getProperty("j:lastPublished").getDate().getTime();
-//                print(node.getVersionHistory());
-                    if (publicationDate.getTime() >= modificationDate.getTime()) {
-                        continue;
-                    }
-                }
-
-                if (!sourceSession.getWorkspace().getName().equals("live")) {
-                    if (!node.isCheckedOut()) {
-                        node.checkout();
-                    }
-                    node.setProperty("j:lastPublished", c);
-                    node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
-                    sourceSession.save();
-                }
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
                 logger.info("Merge node : " + path + " source v=" + node.getBaseVersion().getName() +
                         " , dest node v=" + destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
-
-                // Node has been modified, check in now
-                final Version newVersion = sourceVersionManager.checkin(path);
-
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
                 while (ni.hasNext()) {
+                    logger.info("Merge conflict");
                     // Conflict : node has been modified in live. Resolve conflict without doing anything
                     Node failed = ni.nextNode();
                     destinationVersionManager.checkout(failed.getPath());
-                    destinationVersionManager.doneMerge(failed.getPath(), newVersion);
+                    destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
                     destinationVersionManager.checkin(failed.getPath());
                     // Then retry the merge (should be ok now)
                     String newPath = failed.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
@@ -339,6 +350,7 @@ public class JCRPublicationService extends JahiaService {
     private void cloneToLiveWorkspace(final List<JCRNodeWrapper> toPublish, final List<JCRNodeWrapper> pruneNodes, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
         Calendar c = new GregorianCalendar();
         for (JCRNodeWrapper node : toPublish) {
+            System.out.println("-- setting last published/clone : "+node.getPath());
             if (!node.isCheckedOut()) {
                 node.checkout();
             }

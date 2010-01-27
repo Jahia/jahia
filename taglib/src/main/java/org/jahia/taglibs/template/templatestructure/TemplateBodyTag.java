@@ -479,7 +479,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_export", getJahiaInternalResourceValue("label.export"));
         addGwtDictionaryMessage("fm_exportlink", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.exportlink.label"));
 
-        addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("label.in"));
+        addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("label.user"));
         addGwtDictionaryMessage("ae_restore_inheritance", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
         addGwtDictionaryMessage("ae_inherited_from", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.inheritedFrom.label"));
         addGwtDictionaryMessage("ae_inherited", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.inherited.label"));
@@ -522,7 +522,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
 
         addGwtDictionaryMessage("add_content_wizard_column_label", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.column.label"));
-        addGwtDictionaryMessage("add_content_wizard_column_name", getJahiaInternalResourceValue("label.in"));
+        addGwtDictionaryMessage("add_content_wizard_column_name", getJahiaInternalResourceValue("label.user"));
         addGwtDictionaryMessage("add_content_wizard_card_defs_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.defsCard.text"));
         addGwtDictionaryMessage("add_content_wizard_card_defs_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.defsCard.title"));
         addGwtDictionaryMessage("add_content_wizard_card_form_error_props", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.error.props"));
@@ -532,7 +532,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("add_content_wizard_card_form_success_save", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.success.save"));
         addGwtDictionaryMessage("add_content_wizard_card_form_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.text"));
         addGwtDictionaryMessage("add_content_wizard_card_form_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.title"));
-        addGwtDictionaryMessage("add_content_wizard_card_name_node_name", getJahiaInternalResourceValue("label.in"));
+        addGwtDictionaryMessage("add_content_wizard_card_name_node_name", getJahiaInternalResourceValue("label.user"));
         addGwtDictionaryMessage("add_content_wizard_card_name_node_type", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType"));
         addGwtDictionaryMessage("add_content_wizard_card_name_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.text"));
         addGwtDictionaryMessage("add_content_wizard_card_name_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.title"));

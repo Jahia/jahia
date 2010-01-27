@@ -128,7 +128,7 @@ public class CategoriesManagerTag extends AbstractJahiaTag {
                 addGWTInternalMessage("org.jahia.admin.update.label", "button_update");
                 addGWTInternalMessage("label.cancel", "button_cancel");
                 addGWTInternalMessage("org.jahia.admin.apply.label", "button_apply");
-                addGWTInternalMessage("label.in", "ae_principal");
+                addGWTInternalMessage("label.user", "ae_principal");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.restoreInheritance.label", "ae_restore_inheritance");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.inheritedFrom.label", "ae_inherited_from");
                 addGWTInternalMessage("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label", "ae_restore_all_inheritance");

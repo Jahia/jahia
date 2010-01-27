@@ -82,7 +82,7 @@ public class ThumbViewTag extends AbstractJahiaTag {
         // add messages required by the subscriptions toolbar
         addGwtDictionaryMessage("fm_thumbFilter", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label"));
         addGwtDictionaryMessage("fm_thumbSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label"));
-        addGwtDictionaryMessage("fm_thumbSortName", getJahiaInternalResourceValue("label.in"));
+        addGwtDictionaryMessage("fm_thumbSortName", getJahiaInternalResourceValue("label.user"));
         addGwtDictionaryMessage("fm_thumbSortSize", getJahiaInternalResourceValue("label.size"));
         addGwtDictionaryMessage("fm_thumbSortLastModif", getJahiaInternalResourceValue("label.lastModif"));
         addGwtDictionaryMessage("fm_invertSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));

@@ -430,7 +430,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_uploadFiles", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.uploadFile.label"));
         addGwtDictionaryMessage("fm_autoUnzip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.autoUnzip.label"));
         addGwtDictionaryMessage("fm_addFile", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.addFile.label"));
-        addGwtDictionaryMessage("fm_cancel", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.cancel.label"));
+        addGwtDictionaryMessage("fm_cancel", getJahiaInternalResourceValue("label.cancel"));
         addGwtDictionaryMessage("fm_ok", getJahiaInternalResourceValue("label.ok"));
         addGwtDictionaryMessage("fm_checkUploads", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.checkUploads.label"));
 

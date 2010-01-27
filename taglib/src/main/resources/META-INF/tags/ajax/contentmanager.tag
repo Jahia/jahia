@@ -402,7 +402,7 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_autoUnzip"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.addFile.label"
                             aliasResourceName="fm_addFile"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.cancel.label"
+<internal:gwtResourceBundle resourceName="label.cancel"
                             aliasResourceName="fm_cancel"/>
 <internal:gwtResourceBundle resourceName="label.ok"
                             aliasResourceName="fm_ok"/>

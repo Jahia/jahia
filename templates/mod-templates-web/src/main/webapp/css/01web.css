@@ -531,13 +531,11 @@ shortcuts
 #bodywrapper a:visited {
 	color:#900;
 	text-decoration:underline;
-	background:none;
 }
 #bodywrapper a:hover,
 #bodywrapper a:active {
 	color:#900;
 	text-decoration:none;
-	background:none;
 }
 #bodywrapper p{
 	margin:0.5em 0;
@@ -1465,53 +1463,7 @@ background-color:#eaeaea
 	text-decoration:underline;
 }
 
-/******************************************************************************
-*  documents List
-******************************************************************************/
-#bodywrapper span.docSize{
-	font-size:80%;
-	margin-left:0.2em;
-	font-weight:normal
-}
-#bodywrapper ul.document{
-	margin:0;
-	padding:0;
-	list-style: none;
-	font-weight:bold
 
-	}
-#bodywrapper li.document {
-	margin:0;
-	padding:0.5em;
-	background: url(../img/document.png) no-repeat 0.5em 0.5em;
-	padding-left:30px;
-	list-style: none;
-	display:block;
-	border-bottom:1px solid #eaeaea;
-}
-#bodywrapper li.document:hover{
-	background-color:#eaeaea
-}
-#bodywrapper li.lastdocument  {
-	border-bottom:none
-}
-#bodywrapper li.document .resume {
-	margin:0;
-	padding:0;
-	list-style: none;
-	line-height:1em;
-	font-size:0.9em;
-	font-weight:normal
-}
-#bodywrapper li.document a,
-#bodywrapper li.document a:link,
-#bodywrapper li.document a:visited {
-	text-decoration: none;
-}
-#bodywrapper li.document a:hover,
-#bodywrapper li.document a:active {
-	text-decoration:underline;
-}
 
 /******************************************************************************
 *  Summary

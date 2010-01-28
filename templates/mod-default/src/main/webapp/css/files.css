@@ -1,0 +1,150 @@
+/******************************************************************************
+*  documents List
+******************************************************************************/
+#bodywrapper span.docSize{
+	font-size:80%;
+	margin-left:0.2em;
+	font-weight:normal
+}
+#bodywrapper ul.document{
+	margin:1em 0;
+	padding:0;
+	list-style: none;
+	font-weight:bold
+}
+#bodywrapper li.document {
+	margin:0;
+	padding:0.5em;
+	list-style: none;
+	display:block;
+	border-bottom:1px solid #ccc;
+}
+#bodywrapper li.document:hover{
+	background-color:#eaeaea
+}
+#bodywrapper li.lastdocument  {
+	border-bottom:none
+}
+#bodywrapper li.document .resume {
+	margin:0;
+	padding:0;
+	list-style: none;
+	line-height:1em;
+	font-size:0.9em;
+	font-weight:normal
+}
+#bodywrapper li.document a,
+#bodywrapper li.document a:link,
+#bodywrapper li.document a:visited {
+	text-decoration: none;
+}
+#bodywrapper li.document a:hover,
+#bodywrapper li.document a:active {
+	text-decoration:underline;
+}
+
+/* ------- File types  (start) ------- */
+
+#bodywrapper li.file {
+    background: url(img/files/file.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.video {
+    background: url(img/files/video.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.ppt, #bodywrapper li.pptx {
+    background: url(img/files/ppt.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.exe {
+    background: url(img/files/exe.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.msword, #bodywrapper li.doc, #bodywrapper li.docx {
+    background: url(img/files/doc.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.dir {
+    background: url(img/files/folder_close.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.html, #bodywrapper li.htm {
+    background: url(img/files/html.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.img,  #bodywrapper li.gif, #bodywrapper li.jpeg, #bodywrapper li.jpg, #bodywrapper li.png {
+    background: url(img/files/img.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.pdf {
+    background: url(img/files/pdf.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.sound, #bodywrapper li.wav {
+    background: url(img/files/sound.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.txt {
+    background: url(img/files/txt.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.xls, #bodywrapper li.xlsx, #bodywrapper li.csv {
+    background: url(img/files/xls.png ) no-repeat  scroll 0.5em 0.5em;
+}
+#bodywrapper li.zip, #bodywrapper li.sit  {
+    background: url(img/files/zip.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper li.rar,  #bodywrapper li.tar, #bodywrapper li.gz    {
+    background: url(img/files/rar.png ) no-repeat scroll 0.5em 0.5em;
+}
+
+/* ------- Special treatment for serach results when result hit is a file ------- */
+
+#bodywrapper a.file {
+    background: url(img/files/file.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.video {
+    background: url(img/files/video.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper a.ppt, #bodywrapper a.pptx {
+    background: url(img/files/ppt.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.exe {
+    background: url(img/files/exe.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper a.msword, #bodywrapper a.doc, #bodywrapper a.docx {
+    background: url(img/files/doc.png ) no-repeat scroll 0.2em 0em;
+    padding-left:24px;
+}
+#bodywrapper a.dir {
+    background: url(img/files/folder_close.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper a.html, #bodywrapper a.htm {
+    background: url(img/files/html.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.img,  #bodywrapper a.gif, #bodywrapper a.jpeg, #bodywrapper a.jpg, #bodywrapper a.png {
+    background: url(img/files/img.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper a.pdf {
+    background: url(img/files/pdf.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.sound, #bodywrapper a.wav {
+    background: url(img/files/sound.png ) no-repeat scroll 0.5em 0.5em;
+}
+#bodywrapper a.txt {
+    background: url(img/files/txt.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.xls, #bodywrapper a.xlsx, #bodywrapper a.csv {
+    background: url(img/files/xls.png ) no-repeat  scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.zip, #bodywrapper a.sit  {
+    background: url(img/files/zip.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.rar,  #bodywrapper a.tar, #bodywrapper a.gz    {
+    background: url(img/files/rar.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+#bodywrapper a.jahiapage    {
+    background: url(img/files/html.png ) no-repeat scroll 0.2em 0em;
+        padding-left:24px;
+}
+
+
+/* ------- File types (end) ------- */

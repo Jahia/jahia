@@ -229,7 +229,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                            new JSONObject(req.getParameterMap()).toString());
     }
 
-    protected void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
+    private void serializeNodeToJSON(HttpServletResponse resp, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
         final PropertyIterator stringMap = node.getProperties();
         Map<String,String > map = new HashMap<String, String>();
         while (stringMap.hasNext()) {

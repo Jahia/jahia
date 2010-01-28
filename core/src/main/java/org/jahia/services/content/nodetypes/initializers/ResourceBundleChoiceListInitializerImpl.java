@@ -32,7 +32,9 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -60,7 +62,9 @@ public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitia
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
-        String templatePackageName = context.getSite().getTemplatePackageName();
+        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                    epd.getDeclaringNodeType().getSystemId());
+        String templatePackageName = tpkg != null?tpkg.getName():context.getSite().getTemplatePackageName();
 
         JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getLocale(),
                                                          context.getSite() != null ? templatePackageName : null);

@@ -42,7 +42,7 @@
     </parent>
     <groupId>org.jahia.templates</groupId>
     <artifactId>mod-skins</artifactId>
-    <name>Jahia Sinks</name>
+    <name>Jahia Skins</name>
     <packaging>war</packaging>
     <description>This module provides skins to embed contents.</description>
     <repositories>

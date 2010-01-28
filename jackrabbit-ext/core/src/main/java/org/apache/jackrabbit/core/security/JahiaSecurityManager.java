@@ -115,8 +115,7 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
         initialized = true;
     }
 
-
-    public String getUserID(Subject subject) throws RepositoryException {
+    public String getUserID(Subject subject, String workspace) throws RepositoryException {
         if (!subject.getPrincipals(AdminPrincipal.class).isEmpty()) {
             return " system ";
         }
@@ -153,7 +152,7 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
         }
     }
 
-    public AuthContext getAuthContext(Credentials credentials, Subject subject) throws RepositoryException {
+    public AuthContext getAuthContext(Credentials credentials, Subject subject, String workspace) throws RepositoryException {
         checkInitialized();
         return authContextProvider.getAuthContext(credentials, subject, securitySession, null, JahiaLoginModule.SYSTEM, JahiaLoginModule.GUEST);
     }

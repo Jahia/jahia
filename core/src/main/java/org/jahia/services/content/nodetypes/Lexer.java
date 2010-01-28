@@ -83,9 +83,9 @@ public class Lexer {
     public static final String[] SORTABLE = new String[]{"sortable"};
     public static final String[] FULLTEXTSEARCHABLE = new String[]{"fulltextsearchable", "fts"};
 
-    public static final String[] QUERYOPS = org.apache.jackrabbit.spi.commons.nodetype.compact.Lexer.QUERYOPS;
-    public static final String[] NOFULLTEXT = org.apache.jackrabbit.spi.commons.nodetype.compact.Lexer.NOFULLTEXT;
-    public static final String[] NOQUERYORDER = org.apache.jackrabbit.spi.commons.nodetype.compact.Lexer.NOQUERYORDER;
+    public static final String[] QUERYOPS = new String[]{"queryops", "qop"};
+    public static final String[] NOFULLTEXT = new String[]{"nofulltext", "nof"};
+    public static final String[] NOQUERYORDER = new String[]{"noqueryorder", "nqord"};
 
     public static final String[] HIDDEN = new String[]{"hidden", "Hidden", "HIDDEN"};
 

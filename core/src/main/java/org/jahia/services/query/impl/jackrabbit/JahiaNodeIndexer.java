@@ -32,6 +32,7 @@
 package org.jahia.services.query.impl.jackrabbit;
 
 import java.io.ByteArrayInputStream;
+import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
@@ -46,10 +47,9 @@ import org.apache.jackrabbit.core.state.ItemStateManager;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.core.state.PropertyState;
 import org.apache.jackrabbit.core.value.InternalValueFactory;
-import org.apache.jackrabbit.extractor.HTMLTextExtractor;
-import org.apache.jackrabbit.extractor.TextExtractor;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.lucene.document.Document;
+import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -94,8 +94,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            the persistent item state manager to retrieve properties.
      * @param mappings
      *            internal namespace mappings.
-     * @param extractor
-     *            content extractor
+     * @param executor
+     * @param parser
      * @param nodeTypeRegistry
      *            Jahia's node type registry
      * @param context
@@ -103,8 +103,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            registries)
      */
     public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
-            TextExtractor extractor, NodeTypeRegistry nodeTypeRegistry, QueryHandlerContext context) {
-        super(node, stateProvider, mappings, extractor);
+            Executor executor, Parser parser, NodeTypeRegistry nodeTypeRegistry, QueryHandlerContext context) {
+        super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = nodeTypeRegistry;
         this.namespaceRegistry = context.getNamespaceRegistry();
         try {
@@ -272,14 +272,15 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(propertyName);
         if (definition != null && SelectorType.RICHTEXT == definition.getSelector()) {
-            try {
-                internalValue = FileUtils.readerToString((new HTMLTextExtractor()).extractText(
-                        new ByteArrayInputStream(((String) internalValue)
-                                .getBytes(InternalValueFactory.DEFAULT_ENCODING)), "text/html",
-                        InternalValueFactory.DEFAULT_ENCODING));
-            } catch (Exception e) {
+//todo : jackrabbit 2.0 migration issue
+//            try {
+//                internalValue = FileUtils.readerToString((new HTMLTextExtractor()).extractText(
+//                        new ByteArrayInputStream(((String) internalValue)
+//                                .getBytes(InternalValueFactory.DEFAULT_ENCODING)), "text/html",
+//                        InternalValueFactory.DEFAULT_ENCODING));
+//            } catch (Exception e) {
                 internalValue = TextHtml.html2text((String) internalValue);
-            }
+//            }
         }
         super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost, useInExcerpt);
     }

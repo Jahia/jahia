@@ -31,38 +31,25 @@
  */
 package org.jahia.services.content.rules;
 
-import org.drools.spi.KnowledgeHelper;
+import org.apache.log4j.Logger;
 import org.drools.WorkingMemory;
+import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRFileContent;
-import org.jahia.services.content.textextraction.TextExtractionListener;
 import org.jahia.services.content.textextraction.TextExtractorJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.core.query.lucene.JackrabbitTextExtractor;
-import org.apache.jackrabbit.extractor.TextExtractor;
-import org.apache.log4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,7 +70,7 @@ public class ExtractionService {
     
     private String textFilterClasses = null;
 
-    private static TextExtractor extractor = null;
+//    private static TextExtractor extractor = null;
     private JCRTemplate jcrTemplate;
     public static synchronized ExtractionService getInstance() {
         if (instance == null) {
@@ -150,7 +137,8 @@ public class ExtractionService {
      * @return list with extractable content types
      */
     public List<String> getContentTypes() {
-        return Arrays.asList(getExtractor().getContentTypes());
+        return Arrays.asList();
+//        return Arrays.asList(getExtractor().getContentTypes());
     }
 
     /**
@@ -167,70 +155,71 @@ public class ExtractionService {
      */
     public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath,
             final ProcessingContext context) throws IOException {
-        try {
-            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper file = session.getNode(sourcePath);
-                JCRFileContent fileContent = file.getFileContent();
-                Node n = file.getRealNode().getNode(Constants.JCR_CONTENT);
-
-                String type = fileContent.getContentType();
-
-                // jcr:encoding is not mandatory
-                String encoding = fileContent.getEncoding();
-
-                InputStream stream = fileContent.downloadFile();
-                try {
-                    final Reader reader = getExtractor().extractText(stream, type, encoding);
-                    try {
-                        if (extractionNodePath != null && extractionNodePath.length() > 0) {
-                            n = session.getNode(extractionNodePath);
-                            n.setProperty(Constants.ORIGINAL_UUID, file.getStorageName());
-                        }
-                        n.setProperty(Constants.EXTRACTED_TEXT, new InputStream() {
-                            byte[] temp;
-
-                            int i = 0;
-
-                            public int read() throws IOException {
-                                if (temp == null || i >= temp.length) {
-                                    char cb[] = new char[1];
-                                    if (reader.read(cb, 0, 1) == -1) {
-                                        return -1;
-                                    }
-                                    temp = new String(cb).getBytes("UTF-8");
-                                    i = 0;
-                                }
-                                if (temp[0] >= 0 && temp[0] <= 31) {
-                                    i++;
-                                    return 32; // if char is 31 or less (0
-                                    // generates an error) it is
-                                    // replace with space (32)
-                                }
-                                return temp[i++];
-                            }
-                        });
-                        n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
-                        n.save();
-                        session.save();
-                    } finally {
-                        reader.close();
-                    }
-                } catch (Exception e) {
-                    logger.debug("Cannot extract content", e);
-                } finally {
-                    IOUtils.closeQuietly(stream);
-                }
-                return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Cannot extract content: " + e.getMessage(), e);
-            } else {
-                logger.warn("Cannot extract content: " + e.getMessage());
-            }
-        }
+//todo : jackrabbit 2.0 migration issue
+//        try {
+//            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+//                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+//                JCRNodeWrapper file = session.getNode(sourcePath);
+//                JCRFileContent fileContent = file.getFileContent();
+//                Node n = file.getRealNode().getNode(Constants.JCR_CONTENT);
+//
+//                String type = fileContent.getContentType();
+//
+//                // jcr:encoding is not mandatory
+//                String encoding = fileContent.getEncoding();
+//
+//                InputStream stream = fileContent.downloadFile();
+//                try {
+//                    final Reader reader = getExtractor().extractText(stream, type, encoding);
+//                    try {
+//                        if (extractionNodePath != null && extractionNodePath.length() > 0) {
+//                            n = session.getNode(extractionNodePath);
+//                            n.setProperty(Constants.ORIGINAL_UUID, file.getStorageName());
+//                        }
+//                        n.setProperty(Constants.EXTRACTED_TEXT, new InputStream() {
+//                            byte[] temp;
+//
+//                            int i = 0;
+//
+//                            public int read() throws IOException {
+//                                if (temp == null || i >= temp.length) {
+//                                    char cb[] = new char[1];
+//                                    if (reader.read(cb, 0, 1) == -1) {
+//                                        return -1;
+//                                    }
+//                                    temp = new String(cb).getBytes("UTF-8");
+//                                    i = 0;
+//                                }
+//                                if (temp[0] >= 0 && temp[0] <= 31) {
+//                                    i++;
+//                                    return 32; // if char is 31 or less (0
+//                                    // generates an error) it is
+//                                    // replace with space (32)
+//                                }
+//                                return temp[i++];
+//                            }
+//                        });
+//                        n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
+//                        n.save();
+//                        session.save();
+//                    } finally {
+//                        reader.close();
+//                    }
+//                } catch (Exception e) {
+//                    logger.debug("Cannot extract content", e);
+//                } finally {
+//                    IOUtils.closeQuietly(stream);
+//                }
+//                return null;
+//                }
+//            });
+//        } catch (RepositoryException e) {
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("Cannot extract content: " + e.getMessage(), e);
+//            } else {
+//                logger.warn("Cannot extract content: " + e.getMessage());
+//            }
+//        }
     }
 
     /**
@@ -249,16 +238,16 @@ public class ExtractionService {
         this.textFilterClasses = textFilterClasses;
     }
 
-    /**
-     * Return the text extractor service singleton
-     * @return text extractor service singleton
-     */
-    public TextExtractor getExtractor() {
-        if (extractor == null) {
-            extractor = new JackrabbitTextExtractor(getTextFilterClasses());
-        }
-        return extractor;
-    }
+//    /**
+//     * Return the text extractor service singleton
+//     * @return text extractor service singleton
+//     */
+//    public TextExtractor getExtractor() {
+//        if (extractor == null) {
+//            extractor = new JackrabbitTextExtractor(getTextFilterClasses());
+//        }
+//        return extractor;
+//    }
 
     /**
      * Get the already extracted text from the node. For files within Jahia's Jackrabbit

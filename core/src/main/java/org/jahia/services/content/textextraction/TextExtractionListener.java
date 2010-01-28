@@ -82,47 +82,48 @@ public class TextExtractionListener extends DefaultEventListener {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     try {
-                        while (eventIterator.hasNext()) {
-                            Event event = eventIterator.nextEvent();
-                            if (isExternal(event)) {
-                                continue;
-                            }
-
-                            Property p = (Property) s.getItem(event.getPath());
-                            if (p.getType() != PropertyType.BINARY) {
-                                continue;
-                            }
-                            Node n = p.getParent();
-                            if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
-                                if (n.hasProperty(Constants.EXTRACTION_DATE)) {
-                                    Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-                                    Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
-                                    if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
-                                        continue;
-                                    }
-                                }
-                                JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
-
-                                ProcessingContext jParams = Jahia.getThreadParamBean();
-                                if (jParams == null) {
-                                    jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
-                                    jParams.setCurrentLocale(Locale.getDefault());
-                                }
-
-                                JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + p.getParent().getName(), TextExtractorJob.class, jParams);
-                                JCRNodeWrapper file = (JCRNodeWrapper) p.getParent().getParent();
-                                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-                                JobDataMap jobDataMap;
-                                jobDataMap = jobDetail.getJobDataMap();
-                                jobDataMap.put(TextExtractorJob.PROVIDER, file.getProvider().getMountPoint());
-                                jobDataMap.put(TextExtractorJob.PATH, file.getPath());
-                                jobDataMap.put(TextExtractorJob.NAME, file.getName());
-                                jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
-                                schedulerServ.scheduleJobNow(jobDetail);
-                            }
-                        }
-                    } catch (PathNotFoundException e) {
-                        logger.debug(e.getMessage(), e);
+//todo : jackrabbit 2.0 migration issue
+//                        while (eventIterator.hasNext()) {
+//                            Event event = eventIterator.nextEvent();
+//                            if (isExternal(event)) {
+//                                continue;
+//                            }
+//
+//                            Property p = (Property) s.getItem(event.getPath());
+//                            if (p.getType() != PropertyType.BINARY) {
+//                                continue;
+//                            }
+//                            Node n = p.getParent();
+//                            if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
+//                                if (n.hasProperty(Constants.EXTRACTION_DATE)) {
+//                                    Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
+//                                    Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
+//                                    if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
+//                                        continue;
+//                                    }
+//                                }
+//                                JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
+//
+//                                ProcessingContext jParams = Jahia.getThreadParamBean();
+//                                if (jParams == null) {
+//                                    jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
+//                                    jParams.setCurrentLocale(Locale.getDefault());
+//                                }
+//
+//                                JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + p.getParent().getName(), TextExtractorJob.class, jParams);
+//                                JCRNodeWrapper file = (JCRNodeWrapper) p.getParent().getParent();
+//                                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
+//                                JobDataMap jobDataMap;
+//                                jobDataMap = jobDetail.getJobDataMap();
+//                                jobDataMap.put(TextExtractorJob.PROVIDER, file.getProvider().getMountPoint());
+//                                jobDataMap.put(TextExtractorJob.PATH, file.getPath());
+//                                jobDataMap.put(TextExtractorJob.NAME, file.getName());
+//                                jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
+//                                schedulerServ.scheduleJobNow(jobDetail);
+//                            }
+//                        }
+//                    } catch (PathNotFoundException e) {
+//                        logger.debug(e.getMessage(), e);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }

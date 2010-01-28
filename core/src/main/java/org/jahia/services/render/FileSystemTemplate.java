@@ -1,10 +1,10 @@
 package org.jahia.services.render;
 
+import org.apache.commons.io.IOUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tika.io.IOUtils;
 
 import java.util.Properties;
 import java.util.Map;

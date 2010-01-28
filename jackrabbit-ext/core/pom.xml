@@ -25,16 +25,11 @@
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}</version>
+            <version>${jackrabbit.version}-publication-patched</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-commons</artifactId>
-            <version>${jackrabbit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jackrabbit</groupId>
-            <artifactId>jackrabbit-text-extractors</artifactId>
             <version>${jackrabbit.version}</version>
         </dependency>
         <dependency>

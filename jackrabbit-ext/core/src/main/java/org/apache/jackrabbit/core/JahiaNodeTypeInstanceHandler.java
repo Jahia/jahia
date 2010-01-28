@@ -1,9 +1,9 @@
 package org.apache.jackrabbit.core;
 
-import org.apache.jackrabbit.core.nodetype.PropDef;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.QPropertyDefinition;
 import org.apache.jackrabbit.spi.commons.name.NameConstants;
 
 import java.util.Calendar;
@@ -55,7 +55,7 @@ public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
     }
 
     @Override
-    public InternalValue[] computeSystemGeneratedPropertyValues(NodeState parent, PropDef def) {
+    public InternalValue[] computeSystemGeneratedPropertyValues(NodeState parent, QPropertyDefinition def) {
         // add our own auto generated values here
         InternalValue[] genValues = null;
 

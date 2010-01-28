@@ -51,13 +51,13 @@ public class JahiaSearchIndex extends SearchIndex {
             NamespaceMappings nsMappings, IndexFormatVersion indexFormatVersion)
             throws RepositoryException {
         JahiaNodeIndexer indexer = new JahiaNodeIndexer(node, getContext()
-                .getItemStateManager(), nsMappings, getTextExtractor(),
+                .getItemStateManager(), nsMappings, getContext().getExecutor(), getParser(),
                 NodeTypeRegistry.getInstance(), getContext());
         indexer.setSupportHighlighting(getSupportHighlighting());
         indexer.setIndexingConfiguration(getIndexingConfig());
         indexer.setIndexFormatVersion(indexFormatVersion);
         Document doc = indexer.createDoc();
-        mergeAggregatedNodeIndexes(node, doc);
+        mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
     }
 }

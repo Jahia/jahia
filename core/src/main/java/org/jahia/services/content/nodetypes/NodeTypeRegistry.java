@@ -31,8 +31,8 @@
  */
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.tika.io.IOUtils;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.settings.SettingsBean;
 

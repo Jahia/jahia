@@ -44,7 +44,7 @@
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.httpUnauthorized.label"/></title>
+    <title><fmt:message key="label.httpUnauthorized"/></title>
 <script type="text/javascript">
 function autoFocus() {
     document.loginForm.username.focus();
@@ -66,19 +66,19 @@ function keyDown(e) {
 <center>
     <div id="adminLogin">
         <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
-        <h3 class="loginIcon"><fmt:message key="org.jahia.engines.loginToJahia.label"/></h3>
-        <br class="clearFloat"/>
+            <h3 class="loginIcon"><fmt:message key="label.administration"/></h3>
+            <br class="clearFloat" />
         <ui:isLoginError>
-          <span class="error"><fmt:message key="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label"/></span>
+          <span class="error"><fmt:message key="message.invalidUsernamePassword"/></span>
         </ui:isLoginError>
         <table cellspacing="1" cellpadding="0" border="0" class="formTable">
             <tbody>
             <tr>
-                <th><fmt:message key="org.jahia.engines.username.label"/></th>
+                <th><fmt:message key="label.username"/></th>
                 <td><input type="text" value="" style="width: 150px;" tabindex="1" maxlength="250" size="13" name="username"/></td>
             </tr>
             <tr>
-                <th><fmt:message key="org.jahia.engines.login.Login_Engine.password.label"/></th>
+                <th><fmt:message key="label.password"/></th>
                 <td><input type="password" style="width: 150px;" tabindex="2" maxlength="250" size="13" name="password"/></td>
             </tr>
             </tbody>
@@ -87,15 +87,15 @@ function keyDown(e) {
         <table align="center" width="100%" cellspacing="5">
           <tr>
               <td class="alignCenter" colspan="2">
-                <label for="rememberme"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label><ui:loginRememberMe id="rememberme"/>
+                <label for="rememberme"><fmt:message key="label.rememberme"/></label><ui:loginRememberMe id="rememberme"/>
               </td>
             </tr>
         </table>
         <div id="actionBar" class="alignCenter">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#login" onclick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/>">
-                  <fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
+              <a class="ico-ok" href="#login" onclick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="label.login"/>">
+                  <fmt:message key="label.login"/></a>
              </span>
           </span>
         </div>

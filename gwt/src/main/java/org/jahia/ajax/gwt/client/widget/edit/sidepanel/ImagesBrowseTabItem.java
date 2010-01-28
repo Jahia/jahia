@@ -43,6 +43,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         setIcon(ContentModelIconProvider.CONTENT_ICONS.img());
 
         contentContainer = new LayoutContainer();
+        contentContainer.setId("images-view");
         contentContainer.setBorders(true);
         contentContainer.setScrollMode(Style.Scroll.AUTOY);
 

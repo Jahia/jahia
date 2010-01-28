@@ -49,6 +49,7 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -116,6 +117,9 @@ public class AggregateCacheFilter extends AbstractFilter {
                     logger.debug("Generating content for node : " + key);
                 }
                 String renderContent = chain.doFilter(renderContext, resource);
+
+                resource.getDependencies().add(resource.getNode());
+
                 if (cacheable) {
                     String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                     Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
@@ -124,17 +128,15 @@ public class AggregateCacheFilter extends AbstractFilter {
                     Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
                     for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                         String path = nodeWrapper.getPath();
-                        if (path.equals(currentPath)) {
-                            Element element1 = cacheProvider.getDependenciesCache().get(path);
-                            Set<String> dependencies;
-                            if (element1 != null) {
-                                dependencies = (Set<String>) element1.getValue();
-                            } else {
-                                dependencies = new LinkedHashSet<String>();
-                            }
-                            dependencies.add(key);
-                            cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
+                        Element element1 = cacheProvider.getDependenciesCache().get(path);
+                        Set<String> dependencies;
+                        if (element1 != null) {
+                            dependencies = (Set<String>) element1.getValue();
+                        } else {
+                            dependencies = new LinkedHashSet<String>();
                         }
+                        dependencies.add(key);
+                        cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
                     }
                     // append cache:include tag
                     String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(renderContent).replaceAll("</esi:include>");

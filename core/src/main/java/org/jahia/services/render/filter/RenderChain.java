@@ -101,4 +101,8 @@ public class RenderChain implements RenderFilter {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
     }
+
+    public Object getPreviousValue(String key) {
+        return oldPropertiesMap.get(key);
+    }
 }

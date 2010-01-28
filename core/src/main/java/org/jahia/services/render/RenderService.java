@@ -133,11 +133,6 @@ public class RenderService extends JahiaService {
 
         String output = renderChain.doFilter(context, resource);
 
-        ServletRequest request = context.getRequest();
-        if (request.getAttribute("currentResource") != null) {
-            ((Resource) request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
-        }
-
         return output;
     }
 

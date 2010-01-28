@@ -34,6 +34,7 @@ package org.jahia.taglibs.uicomponents.navigation;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.jcr.node.JCRTagUtils;
 import org.jahia.utils.DateUtils;
@@ -175,6 +176,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
     private void generateMenuAsFlatList(JCRNodeWrapper startNode, int level, Set<NavMenuItemBean> navMenuItemsBean,
                                         int loopIt, NavMenuItemBean parentItem, String sitePath)
             throws IOException, RepositoryException {
+        Resource res = (Resource) pageContext.getRequest().getAttribute("currentResource");
 
         if (node == null) {
             logger.error("Incorrect node : " + node);
@@ -194,6 +196,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                 if (!nodeWrapper.isNodeType("jnt:page")) {
                     continue;
                 }
+                res.getDependencies().add(nodeWrapper);
+                
                 NavMenuItemBean navMenuItemBean = new NavMenuItemBean();
                 navMenuItemBean.setNode(nodeWrapper);
                 navMenuItemBean.setParentItem(parentItem);

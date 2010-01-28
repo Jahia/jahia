@@ -10,11 +10,13 @@ import java.util.HashMap;
  * @author toto
  */
 public class PublicationInfo {
-    public static final int NOT_PUBLISHED = 0;
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
-    public static final int UNPUBLISHABLE = 3;
-    public static final int LIVE_MODIFIED = 4;
+    public static final int NOT_PUBLISHED = 3;
+    public static final int UNPUBLISHED = 4;
+    public static final int UNPUBLISHABLE = 5;
+    public static final int LIVE_MODIFIED = 6;
+    public static final int CONFLICT = 9;
 
     private int status;
 

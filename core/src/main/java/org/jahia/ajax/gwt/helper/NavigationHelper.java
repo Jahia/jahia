@@ -180,7 +180,7 @@ public class NavigationHelper {
                     GWTJahiaNode theNode = getGWTJahiaNode(f);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
                     try {
-                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
+                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false, currentUserSession));
                     } catch (GWTJahiaServiceException e) {
                         logger.error(e.getMessage(), e);
                     }

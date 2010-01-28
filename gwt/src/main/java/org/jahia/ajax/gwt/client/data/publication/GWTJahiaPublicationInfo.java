@@ -15,11 +15,13 @@ import java.util.*;
  */
 public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializable {
 
-    public static final int NOT_PUBLISHED = 0;
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
-    public static final int UNPUBLISHABLE = 3;
-    public static final int LIVE_MODIFIED = 4;
+    public static final int NOT_PUBLISHED = 3;
+    public static final int UNPUBLISHED = 4;
+    public static final int UNPUBLISHABLE = 5;
+    public static final int LIVE_MODIFIED = 6;
+    public static final int CONFLICT = 9;
 
     private Set<Integer> subnodesStatus = new HashSet<Integer>();
 
@@ -30,6 +32,14 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
         setPath(path);
         setStatus(status);
         setCanPublish(canPublish);
+    }
+
+    public String getTitle() {
+        return get("title");
+    }
+
+    public void setTitle(String path) {
+        set("title", path);
     }
 
     public String getPath() {

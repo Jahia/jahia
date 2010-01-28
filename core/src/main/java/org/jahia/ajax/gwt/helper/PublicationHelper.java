@@ -4,14 +4,13 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -36,14 +35,15 @@ public class PublicationHelper {
      * Get the publication status information for a particular path.
      *
      * @param path to get publication info from
+     * @param currentUserSession
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences) throws GWTJahiaServiceException {
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean full, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, includesReferences, true);
-            return convert(path, pubInfo);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, full, true);
+            return convert(path, pubInfo, full, currentUserSession);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -51,16 +51,36 @@ public class PublicationHelper {
 
     }
 
-    public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
+    public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo, boolean full, JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
-        for (String p : pubInfo.getReferences().keySet()) {
-            PublicationInfo pi = pubInfo.getReferences().get(p);
-            gwtInfo.add(convert(p, pi));
+        if (full) {
+            try {
+                JCRNodeWrapper n = currentUserSession.getNode(path);
+                if (n.hasProperty("jcr:title")) {
+                    gwtInfo.setTitle(n.getProperty("jcr:title").getString());
+                } else {
+                    gwtInfo.setTitle(n.getName());
+                }
+            } catch (RepositoryException e) {
+                gwtInfo.setTitle(path);
+            }
         }
 
         for (Map.Entry<String, PublicationInfo> entry : pubInfo.getSubnodes().entrySet()) {
             PublicationInfo pi = entry.getValue();
+            if (entry.getKey().startsWith(path+"/j:translation")) {
+                if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
+                    gwtInfo.setStatus(pi.getStatus());
+                }
+            } else if (full && entry.getKey().indexOf("/j:translation") == -1) {
+                gwtInfo.add(convert(entry.getKey(), pi, full, currentUserSession));
+            }
             gwtInfo.addSubnodesStatus(pi.getStatus());
+        }
+
+        for (String p : pubInfo.getReferences().keySet()) {
+            PublicationInfo pi = pubInfo.getReferences().get(p);
+            gwtInfo.add(convert(p, pi, full, currentUserSession));
         }
 
         return gwtInfo;

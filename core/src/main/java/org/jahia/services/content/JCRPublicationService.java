@@ -570,7 +570,6 @@ public class JCRPublicationService extends JahiaService {
 
         JCRNodeWrapper stageNode = session.getNode(path);
 
-
         if (includesReferences || includesSubnodes) {
             List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
             List<JCRNodeWrapper> blocked = new ArrayList<JCRNodeWrapper>();
@@ -598,7 +597,11 @@ public class JCRPublicationService extends JahiaService {
             // node has not been published yet, check if parent is published
             try {
                 liveSession.getNode(stageNode.getParent().getPath());
-                info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                if (stageNode.hasProperty("j:published") && !stageNode.getProperty("j:published").getBoolean()) {
+                    info.setStatus(PublicationInfo.UNPUBLISHED);
+                } else {
+                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                }
             } catch (AccessDeniedException e) {
                 info.setStatus(PublicationInfo.UNPUBLISHABLE);
             } catch (PathNotFoundException e) {
@@ -619,10 +622,10 @@ public class JCRPublicationService extends JahiaService {
                     long mod = modProp.getTime();
                     long pub = pubProp.getTime();
                     long liveMod = liveModProp.getTime();
-                    if (mod > pub) {
-                        info.setStatus(PublicationInfo.MODIFIED);
-                    } else if (liveMod > pub) {
+                    if (liveMod > pub) {
                         info.setStatus(PublicationInfo.LIVE_MODIFIED);
+                    } else if (mod > pub) {
+                        info.setStatus(PublicationInfo.MODIFIED);
                     } else {
                         info.setStatus(PublicationInfo.PUBLISHED);
                     }

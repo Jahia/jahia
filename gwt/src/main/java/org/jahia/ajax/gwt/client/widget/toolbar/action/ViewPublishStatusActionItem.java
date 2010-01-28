@@ -93,16 +93,18 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                 infoLayer.el().makePositionable(true);
                 LayoutContainer container = module.getContainer();
                 El el = container.el();
-                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
+                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                         continue;
                     }
                     lastUnpublished = module.getNode().getPath();
 
                     infoLayer.setLayout(new CenterLayout());
-                    HtmlContainer box = new HtmlContainer("Unpublished");
+                    HtmlContainer box = new HtmlContainer("Never published");
                     if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
-                        box.setHtml("Unpublished - publish parent first");
+                        box.setHtml("Never published - publish parent first");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        box.setHtml("Unpublished");
                     }
 
                     box.addStyleName("x-view-item");

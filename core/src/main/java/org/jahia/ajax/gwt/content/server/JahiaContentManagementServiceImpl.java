@@ -773,8 +773,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean includeReferences) throws GWTJahiaServiceException {
-        return publication.getPublicationInfo(path, null, includeReferences);
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean full) throws GWTJahiaServiceException {
+        return publication.getPublicationInfo(path, null, full, retrieveCurrentSession());
     }
 
     /**
@@ -787,7 +787,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
         for (String path : pathes) {
-            map.put(path, publication.getPublicationInfo(path, null, false));
+            map.put(path, publication.getPublicationInfo(path, null, false, retrieveCurrentSession()));
         }
 
         return map;

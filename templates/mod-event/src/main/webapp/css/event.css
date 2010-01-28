@@ -1,0 +1,127 @@
+/******************************************************************************
+*  Events generic
+******************************************************************************/
+#bodywrapper .eventsBody{
+	margin:0 0 0 60px
+}
+#bodywrapper div.eventsInfoDate  {
+	float:left;
+	width:46px;
+	margin:0;
+	padding:0;
+	text-align:center;
+}
+#bodywrapper .eventsMeta{
+	clear:both;
+	color:#333;
+	margin:0.5em 0;
+}
+#bodywrapper .eventsMeta a,
+#bodywrapper .eventsMeta a:link,
+#bodywrapper .eventsMeta a:visited {
+	color:#333;
+	text-decoration:none;
+}
+#bodywrapper .eventsMeta a:hover,
+#bodywrapper .eventsMeta a:active {
+	text-decoration:underline;
+}
+
+#bodywrapper div.eventsTxtDate
+{
+	width:46px;
+	height:16px;
+	display:block;
+	background: url(img/eventstxtdate.png) no-repeat 50% 0%;
+}
+#bodywrapper div.eventsTxtDate span
+{
+	display:none
+}
+#bodywrapper div.eventsDate
+{
+	font-family:Georgia, "Times New Roman", Times, serif;
+	text-align:center;
+	background: url(img/eventsdate-bg.png) no-repeat top right;
+	padding-top:8px;
+	width:46px;
+}
+#bodywrapper .eventsListItem .day{
+	font-size:120%;
+	display:block;
+	line-height:130%;
+	font-weight:bold;
+	color:#333
+}
+#bodywrapper .eventsListItem .month{
+	font-size:70%;
+	display:block;
+	line-height:90%;
+	color:#666
+}
+#bodywrapper .eventsListItem .year{
+	font-size:85%;
+	display:block;
+	line-height:90%;
+	background: url(img/eventsdatebottom.png) no-repeat bottom right;
+	padding-bottom:5px;
+	color:#666
+}
+#bodywrapper p.eventsLocation{
+	font-weight:bold;
+	color:#000;
+	font-size:90%;
+	text-transform:uppercase;
+	padding:0;
+}
+#bodywrapper p.eventsType{
+	font-weight:bold;
+	color:#000;
+	font-size:90%;
+	text-transform:uppercase;
+	padding:0;
+}
+
+/******************************************************************************
+*  Events List
+******************************************************************************/
+#bodywrapper .eventsList{
+	clear:both;
+}
+
+#bodywrapper .eventsListItem {
+	border-bottom:1px solid #333;
+	margin-bottom:1em;
+	clear:both;
+	width:100%;
+	position:relative
+}
+
+#bodywrapper .eventsListItem p{
+	margin-bottom:0.5em;
+}
+
+#bodywrapper .eventsListItem h4 {
+	margin: 0;
+	border:none;
+	font-size:2em;
+	font-weight:normal
+}
+#bodywrapper .eventsListItem h4 a,
+#bodywrapper .eventsListItem h4 a:link,
+#bodywrapper .eventsListItem h4 a:visited {
+	color:#333;
+	text-decoration:none;
+	background:none;
+}
+#bodywrapper .eventsListItem h4 a:hover,
+#bodywrapper .eventsListItem h4 a:active {
+	text-decoration:underline;
+	background:none;
+}
+#bodywrapper span.categorytitle {
+	background:transparent url(img/categorytitle.png) no-repeat scroll 0 50%;
+	display:inline;
+	margin-right:8px;
+	padding:5px 0 5px 18px;
+}

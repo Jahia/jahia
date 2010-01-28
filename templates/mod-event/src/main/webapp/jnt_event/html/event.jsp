@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="event.css"/>
 
 
         <div class="eventsListItem"><!--start eventsListItem -->
@@ -26,17 +27,17 @@
             </div>
             <div class="eventsBody"><!--start eventsBody -->
                 <p class="eventsLocation"><span>${currentNode.properties.location.string}</span></p>
-                <p class="eventsLocation"><span>${currentNode.properties.eventsType.string}</span></p>
+                <p class="eventsType"><span>${currentNode.properties.eventsType.string}</span></p>
                 <h4><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h4>
 
-                <p class="eventsResume">
-                    ${currentNode.properties.body.string}</p>
+                <div class="eventsResume">
+                    ${currentNode.properties.body.string}</div>
                     <div class="eventsMeta">
         	    <span class="categoryLabel"><fmt:message key='category'/>:</span>
                         <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>
                         <c:if test="${cat != null}">
                                     <c:forEach items="${cat}" var="category">
-                                        ${category.category.title}
+                                        <span class="categorytitle">${category.category.title}</span>
                                     </c:forEach>
 
                         </c:if>

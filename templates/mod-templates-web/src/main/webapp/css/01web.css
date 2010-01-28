@@ -539,7 +539,9 @@ shortcuts
 	text-decoration:none;
 	background:none;
 }
-
+#bodywrapper p{
+	margin:0.5em 0;
+}
 #bodywrapper ul  {
 	margin:1em 0 1em 2em;
 	padding:0;

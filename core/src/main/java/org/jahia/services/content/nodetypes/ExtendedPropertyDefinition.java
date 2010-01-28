@@ -74,7 +74,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     private boolean queryOrderable = true;
     private boolean fulltextSearchable = true;
     private boolean facetable = false;
-    private String[] availableQueryOperators = new String[0];
+    private String[] availableQueryOperators = Lexer.ALL_OPERATORS;
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
         this.registry = registry;

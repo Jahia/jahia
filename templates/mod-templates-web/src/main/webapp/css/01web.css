@@ -556,6 +556,7 @@ shortcuts
 #bodywrapper ol  {
 	margin:1em 0 1em 2em;
 	padding:0;
+	list-style-position:outside;
 }
 
 #bodywrapper ol li {
@@ -1512,55 +1513,34 @@ background-color:#eaeaea
 	text-decoration:underline;
 }
 
- /******************************************************************************
-*  summary
+/******************************************************************************
+*  Summary
 ******************************************************************************/
-
-#bodywrapper ul.summary {
-	margin: 0;
-	padding:0;
-	background-image:none;
-	height:1%;
-	list-style: none;
-
+#bodywrapper ul.summary, #bodywrapper .summary {
+	margin:10px 0;
+	line-height:130%;
+	padding: 10px;
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	margin:0;
 }
-#bodywrapper .summary li {
-	margin:0 0 0.5em 0;
-	padding: 0.5em 0;
-	background-image:none;
-	width:100%;
-	border-bottom:1px solid #eaeaea
-}
-#bodywrapper .summary h4 a,
-#bodywrapper .summary h4 a:link,
-#bodywrapper .summary h4 a:visited {
+#bodywrapper .summary a,
+#bodywrapper .summary a:link,
+#bodywrapper .summary a:visited {
 	text-decoration:none;
-	color:#333
 }
-#bodywrapper .summary h4 a:hover,
-#bodywrapper .summary h4 a:active {
+#bodywrapper .summary a:hover,
+#bodywrapper .summary a:active {
 	text-decoration:underline;
 }
-#bodywrapper .summary h4 {
-	font-size:1em;
-	line-height:normal;
+
+#bodywrapper .summary ul {
 	margin:0;
-	padding: 0;
-	border-bottom: none
+	padding:0 0 0 2em;
 }
-#bodywrapper .summary img {
-	float:left;
-	margin-right:0.5em;
+#bodywrapper .summary li {
 	padding:0;
-	border:1px solid #ccc;
-	width:50px;
-	height:50px;
-}
-#bodywrapper .summary .summaryresume 	{
-	line-height:normal;
-	font-size:90%;
-	margin:0;
-	padding: 0;
+	margin-bottom:10px
 }
 
 /******************************************************************************

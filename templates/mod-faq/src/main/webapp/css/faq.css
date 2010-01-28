@@ -1,0 +1,13 @@
+/******************************************************************************
+*  FAQ
+******************************************************************************/
+
+#bodywrapper .faqList li {
+	margin-bottom:10px
+}
+#bodywrapper .faqList .faqQuestion{
+	margin-bottom:0;
+}
+#bodywrapper .faqList .faqAnswer{
+	margin:0 0 0 20px
+}

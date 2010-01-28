@@ -379,6 +379,17 @@ shortcuts
 	margin-left:20px;
 	margin-top:6px;
 }
+#bodywrapper ol  {
+	margin:1em 0 1em 2em;
+	padding:0;
+	list-style-position:outside;
+}
+#bodywrapper ol li {
+	margin:0;
+	padding:0;
+	background: none;
+	list-style: decimal
+}
 #bodywrapper ul li {
 	margin-bottom:2px;
 	padding-left:8px;
@@ -427,7 +438,7 @@ shortcuts
 	margin-bottom:10px;
 	margin-top:10px;
 }
-#bodywrapper h4 {
+#bodywrapper h5 {
 	font-weight:bold;
 	font-size:1.2em;
 }
@@ -1321,10 +1332,15 @@ display:none
 /******************************************************************************
 *  Summary
 ******************************************************************************/
-#bodywrapper ul.summary {
+#bodywrapper ul.summary, #bodywrapper .summary {
 	margin:10px 0;
 	line-height:130%;
+	padding: 10px;
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	margin:0;
 }
+
 #bodywrapper .summary a,
 #bodywrapper .summary a:link,
 #bodywrapper .summary a:visited {
@@ -1340,9 +1356,8 @@ display:none
 	padding:0 0 0 2em;
 }
 #bodywrapper .summary li {
-	margin:0;
 	padding:0;
-	list-style:none;
+	margin-bottom:10px
 }
 /******************************************************************************
 * WIKI Search

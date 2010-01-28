@@ -233,6 +233,7 @@ public class PropertiesHelper {
                 }
                 for (String type : types) {
                     if (!objectNode.isNodeType(type)) {
+                        objectNode.checkout();
                         objectNode.addMixin(type);
                     }
                 }

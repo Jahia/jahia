@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.nodetypes;
 
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import java.io.StreamTokenizer;
 import java.io.Reader;
 import java.io.IOException;
@@ -100,6 +101,16 @@ public class Lexer {
 
     public static final String[] PROP_ATTRIBUTE;
     public static final String[] NODE_ATTRIBUTE;
+
+    public static final String[] ALL_OPERATORS = new String[]{
+            QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+            QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO,
+            QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN,
+            QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO,
+            QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN,
+            QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO,
+            QueryObjectModelConstants.JCR_OPERATOR_LIKE
+    };
 
     static {
         ArrayList<String> attr = new ArrayList<String>();

@@ -31,17 +31,14 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ include file="../../common/declarations.jspf" %>
-
-<div class="box2 box2-style1">
-    <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
-<c:if test="${not empty title}">
-    <div class="box2-topright"></div><div class="box2-topleft"></div>
-    <h3 class="box2-header"><span>${title.string}</span></h3>
-</c:if>
-  <div class="box2-text">
-      ${wrappedContent}
-  </div>
-    <div class="box2-bottomright"></div>
-    <div class="box2-bottomleft"></div>
-<div class="clear"> </div></div>
+<%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div class="box3-container box3-style1">
+    <div class="box3-topright"></div>
+    <div class="box3-topleft"></div>
+    <div class="box3-text">
+        ${wrappedContent}
+    </div>
+    <div class="box3-bottomright"></div>
+    <div class="box3-bottomleft"></div>
+</div>

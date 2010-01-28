@@ -323,9 +323,6 @@
 [jmix:renderableReference] > jmix:layout mixin
  - j:referenceTemplate (string, choicelist[templates,resourceBundle,image])
 
-[jmix:skinnable] > jmix:layout, jmix:contentMixin mixin
- - j:skin (string, choicelist[skins,resourceBundle,image]) indexed=no
-
 [jmix:positionable] > jmix:layout mixin
  - j:columnIndex (long)
  - j:rowIndex (long)
@@ -368,7 +365,7 @@
  + j:referenceInField (jnt:referenceInField) multiple
 
 //---------------------------------------------------------
-// Definition organization
+// Definition organization (left panel)
 //---------------------------------------------------------
 
 [jmix:content] > mix:referenceable mixin
@@ -380,6 +377,10 @@
 [jmix:interactiveContent] > jmix:content mixin
 
 [jmix:queryContent] > jmix:content mixin
+
+//---------------------------------------------------------
+// Other mixins
+//---------------------------------------------------------
 
 [jmix:contentMixin] mixin
 

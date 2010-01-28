@@ -89,6 +89,7 @@
         <module>mod-scriptlanguages</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
+        <module>mod-skins</module>
     </modules>
 
 

@@ -31,9 +31,9 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ include file="../../common/declarations.jspf" %>
-
-<div class="box3-container box3-style1">
+<%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div class="box3-container">
     <div class="box3-topright"></div>
     <div class="box3-topleft"></div>
     <div class="box3-text">

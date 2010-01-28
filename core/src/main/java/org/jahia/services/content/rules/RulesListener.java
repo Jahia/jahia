@@ -77,9 +77,6 @@ public class RulesListener extends DefaultEventListener {
     private Set<String> ruleFiles;
     private String serverId;
     
-    private Service ruleService;
-    private ExtractionService extractionService;
-
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
     private PackageBuilder builder;
 
@@ -499,13 +496,5 @@ public class RulesListener extends DefaultEventListener {
 
     public static List<RulesListener> getInstances() {
         return instances;
-    }
-
-    public void setRuleService(Service ruleService) {
-        this.ruleService = ruleService;
-    }
-
-    public void setExtractionService(ExtractionService extractionService) {
-        this.extractionService = extractionService;
     }
 }

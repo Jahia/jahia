@@ -63,6 +63,10 @@
     background-image: url(../images/unpublish.png) !important;
 }
 
+.gwt-toolbar-icon-reversepublish {
+    background-image: url(../images/refresh.png) !important;
+}
+
 .gwt-toolbar-icon-newpage {
     background-image: url(../images/page_add.png) !important;
 }

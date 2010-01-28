@@ -15,6 +15,9 @@
 	clear:both;
 	color:#333;
 	margin:0.5em 0;
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	padding:0.5em;
 }
 #bodywrapper .eventsMeta a,
 #bodywrapper .eventsMeta a:link,
@@ -90,7 +93,7 @@
 }
 
 #bodywrapper .eventsListItem {
-	border-bottom:1px solid #333;
+	border-bottom:1px solid #ccc;
 	margin-bottom:1em;
 	clear:both;
 	width:100%;

@@ -2158,8 +2158,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReversePublishActionItem"/>
         </property>
-        <property name="titleKey" value="toolbar.edit.button.publish"/>
-        <property name="descriptionKey" value="toolbar.edit.button.publish"/>
+        <property name="titleKey" value="label.publish"/>
+        <property name="descriptionKey" value="label.publish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
     </bean>

@@ -46,11 +46,10 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         Log.debug("width" + width);
         if (width > 0 && width < 80) {
             model.set("pathPreview", model.getUrl());
-            model.set("widthPreview", model.getWidth());
         } else {
             model.set("pathPreview", model.getPreview());
-            model.set("widthPreview", 80);
         }
+        model.set("widthPreview", model.getWidth());
         model.set("heightPreview", model.getHeight());
 
         // ugly due to the fact that if condition doesn't work in tpl.

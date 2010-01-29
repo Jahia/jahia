@@ -41,6 +41,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
+        contentContainer.setId("images-view");
         contentContainer.setScrollMode(Style.Scroll.AUTOY);
 
         // data proxy
@@ -75,6 +76,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
         ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
+        listView.setTemplate(getMashupTemplate());
         contentContainer.add(listView);
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
@@ -148,6 +150,24 @@ class MashupBrowseTabItem extends BrowseTabItem {
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("jnt:portlet");
     }
+
+    /**
+     * Mashup template
+     * @return
+     */
+    public native String getMashupTemplate() /*-{
+    return ['<tpl for=".">',
+        '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
+        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{pathPreview}" title="{name}"></div>',
+        '<div style="margin-left: 160px; " class="thumbDetails">',
+        '<div><b>{nameLabel}: </b>{name}</div>',
+        '<div><b>{authorLabel}: </b>{createdBy}</div>',
+        '{tagsHTML}',
+        '</div>',
+        '</div>',
+        '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
+        '<div class="x-clear"></div>'].join("");
+    }-*/;
 
 
 }

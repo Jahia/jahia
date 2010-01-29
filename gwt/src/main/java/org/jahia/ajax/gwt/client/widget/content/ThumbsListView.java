@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -15,6 +16,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * To change this template use File | Settings | File Templates.
  */
 public class ThumbsListView extends ListView<GWTJahiaNode> {
+    public ThumbsListView() {
+        setItemSelector("div.thumb-wrap");
+        setOverStyle("x-view-over");
+    }
+
+
     public ThumbsListView(boolean detailed) {
         if (detailed) {
             setTemplate(getDetailedTemplate());
@@ -36,7 +43,8 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         model.set("widthLabel", Messages.get("ece_width", "Width"));
         model.set("heightLabel", Messages.get("ece_height", "Height"));
         int width = model.getWidth();
-        if (width < 80) {
+        Log.debug("width" + width);
+        if (width > 0 && width < 80) {
             model.set("pathPreview", model.getUrl());
             model.set("widthPreview", model.getWidth());
         } else {

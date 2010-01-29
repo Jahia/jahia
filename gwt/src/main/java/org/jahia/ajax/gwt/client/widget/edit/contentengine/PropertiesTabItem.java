@@ -80,6 +80,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
 
             if (propertiesEditor != null) {
+                addSharedLangLabel = false;
                 propertiesEditor.setVisible(false);
                 // keep tarck of the old values
                 previousNon18nProperties = propertiesEditor.getProperties(false, true);

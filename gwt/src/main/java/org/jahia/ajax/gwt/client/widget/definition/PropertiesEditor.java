@@ -54,6 +54,7 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
+    private Map<String, GWTJahiaItemDefinition> propertyDefinitions = new HashMap<String, GWTJahiaItemDefinition>();
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = false;
     private List<String> excludedItems;
@@ -180,7 +181,10 @@ public class PropertiesEditor extends FormPanel {
                 currentProperties.put(definition.getName(), property);
             }
 
-            final Field field = FormFieldCreator.createField(definition, currentProperties.get(definition.getName()));
+
+            final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
+            final Field field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty);
+            propertyDefinitions.put(gwtJahiaNodeProperty.getName(),definition);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
                 templateField.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
@@ -286,6 +290,7 @@ public class PropertiesEditor extends FormPanel {
 
     /**
      * Get properties
+     *
      * @return
      */
     public List<GWTJahiaNodeProperty> getProperties() {
@@ -294,6 +299,7 @@ public class PropertiesEditor extends FormPanel {
 
     /**
      * Get properties
+     *
      * @return
      */
     public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N) {
@@ -321,7 +327,7 @@ public class PropertiesEditor extends FormPanel {
             allItems.addAll(nodeType.getItems());
 
             for (GWTJahiaItemDefinition definition : allItems) {
-                boolean i18nProp = (definition instanceof GWTJahiaPropertyDefinition  && ((GWTJahiaPropertyDefinition)definition).isInternationalized());
+                boolean i18nProp = (definition instanceof GWTJahiaPropertyDefinition && ((GWTJahiaPropertyDefinition) definition).isInternationalized());
                 if ((includeI18N && i18nProp) || (includeNonI18N && !i18nProp)) {
                     if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
                             (dataType != null && dataType.equals(definition.getDataType()))) {
@@ -377,7 +383,7 @@ public class PropertiesEditor extends FormPanel {
                 ContentPickerField pck = (ContentPickerField) fld;
                 List<GWTJahiaNode> selection = pck.getValue();
                 for (GWTJahiaNode node : selection) {
-                    values.add(new GWTJahiaNodePropertyValue(node,GWTJahiaNodePropertyType.PAGE_LINK));
+                    values.add(new GWTJahiaNodePropertyValue(node, GWTJahiaNodePropertyType.PAGE_LINK));
                 }
             }
             // case of a file upload
@@ -421,7 +427,7 @@ public class PropertiesEditor extends FormPanel {
      * @return string representation of the field value, converted based on its
      *         type
      */
-    private GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue,int requiredType) {
+    private GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue, int requiredType) {
         String propValueString = null;
         if (fieldValue != null) {
             if (fieldValue instanceof Date) {
@@ -438,9 +444,19 @@ public class PropertiesEditor extends FormPanel {
 
     /**
      * Get fields map
+     *
      * @return
      */
     public Map<String, Field<?>> getFieldsMap() {
         return fields;
+    }
+
+    /**
+     * retrieve  GWTJahiaItemDefinition
+     * @param prop
+     * @return
+     */
+    public GWTJahiaItemDefinition getGWTJahiaItemDefinition(GWTJahiaNodeProperty prop){
+        return propertyDefinitions.get(prop.getName());
     }
 }

@@ -2179,3 +2179,7 @@ html>body .gwt-versionComparison-versionsPanel {
 .gwt-toolbar-icon-lang-es_HN {
     background-image: url(../images/flags/plain/flag_honduras.png) !important;
 }
+
+.gwt-toolbar-icon-translate {
+    background-image: url(../images/translate.gif) !important;
+}

@@ -72,6 +72,12 @@ public class FormFieldCreator {
 
     public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
 
+    /**
+     * Create Field
+     * @param definition
+     * @param property
+     * @return
+     */
     public static Field createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property) {
         Field field = null;
         if (definition.isHidden()) {
@@ -179,6 +185,9 @@ public class FormFieldCreator {
                     field = new TextField();
                     break;
             }
+            if(propDefinition.isInternationalized()){
+                field.setLabelSeparator(" <img width='11px' height='11px' src='/css/images/sharedLang.gif'/>:");
+            }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
             if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:extraResource")) {
@@ -201,6 +210,11 @@ public class FormFieldCreator {
         return field;
     }
 
+    /**
+     * set modifiers
+     * @param field
+     * @param definition
+     */
     public static void setModifiers(Field field, GWTJahiaItemDefinition definition) {
         if (field == null || definition == null) {
             return;
@@ -214,15 +228,19 @@ public class FormFieldCreator {
         }
     }
 
+    /**
+     * fill value
+     * @param field
+     * @param definition
+     * @param property
+     */
     public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property) {
-        Log.debug("Setting field value for " + property.getName() + " in " + field.getName());
         List<GWTJahiaNodePropertyValue> values = property.getValues();
         if (values.size() == 0) {
             return;
         }
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
-            Log.debug("selector : " + propDefinition.getSelector());
             if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.CHOICELIST) {
                 List<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
                 final List<GWTJahiaValueDisplayBean> displayBeans = propDefinition.getValueConstraints();
@@ -301,6 +319,11 @@ public class FormFieldCreator {
         }
     }
 
+    /**
+     * Returns values in a string separetad by a ','
+     * @param values
+     * @return
+     */
     private static String join(List<GWTJahiaNodePropertyValue> values) {
         StringBuilder str = new StringBuilder(values.get(0).getString());
         for (int i = 1; i < values.size(); i++) {

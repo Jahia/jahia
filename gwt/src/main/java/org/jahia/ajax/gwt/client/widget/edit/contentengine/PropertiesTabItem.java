@@ -2,8 +2,10 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.HashMap;
@@ -69,15 +71,18 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
     @Override
     public void create(GWTJahiaLanguage locale) {
-        // do not re-process the view if it's laready done and the tabItem is not multilang
-        if(!isMultiLang() && isProcessed()){
+        // do not re-process the view if it's already done and the tabItem is not multilang
+        if (!isMultiLang() && isProcessed()) {
             return;
         }
         if (engine.getMixin() != null) {
+            boolean addSharedLangLabel = true;
+            List<GWTJahiaNodeProperty> previousNon18nProperties = null;
+
             if (propertiesEditor != null) {
-                Log.debug("remove old properties editor from parents");
                 propertiesEditor.setVisible(false);
-                // todo : copy non18n properties to new language
+                // keep tarck of the old values
+                previousNon18nProperties = propertiesEditor.getProperties(false, true);
             }
             if (!isMultiLang()) {
                 setProcessed(true);
@@ -86,10 +91,13 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
             if (propertiesEditor == null) {
                 if (engine.isExistingNode() && engine.getNode().getNodeTypes().contains("jmix:shareable")) {
-                    Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
-                    label.setStyleAttribute("color", "rgb(200,80,80)");
-                    label.setStyleAttribute("font-size", "14px");
-                    add(label);
+                    // this label is shared among languages.
+                    if (addSharedLangLabel) {
+                        Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
+                        label.setStyleAttribute("color", "rgb(200,80,80)");
+                        label.setStyleAttribute("font-size", "14px");
+                        add(label);
+                    }
                 }
 
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
@@ -99,6 +107,17 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 postCreate();
 
             }
+
+            // synch non18n properties
+            if (isMultiLang()) {
+                if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
+                    Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
+                    for (GWTJahiaNodeProperty property : previousNon18nProperties) {
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
+                    }
+                }
+            }
+
             propertiesEditor.setVisible(true);
 
             layout();

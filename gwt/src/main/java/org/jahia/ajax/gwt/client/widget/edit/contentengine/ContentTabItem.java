@@ -17,6 +17,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
     private TextField<String> name = new TextField<String>();
+    private VerticalPanel wrapperPanel;
 
     public TextField<String> getName() {
         return name;
@@ -28,7 +29,7 @@ public class ContentTabItem extends PropertiesTabItem {
         setMultiLang(true);
     }
 
-    public ContentTabItem(AbstractContentEngine engine,boolean multilangue) {
+    public ContentTabItem(AbstractContentEngine engine, boolean multilangue) {
         this(engine);
         setMultiLang(multilangue);
     }
@@ -36,12 +37,14 @@ public class ContentTabItem extends PropertiesTabItem {
     @Override
     public void postCreate() {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
-            VerticalPanel p = new VerticalPanel();
-            FormPanel formPanel = getNamePanel();
-            p.add(formPanel);
-            isNodeNameFieldDisplayed = true;
-            p.add(propertiesEditor);
-            add(p);
+            if (wrapperPanel == null) {
+                wrapperPanel = new VerticalPanel();
+                FormPanel nameFormPanel = getNamePanel();
+                wrapperPanel.add(nameFormPanel);
+                isNodeNameFieldDisplayed = true;
+                add(wrapperPanel);
+            }
+            wrapperPanel.add(propertiesEditor);
             return;
         }
         super.postCreate();
@@ -49,6 +52,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
     /**
      * Get Form panel that contains the name of the nodes
+     *
      * @return
      */
     private FormPanel getNamePanel() {

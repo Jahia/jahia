@@ -289,6 +289,14 @@ public class PropertiesEditor extends FormPanel {
      * @return
      */
     public List<GWTJahiaNodeProperty> getProperties() {
+        return getProperties(true, true);
+    }
+
+    /**
+     * Get properties
+     * @return
+     */
+    public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N) {
         List<GWTJahiaNodeProperty> newProps = new ArrayList<GWTJahiaNodeProperty>();
 
         List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>(nodeTypes);
@@ -313,16 +321,19 @@ public class PropertiesEditor extends FormPanel {
             allItems.addAll(nodeType.getItems());
 
             for (GWTJahiaItemDefinition definition : allItems) {
-                if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
-                    (dataType != null && dataType.equals(definition.getDataType()))) {
-                    if (!definition.isProtected()) {
-                        Field f = fields.get(definition.getName());
-                        GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                        if (f != null && f.isDirty()) {
-                            Log.debug("Set value for " + prop.getName());
-                            prop.setValues(getPropertyValues(f, definition));
+                boolean i18nProp = (definition instanceof GWTJahiaPropertyDefinition  && ((GWTJahiaPropertyDefinition)definition).isInternationalized());
+                if ((includeI18N && i18nProp) || (includeNonI18N && !i18nProp)) {
+                    if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
+                            (dataType != null && dataType.equals(definition.getDataType()))) {
+                        if (!definition.isProtected()) {
+                            Field f = fields.get(definition.getName());
+                            GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
+                            if (f != null && f.isDirty()) {
+                                Log.debug("Set value for " + prop.getName());
+                                prop.setValues(getPropertyValues(f, definition));
+                            }
+                            newProps.add(prop);
                         }
-                        newProps.add(prop);
                     }
                 }
             }

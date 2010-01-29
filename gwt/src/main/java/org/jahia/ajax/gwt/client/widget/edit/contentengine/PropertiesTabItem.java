@@ -77,6 +77,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             if (propertiesEditor != null) {
                 Log.debug("remove old properties editor from parents");
                 propertiesEditor.setVisible(false);
+                // todo : copy non18n properties to new language
             }
             if (!isMultiLang()) {
                 setProcessed(true);
@@ -131,7 +132,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
         Iterator<String> langCodes = langPropertiesEditorMap.keySet().iterator();
         while (langCodes.hasNext()) {
             String langCode = langCodes.next();
-            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties());
+            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false));
         }
         return mapProperties;
     }

@@ -221,6 +221,9 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (propertiesTabItem.isMultiLang()) {
                     // for now only contentTabItem  has multilang. properties
                     langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap());
+                    if (pe != null) {
+                        props.addAll(pe.getProperties(false, true));
+                    }
                 } else {
                     if (pe != null) {
                         props.addAll(pe.getProperties());

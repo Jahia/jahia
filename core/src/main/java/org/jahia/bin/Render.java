@@ -515,21 +515,35 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
 
-            /*
-            JahiaData jData = new JahiaData(paramBean, false);
-            paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-            */
-            
-            path = path.substring(path.indexOf('/', 1));
-
+            // first we swallow the path to the Spring servlet
             int index = path.indexOf('/', 1);
-            String workspace = path.substring(1, index);
-            req.getSession().setAttribute("workspace", workspace);
-            path = path.substring(index);
+            if (index > 0) {
+                path = path.substring(path.indexOf('/', 1));
+            } else {
+                throw new RenderException("Error, missing workspace in render URL with path " + path);
+            }
 
+            // now let's search for the workspace in the URL
             index = path.indexOf('/', 1);
-            String lang = path.substring(1, index);
-            path = path.substring(index);
+            String workspace = Constants.LIVE_WORKSPACE;
+            if (index > 0) {
+                workspace = path.substring(1, index);
+                path = path.substring(index);
+            } else {
+                throw new RenderException("Error, missing language in render URL with path" + path);
+            }
+            req.getSession().setAttribute("workspace", workspace);
+
+            // now let's search for the language in the URL
+            index = path.indexOf('/', 1);
+            String lang = "en";
+            if (index > 0) {
+                lang = path.substring(1, index);
+                path = path.substring(index);
+            } else {
+                lang = path;
+                path = "";
+            }
 
             RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
             final boolean isLive = Constants.LIVE_WORKSPACE.equals(workspace);

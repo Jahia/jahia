@@ -56,6 +56,7 @@ public class Find extends Render {
                             map.put(name,propertyWrapper.getValue().getString());
                         }
                     }
+                    results.add(map);
                 }
             }
             JSONObject nodeJSON = new JSONObject(results);

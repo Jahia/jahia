@@ -1,5 +1,6 @@
 package org.jahia.bin;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -25,6 +26,9 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Find extends Render {
+
+    private static Logger logger = Logger.getLogger(Find.class);
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws Exception {
 
@@ -33,6 +37,15 @@ public class Find extends Render {
         if (session.getWorkspace().getQueryManager() != null) {
             String query = req.getParameter("query");
             String language = req.getParameter("language");
+            String depthLimitStr = req.getParameter("depthLimit");
+            int depthLimit = 1;
+            if (depthLimitStr != null) {
+                try {
+                    depthLimit = Integer.parseInt(depthLimitStr);
+                } catch (NumberFormatException nfe) {
+                    logger.warn("Invalid depth limit integer value=" + depthLimitStr + ", using default depth of 1");
+                }
+            }
             if (language == null) {
                 language = javax.jcr.query.Query.JCR_SQL2; 
             }
@@ -42,7 +55,7 @@ public class Find extends Render {
             JSONArray results = new JSONArray();
             while (rows.hasNext()) {
                 Row currentRow = rows.nextRow();
-                JSONObject serializedMap = serializeNode(currentRow.getNode());
+                JSONObject serializedMap = serializeNode(currentRow.getNode(), depthLimit);
                 results.put(serializedMap);
             }
             results.write(resp.getWriter());
@@ -50,7 +63,7 @@ public class Find extends Render {
         }
     }
 
-    private JSONObject serializeNode(Node currentNode) throws RepositoryException, JSONException {
+    private JSONObject serializeNode(Node currentNode, int depthLimit) throws RepositoryException, JSONException {
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
         // Map<String,Object> map = new HashMap<String, Object>();
@@ -69,13 +82,15 @@ public class Find extends Render {
             }
         }
         final NodeIterator childNodeIterator = currentNode.getNodes();
-        JSONArray childMapList = new JSONArray();
-        while (childNodeIterator.hasNext()) {
-            Node currentChildNode = childNodeIterator.nextNode();
-            JSONObject childSerializedMap = serializeNode(currentChildNode);
-            childMapList.put(childSerializedMap);
+        if ((depthLimit -1) > 0) {
+            JSONArray childMapList = new JSONArray();
+            while (childNodeIterator.hasNext()) {
+                Node currentChildNode = childNodeIterator.nextNode();
+                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit-1);
+                childMapList.put(childSerializedMap);
+            }
+            jsonObject.put("childNodes", childMapList);
         }
-        jsonObject.put("childNodes", childMapList);
         return jsonObject;
     }
 

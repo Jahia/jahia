@@ -39,6 +39,12 @@ public class Login extends HttpServlet implements Controller {
         JahiaData jData = new JahiaData(jParams, false);
         jParams.setAttribute(JahiaData.JAHIA_DATA, jData);
 
+        String redirectActiveStr = request.getParameter("redirectActive");
+        boolean redirectActive = true;
+        if (redirectActiveStr != null) {
+            redirectActive = Boolean.parseBoolean(redirectActiveStr);    
+        }
+
         String redirect = request.getParameter("redirect");
         if (redirect == null || redirect.length() == 0) {
             redirect = request.getContextPath()+"/cms/render/default/"+ jParams.getLocale() +"/sites/" +
@@ -47,7 +53,9 @@ public class Login extends HttpServlet implements Controller {
 
         String result = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if ("ok".equals(result)) {
-            response.sendRedirect(redirect);
+            if (redirectActive) {
+                response.sendRedirect(redirect);
+            }
         } else {
             request.setAttribute("javax.servlet.error.request_uri", redirect);
             request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);

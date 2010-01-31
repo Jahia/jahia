@@ -48,19 +48,30 @@ public class Logout extends HttpServlet implements Controller {
         // set for this user.
         JahiaUser curUser = jParams.getUser();
         String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
-        Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-        authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
-        authCookie.setMaxAge(0); // means we want it deleted now !
-        jParams.getRealResponse().addCookie(authCookie);
-        curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
+        if (cookieAuthKey != null) {
+            Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
+            authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
+            authCookie.setMaxAge(0); // means we want it deleted now !
+            jParams.getRealResponse().addCookie(authCookie);
+            curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
+        }
 
         jParams.setUserGuest();
+
+        String redirectActiveStr = request.getParameter("redirectActive");
+        boolean redirectActive = true;
+        if (redirectActiveStr != null) {
+            redirectActive = Boolean.parseBoolean(redirectActiveStr);
+        }
 
         String redirect = request.getParameter("redirect");
         if (redirect == null) {
             redirect = request.getHeader("referer");
         }
-        response.sendRedirect(redirect);
+
+        if (redirectActive) {
+            response.sendRedirect(redirect);
+        }
         return null;
     }
 }

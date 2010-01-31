@@ -5,10 +5,11 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
+import javax.jcr.*;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -38,31 +39,44 @@ public class Find extends Render {
             javax.jcr.query.Query q = session.getWorkspace().getQueryManager().createQuery(query, javax.jcr.query.Query.JCR_SQL2);
             QueryResult qr = q.execute();
             RowIterator rows = qr.getRows();
-            List<Map> results = new ArrayList<Map>();
+            JSONArray results = new JSONArray();
             while (rows.hasNext()) {
                 Row currentRow = rows.nextRow();
-                final PropertyIterator stringMap = currentRow.getNode().getProperties();
-                Map<String,String > map = new HashMap<String, String>();
-                while (stringMap.hasNext()) {
-                    JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
-                    final int type = propertyWrapper.getType();
-                    final String name = propertyWrapper.getName().replace(":", "_");
-                    if(type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
-                        if(!propertyWrapper.isMultiple()){
-                            map.put(name,((JCRNodeWrapper)propertyWrapper.getNode()).getWebdavUrl());
-                        }
-                    } else {
-                        if(!propertyWrapper.isMultiple()){
-                            map.put(name,propertyWrapper.getValue().getString());
-                        }
-                    }
-                    results.add(map);
-                }
+                JSONObject serializedMap = serializeNode(currentRow.getNode());
+                results.put(serializedMap);
             }
-            JSONObject nodeJSON = new JSONObject(results);
-            nodeJSON.write(resp.getWriter());
+            results.write(resp.getWriter());
 
         }
+    }
+
+    private JSONObject serializeNode(Node currentNode) throws RepositoryException, JSONException {
+        final PropertyIterator stringMap = currentNode.getProperties();
+        JSONObject jsonObject = new JSONObject();
+        // Map<String,Object> map = new HashMap<String, Object>();
+        while (stringMap.hasNext()) {
+            JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
+            final int type = propertyWrapper.getType();
+            final String name = propertyWrapper.getName().replace(":", "_");
+            if(type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
+                if(!propertyWrapper.isMultiple()){
+                    jsonObject.put(name,((JCRNodeWrapper)propertyWrapper.getNode()).getWebdavUrl());
+                }
+            } else {
+                if(!propertyWrapper.isMultiple()){
+                    jsonObject.put(name,propertyWrapper.getValue().getString());
+                }
+            }
+        }
+        final NodeIterator childNodeIterator = currentNode.getNodes();
+        JSONArray childMapList = new JSONArray();
+        while (childNodeIterator.hasNext()) {
+            Node currentChildNode = childNodeIterator.nextNode();
+            JSONObject childSerializedMap = serializeNode(currentChildNode);
+            childMapList.put(childSerializedMap);
+        }
+        jsonObject.put("childNodes", childMapList);
+        return jsonObject;
     }
 
 }

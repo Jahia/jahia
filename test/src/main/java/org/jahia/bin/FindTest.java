@@ -7,6 +7,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +27,17 @@ public class FindTest extends TestCase {
         // Create an instance of HttpClient.
         HttpClient client = new HttpClient();
 
+        PostMethod loginMethod = new PostMethod("http://localhost:8080/cms/login");
+        loginMethod.addParameter("username", "root");
+        loginMethod.addParameter("password", "root1234");
+        // the next parameter is required to properly activate the valve check.
+        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
+
+        int statusCode = client.executeMethod(loginMethod);
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + loginMethod.getStatusLine());
+        }
+
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "SELECT * FROM [jnt:article]");
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
@@ -35,7 +48,7 @@ public class FindTest extends TestCase {
 
         try {
             // Execute the method.
-            int statusCode = client.executeMethod(method);
+            statusCode = client.executeMethod(method);
 
             if (statusCode != HttpStatus.SC_OK) {
                 System.err.println("Method failed: " + method.getStatusLine());
@@ -44,9 +57,9 @@ public class FindTest extends TestCase {
             // Read the response body.
             String responseBody = method.getResponseBodyAsString();
 
-            JSONObject jsonObject = new JSONObject(responseBody);
+            JSONArray jsonResults = new JSONArray(responseBody);
 
-            assertNotNull("A proper JSONObject instance was expected, got null instead", jsonObject);
+            assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
 
         } finally {
             // Release the connection.

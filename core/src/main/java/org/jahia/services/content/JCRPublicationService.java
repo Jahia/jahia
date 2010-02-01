@@ -271,13 +271,13 @@ public class JCRPublicationService extends JahiaService {
         }
         for (JCRNodeWrapper node : modified) {
             System.out.println("-- setting last published : "+node.getPath());
-//            if (!sourceSession.getWorkspace().getName().equals("live")) {
+            if (!sourceSession.getWorkspace().getName().equals("live")) {
                 if (!node.isCheckedOut()) {
                     node.checkout();
                 }
                 node.setProperty("j:lastPublished", c);
                 node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
-//            }
+            }
         }
         if (modified.isEmpty()) {
             return;
@@ -304,6 +304,8 @@ public class JCRPublicationService extends JahiaService {
                 logger.info("Merge node : " + path + " source v=" + node.getBaseVersion().getName() +
                         " , dest node v=" + destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
+//                recurseCheckin(destinationSession.getNode(destinationPath), destinationVersionManager);
+//
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
                 while (ni.hasNext()) {
@@ -311,11 +313,13 @@ public class JCRPublicationService extends JahiaService {
                     // Conflict : node has been modified in live. Resolve conflict without doing anything
                     Node failed = ni.nextNode();
                     destinationVersionManager.checkout(failed.getPath());
+
+                    JCRNodeWrapper destNode = destinationSession.getNode(failed.getPath());
+
+                    new NodeComparator().applyDifferences(node, destNode);
+
                     destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
                     destinationVersionManager.checkin(failed.getPath());
-                    // Then retry the merge (should be ok now)
-                    String newPath = failed.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-                    destinationVersionManager.merge(newPath, node.getSession().getWorkspace().getName(), false, true);
 
                     // todo : workspace write here
                     node.update(destinationSession.getWorkspace().getName());
@@ -468,7 +472,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {
-        if (node.isNodeType("mix:versionable")) {
+        if (node.isNodeType("mix:versionable") && node.isCheckedOut()) {
             versionManager.checkin(node.getPath());
         }
         NodeIterator ni = node.getNodes();
@@ -622,6 +626,13 @@ public class JCRPublicationService extends JahiaService {
                     long mod = modProp.getTime();
                     long pub = pubProp.getTime();
                     long liveMod = liveModProp.getTime();
+//                    if (publishedNode.isCheckedOut()) {
+//                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
+//                    } else if (stageNode.isCheckedOut()) {
+//                        info.setStatus(PublicationInfo.MODIFIED);
+//                    } else {
+//                        info.setStatus(PublicationInfo.PUBLISHED);
+//                    }
                     if (liveMod > pub) {
                         info.setStatus(PublicationInfo.LIVE_MODIFIED);
                     } else if (mod > pub) {

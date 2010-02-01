@@ -541,7 +541,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 lang = path.substring(1, index);
                 path = path.substring(index);
             } else {
-                lang = path;
+                lang = path.substring(1);
                 path = "";
             }
 

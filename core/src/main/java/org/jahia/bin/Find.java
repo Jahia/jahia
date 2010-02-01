@@ -33,7 +33,6 @@ public class Find extends Render {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-        List<String> users = new ArrayList<String>();
         if (session.getWorkspace().getQueryManager() != null) {
             String query = req.getParameter("query");
             String language = req.getParameter("language");

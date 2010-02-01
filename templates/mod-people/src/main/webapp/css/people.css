@@ -1,0 +1,49 @@
+/******************************************************************************
+*  People generic
+******************************************************************************/
+#bodywrapper div.peopleListItem{
+	border-bottom: 1px solid #ccc;
+	padding:5px;
+}
+#bodywrapper div.peoplePhoto{
+	float:left;
+	width:100px;
+	height:100px;
+	display:block;
+	border: 1px solid #ccc;
+	overflow:hidden;
+}
+#bodywrapper p.peopleFonction, #bodywrapper p.peopleEmail, #bodywrapper p.peopleBusinessUnit{
+	margin:0;
+	padding:0;
+}
+#bodywrapper .peopleBody{
+	margin:0 0 0 120px
+}
+#bodywrapper .peopleBody p{
+	margin:0;
+	padding:0;
+}
+#bodywrapper .peopleAction{
+}
+#bodywrapper .peopleAction a,
+#bodywrapper .peopleAction a:link,
+#bodywrapper .peopleAction a:visited {
+	margin-right:0.5em
+}
+#bodywrapper .peopleAction a:hover,
+#bodywrapper .peopleAction a:active {
+	text-decoration:underline;
+}
+#bodywrapper a.peopleEnlarge{
+	background:transparent url(img/peopleenlarge.png) no-repeat 0% 50%;
+	padding-left:16px;
+}
+#bodywrapper a.peopleDownload{
+	background:transparent url(img/peopledownload.png) no-repeat 0% 50%;
+	padding-left:16px;
+}
+#bodywrapper a.peopleBiographiy{
+	background:transparent url(img/peoplebiographiy.png) no-repeat 0% 50%;
+	padding-left:16px;
+}

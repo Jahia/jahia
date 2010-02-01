@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="people.css"/>
 <script type="text/javascript">
     function ShowHideLayer(boxID) {
 	/* Obtain reference for the selected boxID layer and its button */
@@ -22,10 +23,8 @@
 <div class="peopleListItem">
     <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
-        <div class="peoplePhoto">
-                                    <a class="peopleDownload" href="${picture.node.url}" rel="facebox">
-            <img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${currentNode.properties.lastname.string} picture"></a><br/>
-        <fmt:message key='web_templates_peopleContainer.peopleViewFullSize'/></div>
+        <div class="peoplePhoto"><img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${currentNode.properties.lastname.string} picture">
+       </div>
     </c:if>
     <div class="peopleBody">
         <h5>${currentNode.properties.firstname.string}&nbsp;${currentNode.properties.lastname.string}</h5>
@@ -37,11 +36,11 @@
         <p class="peopleEmail"><a href='mailto:${currentNode.properties.email.string}'>${currentNode.properties.email.string}</a></p>
 
         <div class="peopleAction">
-
+			<a class="peopleEnlarge" href="${picture.node.url}" rel="facebox"> <fmt:message key='web_templates_peopleContainer.peopleViewFullSize'/></a>
             <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
                     key='web_templates_peopleContainer.biography'/></a>
         </div>
-         <div id="collapseBox${currentNode.identifier}" class="collapsible" style="border:1px solid #999999; padding:3px;background:#FFFFFF;filter: alpha (opacity=50)">
+         <div id="collapseBox${currentNode.identifier}" class="collapsible" >
             <jcr:nodeProperty node="${currentNode}" name="biography"/>
         </div>
         <!--stop collapsible -->

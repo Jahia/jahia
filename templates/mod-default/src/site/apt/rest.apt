@@ -1,0 +1,70 @@
+Basic Jahia REST API
+
+* Quick introduction
+
+ Jahia provides a basic REST API, mostly for rendering, but a view other services are available as well such login,
+ logout, content creation & updating and searching.
+
+* Examples
+
+ You can find an example of some REST API calls in the file templates/default/examples/jqueryfind.html. To test this
+ file, make sure you start & configure your Jahia, and then point your browser to the following URL :
+
+ http://localhost:8080/templates/default/examples/jqueryfind.html
+
+* Login
+
+ URL : /cms/login
+
+ Parameters :
+
+*----------------+-------------+------------------------------------------------+
+|Name            |Mandatory    |Description                                     |
+*----------------+-------------+------------------------------------------------+
+|username        |yes          |The username of the user that you want to login |
+*----------------+-------------+------------------------------------------------+
+|password        |yes          |The user's password                             |
+*----------------+-------------+------------------------------------------------+
+|redirectActive  |no           |If set to "true" or not set, the login servlet  |
+|                |             |will redirect to the home page after successful |
+|                |             |authentification. If you are using AJAX calls   |
+|                |             |you should set this to "false".                 |
+*----------------+-------------+------------------------------------------------+
+|loginFromTag    |yes          |Should always be set to "1" otherwise login will|
+|                |             |not work                                        |
+*----------------+-------------+------------------------------------------------+
+|redirect        |no           |Allows you to specify another URL to redirect   |
+|                |             |after successful login                          |
+*----------------+-------------+------------------------------------------------+
+
+* Logout
+
+ URL : /cms/logout
+
+ TBD
+
+* Render
+
+ URL : /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH
+
+ TBD
+
+* Find
+
+ URL : /cms/find/WORKSPACE/LANGUAGE
+
+ Parameters :
+ 
+*----------------+-------------+------------------------------------------------+
+|Name            |Mandatory    |Description                                     |
+*----------------+-------------+------------------------------------------------+
+|query           |yes          |The JCR query to execute                        |
+*----------------+-------------+------------------------------------------------+
+|language        |yes          |The JCR language used in the query, for example |
+|                |             |"JCR-SQL2"                                      |
+*----------------+-------------+------------------------------------------------+
+|depthLimit      |no           |The depth of the result tree. If not set it     |
+|                |             |defaults to "1". If you have deep content tree  |
+|                |             |hierarchies you might want to limit result      |
+|                |             |depth to avoid performance issues.              |
+*----------------+-------------+------------------------------------------------+

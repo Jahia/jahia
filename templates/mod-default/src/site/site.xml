@@ -18,6 +18,7 @@
                 <item name="Edit DropDown" href="profile.html#DropDown"/>
                 <item name="Ajax Upload" href="profile.html#Upload"/>
             </item>
+            <item name="REST API" href="rest.html" />
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

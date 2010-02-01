@@ -16,6 +16,8 @@ Basic Jahia REST API
 
  URL : /cms/login
 
+ Method : POST
+
  Parameters :
 
 *----------------+-------------+------------------------------------------------+
@@ -41,17 +43,35 @@ Basic Jahia REST API
 
  URL : /cms/logout
 
+ Method : POST
+
+*----------------+-------------+------------------------------------------------+
+|Name            |Mandatory    |Description                                     |
+*----------------+-------------+------------------------------------------------+
+|redirectActive  |no           |If set to "true" or not set, the login servlet  |
+|                |             |will redirect to the home page after successful |
+|                |             |authentification. If you are using AJAX calls   |
+|                |             |you should set this to "false".                 |
+*----------------+-------------+------------------------------------------------+
+|redirect        |no           |Allows you to specify another URL to redirect   |
+|                |             |after successful login                          |
+*----------------+-------------+------------------------------------------------+
+
  TBD
 
 * Render
 
  URL : /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH
 
+ Method : POST
+
  TBD
 
 * Find
 
  URL : /cms/find/WORKSPACE/LANGUAGE
+
+ Method : POST
 
  Parameters :
  

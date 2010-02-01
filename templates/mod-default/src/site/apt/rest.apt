@@ -2,7 +2,7 @@ Basic Jahia REST API
 
 * Quick introduction
 
- Jahia provides a basic REST API, mostly for rendering, but a view other services are available as well such login,
+ Jahia provides a REST API, mostly for rendering, but some other services are available as well such: login,
  logout, content creation & updating and searching.
 
 * Examples

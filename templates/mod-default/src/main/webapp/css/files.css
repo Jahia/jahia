@@ -92,17 +92,19 @@
 
 #bodywrapper a.file {
     background: url(img/files/file.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.video {
     background: url(img/files/video.png ) no-repeat scroll 0.5em 0.5em;
+	padding-left:24px;
 }
 #bodywrapper a.ppt, #bodywrapper a.pptx {
     background: url(img/files/ppt.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.exe {
     background: url(img/files/exe.png ) no-repeat scroll 0.5em 0.5em;
+	padding-left:24px;
 }
 #bodywrapper a.msword, #bodywrapper a.doc, #bodywrapper a.docx {
     background: url(img/files/doc.png ) no-repeat scroll 0.2em 0em;
@@ -110,40 +112,43 @@
 }
 #bodywrapper a.dir {
     background: url(img/files/folder_close.png ) no-repeat scroll 0.5em 0.5em;
+	padding-left:24px;
 }
 #bodywrapper a.html, #bodywrapper a.htm {
     background: url(img/files/html.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.img,  #bodywrapper a.gif, #bodywrapper a.jpeg, #bodywrapper a.jpg, #bodywrapper a.png {
     background: url(img/files/img.png ) no-repeat scroll 0.5em 0.5em;
+	padding-left:24px;
 }
 #bodywrapper a.pdf {
     background: url(img/files/pdf.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.sound, #bodywrapper a.wav {
     background: url(img/files/sound.png ) no-repeat scroll 0.5em 0.5em;
+	padding-left:24px;
 }
 #bodywrapper a.txt {
     background: url(img/files/txt.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.xls, #bodywrapper a.xlsx, #bodywrapper a.csv {
     background: url(img/files/xls.png ) no-repeat  scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.zip, #bodywrapper a.sit  {
     background: url(img/files/zip.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.rar,  #bodywrapper a.tar, #bodywrapper a.gz    {
     background: url(img/files/rar.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 #bodywrapper a.jahiapage    {
     background: url(img/files/html.png ) no-repeat scroll 0.2em 0em;
-        padding-left:24px;
+    padding-left:24px;
 }
 
 

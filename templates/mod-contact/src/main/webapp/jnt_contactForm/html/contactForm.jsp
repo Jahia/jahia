@@ -4,7 +4,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<div class="contactForm">
+<template:addResources type="css" resources="contactform.css"/>
+<div class="Form contactForm">
     <form action="${url.base}${currentNode.path}/*" method="post">
         <input type="hidden" name="nodeType" value="jnt:contact"/>
         <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -120,7 +121,8 @@
                     <label class="left" for="remarks">${fn:escapeXml(jcr:label(props.remarks.definition))}</label><input type="text" id="remarks" name="remarks"/>
                 </p>
             </c:if>
-            <div class="divButton"><input type="submit" tabindex="28" value="<fmt:message key='save'/>" class="button" id="submit"/>
+            <div class="divButton"><br />
+				<input type="submit" tabindex="28" value="<fmt:message key='save'/>" class="button" id="submit"/>
                 <input type="reset" tabindex="29" value="<fmt:message key='reset'/>" class="button" id="reset"/>
               </div>
         </fieldset>

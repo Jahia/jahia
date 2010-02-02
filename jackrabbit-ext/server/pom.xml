@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}-publication-patched</version>
+            <version>${jackrabbit.version}-patch2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>

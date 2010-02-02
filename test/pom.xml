@@ -46,6 +46,12 @@
             <artifactId>groovy-all</artifactId>
             <version>1.6.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jbpm.jbpm4</groupId>
+            <artifactId>jbpm-test-base</artifactId>
+            <version>4.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>

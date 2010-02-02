@@ -51,17 +51,17 @@
 <!-- Shindig configuration -->
     <!-- configuration -->
     <!-- If you have your own Guice module(s), put them here as a colon-separated list. -->
-    <context-param>
+    <!--<context-param>
       <param-name>guice-modules</param-name>
       <param-value>
         org.apache.shindig.common.PropertiesModule:
         org.apache.shindig.gadgets.DefaultGuiceModule:
         org.jahia.services.shindig.GuiceModule:
-        <!--org.apache.shindig.social.sample.SampleModule:-->
+        &lt;!&ndash;org.apache.shindig.social.sample.SampleModule:&ndash;&gt;
         org.apache.shindig.gadgets.oauth.OAuthModule:
         org.apache.shindig.common.cache.ehcache.EhCacheModule
       </param-value>
-    </context-param>
+    </context-param>-->
 <!-- End of Shindig configuration -->    
 
     <filter>
@@ -141,7 +141,7 @@
     </filter>
     
 <!-- Shindig filters -->
-    <filter>
+    <!--<filter>
         <filter-name>JSecurityFilter</filter-name>
         <filter-class>org.jsecurity.web.servlet.JSecurityFilter</filter-class>
         <init-param>
@@ -176,7 +176,7 @@
   <filter>
     <filter-name>authFilter</filter-name>
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
-  </filter>
+  </filter>-->
 <!-- End of shindig filters -->    
 
     <filter-mapping>
@@ -281,7 +281,7 @@
     </filter-mapping>
     
 <!-- Shinding filter mappings -->
-    <filter-mapping>
+   <!-- <filter-mapping>
         <filter-name>JSecurityFilter</filter-name>
         <url-pattern>/oauth/authorize</url-pattern>
     </filter-mapping>
@@ -314,7 +314,7 @@
     <filter-mapping>
       <filter-name>authFilter</filter-name>
       <url-pattern>/gadgets/api/rest/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 <!-- End of Shindig filter mappings -->    
 
     <listener>
@@ -674,7 +674,7 @@
     </servlet>
     
 <!-- Shindig servlets -->
-    <!-- Render a Gadget -->
+ <!--   &lt;!&ndash; Render a Gadget &ndash;&gt;
     <servlet>
       <servlet-name>xml-to-html</servlet-name>
       <servlet-class>
@@ -682,7 +682,7 @@
       </servlet-class>
     </servlet>
 
-    <!-- Proxy -->
+    &lt;!&ndash; Proxy &ndash;&gt;
     <servlet>
       <servlet-name>proxy</servlet-name>
       <servlet-class>
@@ -690,7 +690,7 @@
       </servlet-class>
     </servlet>
 
-    <!-- makeRequest -->
+    &lt;!&ndash; makeRequest &ndash;&gt;
     <servlet>
       <servlet-name>makeRequest</servlet-name>
       <servlet-class>
@@ -698,7 +698,7 @@
       </servlet-class>
     </servlet>
 
-    <!-- Concat -->
+    &lt;!&ndash; Concat &ndash;&gt;
     <servlet>
       <servlet-name>concat</servlet-name>
       <servlet-class>
@@ -706,7 +706,7 @@
       </servlet-class>
     </servlet>
 
-    <!-- OAuth callback -->
+    &lt;!&ndash; OAuth callback &ndash;&gt;
     <servlet>
       <servlet-name>oauthCallback</servlet-name>
       <servlet-class>
@@ -714,7 +714,7 @@
       </servlet-class>
     </servlet>
 
-    <!-- Metadata RPC -->
+    &lt;!&ndash; Metadata RPC &ndash;&gt;
     <servlet>
       <servlet-name>metadata</servlet-name>
       <servlet-class>
@@ -722,13 +722,13 @@
       </servlet-class>
     </servlet>
 
-    <!-- javascript serving -->
+    &lt;!&ndash; javascript serving &ndash;&gt;
     <servlet>
       <servlet-name>js</servlet-name>
       <servlet-class>org.apache.shindig.gadgets.servlet.JsServlet</servlet-class>
     </servlet>
 
-    <!-- Serve social REST api -->
+    &lt;!&ndash; Serve social REST api &ndash;&gt;
     <servlet>
       <servlet-name>socialRestapiServlet</servlet-name>
       <servlet-class>
@@ -740,7 +740,7 @@
       </init-param>
     </servlet>
 
-    <!-- Serve social RPC api -->
+    &lt;!&ndash; Serve social RPC api &ndash;&gt;
     <servlet>
       <servlet-name>socialJsonRpcServlet</servlet-name>
       <servlet-class>
@@ -752,7 +752,7 @@
       </init-param>
     </servlet>
 
-    <!-- Serve gadgets RPC api -->
+    &lt;!&ndash; Serve gadgets RPC api &ndash;&gt;
     <servlet>
       <servlet-name>gadgetsJsonRpcServlet</servlet-name>
       <servlet-class>
@@ -775,14 +775,14 @@
       </init-param>
     </servlet>
 
-    <!-- Serve sample OAuth apis -->
+    &lt;!&ndash; Serve sample OAuth apis &ndash;&gt;
     <servlet>
       <servlet-name>sampleOAuth</servlet-name>
       <servlet-class>
         org.apache.shindig.social.sample.oauth.SampleOAuthServlet
       </servlet-class>
     </servlet>
-    
+    -->
 <!-- End of Shindig servlets -->
 
 <!-- Apache Chemistry CMIS Servlet -->
@@ -972,7 +972,7 @@
     </servlet-mapping>
 
 <!-- Shindig servlet mappings -->
-    <servlet-mapping>
+    <!--<servlet-mapping>
       <servlet-name>js</servlet-name>
       <url-pattern>/gadgets/js/*</url-pattern>
     </servlet-mapping>
@@ -1030,7 +1030,7 @@
     <servlet-mapping>
       <servlet-name>sampleOAuth</servlet-name>
       <url-pattern>/oauth/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
 <!-- End of Shindig servlet mappings -->
 
 <!-- Apache Chemistry CMIS Servlet mapping -->

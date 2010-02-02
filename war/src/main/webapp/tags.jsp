@@ -64,7 +64,6 @@
 <s:lastModifiedBy/>
 <s:pagePath/>
 <s:rawQuery/>
-<s:resultsPageUrl var=""/>
 <s:site/>
 <s:termFields/>
 <s:termMatch/>

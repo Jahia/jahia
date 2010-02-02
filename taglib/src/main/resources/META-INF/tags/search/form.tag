@@ -33,8 +33,6 @@
 --%>
 <%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the search controls." %>
 <%@ tag dynamic-attributes="attributes"%>
-<%@ attribute name="resultsPage" required="false" type="java.lang.String"
-              description="You can set the target JSP template to be used after form submit. By default the JSP page is used, which is configured in the search-results element of the template deployment descriptor (templates.xml) for the current template set. The special keyword - this - can be used to identify the current page (the page will be preserved after form submit)." %>
 <jsp:useBean id="searchTermIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermMatchIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermFieldIndexes" class="java.util.HashMap" scope="request"/>
@@ -50,13 +48,6 @@
 <c:set target="${attributes}" property="action" value="${functions:default(attributes.action, url.mainResource)}"/>
 <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'searchForm')}"/>
 <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
-<c:set var="searchFor" value="${functions:default(searchFor, 'pages')}"/>
-<c:if test="${empty resultsPage}">
-    <search:resultsPageUrl var="resultsPage"/>
-</c:if>
 <form ${functions:attributes(attributes)}>
-    <c:if test="${not empty resultsPage && resultsPage != 'this'}">
-        <input type="hidden" name="template" value="${fn:escapeXml(resultsPage)}"/>
-    </c:if>
     <jsp:doBody/>
 </form>

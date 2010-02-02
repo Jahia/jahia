@@ -131,50 +131,6 @@
         </attribute>
     </tag>
 
-   
-
-    <tag>
-        <description>Generates the RSS feed view of the search results. Must be nested into the 'results' tag.</description>
-        <name>rssFeedView</name>
-        <tag-class>org.jahia.taglibs.search.RssFeedViewTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>The feed description.</description>
-            <name>description</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>If set to 'false' the tag only exposes the RSS feed into its scope without generating the output.</description>
-            <name>display</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description>The feed title.</description>
-            <name>title</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The type of the RSS feed to generate: rss_0.90, rss_0.91, rss_0.92, rss_0.93, rss_0.94, rss_1.0 rss_2.0 or atom_0.3. Default is rss_2.0.</description>
-            <name>type</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>If specified, the results (as an instance of com.sun.syndication.feed.synd.SyndFeed) are exposed into the tag's scope.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-
     <tag-file>
         <name>created</name>
         <path>/META-INF/tags/search/created.tag</path>
@@ -230,10 +186,6 @@
     <tag-file>
         <name>rawQuery</name>
         <path>/META-INF/tags/search/rawQuery.tag</path>
-    </tag-file>
-    <tag-file>
-        <name>resultsPageUrl</name>
-        <path>/META-INF/tags/search/resultsPageUrl.tag</path>
     </tag-file>
     <tag-file>
         <name>site</name>

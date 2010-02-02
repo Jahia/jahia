@@ -1,6 +1,9 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.LinkedMap;
+import org.jahia.services.content.decorator.JCRVersion;
+import org.jahia.services.content.decorator.JCRVersionHistory;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
@@ -14,31 +17,85 @@ import java.util.*;
  * Time: 5:58:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class NodeComparator {
+public class ConflictResolver {
+    public static final int UNRESOLVED = 1;
+    public static final int USE_SOURCE = 2;
+    public static final int USE_TARGET = 3;
+    public static final int USE_OLDEST = 4;
+    public static final int USE_LATEST = 5;
+    public static final int NUMERIC_USE_MIN = 6;
+    public static final int NUMERIC_USE_MAX = 7;
+    public static final int NUMERIC_SUM = 8;
+    public static final int TEXT_MERGE = 9;
+
+
     private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:frozenUuid", "jcr:frozenPrimaryType",
             "jcr:created", "jcr:createdBy");
     
     // "jcr:lastModified", "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
 
+    private JCRNodeWrapper sourceNode;
+    private JCRNodeWrapper targetNode;
 
-    public void applyDifferences(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode) throws RepositoryException {
-        List<Diff> diffs = getDiffsToApply(sourceNode.getVersionHistory(), sourceNode.getBaseVersion().getName(), targetNode.getBaseVersion().getName());
+    private Calendar sourceDate = null;
+    private Calendar targetDate = null;
 
-        System.out.println("---> "+diffs);
+    private List<String> prunedPaths;
 
-        for (Diff diff : diffs) {
-            diff.applyOn(targetNode);
+    private List<Diff> differences;
+    private List<Diff> resolvedDifferences;
+    private List<Diff> unresolvedDifferences;
+
+    public ConflictResolver(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode) throws RepositoryException {
+        this.sourceNode = sourceNode;
+        this.targetNode = targetNode;
+
+        if (sourceNode.hasProperty("jcr:lastModified")) {
+            sourceDate = sourceNode.getProperty("jcr:lastModified").getDate();
+        }
+        if (targetNode.hasProperty("jcr:lastModified")) {
+            targetDate = targetNode.getProperty("jcr:lastModified").getDate();
+        }
+    }
+
+    public void setPrunedPaths(List<String> prunedPaths) {
+        this.prunedPaths = prunedPaths;
+    }
+
+    public List<Diff> getDifferences() {
+        return differences;
+    }
+
+    public List<Diff> getResolvedDifferences() {
+        return resolvedDifferences;
+    }
+
+    public List<Diff> getUnresolvedDifferences() {
+        return unresolvedDifferences;
+    }
+
+    public void applyDifferences() throws RepositoryException {
+        computeDifferences((JCRVersionHistory) sourceNode.getVersionHistory(), sourceNode.getBaseVersion().getName(), targetNode.getBaseVersion().getName());
+
+        resolvedDifferences = new ArrayList<Diff>();
+        unresolvedDifferences = new ArrayList<Diff>();
+        for (Diff diff : differences) {
+            if (diff.apply()) {
+                resolvedDifferences.add(diff);
+            } else {
+                unresolvedDifferences.add(diff);
+            }
         }
         targetNode.getSession().save();
     }
 
-    public List<Diff> getDiffsToApply (VersionHistory vh, String sourceNode, String targetNode) throws RepositoryException {
+    private void computeDifferences(JCRVersionHistory vh, String sourceNode, String targetNode) throws RepositoryException {
 
-        Version s = vh.getVersion(sourceNode);
-        Version t = vh.getVersion(targetNode);
+        JCRVersion s = vh.getVersion(sourceNode);
+        JCRVersion t = vh.getVersion(targetNode);
 
-        Version base = null;
+        JCRVersion base = null;
 
         List<String> vsh = getLinearHistory(s);
         List<String> vth = getLinearHistory(t);
@@ -52,13 +109,13 @@ public class NodeComparator {
         if (base == null) {
             throw new RepositoryException();
         }
-        return getDiffsToApply(base, s, t);
+        computeDifferences(base, s, t);
     }
 
-    public List<Diff> getDiffsToApply(Version base, Version sourceNode, Version targetNode) throws RepositoryException{
-        Node frozenBase = base.getFrozenNode();
-        Node frozenSource = sourceNode.getFrozenNode();
-        Node frozenTarget = targetNode.getFrozenNode();
+    private void computeDifferences(JCRVersion base, JCRVersion sourceNode, JCRVersion targetNode) throws RepositoryException{
+        JCRNodeWrapper frozenBase = base.getFrozenNode();
+        JCRNodeWrapper frozenSource = sourceNode.getFrozenNode();
+        JCRNodeWrapper frozenTarget = targetNode.getFrozenNode();
 
         List<Diff> sourceDiff = compare(frozenBase, frozenSource);
         List<Diff> targetDiff = compare(frozenBase, frozenTarget);
@@ -70,14 +127,14 @@ public class NodeComparator {
         for (Diff diff : sourceDiff) {
             if (diff instanceof PropertyChangedDiff) {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                changedProperties.put(diff1.propertyName, diff1);
+                changedProperties.put(diff1.propertyDefinition.getName(), diff1);
             }
         }
         for (Diff diff : sourceDiff) {
             if (diff instanceof PropertyChangedDiff) {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                if (changedProperties.containsKey(diff1.propertyName)) {
-                    changedProperties.get(diff1.propertyName).newTargetValue = diff1.newValue;
+                if (changedProperties.containsKey(diff1.propertyDefinition.getName())) {
+                    changedProperties.get(diff1.propertyDefinition.getName()).newTargetValue = diff1.newValue;
                 }
             }
             if (diff instanceof ChildAddedDiff) {
@@ -85,25 +142,25 @@ public class NodeComparator {
             }
         }
 
-        return sourceDiff;
+        differences = sourceDiff;
     }
 
-    public List<Diff> compare(Node n1, Node n2) throws RepositoryException {
+    private List<Diff> compare(JCRNodeWrapper frozenNode1, JCRNodeWrapper frozenNode2) throws RepositoryException {
         List<Diff> diffs = new ArrayList<Diff>();
 
-        NodeIterator ni1 = n1.getNodes();
+        NodeIterator ni1 = frozenNode1.getNodes();
         Map<String,String> uuids1 = new LinkedMap();
         while (ni1.hasNext()) {
             Node node1 = (Node) ni1.next();
-            VersionHistory vh = (VersionHistory) n1.getSession().getNodeByIdentifier(node1.getProperty("jcr:childVersionHistory").getValue().getString());
+            VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node1.getProperty("jcr:childVersionHistory").getValue().getString());
             String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
             uuids1.put(uuid, node1.getName());
         }
-        NodeIterator ni2 = n2.getNodes();
+        NodeIterator ni2 = frozenNode2.getNodes();
         Map<String,String> uuids2 = new LinkedMap();
         while (ni2.hasNext()) {
             Node node2 = (Node) ni2.next();
-            VersionHistory vh = (VersionHistory) n1.getSession().getNodeByIdentifier(node2.getProperty("jcr:childVersionHistory").getValue().getString());
+            VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node2.getProperty("jcr:childVersionHistory").getValue().getString());
             String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
             uuids2.put(uuid, node2.getName());
         }
@@ -121,22 +178,22 @@ public class NodeComparator {
             }
         }
 
-        PropertyIterator pi1 = n1.getProperties();
+        PropertyIterator pi1 = frozenNode1.getProperties();
         while (pi1.hasNext()) {
-            Property prop1 = (Property) pi1.next();
+            JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
             String propName = prop1.getName();
             if (ignore.contains(propName)) {
                 continue;
             }
-            if (!n2.hasProperty(propName)) {
+            if (!frozenNode2.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
-                    diffs.add(new PropertyRemovedDiff(propName, prop1.getValue()));
+                    diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue()));
                 } else {
-                    diffs.add(new PropertyChangedDiff(propName, prop1.getValue(), null));                                        
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue(), null));
                 }
             } else {
-                Property prop2 = n2.getProperty(propName);
+                Property prop2 = frozenNode2.getProperty(propName);
 
                 if (prop1.isMultiple() != prop2.isMultiple()) {
                     throw new RepositoryException();
@@ -153,7 +210,7 @@ public class NodeComparator {
                             added.remove(value.getString());
                         }
                         for (Value value : added.values()) {
-                            diffs.add(new PropertyAddedDiff(propName, value));
+                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), value));
                         }
 
                         Map<String, Value> removed = new HashMap<String,Value>();
@@ -164,30 +221,30 @@ public class NodeComparator {
                             removed.remove(value.getString());
                         }
                         for (Value value : removed.values()) {
-                            diffs.add(new PropertyRemovedDiff(propName, value));
+                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), value));
                         }
                     } else {
                         if (!equalsValue(prop1.getValue(),prop2.getValue())) {
-                            diffs.add(new PropertyChangedDiff(propName, prop1.getValue(), prop2.getValue()));
+                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue(), prop2.getValue()));
                         }
                     }
                 }
             }
         }
-        PropertyIterator pi2 = n2.getProperties();
+        PropertyIterator pi2 = frozenNode2.getProperties();
 
         while (pi2.hasNext()) {
-            Property prop2 = (Property) pi2.next();
+            JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
 
             String propName = prop2.getName();
             if (ignore.contains(propName)) {
                 continue;
             }
-            if (!n1.hasProperty(propName)) {
+            if (!frozenNode1.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
-                    diffs.add(new PropertyAddedDiff(propName, prop2.getValue()));
+                    diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), prop2.getValue()));
                 } else {
-                    diffs.add(new PropertyChangedDiff(propName, null, prop2.getValue()));                    
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), null, prop2.getValue()));
                 }
             }
 
@@ -220,7 +277,7 @@ public class NodeComparator {
     }
 
     interface Diff {
-        void applyOn(JCRNodeWrapper target) throws RepositoryException;
+        boolean apply() throws RepositoryException;
     }
 
     class ChildAddedDiff implements Diff {
@@ -233,8 +290,10 @@ public class NodeComparator {
             this.newName = newName;
         }
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            target.getSession().getWorkspace().clone(sourceWorkspace, target.getPath()+"/"+newName,target.getPath()+"/"+newName, false);
+        public boolean apply() throws RepositoryException {
+            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedPaths, sourceNode.getSession(), targetNode.getSession());
+//            targetNode.getSession().getWorkspace().clone(sourceWorkspace, targetNode.getPath()+"/"+newName,targetNode.getPath()+"/"+newName, false);
+            return true;
         }
 
         @Override
@@ -275,8 +334,9 @@ public class NodeComparator {
             this.oldName = oldName;
         }
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            target.getNode(oldName).remove();
+        public boolean apply() throws RepositoryException {
+            targetNode.getNode(oldName).remove();
+            return true;
         }
 
         @Override
@@ -319,8 +379,8 @@ public class NodeComparator {
             this.newName = newName;
         }
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            //To change body of implemented methods use File | Settings | File Templates.
+        public boolean apply() throws RepositoryException {
+            return false;
         }
 
         @Override
@@ -356,20 +416,22 @@ public class NodeComparator {
     }
 
     class PropertyAddedDiff implements Diff {
-        private String propertyName;
+        private ExtendedPropertyDefinition propertyDefinition;
         private Value newValue;
 
-        PropertyAddedDiff(String propertyName, Value newValue) {
-            this.propertyName = propertyName;
+        PropertyAddedDiff(ExtendedPropertyDefinition propertyDefinition, Value newValue) {
+            this.propertyDefinition = propertyDefinition;
             this.newValue = newValue;
         }
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            if (target.hasProperty(propertyName)) {
-                target.setProperty(propertyName, Arrays.asList(target.getProperty(propertyName),newValue).toArray(new Value[0]));                
+        public boolean apply() throws RepositoryException {
+            String name = propertyDefinition.getName();
+            if (targetNode.hasProperty(name)) {
+                targetNode.setProperty(name, Arrays.asList(targetNode.getProperty(name),newValue).toArray(new Value[0]));
             } else {
-                target.setProperty(propertyName, new Value[] {newValue});
+                targetNode.setProperty(name, new Value[] {newValue});
             }
+            return true;
         }
 
         @Override
@@ -380,14 +442,14 @@ public class NodeComparator {
             PropertyAddedDiff that = (PropertyAddedDiff) o;
 
             if (!equalsValue(newValue,that.newValue)) return false;
-            if (!propertyName.equals(that.propertyName)) return false;
+            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyName.hashCode();
+            int result = propertyDefinition.hashCode();
             result = 31 * result + newValue.hashCode();
             return result;
         }
@@ -395,22 +457,23 @@ public class NodeComparator {
         @Override
         public String toString() {
             return "PropertyAddedDiff{" +
-                    "propertyName='" + propertyName + '\'' +
+                    "propertyName='" + propertyDefinition + '\'' +
                     '}';
         }
     }
 
     class PropertyRemovedDiff implements Diff {
-        private String propertyName;
+        private ExtendedPropertyDefinition propertyDefinition;
         private Value oldValue;
 
-        PropertyRemovedDiff(String propertyName, Value oldValue) {
-            this.propertyName = propertyName;
+        PropertyRemovedDiff(ExtendedPropertyDefinition propertyDefinition, Value oldValue) {
+            this.propertyDefinition = propertyDefinition;
             this.oldValue = oldValue;
         }
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            target.getProperty(propertyName).remove();
+        public boolean apply() throws RepositoryException {
+            targetNode.getProperty(propertyDefinition.getName()).remove();
+            return true;
         }
 
         @Override
@@ -421,14 +484,14 @@ public class NodeComparator {
             PropertyRemovedDiff that = (PropertyRemovedDiff) o;
 
             if (!equalsValue(oldValue,that.oldValue)) return false;
-            if (!propertyName.equals(that.propertyName)) return false;
+            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyName.hashCode();
+            int result = propertyDefinition.hashCode();
             result = 31 * result + oldValue.hashCode();
             return result;
         }
@@ -436,29 +499,90 @@ public class NodeComparator {
         @Override
         public String toString() {
             return "PropertyRemovedDiff{" +
-                    "propertyName='" + propertyName + '\'' +
+                    "propertyName='" + propertyDefinition + '\'' +
                     '}';
         }
     }
 
     class PropertyChangedDiff implements Diff {
-        private String propertyName;
+        private ExtendedPropertyDefinition propertyDefinition;
         private Value oldValue;
         private Value newValue;
         private Value newTargetValue = null;
 
-        public void applyOn(JCRNodeWrapper target) throws RepositoryException {
-            if (newTargetValue == null) {
-                target.setProperty(propertyName, newValue);
-            } else {
-                System.out.println("------- property conflict "+ propertyName + " : " + oldValue.getString() + " / " + newValue.getString() + " / "+ newTargetValue.getString());
-            }
-        }
-
-        PropertyChangedDiff(String propertyName, Value oldValue, Value newValue) {
-            this.propertyName = propertyName;
+        PropertyChangedDiff(ExtendedPropertyDefinition propertyName, Value oldValue, Value newValue) {
+            this.propertyDefinition = propertyName;
             this.oldValue = oldValue;
             this.newValue = newValue;
+        }
+
+        public boolean apply() throws RepositoryException {
+            if (newTargetValue == null) {
+                targetNode.setProperty(propertyDefinition.getName(), newValue);
+                return true;
+            } else {
+                int resolution = getResolutionForDefinition(propertyDefinition);
+
+                Value v;
+                boolean targetMoreRecent = sourceDate != null && sourceDate.before(targetDate);
+                switch (resolution) {
+                    case USE_SOURCE:
+                        v = newValue;
+                        break;
+                    case USE_TARGET:
+                        return true;
+                    case USE_OLDEST:
+                        if (targetMoreRecent) {
+                            v = newValue;
+                            break;
+                        } else {
+                            return true;
+                        }
+                    case USE_LATEST:
+                        if (!targetMoreRecent) {
+                            v = newValue;
+                            break;
+                        } else {
+                            return true;
+                        }
+                    case NUMERIC_USE_MIN:
+                        if (newValue.getLong() < newTargetValue.getLong()) {
+                            v = newValue;
+                            break;
+                        } else {
+                            return true;
+                        }
+                    case NUMERIC_USE_MAX:
+                        if (newValue.getLong() > newTargetValue.getLong()) {
+                            v = newValue;
+                            break;
+                        } else {
+                            return true;
+                        }
+                    case NUMERIC_SUM:
+                        v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong() * 2);
+                        break;
+                    default:
+                        return false;
+                }
+
+                targetNode.setProperty(propertyDefinition.getName(), v);
+                return true;
+            }
+        }
+        // todo : configure somewhere
+        private int getResolutionForDefinition(ExtendedPropertyDefinition definition) {
+            String name = definition.getName();
+            if (name.equals("jcr:lastModified")) {
+                return USE_LATEST;
+            } else if (name.equals("jcr:lastModifiedBy")) {
+                return USE_LATEST;
+            } else if (name.equals("j:lastPublished")) {
+                return USE_LATEST;
+            } else if (name.equals("j:lastPublishedBy")) {
+                return USE_LATEST;
+            }
+            return UNRESOLVED;
         }
 
         @Override
@@ -470,14 +594,14 @@ public class NodeComparator {
 
             if (!equalsValue(newValue, that.newValue)) return false;
             if (!equalsValue(oldValue, that.oldValue)) return false;
-            if (!propertyName.equals(that.propertyName)) return false;
+            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyName.hashCode();
+            int result = propertyDefinition.hashCode();
             result = 31 * result + oldValue.hashCode();
             result = 31 * result + newValue.hashCode();
             return result;
@@ -486,7 +610,7 @@ public class NodeComparator {
         @Override
         public String toString() {
             return "PropertyChangedDiff{" +
-                    "propertyName='" + propertyName + '\'' +
+                    "propertyName='" + propertyDefinition + '\'' +
                     '}';
         }
     }

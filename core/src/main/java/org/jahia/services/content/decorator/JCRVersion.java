@@ -64,31 +64,33 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
         return getRealNode().getCreated();
     }
 
-    public Version[] getSuccessors() throws RepositoryException {
+    public JCRVersion[] getSuccessors() throws RepositoryException {
         Version[] versions = getRealNode().getSuccessors();
+        JCRVersion[] jcrversions = new JCRVersion[versions.length];
         for (int i = 0; i < versions.length; i++) {
-            versions[i] = (Version) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
+            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
         }
-        return versions;
+        return jcrversions;
     }
 
-    public Version[] getPredecessors() throws RepositoryException {
+    public JCRVersion[] getPredecessors() throws RepositoryException {
         Version[] versions = getRealNode().getPredecessors();
+        JCRVersion[] jcrversions = new JCRVersion[versions.length];
         for (int i = 0; i < versions.length; i++) {
-            versions[i] = (Version) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
+            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
         }
-        return versions;
+        return jcrversions;
     }
 
-    public Node getFrozenNode() throws RepositoryException {
+    public JCRNodeWrapper getFrozenNode() throws RepositoryException {
         return getProvider().getNodeWrapper(getRealNode().getFrozenNode(), (JCRSessionWrapper) getSession());
     }
 
-    public Version getLinearSuccessor() throws RepositoryException {
-        return (Version) getProvider().getNodeWrapper(getRealNode().getLinearSuccessor(), (JCRSessionWrapper) getSession());
+    public JCRVersion getLinearSuccessor() throws RepositoryException {
+        return (JCRVersion) getProvider().getNodeWrapper(getRealNode().getLinearSuccessor(), (JCRSessionWrapper) getSession());
     }
 
-    public Version getLinearPredecessor() throws RepositoryException {
-        return (Version) getProvider().getNodeWrapper(getRealNode().getLinearPredecessor(), (JCRSessionWrapper) getSession());
+    public JCRVersion getLinearPredecessor() throws RepositoryException {
+        return (JCRVersion) getProvider().getNodeWrapper(getRealNode().getLinearPredecessor(), (JCRSessionWrapper) getSession());
     }
 }

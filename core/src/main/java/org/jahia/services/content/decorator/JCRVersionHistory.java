@@ -88,12 +88,12 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
         return new VersionIteratorImpl(l.iterator(), l.size());
     }
 
-    public Version getVersion(String s) throws VersionException, RepositoryException {
-        return (Version) getProvider().getNodeWrapper((Node) getRealNode().getVersion(s), (JCRSessionWrapper) getSession());
+    public JCRVersion getVersion(String s) throws VersionException, RepositoryException {
+        return (JCRVersion) getProvider().getNodeWrapper((Node) getRealNode().getVersion(s), (JCRSessionWrapper) getSession());
     }
 
-    public Version getVersionByLabel(String s) throws RepositoryException {
-        return (Version) getProvider().getNodeWrapper((Node) getRealNode().getVersionByLabel(s), (JCRSessionWrapper) getSession());
+    public JCRVersion getVersionByLabel(String s) throws RepositoryException {
+        return (JCRVersion) getProvider().getNodeWrapper((Node) getRealNode().getVersionByLabel(s), (JCRSessionWrapper) getSession());
     }
 
     public void addVersionLabel(String s, String s1, boolean b) throws VersionException, RepositoryException {

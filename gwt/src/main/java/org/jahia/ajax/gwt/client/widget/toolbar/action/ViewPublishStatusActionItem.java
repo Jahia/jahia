@@ -85,88 +85,89 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
         String lastUnpublished = null;
         boolean allPublished = true;
         for (Module module : list) {
-            GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
-            if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
-                allPublished = false;
-                LayoutContainer infoLayer = new LayoutContainer();
-                RootPanel.get().add(infoLayer);
-                infoLayer.el().makePositionable(true);
-                LayoutContainer container = module.getContainer();
-                El el = container.el();
-                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                    if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
-                        continue;
+            if (module.getNode() != null) {
+                GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
+                if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+                    allPublished = false;
+                    LayoutContainer infoLayer = new LayoutContainer();
+                    RootPanel.get().add(infoLayer);
+                    infoLayer.el().makePositionable(true);
+                    LayoutContainer container = module.getContainer();
+                    El el = container.el();
+                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
+                            continue;
+                        }
+                        lastUnpublished = module.getNode().getPath();
+
+                        infoLayer.setLayout(new CenterLayout());
+                        HtmlContainer box = new HtmlContainer("Never published");
+                        if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
+                            box.setHtml("Never published - publish parent first");
+                        } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                            box.setHtml("Unpublished");
+                        }
+
+                        box.addStyleName("x-view-item");
+                        box.setStyleAttribute("background-color", "white");
+                        box.setStyleAttribute("text-color", "black");
+                        box.setStyleAttribute("font-weight", "bold");
+                        box.setStyleAttribute("text-align", "center");
+                        box.setWidth(250);
+                        infoLayer.add(box);
+
+                        infoLayer.setBorders(true);
+                        infoLayer.setStyleAttribute("background-color", "black");
+                        infoLayer.setStyleAttribute("opacity", "0.7");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+                        if (container instanceof ContentPanel) {
+                            el = ((ContentPanel) container).getHeader().el();
+                        }
+
+                        infoLayer.setLayout(new CenterLayout());
+                        HtmlContainer box = new HtmlContainer("Modified");
+                        box.addStyleName("x-view-item");
+                        box.setStyleAttribute("background-color", "white");
+                        box.setStyleAttribute("color", "red");
+                        box.setStyleAttribute("font-weight", "bold");
+                        box.setStyleAttribute("text-align", "center");
+                        box.setWidth(150);
+                        infoLayer.add(box);
+
+                        infoLayer.setBorders(true);
+                        infoLayer.setStyleAttribute("background-color", "red");
+                        infoLayer.setStyleAttribute("opacity", "0.7");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
+                        if (container instanceof ContentPanel) {
+                            el = ((ContentPanel) container).getHeader().el();
+                        }
+
+                        infoLayer.setLayout(new CenterLayout());
+                        HtmlContainer box = new HtmlContainer("Modified in live");
+                        box.addStyleName("x-view-item");
+                        box.setStyleAttribute("background-color", "white");
+                        box.setStyleAttribute("color", "blue");
+                        box.setStyleAttribute("font-weight", "bold");
+                        box.setStyleAttribute("text-align", "center");
+                        box.setWidth(150);
+                        infoLayer.add(box);
+
+                        infoLayer.setBorders(true);
+                        infoLayer.setStyleAttribute("background-color", "blue");
+                        infoLayer.setStyleAttribute("opacity", "0.7");
                     }
-                    lastUnpublished = module.getNode().getPath();
 
-                    infoLayer.setLayout(new CenterLayout());
-                    HtmlContainer box = new HtmlContainer("Never published");
-                    if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
-                        box.setHtml("Never published - publish parent first");
-                    } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                        box.setHtml("Unpublished");
+                    if (container != mainPanel) {
+                        position(infoLayer, el, top, bottom, left, right);
+                    } else {
+                        position(infoLayer, el, 0, bottom, left, right);
                     }
 
-                    box.addStyleName("x-view-item");
-                    box.setStyleAttribute("background-color", "white");
-                    box.setStyleAttribute("text-color", "black");
-                    box.setStyleAttribute("font-weight", "bold");
-                    box.setStyleAttribute("text-align", "center");
-                    box.setWidth(250);
-                    infoLayer.add(box);
-
-                    infoLayer.setBorders(true);
-                    infoLayer.setStyleAttribute("background-color", "black");
-                    infoLayer.setStyleAttribute("opacity", "0.7");
-                } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                    if (container instanceof ContentPanel) {
-                        el = ((ContentPanel) container).getHeader().el();
-                    }
-
-                    infoLayer.setLayout(new CenterLayout());
-                    HtmlContainer box = new HtmlContainer("Modified");
-                    box.addStyleName("x-view-item");
-                    box.setStyleAttribute("background-color", "white");
-                    box.setStyleAttribute("color", "red");
-                    box.setStyleAttribute("font-weight", "bold");
-                    box.setStyleAttribute("text-align", "center");
-                    box.setWidth(150);
-                    infoLayer.add(box);
-
-                    infoLayer.setBorders(true);
-                    infoLayer.setStyleAttribute("background-color", "red");
-                    infoLayer.setStyleAttribute("opacity", "0.7");
-                } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
-                    if (container instanceof ContentPanel) {
-                        el = ((ContentPanel) container).getHeader().el();
-                    }
-
-                    infoLayer.setLayout(new CenterLayout());
-                    HtmlContainer box = new HtmlContainer("Modified in live");
-                    box.addStyleName("x-view-item");
-                    box.setStyleAttribute("background-color", "white");
-                    box.setStyleAttribute("color", "blue");
-                    box.setStyleAttribute("font-weight", "bold");
-                    box.setStyleAttribute("text-align", "center");
-                    box.setWidth(150);
-                    infoLayer.add(box);
-
-                    infoLayer.setBorders(true);
-                    infoLayer.setStyleAttribute("background-color", "blue");
-                    infoLayer.setStyleAttribute("opacity", "0.7");
+                    infoLayer.show();
+                    containers.put(infoLayer, el);
+                    infoLayer.sinkEvents(Event.ONCLICK);
+                    infoLayer.addListener(Events.OnClick, removeListener);
                 }
-
-                if (container != mainPanel) {
-                    position(infoLayer, el, top, bottom, left, right);
-                } else {
-                    position(infoLayer, el, 0, bottom, left, right);                    
-                }
-
-                infoLayer.show();
-                containers.put(infoLayer, el);
-                infoLayer.sinkEvents(Event.ONCLICK);
-                infoLayer.addListener(Events.OnClick, removeListener);
-
             }
         }
 

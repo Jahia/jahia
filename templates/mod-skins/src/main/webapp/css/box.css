@@ -1,0 +1,34 @@
+/******************************************************************************
+* Box
+******************************************************************************/
+
+#bodywrapper .box {
+	clear:both;
+	position: relative;
+	height:1%;
+	background-color:#fff;
+	padding:10px;
+	background: url(img/box-bg.png) no-repeat top right;
+	font-size:90%;
+	line-height:110%;
+}
+#bodywrapper .box {
+	padding-bottom:2em;
+}
+
+#bodywrapper .box h3.box-header  {
+	font-size:100%;
+	line-height:110%;
+	font-weight:bold;
+	text-transform:none;
+	margin:0;
+	padding:0;
+	display:inline
+}
+
+/******************************************************************************
+* Box style1
+******************************************************************************/
+#bodywrapper .box-style1 {
+	background: url(img/box-style1-bg.png) no-repeat top left;
+}

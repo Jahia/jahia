@@ -60,6 +60,7 @@ import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.TemplateNotFoundException;
 
 /**
@@ -136,6 +137,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         int code = SC_INTERNAL_SERVER_ERROR;
         if (e instanceof ServletException) {
             e = ((ServletException) e).getRootCause();
+        } if (e instanceof RenderException && e.getCause() != null) {
+            e = e.getCause();
         }
 
         if (e instanceof PathNotFoundException) {

@@ -942,61 +942,6 @@ shortcuts
 }
 
 /******************************************************************************
-* Box
-******************************************************************************/
-
-#bodywrapper .box {
-	clear:both;
-	position: relative;
-	height:1%;
-	background-color:#fff;
-	padding:10px;
-	background: url(../img/box-bg.png) no-repeat top right;
-	font-size:90%;
-	line-height:110%;
-}
-#bodywrapper .box {
-	padding-bottom:2em;
-}
-
-#bodywrapper .box h3  {
-	font-size:100%;
-	line-height:110%;
-	font-weight:bold;
-	text-transform:none;
-	margin:0;
-	padding:0;
-	display:inline
-}
-#bodywrapper .box p  {
-	margin:0;
-}
-#bodywrapper .box .floatLeft {
-	float:left;
-	margin: 0 5px 5px 0px;
-}
-
-#bodywrapper .box .more{
-	position:absolute;
-	bottom:1em;
-	right:1em;
-}
-#bodywrapper .box-fixed-height {
-	height:6em;
-	overflow:hidden;
-}
-#bodywrapper .box-fixed-height .box-content{
-	overflow: hidden;
-	height:5.5em;
-}
-/******************************************************************************
-* Box style1
-******************************************************************************/
-#bodywrapper .box-style1 {
-	background: url(../img/box-style1-bg.png) no-repeat top left;
-}
-
-/******************************************************************************
 * more info
 ******************************************************************************/
 #bodywrapper div.more {

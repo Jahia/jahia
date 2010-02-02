@@ -17,7 +17,7 @@
 	position:absolute;
 	top:16px;
 	right:-14px;
-	background: url(../img/arrow-white-shadow-right.png) no-repeat top left;
+	background: url(img/arrow-white-shadow-right.png) no-repeat top left;
 }
 #bodywrapper .arrow-white-shadow-left {
 	height: 31px; width: 17px;
@@ -25,7 +25,7 @@
 	position:absolute;
 	top:16px;
 	left:-17px;
-	background: url(../img/arrow-white-shadow-left.png) no-repeat top left;
+	background: url(img/arrow-white-shadow-left.png) no-repeat top left;
 }
 
 #bodywrapper .arrow-grey-shadow-right {
@@ -34,7 +34,7 @@
 	position:absolute;
 	top:16px;
 	right:-14px;
-	background: url(../img/arrow-grey-shadow-right.png) no-repeat top left;
+	background: url(img/arrow-grey-shadow-right.png) no-repeat top left;
 }
 #bodywrapper .arrow-grey-inner-left {
 	height: 24px; width: 14px;
@@ -42,7 +42,7 @@
 	position:absolute;
 	top:16px;
 	left:0px;
-	background: url(../img/arrow-grey-inner-left.png) no-repeat top left;
+	background: url(img/arrow-grey-inner-left.png) no-repeat top left;
 }
 #bodywrapper .arrow-white-inner-left {
 	height: 24px; width: 14px;
@@ -50,7 +50,7 @@
 	position:absolute;
 	top:16px;
 	left:0;
-	background: url(../img/arrow-white-inner-left.png) no-repeat top left;
+	background: url(img/arrow-white-inner-left.png) no-repeat top left;
 }
 #bodywrapper div.box5-inner {
 	background-color:#fff;
@@ -107,7 +107,7 @@
 }
 /*box5 title*/
 #bodywrapper h4.box5-title {
-	background:#010101 url(../img/h4titleblack.png) repeat-x top right;
+	background:#010101 url(img/box5-h4titleblack.png) repeat-x top right;
 	border:1px solid #010101;
 	color:#FFFFFF;
 	font-size:1.3em;
@@ -116,20 +116,21 @@
 	text-align:center;
 	font-weight:normal;
 	clear:both;
+	margin:0;
 }
 #bodywrapper h4.box5-titleorange {
-	background:#df6c04 url(../img/h4titleorange.png) repeat-x top right;
+	background:#df6c04 url(img/box5-h4titleorange.png) repeat-x top right;
 	border:1px solid #df6c04;
 	color:#333;
 }
 
 #bodywrapper h4.box5-titlegrey {
-	background:#666666 url(../img/h4titlegrey.png) repeat-x top right;
+	background:#666666 url(img/box5-h4titlegrey.png) repeat-x top right;
 	border:1px solid #666666;
 	color:#fff;
 }
 #bodywrapper h4.box5-titlemushroom {
-	background:#dad0c7 url(../img/h4titlemushroom.png) repeat-x top right;
+	background:#dad0c7 url(img/box5-h4titlemushroom.png) repeat-x top right;
 	border:1px solid #dad0c7;
 	color:#333;
 }

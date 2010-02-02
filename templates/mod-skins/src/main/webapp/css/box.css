@@ -11,9 +11,7 @@
 	background: url(img/box-bg.png) no-repeat top right;
 	font-size:90%;
 	line-height:110%;
-}
-#bodywrapper .box {
-	padding-bottom:2em;
+	margin-bottom:10px;
 }
 
 #bodywrapper .box h3.box-header  {

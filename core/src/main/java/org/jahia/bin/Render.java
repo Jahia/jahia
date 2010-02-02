@@ -437,7 +437,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
-
+        
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Resource>() {
             public Resource doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String ext = null;
@@ -458,15 +458,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     } else {
                         throw new PathNotFoundException("not found");
                     }
-                    node = session.getNode(nodePath);
-                    break;
+                    try {
+                        node = session.getNode(nodePath);
+                        break;
+                    } catch (PathNotFoundException ex) {
+                        // ignore it
+                    }
                 }
 
-                ProcessingContext ctx = Jahia.getThreadParamBean();
                 JahiaSite site = node.resolveSite();
                 JCRSessionWrapper userSession;
 
                 if (site != null) {
+                    ProcessingContext ctx = Jahia.getThreadParamBean();
                     ctx.setSite(site);
                     ctx.setContentPage(site.getHomeContentPage());
                     ctx.setThePage(site.getHomePage());

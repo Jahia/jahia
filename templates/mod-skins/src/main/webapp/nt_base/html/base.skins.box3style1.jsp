@@ -39,6 +39,7 @@
 <div class="box3-container box3-style1">
     <div class="box3-topright"></div>
     <div class="box3-topleft"></div>
+
     <div class="box3-text">
         ${wrappedContent}
     </div>

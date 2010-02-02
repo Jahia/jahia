@@ -45,7 +45,7 @@
 	overflow: hidden;
 	height:1%
 }
-#bodywrapper .box3-text h3 {
+#bodywrapper .box3-text h3.box3-header {
 	color:#900;
 	margin-bottom:0
 }

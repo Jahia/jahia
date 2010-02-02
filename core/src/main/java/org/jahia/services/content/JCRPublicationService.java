@@ -298,6 +298,16 @@ public class JCRPublicationService extends JahiaService {
         
         for (final JCRNodeWrapper node : modified) {
             try {
+
+                if (node.hasProperty("jcr:mergeFailed")) {
+                    Value[] failed = node.getProperty("jcr:mergeFailed").getValues();
+
+                    for (Value value : failed) {
+                        System.out.println("-- failed merge waiting : "+value.getString());
+                    }
+                    continue;
+                }
+
                 final String path = node.getPath();
                 final String destinationPath = node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
 
@@ -310,8 +320,8 @@ public class JCRPublicationService extends JahiaService {
                 logger.info("Merge node : " + path + " source v=" + node.getBaseVersion().getName() +
                         " , dest node v=" + destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
-//                recurseCheckin(destinationSession.getNode(destinationPath), destinationVersionManager);
-//
+                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
+
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
                 while (ni.hasNext()) {
@@ -324,15 +334,20 @@ public class JCRPublicationService extends JahiaService {
 
                     ConflictResolver resolver = new ConflictResolver(node, destNode);
                     resolver.setPrunedPaths(pruneNodes);
-                    resolver.applyDifferences();
-                    if (!resolver.getUnresolvedDifferences().isEmpty()) {
-                        logger.warn("Unresolved conflicts : "+resolver.getUnresolvedDifferences());
-                    } else {
-                        destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
-                        destinationVersionManager.checkin(failed.getPath());
+                    try {
+                        resolver.applyDifferences();
 
-                        // todo : workspace write here
-                        node.update(destinationSession.getWorkspace().getName());
+                        if (!resolver.getUnresolvedDifferences().isEmpty()) {
+                            logger.warn("Unresolved conflicts : "+resolver.getUnresolvedDifferences());
+                        } else {
+                            destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
+                            destinationVersionManager.checkin(failed.getPath());
+
+                            // todo : workspace write here
+                            node.update(destinationSession.getWorkspace().getName());
+                        }
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -506,20 +521,20 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (!prune.contains(sub.getPath())) {
+            if (prune == null || !prune.contains(sub.getPath())) {
                 recurseSetPublicationDate(sub, prune, c, userID);
             }
         }
     }
 
     private void recurseCheckin(Node node, List<String> prune, VersionManager versionManager) throws RepositoryException {
-        if (node.isNodeType("mix:versionable") && node.isCheckedOut()) {
+        if (node.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
             versionManager.checkin(node.getPath());
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (!prune.contains(sub.getPath())) {
+            if (prune == null || !prune.contains(sub.getPath())) {
                 recurseCheckin(sub, prune, versionManager);
             }
         }
@@ -655,6 +670,9 @@ public class JCRPublicationService extends JahiaService {
                 info.setStatus(PublicationInfo.UNPUBLISHABLE);
             }
         } else {
+            if (stageNode.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
+                info.setStatus(PublicationInfo.CONFLICT);                
+            }
             if (stageNode.getLastModifiedAsDate() == null) {
                 logger.error("Null modifieddate for staged node " + stageNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);

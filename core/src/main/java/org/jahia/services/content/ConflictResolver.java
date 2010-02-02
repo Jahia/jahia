@@ -29,7 +29,7 @@ public class ConflictResolver {
     public static final int TEXT_MERGE = 9;
 
 
-    private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:frozenUuid", "jcr:frozenPrimaryType",
+    private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:mixinTypes", "jcr:frozenUuid", "jcr:frozenPrimaryType", "jcr:frozenMixinTypes",
             "jcr:created", "jcr:createdBy");
     
     // "jcr:lastModified", "jcr:lastModifiedBy",
@@ -112,10 +112,10 @@ public class ConflictResolver {
         computeDifferences(base, s, t);
     }
 
-    private void computeDifferences(JCRVersion base, JCRVersion sourceNode, JCRVersion targetNode) throws RepositoryException{
-        JCRNodeWrapper frozenBase = base.getFrozenNode();
-        JCRNodeWrapper frozenSource = sourceNode.getFrozenNode();
-        JCRNodeWrapper frozenTarget = targetNode.getFrozenNode();
+    private void computeDifferences(JCRVersion baseVersion, JCRVersion sourceVersion, JCRVersion targetVersion) throws RepositoryException{
+        JCRNodeWrapper frozenBase = baseVersion.getFrozenNode();
+        JCRNodeWrapper frozenSource = sourceVersion.getFrozenNode();
+        JCRNodeWrapper frozenTarget = targetVersion.getFrozenNode();
 
         List<Diff> sourceDiff = compare(frozenBase, frozenSource);
         List<Diff> targetDiff = compare(frozenBase, frozenTarget);
@@ -129,16 +129,16 @@ public class ConflictResolver {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
                 changedProperties.put(diff1.propertyDefinition.getName(), diff1);
             }
+            if (diff instanceof ChildAddedDiff) {
+                ((ChildAddedDiff)diff).sourceWorkspace = baseVersion.getSession().getWorkspace().getName();
+            }
         }
-        for (Diff diff : sourceDiff) {
+        for (Diff diff : targetDiff) {
             if (diff instanceof PropertyChangedDiff) {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
                 if (changedProperties.containsKey(diff1.propertyDefinition.getName())) {
                     changedProperties.get(diff1.propertyDefinition.getName()).newTargetValue = diff1.newValue;
                 }
-            }
-            if (diff instanceof ChildAddedDiff) {
-                ((ChildAddedDiff)diff).sourceWorkspace = base.getSession().getWorkspace().getName();
             }
         }
 
@@ -148,22 +148,8 @@ public class ConflictResolver {
     private List<Diff> compare(JCRNodeWrapper frozenNode1, JCRNodeWrapper frozenNode2) throws RepositoryException {
         List<Diff> diffs = new ArrayList<Diff>();
 
-        NodeIterator ni1 = frozenNode1.getNodes();
-        Map<String,String> uuids1 = new LinkedMap();
-        while (ni1.hasNext()) {
-            Node node1 = (Node) ni1.next();
-            VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node1.getProperty("jcr:childVersionHistory").getValue().getString());
-            String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
-            uuids1.put(uuid, node1.getName());
-        }
-        NodeIterator ni2 = frozenNode2.getNodes();
-        Map<String,String> uuids2 = new LinkedMap();
-        while (ni2.hasNext()) {
-            Node node2 = (Node) ni2.next();
-            VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node2.getProperty("jcr:childVersionHistory").getValue().getString());
-            String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
-            uuids2.put(uuid, node2.getName());
-        }
+        Map<String, String> uuids1 = getChildEntries(frozenNode1);
+        Map<String, String> uuids2 = getChildEntries(frozenNode2);
 
         if (!uuids1.equals(uuids2)) {
             List<String> added = new ArrayList<String>(uuids2.keySet());
@@ -250,6 +236,23 @@ public class ConflictResolver {
 
         }
         return diffs;
+    }
+
+    private Map<String, String> getChildEntries(JCRNodeWrapper frozenNode1) throws RepositoryException {
+        NodeIterator ni1 = frozenNode1.getNodes();
+        Map<String,String> uuids1 = new LinkedMap();
+        while (ni1.hasNext()) {
+            Node node1 = (Node) ni1.next();
+            if (node1.isNodeType("nt:versionedChild")) {
+                VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node1.getProperty("jcr:childVersionHistory").getValue().getString());
+                String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
+                uuids1.put(uuid, node1.getName());
+            } else {
+                String uuid = node1.getProperty("jcr:frozenUuid").getValue().getString();
+                uuids1.put(uuid, node1.getName());
+            }
+        }
+        return uuids1;
     }
 
     List<String> getLinearHistory(Version v) throws RepositoryException {
@@ -457,7 +460,7 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyAddedDiff{" +
-                    "propertyName='" + propertyDefinition + '\'' +
+                    "propertyName='" + propertyDefinition.getName() + '\'' +
                     '}';
         }
     }
@@ -499,7 +502,7 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyRemovedDiff{" +
-                    "propertyName='" + propertyDefinition + '\'' +
+                    "propertyName='" + propertyDefinition.getName() + '\'' +
                     '}';
         }
     }
@@ -560,7 +563,7 @@ public class ConflictResolver {
                             return true;
                         }
                     case NUMERIC_SUM:
-                        v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong() * 2);
+                        v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong());
                         break;
                     default:
                         return false;
@@ -581,7 +584,14 @@ public class ConflictResolver {
                 return USE_LATEST;
             } else if (name.equals("j:lastPublishedBy")) {
                 return USE_LATEST;
+            } else if (name.equals("j:nbOfVotes")) {
+                return NUMERIC_SUM;
+            } else if (name.equals("j:sumOfVotes")) {
+                return NUMERIC_SUM;                
+            } else if (name.equals("j:lastVote")) {
+                return USE_LATEST;
             }
+
             return UNRESOLVED;
         }
 
@@ -592,8 +602,10 @@ public class ConflictResolver {
 
             PropertyChangedDiff that = (PropertyChangedDiff) o;
 
-            if (!equalsValue(newValue, that.newValue)) return false;
-            if (!equalsValue(oldValue, that.oldValue)) return false;
+            if (newTargetValue != null ? !newTargetValue.equals(that.newTargetValue) : that.newTargetValue != null)
+                return false;
+            if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
+            if (oldValue != null ? !oldValue.equals(that.oldValue) : that.oldValue != null) return false;
             if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
@@ -610,7 +622,7 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyChangedDiff{" +
-                    "propertyName='" + propertyDefinition + '\'' +
+                    "propertyName='" + propertyDefinition.getName() + '\'' +
                     '}';
         }
     }

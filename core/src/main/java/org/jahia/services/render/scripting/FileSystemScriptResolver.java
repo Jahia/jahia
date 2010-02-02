@@ -118,6 +118,9 @@ public class FileSystemScriptResolver implements ScriptResolver {
     public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException {
         try {
             Template resolvedTemplate = resolveTemplate(resource, context);
+            if (resolvedTemplate == null) {
+                throw new TemplateNotFoundException("Unable to find the template for resource " + resource);
+            }
 
             // @todo remove this hardcoding of script instantiation and make it Spring-configured.
             if (JSP_EXTENSION.equals(resolvedTemplate.getFileExtension()) || PHP_EXTENSION.equals(resolvedTemplate.getFileExtension())) {

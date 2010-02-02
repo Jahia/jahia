@@ -41,6 +41,7 @@ import org.jbpm.api.ProcessEngine;
 import org.jbpm.api.RepositoryService;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -87,10 +88,17 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public List<Workflow> getAvailableWorlfows() {
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
+                                              repositoryService.createDeploymentQuery().count()));
+        }
         final List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
         List<Workflow> workflows = new LinkedList<Workflow>();
         for (Deployment deployment : deploymentList) {
-            workflows.add(new Workflow(deployment.getName(),deployment.getId()));
+            workflows.add(new Workflow(deployment.getName(), deployment.getId()));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Process : " + deployment);
+            }
         }
         return workflows;
     }

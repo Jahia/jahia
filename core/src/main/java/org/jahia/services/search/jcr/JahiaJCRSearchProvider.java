@@ -191,10 +191,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         StringBuilder query = new StringBuilder(256);
         String path = null;
-        if (params.getFilePath() != null
-                && !params.getFilePath().isEmpty()) {
+        boolean includeChildren = false;
+        if (!params.getFilePath().isEmpty()) {
             path = params.getFilePath().getValue().trim();
-        }
+            includeChildren = params.getFilePath().isIncludeChildren();
+        } else if (!params.getPagePath().isEmpty()) {
+            path = params.getPagePath().getValue().trim();
+            includeChildren = params.getPagePath().isIncludeChildren();
+        } 
         if (path != null) {
             String[] pathTokens = JahiaTools.getTokens(StringEscapeUtils
                     .unescapeHtml(path), "/");
@@ -202,7 +206,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
             for (String folder : pathTokens) {
-                if (!params.getFilePath().isIncludeChildren()) {
+                if (!includeChildren) {
                     if (lastFolder != null) {
                         jcrPath.append(lastFolder).append("/");
                     }
@@ -211,14 +215,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     jcrPath.append(folder).append("/");
                 }
             }
-            if (params.getFilePath().isIncludeChildren()) {
+            if (includeChildren) {
                 jcrPath.append("/");
                 lastFolder = "*";
             }
             query.append(jcrPath.toString()).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
-        } else if (!params.getSites().isEmpty()) {
+        } else if (!params.getSites().isEmpty() && (params.getSites().getValues().length > 1 || !"-all-".equals(params.getSites().getValue()))) {
             query.append("/jcr:root/sites/");
             if (params.getSites().getValues().length == 1) {
                 query.append(params.getSites().getValue());

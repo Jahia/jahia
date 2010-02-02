@@ -34,6 +34,8 @@
 <%@ tag body-content="empty" description="Renders the trigger link and the tree control to select a page." %>
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with." %>
+<%@ attribute name="displayFieldId" required="false" type="java.lang.String"
+              description="The input field name and ID to synchronize the seletcted item display title with." %>
 <%@ attribute name="fieldIdIncludeChildren" required="false" type="java.lang.String"
               description="The ID and name of the include children input field." %>
 <%@ attribute name="displayIncludeChildren" required="false" type="java.lang.Boolean"
@@ -64,7 +66,7 @@
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></c:set></c:if>
-<uiComponents:treeItemSelector fieldId="${fieldId}" fieldIdIncludeChildren="${fieldIdIncludeChildren}" displayIncludeChildren="${functions:default(displayIncludeChildren, 'true')}"
+<uiComponents:treeItemSelector fieldId="${fieldId}" displayFieldId="${displayFieldId}" fieldIdIncludeChildren="${fieldIdIncludeChildren}" displayIncludeChildren="${functions:default(displayIncludeChildren, 'true')}"
 	includeChildren="${functions:default(includeChildren, 'true')}" label="${label}" includeChildrenLabel="${includeChildrenLabel}" onSelect="${onSelect}"
 	nodeTypes="${functions:default(nodeTypes, 'jnt:page,jnt:virtualsite')}" selectableNodeTypes="${functions:default(selectableNodeTypes, 'jnt:page')}"
 	root="${root}" valueType="${valueType}" fancyboxOptions="${fancyboxOptions}" treeviewOptions="${treeviewOptions}"/>

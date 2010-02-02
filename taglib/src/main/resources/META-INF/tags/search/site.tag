@@ -49,7 +49,6 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? fn:replace(value, ' ', '') : ''}"/>
@@ -63,7 +62,7 @@
     </c:if>
     <select ${functions:attributes(attributes)}>
    		<c:if test="${allowAll}">
-   			<option value=""><fmt:message key="searchForm.any"/></option>
+   			<option value="-all-" ${fn:contains(selectedValues, '-all-') ? 'selected="selected"' : ''}><fmt:message key="searchForm.any"/></option>
    		</c:if>
     	<c:forEach items="${allSites}" var="site">
     		<c:set var="siteKeyToCheck" value=",${site.siteKey},"/>

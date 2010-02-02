@@ -34,6 +34,8 @@
 <%@ tag body-content="empty" description="Renders the trigger link and the tree control to select a file." %>
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with." %>
+<%@ attribute name="displayFieldId" required="false" type="java.lang.String"
+              description="The input field name and ID to synchronize the seletcted item display title with." %>
 <%@ attribute name="label" required="false" type="java.lang.String"
               description="The trigger link text." %>
 <%@ attribute name="onSelect" required="false" type="java.lang.String"
@@ -55,7 +57,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.fileSelector.selectFile"/></c:set></c:if>
-<uiComponents:treeItemSelector fieldId="${fieldId}" displayIncludeChildren="false"
+<uiComponents:treeItemSelector fieldId="${fieldId}" displayFieldId="${displayFieldId}" displayIncludeChildren="false"
 	label="${label}" onSelect="${onSelect}"
 	nodeTypes="${functions:default(nodeTypes, 'nt:folder,nt:file,jnt:virtualsite')}" selectableNodeTypes="${functions:default(selectableNodeTypes, 'nt:file')}"
 	root="${root}" valueType="${valueType}" fancyboxOptions="${fancyboxOptions}" treeviewOptions="${treeviewOptions}"/>

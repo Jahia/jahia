@@ -46,7 +46,7 @@
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_filePath.value"/>
-<c:set target="${attributes}" property="id" value="${functions:default(attributes.id, 'src_filePath.value')}"/>
+<c:set target="${attributes}" property="id" value="${functions:default(attributes.id, 'src_filePath_value')}"/>
 <c:set var="value" value="${functions:default(param['src_filePath.value'], value)}"/>
 <%-- by default set includeChildren to 'true' to search in subfolders --%>
 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>

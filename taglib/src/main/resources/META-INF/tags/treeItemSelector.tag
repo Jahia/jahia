@@ -34,6 +34,8 @@
 <%@ tag body-content="empty" description="Renders the trigger link and the tree control to select an item." %>
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with." %>
+<%@ attribute name="displayFieldId" required="false" type="java.lang.String"
+              description="The input field name and ID to synchronize the seletcted item display title with." %>
 <%@ attribute name="fieldIdIncludeChildren" required="false" type="java.lang.String"
               description="The ID and name of the include children input field." %>
 <%@ attribute name="displayIncludeChildren" required="false" type="java.lang.Boolean"
@@ -73,12 +75,41 @@
 		overflow: auto;
 	}
 	</template:addResources>
+	<template:addResources type="inlineJavaScript">
+	function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nodeTypes, selectableNodeTypes, valueType, onSelect, treeviewOptions, fancyboxOptions) {
+		$("#" + fieldId + "-treeItemSelectorTrigger").fancybox($.extend({
+			frameHeight: 600,
+			frameWidth: 350,
+			hideOnOverlayClick: false,
+			hideOnContentClick: false,
+			callbackOnShow: function () {
+				var queryString = (nodeTypes.length > 0 ? "nodeTypes=" + encodeURIComponent(nodeTypes) : "") + (selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) : "");
+				queryString = queryString.length > 0 ? "?" + queryString : ""; 
+				$("#fancy_div #" + fieldId + "-treeItemSelectorTree").treeview($.extend({
+					urlBase: baseUrl,
+					urlExtension: ".tree.json" + queryString,
+					urlStartWith: baseUrl + root + ".treeRootItem.json" + queryString,
+					callback: function (uuid, path, title) {
+						var setValue = true;
+						if (onSelect && (typeof onSelect == 'function')) {
+					        setValue = onSelect(uuid, path, title);
+					    }
+					    if (setValue) {
+					        document.getElementById(fieldId).value = 'title' == valueType ? title : ('identifier' == valueType ? uuid : path);
+					        if (displayFieldId.length > 0) {
+					        	document.getElementById(displayFieldId).value = title;
+					        }
+					    }
+						$("#" + fieldId + "-treeItemSelectorTrigger").fancybox.close(); 
+					}		
+				}, treeviewOptions));
+			}
+		}, fancyboxOptions));
+ 	}
+	</template:addResources>
 	<c:set var="org.jahia.tags.treeItemSelector.resources" value="true" scope="request"/>
 </c:if>
 <c:set var="root" value="${functions:default(root, renderContext.siteNode.path)}"/>
-<c:set var="emptyOptions" value="{}"/>
-<c:set var="fancyboxOptions" value="${functions:default(fancyboxOptions, emptyOptions)}"/>
-<c:set var="treeviewOptions" value="${functions:default(treeviewOptions, emptyOptions)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>
@@ -92,34 +123,6 @@
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
 </c:if>
 <template:addResources type="inlineJavaScript">
-$(document).ready(function() {
-	var fancyboxOptions = {};
-	eval("fancyboxOptions = ${fancyboxOptions}");
-	var treeviewOptions = {};
-	eval("treeviewOptions = ${treeviewOptions}");
-	$("#${fieldId}-treeItemSelectorTrigger").fancybox($.extend({
-		frameHeight: 600,
-		frameWidth: 350,
-		hideOnOverlayClick: false,
-		hideOnContentClick: false,
-		callbackOnShow: function () {
-			$("#fancy_div #${fieldId}-treeItemSelectorTree").treeview($.extend({
-				urlBase: "${url.base}",
-				urlExtension: ".tree.json?nodeTypes=${nodeTypes}&selectableNodeTypes=${selectableNodeTypes}",
-				urlStartWith: "${url.base}${root}.treeRootItem.json?nodeTypes=${nodeTypes}&selectableNodeTypes=${selectableNodeTypes}",
-				callback: function (uuid, path, title) {
-					var setValue = true;
-				    <c:if test="${not empty onSelect}">
-				        setValue = (${onSelect})(uuid, path, title));
-				    </c:if>
-				    if (setValue) {
-				        document.getElementById('${fieldId}').value = 'title' == '${valueType}' ? title : ('identifier' == '${valueType}' ? uuid : path);
-				    }
-					$("#pagePickerTrigger").fancybox.close(); 
-				}		
-			}, treeviewOptions));
-		}
-	}, fancyboxOptions));
-});
+$(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${url.base}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
 </template:addResources>
 <div id="${fieldId}-treeItemSelector" style="display:none"><ul id="${fieldId}-treeItemSelectorTree"></ul></div>

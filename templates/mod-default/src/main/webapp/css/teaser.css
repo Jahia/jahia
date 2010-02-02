@@ -1,0 +1,25 @@
+#bodywrapper .teaser .floatLeft {
+	clear:both;
+	position: relative;
+	height:1%;
+	font-size:90%;
+	line-height:110%;
+}
+#bodywrapper .teaser .floatLeft {
+	float:left;
+	margin: 0 5px 5px 0px;
+}
+
+#bodywrapper .teaser .more{
+	position:absolute;
+	bottom:1em;
+	right:1em;
+}
+#bodywrapper .teaser-fixed-height {
+	height:6em;
+	overflow:hidden;
+}
+#bodywrapper .teaser-fixed-height .teaser-content{
+	overflow: hidden;
+	height:5.5em;
+}

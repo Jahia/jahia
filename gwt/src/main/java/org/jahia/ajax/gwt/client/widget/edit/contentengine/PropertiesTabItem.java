@@ -80,6 +80,9 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
 
             if (propertiesEditor != null) {
+                if (propertiesEditor == getPropertiesEditorByLang(locale)) {
+                    return;
+                }
                 addSharedLangLabel = false;
                 propertiesEditor.setVisible(false);
                 // keep tarck of the old values
@@ -114,7 +117,9 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
                     Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
                     for (GWTJahiaNodeProperty property : previousNon18nProperties) {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
+                        if (fieldsMap.containsKey(property.getName()))  {
+                            FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
+                        }
                     }
                 }
             }

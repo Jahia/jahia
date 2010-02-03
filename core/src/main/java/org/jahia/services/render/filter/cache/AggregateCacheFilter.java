@@ -48,6 +48,8 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletRequest;
 import java.text.ParseException;
@@ -241,6 +243,8 @@ public class AggregateCacheFilter extends AbstractFilter {
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
                     "templateType"), keyAttrbs.get("template"), keyAttrbs.get("template")), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
+        } catch (PathNotFoundException e) {
+            outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), "");
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

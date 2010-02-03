@@ -87,7 +87,7 @@ public class ConflictResolver {
                 unresolvedDifferences.add(diff);
             }
         }
-        targetNode.getSession().save();
+        targetNode.getRealNode().getSession().save();
     }
 
     private void computeDifferences(JCRVersionHistory vh, String sourceNode, String targetNode) throws RepositoryException {
@@ -127,7 +127,7 @@ public class ConflictResolver {
         for (Diff diff : sourceDiff) {
             if (diff instanceof PropertyChangedDiff) {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                changedProperties.put(diff1.propertyDefinition.getName(), diff1);
+                changedProperties.put(diff1.propertyName, diff1);
             }
             if (diff instanceof ChildAddedDiff) {
                 ((ChildAddedDiff)diff).sourceWorkspace = baseVersion.getSession().getWorkspace().getName();
@@ -136,8 +136,8 @@ public class ConflictResolver {
         for (Diff diff : targetDiff) {
             if (diff instanceof PropertyChangedDiff) {
                 PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                if (changedProperties.containsKey(diff1.propertyDefinition.getName())) {
-                    changedProperties.get(diff1.propertyDefinition.getName()).newTargetValue = diff1.newValue;
+                if (changedProperties.containsKey(diff1.propertyName)) {
+                    changedProperties.get(diff1.propertyName).newTargetValue = diff1.newValue;
                 }
             }
         }
@@ -156,11 +156,11 @@ public class ConflictResolver {
             added.removeAll(uuids1.keySet());
             List<String> removed = new ArrayList<String>(uuids1.keySet());
             removed.removeAll(uuids2.keySet());
-            for (String s : added) {
-                diffs.add(new ChildAddedDiff(s,uuids2.get(s)));
-            }
             for (String s : removed) {
                 diffs.add(new ChildRemovedDiff(s,uuids1.get(s)));
+            }
+            for (String s : added) {
+                diffs.add(new ChildAddedDiff(s,uuids2.get(s)));
             }
         }
 
@@ -174,9 +174,12 @@ public class ConflictResolver {
             }
             if (!frozenNode2.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
-                    diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue()));
+                    Value[] values = prop1.getValues();
+                    for (Value value : values) {
+                        diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(),value));
+                    }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue(), null));
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(),prop1.getValue(), null));
                 }
             } else {
                 Property prop2 = frozenNode2.getProperty(propName);
@@ -196,7 +199,7 @@ public class ConflictResolver {
                             added.remove(value.getString());
                         }
                         for (Value value : added.values()) {
-                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), value));
+                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), value));
                         }
 
                         Map<String, Value> removed = new HashMap<String,Value>();
@@ -207,11 +210,11 @@ public class ConflictResolver {
                             removed.remove(value.getString());
                         }
                         for (Value value : removed.values()) {
-                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), value));
+                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), value));
                         }
                     } else {
                         if (!equalsValue(prop1.getValue(),prop2.getValue())) {
-                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getValue(), prop2.getValue()));
+                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), prop1.getValue(), prop2.getValue()));
                         }
                     }
                 }
@@ -228,9 +231,12 @@ public class ConflictResolver {
             }
             if (!frozenNode1.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
-                    diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), prop2.getValue()));
+                    Value[] values = prop2.getValues();
+                    for (Value value : values) {
+                        diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), prop2.getName(), value));
+                    }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), null, prop2.getValue()));
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), prop2.getName(), null, prop2.getValue()));
                 }
             }
 
@@ -294,6 +300,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
+            targetNode.getRealNode().getSession().save();
             JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedPaths, sourceNode.getSession(), targetNode.getSession());
 //            targetNode.getSession().getWorkspace().clone(sourceWorkspace, targetNode.getPath()+"/"+newName,targetNode.getPath()+"/"+newName, false);
             return true;
@@ -420,15 +427,17 @@ public class ConflictResolver {
 
     class PropertyAddedDiff implements Diff {
         private ExtendedPropertyDefinition propertyDefinition;
+        private String propertyName;
         private Value newValue;
 
-        PropertyAddedDiff(ExtendedPropertyDefinition propertyDefinition, Value newValue) {
+        PropertyAddedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyName, Value newValue) {
             this.propertyDefinition = propertyDefinition;
+            this.propertyName = propertyName;
             this.newValue = newValue;
         }
 
         public boolean apply() throws RepositoryException {
-            String name = propertyDefinition.getName();
+            String name = propertyName;
             if (targetNode.hasProperty(name)) {
                 targetNode.setProperty(name, Arrays.asList(targetNode.getProperty(name),newValue).toArray(new Value[0]));
             } else {
@@ -460,22 +469,24 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyAddedDiff{" +
-                    "propertyName='" + propertyDefinition.getName() + '\'' +
+                    "propertyName='" + propertyName + '\'' +
                     '}';
         }
     }
 
     class PropertyRemovedDiff implements Diff {
         private ExtendedPropertyDefinition propertyDefinition;
+        private String propertyName;
         private Value oldValue;
 
-        PropertyRemovedDiff(ExtendedPropertyDefinition propertyDefinition, Value oldValue) {
+        PropertyRemovedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyName, Value oldValue) {
             this.propertyDefinition = propertyDefinition;
+            this.propertyName = propertyName;
             this.oldValue = oldValue;
         }
 
         public boolean apply() throws RepositoryException {
-            targetNode.getProperty(propertyDefinition.getName()).remove();
+            targetNode.getProperty(propertyName).remove();
             return true;
         }
 
@@ -502,26 +513,28 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyRemovedDiff{" +
-                    "propertyName='" + propertyDefinition.getName() + '\'' +
+                    "propertyName='" + propertyName + '\'' +
                     '}';
         }
     }
 
     class PropertyChangedDiff implements Diff {
         private ExtendedPropertyDefinition propertyDefinition;
+        private String propertyName;
         private Value oldValue;
         private Value newValue;
         private Value newTargetValue = null;
 
-        PropertyChangedDiff(ExtendedPropertyDefinition propertyName, Value oldValue, Value newValue) {
-            this.propertyDefinition = propertyName;
+        PropertyChangedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyName, Value oldValue, Value newValue) {
+            this.propertyDefinition = propertyDefinition;
+            this.propertyName = propertyName;
             this.oldValue = oldValue;
             this.newValue = newValue;
         }
 
         public boolean apply() throws RepositoryException {
             if (newTargetValue == null) {
-                targetNode.setProperty(propertyDefinition.getName(), newValue);
+                targetNode.setProperty(propertyName, newValue);
                 return true;
             } else {
                 int resolution = getResolutionForDefinition(propertyDefinition);
@@ -569,7 +582,7 @@ public class ConflictResolver {
                         return false;
                 }
 
-                targetNode.setProperty(propertyDefinition.getName(), v);
+                targetNode.setProperty(propertyName, v);
                 return true;
             }
         }
@@ -622,7 +635,7 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyChangedDiff{" +
-                    "propertyName='" + propertyDefinition.getName() + '\'' +
+                    "propertyName='" + propertyName + '\'' +
                     '}';
         }
     }

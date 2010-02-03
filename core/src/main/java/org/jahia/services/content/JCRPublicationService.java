@@ -317,7 +317,7 @@ public class JCRPublicationService extends JahiaService {
 
                 // Item exists at "destinationPath" in live space, update it
 
-                Node liveNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
+                Node destinationNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
@@ -328,41 +328,41 @@ public class JCRPublicationService extends JahiaService {
 
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
-                while (ni.hasNext()) {
-                    logger.info("Merge conflict");
-                    // Conflict : node has been modified in live. Resolve conflict.
-                    Node failed = ni.nextNode();
-                    destinationVersionManager.checkout(failed.getPath());
+                if (ni.hasNext()) {
+                    while (ni.hasNext()) {
+                        logger.info("Merge conflict");
+                        // Conflict : node has been modified in live. Resolve conflict.
+                        Node failed = ni.nextNode();
+                        destinationVersionManager.checkout(failed.getPath());
 
-                    JCRNodeWrapper destNode = destinationSession.getNode(failed.getPath());
+                        JCRNodeWrapper destNode = destinationSession.getNode(failed.getPath());
 
-                    ConflictResolver resolver = new ConflictResolver(node, destNode);
-                    resolver.setPrunedPaths(pruneNodes);
-                    try {
-                        resolver.applyDifferences();
+                        ConflictResolver resolver = new ConflictResolver(node, destNode);
+                        resolver.setPrunedPaths(pruneNodes);
+                        try {
+                            resolver.applyDifferences();
 
-                        if (!resolver.getUnresolvedDifferences().isEmpty()) {
-                            logger.warn("Unresolved conflicts : "+resolver.getUnresolvedDifferences());
-                        } else {
-                            destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
-                            destinationVersionManager.checkin(failed.getPath());
-
-                            // todo : workspace write here
-                            node.update(destinationSession.getWorkspace().getName());
+                            if (!resolver.getUnresolvedDifferences().isEmpty()) {
+                                logger.warn("Unresolved conflicts : "+resolver.getUnresolvedDifferences());
+                            } else {
+                                destinationVersionManager.doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
+                            }
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();
                         }
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();
                     }
+                    recurseCheckin(destinationNode, pruneNodes, destinationVersionManager);
+                    node.update(destinationSession.getWorkspace().getName());
                 }
 
                 if (oldPath != null) {
                     try {
                         JCRNodeWrapper snode = destinationSession.getNode(oldPath);
                         recurseCheckout(snode,null,destinationVersionManager);
-                        JCRNodeWrapper oldParent = snode.getParent();
+                        JCRNodeWrapper oldParent = node.getParent();
                         oldParent.checkout();
-                        snode.remove();
-                        snode.getRealNode().getSession().save();
+                        node.remove();
+                        node.getRealNode().getSession().save();
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }

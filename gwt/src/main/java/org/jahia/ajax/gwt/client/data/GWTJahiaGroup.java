@@ -43,7 +43,7 @@ import java.util.Collection;
  * Time: 2:53:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaGroup extends BaseModelData implements Serializable {
+public class GWTJahiaGroup extends BaseModelData implements GWTJahiaPrincipal {
     public GWTJahiaGroup() {
     }
 
@@ -56,16 +56,26 @@ public class GWTJahiaGroup extends BaseModelData implements Serializable {
         return get("groupname") ;
     }
 
+    public String getName() {
+        return get("name") ;
+    }
+
     public void setGroupname(String username) {
         set("groupname", username) ;
+        set("name", username) ;
     }
 
     public String getGroupKey() {
         return get("groupKey") ;
     }
 
+    public String getKey() {
+        return get("groupKey") ;
+    }
+
     public void setGroupKey(String userKey) {
         set("groupKey", userKey) ;
+        set("key", userKey) ;
     }
 
     public Collection<String> getMembers() {

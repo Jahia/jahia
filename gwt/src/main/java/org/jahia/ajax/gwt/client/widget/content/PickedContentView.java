@@ -110,6 +110,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
 
         //name
         column = new ColumnConfig();
+        column.setAlignment(Style.HorizontalAlignment.LEFT);
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
 
@@ -210,7 +211,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         // display preview only for file
         if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
             if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-                m_thumbsListView = new ThumbsListView();
+                m_thumbsListView = new ThumbsListView(true);
                 m_thumbsListView.setStore(store);
                 m_thumbsListView.setTemplate(getThumbsListTemplate());
                 m_thumbsListView.setItemSelector("div.thumb-wrap");
@@ -353,16 +354,6 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
                 pathes.add(s.getUrl());
             }
             return pathes;
-        }
-    }
-
-
-    private class ThumbsListView extends ListView<GWTJahiaNode> {
-        @Override
-        protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-            String s = model.getName();
-            model.set("shortName", Format.ellipse(s, 14));
-            return model;
         }
     }
 

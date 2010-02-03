@@ -37,8 +37,7 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -88,7 +87,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ContentHubHelper contentHub;
     private PropertiesHelper properties;
     private LanguageHelper languages;
-
+    private RolesPermissionsHelper rolesPermissions;
     private TemplateHelper template;
     private ZipHelper zip;
     private ACLHelper acl;
@@ -137,6 +136,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setLanguages(LanguageHelper languages) {
         this.languages = languages;
+    }
+
+    public RolesPermissionsHelper getRolesPermissions() {
+        return rolesPermissions;
+    }
+
+    public void setRolesPermissions(RolesPermissionsHelper rolesPermissions) {
+        this.rolesPermissions = rolesPermissions;
     }
 
     public void setTemplate(TemplateHelper template) {
@@ -434,6 +441,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Create node with multilangue
+     *
      * @param parentPath
      * @param name
      * @param nodeType
@@ -474,7 +482,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param captcha
      * @throws GWTJahiaServiceException
      */
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, retrieveCurrentSession());
@@ -491,7 +499,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // save shared properties
         if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            nodes.add(jahiaNode);            
+            nodes.add(jahiaNode);
             Iterator<String> langCode = langCodeProperties.keySet().iterator();
             // save properties per lang
             while (langCode.hasNext()) {
@@ -801,6 +809,137 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException {
         return languages.getLanguages(retrieveParamBean());
+    }
+
+    /**
+     * Get permissions
+     *
+     * @param currentSite if false, returns server permissions
+     * @return
+     */
+    public List<GWTJahiaPermission> getPermission(boolean currentSite) {
+        List<GWTJahiaPermission> data = new ArrayList<GWTJahiaPermission>();
+
+
+        GWTJahiaPermission p = new GWTJahiaPermission();
+        p.setGroup("Admin");
+        p.setId("Role " + 0);
+        p.setLabel("Can enter Jahia administration GUI ");
+        data.add(p);
+
+        p = new GWTJahiaPermission();
+        p.setGroup("Admin");
+        p.setId("Role " + 1);
+        p.setLabel("Page settings ");
+        data.add(p);
+
+        p = new GWTJahiaPermission();
+        p.setGroup("Admin");
+        p.setId("Role " + 2);
+        p.setLabel("Manage templates");
+        data.add(p);
+
+        p = new GWTJahiaPermission();
+        p.setGroup("Edit");
+        p.setId("Role " + 3);
+        p.setLabel("Content edition");
+        data.add(p);
+
+        p = new GWTJahiaPermission();
+        p.setGroup("Edit");
+        p.setId("Role " + 4);
+        p.setLabel("Time-based publishing");
+        data.add(p);
+        return data;
+    }
+
+    /**
+     * Get roles with permission
+     *
+     * @param site
+     * @param server
+     * @param principalKey
+     * @return
+     */
+    public List<GWTJahiaRole> getRoles(boolean site, boolean server, String principalKey) {
+        return rolesPermissions.getRoles(site,server,principalKey);
+    }
+
+    /**
+     * Get principal in role
+     *
+     * @param role
+     * @return
+     */
+    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) {
+        return rolesPermissions.getPrincipalsInRole(role);
+    }
+
+
+    /**
+     * Get all roles and all permissions
+     *
+     * @param site
+     * @param server
+     * @return
+     */
+    public GWTRolesPermissions getRolesAndPermissions(boolean site, boolean server) {
+        return rolesPermissions.getRolesAndPermissions(site,server);
+    }
+
+    /**
+     * add permission to role
+     *
+     * @param role
+     */
+    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) {
+        rolesPermissions.addRolePermissions(role,permissions);
+    }
+
+    /**
+     * remove permissin from role
+     *
+     * @param role
+     * @param permissions
+     */
+    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) {
+        rolesPermissions.removeRolePermissions(role,permissions);
+    }
+
+    /**
+     * Grant role toe users
+     *
+     * @param role
+     */
+    public void grantRoleToUser(GWTJahiaRole role, String principalKey) {
+        rolesPermissions.grantRoleToUser(role,principalKey);
+    }
+
+    /**
+     * Remove role to user
+     *
+     * @param role
+     */
+    public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) {
+       rolesPermissions.removeRoleToUser(role,principalKey);
+    }
+
+    /**
+     * Grant role to principals
+     * @param role
+     * @param principals
+     */
+    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) {
+        rolesPermissions.grantRoleToPrincipals(role,principals);
+    }
+
+    /**
+     * remove roel to principals
+     * @param role
+     * @param principals
+     */
+    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) {
+        rolesPermissions.removeRoleToPrincipals(role,principals);
     }
 
 

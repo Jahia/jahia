@@ -69,6 +69,7 @@
         <property name="navigation" ref="NavigationHelper"/>
         <property name="properties" ref="PropertiesHelper"/>
         <property name="languages" ref="LanguagesHelper"/>
+        <property name="rolesPermissions" ref="RolesPermissionsHelper"/>
         <property name="publication" ref="PublicationHelper"/>
         <property name="search" ref="SearchHelper"/>
         <property name="template" ref="TemplateHelper"/>
@@ -178,6 +179,9 @@
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >
         <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
+
+    <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper"/>
+
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper" >
         <property name="navigation"  ref="NavigationHelper"/>

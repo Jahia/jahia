@@ -71,36 +71,7 @@ stretcherToOpen   = 0; %>
                     <jsp:param name="mode" value="server"/>
                 </jsp:include>
               <div id="content" class="fit">
-              <div class="head">
-                  <div class="object-title">
-                       <fmt:message key="label.serverpermissions"/>
-                  </div>
-              </div>
-              <div class="content-item-noborder">
-                <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"serverPermissions","&sub=process")%>' method="post">
-                <p>
-                  &nbsp;&nbsp;<fmt:message key="org.jahia.admin.serverpermissions.introduction.label"/>
-                </p>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" class="permissions">
-                <c:forEach items="${aclNameList}" var="curAclName" varStatus="status">
-                  <tr>
-                    <td>
-                      <div class="head headtop">
-                        <div class="object-title">
-                          <fmt:message key="org.jahia.admin.serverpermissions.permission.${fn:substringAfter(curAclName.aclName, 'org.jahia.actions.server.')}.label"/>
-                        </div>
-                      </div>
-                        <c:set var="aclName" value="${curAclName.aclName}"/>
-                        <c:set var="fieldName" value="${fn:replace(aclName, '.', '_')}"/>
-                        <c:set var="readonly"><%= !LicenseActionChecker.isAuthorizedByLicense((String) pageContext.getAttribute("aclName"), siteID != null ? siteID.intValue() : 0) %></c:set>
-                        <internal:aclNameEditor aclId="${curAclName.acl.id}" fieldId="${fieldName}" fieldName="${fieldName}" readonly="${readonly}" allowSiteSelection="true"/>
-                    </td>
-                  </tr>
-                </c:forEach>
-                </table>
-
-                </form>
-                </div>
+                  <div id="gwtpermissionrole" mode="server" class="jahia-admin-gxt"></div>                           
               </div>
             </div>
             </div>

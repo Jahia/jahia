@@ -39,7 +39,7 @@ import java.io.Serializable;
  * User: hollis
  * Date: 7 ao�t 2008 - 15:54:17
  */
-public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements Serializable {
+public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements GWTJahiaPrincipal {
     
     public GWTJahiaUser() {
         super();
@@ -57,16 +57,26 @@ public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements Serializab
         return get("userName") ;
     }
 
+    public String getName() {
+        return get("name") ;
+    }
+
     public void setUsername(String username) {
         set("userName", username) ;
+        set("name", username) ;
     }
 
     public String getUserKey() {
         return get("userKey") ;
     }
 
+    public String getKey() {
+        return get("userKey") ;
+    }
+
     public void setUserKey(String userKey) {
         set("userKey", userKey) ;
+        set("key", userKey) ;
     }
 
     public void setSiteName (String serverName) {

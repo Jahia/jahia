@@ -126,7 +126,7 @@
         return true;
     }
     function homePageRemoved() {
-        document.getElementById('homePageID').value = ''; 
+        document.getElementById('homePageID').value = '';
         var titleElement = document.getElementById('homePageLabel');
         titleElement.removeChild(titleElement.firstChild);
         titleElement.appendChild(document.createTextNode('${noneLabel}'));
@@ -353,7 +353,7 @@
             <span class="first-child">
                 <c:set var="label"><fmt:message key='org.jahia.admin.select.label' /></c:set>
                 <c:set var="title"><fmt:message key='org.jahia.admin.users.ManageUsers.setHomePage.label'/></c:set>
-                <%-- 
+                <%--
                 <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}" title="${title}"/>
                 --%>
             </span>
@@ -367,6 +367,13 @@
     </td>
 </tr>
 <% } %>
+<tr>
+	<td colspan="2">
+		<div id="gwtroleprincipal" group="false" principal="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
+	</td>
+</tr>
+
+
 <tr>
     <td colspan="2" align="center">&nbsp;
         <%
@@ -423,6 +430,7 @@
     </td>
 </tr>
 </table>
+
 <!--  -->
 </form>
 </div>
@@ -439,10 +447,10 @@
 </div>
 
 <div id="actionBar">
-  	
-    <span class="dex-PushButton"> 
+
+    <span class="dex-PushButton">
 	  <span class="first-child">
-      	  
+
     <% if (isSuperAdminProp == null) {
         String cancelURL = JahiaAdministration.composeActionURL(request, response, "users", "&sub=display");
         if (isPopup) {
@@ -460,7 +468,7 @@
     <% } %>
       </span>
      </span>
-     <span class="dex-PushButton"> 
+     <span class="dex-PushButton">
       <span class="first-child">
          <a class="ico-ok"
             href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><fmt:message key="label.ok"/></a>

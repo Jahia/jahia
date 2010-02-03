@@ -81,6 +81,11 @@ public final class JCRClientUtils {
     public final static String GLOBAL_REPOSITORY = "globalRepository";
     
     public static final String REUSABLE_COMPONENTS_REPOSITORY = "resuableComponentsRepository";
+
+    public final static String PRINCIPAL_ROLES_MAPPING = "principalRolesMapping";
+    public final static String AUTHORIZATIONS = "authorizations";
+    public final static String USAGE = "usage";
+    public final static String VERSIONING = "versioning";
     
     public static short FILE_TABLE = 1;
     public static short THUMB_VIEW = 2;

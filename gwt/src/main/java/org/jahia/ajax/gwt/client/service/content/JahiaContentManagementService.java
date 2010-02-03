@@ -36,8 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -72,6 +71,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     /**
      * Get a node by its path if existing.
+     *
      * @param path path o fthe node you want
      * @return the founded node if existing
      * @throws GWTJahiaServiceException if node does not exist
@@ -117,29 +117,29 @@ public interface JahiaContentManagementService extends RemoteService {
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 
     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut) throws GWTJahiaServiceException;
-    
+
     public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
-            
-    public GWTJahiaGetPropertiesResult getProperties(String path,String langCode) throws GWTJahiaServiceException;
+
+    public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException;
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException;
 
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty>  newProps) throws GWTJahiaServiceException;
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
-    void savePropertiesAndACL(List<GWTJahiaNode> nodes,GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
 
 
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
 
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createRSSPortletInstance(String path,String name, String url) throws GWTJahiaServiceException;
+    public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException;
 
@@ -181,36 +181,61 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;
 
-    public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
+    public void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException;
 
-    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException;
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException;
 
-    public String getNodeURL(String path, String locale,  int mode) throws GWTJahiaServiceException;
+    public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
 
+    public List<GWTJahiaPermission> getPermission(boolean currentSite) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaRole> getRoles(boolean site, boolean server, String userKey) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role);
+
+
+    public GWTRolesPermissions getRolesAndPermissions(boolean site, boolean server) throws GWTJahiaServiceException;
+
+    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
+
+    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
+
+    public void grantRoleToUser(GWTJahiaRole role, String principalKey) throws GWTJahiaServiceException;
+
+    public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) throws GWTJahiaServiceException;
+
+    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException;
+
+    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException;
+
     /**
      * Publish the specified path.
+     *
      * @param path the path to publish, will not auto publish the parents
      */
     public void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified paths.
+     *
      * @param path the list of node paths to publish, will not auto publish the parents
      */
     public void publish(List<String> path, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.
+     *
      * @param path the path to unpublish, will not unpublish the references
      */
     public void unpublish(String path) throws GWTJahiaServiceException;
 
     /**
      * Get the publication status information for a particular path.
+     *
      * @param path path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
@@ -218,10 +243,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     /**
      * Get the publication status information for multiple pathes.
+     *
      * @param pathes path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
-    public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
 
 
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;

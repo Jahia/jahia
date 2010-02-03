@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
@@ -186,7 +187,7 @@ public class FormFieldCreator {
                     break;
             }
             if(propDefinition.isInternationalized()){
-                field.setLabelSeparator(" <img width='11px' height='11px' src='/css/images/sharedLang.gif'/>:");
+                field.setLabelSeparator(" <img width='11px' height='11px' src='"+ JahiaGWTParameters.getContextPath()+"/css/images/sharedLang.gif'/>:");
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;

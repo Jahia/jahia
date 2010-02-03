@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -69,6 +70,7 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.versioning.VersioningPanel;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;
@@ -89,10 +91,11 @@ public class ContentDetails extends BottomRightComponent {
     private AsyncTabItem propertiesTabItem;
     private AsyncTabItem portletsTabItem;
     private AsyncTabItem authorizationsTabItem;
-    private AsyncTabItem rolesTabItem;
+    private AsyncTabItem portletRolesTabItem;
     private AsyncTabItem modesTabItem;
     private AsyncTabItem usagesTabItem;
     private AsyncTabItem versioningTabItem;
+    private AsyncTabItem principalRoleTabItem;
     private FlowPanel infoPanel;
     private TabPanel tabs;
     private AclEditor modeAclEditor;
@@ -130,17 +133,17 @@ public class ContentDetails extends BottomRightComponent {
         propertiesTabItem = new AsyncTabItem();
         propertiesTabItem.setLayout(new FitLayout());
         propertiesTabItem.setText(Messages.getResource("fm_properties"));
-        
+
         // portlets
         portletsTabItem = new AsyncTabItem();
         portletsTabItem.setLayout(new FitLayout());
         portletsTabItem.setText(Messages.get("fm_portlets", "Portlets"));
 
         // roles
-        rolesTabItem = new AsyncTabItem();
-        rolesTabItem.setLayout(new FitLayout());
-        rolesTabItem.setText(Messages.getResource("fm_roles"));
-        rolesTabItem.setEnabled(false);
+        portletRolesTabItem = new AsyncTabItem();
+        portletRolesTabItem.setLayout(new FitLayout());
+        portletRolesTabItem.setText(Messages.getResource("fm_roles"));
+        portletRolesTabItem.setEnabled(false);
 
         // modes
         modesTabItem = new AsyncTabItem();
@@ -163,11 +166,16 @@ public class ContentDetails extends BottomRightComponent {
         versioningTabItem.setText("Versioning");
         versioningTabItem.setLayout(new FitLayout());
 
+        // principale roles mapping
+        principalRoleTabItem = new AsyncTabItem();
+        principalRoleTabItem.setText("Principal mapping");
+        principalRoleTabItem.setLayout(new FitLayout());
+
         // add all tabs
         tabs.add(infoTabItem);
         tabs.add(propertiesTabItem);
         if (config.getTabs().contains(JCRClientUtils.ROLES_ACL)) {
-            tabs.add(rolesTabItem);
+            tabs.add(portletRolesTabItem);
         }
         if (config.getTabs().contains("portlets")) {
             tabs.add(portletsTabItem);
@@ -175,9 +183,22 @@ public class ContentDetails extends BottomRightComponent {
         if (config.getTabs().contains(JCRClientUtils.MODES_ACL)) {
             tabs.add(modesTabItem);
         }
-        tabs.add(authorizationsTabItem);
-        tabs.add(usagesTabItem);
-        tabs.add(versioningTabItem);
+
+        if (config.getTabs().contains(JCRClientUtils.PRINCIPAL_ROLES_MAPPING)) {
+            tabs.add(principalRoleTabItem);
+        }
+
+        if (config.getTabs().contains(JCRClientUtils.AUTHORIZATIONS)) {
+            tabs.add(authorizationsTabItem);
+        }
+
+        if (config.getTabs().contains(JCRClientUtils.USAGE)) {
+            tabs.add(usagesTabItem);
+        }
+
+        if (config.getTabs().contains(JCRClientUtils.VERSIONING)) {
+            tabs.add(versioningTabItem);
+        }
 
         tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -200,7 +221,7 @@ public class ContentDetails extends BottomRightComponent {
         infoPanel.clear();
         propertiesTabItem.removeAll();
         portletsTabItem.removeAll();
-        rolesTabItem.removeAll();
+        portletRolesTabItem.removeAll();
         modesTabItem.removeAll();
         authorizationsTabItem.removeAll();
         usagesTabItem.removeAll();
@@ -212,8 +233,8 @@ public class ContentDetails extends BottomRightComponent {
         propertiesTabItem.setEnabled(false);
         portletsTabItem.setProcessed(false);
         portletsTabItem.setEnabled(false);
-        rolesTabItem.setProcessed(false);
-        rolesTabItem.setEnabled(false);
+        portletRolesTabItem.setProcessed(false);
+        portletRolesTabItem.setEnabled(false);
         modesTabItem.setProcessed(false);
         modesTabItem.setEnabled(false);
         authorizationsTabItem.setProcessed(false);
@@ -222,6 +243,8 @@ public class ContentDetails extends BottomRightComponent {
         usagesTabItem.setEnabled(false);
         versioningTabItem.setProcessed(false);
         versioningTabItem.setEnabled(false);
+        principalRoleTabItem.setProcessed(false);
+        principalRoleTabItem.setEnabled(false);
     }
 
     public void fillData(Object selectedItem) {
@@ -258,20 +281,20 @@ public class ContentDetails extends BottomRightComponent {
                 portletsTabItem.setEnabled(true);
                 if (selectedNodes.get(0).isPortlet()) {
                     modesTabItem.setEnabled(true);
-                    rolesTabItem.setEnabled(true);
+                    portletRolesTabItem.setEnabled(true);
                 } else {
                     modesTabItem.setEnabled(false);
-                    rolesTabItem.setEnabled(false);
+                    portletRolesTabItem.setEnabled(false);
                 }
                 authorizationsTabItem.setEnabled(true);
                 usagesTabItem.setEnabled(true);
-                versioningTabItem.setEnabled(true);                
+                versioningTabItem.setEnabled(true);
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(false);
                 portletsTabItem.setEnabled(false);
                 modesTabItem.setEnabled(false);
-                rolesTabItem.setEnabled(false);
+                portletRolesTabItem.setEnabled(false);
                 authorizationsTabItem.setEnabled(false);
                 usagesTabItem.setEnabled(false);
                 versioningTabItem.setEnabled(false);
@@ -295,7 +318,7 @@ public class ContentDetails extends BottomRightComponent {
             displayProperties();
         } else if (currentTab == portletsTabItem) {
             displayPortlets();
-        } else if (currentTab == rolesTabItem) {
+        } else if (currentTab == portletRolesTabItem) {
             displayRoles();
         } else if (currentTab == modesTabItem) {
             displayModes();
@@ -305,10 +328,14 @@ public class ContentDetails extends BottomRightComponent {
             displayFileUsages();
         } else if (currentTab == versioningTabItem) {
             displayVersioning();
+        } else if (currentTab == principalRoleTabItem) {
+            displayPrincipalRole();
         }
     }
 
-
+    /**
+     * Display portlets
+     */
     private void displayPortlets() {
         if (!portletsTabItem.isProcessed() && selectedNodes.size() == 1) {
 
@@ -319,7 +346,7 @@ public class ContentDetails extends BottomRightComponent {
                 }
 
                 public void onFailure(Throwable caught) {
-                	// do nothing
+                    // do nothing
                 }
             });
 
@@ -346,7 +373,8 @@ public class ContentDetails extends BottomRightComponent {
         }
     }
 
-	// INFO TAB
+    // INFO TAB
+
     public void displayInfo() {
         if (!infoTabItem.isProcessed()) {
             Grid g = new Grid(1, 2);
@@ -410,6 +438,9 @@ public class ContentDetails extends BottomRightComponent {
 
     }
 
+    /**
+     * Display properties
+     */
     public void displayProperties() {
         if (!propertiesTabItem.isProcessed()) {
             if (selectedNodes.size() == 1) {
@@ -430,7 +461,7 @@ public class ContentDetails extends BottomRightComponent {
                         List<String> list = new ArrayList<String>();
                         list.add("jcr:content");
                         list.add("j:thumbnail");
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null,selectedNode.isWriteable(), false);
+                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null, selectedNode.isWriteable(), false);
 
                         ToolBar toolBar = new ToolBar();
                         propertiesEditor.setTopComponent(toolBar);
@@ -548,22 +579,17 @@ public class ContentDetails extends BottomRightComponent {
     }
 
     // ACL TAB
+
     private void renderRoles() {
         if (!roleAclEditor.isEmpty()) {
-            rolesTabItem.setEnabled(true);
-            rolesTabItem.add(roleAclEditor.renderNewAclPanel());
+            portletRolesTabItem.setEnabled(true);
+            portletRolesTabItem.add(roleAclEditor.renderNewAclPanel());
         } else {
-            rolesTabItem.setEnabled(false);
+            portletRolesTabItem.setEnabled(false);
         }
-        rolesTabItem.layout();
+        portletRolesTabItem.layout();
     }
 
-    public void rerenderRoles() {
-        if (roleAclEditor != null) {
-            rolesTabItem.add(roleAclEditor.renderNewAclPanel());
-            rolesTabItem.layout();
-        }
-    }
 
     private void renderModes() {
         if (!modeAclEditor.isEmpty()) {
@@ -575,30 +601,17 @@ public class ContentDetails extends BottomRightComponent {
         modesTabItem.layout();
     }
 
-    public void rerenderModes() {
-        if (modeAclEditor != null) {
-            modesTabItem.add(modeAclEditor.renderNewAclPanel());
-            modesTabItem.layout();
-        }
-    }
 
     private void renderAuthorization() {
         authorizationsTabItem.add(authAclEditor.renderNewAclPanel());
         authorizationsTabItem.layout();
     }
 
-    public void rerenderAuthorization() {
-        if (authAclEditor != null) {
-            authorizationsTabItem.removeAll();
-            renderAuthorization();
-        }
-    }
-
 
     public void displayRoles() {
         if (selectedNodes.size() == 1) {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!rolesTabItem.isProcessed()) {
+            if (!portletRolesTabItem.isProcessed()) {
                 if (getLinker() != null) {
                     getLinker().loading("collecting roles acls...");
                 }
@@ -618,7 +631,7 @@ public class ContentDetails extends BottomRightComponent {
                         Button saveButton = roleAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, ROLES_TAB_ITEM));
                         renderRoles();
-                        rolesTabItem.setProcessed(true);
+                        portletRolesTabItem.setProcessed(true);
 
                         if (getLinker() != null) {
                             getLinker().loaded();
@@ -699,7 +712,7 @@ public class ContentDetails extends BottomRightComponent {
                         authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
-                        if(!(selectedNode.getProviderKey().equals("default")||selectedNode.getProviderKey().equals("jahia"))) {
+                        if (!(selectedNode.getProviderKey().equals("default") || selectedNode.getProviderKey().equals("jahia"))) {
                             authAclEditor.setReadOnly(true);
                         } else {
                             authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
@@ -728,6 +741,7 @@ public class ContentDetails extends BottomRightComponent {
     }
 
     // FILE USAGES TAB
+
     public void displayFileUsages() {
         if (!usagesTabItem.isProcessed()) {
 
@@ -839,6 +853,25 @@ public class ContentDetails extends BottomRightComponent {
                 versioningTabItem.layout();
             }
         }
+    }
+
+    /**
+     * Displa principal mapping
+     */
+    public void displayPrincipalRole() {
+        Log.debug("Principal role");
+        // if (selectedNodes.size() == 1) {
+        //     final GWTJahiaNode selectedNode = selectedNodes.get(0);
+        if (!principalRoleTabItem.isProcessed()) {
+            GWTJahiaRole role = new GWTJahiaRole();
+            role.setLabel("test");
+            role.setId("id");
+            PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(role);
+            principalRoleTabItem.add(principalRolePanel);
+            principalRoleTabItem.setProcessed(true);
+            principalRoleTabItem.layout();
+        }
+        // }
     }
 
 

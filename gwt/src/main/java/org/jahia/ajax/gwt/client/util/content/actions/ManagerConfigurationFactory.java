@@ -53,6 +53,7 @@ public class ManagerConfigurationFactory {
     public static final String CATEGORYPICKER = "categorypicker";
     public static final String COMPLETE = "complete";
     public static final String SITEMANAGER = "sitemanager";
+    public static final String ROLESMANAGER = "rolesmanager";
 
     public static ManagerConfiguration getConfiguration(String config, ManagerLinker linker) {
         if (config != null) {
@@ -86,6 +87,9 @@ public class ManagerConfigurationFactory {
             if (config.contains(TAGMANAGER)) {
                 return getTagManagerConfiguration(linker);
             }
+            if (config.contains(ROLESMANAGER)) {
+                return getRolesManagerConfiguration(linker);
+            }
             if (config.contains(LINKPICKER)) {
                 return getPagePickerConfiguration(linker);
             }
@@ -94,173 +98,190 @@ public class ManagerConfigurationFactory {
     }
 
     public static ManagerConfiguration getCompleteManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
-        completeManagerConfig.setEnableTextMenu(true);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(true);
 
-        completeManagerConfig.setToolbarGroup("content-manager");
+        configuration.setToolbarGroup("content-manager");
 
         // no columns to add (default)
 
         // show root repository
-        completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
-        completeManagerConfig.setNodeTypes("");
-        completeManagerConfig.setFolderTypes("");
+        configuration.setNodeTypes("");
+        configuration.setFolderTypes("");
 
         // show the current site (first) tab by default
 
         // do not hide the left panel (default)
 
-        completeManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
-        completeManagerConfig.addTab(JCRClientUtils.MODES_ACL);
+        configuration.addTab(JCRClientUtils.ROLES_ACL);
+        configuration.addTab(JCRClientUtils.MODES_ACL);
 
-        return completeManagerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getFileManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration fileManagerConfig = new ManagerConfiguration();
-        fileManagerConfig.setEnableTextMenu(true);
-        fileManagerConfig.setDisplayProvider(true);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(true);
+        configuration.setDisplayProvider(true);
 
-        fileManagerConfig.setToolbarGroup("document-manager");
+        configuration.setToolbarGroup("document-manager");
 
-        fileManagerConfig.addColumn("providerKey");
-        fileManagerConfig.addColumn("ext");
-        fileManagerConfig.addColumn("name");
-        fileManagerConfig.addColumn("locked");
-        fileManagerConfig.addColumn("path");
-        fileManagerConfig.addColumn("size");
-        fileManagerConfig.addColumn("lastModified");
+        configuration.addColumn("providerKey");
+        configuration.addColumn("ext");
+        configuration.addColumn("name");
+        configuration.addColumn("locked");
+        configuration.addColumn("path");
+        configuration.addColumn("size");
+        configuration.addColumn("lastModified");
+
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
 
         // no columns to add (default)
 
         // hide the mashup repository and the global repository
-        fileManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
-        fileManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
-        fileManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
-        fileManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
-        fileManagerConfig.addAccordion(JCRClientUtils.USERS_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.USERS_REPOSITORY);
 
         // show the current site (first) tab by default
 
         // do not hide the left panel (default)
-        fileManagerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
-        fileManagerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        return fileManagerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getFilePickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration filePickerConfig = new ManagerConfiguration();
-        filePickerConfig.setEnableTextMenu(false);
-        filePickerConfig.setToolbarGroup("file-picker");
-        filePickerConfig.setHideLeftPanel(true);
-        filePickerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
-        filePickerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
-        filePickerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
-        filePickerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
-        filePickerConfig.addAccordion(JCRClientUtils.USERS_REPOSITORY);
-        filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
-        filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(false);
+        configuration.setToolbarGroup("file-picker");
+        configuration.setHideLeftPanel(true);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
+        configuration.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.USERS_REPOSITORY);
+        configuration.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        return filePickerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getPagePickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration filePickerConfig = new ManagerConfiguration();
-        filePickerConfig.setEnableTextMenu(false);
-        filePickerConfig.addAccordion(JCRClientUtils.SITE_REPOSITORY);
-        filePickerConfig.setToolbarGroup("file-picker");
-        filePickerConfig.setHideLeftPanel(true);
-        filePickerConfig.setNodeTypes(JCRClientUtils.PAGE_NODETYPES);
-        filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(false);
+        configuration.addAccordion(JCRClientUtils.SITE_REPOSITORY);
+        configuration.setToolbarGroup("file-picker");
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
+        configuration.setHideLeftPanel(true);
+        configuration.setNodeTypes(JCRClientUtils.PAGE_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        return filePickerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getMashupManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration mashupManagerConfig = new ManagerConfiguration();
-        mashupManagerConfig.setEnableTextMenu(true);
-        mashupManagerConfig.setEnableFileDoubleClick(false);
-        mashupManagerConfig.setDisplayExt(false);
-        mashupManagerConfig.setDisplaySize(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(true);
+        configuration.setEnableFileDoubleClick(false);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
 
-        mashupManagerConfig.setToolbarGroup("mashup-manager");
+        configuration.setToolbarGroup("mashup-manager");
 
-        mashupManagerConfig.addColumn("name");
-        mashupManagerConfig.addColumn("locked");
-        mashupManagerConfig.addColumn("path");
-        mashupManagerConfig.addColumn("lastModified");
+        configuration.addColumn("name");
+        configuration.addColumn("locked");
+        configuration.addColumn("path");
+        configuration.addColumn("lastModified");
 
-        mashupManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        configuration.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
         // show only the mashup repository
-        mashupManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
-        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
 
-        mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
-        mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL);
+        configuration.addTab(JCRClientUtils.ROLES_ACL);
+        configuration.addTab(JCRClientUtils.MODES_ACL);
 
 
         // show the mashup tab by default
 
         // do not hide the left panel (default)
 
-        mashupManagerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
-        mashupManagerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        return mashupManagerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getMashupPickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration mashupPickerConfig = new ManagerConfiguration();
-        mashupPickerConfig.setEnableTextMenu(false);
-        mashupPickerConfig.setEnableFileDoubleClick(false);
-        mashupPickerConfig.setDisplayExt(false);
-        mashupPickerConfig.setDisplaySize(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(false);
+        configuration.setEnableFileDoubleClick(false);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
 
-        mashupPickerConfig.setToolbarGroup("mashup-picker");
+        configuration.setToolbarGroup("mashup-picker");
 
         // only one column here : name
-        mashupPickerConfig.addColumn("name");
-        mashupPickerConfig.addColumn("picker");
+        configuration.addColumn("name");
+        configuration.addColumn("picker");
 
-        mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
-        mashupPickerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        mashupPickerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
-        mashupPickerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
+        configuration.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        configuration.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
 
         // hide the left panel
-        mashupPickerConfig.setHideLeftPanel(true);
+        configuration.setHideLeftPanel(true);
 
-        mashupPickerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
-        mashupPickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        return mashupPickerConfig;
+        return configuration;
     }
 
     public static ManagerConfiguration getCategoryManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration categoryManagerConfig = new ManagerConfiguration();
-        categoryManagerConfig.setEnableTextMenu(true);
-        categoryManagerConfig.setDisplayExt(false);
-        categoryManagerConfig.setDisplaySize(false);
-        categoryManagerConfig.setDisplayDate(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(true);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
+        configuration.setDisplayDate(false);
 
-        categoryManagerConfig.setToolbarGroup("category-manager");
+        configuration.setToolbarGroup("category-manager");
 
-        categoryManagerConfig.addColumn("ext");
-        categoryManagerConfig.addColumn("name");
-        categoryManagerConfig.addColumn("locked");
-        categoryManagerConfig.addColumn("path");
+        configuration.addColumn("ext");
+        configuration.addColumn("name");
+        configuration.addColumn("locked");
+        configuration.addColumn("path");
 
-        categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
-        categoryManagerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
+        configuration.setDefaultView(JCRClientUtils.FILE_TABLE);
+        configuration.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
 
-        categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
-        categoryManagerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
 
-        return categoryManagerConfig;
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+
+        return configuration;
     }
 
     public static ManagerConfiguration getTagManagerConfiguration(final ManagerLinker linker) {
@@ -284,87 +305,119 @@ public class ManagerConfigurationFactory {
         configuration.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
 
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+
+        return configuration;
+    }
+
+    public static ManagerConfiguration getRolesManagerConfiguration(final ManagerLinker linker) {
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setHideLeftPanel(true);
+        configuration.setEnableTextMenu(true);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
+        configuration.setDisplayDate(false);
+        configuration.setToolbarGroup("role-manager");
+        configuration.setExpandRoot(true);
+        configuration.addColumn("name");
+        configuration.addTab(JCRClientUtils.PRINCIPAL_ROLES_MAPPING);
+
+        configuration.setDefaultView(JCRClientUtils.FILE_TABLE);
+        configuration.addAccordion(JCRClientUtils.TAG_REPOSITORY);
+
+        configuration.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
+
         return configuration;
     }
 
     public static ManagerConfiguration getCategoryPickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration categoryPickerConfig = new ManagerConfiguration();
-        categoryPickerConfig.setEnableTextMenu(false);
-        categoryPickerConfig.setEnableFileDoubleClick(false);
-        categoryPickerConfig.setDisplayExt(false);
-        categoryPickerConfig.setDisplaySize(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(false);
+        configuration.setEnableFileDoubleClick(false);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
 
-        categoryPickerConfig.setToolbarGroup("category-picker");
+        configuration.setToolbarGroup("category-picker");
 
         // only one column here : name
-        categoryPickerConfig.addColumn("name");
-        categoryPickerConfig.addColumn("picker");
+        configuration.addColumn("name");
+        configuration.addColumn("picker");
 
-        categoryPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        configuration.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
         // hide the left panel
-        categoryPickerConfig.setHideLeftPanel(true);
+        configuration.setHideLeftPanel(true);
 
-        categoryPickerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
-        categoryPickerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
 
-        categoryPickerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
 
-        return categoryPickerConfig;
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+
+        return configuration;
     }
 
     public static ManagerConfiguration getPortletDefinitionManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration portletDefinitionManagerConf = new ManagerConfiguration();
+        ManagerConfiguration configuration = new ManagerConfiguration();
 
-        portletDefinitionManagerConf.setEnableTextMenu(false);
-        portletDefinitionManagerConf.setEnableFileDoubleClick(false);
-        portletDefinitionManagerConf.setDisplayExt(false);
-        portletDefinitionManagerConf.setDisplaySize(false);
+        configuration.setEnableTextMenu(false);
+        configuration.setEnableFileDoubleClick(false);
+        configuration.setDisplayExt(false);
+        configuration.setDisplaySize(false);
 
-        portletDefinitionManagerConf.setToolbarGroup("portlet-definition-manager");
+        configuration.setToolbarGroup("portlet-definition-manager");
 
         // only one column here : name
-        portletDefinitionManagerConf.addColumn("name");
+        configuration.addColumn("name");
 
         // hide the left panel
-        portletDefinitionManagerConf.setHideLeftPanel(true);
+        configuration.setHideLeftPanel(true);
 
-        portletDefinitionManagerConf.addAccordion(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY);
 
-        portletDefinitionManagerConf.setNodeTypes(JCRClientUtils.PORTLET_DEFINITIONS_NODETYPES);
-        portletDefinitionManagerConf.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.PORTLET_DEFINITIONS_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
-        portletDefinitionManagerConf.addTab("portlets");
+        configuration.addTab("portlets");
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
 
-        return portletDefinitionManagerConf;
+        return configuration;
     }
 
     public static ManagerConfiguration getSiteManagerConfiguration(ManagerLinker linker) {
-        ManagerConfiguration cfg = new ManagerConfiguration();
-        cfg.setEnableTextMenu(true);
-        cfg.setDisplaySize(false);
-        cfg.setDisplayDate(false);
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(true);
+        configuration.setDisplaySize(false);
+        configuration.setDisplayDate(false);
 
-        cfg.setToolbarGroup("site-manager");
+        configuration.setToolbarGroup("site-manager");
 
-        cfg.addColumn("ext");      
-        cfg.addColumn("name");
-        cfg.addColumn("locked");
-        cfg.addColumn("lastModified");
-        cfg.addColumn("lastModifiedBy");
-        cfg.addColumn("publicationInfo");
+        configuration.addColumn("ext");
+        configuration.addColumn("name");
+        configuration.addColumn("locked");
+        configuration.addColumn("lastModified");
+        configuration.addColumn("lastModifiedBy");
+        configuration.addColumn("publicationInfo");
 
-        cfg.setDefaultView(JCRClientUtils.FILE_TABLE);
+        configuration.setDefaultView(JCRClientUtils.FILE_TABLE);
 
-        cfg.addAccordion(JCRClientUtils.SITE_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SITE_REPOSITORY);
 
-        cfg.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
-        cfg.setFolderTypes(JCRClientUtils.SITE_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.SITE_NODETYPES);
 
         // do not display collections, if they do not match node type filters
-        cfg.setAllowCollections(false);
+        configuration.setAllowCollections(false);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
 
-        return cfg;
+        return configuration;
 
     }
 

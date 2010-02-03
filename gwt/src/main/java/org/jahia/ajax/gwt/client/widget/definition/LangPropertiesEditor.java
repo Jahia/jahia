@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -19,6 +20,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 
 import java.util.*;
 
@@ -102,22 +104,28 @@ public class LangPropertiesEditor extends LayoutContainer {
      */
     public void updatePropertiesComponent(String locale) {
         if (mixin != null) {
+            List<GWTJahiaNodeProperty> previousNon18nProperties = null;
+            boolean addSharedLangLabel = true;
             if (displayedPropertiesEditor != null) {
-                this.displayedPropertiesEditor.setVisible(false);
+                displayedPropertiesEditor.setVisible(false);
+                previousNon18nProperties = displayedPropertiesEditor.getProperties(false, true);
+
             }
 
-            if(locale == null){
-               locale =  displayedLocale.getCountryIsoCode();
+
+            if (locale == null) {
+                locale = displayedLocale.getCountryIsoCode();
             }
 
             PropertiesEditor langPropertiesEditor = getPropertiesEditorByLang(locale);
             if (langPropertiesEditor == null) {
-                if (node.getNodeTypes().contains("jmix:shareable")) {
+                if (addSharedLangLabel && node.getNodeTypes().contains("jmix:shareable")) {
                     Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
                     label.setStyleAttribute("color", "rgb(200,80,80)");
                     label.setStyleAttribute("font-size", "14px");
                     add(label);
                 }
+                addSharedLangLabel = false;
 
 
                 //create and update properties editor
@@ -130,8 +138,17 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor.setVisible(true);
             }
 
-            // keep track of the display editor
-            this.displayedPropertiesEditor = langPropertiesEditor;
+            // synch non18n properties
+            if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
+                Map<String, Field<?>> fieldsMap = langPropertiesEditor.getFieldsMap();
+                for (GWTJahiaNodeProperty property : previousNon18nProperties) {
+                    FormFieldCreator.fillValue(fieldsMap.get(property.getName()), langPropertiesEditor.getGWTJahiaItemDefinition(property), property);
+                }
+            }
+
+
+            // update displayed properties 
+            displayedPropertiesEditor = langPropertiesEditor;
 
             mainPanel.layout();
         } else {
@@ -237,6 +254,7 @@ public class LangPropertiesEditor extends LayoutContainer {
 
     /**
      * LangSwithcing template
+     *
      * @return
      */
     private static native String getLangSwitchingTemplate()  /*-{

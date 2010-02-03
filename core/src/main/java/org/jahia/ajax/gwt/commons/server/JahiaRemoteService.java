@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.commons.server;
 
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -43,6 +44,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
@@ -68,7 +72,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * 
  * @author Sergiy Shyrkov
  */
-public class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
+public abstract class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
     
     private static final transient Logger logger = Logger.getLogger(JahiaRemoteService.class);
     private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
@@ -431,4 +435,5 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         this.servletContext = servletContext;
     }
 
+    
 }

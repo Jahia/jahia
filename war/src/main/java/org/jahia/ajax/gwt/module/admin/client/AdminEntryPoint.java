@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclNameEditor;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import org.jahia.ajax.gwt.client.util.security.RoleEditor;
 
 /**
  * Entry point class for GWT integration into Jahia Administration.
@@ -48,6 +49,8 @@ public class AdminEntryPoint extends CommonEntryPoint {
         super.onModuleLoad();
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
+        RoleEditor.initPermissionRole();
+        RoleEditor.initPrincipalRole();
         exposeFunctions();
     }
 

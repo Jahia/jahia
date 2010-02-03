@@ -106,6 +106,15 @@
         </property>
     </bean>
 
+    <bean id="role-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.roles.menu"/>
+                <ref bean="org.jahia.toolbar.manager.roles.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- switching mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
@@ -364,6 +373,39 @@
         </property>
     </bean>
     <!-- end of the Tags Manager -->
+
+    <!-- roles -->
+    <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="tags.menu"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.roles.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="tags.shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+
     <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
     <bean id="org.jahia.toolbar.itemsgroup.Fill" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="items">
@@ -890,6 +932,21 @@
             </list>
         </property>
     </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.RoleManager.menu.file"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newRole"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- shortcut buttons -->
     <bean id="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"
           class="org.jahia.services.toolbar.bean.ItemsGroup">
@@ -1012,6 +1069,18 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.newTag"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.RoleManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newRole"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.export"/>
                 <ref bean="org.jahia.toolbar.item.import"/>
@@ -2254,6 +2323,15 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
         </property>
         <property name="titleKey" value="label.createTag"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+    </bean>
+    
+    <bean id="org.jahia.toolbar.item.newRole" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRoleActionItem"/>
+        </property>
+        <property name="titleKey" value="label.createRole"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>

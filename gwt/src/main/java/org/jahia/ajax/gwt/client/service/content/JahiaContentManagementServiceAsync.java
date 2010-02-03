@@ -33,8 +33,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -182,6 +181,27 @@ public interface JahiaContentManagementServiceAsync {
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getPermission(boolean currentSite, AsyncCallback<List<GWTJahiaPermission>> async) ;
+
+    void getRoles(boolean site, boolean server, String userKey, AsyncCallback<List<GWTJahiaRole>> async);
+
+    void getPrincipalsInRole(GWTJahiaRole role, AsyncCallback<List<GWTJahiaPrincipal>> async);
+
+    void getRolesAndPermissions(boolean site, boolean server,AsyncCallback<GWTRolesPermissions> async);
+
+
+    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
+
+    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
+
+    void grantRoleToUser(GWTJahiaRole role, String principalKey, AsyncCallback async);
+
+    void removeRoleToPrincipal(GWTJahiaRole role, String principalKey, AsyncCallback async);
+
+    void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
+
+    void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
 
     /**
      * Publish the specified path.

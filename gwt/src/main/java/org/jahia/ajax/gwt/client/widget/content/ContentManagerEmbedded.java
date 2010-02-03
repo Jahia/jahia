@@ -66,10 +66,11 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         LeftComponent tree = null;
         Component leftTree = null;
 
-        //if(!config.isHideLeftPanel()){
+        if(!config.isHideLeftPanel()){
             tree = new ContentRepositoryTabs(config);
             leftTree = tree.getComponent();
-       // }
+        }
+      
 
         final ContentViews filesViews = new ContentViews(config);
         BottomRightComponent tabs = new ContentDetails(config);

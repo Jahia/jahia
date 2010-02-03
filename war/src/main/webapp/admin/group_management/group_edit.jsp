@@ -315,6 +315,11 @@
                                                 </span>
                                             </td>
                                         </tr>
+                                        <tr>
+	                                        <td colspan="2">
+		                                        <div id="gwtroleprincipal" group="true" principal="<%=groupName%>" class="jahia-admin-gxt"></div>
+	                                        </td>
+                                        </tr>
                                     </table>
                                     <br/>
                                     <br/>

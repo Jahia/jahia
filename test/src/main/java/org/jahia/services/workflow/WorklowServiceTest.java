@@ -33,10 +33,11 @@
 package org.jahia.services.workflow;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +52,6 @@ import java.util.*;
  *        Created : 2 févr. 2010
  */
 public class WorklowServiceTest extends TestCase {
-    private transient static Logger logger = Logger.getLogger(WorklowServiceTest.class);
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
@@ -110,25 +110,54 @@ public class WorklowServiceTest extends TestCase {
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflows providers", activeWorkflows.size() > 0);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.get("jBPM").size() > 0);
-        final Set<String> availableActions = activeWorkflows.get("jBPM").get(0).getAvailableActions();
+        final Set<WorkflowAction> availableActions = activeWorkflows.get("jBPM").get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM",
                    availableActions.size() > 0);
-
-        service.signalProcess(processId, availableActions.iterator().next(), "jBPM", emptyMap);
+        service.signalProcess(processId, availableActions.iterator().next().getName(), "jBPM", emptyMap);
         final Map<String, List<Workflow>> newActiveWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflows providers", newActiveWorkflows.size() > 0);
         assertTrue("There should be some active workflow in jBPM", newActiveWorkflows.get("jBPM").size() > 0);
-        final Set<String> newAvailableActions = newActiveWorkflows.get("jBPM").get(0).getAvailableActions();
+        final Set<WorkflowAction> newAvailableActions = newActiveWorkflows.get("jBPM").get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM",
                    availableActions.size() > 0);
         assertFalse("Availables actions should not match", availableActions.equals(newAvailableActions));
-        final Set<WorkflowAction> availableWorkflowActions = new LinkedHashSet<WorkflowAction>(
-                newAvailableActions.size());
-        for (String action : newAvailableActions) {
-            availableWorkflowActions.add(new WorkflowAction(action));
-        }
         assertTrue("Availables action should match between service.getActiveWorkflows and getAvailableActions",
-                   availableWorkflowActions.equals(service.getAvailableActions(processId, "jBPM")));
+                   newAvailableActions.equals(service.getAvailableActions(processId, "jBPM")));
+    }
+
+    @org.junit.Test
+    public void testAssignTask() throws Exception {
+        final WorkflowService service = WorkflowService.getInstance();
+        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(null);
+        assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
+        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        final Workflow workflow = workflowList.get(0);
+        assertNotNull("Worflow should not be null", workflow);
+        JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
+        final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM",
+                                                      new HashMap<String, Object>());
+        assertNotNull("The startup of a process should have return an id", processId);
+        final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
+        assertTrue("There should be some active workflows providers", activeWorkflows.size() > 0);
+        assertTrue("There should be some active workflow in jBPM", activeWorkflows.get("jBPM").size() > 0);
+        Set<WorkflowAction> actionSet = activeWorkflows.get("jBPM").get(0).getAvailableActions();
+        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
+        WorkflowAction action = actionSet.iterator().next();
+        assertTrue(action instanceof WorkflowTask);
+        WorkflowTask task = (WorkflowTask) action;
+        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
+        assertNotNull(user);
+        service.assignTask(task.getName(),processId,"jBPM", user);
+        List<WorkflowTask> forUser = service.getTasksForUser(user);
+        assertTrue(forUser.size()>0);
+        final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
+        WorkflowTask workflowTask = forUser.get(0);
+        service.completeTask(workflowTask.getId(),"jBPM",workflowTask.getOutcomes().iterator().next(),emptyMap);
+        assertTrue(service.getTasksForUser(user).size()<forUser.size());
+        assertFalse(service.getActiveWorkflows(stageNode).equals(actionSet));
     }
 
     @After

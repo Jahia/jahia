@@ -32,47 +32,77 @@
  */
 package org.jahia.services.workflow;
 
+import org.apache.log4j.Logger;
+import org.jahia.services.usermanager.JahiaUser;
+
+import java.util.Date;
+import java.util.Set;
+
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 3 févr. 2010
  */
-public class WorkflowAction {
-    private final String name;
-    private final String provider;
+public class WorkflowTask extends WorkflowAction {
+    private transient static Logger logger = Logger.getLogger(WorkflowTask.class);
+    private Date dueDate;
+    private String description;
+    private Date createTime;
+    private JahiaUser assignee;
+    private String id;
+    private Set<String> outcomes;
 
-    public WorkflowAction(String name, String provider) {
-        this.name = name;
-        this.provider = provider;
+    public WorkflowTask(String name, String provider) {
+        super(name, provider);
     }
 
-    public String getName() {
-        return name;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        WorkflowAction that = (WorkflowAction) o;
-
-        return name.equals(that.name) && provider.equals(that.provider);
-
+    public Date getDueDate() {
+        return dueDate;
     }
 
-    @Override
-    public int hashCode() {
-        return name.hashCode() ;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getProvider() {
-        return provider;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setAssignee(JahiaUser assignee) {
+        this.assignee = assignee;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public JahiaUser getAssignee() {
+        return assignee;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setOutcome(Set<String> outcome) {
+        this.outcomes = outcome;
+    }
+
+    public Set<String> getOutcomes() {
+        return outcomes;
     }
 }

@@ -2,16 +2,16 @@
 
 <process name="My First Process" xmlns="http://jbpm.org/4.3/jpdl">
    <start name="start">
-      <transition name="start Validation" to="First Review"/>
+      <transition to="First Review"/>
    </start>
-   <state name="First Review">
-      <transition  name="to Final Review" to="Final Review"/>
-   </state>
-   <state name="Final Review">
-      <transition name="to Publication" to="Publication"/>
-   </state>
+   <task name="First Review">
+      <transition to="Final Review"/>
+   </task>
+   <task name="Final Review">
+      <transition to="Publication"/>
+   </task>
    <state name="Publication">
-      <transition name="to end" to="end"/>
+      <transition to="end"/>
    </state>
    <end name="end"/>
 </process>

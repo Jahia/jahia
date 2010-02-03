@@ -34,6 +34,7 @@ package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -146,5 +147,22 @@ public class WorkflowService {
         workflowNode.setProperty("jBPM", new String[]{processId});
         stageNode.getSession().save();
         return processId;
+    }
+
+    public List<WorkflowTask> getTasksForUser(JahiaUser user) {
+        final List<WorkflowTask> workflowActions = new LinkedList<WorkflowTask>();
+        for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
+            workflowActions.addAll(providerEntry.getValue().getTasksForUser(user));
+        }
+        return workflowActions;
+    }
+
+    public void assignTask(String taskName,String processId,String provider,JahiaUser user) {
+        logger.debug("Assigning user "+user+" to task "+taskName);
+        providers.get(provider).assignTask(processId,taskName,user);
+    }
+
+    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
+        providers.get(provider).completeTask(taskId,outcome,args);
     }
 }

@@ -33,10 +33,15 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.WorkflowAction;
 import org.jahia.services.workflow.WorkflowProvider;
+import org.jahia.services.workflow.WorkflowTask;
 import org.jbpm.api.*;
+import org.jbpm.api.identity.User;
+import org.jbpm.api.task.Task;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.text.MessageFormat;
@@ -55,11 +60,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private ExecutionService executionService;
     private ProcessEngine processEngine;
     private List<String> processes;
+    private TaskService taskService;
 
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
         repositoryService = processEngine.getRepositoryService();
         executionService = processEngine.getExecutionService();
+        taskService = processEngine.getTaskService();
     }
 
     /**
@@ -105,19 +112,19 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (String processId : processIds) {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
             final Workflow workflow = new Workflow(instance.getName(), instance.getId());
-            workflow.setAvailableActions(instance.findActiveActivityNames());
+            workflow.setAvailableActions(getAvailableActions(instance.getId()));
             workflows.add(workflow);
         }
         return workflows;
     }
 
-    public String startProcess(String processKey, Map<String,Object> args) {
-        return executionService.startProcessInstanceById(processKey,args).getId();
+    public String startProcess(String processKey, Map<String, Object> args) {
+        return executionService.startProcessInstanceById(processKey, args).getId();
     }
 
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
         final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
-        executionService.signalExecutionById(in.getId(),args);
+        executionService.signalExecutionById(in.getId(), args);
     }
 
     public Set<WorkflowAction> getAvailableActions(String processId) {
@@ -125,8 +132,67 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         final Set<String> actions = instance.findActiveActivityNames();
         final Set<WorkflowAction> availableActions = new LinkedHashSet<WorkflowAction>(actions.size());
         for (String action : actions) {
-            availableActions.add(new WorkflowAction(action));
+            WorkflowAction workflowAction = null;
+            if (taskService.createTaskQuery().processInstanceId(processId).activityName(action).count() > 0) {
+                List<Task> taskList = taskService.createTaskQuery().processInstanceId(processId).activityName(
+                        action).list();
+                for (Task task : taskList) {
+                    if(task.getActivityName().equals(action)) {
+                        workflowAction = convertToWorkflowTask(task);
+                    }
+                }
+            } else {
+                workflowAction = new WorkflowAction(action, "jBPM");
+            }
+            if(workflowAction!=null)
+            availableActions.add(workflowAction);
         }
         return availableActions;
+    }
+
+    public List<WorkflowTask> getTasksForUser(JahiaUser user) {
+        User jBPMUser = getJBPMUser(user);
+        List<Task> taskList = taskService.createTaskQuery().assignee(jBPMUser.getId()).list();
+        final List<WorkflowTask> availableActions = new LinkedList<WorkflowTask>();
+        for (Task task : taskList) {
+            WorkflowTask action = convertToWorkflowTask(task);
+            availableActions.add(action);
+        }
+        return availableActions;
+    }
+
+    private WorkflowTask convertToWorkflowTask(Task task) {
+        WorkflowTask action = new WorkflowTask(task.getActivityName(), "jBPM");
+        action.setDueDate(task.getDuedate());
+        action.setDescription(task.getDescription());
+        action.setCreateTime(task.getCreateTime());
+        if (task.getAssignee() != null) {
+            action.setAssignee(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                    task.getAssignee()));
+        }
+        action.setId(task.getId());
+        action.setOutcome(taskService.getOutcomes(task.getId()));
+        return action;
+    }
+
+    public void assignTask(String processId, String taskName, JahiaUser user) {
+        User jBPMUser = getJBPMUser(user);
+        Task task = taskService.createTaskQuery().processInstanceId(processId).activityName(taskName).uniqueResult();
+        taskService.takeTask(task.getId(), jBPMUser.getId());
+    }
+
+    public void completeTask(String taskId, String outcome, Map<String, Object> args) {
+        taskService.completeTask(taskId, outcome, args);
+    }
+
+    private User getJBPMUser(JahiaUser user) {
+        IdentityService identityService = processEngine.getIdentityService();
+        User jBPMUser = identityService.findUserById(user.getUserKey());
+        if (jBPMUser == null) {
+            identityService.createUser(user.getUserKey(), user.getProperty("j:firstName"), user.getProperty(
+                    "j:lastName"), user.getProperty("j:email"));
+            jBPMUser = identityService.findUserById(user.getUserKey());
+        }
+        return jBPMUser;
     }
 }

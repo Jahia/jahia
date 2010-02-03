@@ -32,6 +32,8 @@
  */
 package org.jahia.services.workflow;
 
+import org.jahia.services.usermanager.JahiaUser;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,4 +54,10 @@ public interface WorkflowProvider {
     void signalProcess(String processId, String transitionName, Map<String, Object> args);
 
     Set<WorkflowAction> getAvailableActions(String processId);
+
+    List<WorkflowTask> getTasksForUser(JahiaUser user);
+
+    void assignTask(String processId, String taskName, JahiaUser user);
+
+    void completeTask(String taskId, String outcome, Map<String, Object> args);
 }

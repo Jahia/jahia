@@ -38,11 +38,11 @@ body {
 
 #bodywrapper .floatright {
 	float:right;
-	margin: 20px;
+	margin: 5px;
 }
 #bodywrapper .floatleft {
 	float:left;
-	margin: 20px;
+	margin: 5px;
 }
 
 #bodywrapper .leftside{

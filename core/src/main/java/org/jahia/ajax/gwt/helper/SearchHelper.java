@@ -5,7 +5,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 
@@ -15,11 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Search utility class.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:23:56 PM
- * To change this template use File | Settings | File Templates.
  */
 public class SearchHelper {
     private static Logger logger = Logger.getLogger(SearchHelper.class);
@@ -43,7 +41,7 @@ public class SearchHelper {
 
     public List<GWTJahiaNode> search(String searchString, int limit, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), currentUserSession);
+            Query q = createQuery(formatQuery(searchString), currentUserSession);
             return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -59,7 +57,7 @@ public class SearchHelper {
         String[] mimeTypesToMatch = navigation.getFiltersToApply(mimeTypes);
         String[] filtersToApply = navigation.getFiltersToApply(filters);
         try {
-            Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), currentUserSession);
+            Query q = createQuery(formatQuery(searchString), currentUserSession);
             return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -109,18 +107,12 @@ public class SearchHelper {
             }
             JCRNodeWrapper user = users.iterator().next();
             JCRNodeWrapper queryStore;
-            boolean createdSearchFolder = false;
             if (!user.hasNode("savedSearch")) {
-                if (!user.isCheckedOut()) {
-                    user.checkout();
-                }
+                currentUserSession.checkout(user);
                 queryStore = user.createCollection("savedSearch");
-                createdSearchFolder = true;
             } else {
                 queryStore = currentUserSession.getNode(user.getPath() + "/savedSearch");
-                if (!queryStore.isCheckedOut()) {
-                    queryStore.checkout();
-                }
+                currentUserSession.checkout(queryStore);
             }
             String path = queryStore.getPath() + "/" + name;
             if (contentManager.checkExistence(path, currentUserSession)) {
@@ -133,7 +125,7 @@ public class SearchHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
         }
     }
@@ -155,8 +147,27 @@ public class SearchHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
+        }
+    }
+
+    /**
+     * Add "*" at beginning and end of query if not present in original search string.
+     * Ex: *query   -->   *query
+     *     query*   -->   query*
+     *     query    -->   *query*
+     *
+     * @param rawQuery the raw query string
+     * @return formatted query string
+     */
+    public static String formatQuery(String rawQuery) {
+        if (rawQuery == null || rawQuery.length() == 0) {
+            return "" ;
+        } else if (rawQuery.startsWith("*") || rawQuery.endsWith("*")) {
+            return rawQuery ;
+        } else {
+            return new StringBuilder("*").append(rawQuery).append("*").toString() ;
         }
     }
 }

@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
@@ -49,13 +50,12 @@ import java.security.Principal;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT user management service.
  * User: hollis
  * Date: 25 juil. 2008
  * Time: 12:53:39
- * To change this template use File | Settings | File Templates.
  */
-public class UserManagerServiceImpl extends SessionManagerServiceImpl implements UserManagerService {
+public class UserManagerServiceImpl extends JahiaRemoteService implements UserManagerService {
 
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;

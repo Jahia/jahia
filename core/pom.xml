@@ -1180,6 +1180,18 @@
                     <groupId>org.livetribe</groupId>
                     <artifactId>livetribe-jsr223</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>juel</groupId>
+                    <artifactId>juel</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>juel</groupId>
+                    <artifactId>juel-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>juel</groupId>
+                    <artifactId>juel-engine</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

@@ -35,7 +35,7 @@ function keyDown(e) {
 </p>
 <p>
                 <input type="checkbox" />
-                <label for="rememberme"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label>
+                <label for="rememberme" class="rememberLabel"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label>
                         
 </p>
         <div class="divButton">

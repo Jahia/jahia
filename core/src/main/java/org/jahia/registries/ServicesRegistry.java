@@ -54,7 +54,6 @@ import org.jahia.services.lock.LockService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.metadata.MetadataService;
 import org.jahia.services.notification.SubscriptionService;
-import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.pagesusers.JahiaPageUserPropService;
@@ -124,9 +123,6 @@ public class ServicesRegistry {
     private static final String APPLICATIONS_MANAGER_SERVICE =
             "ApplicationsManagerService";
 
-    // Jahia Containers Services
-    private static final String JAHIA_CONTAINERS_SERVICE = "JahiaContainersService";
-
     // Jahia User Manager Service
     private static final String JAHIA_USER_MANAGER_SERVICE = "JahiaUserManagerService";
     private static final String JAHIA_GROUP_MANAGER_SERVICE =
@@ -150,15 +146,8 @@ public class ServicesRegistry {
     // Jahia Event Service
     private static final String JAHIA_EVENT_SERVICE = "JahiaEventService";
 
-    // Jahia Audit Log Manager Service
-    private static final String JAHIA_AUDIT_LOG_MANAGER_SERVICE =
-            "JahiaAuditLogManagerService";
-
     // Jahia Multi Sites Manager Service
     private static final String JAHIA_SITES_SERVICE = "JahiaSitesService";
-
-    // Jahia Workflow service
-    private static final String WORKFLOW_SERVICE = "WorkflowService";
 
     // Jahia Versioning Service
     private static final String JAHIA_VERSION_SERVICE = "JahiaVersionService";
@@ -168,9 +157,6 @@ public class ServicesRegistry {
 
     // Jahia Cache factory for every cache except the HTML one
     private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
-
-    //Jahia site map helper
-    private static final String JAHIA_SITE_MAP_SERVICE = "JahiaSiteMapService";
 
     private static final String MAIL_SERVICE = "MailService";
 
@@ -199,12 +185,6 @@ public class ServicesRegistry {
     // END [added by Pascal Aubry for CAS authentication]
 
     private static final String CLUSTER_SERVICE = "clusterService";
-
-    private static final String TIME_BASED_PUBLISHING_SERVICE = "TimeBasedPublishingService";
-
-    private static final String JAHIA_TOOLBAR_SERVICE = "JahiaToolbarService";
-
-    private static final String JAHIA_OPENSEARCH_SERVICE = "JahiaOpenSearchService";
 
     // This map is an optimization to avoid synchronization issues.
     private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
@@ -241,10 +221,12 @@ public class ServicesRegistry {
 //        }
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<? extends JahiaService> getServiceInstances() {
         return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).values();
     }
 
+    @SuppressWarnings("unchecked")
     public Set<String> getServiceNames() {
         return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).keySet();
     }
@@ -465,10 +447,6 @@ public class ServicesRegistry {
         return (QueryService) getService("QueryService");
     }
 
-    public JahiaOpenSearchService getOpenSearchService() {
-       return (JahiaOpenSearchService) getService(JAHIA_OPENSEARCH_SERVICE);
-   }
-
     public SubscriptionService getSubscriptionService() {
         return (SubscriptionService) getService("SubscriptionService");
     }
@@ -481,6 +459,7 @@ public class ServicesRegistry {
      * Default constructor, creates a new <code>ServiceRegistry</code> instance.
      */
     private ServicesRegistry() {
+        super();
     }
 
 }

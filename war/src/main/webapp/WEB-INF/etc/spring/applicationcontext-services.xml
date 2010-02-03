@@ -111,12 +111,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="JahiaOpenSearchService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.opensearch.JahiaOpenSearchBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaFetcherService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

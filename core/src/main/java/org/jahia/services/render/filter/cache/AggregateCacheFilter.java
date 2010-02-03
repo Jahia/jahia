@@ -243,8 +243,6 @@ public class AggregateCacheFilter extends AbstractFilter {
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
                     "templateType"), keyAttrbs.get("template"), keyAttrbs.get("template")), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
-        } catch (PathNotFoundException e) {
-            outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), "");
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

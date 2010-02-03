@@ -1278,3 +1278,12 @@ color:#666;
 #bodywrapper .Form input.button {
 	margin-left:0.5em;
 }
+/******************************************************************************
+*  error
+******************************************************************************/
+#bodywrapper .error{
+	padding:10px;
+	margin:10px;
+	background-color:#ffebe8;
+	border:1px solid #cc3300;
+}

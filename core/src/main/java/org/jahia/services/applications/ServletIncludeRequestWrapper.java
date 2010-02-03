@@ -35,26 +35,14 @@
 
 package org.jahia.services.applications;
 
-import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseConstants;
-import org.jahia.services.usermanager.GenericPrincipal;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import java.net.URLDecoder;
+import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.Principal;
-import java.util.*;
+
+import org.apache.log4j.Logger;
+import org.jahia.params.ParamBean;
 
 /**
  */

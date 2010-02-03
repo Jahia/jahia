@@ -207,15 +207,26 @@ public class JCRPublicationService extends JahiaService {
                 logger.warn("Cannot publish node at : " + node);
             }
         }
-        for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
-            if (!jcrNodeWrapper.hasProperty("j:published") || !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
-                if (!jcrNodeWrapper.isCheckedOut()) {
-                    jcrNodeWrapper.checkout();
+        if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+            for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
+                if (!jcrNodeWrapper.hasProperty("j:published") || !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
+                    if (!jcrNodeWrapper.isCheckedOut()) {
+                        jcrNodeWrapper.checkout();
+                    }
+                    jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
+                    try {
+                        JCRNodeWrapper destNode = destinationSession.getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
+                        if (!destNode.isCheckedOut()) {
+                            destNode.checkout();
+                        }
+                        destNode.setProperty("j:published", Boolean.TRUE);
+                    } catch (ItemNotFoundException e) {
+                    }
                 }
-                jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
             }
+            sourceNode.getSession().save();
+            destinationSession.save();
         }
-        sourceNode.getSession().save();
         system = true;
         if (system) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(destinationSession.getUserID(), sourceWorkspace, new JCRCallback<Object>() {
@@ -550,24 +561,34 @@ public class JCRPublicationService extends JahiaService {
         if (!vm.isCheckedOut(node.getPath())) {
             vm.checkout(node.getPath());
         }
+        unpublish(node, languages);
+        sourceSession.save();
+
+        JCRNodeWrapper destNode = destinationSession.getNode(node.getCorrespondingNodePath(Constants.LIVE_WORKSPACE));
+        unpublish(destNode, languages);
+        destinationSession.save();
+    }
+
+    private void unpublish(JCRNodeWrapper node, Set<String> languages) throws RepositoryException {
+        if (!node.isCheckedOut()) {
+            node.checkout();
+        }
         node.setProperty("j:published", false);
         if (!node.isNodeType("jmix:publication")) {
             node.addMixin("jmix:publication");
         }
-        l.add(node);
         if (languages != null) {
             NodeIterator ni = node.getNodes("jnt:translation");
             while (ni.hasNext()) {
                 JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
                 if (languages.contains(i18n.getProperty("jcr:language").getString())) {
+                    if (!i18n.isCheckedOut()) {
+                        i18n.checkout();
+                    }
                     i18n.setProperty("j:published", false);
-                    l.add(i18n);
                 }
             }
         }
-        sourceSession.save();
-//            l.add(node);
-        mergeToDestinationWorkspace(l, null, sourceSession, destinationSession);
     }
 
     /**

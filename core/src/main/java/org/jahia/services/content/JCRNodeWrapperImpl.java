@@ -2241,6 +2241,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 sharedNode.checkout();
             }
             sharedNode.addMixin("jmix:shareable");
+            sharedNode.getRealNode().getSession().save();
 
             try {
                 final String path = sharedNode.getCorrespondingNodePath("live");
@@ -2249,7 +2250,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         JCRNodeWrapper n = session.getNode(path);
                         n.checkout();
                         n.addMixin("jmix:shareable");
-                        session.save();
+                        n.getRealNode().getSession().save();
                         return null;
                     }
                 });
@@ -2258,9 +2259,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 e.printStackTrace();
             }
         }
-
-        // ugly save needed by jackrabbit : todo remove it
-        session.save();
 
         if (getRealNode() instanceof NodeImpl && sharedNode.getRealNode() instanceof NodeImpl) {
             String uri = "";

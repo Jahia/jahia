@@ -61,7 +61,7 @@ public abstract class DefaultEventListener implements SynchronousEventListener {
         propertiesToIgnore.add(Constants.JCR_LASTMODIFIEDBY);
         propertiesToIgnore.add(Constants.LASTPUBLISHED);
         propertiesToIgnore.add(Constants.LASTPUBLISHEDBY);        
-        propertiesToIgnore.add(Constants.PUBLISHED);        
+        propertiesToIgnore.add(Constants.PUBLISHED);
         propertiesToIgnore.add(Constants.JCR_LOCKOWNER);
         propertiesToIgnore.add(Constants.JCR_LOCKISDEEP);
         propertiesToIgnore.add(Constants.JCR_ISCHECKEDOUT);
@@ -70,6 +70,8 @@ public abstract class DefaultEventListener implements SynchronousEventListener {
         propertiesToIgnore.add(Constants.JCR_SUCCESSORS);
         propertiesToIgnore.add(Constants.JCR_BASEVERSION);
         propertiesToIgnore.add(Constants.JCR_FROZENUUID);
+        propertiesToIgnore.add(Constants.FULLPATH);
+        propertiesToIgnore.add(Constants.NODENAME);
 
     }
 

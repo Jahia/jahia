@@ -107,7 +107,7 @@ public class FullpathListener extends DefaultEventListener {
                 node.checkout();
             }
             node.setProperty(FULLPATH, node.getPath());
-            node.setProperty("j:nodename", node.getName());
+            node.setProperty(NODENAME, node.getName());
             node.save();
         }
         if (node.isNodeType(NT_FOLDER)) {

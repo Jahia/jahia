@@ -102,14 +102,9 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
     private Map<String,Boolean> cache = new HashMap<String,Boolean>();
 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
-    private static ThreadLocal<Boolean> publication = new ThreadLocal<Boolean>();
 
     public static void setDeniedPathes(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
-    }
-
-    public static void setPublication(Boolean published) {
-        JahiaAccessManager.publication.set(published);
     }
 
     /**
@@ -233,18 +228,6 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
                         cache.put(absPath.toString() + " : " + permissions, false);
                         return false;
-                    }
-                }
-
-                if (publication.get() == null) {
-                    if ("live".equals(workspaceName) && i.isNode()) {
-                        Node n = (Node) i;
-                        if (n.isNodeType("jmix:lastPublished")) {
-                            if (!n.hasProperty("j:published") || !n.getProperty("j:published").getBoolean()) {
-                                cache.put(absPath.toString() + " : " + permissions, false);
-                                return false;
-                            }
-                        }
                     }
                 }
             }

@@ -157,23 +157,16 @@ public class JCRPublicationService extends JahiaService {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(sourceWorkspace);
         JCRNodeWrapper n = session.getNode(path);
 
-        try {
-            JahiaAccessManager.setPublication(Boolean.TRUE);
-            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
-                if (type.getName().equals("jmix:publication")) {
-                    if (!n.isCheckedOut()) {
-                        n.checkout();
-                    }
-                    n.removeMixin("jmix:publication");
-                    session.save();
+        for (ExtendedNodeType type : n.getMixinNodeTypes()) {
+            if (type.getName().equals("jmix:publication")) {
+                if (!n.isCheckedOut()) {
+                    n.checkout();
                 }
+                n.removeMixin("jmix:publication");
+                session.save();
             }
-            publish(n, sourceWorkspace, destinationWorkspace, languages, system, allSubTree, false, new HashSet<String>());
-        } finally {
-            JahiaAccessManager.setPublication(null);
         }
-
-
+        publish(n, sourceWorkspace, destinationWorkspace, languages, system, allSubTree, false, new HashSet<String>());
 //        session.save();
     }
 
@@ -553,33 +546,28 @@ public class JCRPublicationService extends JahiaService {
         JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         JCRNodeWrapper node = sourceSession.getNode(path);
         VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-        try {
-            List<JCRNodeWrapper> l = new ArrayList<JCRNodeWrapper>();
-            JahiaAccessManager.setPublication(Boolean.TRUE);
-            if (!vm.isCheckedOut(node.getPath())) {
-                vm.checkout(node.getPath());
-            }
-            node.setProperty("j:published", false);
-            if (!node.isNodeType("jmix:publication")) {
-                node.addMixin("jmix:publication");
-            }
-            l.add(node);
-            if (languages != null) {
-                NodeIterator ni = node.getNodes("jnt:translation");
-                while (ni.hasNext()) {
-                    JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
-                    if (languages.contains(i18n.getProperty("jcr:language").getString())) {
-                        i18n.setProperty("j:published", false);
-                        l.add(i18n);
-                    }
+        List<JCRNodeWrapper> l = new ArrayList<JCRNodeWrapper>();
+        if (!vm.isCheckedOut(node.getPath())) {
+            vm.checkout(node.getPath());
+        }
+        node.setProperty("j:published", false);
+        if (!node.isNodeType("jmix:publication")) {
+            node.addMixin("jmix:publication");
+        }
+        l.add(node);
+        if (languages != null) {
+            NodeIterator ni = node.getNodes("jnt:translation");
+            while (ni.hasNext()) {
+                JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
+                if (languages.contains(i18n.getProperty("jcr:language").getString())) {
+                    i18n.setProperty("j:published", false);
+                    l.add(i18n);
                 }
             }
-            sourceSession.save();
-//            l.add(node);
-            mergeToDestinationWorkspace(l, null, sourceSession, destinationSession);
-        } finally {
-            JahiaAccessManager.setPublication(null);
         }
+        sourceSession.save();
+//            l.add(node);
+        mergeToDestinationWorkspace(l, null, sourceSession, destinationSession);
     }
 
     /**
@@ -655,15 +643,13 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
-        if (publishedNode == null) {
+        if (stageNode.hasProperty("j:published") && !stageNode.getProperty("j:published").getBoolean()) {
+            info.setStatus(PublicationInfo.UNPUBLISHED);
+        } else if (publishedNode == null) {
             // node has not been published yet, check if parent is published
             try {
                 liveSession.getNode(stageNode.getParent().getPath());
-                if (stageNode.hasProperty("j:published") && !stageNode.getProperty("j:published").getBoolean()) {
-                    info.setStatus(PublicationInfo.UNPUBLISHED);
-                } else {
-                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
-                }
+                info.setStatus(PublicationInfo.NOT_PUBLISHED);
             } catch (AccessDeniedException e) {
                 info.setStatus(PublicationInfo.UNPUBLISHABLE);
             } catch (PathNotFoundException e) {

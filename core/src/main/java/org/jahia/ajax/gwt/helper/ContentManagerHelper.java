@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import com.ibm.icu.text.Normalizer;
-import org.apache.commons.lang.CharUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -196,19 +194,7 @@ public class ContentManagerHelper {
             if (property != null) {
                 final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
                 if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0) {
-                    nodeName = propertyValues.get(0).getString();
-                    final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
-                    final char[] newChars = new char[chars.length];
-                    int j = 0;
-                    for (char aChar : chars) {
-                        if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
-                            newChars[j++] = aChar;
-                        }
-                    }
-                    nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
-                    if (nodeName.length() > 32) {
-                        nodeName = nodeName.substring(0, 32);
-                    }
+                    nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString(), 32);
                 }
             }else{
                 logger.error("found a null property");

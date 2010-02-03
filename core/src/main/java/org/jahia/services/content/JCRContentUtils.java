@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
+import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
@@ -41,6 +42,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+
+import com.ibm.icu.text.Normalizer;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -384,6 +387,36 @@ public final class JCRContentUtils {
         } while (true);
 
         return name;
+    }
+    
+    /**
+     * Generates the JCR node name from the provided text by normalizing it,
+     * converting to lower case, replacing spaces with dashes and truncating to
+     * ${@code maxLength} characters.
+     * 
+     * @param text the original text to be used as a source
+     * @param maxLength the maximum length of the resulting name (it will be
+     *            truncated if needed)
+     * @return the JCR node name from the provided text by normalizing it,
+     *         converting to lower case, replacing spaces with dashes and
+     *         truncating to ${@code maxLength} characters
+     */
+    public static String generateNodeName(String text, int maxLength) {
+        String nodeName = text;
+        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
+        final char[] newChars = new char[chars.length];
+        int j = 0;
+        for (char aChar : chars) {
+            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
+                newChars[j++] = aChar;
+            }
+        }
+        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+        if (nodeName.length() > maxLength) {
+            nodeName = nodeName.substring(0, maxLength);
+        }
+
+        return nodeName;
     }
 
     /**

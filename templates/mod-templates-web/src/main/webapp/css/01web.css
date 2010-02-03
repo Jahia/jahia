@@ -1212,86 +1212,6 @@ background-color:#eaeaea
 	margin-bottom:10px
 }
 
-/******************************************************************************
-*  CALENDAR
-******************************************************************************/
-#bodywrapper div#calendar{
-	text-align:center;
-}
-#bodywrapper div#calendar abbr{
-	border:none
-}
-#bodywrapper div#calendar table{
-	font-size: 0.9em;
-	text-align: center;
-	margin: 0 3em;
-	border-collapse: collapse;
-}
-#bodywrapper div#calendar caption{
-	display:none
-}
-#bodywrapper .calendarnav p{
-	text-align:center;
-	margin:0.5em 0;
-	padding:0;
-	font-weight:bold;
-
-}
-#bodywrapper .calendarnav .calendarnav-previous span,
-#bodywrapper .calendarnav .calendarnav-next span{
-	display:none;
-}
-
-#bodywrapper div#calendar table th{
-	background: transparent;
-	line-height: 2em;
-	text-align: center;
-	border: 1px solid #eaeaea;
-}
-#bodywrapper div#calendar table td{
-	width: 14%;
-	line-height: 2em;
-	border: 1px solid #eaeaea;
-	text-align: center;
-}
-
-#bodywrapper div#calendar table td a{
-	display: block;
-	color:#900;
-	background-color:#ddd3ca;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-#bodywrapper div#calendar table td a:hover{
-	background: #900;
-	color: #fff;
-}
-#bodywrapper div#calendar .activeweek td {
-	background: #ebebeb;
-	color:#000;
-}
-#bodywrapper div#calendar .calendarfocus{
-	text-align:center;
-	font-size:90%
-}
-#bodywrapper div#calendar .calendarfocus a{
-	padding-left:1em
-}
-#bodywrapper div#calendar  .numweek{
-	padding-right:0.2em;
-	font-weight:normal;
-	color:#999;
-}
-#bodywrapper div#calendar .numweekactive{
-	color:#900;
-	font-weight:bold
-}
-#bodywrapper div#calendar td.activeday {
-	color:#000;
-	font-weight:bold;
-	background: #a6acb3;
-}
 
 
 /******************************************************************************
@@ -1429,73 +1349,30 @@ background-color:#eaeaea
 	background:url(../img-text/architecture.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
-/******************************************************************************
-*  loginForm
-******************************************************************************/
-#bodywrapper .loginForm fieldset{
-	border:1px solid #eaeaea;
-	padding:0.5em;
-	margin:0.5em 0;
-}
-#bodywrapper .loginForm legend{
-	display:none
-}
-#bodywrapper .loginForm h3{
-	background: url(../img/login.png) no-repeat;
-	padding-left:24px;
-	line-height:1.6em;
-	margin:0;
-}
-#bodywrapper .loginForm #username,
-#bodywrapper .loginForm #password{
-	background:#fff url(../img/bg-input.png) repeat-x top left;
-	margin-top:2px;
-	background-color:#fff;
-	border:1px solid #ccc;
-	color:#333;
-	width:95%
 
-}
-#bodywrapper .loginForm #username:focus,
-#bodywrapper .loginForm #password:focus{
-	background:#99ccff url(../img/bg-input-on.png) repeat-x top left;
-	color:#333
-}
-#bodywrapper .loginForm #remember{
-
-}
-#bodywrapper .loginForm .rememberLabel {
-	font-weight:normal;
-	font-size:80%;
-}
-#bodywrapper checkbox #remember{
-	float:left
-}
-#bodywrapper .loginForm .button{
-}
 /******************************************************************************
 *  Preferences
 ******************************************************************************/
 #bodywrapper div.preferences{
-border: 1px solid #ccc;
-background-color:#eaeaea;
-padding:5px;
-font-size:90%;
-line-height:100%;
-margin:1em 0;
+	border: 1px solid #ccc;
+	background-color:#eaeaea;
+	padding:5px;
+	font-size:90%;
+	line-height:100%;
+	margin:1em 0;
 }
 #bodywrapper .preferences p{
-margin:0;
-padding:0
+	margin:0;
+	padding:0
 }
 #bodywrapper .preferences h2{
-margin:0;
-padding:0;
-font-size:1.2em;
-font-weight:bold;
+	margin:0;
+	padding:0;
+	font-size:1.2em;
+	font-weight:bold;
 }
 #bodywrapper .preferences .preference-label{
-font-weight:bold;
+	font-weight:bold;
 }
 /******************************************************************************
 *  Back
@@ -1509,83 +1386,7 @@ font-weight:bold;
 	margin-left:0.5em;
 	display:block;
 }
-/******************************************************************************
-* columns LAYOUT
-******************************************************************************/
-#bodywrapper .space{
 
-}
-/*2columns*/
-#bodywrapper .columns2{
-	float:left;
-	width:100%;
-	overflow:hidden;
-	clear:both
-}
-#bodywrapper .columns2 .column-item{
-	float:left;
-	width:50%;
-	overflow:hidden;
-	display:block;
-}
-
-#bodywrapper .columns2 .column-item .columnspace{
-	padding:10px;
-}
-
-/*3columns*/
-#bodywrapper .columns3{
-	float:left;
-	width:100%;
-	overflow:hidden;
-	clear:both
-}
-#bodywrapper .columns3 .column-item{
-	float:left;
-	width:33.33%;
-	overflow:hidden;
-	display:block;
-}
-#bodywrapper .columns3 .column-item .columnspace{
-	padding:10px;
-}
-
-/*4columns*/
-#bodywrapper .columns4{
-	float:left;
-	width:100%;
-	overflow:hidden;
-	clear:both
-}
-#bodywrapper .columns4 .column-item{
-	float:left;
-	width:25%;
-	overflow:hidden;
-	display:block;
-}
-#bodywrapper .columns4 .column-item .columnspace{
-	padding:10px;
-}
-/*5columns*/
-#bodywrapper .columns5{
-	float:left;
-	width:100%;
-	overflow:hidden;
-	clear:both
-}
-#bodywrapper .columns5 .column-item{
-	float:left;
-	width:20%;
-	overflow:hidden;
-	display:block;
-}
-#bodywrapper .columns5 .column-item .columnspace{
-	padding:10px;
-}
-/*columns without bottom space*/
-#bodywrapper .nobottomspace .column-item .columnspace{
-	padding:10px 10px 0 10px;
-}
 /******************************************************************************
 * Form
 ******************************************************************************/
@@ -1608,11 +1409,19 @@ font-weight:bold;
 	padding:2px;
 	text-align:right;
 }
-
 #bodywrapper .divButton{
 	text-align:center;
 	margin:0.5em 0;
 }
 #bodywrapper .Form input.button {
 	margin-left:0.5em;
+}
+/******************************************************************************
+*  error
+******************************************************************************/
+#bodywrapper .error{
+	padding:10px;
+	margin:10px;
+	background-color:#ffebe8;
+	border:1px solid #cc3300
 }

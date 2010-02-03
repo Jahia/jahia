@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="My First Process" xmlns="http://jbpm.org/4.3/jpdl">
+   <start g="53,96,48,48" name="start1">
+      <transition g="-63,-22" name="start Validation" to="First Review"/>
+   </start>
+   <state g="269,82,260,78" name="First Review">
+      <transition g="-96,-22" name="to Final Review" to="Final Review"/>
+   </state>
+   <state g="195,291,154,71" name="Final Review">
+      <transition g="-91,-22" name="to Publication" to="Publication"/>
+   </state>
+   <state g="506,204,229,128" name="Publication">
+      <transition g="-54,-22" name="to end1" to="end1"/>
+   </state>
+   <end g="708,390,48,48" name="end1"/>
+</process>

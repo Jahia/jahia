@@ -210,9 +210,9 @@ public class TaggingService {
 	public boolean tag(final Node node, final String tag, final String siteKey, final boolean createTagIfNotExists)
 	        throws RepositoryException {
 
-		return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+		return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUserID(), node.getSession().getWorkspace().getName(), new JCRCallback<Boolean>() {
 			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				return tag(node, tag, siteKey, createTagIfNotExists, session);
+				return tag(node.getPath(), tag, siteKey, createTagIfNotExists, session);
 			}
 		});
 	}
@@ -236,13 +236,14 @@ public class TaggingService {
 	 * @throws RepositoryException
 	 *             in case of errors
 	 */
-	private boolean tag(final Node node, final String tag, final String siteKey, final boolean createTagIfNotExists,
+	private boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
 	        JCRSessionWrapper session) throws RepositoryException {
 
 		boolean applied = false;
 		boolean doSessionCommit = false;
         String[] tags = tag.split(",");
         // todo : find another way to avoid blank tags to be add
+        JCRNodeWrapper node = session.getNode(nodePath);
         for (String t : tags) if (! t.equals("")) {
             t = t.trim();
             JCRNodeWrapper tagNode = getTag(t, siteKey, session);
@@ -300,7 +301,7 @@ public class TaggingService {
 
 		return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
 			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				return tag(session.getNode(nodePath), tag, siteKey, createTagIfNotExists, session);
+				return tag(nodePath, tag, siteKey, createTagIfNotExists, session);
 			}
 		});
 	}

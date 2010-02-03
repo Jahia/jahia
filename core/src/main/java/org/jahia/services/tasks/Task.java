@@ -32,6 +32,7 @@
 
 package org.jahia.services.tasks;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Date;
  * 
  * @author Sergiy Shyrkov
  */
-public class Task {
+public class Task implements Serializable {
 
     public enum Priority {
         HIGH, LOW, MEDIUM, VERY_HIGH, VERY_LOW;

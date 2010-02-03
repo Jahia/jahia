@@ -39,5 +39,34 @@ package org.jahia.services.workflow;
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public interface WorkflowAction {
+public class WorkflowAction {
+    private final String name;
+
+    public WorkflowAction(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        WorkflowAction that = (WorkflowAction) o;
+
+        return name.equals(that.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

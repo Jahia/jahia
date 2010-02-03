@@ -34,16 +34,13 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowAction;
 import org.jahia.services.workflow.WorkflowProvider;
-import org.jbpm.api.Deployment;
-import org.jbpm.api.ExecutionService;
-import org.jbpm.api.ProcessEngine;
-import org.jbpm.api.RepositoryService;
+import org.jbpm.api.*;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.text.MessageFormat;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -87,19 +84,49 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         this.processes = processes;
     }
 
-    public List<Workflow> getAvailableWorlfows() {
+    public List<Workflow> getAvailableWorkflows() {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                                              repositoryService.createDeploymentQuery().count()));
+                                              repositoryService.createProcessDefinitionQuery().count()));
         }
-        final List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
+        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
         List<Workflow> workflows = new LinkedList<Workflow>();
-        for (Deployment deployment : deploymentList) {
-            workflows.add(new Workflow(deployment.getName(), deployment.getId()));
+        for (ProcessDefinition definition : definitionList) {
+            workflows.add(new Workflow(definition.getName(), definition.getId()));
             if (logger.isDebugEnabled()) {
-                logger.debug("Process : " + deployment);
+                logger.debug("Process : " + definition);
             }
         }
         return workflows;
+    }
+
+    public List<Workflow> getActiveWorkflowsInformations(List<String> processIds) {
+        List<Workflow> workflows = new LinkedList<Workflow>();
+        for (String processId : processIds) {
+            final ProcessInstance instance = executionService.findProcessInstanceById(processId);
+            final Workflow workflow = new Workflow(instance.getName(), instance.getId());
+            workflow.setAvailableActions(instance.findActiveActivityNames());
+            workflows.add(workflow);
+        }
+        return workflows;
+    }
+
+    public String startProcess(String processKey, Map<String,Object> args) {
+        return executionService.startProcessInstanceById(processKey,args).getId();
+    }
+
+    public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
+        final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
+        executionService.signalExecutionById(in.getId(),args);
+    }
+
+    public Set<WorkflowAction> getAvailableActions(String processId) {
+        final ProcessInstance instance = executionService.findProcessInstanceById(processId);
+        final Set<String> actions = instance.findActiveActivityNames();
+        final Set<WorkflowAction> availableActions = new LinkedHashSet<WorkflowAction>(actions.size());
+        for (String action : actions) {
+            availableActions.add(new WorkflowAction(action));
+        }
+        return availableActions;
     }
 }

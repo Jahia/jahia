@@ -34,6 +34,8 @@ package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
 
+import java.util.Set;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -45,6 +47,7 @@ public class Workflow {
     private transient static Logger logger = Logger.getLogger(Workflow.class);
     private final String name;
     private final String id;
+    private Set<String> availableActions;
 
     public Workflow(String name, String id) {
         //To change body of created methods use File | Settings | File Templates.
@@ -58,5 +61,13 @@ public class Workflow {
 
     public String getId() {
         return id;
+    }
+
+    public void setAvailableActions(Set<String> availableActions) {
+        this.availableActions = availableActions;
+    }
+
+    public Set<String> getAvailableActions() {
+        return availableActions;
     }
 }

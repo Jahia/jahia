@@ -33,6 +33,8 @@
 package org.jahia.services.workflow;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,5 +44,12 @@ import java.util.List;
  *        Created : 2 févr. 2010
  */
 public interface WorkflowProvider {
-    List<Workflow> getAvailableWorlfows();
+    List<Workflow> getAvailableWorkflows();
+    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+
+    String startProcess(String processKey, Map<String,Object> args);
+
+    void signalProcess(String processId, String transitionName, Map<String, Object> args);
+
+    Set<WorkflowAction> getAvailableActions(String processId);
 }

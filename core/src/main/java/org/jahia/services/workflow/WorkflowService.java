@@ -35,6 +35,8 @@ package org.jahia.services.workflow;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.*;
 
 /**
@@ -58,7 +60,7 @@ public class WorkflowService {
         return instance;
     }
 
-    public void setProviders(Map<String,WorkflowProvider> providers) {
+    public void setProviders(Map<String, WorkflowProvider> providers) {
         this.providers = providers;
     }
 
@@ -68,43 +70,81 @@ public class WorkflowService {
 
     /**
      * This method list all possible workflows for the specified node.
+     *
      * @param node
      * @return A map of available workflows per provider.
      */
-    public Map<String,List<Workflow>> getPossibleWorkflows (JCRNodeWrapper node) {
-        Map<String,List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
+    public Map<String, List<Workflow>> getPossibleWorkflows(JCRNodeWrapper node) {
+        Map<String, List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            workflowsByProvider.put(providerEntry.getKey(),providerEntry.getValue().getAvailableWorlfows());
+            workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
         }
         return workflowsByProvider;
     }
 
     /**
      * This method list all currently active workflow for the specified node.
+     *
      * @param node
      * @return A map of active workflows per provider
      */
-    public Map<String,String> getActiveWorkflows(JCRNodeWrapper node) {
-        return Collections.emptyMap();
+    public Map<String, List<Workflow>> getActiveWorkflows(JCRNodeWrapper node) {
+        Map<String, List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
+        try {
+            if (node.hasNode("j:workflow")) {
+                JCRNodeWrapper workflowNode = node.getNode("j:workflow");
+                for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
+                    final Value[] values = workflowNode.getProperty(entry.getKey()).getValues();
+                    final List<String> processIds = new ArrayList<String>(values.length);
+                    for (Value value : values) {
+                        processIds.add(value.getString());
+                    }
+                    workflowsByProvider.put(entry.getKey(), entry.getValue().getActiveWorkflowsInformations(
+                            processIds));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return workflowsByProvider;
     }
 
     /**
      * This method list all actions available at execution time for a node.
+     *
      * @param processId the process we want to advance
-     * @param provider The provider executing the process
-     * @return a map of actions per workflows per provider.
+     * @param provider  The provider executing the process
+     * @return a set of actions per workflows per provider.
      */
-    public List<WorkflowAction> getAvailableActions(String processId,String provider) {
-        return Collections.emptyList();
+    public Set<WorkflowAction> getAvailableActions(String processId, String provider) {
+        return providers.get(provider).getAvailableActions(processId);
     }
 
     /**
      * This method will call the underlying provider to signal the identified process.
+     *
      * @param processId the process we want to advance
-     * @param provider The provider executing the process
-     * @param args List of args for the process
+     * @param provider  The provider executing the process
+     * @param s
+     * @param args      List of args for the process
      */
-    public void signalProcess(String processId,String provider,Object... args) {
-        
+    public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
+        providers.get(provider).signalProcess(processId, transitionName, args);
+    }
+
+    /**
+     * This method will call the underlying provider to signal the identified process.
+     *
+     * @param stageNode
+     * @param provider  The provider executing the process
+     * @param args      Map of args for the process
+     */
+    public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
+            throws RepositoryException {
+        final String processId = providers.get(provider).startProcess(processKey, args);
+        final JCRNodeWrapper workflowNode = stageNode.addNode("j:workflow", "nt:unstructured");
+        workflowNode.setProperty("jBPM", new String[]{processId});
+        stageNode.getSession().save();
+        return processId;
     }
 }

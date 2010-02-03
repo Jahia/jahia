@@ -42,3 +42,28 @@ rule "Metadata update / property modified"
         Set the property jcr:lastModified of the node with the current time
         Set the property jcr:lastModifiedBy of the node with the name of the current user
 end
+
+rule "Metadata update / property removed"
+    salience -11
+    no-loop
+    when
+        A property has been removed from a node
+             - the node has the type mix:lastModified
+        The property jcr:lastModified has not been modified yet on the node
+    then
+        Set the property jcr:lastModified of the node with the current time
+        Set the property jcr:lastModifiedBy of the node with the name of the current user
+end
+
+rule "Metadata update / node deleted"
+    salience -12
+    no-loop
+    when
+        A node is deleted
+        The node has a parent
+             - the parent has the type mix:lastModified
+    then
+        Set the property jcr:lastModified of the parent with the current time
+        Set the property jcr:lastModifiedBy of the parent with the name of the current user
+end
+

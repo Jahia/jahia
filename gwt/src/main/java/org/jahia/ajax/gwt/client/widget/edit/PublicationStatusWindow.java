@@ -91,6 +91,8 @@ class PublicationStatusWindow extends Window {
                         return Messages.getResource("publication_status_notyetpublished");
                     case GWTJahiaPublicationInfo.UNPUBLISHED:
                         return "Unpublished";
+                    case GWTJahiaPublicationInfo.CONFLICT:
+                        return "Conflict - cannot publish";
                 }
                 return "";
             }

@@ -89,116 +89,32 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                 GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
                 if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                     allPublished = false;
-                    LayoutContainer infoLayer = new LayoutContainer();
-                    RootPanel.get().add(infoLayer);
-                    infoLayer.el().makePositionable(true);
-                    LayoutContainer container = module.getContainer();
-                    El el = container.el();
                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                             continue;
                         }
                         lastUnpublished = module.getNode().getPath();
-
-                        infoLayer.setLayout(new CenterLayout());
-                        HtmlContainer box = new HtmlContainer("Never published");
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
-                            box.setHtml("Never published - publish parent first");
+                            addInfoLayer(module, "Never published - publish parent first", "black", "black", left, top, right, bottom, removeListener, false);
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                            box.setHtml("Unpublished");
+                            addInfoLayer(module, ("Unpublished"), "black", "black", left, top, right, bottom, removeListener, false);
+                        } else {
+                            addInfoLayer(module, "Never published", "black", "black", left, top, right, bottom, removeListener, false);
                         }
-
-                        box.addStyleName("x-view-item");
-                        box.setStyleAttribute("background-color", "white");
-                        box.setStyleAttribute("text-color", "black");
-                        box.setStyleAttribute("font-weight", "bold");
-                        box.setStyleAttribute("text-align", "center");
-                        box.setWidth(250);
-                        infoLayer.add(box);
-
-                        infoLayer.setBorders(true);
-                        infoLayer.setStyleAttribute("background-color", "black");
-                        infoLayer.setStyleAttribute("opacity", "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                        if (container instanceof ContentPanel) {
-                            el = ((ContentPanel) container).getHeader().el();
-                        }
-
-                        infoLayer.setLayout(new CenterLayout());
-                        HtmlContainer box = new HtmlContainer("Modified");
-                        box.addStyleName("x-view-item");
-                        box.setStyleAttribute("background-color", "white");
-                        box.setStyleAttribute("color", "red");
-                        box.setStyleAttribute("font-weight", "bold");
-                        box.setStyleAttribute("text-align", "center");
-                        box.setWidth(150);
-                        infoLayer.add(box);
-
-                        infoLayer.setBorders(true);
-                        infoLayer.setStyleAttribute("background-color", "red");
-                        infoLayer.setStyleAttribute("opacity", "0.7");
+                        addInfoLayer(module, "Modified", "red", "red", left, top, right, bottom, removeListener, true);
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
-                        if (container instanceof ContentPanel) {
-                            el = ((ContentPanel) container).getHeader().el();
-                        }
-
-                        infoLayer.setLayout(new CenterLayout());
-                        HtmlContainer box = new HtmlContainer("Modified in live");
-                        box.addStyleName("x-view-item");
-                        box.setStyleAttribute("background-color", "white");
-                        box.setStyleAttribute("color", "blue");
-                        box.setStyleAttribute("font-weight", "bold");
-                        box.setStyleAttribute("text-align", "center");
-                        box.setWidth(150);
-                        infoLayer.add(box);
-
-                        infoLayer.setBorders(true);
-                        infoLayer.setStyleAttribute("background-color", "blue");
-                        infoLayer.setStyleAttribute("opacity", "0.7");
+                        addInfoLayer(module, "Modified in live", "blue", "blue", left, top, right, bottom, removeListener, true);
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.CONFLICT) {
+                        addInfoLayer(module, "Conflict", "red", "red", left, top, right, bottom, removeListener, true);
                     }
-
-                    if (container != mainPanel) {
-                        position(infoLayer, el, top, bottom, left, right);
-                    } else {
-                        position(infoLayer, el, 0, bottom, left, right);
-                    }
-
-                    infoLayer.show();
-                    containers.put(infoLayer, el);
-                    infoLayer.sinkEvents(Event.ONCLICK);
-                    infoLayer.addListener(Events.OnClick, removeListener);
                 }
             }
         }
 
         if (allPublished) {
-            LayoutContainer infoLayer = new LayoutContainer();
-            RootPanel.get().add(infoLayer);
-            infoLayer.el().makePositionable(true);
-            El el = mainPanel.el();
-
-            infoLayer.setLayout(new CenterLayout());
-            HtmlContainer box = new HtmlContainer("Everything published");
-            box.addStyleName("x-view-item");
-            box.setStyleAttribute("background-color", "white");
-            box.setStyleAttribute("text-color", "black");
-            box.setStyleAttribute("font-weight", "bold");
-            box.setStyleAttribute("text-align", "center");
-            box.setWidth(150);
-            infoLayer.add(box);
-
-            infoLayer.setBorders(true);
-            infoLayer.setStyleAttribute("background-color", "white");
-            infoLayer.setStyleAttribute("opacity", "0.7");
-
-            position(infoLayer, el, 0, bottom, left, right);
-
-            infoLayer.show();
-            containers.put(infoLayer, el);
-            infoLayer.sinkEvents(Event.ONCLICK);
-            infoLayer.addListener(Events.OnClick, removeListener);
+            addInfoLayer(modules.iterator().next(), "Everything published", "black", "white", left,top,right,bottom,removeListener, false);
         }
-
 
         ((EditLinker) linker).getMainModule().addScrollListener(new ScrollListener() {
             @Override
@@ -212,6 +128,42 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
                 super.widgetScrolled(ce);
             }
         });
+    }
+
+    private void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right, int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly) {
+        LayoutContainer infoLayer = new LayoutContainer();
+        RootPanel.get().add(infoLayer);
+        infoLayer.el().makePositionable(true);
+        LayoutContainer container = module.getContainer();
+        El el = container.el();
+
+        if (headerOnly && container instanceof ContentPanel) {
+            el = ((ContentPanel) container).getHeader().el();
+        }
+
+        infoLayer.setLayout(new CenterLayout());
+        HtmlContainer box = new HtmlContainer(text);
+        box.addStyleName("x-view-item");
+        box.setStyleAttribute("background-color", "white");
+        box.setStyleAttribute("color", color);
+        box.setStyleAttribute("font-weight", "bold");
+        box.setStyleAttribute("text-align", "center");
+        box.setWidth(250);
+        infoLayer.add(box);
+
+        infoLayer.setBorders(true);
+        infoLayer.setStyleAttribute("background-color", bgcolor);
+        infoLayer.setStyleAttribute("opacity", "0.7");
+        if (module instanceof MainModule) {
+            position(infoLayer, el, top, bottom, left, right);
+        } else {
+            position(infoLayer, el, 0, bottom, left, right);
+        }
+
+        infoLayer.show();
+        containers.put(infoLayer, el);
+        infoLayer.sinkEvents(Event.ONCLICK);
+        infoLayer.addListener(Events.OnClick, removeListener);
     }
 
     private void position(LayoutContainer infoLayer, El el, int top, int bottom, int left, int right) {

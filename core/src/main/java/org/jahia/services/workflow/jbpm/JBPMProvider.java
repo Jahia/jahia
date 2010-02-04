@@ -116,23 +116,34 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                                               repositoryService.createProcessDefinitionQuery().count()));
         }
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
-        List<WorkflowDefinition> workflows = new LinkedList<WorkflowDefinition>();
+
+        Map<String, Integer> versions = new HashMap<String, Integer>();
+        Map<String, WorkflowDefinition> workflows = new HashMap<String, WorkflowDefinition>();
+
         for (ProcessDefinition definition : definitionList) {
-            workflows.add(new WorkflowDefinition(definition.getName(),definition.getId()));
+            if (versions.containsKey(definition.getName())) {
+                if (versions.get(definition.getName()) > definition.getVersion()) {
+                    continue;
+                }
+            }
+            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getId()));
+            versions.put(definition.getName(), definition.getVersion());
             if (logger.isDebugEnabled()) {
                 logger.debug("Process : " + definition);
             }
         }
-        return workflows;
+        return new ArrayList<WorkflowDefinition>(workflows.values());
     }
 
     public List<Workflow> getActiveWorkflowsInformations(List<String> processIds) {
         List<Workflow> workflows = new LinkedList<Workflow>();
         for (String processId : processIds) {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
-            final Workflow workflow = new Workflow(instance.getName(), instance.getId(), PROVIDER);
-            workflow.setAvailableActions(getAvailableActions(instance.getId()));
-            workflows.add(workflow);
+            if (instance != null) {
+                final Workflow workflow = new Workflow(instance.getName(), instance.getId(), PROVIDER);
+                workflow.setAvailableActions(getAvailableActions(instance.getId()));
+                workflows.add(workflow);
+            }
         }
         return workflows;
     }

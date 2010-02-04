@@ -25,7 +25,7 @@
                 <entry key="members.attribute" value="uniqueMember"/>
                 <entry key="dynamic.search.objectclass" value="groupOfURLs"/>
                 <entry key="dynamic.members.attribute" value="memberurl"/>
-                <entry key="preload" value="true"/>
+                <entry key="preload" value="false"/>
                 <entry key="search.wildcards.attributes" value="cn,description,uniqueMember"/>
                 <entry key="groupname.attribute.map" value="cn"/>
                 <entry key="description.attribute.map" value="description"/>

@@ -67,6 +67,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
     private JahiaGroupManagerService groupManager;
     private static JBPMProvider instance;
+    private static final String PROVIDER = "jBPM";
 
     static {
         participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
@@ -129,7 +130,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         List<Workflow> workflows = new LinkedList<Workflow>();
         for (String processId : processIds) {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
-            final Workflow workflow = new Workflow(instance.getName(), instance.getId());
+            final Workflow workflow = new Workflow(instance.getName(), instance.getId(), PROVIDER);
             workflow.setAvailableActions(getAvailableActions(instance.getId()));
             workflows.add(workflow);
         }
@@ -165,7 +166,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     }
                 }
             } else {
-                workflowAction = new WorkflowAction(action, "jBPM");
+                workflowAction = new WorkflowAction(action, PROVIDER);
             }
             if (workflowAction != null) {
                 availableActions.add(workflowAction);
@@ -191,7 +192,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     private WorkflowTask convertToWorkflowTask(Task task) {
-        WorkflowTask action = new WorkflowTask(task.getActivityName(), "jBPM");
+        WorkflowTask action = new WorkflowTask(task.getActivityName(), PROVIDER);
         action.setDueDate(task.getDuedate());
         action.setDescription(task.getDescription());
         action.setCreateTime(task.getCreateTime());

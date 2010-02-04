@@ -47,12 +47,14 @@ public class Workflow {
     private transient static Logger logger = Logger.getLogger(Workflow.class);
     private final String name;
     private final String id;
+    private final String provider;
     private Set<WorkflowAction> availableActions;
 
-    public Workflow(String name, String id) {
+    public Workflow(String name, String id, String provider) {
         //To change body of created methods use File | Settings | File Templates.
         this.name = name;
         this.id = id;
+        this.provider = provider;
     }
 
     public String getName() {
@@ -61,6 +63,10 @@ public class Workflow {
 
     public String getId() {
         return id;
+    }
+
+    public String getProvider() {
+        return provider;
     }
 
     public void setAvailableActions(Set<WorkflowAction> availableActions) {

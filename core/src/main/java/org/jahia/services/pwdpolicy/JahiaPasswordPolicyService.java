@@ -404,7 +404,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
      * 
      * @return boolean {@code true} if the user comes from a read-only provider
      */
-    private boolean isPasswordReadOnly(JahiaUser user) {
+    public boolean isPasswordReadOnly(JahiaUser user) {
         boolean readOnly = true;
         JahiaUserManagerProvider provider = userMgrService.getProvider(user.getProviderName());
         if (provider != null) {

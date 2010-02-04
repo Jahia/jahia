@@ -63,8 +63,8 @@
 <div id="content"><!--start content-->
     <div class="container container_16">
          ${wrappedContent}
-    </div><!--stop content-->
-</div>
+    <div class="clear"></div></div><!--stop content-->
+<div class="clear"></div></div>
 <div id="footer"><!--start footer-->
 <div id="footerPart3"><!--start footerPart3-->
 <div class="container container_16">

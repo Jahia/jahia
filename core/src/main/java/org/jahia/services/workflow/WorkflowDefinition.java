@@ -32,39 +32,30 @@
  */
 package org.jahia.services.workflow;
 
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 4 févr. 2010
  */
-public interface WorkflowProvider {
-    List<WorkflowDefinition> getAvailableWorkflows();
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+public class WorkflowDefinition {
+    private transient static Logger logger = Logger.getLogger(WorkflowDefinition.class);
+    private final String name;
+    private final String id;
 
-    String startProcess(String processKey, Map<String,Object> args);
+    public WorkflowDefinition(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
 
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
+    public String getId() {
+        return id;
+    }
 
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
-
-    Set<WorkflowAction> getAvailableActions(String processId);
-
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
-
-    void assignTask(String processId, String taskName, JahiaUser user);
-
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
-
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
+    public String getName() {
+        return name;
+    }
 }

@@ -109,15 +109,15 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         this.processes = processes;
     }
 
-    public List<Workflow> getAvailableWorkflows() {
+    public List<WorkflowDefinition> getAvailableWorkflows() {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
                                               repositoryService.createProcessDefinitionQuery().count()));
         }
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
-        List<Workflow> workflows = new LinkedList<Workflow>();
+        List<WorkflowDefinition> workflows = new LinkedList<WorkflowDefinition>();
         for (ProcessDefinition definition : definitionList) {
-            workflows.add(new Workflow(definition.getName(), definition.getId()));
+            workflows.add(new WorkflowDefinition(definition.getName(),definition.getId()));
             if (logger.isDebugEnabled()) {
                 logger.debug("Process : " + definition);
             }

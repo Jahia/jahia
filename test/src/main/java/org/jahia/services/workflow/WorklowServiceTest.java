@@ -79,10 +79,10 @@ public class WorklowServiceTest extends TestCase {
         JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-        final Map<String, List<Workflow>> possibleWorkflows = WorkflowService.getInstance().getPossibleWorkflows(
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = WorkflowService.getInstance().getPossibleWorkflows(
                 stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
     }
 
@@ -92,11 +92,11 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final Workflow workflow = workflowList.get(0);
+        final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
         final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM",
                                                       new HashMap<String, Object>());
@@ -114,11 +114,11 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final Workflow workflow = workflowList.get(0);
+        final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
         final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM", emptyMap);
         assertNotNull("The startup of a process should have return an id", processId);
@@ -152,11 +152,11 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final Workflow workflow = workflowList.get(0);
+        final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
         final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM",
                                                       new HashMap<String, Object>());
@@ -188,11 +188,11 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final Workflow workflow = workflowList.get(0);
+        final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
         final String processId = service.startProcess(stageNode, workflow.getId(), PROVIDER,
                                                       new HashMap<String, Object>());
@@ -223,11 +223,11 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
+        final Map<String, List<WorkflowDefinition>> possibleWorkflows = service.getPossibleWorkflows(stageNode);
         assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
-        final List<Workflow> workflowList = possibleWorkflows.get("jBPM");
+        final List<WorkflowDefinition> workflowList = possibleWorkflows.get("jBPM");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final Workflow workflow = workflowList.get(0);
+        final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
         final String processId = service.startProcess(stageNode, workflow.getId(), PROVIDER,
                                                       new HashMap<String, Object>());

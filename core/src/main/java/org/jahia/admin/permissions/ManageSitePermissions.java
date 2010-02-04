@@ -30,26 +30,10 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.admin.permissions;
-
-import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.ACLInfo;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.hibernate.model.JahiaAclName;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAclEntryPK;
-import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.admin.AbstractAdministrationModule;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,11 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.security.Principal;
+
 
 /**
  * User: Serge Huber

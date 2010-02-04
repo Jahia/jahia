@@ -53,7 +53,7 @@
     <h2 class="edit"><fmt:message key="label.sitepermissions"/></h2>
 </div>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
-
+<int
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
 <tbody>

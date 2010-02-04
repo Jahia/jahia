@@ -21,5 +21,5 @@
    		<my-permission-1 jcr:primaryType="jnt:permission"/>
    		<my-permission-2 jcr:primaryType="jnt:permission"/>
    		<my-permission-3 jcr:primaryType="jnt:permission"/>
-   	</global>
+   	</test>
 </content>

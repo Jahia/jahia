@@ -69,7 +69,7 @@
         <property name="permissionName" value="admin.permissions.ManageServerPermissions" />
         <property name="name" value="serverPermissions" />
         <property name="icon" value="policeman_usa" />
-        <property name="label" value="label.serverpermissions" />
+        <property name="label" value="label.serverroles" />
         <property name="urlAction" value="serverPermissions" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
@@ -182,7 +182,7 @@
         <property name="permissionName" value="admin.permissions.ManageSitePermissions" />
         <property name="name" value="sitePermissions" />
         <property name="icon" value="security_agent" />
-        <property name="label" value="label.sitepermissions" />
+        <property name="label" value="label.siteroles" />
         <property name="urlAction" value="sitePermissions" />
         <property name="urlParams" value="&amp;sub=display" />
     </bean>

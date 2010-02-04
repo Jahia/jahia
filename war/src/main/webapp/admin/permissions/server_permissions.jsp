@@ -53,7 +53,7 @@ stretcherToOpen   = 0; %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><fmt:message key="label.serverpermissions"/></h2>
+  <h2 class="edit"><fmt:message key="label.serverroles"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">

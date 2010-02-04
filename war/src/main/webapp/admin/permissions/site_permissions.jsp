@@ -50,7 +50,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="label.sitepermissions"/></h2>
+    <h2 class="edit"><fmt:message key="label.siteroles"/></h2>
 </div>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 <int
@@ -72,7 +72,7 @@
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <fmt:message key="label.sitepermissions"/>
+        <fmt:message key="label.siteroles"/>
     </div>
 </div>
 <div class="content-item">

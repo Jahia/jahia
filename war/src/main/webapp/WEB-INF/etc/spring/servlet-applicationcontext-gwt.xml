@@ -180,7 +180,9 @@
         <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
 
-    <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper"/>
+    <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">
+    	<property name="roleManager" ref="RoleManager"/>
+    </bean>
 
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper" >

@@ -5,19 +5,28 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.rbac.impl.PermissionImpl;
+import org.jahia.services.rbac.impl.RoleImpl;
+import org.jahia.services.rbac.impl.RoleManager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.jcr.RepositoryException;
+
 /**
- * Created by IntelliJ IDEA.
+ * Roles and permission GWT helper class.
  * User: ktlili
  * Date: Feb 3, 2010
  * Time: 4:15:49 PM
- * To change this template use File | Settings | File Templates.
  */
 public class RolesPermissionsHelper {
     private static Logger logger = Logger.getLogger(RolesPermissionsHelper.class);
+    
+    private RoleManager roleManager;
 
     /**
      * Get permissions
@@ -63,23 +72,59 @@ public class RolesPermissionsHelper {
     }
 
     /**
-     * Get roles with permission
+     * Get all roles for the specified site or for the server if the site is not specified. 
      *
-     * @param site
-     * @param server
-     * @param principalKey
-     * @return
+     * @param site target site key or {@code null} if the server level roles are requested
+     * @param jcrSession current JCR session
+     * @return all roles for the specified site or for the server if the site is not specified
+     * @throws GWTJahiaServiceException in case of an error
      */
-    public List<GWTJahiaRole> getRoles(boolean site, boolean server, String principalKey) {
-        logger.debug("getRoles() ," + site + "," + server + "," + principalKey);
-
-        List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
-        for (int i = 0; i < 5; i++) {
-            GWTJahiaRole r = new GWTJahiaRole();
-            r.setLabel("Role " + i);
-            roles.add(r);
+    public List<GWTJahiaRole> getRoles(String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Retrieving roles for " + (site != null ? "site " + site : "server"));
         }
+
+        List<GWTJahiaRole> roles = new LinkedList<GWTJahiaRole>();
+        try {
+            for(RoleImpl role : roleManager.getRoles(site, jcrSession)) {
+                roles.add(toRole(role));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
         return roles;
+    }
+
+    /**
+     * Get all permissions for the specified site or for the server if the site
+     * is not specified.
+     * 
+     * @param site target site key or {@code null} if the server level
+     *            permissions are requested
+     * @param jcrSession current JCR session
+     * @return all permissions for the specified site or for the server if the
+     *         site is not specified
+     * @throws GWTJahiaServiceException in case of an error
+     */
+    public List<GWTJahiaPermission> getPermissions(String site, JCRSessionWrapper jcrSession)
+            throws GWTJahiaServiceException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Retrieving permissions for " + (site != null ? "site " + site : "server"));
+        }
+
+        List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
+        try {
+            for (PermissionImpl permission : roleManager.getPermissions(site, jcrSession)) {
+                permissions.add(toPermission(permission));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
+        return permissions;
     }
 
     /**
@@ -99,16 +144,19 @@ public class RolesPermissionsHelper {
     /**
      * Get all roles and all permissions
      *
-     * @param site
-     * @param server
+     * @param site the site key to retrieve roles and permissions
+     * @param jcrSession current user JCR session
      * @return
+     * @throws GWTJahiaServiceException in case of an error
      */
-    public GWTRolesPermissions getRolesAndPermissions(boolean site, boolean server) {
-        logger.debug("getRolesAndPermissions() ," + site + "," + server);
+    public GWTRolesPermissions getRolesAndPermissions(String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getting roles and permission for " + (site != null ? "site " + site : "server"));
+        }
 
         GWTRolesPermissions rp = new GWTRolesPermissions();
-        rp.setRoles(getRoles(site, server, null));
-        rp.setPermissions(getPermission(site));
+        rp.setRoles(getRoles(site, jcrSession));
+        rp.setPermissions(getPermissions(site, jcrSession));
         return rp;
     }
 
@@ -170,4 +218,34 @@ public class RolesPermissionsHelper {
         logger.debug("removeRoleToPrincipals() ," + role + "," + principals);
     }
 
+    private GWTJahiaPermission toPermission(PermissionImpl permission) {
+        GWTJahiaPermission gwtPermission = new GWTJahiaPermission();
+        gwtPermission.setId(permission.getPath());
+        gwtPermission.setLabel(permission.getTitle() != null ? permission.getTitle() : permission.getName());
+        gwtPermission.setGroup(permission.getGroup());
+
+        return gwtPermission;
+    }
+
+    private GWTJahiaRole toRole(RoleImpl role) {
+        GWTJahiaRole gwtRole = new GWTJahiaRole();
+        gwtRole.setId(role.getPath());
+        gwtRole.setLabel(role.getTitle() != null ? role.getTitle() : role.getName());
+        List<GWTJahiaPermission> gwtPermissions = new LinkedList<GWTJahiaPermission>();
+        for (PermissionImpl perm : role.getPermissions()) {
+            gwtPermissions.add(toPermission(perm));
+        }
+        gwtRole.setPermissions(gwtPermissions);
+
+        return gwtRole;
+    }
+
+    /**
+     * Injects the role management service instance.
+     * 
+     * @param roleManager the role management service instance
+     */
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
+    }
 }

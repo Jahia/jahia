@@ -43,7 +43,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -53,7 +52,7 @@ import java.util.Properties;
  * @since : JAHIA 6.1
  *        Created : 7 juil. 2009
  */
-public class JCRUser implements JahiaUser {
+public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
     private transient static Logger logger = Logger.getLogger(JCRUser.class);
     private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
@@ -360,7 +359,7 @@ public class JCRUser implements JahiaUser {
     }
 
     /**
-     * Verifiy if the passed in password is the same as the encapsulated by this
+     * Verify if the passed in password is the same as the encapsulated by this
      * user.
      *
      * @param password String representation of an non-encrypted password.
@@ -372,126 +371,12 @@ public class JCRUser implements JahiaUser {
     }
 
     /**
-     * Retrieve a List of language codes stored for this user. The order
-     * of these codes is important. The first language is the first choice, and
-     * as the list goes down so does the importance of the languages.
-     *
-     * @return a List containing String objects that contain language codes,
-     *         the List may be empty if this property was never set for the user.
-     */
-    public List<String> getLanguageCodes() {
-        // TODO not implemented
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Sets the language codes for a user. This List contains String object
-     * that contain language codes. The order of this list is defined so as that
-     * the most important language is first.
-     *
-     * @param userLanguages a List of String object containing the language
-     *                      codes. The order is from the most important language first to the least
-     *                      important one last.
-     */
-    public void setLanguageCodes(List<String> userLanguages) {
-        // TODO not implemented
-    }
-
-    /**
-     * Returns true if this user has activated the language mixing function
-     * of Jahia. This means that the content that will be displayed on his
-     * page will content multiple languages based on language preference list.
-     *
-     * @return true if the property is active.
-     */
-    public boolean isMixLanguagesActive() {
-        // TODO not implemented
-
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Sets the user property that indicates whether the user wants to see
-     * mixed language content in the pages he is browsing or not.
-     *
-     * @param mixLanguagesActive a boolean set to true to allow language mixing
-     */
-    public void setMixLanguagesActive(boolean mixLanguagesActive) {
-        // TODO not implemented
-
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Returns true if the user has setup this property indicating that he
-     * doesn't want to default to any other languages than the ones he has
-     * setup in his users settings. This will shortcut defaulting to the
-     * browser and site settings.
-     *
-     * @return true if the user only wants to see the languages he has configured
-     *         and never the ones configured in his browser or in the site settings.
-     */
-    public boolean isUserLanguagesOnlyActive() {
-        // TODO not implemented
-
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Sets the value indicating whether a user wants to fallback to browser
-     * or site setting languages. If set to true this means we are NOT falling
-     * back to the above mentioned settings.
-     *
-     * @param userLanguagesOnlyActive true means we are not falling back to
-     *                                browser or site settings.
-     */
-    public void setUserLanguagesOnlyActive(boolean userLanguagesOnlyActive) {
-        // TODO not implemented
-
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
      * Get the name of the provider of this user.
      *
      * @return String representation of the name of the provider of this user
      */
     public String getProviderName() {
         return PROVIDER_NAME;
-    }
-
-    public boolean isProxied() {
-        // TODO not implemented
-
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setProxied(boolean proxied) {
-        // TODO not implemented
-
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * if true, ignore user aliasing check at ACL level.
-     *
-     * @return true if option  byPassUserAliasing is set
-     */
-    public boolean byPassUserAliasing() {
-        // TODO not implemented
-
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * if true, force ignore user aliasing check at ACL level
-     *
-     * @param bypassUserAliasing set to true to activate option byPassUserAliasing
-     */
-    public void setByPassUserAliasing(boolean bypassUserAliasing) {
-        // TODO not implemented
-
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public String getNodeUuid() {

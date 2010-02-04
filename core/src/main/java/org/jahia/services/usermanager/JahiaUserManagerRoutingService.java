@@ -447,4 +447,9 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
         T execute(JahiaUserManagerProvider p);
     }
 
+    @Override
+    public JahiaUserManagerProvider getProvider(String name) {
+        return providersTable.get(name);
+    }
+    
 }

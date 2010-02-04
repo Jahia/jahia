@@ -14,6 +14,28 @@
 
     <themes jcr:primaryType="jnt:folder"/>
 
+    <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                    j:privileges="jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl" j:aceType="GRANT"/>
+            <GRANT_jcr_write_live_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:write_live" j:aceType="GRANT"/>
+        </j:acl>
+    </permissions>
+    
+    <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                    j:privileges="jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl" j:aceType="GRANT"/>
+            <GRANT_jcr_write_live_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:write_live" j:aceType="GRANT"/>
+        </j:acl>
+    </roles>
+
     <tags jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"

@@ -9,6 +9,7 @@
             <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="passwordPolicyManager" ref="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" />
                 <property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
+                <property name="userManagerService" ref="JahiaUserManagerService"/>
             </bean>
         </property>
     </bean>

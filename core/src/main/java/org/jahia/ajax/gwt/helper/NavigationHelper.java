@@ -392,6 +392,18 @@ public class NavigationHelper {
                     root.setDisplayName("tags");
                     userNodes.add(root);
                 }
+            } else if (key.equals(JCRClientUtils.ROLE_REPOSITORY)) {
+                GWTJahiaNode root = getNode("/roles", currentUserSession);
+                if (root != null) {
+                    root.setDisplayName("roles");
+                    userNodes.add(root);
+                }
+            } else if (key.equals(JCRClientUtils.SITE_ROLE_REPOSITORY)) {
+                GWTJahiaNode root = getNode("/sites/" + site.getSiteKey() + "/roles", currentUserSession);
+                if (root != null) {
+                    root.setDisplayName("roles");
+                    userNodes.add(root);
+                }
             } else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/portletdefinitions", currentUserSession);
                 if (root != null) {

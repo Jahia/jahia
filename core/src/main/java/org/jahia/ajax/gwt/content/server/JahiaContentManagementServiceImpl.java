@@ -138,10 +138,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.languages = languages;
     }
 
-    public RolesPermissionsHelper getRolesPermissions() {
-        return rolesPermissions;
-    }
-
     public void setRolesPermissions(RolesPermissionsHelper rolesPermissions) {
         this.rolesPermissions = rolesPermissions;
     }
@@ -861,8 +857,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param principalKey
      * @return
      */
-    public List<GWTJahiaRole> getRoles(boolean site, boolean server, String principalKey) {
-        return rolesPermissions.getRoles(site,server,principalKey);
+    public List<GWTJahiaRole> getRoles(String principalKey) {
+        //return rolesPermissions.getRoles(principalKey);
+        return Collections.emptyList();
     }
 
     /**
@@ -879,12 +876,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get all roles and all permissions
      *
-     * @param site
-     * @param server
+     * @param site the current site key or {@code null} if the server roles and permissions are requested
      * @return
+     * @throws GWTJahiaServiceException 
      */
-    public GWTRolesPermissions getRolesAndPermissions(boolean site, boolean server) {
-        return rolesPermissions.getRolesAndPermissions(site,server);
+    public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException {
+        return rolesPermissions.getRolesAndPermissions(site, retrieveCurrentSession());
     }
 
     /**

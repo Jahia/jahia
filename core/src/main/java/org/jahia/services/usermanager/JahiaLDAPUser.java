@@ -33,18 +33,18 @@
 
 package org.jahia.services.usermanager;
 
+import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
  * A JahiaUser represents a physical person who is defined by a username and
- * a password for authentification purpose. Every other property of a JahiaUser
+ * a password for authentication purpose. Every other property of a JahiaUser
  * is stored in it's properties list, which hold key-value string pairs.
  * For example email, firstname, lastname, ... information should be stored in
  * this properties list.
@@ -52,9 +52,8 @@ import java.util.*;
  * @author Serge Huber
  * @version 1.0
  */
-public class JahiaLDAPUser implements JahiaUser, Serializable {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JahiaLDAPUser.class);
+public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
+    private static Logger logger = Logger.getLogger (JahiaLDAPUser.class);
 
     private static final long serialVersionUID = 949596639726348808L;
 
@@ -88,15 +87,10 @@ public class JahiaLDAPUser implements JahiaUser, Serializable {
     // language property constants
     private static final String mLANGUAGES_ORDER_PROP = "language_codes";
     private static final String mLANGUAGES_ORDER_PROP_SEPARATOR = ",";
-    private static final String mLANGUAGES_MIX_PROP = "langage_mix";
-    private static final String mLANGUAGES_ONLYUSER_PROP = "language_onlyuser";
 
     private transient JahiaUserManagerLDAPProvider provider;
     private transient boolean propLoaded = false;
 
-    private boolean proxied;
-    private boolean bypassUserAliasing;
-    
     /**
      * Create a new JahiaDBUser class instance. The passed in password must
      * already be encrypted, no ecryption will be done. If the passed in
@@ -269,10 +263,6 @@ public class JahiaLDAPUser implements JahiaUser, Serializable {
         }
         //Predrag
         return result;
-    }
-
-    public boolean isPasswordReadOnly() {
-        return true;
     }
 
     /**
@@ -519,137 +509,12 @@ public class JahiaLDAPUser implements JahiaUser, Serializable {
     }
 
     /**
-     * Sets the language codes for a user. This List contains String object
-     * that contain language codes. The order of this list is defined so as that
-     * the most important language is first.
-     *
-     * @param userLanguages a List of String object containing the language
-     *                      codes. The order is from the most important language first to the least
-     *                      important one last.
-     */
-    public void setLanguageCodes (List<String> userLanguages) {
-        StringBuffer encodedLanguageCodes = new StringBuffer ();
-        Iterator<String> userLanguagesEnum = userLanguages.iterator();
-        while (userLanguagesEnum.hasNext ()) {
-            String curLanguage = userLanguagesEnum.next ();
-            if (curLanguage.indexOf (mLANGUAGES_ORDER_PROP_SEPARATOR) != 0) {
-                // we found the separator character inside the string.
-                logger.debug ("Invalid " + mLANGUAGES_ORDER_PROP_SEPARATOR +
-                        " character in language code : " + curLanguage +
-                        ". Not storing this language code.");
-            } else {
-                encodedLanguageCodes.append (curLanguage);
-                encodedLanguageCodes.append (mLANGUAGES_ORDER_PROP_SEPARATOR);
-            }
-        }
-        String encodedLanguageCodeStr = encodedLanguageCodes.toString ();
-        // we must now remove the extra separator at the end of the encoded list
-        encodedLanguageCodeStr =
-                encodedLanguageCodeStr.substring (0, encodedLanguageCodeStr.length () - 1);
-        setProperty (mLANGUAGES_ORDER_PROP, encodedLanguageCodeStr);
-    }
-
-    /**
-     * Returns true if this user has activated the language mixing function
-     * of Jahia. This means that the content that will be displayed on his
-     * page will content multiple languages based on language preference list.
-     *
-     * @return true if the property is active.
-     */
-    public boolean isMixLanguagesActive () {
-        String mixActiveStr = getProperty (mLANGUAGES_MIX_PROP);
-        if (mixActiveStr != null) {
-            Boolean mixActiveBool = Boolean.valueOf (mixActiveStr);
-            return mixActiveBool.booleanValue ();
-        } else {
-            logger.debug (mLANGUAGES_MIX_PROP +
-                    " property not found for user " +
-                    this.getUsername () +
-                    ". Defaulting to false.");
-            return false;
-        }
-    }
-
-    /**
-     * Sets the user property that indicates whether the user wants to see
-     * mixed language content in the pages he is browsing or not.
-     *
-     * @param mixLanguagesActive a boolean set to true to allow language mixing
-     */
-    public void setMixLanguagesActive (boolean mixLanguagesActive) {
-        setProperty (mLANGUAGES_MIX_PROP,
-                Boolean.valueOf(mixLanguagesActive).toString ());
-    }
-
-    /**
-     * Returns true if the user has setup this property indicating that he
-     * doesn't want to default to any other languages than the ones he has
-     * setup in his users settings. This will shortcut defaulting to the
-     * browser and site settings.
-     *
-     * @return true if the user only wants to see the languages he has configured
-     *         and never the ones configured in his browser or in the site settings.
-     */
-    public boolean isUserLanguagesOnlyActive () {
-        String userLanguagesOnlyStr = getProperty (mLANGUAGES_ONLYUSER_PROP);
-        if (userLanguagesOnlyStr != null) {
-            Boolean userLanguagesOnlyBool = Boolean.valueOf (userLanguagesOnlyStr);
-            return userLanguagesOnlyBool.booleanValue ();
-        } else {
-            logger.debug (mLANGUAGES_ONLYUSER_PROP +
-                    " property not found for user " +
-                    this.getUsername () +
-                    ". Defaulting to false.");
-            return false;
-        }
-
-    }
-
-    /**
-     * Sets the value indicating whether a user wants to fallback to browser
-     * or site setting languages. If set to true this means we are NOT falling
-     * back to the above mentioned settings.
-     *
-     * @param userLanguagesOnlyActive true means we are not falling back to
-     *                                browser or site settings.
-     */
-    public void setUserLanguagesOnlyActive (boolean userLanguagesOnlyActive) {
-        setProperty (mLANGUAGES_ONLYUSER_PROP,
-                Boolean.valueOf(userLanguagesOnlyActive).toString ());
-
-    }
-
-    /**
      * Get the name of the provider of this user.
      *
      * @return String representation of the name of the provider of this user
      */
     public String getProviderName () {
         return JahiaUserManagerLDAPProvider.PROVIDER_NAME;
-    }
-
-    public boolean isProxied() {
-        return proxied;
-    }
-
-    public void setProxied(boolean proxied) {
-        this.proxied = proxied;
-    }
-
-    /**
-     * if true, ignore user aliasing check at ACL level.
-     * @return
-     */
-    public boolean byPassUserAliasing() {
-        return bypassUserAliasing;
-    }
-
-    /**
-     * if true, force ignore user aliasing check at ACL level
-     * @param bypassUserAliasing
-     */
-    public void setByPassUserAliasing(boolean bypassUserAliasing) {
-        this.bypassUserAliasing = bypassUserAliasing;
     }
 
 }

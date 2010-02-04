@@ -45,9 +45,11 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 /**
- * Jahia service for managing and enforcing dirrerent password policies.
+ * Jahia service for managing and enforcing different password policies.
  * 
  * @author Sergiy Shyrkov
  */
@@ -59,7 +61,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
     private static final String PROPERTY_SITE_ENFORCE_POLICY = "enforcePasswordPolicy";
 
     private static JahiaPasswordPolicyService service;
-
+    
     /**
      * Returns an instance of this service.
      * 
@@ -80,6 +82,8 @@ public class JahiaPasswordPolicyService extends JahiaService {
     private JahiaPasswordPolicy defaultPasswordPolicy;
 
     private JahiaPasswordPolicyManager policyMgr;
+
+    private JahiaUserManagerService userMgrService;
 
     /**
      * Enforce the password policy for the specified user if applicable during
@@ -141,7 +145,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
         } else if (logger.isDebugEnabled()) {
             logger.debug("Policy enforcement not enabled for user "
                     + user.getUsername()
-                    + ". Skipping password policy eforcement.");
+                    + ". Skipping password policy enforcement.");
         }
 
         return evaluationResult;
@@ -268,7 +272,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
         if (user == null)
             throw new IllegalArgumentException("The specified user is null");
 
-        if (user.isPasswordReadOnly())
+        if (isPasswordReadOnly(user))
             return false;
 
         if (user.isRoot())
@@ -290,11 +294,11 @@ public class JahiaPasswordPolicyService extends JahiaService {
         if (user.getUserKey() != null && enforcePolicy) {
             JahiaGroupManagerService groupMgr = ServicesRegistry.getInstance()
                     .getJahiaGroupManagerService();
-            List groups = groupMgr.getUserMembership(user);
+            List<String> groups = groupMgr.getUserMembership(user);
             if (groups.size() > 0) {
                 boolean enforcePolicyAtLeastForOneGroup = false;
-                for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
-                    String groupName = (String) iterator.next();
+                for (Iterator<String> iterator = groups.iterator(); iterator.hasNext();) {
+                    String groupName = iterator.next();
                     JahiaGroup group = groupMgr.lookupGroup(groupName);
                     if (group != null) {
                         String propValue = group
@@ -325,11 +329,9 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
         boolean enforcePolicy = false;
         try {
-            Iterator sites = ServicesRegistry.getInstance()
-                    .getJahiaSitesService().getSites();
+            Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
             while (sites.hasNext()) {
-                JahiaSite site = (JahiaSite) sites.next();
-                if (isPolicyEnabled(site.getID())) {
+                if (isPolicyEnabled(sites.next().getID())) {
                     enforcePolicy = true;
                     break;
                 }
@@ -374,7 +376,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
         JahiaPasswordPolicy policy = getDefaultPolicy();
         if (policy == null)
             throw new JahiaInitializationException(
-                    "Default password policy can not be iinitialized. Service startup failed.");
+                    "Default password policy can not be initialized. Service startup failed.");
     }
 
     /*
@@ -387,13 +389,40 @@ public class JahiaPasswordPolicyService extends JahiaService {
     }
 
     /**
-     * Persists the chaanges made to the password policy.
+     * Persists the changes made to the password policy.
      * 
      * @param policy
-     *            returns the same instance of passwqord policy with the
+     *            returns the same instance of password policy with the
      *            persisted data.
      */
     public void updatePolicy(JahiaPasswordPolicy policy) {
         policyMgr.update(policy);
     }
+    
+    /**
+     * Method to test if the user comes from a read-only provider.
+     * 
+     * @return boolean {@code true} if the user comes from a read-only provider
+     */
+    private boolean isPasswordReadOnly(JahiaUser user) {
+        boolean readOnly = true;
+        JahiaUserManagerProvider provider = userMgrService.getProvider(user.getProviderName());
+        if (provider != null) {
+            readOnly = provider.isReadOnly();
+        } else {
+            logger.warn("Unable to find a provider by name '" + user.getProviderName() + "' for the user " + user);
+        }
+        
+        return readOnly;
+    }
+
+    /**
+     * Injects an instance of the {@link JahiaUserManagerService}
+     * 
+     * @param userMgrService an instance of the {@link JahiaUserManagerService}
+     */
+    public void setUserManagerService(JahiaUserManagerService userMgrService) {
+        this.userMgrService = userMgrService;
+    }
+
 }

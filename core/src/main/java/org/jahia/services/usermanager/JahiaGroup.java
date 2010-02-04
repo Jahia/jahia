@@ -57,7 +57,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.jcr.JCRUser;
 
-import java.io.Serializable;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.*;
@@ -81,7 +80,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Fulco Houkes
  * @version 2.2
  */
-public abstract class JahiaGroup implements Group, Serializable {
+public abstract class JahiaGroup extends JahiaBasePrincipal implements Group {
 
     private static final long serialVersionUID = 3192050315335252786L;
 

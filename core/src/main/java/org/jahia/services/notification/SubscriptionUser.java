@@ -31,7 +31,7 @@
  */
 package org.jahia.services.notification;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
@@ -79,25 +79,9 @@ public class SubscriptionUser implements JahiaUser {
 
     /*
      * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#byPassUserAliasing()
-     */
-    public boolean byPassUserAliasing() {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
      * @see org.jahia.services.usermanager.JahiaUser#getHomepageID()
      */
     public int getHomepageID() {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#getLanguageCodes()
-     */
-    public List<String> getLanguageCodes() {
         throw new UnsupportedOperationException();
     }
 
@@ -187,41 +171,9 @@ public class SubscriptionUser implements JahiaUser {
 
     /*
      * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#isMixLanguagesActive()
-     */
-    public boolean isMixLanguagesActive() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#isPasswordReadOnly()
-     */
-    public boolean isPasswordReadOnly() {
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#isProxied()
-     */
-    public boolean isProxied() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
      * @see org.jahia.services.usermanager.JahiaUser#isRoot()
      */
     public boolean isRoot() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#isUserLanguagesOnlyActive()
-     */
-    public boolean isUserLanguagesOnlyActive() {
         return false;
     }
 
@@ -236,36 +188,9 @@ public class SubscriptionUser implements JahiaUser {
 
     /*
      * (non-Javadoc)
-     * @see
-     * org.jahia.services.usermanager.JahiaUser#setByPassUserAliasing(boolean)
-     */
-    public void setByPassUserAliasing(boolean bypassUserAliasing) {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
      * @see org.jahia.services.usermanager.JahiaUser#setHomepageID(int)
      */
     public boolean setHomepageID(int id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.jahia.services.usermanager.JahiaUser#setLanguageCodes(java.util.List)
-     */
-    public void setLanguageCodes(List<String> userLanguages) {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.jahia.services.usermanager.JahiaUser#setMixLanguagesActive(boolean)
-     */
-    public void setMixLanguagesActive(boolean mixLanguagesActive) {
         throw new UnsupportedOperationException();
     }
 
@@ -290,29 +215,27 @@ public class SubscriptionUser implements JahiaUser {
 
     /*
      * (non-Javadoc)
-     * @see org.jahia.services.usermanager.JahiaUser#setProxied(boolean)
-     */
-    public void setProxied(boolean proxied) {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.jahia.services.usermanager.JahiaUser#setUserLanguagesOnlyActive(boolean
-     * )
-     */
-    public void setUserLanguagesOnlyActive(boolean userLanguagesOnlyActive) {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * (non-Javadoc)
      * @see
      * org.jahia.services.usermanager.JahiaUser#verifyPassword(java.lang.String)
      */
     public boolean verifyPassword(String password) {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean hasRole(String role) {
+        return false;
+    }
+
+    public boolean hasRoles(Collection<String> roles) {
+        return false;
+    }
+
+    public boolean isPermitted(Collection<String> permissions) {
+        return false;
+    }
+
+    public boolean isPermitted(String permission) {
+        return false;
     }
 
 }

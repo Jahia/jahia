@@ -183,6 +183,13 @@ public abstract class JahiaUserManagerService extends JahiaService {
      */
     public abstract List<? extends JahiaUserManagerProvider> getProviderList ();
 
+    /**
+     * Returns a {@link JahiaUserManagerProvider} for the specified name.
+     *
+     * @return a {@link JahiaUserManagerProvider} for the specified name
+     */
+    public abstract JahiaUserManagerProvider getProvider(String name);
+
     //-------------------------------------------------------------------------
     /**
      * This method return all users' keys in the system.

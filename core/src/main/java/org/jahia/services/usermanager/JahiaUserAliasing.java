@@ -31,7 +31,7 @@
  */
 package org.jahia.services.usermanager;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -42,7 +42,6 @@ import java.util.Properties;
  * User: hollis
  * Date: 31 juil. 2008
  * Time: 10:33:07
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaUserAliasing implements JahiaUser {
 
@@ -96,10 +95,6 @@ public class JahiaUserAliasing implements JahiaUser {
         return user.setProperty(key,value);
     }
 
-    public boolean isPasswordReadOnly() {
-        return user.isPasswordReadOnly();
-    }
-
     public boolean setPassword(String password) {
         return user.setPassword(password);
     }
@@ -120,56 +115,27 @@ public class JahiaUserAliasing implements JahiaUser {
         return user.verifyPassword(password);
     }
 
-    public List<String> getLanguageCodes() {
-        return user.getLanguageCodes();
-    }
-
-    public void setLanguageCodes(List<String> userLanguages) {
-        user.setLanguageCodes(userLanguages);
-    }
-
-    public boolean isMixLanguagesActive() {
-        return user.isMixLanguagesActive();
-    }
-
-    public void setMixLanguagesActive(boolean mixLanguagesActive) {
-        user.setMixLanguagesActive(mixLanguagesActive);
-    }
-
-    public boolean isUserLanguagesOnlyActive() {
-        return user.isUserLanguagesOnlyActive();
-    }
-
-    public void setUserLanguagesOnlyActive(boolean userLanguagesOnlyActive) {
-        user.setUserLanguagesOnlyActive(userLanguagesOnlyActive);
-    }
-
     public String getProviderName() {
         return user.getProviderName();
     }
 
-    public boolean isProxied() {
-        return user.isProxied();
-    }
-
-    public void setProxied(boolean proxied) {
-        user.setProxied(proxied);
-    }
-
-    /**
-     * Always return true to force bypass user aliasing
-     *
-     * @return
-     */
-    public boolean byPassUserAliasing() {
-        return true;
-    }
-
-    public void setByPassUserAliasing(boolean bypassUserAliasing) {
-        // do nothing
-    }
-
     JahiaUser getUser () {
         return user;
+    }
+
+    public boolean hasRole(String role) {
+        return getUser().hasRole(role);
+    }
+
+    public boolean hasRoles(Collection<String> roles) {
+        return getUser().hasRoles(roles);
+    }
+
+    public boolean isPermitted(Collection<String> permissions) {
+        return getUser().isPermitted(permissions);
+    }
+
+    public boolean isPermitted(String permission) {
+        return getUser().isPermitted(permission);
     }
 }

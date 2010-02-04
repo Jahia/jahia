@@ -66,6 +66,27 @@
  + j:acl (jnt:acl) mandatory
 
 //---------------------------------------------------------
+// Role based access control
+//---------------------------------------------------------
+
+[jnt:role] > nt:base, mix:title
+ - j:permissions (weakreference) multiple < jnt:permission
+  
+[jnt:roles] > nt:folder, jmix:hierarchyNode
+ + * (jnt:role)
+ 
+[jnt:permission] > nt:base, mix:title
+ 
+[jnt:permissionGroup] > nt:folder
+ + * (jnt:permission)
+
+[jnt:permissions] > nt:folder, jmix:hierarchyNode
+ + * (jnt:permissionGroup)
+ 
+[jmix:roleBasedAccessControlled] mixin
+ - j:roles (weakreference) multiple < jnt:role
+
+//---------------------------------------------------------
 // Publication
 //---------------------------------------------------------
 

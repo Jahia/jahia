@@ -24,7 +24,7 @@ public class RoleEditor {
 
         final RootPanel panel = RootPanel.get(PERMISSION_ROLE);
         if (panel != null) {
-            panel.add(new RolesManager());
+            panel.add(new RolesManager("server".equals(panel.getElement().getAttribute("mode"))));
         }
 
     }

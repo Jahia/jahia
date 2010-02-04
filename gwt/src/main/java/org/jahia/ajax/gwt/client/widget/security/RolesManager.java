@@ -20,7 +20,13 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class RolesManager extends LayoutContainer {
-    public RolesManager() {
+    
+    private boolean serverMode;
+
+
+    public RolesManager(boolean serverMode) {
+        super();
+        this.serverMode = serverMode;
     }
 
 
@@ -33,7 +39,7 @@ public class RolesManager extends LayoutContainer {
         tabPanel.setBorders(false);
         tabPanel.setSize(600, 500);
         TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Roles manager"));
-        managerItem.add(new ContentManagerEmbedded(null, null, null, ManagerConfigurationFactory.ROLESMANAGER));
+        managerItem.add(new ContentManagerEmbedded(null, null, null, serverMode ? ManagerConfigurationFactory.ROLESMANAGER : ManagerConfigurationFactory.SITEROLESMANAGER));
         tabPanel.add(managerItem);
 
         TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Roles/permission mapping"));

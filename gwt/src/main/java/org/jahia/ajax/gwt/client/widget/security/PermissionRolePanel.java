@@ -68,7 +68,8 @@ public class PermissionRolePanel extends LayoutContainer {
      * Refresh data
      */
     private void refreshData() {
-        contentService.getRolesAndPermissions(site, server, new AsyncCallback<GWTRolesPermissions>() {
+        // TODO need to provide a site key in case we are in the site permissions
+        contentService.getRolesAndPermissions(null, new AsyncCallback<GWTRolesPermissions>() {
             public void onSuccess(GWTRolesPermissions gwtRolesPermissions) {
                 roles = gwtRolesPermissions.getRoles();
                 permissions = gwtRolesPermissions.getPermissions();
@@ -76,7 +77,7 @@ public class PermissionRolePanel extends LayoutContainer {
             }
 
             public void onFailure(Throwable throwable) {
-                Log.error("Error while retriving roles and permissions", throwable);
+                Log.error("Error while retrieving roles and permissions", throwable);
             }
         });
     }

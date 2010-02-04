@@ -50,6 +50,7 @@ public final class JCRClientUtils {
     public static final String SITE_NODETYPES = "jnt:virtualsite,jnt:page";
     public static final String PAGE_NODETYPES = "jnt:page";
     public static final String TAG_NODETYPES = "jnt:tag";
+    public static final String ROLE_NODETYPES = "jnt:role";
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";
@@ -65,6 +66,8 @@ public final class JCRClientUtils {
 
     public final static String CATEGORY_REPOSITORY = "categoryRepository";
     public final static String TAG_REPOSITORY = "tagRepository";
+    public final static String ROLE_REPOSITORY = "roleRepository";
+    public final static String SITE_ROLE_REPOSITORY = "siteRoleRepository";
 
     public final static String PORTLET_DEFINITIONS_REPOSITORY = "portletDefinitionRepository";
 

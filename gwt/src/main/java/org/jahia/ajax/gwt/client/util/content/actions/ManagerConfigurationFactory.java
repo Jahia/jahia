@@ -54,6 +54,7 @@ public class ManagerConfigurationFactory {
     public static final String COMPLETE = "complete";
     public static final String SITEMANAGER = "sitemanager";
     public static final String ROLESMANAGER = "rolesmanager";
+    public static final String SITEROLESMANAGER = "siterolesmanager";
 
     public static ManagerConfiguration getConfiguration(String config, ManagerLinker linker) {
         if (config != null) {
@@ -89,6 +90,9 @@ public class ManagerConfigurationFactory {
             }
             if (config.contains(ROLESMANAGER)) {
                 return getRolesManagerConfiguration(linker);
+            }
+            if (config.contains(SITEROLESMANAGER)) {
+                return getSiteRolesManagerConfiguration(linker);
             }
             if (config.contains(LINKPICKER)) {
                 return getPagePickerConfiguration(linker);
@@ -313,7 +317,7 @@ public class ManagerConfigurationFactory {
 
     public static ManagerConfiguration getRolesManagerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration configuration = new ManagerConfiguration();
-        configuration.setHideLeftPanel(true);
+        configuration.setHideLeftPanel(false);
         configuration.setEnableTextMenu(true);
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
@@ -324,11 +328,18 @@ public class ManagerConfigurationFactory {
         configuration.addTab(JCRClientUtils.PRINCIPAL_ROLES_MAPPING);
 
         configuration.setDefaultView(JCRClientUtils.FILE_TABLE);
-        configuration.addAccordion(JCRClientUtils.TAG_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.ROLE_REPOSITORY);
 
-        configuration.setNodeTypes(JCRClientUtils.TAG_NODETYPES);
-        configuration.setFolderTypes(JCRClientUtils.TAG_NODETYPES);
+        configuration.setNodeTypes(JCRClientUtils.ROLE_NODETYPES);
+        configuration.setFolderTypes(JCRClientUtils.ROLE_NODETYPES);
 
+        return configuration;
+    }
+
+    public static ManagerConfiguration getSiteRolesManagerConfiguration(final ManagerLinker linker) {
+        ManagerConfiguration configuration = getRolesManagerConfiguration(linker);
+        configuration.getAccordionPanels().clear();
+        configuration.addAccordion(JCRClientUtils.SITE_ROLE_REPOSITORY);
         return configuration;
     }
 

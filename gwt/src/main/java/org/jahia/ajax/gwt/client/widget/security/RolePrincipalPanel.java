@@ -50,14 +50,14 @@ public class RolePrincipalPanel extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         //setLayout(new FitLayout());
-        JahiaContentManagementService.App.getInstance().getRoles(site, server, principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
+        JahiaContentManagementService.App.getInstance().getRoles(principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
             public void onSuccess(List<GWTJahiaRole> gwtRoles) {
                 roles = gwtRoles;
                 updateUI();
             }
 
             public void onFailure(Throwable throwable) {
-                Log.error("Error while retriving roles", throwable);
+                Log.error("Error while retrieving roles", throwable);
             }
         });
 

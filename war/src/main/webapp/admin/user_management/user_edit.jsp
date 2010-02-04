@@ -315,30 +315,6 @@
     </td>
 </tr>
 <%-- You can add your custom user properties here --%>
-<% if (!jUser.isPasswordReadOnly()) { %>
-<tr>
-    <td align="right">
-        <fmt:message key="label.password"/>&nbsp;
-    </td>
-    <td>
-        <input class="input" type="password" name="passwd"
-               size="40" maxlength="255"
-               value='<%=JahiaTools.nnString(passwd)%>'>
-        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
-    </td>
-</tr>
-<tr>
-    <td align="right">
-        <fmt:message key="label.comfirmPassword"/>&nbsp;
-    </td>
-    <td>
-        <input class="input" type="password" name="passwdconfirm"
-               size="40" maxlength="255"
-               value='<%=JahiaTools.nnString(passwdConfirm)%>'>
-        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
-    </td>
-</tr>
-<% } %>
 <% if (isSuperAdminProp == null) {%>
 <tr style="height: 35px; vertical-align: top;">
     <td align="right">

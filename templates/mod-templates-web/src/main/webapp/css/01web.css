@@ -650,6 +650,10 @@ shortcuts
 	padding:0;
 	margin : 0;
 }
+#bodywrapper textarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:100%
+}
 #bodywrapper input,
 #bodywrapper select,
 #bodywrapper textarea {
@@ -658,7 +662,6 @@ shortcuts
 	border:1px solid #ccc;
 	color:#666;
 	padding:4px 5px;
-	background-color:#f6f6f6;
 }
 
 #bodywrapper input.gobutton{
@@ -687,6 +690,42 @@ shortcuts
 	background:#fff url(../img/bg-button-on.png) repeat-x top left;
 	color:#900;
 }
+/******************************************************************************
+*  <A> Button
+******************************************************************************/
+
+#bodywrapper  a.aButton,
+#bodywrapper  a.aButton:link,
+#bodywrapper  a.aButton:visited {
+	background: transparent url(../img/button-right.png) no-repeat scroll top right;
+	display: block;
+	float: left;
+	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
+	margin-right: 6px;
+	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
+	/* FONT PROPERTIES */
+	text-decoration: none;
+	color:#fff;
+	margin-top: 5px;
+}
+#bodywrapper  a.aButton span {
+	/* Background left image */
+	background: transparent url(../img/button-left.png) no-repeat;
+	display: block;
+	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
+	padding: 6px 0 6px 18px;
+}
+#bodywrapper  a.aButton:hover span{
+	text-decoration:underline;
+}
+#bodywrapper  a.aButtonRight,
+#bodywrapper  a.aButtonRight:link,
+#bodywrapper  a.aButtonRight:visited{
+	float: right;
+}
+/******************************************************************************
+*  <A> bottomanchor
+******************************************************************************/
 #bodywrapper div.bottomanchor {
 	border-top:1px dotted #ccc;
 	line-height:1.2em;
@@ -706,13 +745,6 @@ shortcuts
 #bodywrapper .bottomanchor a:active  {
 	cursor: pointer;
 	background: url(../img/bottomanchor-on.png) no-repeat top right;
-}
-
-
-/*illustration */
-#bodywrapper #illustration{
-	clear:both;
-	padding:10px 0 0 0;
 }
 
 /******************************************************************************
@@ -1212,31 +1244,31 @@ background-color:#eaeaea
 	margin-bottom:10px
 }
 
-
-
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-#bodywrapper .tab,
+#bodywrapper .table th img{
+	vertical-align: middle
+}
+#bodywrapper .table,
 #bodywrapper .table caption
 {
     margin: auto;
-	line-height:1.9em
+	line-height:1.9em;
+
 }
 
 #bodywrapper .table
 {
     border-collapse: separate;
-    border-spacing: 1px;
     empty-cells: hide;
 	margin-bottom:1em;
-	background-color:#fff
-
+	font-size:0.85em;
+	border:none;
 }
 
 #bodywrapper .table caption
 {
-	color:#900;
 	font-weight:normal;
 	font-size:2em;
 	margin:0 ;
@@ -1245,39 +1277,99 @@ background-color:#eaeaea
 
 #bodywrapper .table th {
     color: #333;
-	text-transform: uppercase;
-    font-size: 1em;
-    letter-spacing: 1px;
-	padding-left:0.5em;
+	white-space:nowrap;
+	background-color:#CCCCCC;
+	padding:5px;
 }
 #bodywrapper .table td
 {
-	padding-left: 0.5em;
+	padding:5px;
 }
-#bodywrapper .table .odd td
+#bodywrapper .table tr:hover{
+	background-color:#f0f0f0
+}
+#bodywrapper .table .odd td{}
+#bodywrapper .table .even td{}
+#bodywrapper .col1{}
+#bodywrapper .col2{}
+#bodywrapper .col3{}
+#bodywrapper .col4{}
+
+#bodywrapper .table td.center,
+#bodywrapper .table th.center
 {
-    color: #333;
-	background-color:#eaeaea
+	text-align:center;
 }
-#bodywrapper .table .even td
-{
-    color: #333;
-	background-color:#fff
+/******************************************************************************
+*  idTabs
+******************************************************************************/
+#bodywrapper div.idTabsContainer{
+	margin:0 ;
 }
-#bodywrapper .col1{
+#bodywrapper  ul.idTabs {
+	clear:both;
+	list-style-type:none;
+	overflow:hidden;
+	background:transparent url(../img/tab-bg.png) repeat-x bottom left;
+	margin:0 0 10px 0;
+	padding:0;
 
 }
-#bodywrapper .col2{
+#bodywrapper .idTabs li {
+	display:inline;
+	float:left;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .idTabs li.spacing{
+	padding-left:20px;
+}
+
+#bodywrapper .idTabs li a {
+	background:transparent url(../img/tab-left.png) no-repeat scroll 0 0;
+	color:#fff;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-left:15px;
+	text-decoration:none;
+	margin-right:2px
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	background-position:0 -29px;
+	color:#fff;
+	text-decoration:none;
+}
+
+
+#bodywrapper .idTabs li a span {
+	background:transparent url(../img/tab-right.png) no-repeat scroll 100% 0;
+	color:#cccccc;
+	cursor:pointer;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-right:15px;
+	text-decoration:none;
 
 }
-#bodywrapper .col3{
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	background-position:100% -29px;
+	color:#fff;
+	text-decoration:none;
 }
-
-#bodywrapper .table tfoot td
-{
-	font-size: 0.8em;
-    color: #666;
-    letter-spacing: 1px;
+/******************************************************************************
+*  menu-tabs-home
+******************************************************************************/
+#bodywrapper div.idTabs-home{
+	margin-top:1em;
+	margin-bottom:1em
 }
 /******************************************************************************
 * Get Flash

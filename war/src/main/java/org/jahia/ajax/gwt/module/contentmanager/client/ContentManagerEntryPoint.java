@@ -57,7 +57,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             String config = DOMUtil.getRootAttr(panel, "config");
             String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
             if (embedded) {
-                panel.add(new ContentManagerEmbedded(nodeTypes,filters,mimeTypes,config));
+                panel.add(new ContentManagerEmbedded(rootPath,nodeTypes,filters,mimeTypes,config));
             } else {
                 panel.add(new ContentManager(rootPath,nodeTypes,filters,mimeTypes,config));
             }

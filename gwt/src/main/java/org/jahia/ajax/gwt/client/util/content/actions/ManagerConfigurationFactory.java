@@ -317,7 +317,7 @@ public class ManagerConfigurationFactory {
 
     public static ManagerConfiguration getRolesManagerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration configuration = new ManagerConfiguration();
-        configuration.setHideLeftPanel(false);
+        configuration.setHideLeftPanel(true);
         configuration.setEnableTextMenu(true);
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);

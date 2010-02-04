@@ -77,7 +77,7 @@
 </div>
 <div class="content-item">
  <div class="dex-subTabBar">
-    <div id="gwtpermissionrole" mode="site" class="jahia-admin-gxt"></div>
+    <div id="gwtpermissionrole" <%="/sites/"+Jahia.getThreadParamBean().getSiteKey()+"/roles"%> class="jahia-admin-gxt"></div>
  </div>
 
 </div>

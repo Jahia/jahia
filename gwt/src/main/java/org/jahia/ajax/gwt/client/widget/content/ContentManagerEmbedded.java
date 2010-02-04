@@ -1,5 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
@@ -40,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 
 public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
-    public ContentManagerEmbedded(String types, String filters, String mimeTypes, String conf) {
+    public ContentManagerEmbedded(final String rootPath,String types, String filters, String mimeTypes, String conf) {
         // superclass constructor (define linker)
         super();
         setWidth("100%");
@@ -72,23 +78,23 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         }
       
 
-        final ContentViews filesViews = new ContentViews(config);
+        final ContentViews contentViews = new ContentViews(config);
         BottomRightComponent tabs = new ContentDetails(config);
         TopBar toolbar = new ContentToolbar(config, linker) {
             protected void setListView() {
-                filesViews.switchToListView();
+                contentViews.switchToListView();
             }
 
             protected void setThumbView() {
-                filesViews.switchToThumbView();
+                contentViews.switchToThumbView();
             }
 
             protected void setDetailedThumbView() {
-                filesViews.switchToDetailedThumbView();
+                contentViews.switchToDetailedThumbView();
             }
 
             protected void setTemplateView() {
-                filesViews.switchToTemplateView();
+                contentViews.switchToTemplateView();
             }
         };
         BottomBar statusBar = new ContentStatusBar();
@@ -96,14 +102,32 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         // setup widgets in layout
 
         initWidgets(leftTree,
-                filesViews.getComponent(),
+                contentViews.getComponent(),
                 tabs.getComponent(),
                 toolbar.getComponent(),
                 statusBar.getComponent());
 
         // linker initializations
-        linker.registerComponents(tree, filesViews, tabs, toolbar, statusBar);
-        filesViews.initContextMenu();
+        linker.registerComponents(tree, contentViews, tabs, toolbar, statusBar);
+        contentViews.initContextMenu();
         linker.handleNewSelection();
+        if (config.isExpandRoot()) {
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    JahiaContentManagementService.App.getInstance().getNode(rootPath, new AsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode gwtJahiaNode) {
+                            linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode);
+                            linker.refresh();
+                        }
+
+                        public void onFailure(Throwable throwable) {
+                            Log.error("Unable to loaf node with path " + rootPath, throwable);
+                        }
+                    });
+                }
+            });
+        } else {
+            linker.handleNewSelection();
+        }
     }
 }

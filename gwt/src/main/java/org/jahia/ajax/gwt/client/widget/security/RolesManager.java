@@ -21,12 +21,12 @@ import java.util.List;
  */
 public class RolesManager extends LayoutContainer {
     
-    private boolean serverMode;
+    private String rootPath;
 
 
-    public RolesManager(boolean serverMode) {
+    public RolesManager(final String rootPath) {
         super();
-        this.serverMode = serverMode;
+        this.rootPath = rootPath;
     }
 
 
@@ -39,7 +39,7 @@ public class RolesManager extends LayoutContainer {
         tabPanel.setBorders(false);
         tabPanel.setSize(600, 500);
         TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Roles manager"));
-        managerItem.add(new ContentManagerEmbedded(null, null, null, serverMode ? ManagerConfigurationFactory.ROLESMANAGER : ManagerConfigurationFactory.SITEROLESMANAGER));
+        managerItem.add(new ContentManagerEmbedded(rootPath,null, null, null, ManagerConfigurationFactory.ROLESMANAGER));
         tabPanel.add(managerItem);
 
         TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Roles/permission mapping"));

@@ -90,7 +90,6 @@ public class ManageServerPermissions extends AbstractAdministrationModule {
                                     HttpSession session)
             throws IOException, ServletException {
 
-        JahiaSite jahiaSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         ProcessingContext jParams = null;
         if (jData != null) {
@@ -98,8 +97,6 @@ public class ManageServerPermissions extends AbstractAdministrationModule {
         }
 
         try {
-            request.setAttribute("siteID", new Integer(jahiaSite.getID()));
-            request.setAttribute("siteKey", new Integer(jahiaSite.getSiteKey()));
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "permissions/server_permissions.jsp");
         } catch (Exception je) {
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",

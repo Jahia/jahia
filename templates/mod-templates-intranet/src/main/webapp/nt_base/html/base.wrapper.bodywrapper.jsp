@@ -66,7 +66,7 @@
                     </c:forTokens>
                 </div>
                 <!--stop breadcrumbs-->
-                <h1>${currentNode.propertiesAsString['jcr:title']}</h1>
+                <h2 class="pagetitle">${currentNode.propertiesAsString['jcr:title']}</h2>
 
                 <div class="clear"></div>
                 <div id="navigation">

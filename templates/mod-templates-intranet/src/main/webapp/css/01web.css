@@ -414,7 +414,16 @@ shortcuts
 	line-height:normal;
 	padding:0 0 0.5em 0;
 }
-
+#bodywrapper h2.pagetitle {
+	margin:0;
+	padding:0;
+	color:#666666;
+	font-weight:normal;
+	font-size:2.8em;
+	line-height:normal;
+	padding:0 0 0.5em 0;
+	background:none;
+}
 #bodywrapper h2 {
 	font-weight:normal;
 	font-size:2em;

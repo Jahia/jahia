@@ -47,12 +47,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
-<%
-    List aclNameList = (List) request.getAttribute("aclNameList");
-    final Integer userNameWidth = new Integer(15);
-    request.getSession().setAttribute("userNameWidth", userNameWidth);
-    final String selectUsrGrp = (String) request.getAttribute("selectUsrGrp");
-    final String curPermissionGroup = (String) session.getAttribute(ManageSitePermissions.class.getName() + ManageSitePermissions.CURGROUP_SESSION_ATTR_NAME); %>
 <div id="topTitle">
     <h1>Jahia</h1>
 
@@ -82,28 +76,10 @@
     </div>
 </div>
 <div class="content-item">
-<form name="jahiaAdmin"
-      action='<%=JahiaAdministration.composeActionURL(request,response,"sitePermissions","&sub=process")%>'
-      method="post">
-<script type="text/javascript">
-    function saveContent() {
-        document.jahiaAdmin.submit();
-    }
-    function changePermissionGroup(newGroup) {
-        document.jahiaAdmin.currentGroup.value = newGroup;
-        document.jahiaAdmin.submit();
-    }
-</script>
-<input type="hidden" name="currentGroup" value="<%=curPermissionGroup%>"/>
-
-<p>
-    <fmt:message key="org.jahia.admin.sitepermissions.introduction.label"/>
-</p>
-
-<div class="dex-subTabBar">
+ <div class="dex-subTabBar">
     <div id="gwtpermissionrole" mode="site" class="jahia-admin-gxt"></div>
-</div>
-</form>
+ </div>
+
 </div>
 </div>
 </div>

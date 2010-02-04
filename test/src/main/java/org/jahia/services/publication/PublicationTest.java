@@ -55,6 +55,22 @@ import java.util.*;
  *
  * @author Benjamin Papez
  *
+ *
+ * TestA - standard nodes :
+ *
+ * 1/ create new node "nodeA" - publish it - check in live if nodeA is here
+ * 2/ modify nodeA - publish it - check in live if nodeA is modified
+ * 3/ unpublish nodeA - check in live if nodeA has disappeared
+ * 4/ publish nodeA - check in live if nodeA is here
+ * 5/ move nodeA in same list, before a node - publish it - check if nodeA is correctly moved (and removed from original place)
+ * 6/ move nodeA in another list, before a node - publish it - check if nodeA is correctly moved (and removed from original place)
+ * 7/ move and modify nodeA in another list, before a node - publish it - check if nodeA is correctly modified and moved (and removed from original place)
+ * 8/ move nodeA in another list, before a node twice - publish it - check if nodeA is correctly moved (and removed from original place)
+ * 9/ delete nodeA - publish parent - check in live the node is deleted
+ *
+ * TestB - shareable nodes - same scenarios
+ * TestC - pages node with sub pages - same scenarios. sub pages should not be published.
+ *
  */
 public class PublicationTest extends TestCase {
     private static Logger logger = Logger.getLogger(PublicationTest.class);

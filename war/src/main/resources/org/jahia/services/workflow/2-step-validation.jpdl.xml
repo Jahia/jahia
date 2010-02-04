@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<process name="My First Process" xmlns="http://jbpm.org/4.3/jpdl">
-   <start name="start">
-      <transition to="First Review"/>
-   </start>
-   <task name="First Review">
-      <transition to="Final Review"/>
-   </task>
-   <task name="Final Review">
-      <transition to="Publication"/>
-   </task>
-   <state name="Publication">
-      <transition to="end"/>
-   </state>
-   <end name="end"/>
+<process name="2 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
+    <start name="start">
+        <transition to="first review"/>
+    </start>
+    <task name="first review">
+        <transition name="accept" to="final review"/>
+        <transition name="reject" to="end"/>
+    </task>
+    <task name="final review">
+        <transition name="publish" to="publication"/>
+        <transition name="reject" to="end"/>
+        <transition name="correction needed" to="first review"/>
+    </task>
+    <state name="publication">
+        <transition to="end"/>
+    </state>
+    <end name="end"/>
 </process>

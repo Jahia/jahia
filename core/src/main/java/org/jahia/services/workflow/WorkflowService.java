@@ -139,6 +139,18 @@ public class WorkflowService {
     /**
      * This method will call the underlying provider to signal the identified process.
      *
+     * @param processId the process we want to advance
+     * @param provider  The provider executing the process
+     * @param s
+     * @param args      List of args for the process
+     */
+    public void signalProcess(String processId, String transitionName,String signalName, String provider, Map<String, Object> args) {
+        providers.get(provider).signalProcess(processId, transitionName, signalName, args);
+    }
+
+    /**
+     * This method will call the underlying provider to signal the identified process.
+     *
      * @param stageNode
      * @param provider  The provider executing the process
      * @param args      Map of args for the process

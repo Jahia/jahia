@@ -136,6 +136,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         executionService.signalExecutionById(in.getId(), args);
     }
 
+    public void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args) {
+        final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
+        executionService.signalExecutionById(in.getId(),signalName, args);
+    }
+
     public Set<WorkflowAction> getAvailableActions(String processId) {
         final ProcessInstance instance = executionService.findProcessInstanceById(processId);
         final Set<String> actions = instance.findActiveActivityNames();

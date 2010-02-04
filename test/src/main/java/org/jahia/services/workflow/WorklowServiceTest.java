@@ -62,6 +62,8 @@ public class WorklowServiceTest extends TestCase {
     private JahiaUser johndoe;
     private JahiaUser johnsmoe;
     private JahiaGroup group;
+    private HashMap<String, Object> emptyMap;
+    private static final String PROVIDER = "jBPM";
 
     @Before
     public void setUp() throws Exception {
@@ -69,6 +71,7 @@ public class WorklowServiceTest extends TestCase {
         initUsersGroup();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
+        emptyMap = new HashMap<String, Object>();
     }
 
     @org.junit.Test
@@ -122,7 +125,12 @@ public class WorklowServiceTest extends TestCase {
         final Set<WorkflowAction> availableActions = activeWorkflows.get("jBPM").get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM",
                    availableActions.size() > 0);
-        service.signalProcess(processId, availableActions.iterator().next().getName(), "jBPM", emptyMap);
+        WorkflowAction action = availableActions.iterator().next();
+        if(action instanceof WorkflowTask) {
+            service.signalProcess(processId, action.getName(),((WorkflowTask)action).getOutcomes().contains("accept")?"accept":"reject", "jBPM", emptyMap);
+        } else {
+            service.signalProcess(processId, action.getName(), "jBPM", emptyMap);
+        }
         final Map<String, List<Workflow>> newActiveWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflows providers", newActiveWorkflows.size() > 0);
         assertTrue("There should be some active workflow in jBPM", newActiveWorkflows.get("jBPM").size() > 0);
@@ -164,7 +172,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue(forUser.size() > 0);
         final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
         WorkflowTask workflowTask = forUser.get(0);
-        service.completeTask(workflowTask.getId(), "jBPM", workflowTask.getOutcomes().iterator().next(), emptyMap);
+        service.completeTask(workflowTask.getId(), "jBPM", workflowTask.getOutcomes().contains("accept")?"accept":"reject", emptyMap);
         assertTrue(service.getTasksForUser(user).size() < forUser.size());
         assertFalse(service.getActiveWorkflows(stageNode).equals(actionSet));
     }
@@ -193,7 +201,6 @@ public class WorklowServiceTest extends TestCase {
         WorkflowAction action = actionSet.iterator().next();
         assertTrue(action instanceof WorkflowTask);
         WorkflowTask task = (WorkflowTask) action;
-
         service.addParticipatingGroup(task.getId(), provider, group, WorkflowService.CANDIDATE);
         List<WorkflowTask> johnDoeList = service.getTasksForUser(johndoe);
         List<WorkflowTask> johnSmoeList = service.getTasksForUser(johnsmoe);
@@ -204,6 +211,65 @@ public class WorklowServiceTest extends TestCase {
         assertFalse("John Doe and John Smoe should not have same tasks list", johnDoeList.equals(johnSmoeList));
         service.completeTask(task.getId(), provider, task.getOutcomes().iterator().next(),
                              new HashMap<String, Object>());
+    }
+
+    @org.junit.Test
+    public void testFullProcess2StepPublication() throws Exception {
+        final WorkflowService service = WorkflowService.getInstance();
+        final Map<String, List<Workflow>> possibleWorkflows = service.getPossibleWorkflows(null);
+        assertTrue("There should be some workflows already deployed", possibleWorkflows.size() > 0);
+        final List<Workflow> workflowList = possibleWorkflows.get(PROVIDER);
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        final Workflow workflow = workflowList.get(0);
+        assertNotNull("Worflow should not be null", workflow);
+        JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
+        final String processId = service.startProcess(stageNode, workflow.getId(), PROVIDER,
+                                                      new HashMap<String, Object>());
+        assertNotNull("The startup of a process should have return an id", processId);
+        final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
+        assertTrue("There should be some active workflows providers", activeWorkflows.size() > 0);
+        assertTrue("There should be some active workflow in jBPM", activeWorkflows.get(PROVIDER).size() > 0);
+        Set<WorkflowAction> actionSet = activeWorkflows.get(PROVIDER).get(0).getAvailableActions();
+        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
+        WorkflowAction action = actionSet.iterator().next();
+        assertTrue(action instanceof WorkflowTask);
+        WorkflowTask task = (WorkflowTask) action;
+        service.assignTask(task.getName(), processId, PROVIDER, johndoe);
+        List<WorkflowTask> forUser = service.getTasksForUser(johndoe);
+        assertTrue(forUser.size() > 0);
+        WorkflowTask workflowTask = forUser.get(0);
+        service.completeTask(workflowTask.getId(), PROVIDER, "accept", emptyMap);
+        assertTrue(service.getTasksForUser(johndoe).size() < forUser.size());
+        assertFalse(service.getActiveWorkflows(stageNode).equals(actionSet));
+        // Assign john smoe to the next task
+        actionSet = service.getAvailableActions(processId, PROVIDER);
+        service.assignTask(actionSet.iterator().next().getName(), processId, PROVIDER, johnsmoe);
+        // Rollback to previous task
+        forUser = service.getTasksForUser(johnsmoe);
+        assertTrue("John Smoe task list should not be empty", forUser.size() > 0);
+        assertTrue("Current task should be final review", forUser.get(0).getName().equals("final review"));
+        workflowTask = forUser.get(0);
+        assertTrue("Final review should have 3 outcomes", workflowTask.getOutcomes().size() == 3);
+        assertTrue("Final review should contains correction needed as an outcome", workflowTask.getOutcomes().contains(
+                "correction needed"));
+        service.completeTask(workflowTask.getId(), workflowTask.getProvider(), "correction needed", emptyMap);
+        assertTrue("Current Task should be first review as we have asked for corrections", service.getAvailableActions(
+                processId, PROVIDER).iterator().next().getName().equals("first review"));
+        // Assign john doe to task
+        service.assignTask(service.getAvailableActions(processId, PROVIDER).iterator().next().getName(), processId,
+                           PROVIDER, johndoe);
+        // Complete task
+        service.completeTask(service.getTasksForUser(johndoe).get(0).getId(),PROVIDER,"accept",emptyMap);
+        // Assign john smoe to the next task
+        service.assignTask(service.getAvailableActions(processId, PROVIDER).iterator().next().getName(), processId,
+                           PROVIDER, johnsmoe);
+        // Complete Task with accept
+        service.completeTask(service.getTasksForUser(johnsmoe).get(0).getId(),PROVIDER,"publish",emptyMap);
+        // Verify we are at publish state
+        assertTrue("Current Task should be first review as we have accepted it", service.getAvailableActions(
+                processId, PROVIDER).iterator().next().getName().equals("publication"));
     }
 
     @After

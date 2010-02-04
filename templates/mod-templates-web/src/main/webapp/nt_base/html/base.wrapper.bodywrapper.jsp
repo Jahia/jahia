@@ -60,13 +60,11 @@
 </div>
 <div class="clear"></div></div>
 <!--stop bottomheader-->
-<div class="container container_16"></div>
-
 <div id="content"><!--start content-->
-
-     ${wrappedContent}
-
-</div><!--stop content-->
+    <div class="container container_16">
+         ${wrappedContent}
+    </div><!--stop content-->
+</div>
 <div id="footer"><!--start footer-->
 <div id="footerPart3"><!--start footerPart3-->
 <div class="container container_16">

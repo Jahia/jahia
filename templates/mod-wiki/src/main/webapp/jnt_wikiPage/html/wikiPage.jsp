@@ -1,19 +1,20 @@
 <%@ page contentType="text/html; UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<template:addResources type="css" resources="wiki.css"/>
 <template:addWrapper name="wrapper.wiki"/>
 <div id="one"><!--start tab One-->
 
-    <div class="intro wiki">
+    <div class="wiki">
         <template:module node="${currentNode}" forcedTemplate="syntax"/>
 
      <%--
-        <div class="box"><!--start box -->
-            <div class="boxshadow boxpadding16 boxmarginbottom16">
-                <div class="box-inner">
+        <div class="boxwiki"><!--start boxwiki -->
+            <div class="boxwikishadow boxwikipadding16 boxwikimarginbottom16">
+                <div class="boxwiki-inner">
 
-                    <div class="box-inner-border">
-                        <h3 class="boxtitleh3"><a href="#">Sommaire</a></h3>
+                    <div class="boxwiki-inner-border">
+                        <h3 class="boxwikititleh3"><a href="#">Sommaire</a></h3>
                         <ul class="summary wiki">
                             <li class="toclevel-1 tocsection-1"><a href="#Fonctionnement_technique"><span
                                     class="tocnumber">1</span> <span class="toctext">Fonctionnement technique</span></a>
@@ -79,14 +80,14 @@
         <!--stop anchor-->
     </div>
 <%--
-    <div class="box">
-        <div class="boxshadow boxgrey boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
+    <div class="boxwiki">
+        <div class="boxwikishadow boxwikigrey boxwikipadding16 boxwikimarginbottom16">
+            <div class="boxwiki-inner">
 
-                <div class="box-inner-border"><!--start box -->
+                <div class="boxwiki-inner-border"><!--start boxwiki -->
                     <h3>Voir aussi</h3>
                     <h4>Articles connexes</h4>
-                    <ul class="list4">
+                    <ul class="listwiki">
 
                         <li><a href="#">Liste de logiciels wiki</a><a href="#"></a></li>
                         <li><a href="#">WikiWikiWeb</a>, le premier wiki</li>
@@ -96,7 +97,7 @@
                         <li><a href="#">Web social</a></li>
                     </ul>
                     <h4>Liens externes</h4>
-                    <ul class="list4">
+                    <ul class="listwiki">
                         <li><span class="lang">(fr)</span> <a class="external" href="#">Catégorie wiki</a> de l’annuaire
                             <a href="#">dmoz</a></li>
                         <li><span class="lang">(fr)</span> <a class="external" href="#">la page Wiki dans Framasoft</a>notices
@@ -117,7 +118,7 @@
 
                     </ul>
                     <h4>Bibliographie</h4>
-                    <ul class="list4">
+                    <ul class="listwiki">
 
                         <li>Jérôme Delacroix, Les wikis. Espaces de l'intelligence collective, M2 Éditions, Paris, 2005.
                             (fr)
@@ -128,7 +129,7 @@
             </div>
         </div>
     </div>
-    <!--stop box -->
+    <!--stop boxwiki -->
  --%>
 </div>
 <!--stop grid_10-->

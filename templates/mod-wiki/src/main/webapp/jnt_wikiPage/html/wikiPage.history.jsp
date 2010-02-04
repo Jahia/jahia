@@ -1,15 +1,17 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<template:addResources type="css" resources="wiki.css"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addWrapper name="wrapper.wiki"/>
-    <div id="${currentNode.UUID}-history" class="box">
-        <div class="boxgrey boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border"><!--start box -->
+
+    <div id="${currentNode.UUID}-history" class="boxwiki">
+        <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
+            <div class="boxwiki-inner">
+                <div class="boxwiki-inner-border"><!--start boxwiki -->
                     <form name="diff" method="get" action="${currentNode.name}.compare.html">
-                        <h4 class="title titlegrey"><fmt:message key="jnt_wiki.pageHistoryTitle"/></h4>
-                        <table width="100%" class="table tableTasks " summary="Mes taches en cour en table">
+                        <h4 class="boxwiki-title"><fmt:message key="jnt_wiki.pageHistoryTitle"/></h4>
+                        <table width="100%" class="table tablecompare " summary="Table Compare">
                             <caption class=" hidden">
                                 <fmt:message key="jnt_wiki.pageHistoryTitle"/>
                             </caption>
@@ -100,8 +102,4 @@
             </div>
         </div>
     </div>
-    <!--stop box -->
-
-
-</div>
-<!--stop tabtwo-->
+    <!--stop boxwiki -->

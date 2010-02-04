@@ -3,6 +3,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<template:addResources type="css" resources="wiki.css"/>
 
 <template:addWrapper name="wrapper.wiki"/>
 <div id="one"><!--start tab One-->
@@ -19,7 +20,7 @@
     <c:if test="${pageList.nodes.size > 0}">
         <h3 class="boxtitleh3"><fmt:message key="jnt_wiki.lastModifiedPages"/> </h3>
 
-        <ul class="list4">
+        <ul class="listwiki">
             <c:forEach items="${pageList.nodes}" var="page">
                 <li>
                     <a href="${currentNode.name}/${page.name}.html">${page.name}</a> -
@@ -33,7 +34,7 @@
 
     <div>
         <form name="wikiForm"/>
-        <fmt:message key="jnt_wiki.createPage"/> : <input id="link" name="link" onchange="form.action='${currentNode.name}/'+form.elements.link.value+'.html'"> <input type="submit"/>
+        <fmt:message key="jnt_wiki.createPage"/> : <input id="link" name="link" onchange="form.action='${currentNode.name}/'+form.elements.link.value+'.html'"/> <input class="button" type="submit"/>
         </form>
     </div>
 </div>

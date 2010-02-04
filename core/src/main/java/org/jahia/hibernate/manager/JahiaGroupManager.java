@@ -298,17 +298,17 @@ public class JahiaGroupManager {
 
     private JahiaGroup getJahiaGroup(JahiaGrp jahiaGrp, int siteID, Map<String, Principal> members, Properties properties, boolean preloadedGroups) {
         JahiaGroup group;
-        if (JahiaGroupManagerDBProvider.GUEST_GROUPNAME.equals(jahiaGrp.getName())) {
-            group = new GuestGroup(jahiaGrp.getId().intValue(), 0, properties);
-        } else if (JahiaGroupManagerDBProvider.USERS_GROUPNAME.equals(jahiaGrp.getName())) {
-            group = new UsersGroup(jahiaGrp.getId().intValue(), 0, properties);
-        } else {
+//        if (JahiaGroupManagerDBProvider.GUEST_GROUPNAME.equals(jahiaGrp.getName())) {
+//            group = new GuestGroup(jahiaGrp.getId().intValue(), 0, properties);
+//        } else if (JahiaGroupManagerDBProvider.USERS_GROUPNAME.equals(jahiaGrp.getName())) {
+//            group = new UsersGroup(jahiaGrp.getId().intValue(), 0, properties);
+//        } else {
             group = new JahiaDBGroup(jahiaGrp.getId().intValue(), jahiaGrp.getName(), jahiaGrp.getKey(),
                                      siteID, members, properties, preloadedGroups);
             if (jahiaGrp.isHidden() != null ) {
                 group.setHidden(jahiaGrp.isHidden());
             }
-        }
+//        }
         return group;
     }
 

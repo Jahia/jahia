@@ -33,7 +33,10 @@
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.jcr.JCRGroup;
 
+import javax.jcr.Node;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.security.Principal;
@@ -45,15 +48,13 @@ import java.security.Principal;
  * Time: 16:44:20
  * To change this template use File | Settings | File Templates.
  */
-public class UsersGroup extends JahiaDBGroup {
+public class UsersGroup extends JCRGroup {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(UsersGroup.class);
 
-    public UsersGroup(int id, int siteId, Properties properties) {
-        super(id, JahiaGroupManagerDBProvider.USERS_GROUPNAME,
-                JahiaGroupManagerDBProvider.USERS_GROUPNAME+":"+siteId, siteId, new ConcurrentHashMap<String, Principal>(), properties, false);
+    public UsersGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
+        super(nodeWrapper, jcrTemplate, siteID);
     }
-
 
     public Enumeration<Principal> members() {
         return new Vector<Principal>(getRecursiveUserMembers()).elements();

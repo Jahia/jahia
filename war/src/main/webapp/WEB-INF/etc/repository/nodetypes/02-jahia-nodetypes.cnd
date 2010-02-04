@@ -120,12 +120,8 @@
 // Workflow
 //---------------------------------------------------------
 
-[jnt:workflow]
- - j:type (string)
-
-[jmix:workflowed] mixin
- + j:workflow (jnt:workflow)
- - j:workflowState (string) internationalized hidden
+[jmix:workflow] mixin
+ - j:processId (string) multiple
 
 //---------------------------------------------------------
 // Hierarchy nodes

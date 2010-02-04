@@ -32,11 +32,14 @@
  */
 package org.jahia.services.workflow;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.*;
@@ -79,10 +82,10 @@ public class WorkflowService {
      */
     public Map<String, List<WorkflowDefinition>> getPossibleWorkflows(JCRNodeWrapper node) throws RepositoryException {
         Map<String, List<WorkflowDefinition>> workflowsByProvider = new LinkedHashMap<String, List<WorkflowDefinition>>();
-        if(node.isNodeType("jnt:page")) {
+        if (node.isNodeType("jnt:page")) {
             for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-                        workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
-                    }
+                workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
+            }
         }
         return workflowsByProvider;
     }
@@ -96,13 +99,18 @@ public class WorkflowService {
     public Map<String, List<Workflow>> getActiveWorkflows(JCRNodeWrapper node) {
         Map<String, List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
         try {
-            if (node.hasNode("j:workflow")) {
-                JCRNodeWrapper workflowNode = node.getNode("j:workflow");
+            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+                Property p = node.getProperty(Constants.PROCESSID);
+                Value[] values = p.getValues();
                 for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
-                    final Value[] values = workflowNode.getProperty(entry.getKey()).getValues();
                     final List<String> processIds = new ArrayList<String>(values.length);
                     for (Value value : values) {
-                        processIds.add(value.getString());
+                        String key = value.getString();
+                        String processId = StringUtils.substringAfter(key, ":");
+                        String providerKey = StringUtils.substringBefore(key, ":");
+                        if (providerKey.equals(entry.getKey())) {
+                            processIds.add(processId);
+                        }
                     }
                     workflowsByProvider.put(entry.getKey(), entry.getValue().getActiveWorkflowsInformations(
                             processIds));
@@ -145,7 +153,7 @@ public class WorkflowService {
      * @param s
      * @param args      List of args for the process
      */
-    public void signalProcess(String processId, String transitionName,String signalName, String provider, Map<String, Object> args) {
+    public void signalProcess(String processId, String transitionName, String signalName, String provider, Map<String, Object> args) {
         providers.get(provider).signalProcess(processId, transitionName, signalName, args);
     }
 
@@ -158,10 +166,20 @@ public class WorkflowService {
      */
     public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
             throws RepositoryException {
+        args.put("nodeId", stageNode.getIdentifier());
         final String processId = providers.get(provider).startProcess(processKey, args);
         stageNode.checkout();
-        final JCRNodeWrapper workflowNode = stageNode.addNode("j:workflow", "nt:unstructured");
-        workflowNode.setProperty(provider, new String[]{processId});
+        if (!stageNode.isNodeType("jmix:workflow")) {
+            stageNode.addMixin("jmix:workflow");
+        }
+        List<Value> values;
+        if (stageNode.hasProperty(Constants.PROCESSID)) {
+            values = new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
+        } else {
+            values = new ArrayList<Value>();
+        }
+        values.add(stageNode.getSession().getValueFactory().createValue(provider + ":" + processId));
+        stageNode.setProperty(Constants.PROCESSID, values.toArray(new Value[values.size()]));
         stageNode.getSession().save();
         return processId;
     }
@@ -174,20 +192,20 @@ public class WorkflowService {
         return workflowActions;
     }
 
-    public void assignTask(String taskId,String provider,JahiaUser user) {
-        logger.debug("Assigning user "+user+" to task "+taskId);
+    public void assignTask(String taskId, String provider, JahiaUser user) {
+        logger.debug("Assigning user " + user + " to task " + taskId);
         providers.get(provider).assignTask(taskId, user);
     }
 
     public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
-        providers.get(provider).completeTask(taskId,outcome,args);
+        providers.get(provider).completeTask(taskId, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
-        providers.get(provider).addParticipatingGroup(taskId,group,role);
+        providers.get(provider).addParticipatingGroup(taskId, group, role);
     }
 
     public void deleteTask(String taskId, String provider, String reason) {
-        providers.get(provider).deleteTask(taskId,reason);
+        providers.get(provider).deleteTask(taskId, reason);
     }
 }

@@ -820,8 +820,15 @@
                   <groupId>org.json</groupId>
                   <artifactId>json</artifactId>
               </exclusion>
-            </exclusions>
-
+              <exclusion>
+                  <groupId>commons-beanutils</groupId>
+                  <artifactId>commons-beanutils-core</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>commons-collections</groupId>
+                  <artifactId>commons-collections</artifactId>
+              </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.shindig</groupId>

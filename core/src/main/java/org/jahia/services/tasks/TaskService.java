@@ -37,9 +37,6 @@ import static org.jahia.api.Constants.JAHIANT_TASKS;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.security.Principal;
@@ -63,8 +60,6 @@ public class TaskService {
     }
 
     private JahiaGroupManagerService groupManager;
-
-    private JahiaUserManagerService userManager;
 
     /**
      * Creates a task for the specified user.
@@ -112,7 +107,11 @@ public class TaskService {
             taskNode.setProperty("dueDate", calendar);
         }
         taskNode.setProperty("state", task.getState().toString().toLowerCase());
-        taskNode.setProperty("assignee",((JCRUser)userManager.lookupUser(forUser)).getNodeUuid());
+        try {
+            taskNode.setProperty("assignee", session.getNode("/users/" + forUser).getIdentifier());
+        } catch (Exception e) {
+            logger.warn("Unable to find user '" + forUser + "' to assign a task", e);
+        }
     }
 
     /**
@@ -177,9 +176,5 @@ public class TaskService {
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
         this.groupManager = groupManager;
-    }
-
-    public void setUserManager(JahiaUserManagerService userManager) {
-        this.userManager = userManager;
     }
 }

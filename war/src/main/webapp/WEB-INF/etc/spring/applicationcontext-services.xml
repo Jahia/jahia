@@ -396,7 +396,6 @@
         <property name="target">
             <bean class="org.jahia.services.tasks.TaskService">
             	<property name="groupManager" ref="JahiaGroupManagerService"/>
-                <property name="userManager" ref="JahiaUserManagerService"/>
             </bean>
         </property>
     </bean>

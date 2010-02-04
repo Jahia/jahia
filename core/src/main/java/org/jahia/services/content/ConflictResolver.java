@@ -76,7 +76,7 @@ public class ConflictResolver {
     }
 
     public void applyDifferences() throws RepositoryException {
-        computeDifferences((JCRVersionHistory) sourceNode.getVersionHistory(), sourceNode.getBaseVersion().getName(), targetNode.getBaseVersion().getName());
+        computeDifferences();
 
         resolvedDifferences = new ArrayList<Diff>();
         unresolvedDifferences = new ArrayList<Diff>();
@@ -90,10 +90,11 @@ public class ConflictResolver {
         targetNode.getRealNode().getSession().save();
     }
 
-    private void computeDifferences(JCRVersionHistory vh, String sourceNode, String targetNode) throws RepositoryException {
+    private void computeDifferences() throws RepositoryException {
+        JCRVersionHistory vh = (JCRVersionHistory) sourceNode.getVersionHistory();
 
-        JCRVersion s = vh.getVersion(sourceNode);
-        JCRVersion t = vh.getVersion(targetNode);
+        JCRVersion s = vh.getVersion(sourceNode.getBaseVersion().getName());
+        JCRVersion t = vh.getVersion(targetNode.getBaseVersion().getName());
 
         JCRVersion base = null;
 
@@ -109,16 +110,16 @@ public class ConflictResolver {
         if (base == null) {
             throw new RepositoryException();
         }
-        computeDifferences(base, s, t);
+        computeDifferences(base.getFrozenNode());
     }
 
-    private void computeDifferences(JCRVersion baseVersion, JCRVersion sourceVersion, JCRVersion targetVersion) throws RepositoryException{
-        JCRNodeWrapper frozenBase = baseVersion.getFrozenNode();
-        JCRNodeWrapper frozenSource = sourceVersion.getFrozenNode();
-        JCRNodeWrapper frozenTarget = targetVersion.getFrozenNode();
+    private void computeDifferences(JCRNodeWrapper frozenBase) throws RepositoryException{
+//        JCRNodeWrapper frozenBase = baseVersion.getFrozenNode();
+//        JCRNodeWrapper frozenSource = sourceVersion.getFrozenNode();
+//        JCRNodeWrapper frozenTarget = targetVersion.getFrozenNode();
 
-        List<Diff> sourceDiff = compare(frozenBase, frozenSource);
-        List<Diff> targetDiff = compare(frozenBase, frozenTarget);
+        List<Diff> sourceDiff = compare(frozenBase, sourceNode);
+        List<Diff> targetDiff = compare(frozenBase, targetNode);
 
         sourceDiff.removeAll(targetDiff);
 
@@ -130,7 +131,7 @@ public class ConflictResolver {
                 changedProperties.put(diff1.propertyName, diff1);
             }
             if (diff instanceof ChildAddedDiff) {
-                ((ChildAddedDiff)diff).sourceWorkspace = baseVersion.getSession().getWorkspace().getName();
+                ((ChildAddedDiff)diff).sourceWorkspace = sourceNode.getSession().getWorkspace().getName();
             }
         }
         for (Diff diff : targetDiff) {
@@ -244,21 +245,23 @@ public class ConflictResolver {
         return diffs;
     }
 
-    private Map<String, String> getChildEntries(JCRNodeWrapper frozenNode1) throws RepositoryException {
-        NodeIterator ni1 = frozenNode1.getNodes();
-        Map<String,String> uuids1 = new LinkedMap();
+    private Map<String, String> getChildEntries(JCRNodeWrapper node) throws RepositoryException {
+        NodeIterator ni1 = node.getNodes();
+        Map<String,String> childEntries = new LinkedMap();
         while (ni1.hasNext()) {
-            Node node1 = (Node) ni1.next();
-            if (node1.isNodeType("nt:versionedChild")) {
-                VersionHistory vh = (VersionHistory) frozenNode1.getSession().getNodeByIdentifier(node1.getProperty("jcr:childVersionHistory").getValue().getString());
+            Node child = (Node) ni1.next();
+            if (child.isNodeType("nt:versionedChild")) {
+                VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
                 String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
-                uuids1.put(uuid, node1.getName());
+                childEntries.put(uuid, child.getName());
+            } else if (child.isNodeType("nt:frozenNode")) {
+                String uuid = child.getProperty("jcr:frozenUuid").getValue().getString();
+                childEntries.put(uuid, child.getName());
             } else {
-                String uuid = node1.getProperty("jcr:frozenUuid").getValue().getString();
-                uuids1.put(uuid, node1.getName());
+                childEntries.put(child.getIdentifier(), child.getName());
             }
         }
-        return uuids1;
+        return childEntries;
     }
 
     List<String> getLinearHistory(Version v) throws RepositoryException {
@@ -439,7 +442,9 @@ public class ConflictResolver {
         public boolean apply() throws RepositoryException {
             String name = propertyName;
             if (targetNode.hasProperty(name)) {
-                targetNode.setProperty(name, Arrays.asList(targetNode.getProperty(name),newValue).toArray(new Value[0]));
+                List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(name).getValues()));
+                values.add(newValue);
+                targetNode.setProperty(name, values.toArray(new Value[values.size()]));
             } else {
                 targetNode.setProperty(name, new Value[] {newValue});
             }
@@ -486,7 +491,18 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            targetNode.getProperty(propertyName).remove();
+            List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getValues());
+            List<Value> newValues = new ArrayList<Value>();
+            for (Value value : oldValues) {
+                if (!equalsValue(value, oldValue)) {
+                    newValues.add(value);
+                }
+            }
+            if (newValues.isEmpty()) {
+                targetNode.getProperty(propertyName).remove();
+            } else {
+                targetNode.setProperty(propertyName, newValues.toArray(new Value[newValues.size()]));
+            }
             return true;
         }
 
@@ -534,7 +550,11 @@ public class ConflictResolver {
 
         public boolean apply() throws RepositoryException {
             if (newTargetValue == null) {
-                targetNode.setProperty(propertyName, newValue);
+                if (newValue == null) {
+                    targetNode.getProperty(propertyName).remove();
+                } else {
+                    targetNode.setProperty(propertyName, newValue);
+                }
                 return true;
             } else {
                 int resolution = getResolutionForDefinition(propertyDefinition);

@@ -259,7 +259,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (Principal principal : principalCollection) {
             if (principal instanceof JahiaUser) {
                 User jbpmUser = getJBPMUser((JahiaUser) principal);
-                identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
+                List<String> groupIdsByUser = identityService.findGroupIdsByUser(jbpmUser.getId());
+                if (groupIdsByUser == null || groupIdsByUser.size() == 0 || !groupIdsByUser.contains(jBPMGroup.getId())) {
+                    identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
+                }
             }
         }
         return jBPMGroup;

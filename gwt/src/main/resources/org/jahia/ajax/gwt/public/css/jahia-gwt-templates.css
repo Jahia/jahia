@@ -446,6 +446,12 @@
 .gwt-toolbar-icon-publicationaction-normal {
     background: url( ../images/min/publication.png ) no-repeat scroll 0 center !important;
 }
+.gwt-toolbar-icon-workflowaction-min {
+    background: url( ../images/min/workflow.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-icon-workflowaction-normal {
+    background: url( ../images/min/workflow.png ) no-repeat scroll 0 center !important;
+}
 
 .gwt-MenuBar .gwt-toolbar-ItemsGroup-submenu {
     border: 1px solid gray;

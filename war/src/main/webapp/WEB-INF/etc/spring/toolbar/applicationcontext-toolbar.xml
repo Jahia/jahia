@@ -131,6 +131,7 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -747,6 +748,14 @@
         </property>
     </bean>
 
+    <bean id="org.jahia.toolbar.itemsgroup.WorkflowAction" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.workflow"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-workflowaction-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-workflowaction-normal"/>
+    </bean>
 
     <bean id="org.jahia.toolbar.itemsgroup.ContentAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>

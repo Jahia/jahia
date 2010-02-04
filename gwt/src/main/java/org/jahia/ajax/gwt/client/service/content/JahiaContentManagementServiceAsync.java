@@ -39,6 +39,9 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
@@ -202,6 +205,10 @@ public interface JahiaContentManagementServiceAsync {
     void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
 
     void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
+
+    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, AsyncCallback async);
+
+    void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, AsyncCallback async); 
 
     /**
      * Publish the specified path.

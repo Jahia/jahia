@@ -159,8 +159,9 @@ public class WorkflowService {
     public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
             throws RepositoryException {
         final String processId = providers.get(provider).startProcess(processKey, args);
+        stageNode.checkout();
         final JCRNodeWrapper workflowNode = stageNode.addNode("j:workflow", "nt:unstructured");
-        workflowNode.setProperty("jBPM", new String[]{processId});
+        workflowNode.setProperty(provider, new String[]{processId});
         stageNode.getSession().save();
         return processId;
     }

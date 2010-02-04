@@ -44,6 +44,10 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -81,6 +85,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ContentManagerHelper contentManager;
     private SearchHelper search;
     private PublicationHelper publication;
+    private WorkflowHelper workflow;
     private VersioningHelper versioning;
     private MashupHelper mashup;
     private ContentDefinitionHelper contentDefinition;
@@ -128,6 +133,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setPublication(PublicationHelper publication) {
         this.publication = publication;
+    }
+
+    public void setWorkflow(WorkflowHelper workflow) {
+        this.workflow = workflow;
     }
 
     public void setSearch(SearchHelper search) {
@@ -723,19 +732,27 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
-        String workspace = "default";
-        ParamBean jParams = retrieveParamBean();
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : pathes) {
             try {
                 GWTJahiaNode gwtJahiaNode = navigation.getNode(path, retrieveCurrentSession());
                 gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
+                gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
                 logger.debug(e, e);
             }
         }
         return list;
+    }
+
+
+    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition) throws GWTJahiaServiceException {
+        workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession());
+    }
+
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome) throws GWTJahiaServiceException {
+        workflow.assignAndCompleteTask(path, action, outcome, retrieveCurrentSession());
     }
 
     /**
@@ -779,6 +796,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean full) throws GWTJahiaServiceException {
         return publication.getPublicationInfo(path, null, full, retrieveCurrentSession());
+    }
+
+
+    public GWTJahiaWorkflowInfo getWorkflowInfo(String path) throws GWTJahiaServiceException {
+        return workflow.getWorkflowInfo(path, retrieveCurrentSession());
     }
 
     /**

@@ -71,6 +71,7 @@
         <property name="languages" ref="LanguagesHelper"/>
         <property name="rolesPermissions" ref="RolesPermissionsHelper"/>
         <property name="publication" ref="PublicationHelper"/>
+        <property name="workflow" ref="WorkflowHelper"/>
         <property name="search" ref="SearchHelper"/>
         <property name="template" ref="TemplateHelper"/>
         <property name="zip" ref="ZipHelper"/>
@@ -178,6 +179,10 @@
 
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >
         <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
+
+    <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper" >
+        <property name="service" ref="workflowService"/>
     </bean>
 
     <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">

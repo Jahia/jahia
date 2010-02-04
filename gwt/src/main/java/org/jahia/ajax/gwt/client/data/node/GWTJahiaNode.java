@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 
 /**
  * GWT bean that represents a single JCR node.
@@ -67,6 +68,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean selectedOnLoad = false;
     private GWTJahiaNode referencedNode;
     private GWTJahiaPublicationInfo publicationInfo;
+    private GWTJahiaWorkflowInfo workflowInfo;
 
     // in case of a folder, it allows to know if the node is selectable or not
     private boolean matchFilters = false;
@@ -544,5 +546,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
         this.publicationInfo = publicationInfo;
+    }
+
+    public GWTJahiaWorkflowInfo getWorkflowInfo() {
+        return workflowInfo;
+    }
+
+    public void setWorkflowInfo(GWTJahiaWorkflowInfo workflowInfo) {
+        this.workflowInfo = workflowInfo;
     }
 }

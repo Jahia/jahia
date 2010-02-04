@@ -71,7 +71,7 @@ stretcherToOpen   = 0; %>
                     <jsp:param name="mode" value="server"/>
                 </jsp:include>
               <div id="content" class="fit">
-                  <div id="gwtpermissionrole" mode="server" class="jahia-admin-gxt"></div>                           
+                  <div id="gwtpermissionrole" rootPath='/roles' class="jahia-admin-gxt"></div>
               </div>
             </div>
             </div>

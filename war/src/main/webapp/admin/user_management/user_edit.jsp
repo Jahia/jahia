@@ -345,7 +345,7 @@
 <% } %>
 <tr>
 	<td colspan="2">
-		<div id="gwtroleprincipal" group="false" principal="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
+		<div id="gwtroleprincipal"  principalKey="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
 	</td>
 </tr>
 

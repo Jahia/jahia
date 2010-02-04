@@ -852,14 +852,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get roles with permission
      *
-     * @param site
-     * @param server
      * @param principalKey
      * @return
      */
-    public List<GWTJahiaRole> getRoles(String principalKey) {
-        //return rolesPermissions.getRoles(principalKey);
-        return Collections.emptyList();
+    public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException {
+        List<GWTJahiaRole> roles =  rolesPermissions.getRoles(siteKey,retrieveCurrentSession());
+        roles.addAll(rolesPermissions.getRoles(null,retrieveCurrentSession()));
+
+
+        for(GWTJahiaRole role: roles){
+            // add the check to know of the role is granted or not to the principal
+            if(rolesPermissions.isGrant(role,isGroup,principalKey)){
+                role.set("grant","true");
+            }
+        }
+
+        return roles;
     }
 
     /**

@@ -193,7 +193,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public List<GWTJahiaPermission> getPermission(boolean currentSite) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaRole> getRoles(String userKey) throws GWTJahiaServiceException;
+    public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException;
 
     public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role);
 

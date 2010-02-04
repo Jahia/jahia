@@ -289,7 +289,7 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(true);
                 usagesTabItem.setEnabled(true);
                 versioningTabItem.setEnabled(true);
-                principalRoleTabItem.setEnabled(true);
+                principalRoleTabItem.setEnabled(true);                
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(false);
@@ -299,7 +299,7 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(false);
                 usagesTabItem.setEnabled(false);
                 versioningTabItem.setEnabled(false);
-                principalRoleTabItem.setEnabled(false);
+                principalRoleTabItem.setEnabled(true);
 
             }
 
@@ -862,19 +862,18 @@ public class ContentDetails extends BottomRightComponent {
      * Displa principal mapping
      */
     public void displayPrincipalRole() {
-        Log.debug("Principal role");
-        // if (selectedNodes.size() == 1) {
-        //     final GWTJahiaNode selectedNode = selectedNodes.get(0);
-        if (!principalRoleTabItem.isProcessed()) {
-            GWTJahiaRole role = new GWTJahiaRole();
-            role.setLabel("test");
-            role.setId("id");
-            PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(role);
-            principalRoleTabItem.add(principalRolePanel);
-            principalRoleTabItem.setProcessed(true);
-            principalRoleTabItem.layout();
+        if (selectedNodes.size() == 1) {
+            final GWTJahiaNode selectedNode = selectedNodes.get(0);
+            if (!principalRoleTabItem.isProcessed()) {
+                GWTJahiaRole role = new GWTJahiaRole();
+                role.setLabel(selectedNode.getName());
+                role.setId(selectedNode.getUUID());
+                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(role);
+                principalRoleTabItem.add(principalRolePanel);
+                principalRoleTabItem.setProcessed(true);
+                principalRoleTabItem.layout();
+            }
         }
-        // }
     }
 
 

@@ -24,7 +24,7 @@ public class RoleEditor {
 
         final RootPanel panel = RootPanel.get(PERMISSION_ROLE);
         if (panel != null) {
-            panel.add(new RolesManager(panel.getElement().getAttribute("rootPath")));
+            panel.add(new RolesManager(panel.getElement().getAttribute("rootPath"),panel.getElement().getAttribute("siteKey")));
         }
 
     }
@@ -35,10 +35,7 @@ public class RoleEditor {
     public static void initPrincipalRole() {
         final RootPanel panel = RootPanel.get(ROLE_PRINCIPAL);
         if (panel != null) {
-            String principal = DOM.getElementAttribute(panel.getElement(), "principal");
-            String server = DOM.getElementAttribute(panel.getElement(), "site");
-            String site = DOM.getElementAttribute(panel.getElement(), "server");
-            panel.add(new RolePrincipalPanel(true,false,"root"));
+            panel.add(new RolePrincipalPanel(panel.getElement().getAttribute("siteKey"),Boolean.parseBoolean(panel.getElement().getAttribute("group")),panel.getElement().getAttribute("principalKey")));
         }
     }
 }

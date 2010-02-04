@@ -36,17 +36,16 @@ import java.util.List;
 public class PermissionRolePanel extends LayoutContainer implements LinkerComponent {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
     private List<GWTJahiaPermission> permissions = new ArrayList<GWTJahiaPermission>();
+    private String siteKey = null;
 
-    private boolean site = true;
-    private boolean server = false;
     private ContentPanel mainPanel = new ContentPanel();
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
     public PermissionRolePanel() {
     }
 
-    public PermissionRolePanel(List<GWTJahiaRole> roles) {
-        this.roles = roles;
+    public PermissionRolePanel(String siteKey) {
+        this.siteKey = siteKey;
     }
 
     @Override
@@ -69,8 +68,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      * Refresh data
      */
     public void refresh() {
-        // TODO need to provide a site key in case we are in the site permissions
-        contentService.getRolesAndPermissions(null, new AsyncCallback<GWTRolesPermissions>() {
+        contentService.getRolesAndPermissions(siteKey, new AsyncCallback<GWTRolesPermissions>() {
             public void onSuccess(GWTRolesPermissions gwtRolesPermissions) {
                 roles = gwtRolesPermissions.getRoles();
                 permissions = gwtRolesPermissions.getPermissions();

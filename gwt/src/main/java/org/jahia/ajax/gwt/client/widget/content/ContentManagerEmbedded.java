@@ -50,6 +50,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         // superclass constructor (define linker)
         super();
         setWidth("100%");
+
         setHeight("500px");
         ManagerConfiguration config ;
         if (conf != null && conf.length() > 0) {
@@ -121,7 +122,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
                         }
 
                         public void onFailure(Throwable throwable) {
-                            Log.error("Unable to loaf node with path " + rootPath, throwable);
+                            Log.error("Unable to load node with path " + rootPath, throwable);
                         }
                     });
                 }

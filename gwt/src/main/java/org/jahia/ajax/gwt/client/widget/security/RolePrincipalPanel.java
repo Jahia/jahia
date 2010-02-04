@@ -32,14 +32,14 @@ import java.util.List;
  */
 public class RolePrincipalPanel extends LayoutContainer {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
-    private boolean site = true;
-    private boolean server = true;
     private String principalKey;
+    private String siteKey;
+    private boolean isGroup;
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
-    public RolePrincipalPanel(boolean site, boolean server, String principalKey) {
-        this.site = site;
-        this.server = server;
+    public RolePrincipalPanel(String siteKey,boolean isGroup,String principalKey) {
+        this.siteKey = siteKey;
+        this.isGroup = isGroup;
         this.principalKey = principalKey;
     }
 
@@ -50,7 +50,7 @@ public class RolePrincipalPanel extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         //setLayout(new FitLayout());
-        JahiaContentManagementService.App.getInstance().getRoles(principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
+        JahiaContentManagementService.App.getInstance().getRoles(siteKey,isGroup,principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
             public void onSuccess(List<GWTJahiaRole> gwtRoles) {
                 roles = gwtRoles;
                 updateUI();

@@ -174,11 +174,11 @@ public class RoleManager {
     protected JCRNodeWrapper getPermissionsHome(String site, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper permissionsNode = null;
         try {
-            permissionsNode = session.getNode(site == null ? "/" + permissionsNodeName : "/sites/" + site + "/"
+            permissionsNode = session.getNode(StringUtils.isEmpty(site)? "/" + permissionsNodeName : "/sites/" + site + "/"
                     + permissionsNodeName);
         } catch (PathNotFoundException ex) {
             // create it
-            JCRNodeWrapper parentNode = session.getNode(site != null ? "/sites/" + site : "/");
+            JCRNodeWrapper parentNode = session.getNode(StringUtils.isEmpty(site) ? "/sites/" + site : "/");
             session.checkout(parentNode);
             permissionsNode = parentNode.addNode(permissionsNodeName, JAHIANT_PERMISSIONS);
         }
@@ -283,10 +283,10 @@ public class RoleManager {
     protected JCRNodeWrapper getRolesHome(String site, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper rolesNode = null;
         try {
-            rolesNode = session.getNode(site == null ? "/" + rolesNodeName : "/sites/" + site + "/" + rolesNodeName);
+            rolesNode = session.getNode(StringUtils.isEmpty(site) ? "/" + rolesNodeName : "/sites/" + site + "/" + rolesNodeName);
         } catch (PathNotFoundException ex) {
             // create it
-            JCRNodeWrapper parentNode = session.getNode(site != null ? "/sites/" + site : "/");
+            JCRNodeWrapper parentNode = session.getNode(StringUtils.isEmpty(site) ? "/sites/" + site : "/");
             session.checkout(parentNode);
             rolesNode = parentNode.addNode(rolesNodeName, JAHIANT_ROLES);
         }
@@ -555,7 +555,6 @@ public class RoleManager {
      * corresponding fields.
      * 
      * @param roleNode the underlying JCR node
-     * @param target site key
      * @return {@link RoleImpl} object populated with corresponding data
      * @throws RepositoryException in case of an error
      */

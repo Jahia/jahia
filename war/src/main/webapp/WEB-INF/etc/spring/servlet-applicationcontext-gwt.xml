@@ -182,6 +182,8 @@
 
     <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">
     	<property name="roleManager" ref="RoleManager"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
     </bean>
 
 

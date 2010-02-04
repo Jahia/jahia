@@ -129,7 +129,7 @@ public class ContentManager extends TriPanelBrowserViewport {
                         }
 
                         public void onFailure(Throwable throwable) {
-                            Log.error("Unable to loaf node with path " + rootPath, throwable);
+                            Log.error("Unable to load node with path " + rootPath, throwable);
                         }
                     });
                 }

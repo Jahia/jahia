@@ -745,10 +745,14 @@ public class NavigationHelper {
         } else {
             StringBuilder buffer = new StringBuilder();
             ProcessingContext pBean = Jahia.getThreadParamBean();
-            buffer.append(pBean.getScheme()).append("://").append(pBean.getServerName()).append(":").append(pBean.getServerPort()).append(Jahia.getContextPath());
-            buffer.append("/engines/images/types/gwt/large/");
-            buffer.append(n.getExt()).append(".png");
-            n.setPreview(buffer.toString());
+            if(pBean != null){
+                buffer.append(pBean.getScheme()).append("://").append(pBean.getServerName()).append(":").append(pBean.getServerPort()).append(Jahia.getContextPath());
+                buffer.append("/engines/images/types/gwt/large/");
+                buffer.append(n.getExt()).append(".png");
+                n.setPreview(buffer.toString());
+            }else{
+                logger.error("ProcessingContext not found.");
+            }
         }
         for (String name : names) {
             n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));

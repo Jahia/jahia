@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class ManagerLinker implements Linker {
     private DNDListener dndListener;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private GWTJahiaNode leftPanelSelectionWhenHidden;
+    private List<LinkerComponent> extraComponents = new ArrayList<LinkerComponent>();
 
     public ManagerLinker() {
     }
@@ -159,7 +161,7 @@ public class ManagerLinker implements Linker {
 
     public void onTableItemDoubleClicked(Object item) {
         if (m_leftComponent != null) {
-           
+
             m_leftComponent.openAndSelectItem(item);
         }
     }
@@ -326,10 +328,19 @@ public class ManagerLinker implements Linker {
 
     public void refresh() {
         refreshAll();
+        // refresh also extra components
+        for (LinkerComponent l : extraComponents) {
+            l.refresh();
+        }
     }
 
     public void refresh(int flag) {
         refresh();
+
+    }
+
+    public void registerExtraComponent(LinkerComponent l) {
+        extraComponents.add(l);
     }
 
     public void refreshMainComponent() {
@@ -353,8 +364,8 @@ public class ManagerLinker implements Linker {
             } else if (o instanceof List) {
                 nodes = ((List<GWTJahiaNode>) o);
             }
-            handleNewSelection(nodes);            
-        }else{
+            handleNewSelection(nodes);
+        } else {
             handleNewSelection();
         }
     }

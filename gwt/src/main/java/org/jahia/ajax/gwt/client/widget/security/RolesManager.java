@@ -9,9 +9,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: ktlili
@@ -34,16 +31,19 @@ public class RolesManager extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FillLayout());
-
+        final ContentManagerEmbedded cm = new ContentManagerEmbedded(rootPath,null, null, null, ManagerConfigurationFactory.ROLESMANAGER);
+        final PermissionRolePanel pr = new PermissionRolePanel();
+        cm.getLinker().registerExtraComponent(pr);
+        
         TabPanel tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setSize(600, 500);
         TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Roles manager"));
-        managerItem.add(new ContentManagerEmbedded(rootPath,null, null, null, ManagerConfigurationFactory.ROLESMANAGER));
+        managerItem.add(cm);
         tabPanel.add(managerItem);
 
         TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Roles/permission mapping"));
-        rolePermisionItem.add(new PermissionRolePanel());
+        rolePermisionItem.add(pr);
         tabPanel.add(rolePermisionItem);
 
 

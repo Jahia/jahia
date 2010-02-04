@@ -71,6 +71,8 @@ public class ManagerConfiguration implements Serializable {
     
 	private boolean allowCollections = true;
 
+    private boolean displaySearch = true;
+
     public ManagerConfiguration() {
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
@@ -247,5 +249,13 @@ public class ManagerConfiguration implements Serializable {
 
     public void setExpandRoot(boolean expandRoot) {
         this.expandRoot = expandRoot;
+    }
+
+    public boolean isDisplaySearch() {
+        return displaySearch;
+    }
+
+    public void setDisplaySearch(boolean displaySearch) {
+        this.displaySearch = displaySearch;
     }
 }

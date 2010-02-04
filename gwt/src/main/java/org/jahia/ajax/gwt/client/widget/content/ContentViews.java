@@ -59,7 +59,7 @@ public class ContentViews extends TopRightComponent {
     private TableView tableView;
     private ThumbView thumbView;
     private TemplateView templateView;
-    
+
     private ThumbView detailedThumbView;
 
     private ContentPanel m_component;
@@ -90,14 +90,14 @@ public class ContentViews extends TopRightComponent {
 
             public void onSaveButtonClicked(String value) {
                 if (value != null && value.length() > 0) {
-                    String name = Window.prompt(Messages.getNotEmptyResource("fm_saveSearchName","Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
+                    String name = Window.prompt(Messages.getNotEmptyResource("fm_saveSearchName", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
                     if (name != null && name.length() > 0) {
                         name = JCRClientUtils.cleanUpFilename(name);
                         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                         service.saveSearch(value, name, new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable throwable) {
                                 if (throwable instanceof ExistingFileException) {
-                                    Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch","The entered name is already in use."));
+                                    Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch", "The entered name is already in use."));
                                 } else {
                                     Log.error("error", throwable);
                                 }
@@ -109,19 +109,22 @@ public class ContentViews extends TopRightComponent {
                             }
                         });
                     } else {
-                        Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch","The entered name is invalid."));
+                        Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch", "The entered name is invalid."));
                     }
                 }
             }
         };
-        m_component.setTopComponent(searchField);
+
+        if (config.isDisplaySearch()) {
+            m_component.setTopComponent(searchField);
+        }
 
         // set default view
         if (config.getDefaultView() == JCRClientUtils.FILE_TABLE) {
             current = tableView;
         } else if (config.getDefaultView() == JCRClientUtils.THUMB_VIEW) {
             current = thumbView;
-        }else if (config.getDefaultView() == JCRClientUtils.DETAILED_THUMB_VIEW) {
+        } else if (config.getDefaultView() == JCRClientUtils.DETAILED_THUMB_VIEW) {
             current = detailedThumbView;
         } else {
             current = tableView;

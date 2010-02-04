@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -20,6 +21,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
@@ -49,7 +51,7 @@ public class PrincipalRolePanel extends LayoutContainer {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        //setLayout(new FitLayout());
+        setLayout(new FitLayout());
         contentService.getPrincipalsInRole(role, new AsyncCallback<List<GWTJahiaPrincipal>>() {
             public void onSuccess(List<GWTJahiaPrincipal> p) {
                 principals = p;
@@ -79,8 +81,11 @@ public class PrincipalRolePanel extends LayoutContainer {
         cp.setBorders(false);
         cp.setBodyBorder(false);
         ToolBar bar = new ToolBar();
-        Button addUser = new Button("Add user");
-        Button addGroup = new Button("Add Group");
+        Button addUser = new Button(Messages.getResource("um_adduser"));
+        addUser.setIconStyle("um-adduser");
+        Button addGroup = new Button(Messages.getResource("um_addgroup"));
+        addGroup.setIconStyle("um-addgroup");
+        bar.add(new FillToolItem());
         bar.add(addUser);
         bar.add(addGroup);
         final UserGroupAdder userGroupAdder = new UserGroupAdder() {

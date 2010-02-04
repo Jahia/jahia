@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.List;
  * Time: 11:38:47 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PermissionRolePanel extends LayoutContainer {
+public class PermissionRolePanel extends LayoutContainer implements LinkerComponent {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
     private List<GWTJahiaPermission> permissions = new ArrayList<GWTJahiaPermission>();
 
@@ -60,20 +61,20 @@ public class PermissionRolePanel extends LayoutContainer {
         mainPanel.setSize(600, 500);
         add(mainPanel);
         // refresh data
-        refreshData();
+        refresh();
 
     }
 
     /**
      * Refresh data
      */
-    private void refreshData() {
+    public void refresh() {
         // TODO need to provide a site key in case we are in the site permissions
         contentService.getRolesAndPermissions(null, new AsyncCallback<GWTRolesPermissions>() {
             public void onSuccess(GWTRolesPermissions gwtRolesPermissions) {
                 roles = gwtRolesPermissions.getRoles();
                 permissions = gwtRolesPermissions.getPermissions();
-                updateUI();
+                refreshUI();
             }
 
             public void onFailure(Throwable throwable) {
@@ -85,7 +86,7 @@ public class PermissionRolePanel extends LayoutContainer {
     /**
      * Update ui
      */
-    private void updateUI() {
+    public void refreshUI() {
         mainPanel.removeAll();
         final GroupingStore<GWTJahiaPermission> store = new GroupingStore<GWTJahiaPermission>();
         store.add(permissions);

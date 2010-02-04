@@ -289,6 +289,7 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(true);
                 usagesTabItem.setEnabled(true);
                 versioningTabItem.setEnabled(true);
+                principalRoleTabItem.setEnabled(true);
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(false);
@@ -298,6 +299,8 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(false);
                 usagesTabItem.setEnabled(false);
                 versioningTabItem.setEnabled(false);
+                principalRoleTabItem.setEnabled(false);
+
             }
 
 

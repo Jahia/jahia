@@ -295,6 +295,7 @@ public class ManagerConfigurationFactory {
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
         configuration.setDisplayDate(false);
+        configuration.setDisplaySearch(false);        
         configuration.setToolbarGroup("tag-manager");
         configuration.setExpandRoot(true);
         configuration.addColumn("ext");
@@ -322,6 +323,7 @@ public class ManagerConfigurationFactory {
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
         configuration.setDisplayDate(false);
+        configuration.setDisplaySearch(false);
         configuration.setToolbarGroup("role-manager");
         configuration.setExpandRoot(true);
         configuration.addColumn("name");

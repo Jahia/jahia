@@ -152,29 +152,56 @@ public class JCRPublicationService extends JahiaService {
      * @param allSubTree
      * @throws javax.jcr.RepositoryException in case of error
      */
-    public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
-                        boolean system, boolean allSubTree) throws RepositoryException {
-        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(sourceWorkspace);
-        JCRNodeWrapper n = session.getNode(path);
+    public void publish(final String path, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
+                        boolean system, final boolean allSubTree) throws RepositoryException {
+        JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession(sourceWorkspace);
+        if (system) {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, sourceWorkspace, new JCRCallback() {
+                public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                    return JCRTemplate.getInstance().doExecuteWithSystemSession(null, destinationWorkspace, new JCRCallback() {
+                        public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                            JCRNodeWrapper n = sourceSession.getNode(path);
 
-        for (ExtendedNodeType type : n.getMixinNodeTypes()) {
-            if (type.getName().equals("jmix:publication")) {
-                if (!n.isCheckedOut()) {
-                    n.checkout();
+                            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
+                                if (type.getName().equals("jmix:publication")) {
+                                    if (!n.isCheckedOut()) {
+                                        n.checkout();
+                                    }
+                                    n.removeMixin("jmix:publication");
+                                    sourceSession.save();
+                                }
+                            }
+
+                            publish(n, destinationSession, languages, allSubTree, false, new HashSet<String>());
+                            return null;
+                        }
+                    });
                 }
-                n.removeMixin("jmix:publication");
-                session.save();
+            });
+        } else {
+            JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(destinationWorkspace);
+            JCRNodeWrapper n = sourceSession.getNode(path);
+
+            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
+                if (type.getName().equals("jmix:publication")) {
+                    if (!n.isCheckedOut()) {
+                        n.checkout();
+                    }
+                    n.removeMixin("jmix:publication");
+                    sourceSession.save();
+                }
             }
+
+            publish(n, destinationSession, languages, allSubTree, false, new HashSet<String>());
         }
-        publish(n, sourceWorkspace, destinationWorkspace, languages, system, allSubTree, false, new HashSet<String>());
 //        session.save();
     }
 
-    private void publish(final JCRNodeWrapper sourceNode, final String sourceWorkspace, final String destinationWorkspace, Set<String> languages,
-                         boolean system, boolean allSubTree, boolean publishParent, Set<String> pathes) throws RepositoryException {
+    private void publish(final JCRNodeWrapper sourceNode, JCRSessionWrapper destinationSession, Set<String> languages,
+                         boolean allSubTree, boolean publishParent, Set<String> pathes) throws RepositoryException {
         pathes.add(sourceNode.getPath());
 
-        JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(destinationWorkspace);
+        String destinationWorkspace = destinationSession.getWorkspace().getName();
 
         try {
             sourceNode.getParent().getCorrespondingNodePath(destinationWorkspace);
@@ -182,18 +209,18 @@ public class JCRPublicationService extends JahiaService {
             if (publishParent) {
                 String parentPath = sourceNode.getParent().getPath();
                 if (!pathes.contains(parentPath)) {
-                    publish(sourceNode.getParent(), sourceWorkspace, destinationWorkspace, languages, system, false, true, pathes);
+                    publish(sourceNode.getParent(), destinationSession, languages, false, true, pathes);
                 }
             } else {
                 return;
             }
         }
 
-        final List<JCRNodeWrapper> pruneNodes = new ArrayList<JCRNodeWrapper>();
+        final List<JCRNodeWrapper> pruneSourceNodes = new ArrayList<JCRNodeWrapper>();
         final List<JCRNodeWrapper> referencedNodes = new ArrayList<JCRNodeWrapper>();
         final List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
 
-        getBlockedAndReferencesList(sourceNode, toPublish, pruneNodes, referencedNodes, languages, allSubTree);
+        getBlockedAndReferencesList(sourceNode, toPublish, pruneSourceNodes, referencedNodes, languages, allSubTree);
 //        for (Node s : toPublish) {
 //            s.setProperty("j:publishedLanguage")
 //        }
@@ -201,7 +228,7 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : referencedNodes) {
             try {
                 if (!pathes.contains(node.getPath())) {
-                    publish(node, sourceWorkspace, destinationWorkspace, languages, system, false, true, pathes);
+                    publish(node, destinationSession, languages, false, true, pathes);
                 }
             } catch (AccessDeniedException e) {
                 logger.warn("Cannot publish node at : " + node);
@@ -227,48 +254,43 @@ public class JCRPublicationService extends JahiaService {
             sourceNode.getSession().save();
             destinationSession.save();
         }
-        system = true;
-        if (system) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(destinationSession.getUserID(), sourceWorkspace, new JCRCallback<Object>() {
-                public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    return JCRTemplate.getInstance().doExecuteWithSystemSession(sourceSession.getUserID(), destinationWorkspace, new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper destinationSession) throws RepositoryException {
-                            publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
-                            return null;
-                        }
-                    });
-                }
-            });
-        } else {
-            publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
-        }
-    }
 
-    private void publish(List<JCRNodeWrapper> toPublish, List<JCRNodeWrapper> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
-        JCRNodeWrapper sourceNode = toPublish.iterator().next();
-
-        List<String> prunedPath = new ArrayList<String>();
-        if (pruneNodes != null) {
-            for (JCRNodeWrapper node : pruneNodes) {
-                prunedPath.add(node.getPath());
-            }
+        final List<String> prunedSourcePath = new ArrayList<String>();
+        for (JCRNodeWrapper node : pruneSourceNodes) {
+            prunedSourcePath.add(node.getPath());
         }
 
         try {
-            destinationSession.getNode(sourceNode.getPath());
-            mergeToDestinationWorkspace(toPublish, prunedPath, sourceSession, destinationSession);
+            JCRNodeWrapper destNode = destinationSession.getNode(sourceNode.getPath());
+            ArrayList<JCRNodeWrapper> pruneDestNodes = new ArrayList<JCRNodeWrapper>();
+            getBlockedAndReferencesList(destNode, new ArrayList<JCRNodeWrapper>(), pruneDestNodes, new ArrayList<JCRNodeWrapper>(), languages, allSubTree);
+            final List<String> prunedDestPath = new ArrayList<String>();
+            for (JCRNodeWrapper node : pruneDestNodes) {
+                prunedDestPath.add(node.getPath());
+            }
+
+            mergeToDestinationWorkspace(toPublish, prunedSourcePath, prunedDestPath, sourceNode.getSession(), destinationSession);
         } catch (PathNotFoundException e) {
-            cloneToDestinationWorkspace(toPublish.iterator().next(), prunedPath, sourceSession, destinationSession);
+            cloneToDestinationWorkspace(toPublish.iterator().next(), prunedSourcePath, sourceNode.getSession(), destinationSession);
         }
     }
 
-    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> pruneNodes, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
+    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> prunedSourcePath, final List<String> prunedDestPath, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
         Calendar c = new GregorianCalendar();
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
         List<JCRNodeWrapper> modified = new ArrayList<JCRNodeWrapper>();
         for (final JCRNodeWrapper node : toPublish) {
+            if (node.hasProperty("jcr:mergeFailed")) {
+                Value[] failed = node.getProperty("jcr:mergeFailed").getValues();
+
+                for (Value value : failed) {
+                    System.out.println("-- failed merge waiting : "+node.getPath() + " / "+value.getString());
+                }
+                continue;
+            }
+
             if (!node.hasProperty("j:lastPublished")) {
                 modified.add(node);
             } else if (node.isNodeType("jmix:lastPublished")) {
@@ -302,16 +324,6 @@ public class JCRPublicationService extends JahiaService {
         
         for (final JCRNodeWrapper node : modified) {
             try {
-
-                if (node.hasProperty("jcr:mergeFailed")) {
-                    Value[] failed = node.getProperty("jcr:mergeFailed").getValues();
-
-                    for (Value value : failed) {
-                        System.out.println("-- failed merge waiting : "+value.getString());
-                    }
-                    continue;
-                }
-
                 final String path = node.getPath();
                 final String destinationPath = node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
 
@@ -324,8 +336,10 @@ public class JCRPublicationService extends JahiaService {
                 logger.info("Merge node : " + path + " source v=" + node.getBaseVersion().getName() +
                         " , dest node v=" + destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
-                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
-
+//                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
+                if (destinationNode.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
+                    destinationVersionManager.checkin(destinationPath);
+                }
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
                 if (ni.hasNext()) {
@@ -338,7 +352,8 @@ public class JCRPublicationService extends JahiaService {
                         JCRNodeWrapper destNode = destinationSession.getNode(failed.getPath());
 
                         ConflictResolver resolver = new ConflictResolver(node, destNode);
-                        resolver.setPrunedPaths(pruneNodes);
+                        resolver.setPrunedSourcePath(prunedSourcePath);
+                        resolver.setPrunedTargetPath(prunedDestPath);
                         try {
                             resolver.applyDifferences();
 
@@ -351,8 +366,10 @@ public class JCRPublicationService extends JahiaService {
                             e.printStackTrace();
                         }
                     }
-                    recurseCheckin(destinationNode, pruneNodes, destinationVersionManager);
-                    node.update(destinationSession.getWorkspace().getName());
+                    if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+                        recurseCheckin(destinationNode, prunedDestPath, destinationVersionManager);
+                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
+                    }
                 }
 
                 if (oldPath != null) {
@@ -686,8 +703,7 @@ public class JCRPublicationService extends JahiaService {
         } else {
             if (stageNode.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
                 info.setStatus(PublicationInfo.CONFLICT);                
-            }
-            if (stageNode.getLastModifiedAsDate() == null) {
+            } else if (stageNode.getLastModifiedAsDate() == null) {
                 logger.error("Null modifieddate for staged node " + stageNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {

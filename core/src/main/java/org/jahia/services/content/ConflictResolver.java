@@ -30,7 +30,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:mixinTypes", "jcr:frozenUuid", "jcr:frozenPrimaryType", "jcr:frozenMixinTypes",
-            "jcr:created", "jcr:createdBy");
+            "jcr:created", "jcr:createdBy", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:versionHistory");
     
     // "jcr:lastModified", "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
@@ -41,7 +41,8 @@ public class ConflictResolver {
     private Calendar sourceDate = null;
     private Calendar targetDate = null;
 
-    private List<String> prunedPaths;
+    private List<String> prunedSourcePath;
+    private List<String> prunedTargetPath;
 
     private List<Diff> differences;
     private List<Diff> resolvedDifferences;
@@ -59,8 +60,12 @@ public class ConflictResolver {
         }
     }
 
-    public void setPrunedPaths(List<String> prunedPaths) {
-        this.prunedPaths = prunedPaths;
+    public void setPrunedSourcePath(List<String> prunedSourcePath) {
+        this.prunedSourcePath = prunedSourcePath;
+    }
+
+    public void setPrunedTargetPath(List<String> prunedTargetPath) {
+        this.prunedTargetPath = prunedTargetPath;
     }
 
     public List<Diff> getDifferences() {
@@ -304,7 +309,7 @@ public class ConflictResolver {
 
         public boolean apply() throws RepositoryException {
             targetNode.getRealNode().getSession().save();
-            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedPaths, sourceNode.getSession(), targetNode.getSession());
+            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
 //            targetNode.getSession().getWorkspace().clone(sourceWorkspace, targetNode.getPath()+"/"+newName,targetNode.getPath()+"/"+newName, false);
             return true;
         }

@@ -2,8 +2,11 @@
 
 <process name="2 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
     <start name="start">
-        <transition to="first review"/>
+        <transition to="lock"/>
     </start>
+    <custom name="lock" class="org.jahia.services.workflow.jbpm.custom.Lock" >
+        <transition to="first review"/>
+    </custom>
     <task name="first review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="accept" to="final review"/>
@@ -15,8 +18,8 @@
         <transition name="reject" to="end"/>
         <transition name="correction needed" to="first review"/>
     </task>
-    <state name="publication">
+    <custom name="publication" class="org.jahia.services.workflow.jbpm.custom.Publish" >
         <transition to="end"/>
-    </state>
+    </custom>
     <end name="end"/>
 </process>

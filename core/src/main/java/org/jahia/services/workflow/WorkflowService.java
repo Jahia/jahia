@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jbpm.api.task.Participation;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;

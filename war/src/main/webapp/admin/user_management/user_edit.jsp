@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
+<%@page import="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.security.Principal" %>
@@ -315,6 +316,30 @@
     </td>
 </tr>
 <%-- You can add your custom user properties here --%>
+<% if (!JahiaPasswordPolicyService.getInstance().isPasswordReadOnly(jUser)) { %>
+<tr>
+    <td align="right">
+        <fmt:message key="label.password"/>&nbsp;
+    </td>
+    <td>
+        <input class="input" type="password" name="passwd"
+               size="40" maxlength="255"
+               value='<%=JahiaTools.nnString(passwd)%>'>
+        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
+    </td>
+</tr>
+<tr>
+    <td align="right">
+        <fmt:message key="label.comfirmPassword"/>&nbsp;
+    </td>
+    <td>
+        <input class="input" type="password" name="passwdconfirm"
+               size="40" maxlength="255"
+               value='<%=JahiaTools.nnString(passwdConfirm)%>'>
+        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
+    </td>
+</tr>
+<% } %>
 <% if (isSuperAdminProp == null) {%>
 <tr style="height: 35px; vertical-align: top;">
     <td align="right">

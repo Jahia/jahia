@@ -77,10 +77,12 @@ public class WorkflowService {
      * @param node
      * @return A map of available workflows per provider.
      */
-    public Map<String, List<Workflow>> getPossibleWorkflows(JCRNodeWrapper node) {
+    public Map<String, List<Workflow>> getPossibleWorkflows(JCRNodeWrapper node) throws RepositoryException {
         Map<String, List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
-        for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
+        if(node.isNodeType("jnt:page")) {
+            for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
+                        workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
+                    }
         }
         return workflowsByProvider;
     }

@@ -5,8 +5,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="wiki.css"/>
 
-<div id="content"><!--start content-->
-    <div class="container container_16"> <!--start container_16-->
         <div class='grid_3'><!--start grid_3-->
             <div class="boxwiki">
                 <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
@@ -117,11 +115,3 @@
             <div class='clear'></div>
         </div>
         <!--stop grid_3-->
-
-        <div class='clear'></div>
-    </div>
-    <!--stop container_16-->
-
-    <div class="clear"></div>
-</div>
-<!--stop content-->

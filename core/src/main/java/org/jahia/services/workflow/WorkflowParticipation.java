@@ -32,37 +32,31 @@
  */
 package org.jahia.services.workflow;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 4 févr. 2010
  */
-public interface WorkflowProvider {
-    List<Workflow> getAvailableWorkflows();
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+public class WorkflowParticipation {
+    private transient static Logger logger = Logger.getLogger(WorkflowParticipation.class);
+    private final String role;
+    private final JahiaGroup jahiaGroup;
 
-    String startProcess(String processKey, Map<String,Object> args);
+    public WorkflowParticipation(String role, JahiaGroup jahiaGroup) {
+        this.role = role;
+        this.jahiaGroup = jahiaGroup;
+    }
 
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
+    public JahiaGroup getJahiaGroup() {
+        return jahiaGroup;
+    }
 
-    Set<WorkflowAction> getAvailableActions(String processId);
-
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
-
-    void assignTask(String processId, String taskName, JahiaUser user);
-
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
-
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
+    public String getRole() {
+        return role;
+    }
 }

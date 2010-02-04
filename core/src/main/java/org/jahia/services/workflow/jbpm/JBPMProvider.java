@@ -34,16 +34,18 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.Workflow;
-import org.jahia.services.workflow.WorkflowAction;
-import org.jahia.services.workflow.WorkflowProvider;
-import org.jahia.services.workflow.WorkflowTask;
+import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
+import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
+import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -61,6 +63,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private ProcessEngine processEngine;
     private List<String> processes;
     private TaskService taskService;
+    private static Map<String, String> participationRoles = new HashMap<String, String>();
+    private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
+
+    static {
+        participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
+        participationRolesInverted.put(Participation.CANDIDATE, WorkflowService.CANDIDATE);
+    }
 
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
@@ -137,23 +146,29 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 List<Task> taskList = taskService.createTaskQuery().processInstanceId(processId).activityName(
                         action).list();
                 for (Task task : taskList) {
-                    if(task.getActivityName().equals(action)) {
+                    if (task.getActivityName().equals(action)) {
                         workflowAction = convertToWorkflowTask(task);
                     }
                 }
             } else {
                 workflowAction = new WorkflowAction(action, "jBPM");
             }
-            if(workflowAction!=null)
-            availableActions.add(workflowAction);
+            if (workflowAction != null) {
+                availableActions.add(workflowAction);
+            }
         }
         return availableActions;
     }
 
     public List<WorkflowTask> getTasksForUser(JahiaUser user) {
         User jBPMUser = getJBPMUser(user);
-        List<Task> taskList = taskService.createTaskQuery().assignee(jBPMUser.getId()).list();
         final List<WorkflowTask> availableActions = new LinkedList<WorkflowTask>();
+        List<Task> taskList = taskService.findPersonalTasks(jBPMUser.getId());
+        for (Task task : taskList) {
+            WorkflowTask action = convertToWorkflowTask(task);
+            availableActions.add(action);
+        }
+        taskList = taskService.findGroupTasks(jBPMUser.getId());
         for (Task task : taskList) {
             WorkflowTask action = convertToWorkflowTask(task);
             availableActions.add(action);
@@ -172,6 +187,17 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
         action.setId(task.getId());
         action.setOutcome(taskService.getOutcomes(task.getId()));
+        List<Participation> participationList = taskService.getTaskParticipations(task.getId());
+        if (participationList.size() > 0) {
+            List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
+            JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+            for (Participation participation : participationList) {
+                participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                                                             groupManagerService.lookupGroup(
+                                                                     participation.getGroupId())));
+            }
+            action.setParticipations(participations);
+        }
         return action;
     }
 
@@ -185,6 +211,20 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         taskService.completeTask(taskId, outcome, args);
     }
 
+    public void addParticipatingGroup(String taskId, JahiaGroup group, String role) {
+        Group jbpmGroup = getJBPMGroup(group);
+        String participationType = participationRoles.get(role);
+        if (participationType != null) {
+            taskService.addTaskParticipatingGroup(taskId, jbpmGroup.getId(), participationType);
+        } else {
+            taskService.addTaskParticipatingGroup(taskId, jbpmGroup.getId(), Participation.VIEWER);
+        }
+    }
+
+    public void deleteTask(String taskId, String reason) {
+        taskService.deleteTask(taskId, reason);
+    }
+
     private User getJBPMUser(JahiaUser user) {
         IdentityService identityService = processEngine.getIdentityService();
         User jBPMUser = identityService.findUserById(user.getUserKey());
@@ -194,5 +234,22 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             jBPMUser = identityService.findUserById(user.getUserKey());
         }
         return jBPMUser;
+    }
+
+    private Group getJBPMGroup(JahiaGroup group) {
+        IdentityService identityService = processEngine.getIdentityService();
+        Group jBPMGroup = identityService.findGroupById(group.getGroupKey());
+        if (jBPMGroup == null) {
+            identityService.createGroup(group.getGroupKey());
+            jBPMGroup = identityService.findGroupById(group.getGroupKey());
+            Collection<Principal> principalCollection = group.getMembers();
+            for (Principal principal : principalCollection) {
+                if (principal instanceof JahiaUser) {
+                    User jbpmUser = getJBPMUser((JahiaUser) principal);
+                    identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
+                }
+            }
+        }
+        return jBPMGroup;
     }
 }

@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,7 +55,8 @@ public class WorkflowTask extends WorkflowAction {
     private JahiaUser assignee;
     private String id;
     private Set<String> outcomes;
-
+    private List<WorkflowParticipation> participations;
+    
     public WorkflowTask(String name, String provider) {
         super(name, provider);
     }
@@ -104,5 +107,13 @@ public class WorkflowTask extends WorkflowAction {
 
     public Set<String> getOutcomes() {
         return outcomes;
+    }
+
+    public List<WorkflowParticipation> getParticipations() {
+        return participations;
+    }
+
+    public void setParticipations(List<WorkflowParticipation> participations) {
+        this.participations = participations;
     }
 }

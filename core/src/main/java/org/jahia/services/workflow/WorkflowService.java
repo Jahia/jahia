@@ -34,7 +34,9 @@ package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jbpm.api.task.Participation;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -53,6 +55,7 @@ public class WorkflowService {
 
     private Map<String, WorkflowProvider> providers;
     private static WorkflowService instance;
+    public static final String CANDIDATE = "candidate";
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -164,5 +167,13 @@ public class WorkflowService {
 
     public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
         providers.get(provider).completeTask(taskId,outcome,args);
+    }
+
+    public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
+        providers.get(provider).addParticipatingGroup(taskId,group,role);
+    }
+
+    public void deleteTask(String taskId, String provider, String reason) {
+        providers.get(provider).deleteTask(taskId,reason);
     }
 }

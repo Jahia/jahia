@@ -152,6 +152,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Node node = session.getNodeByUUID(jcrGroup.getNodeUuid());
+                        session.checkout(node.getParent());
+                        session.checkout(node);
                         node.remove();
                         session.save();
                         return true;

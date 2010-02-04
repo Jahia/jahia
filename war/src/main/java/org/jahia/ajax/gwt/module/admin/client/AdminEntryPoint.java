@@ -31,12 +31,21 @@
  */
 package org.jahia.ajax.gwt.module.admin.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclNameEditor;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.util.security.RoleEditor;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
+
+import java.util.List;
 
 /**
  * Entry point class for GWT integration into Jahia Administration.
@@ -49,19 +58,79 @@ public class AdminEntryPoint extends CommonEntryPoint {
         super.onModuleLoad();
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
-        RoleEditor.initPermissionRole();
-        RoleEditor.initPrincipalRole();
+        RoleEditor.init();
         exposeFunctions();
     }
 
     private native void exposeFunctions() /*-{
+        $wnd.openUserGroupSelect = function (mode,id,pattern) { @org.jahia.ajax.gwt.module.admin.client.AdminEntryPoint::openUserGroupSelect(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode,id,pattern) };        
         if (!$wnd.jahia) {
             $wnd.jahia = new Object();
         }
         $wnd.jahia.alert = function (title, message) {@org.jahia.ajax.gwt.module.admin.client.AdminEntryPoint::alert(Ljava/lang/String;Ljava/lang/String;)(title, message); };
+
     }-*/;
-    
+
+    /**
+     * Alert message
+     * @param title
+     * @param message
+     */
     static void alert(String title, String message) {
         MessageBox.alert(title != null ? title : "Info", message, null);
-    } 
+    }
+
+
+    /**
+     * User/group picekr
+     * @param mode
+     * @param id
+     * @param pattern
+     */
+    public static void openUserGroupSelect(final String mode, final String id, final String pattern) {
+        int viewMode = UserGroupSelect.VIEW_TABS;
+        if ("users".equals(mode)) viewMode = UserGroupSelect.VIEW_USERS;
+        if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
+
+        UserGroupSelect ug = new UserGroupSelect(new UserGroupAdder() {
+            public void addUsers(List<GWTJahiaUser> users) {
+                for (GWTJahiaUser user : users) {
+                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new AsyncCallback<String[]>() {
+                        public void onFailure(Throwable throwable) {
+
+                        }
+
+                        public void onSuccess(String[] strings) {
+                            add(strings[0], strings[1]);
+                        }
+                    });
+                }
+            }
+
+            public void addGroups(List<GWTJahiaGroup> groups) {
+                for (GWTJahiaGroup group : groups) {
+                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new AsyncCallback<String[]>() {
+                        public void onFailure(Throwable throwable) {
+
+                        }
+
+                        public void onSuccess(String[] strings) {
+                            add(strings[0], strings[1]);
+                        }
+                    });
+                }
+            }
+        }, viewMode, "currentSite");
+    }
+
+    /**
+     * Add option
+     * @param text
+     * @param value
+     */
+    public static native void add(String text, String value) /*-{
+    try {
+        eval('$wnd.addOptions')(text, value);
+    } catch (e) {};
+    }-*/;
 }

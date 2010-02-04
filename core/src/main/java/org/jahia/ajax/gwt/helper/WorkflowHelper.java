@@ -54,19 +54,26 @@ public class WorkflowHelper {
                 for (Workflow workflow : entry.getValue()) {
                     for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                         if (workflowAction instanceof WorkflowTask) {
-                            GWTJahiaWorkflowAction action = new GWTJahiaWorkflowAction();
-                            gwtActions.add(action);
-                            List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();
-                            action.setProvider(entry.getKey());
-                            action.setOutcomes(gwtOutcomes);
-                            action.setName(workflowAction.getName());
-                            action.setId(((WorkflowTask) workflowAction).getId());
-                            Set<String> outcomes = ((WorkflowTask)workflowAction).getOutcomes();
-                            for (String outcome : outcomes) {
-                                GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
-                                gwtOutcome.setName(outcome);
-                                gwtOutcome.setLabel(outcome);
-                                gwtOutcomes.add(gwtOutcome);
+                            WorkflowTask workflowTask = (WorkflowTask) workflowAction;
+                            List<WorkflowParticipation> participations = workflowTask.getParticipations();
+                            for (WorkflowParticipation participation : participations) {
+                                if (participation.getJahiaGroup().isMember(session.getUser())) {
+                                    GWTJahiaWorkflowAction action = new GWTJahiaWorkflowAction();
+                                    gwtActions.add(action);
+                                    List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();
+                                    action.setProvider(entry.getKey());
+                                    action.setOutcomes(gwtOutcomes);
+                                    action.setName(workflowAction.getName());
+                                    action.setId(workflowTask.getId());
+                                    Set<String> outcomes = workflowTask.getOutcomes();
+                                    for (String outcome : outcomes) {
+                                        GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
+                                        gwtOutcome.setName(outcome);
+                                        gwtOutcome.setLabel(outcome);
+                                        gwtOutcomes.add(gwtOutcome);
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }                     

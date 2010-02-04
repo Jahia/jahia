@@ -735,21 +735,7 @@ background-color:#FFFFFF
 	padding:0 0 0 12px;
 	clear:left
 }
-/******************************************************************************
-* spacial Links
-******************************************************************************/
-#bodywrapper  a.external{
-	padding:0 13px 0 0;
-	background:transparent url(../img/external.png) no-repeat scroll right center;
-}
-#bodywrapper  a.wikidef{
-	padding:0 13px 0 0;
-	background:transparent url(../img/wikidef.png) no-repeat scroll right center;
-}
-#bodywrapper  a.wikidef-new{
-	padding:0 13px 0 0;
-	background:transparent url(../img/wikidef-new.png) no-repeat scroll right center;
-}
+
 /******************************************************************************
 *  Pagination
 ******************************************************************************/
@@ -1226,20 +1212,7 @@ display:none
 	padding:0;
 	margin-bottom:10px
 }
-/******************************************************************************
-* WIKI Search
-******************************************************************************/
-#bodywrapper #wikisearch p{
-	margin:0;
-	padding:0;
-}
-#bodywrapper #wikisearch fieldset {
-	padding:0 ;
-	border:none;
-}
-#bodywrapper #wikisearch .search{
-	width:90%
-}
+
 
 /******************************************************************************
 News  Most read

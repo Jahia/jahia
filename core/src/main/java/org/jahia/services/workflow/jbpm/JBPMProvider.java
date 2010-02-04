@@ -65,6 +65,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
     private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
+    private JahiaGroupManagerService groupManager;
+    private static JBPMProvider instance;
 
     static {
         participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
@@ -76,6 +78,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         repositoryService = processEngine.getRepositoryService();
         executionService = processEngine.getExecutionService();
         taskService = processEngine.getTaskService();
+    }
+
+    public static JBPMProvider getInstance() {
+        if (instance == null) {
+            instance = new JBPMProvider();
+        }
+        return instance;
     }
 
     /**
@@ -138,7 +147,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args) {
         final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
-        executionService.signalExecutionById(in.getId(),signalName, args);
+        executionService.signalExecutionById(in.getId(), signalName, args);
     }
 
     public Set<WorkflowAction> getAvailableActions(String processId) {
@@ -195,11 +204,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         List<Participation> participationList = taskService.getTaskParticipations(task.getId());
         if (participationList.size() > 0) {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
-            JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
             for (Participation participation : participationList) {
                 participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                                             groupManagerService.lookupGroup(
-                                                                     participation.getGroupId())));
+                                                             groupManager.lookupGroup(participation.getGroupId())));
             }
             action.setParticipations(participations);
         }
@@ -247,14 +254,22 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         if (jBPMGroup == null) {
             identityService.createGroup(group.getGroupKey());
             jBPMGroup = identityService.findGroupById(group.getGroupKey());
-            Collection<Principal> principalCollection = group.getMembers();
-            for (Principal principal : principalCollection) {
-                if (principal instanceof JahiaUser) {
-                    User jbpmUser = getJBPMUser((JahiaUser) principal);
-                    identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
-                }
+        }
+        Collection<Principal> principalCollection = group.getMembers();
+        for (Principal principal : principalCollection) {
+            if (principal instanceof JahiaUser) {
+                User jbpmUser = getJBPMUser((JahiaUser) principal);
+                identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
             }
         }
         return jBPMGroup;
+    }
+
+    public void setGroupManager(JahiaGroupManagerService groupManager) {
+        this.groupManager = groupManager;
+    }
+
+    public String getGroupId(String groupName) {
+        return getJBPMGroup(groupManager.lookupGroup("users")).getId();
     }
 }

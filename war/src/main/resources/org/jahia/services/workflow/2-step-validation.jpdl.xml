@@ -5,10 +5,12 @@
         <transition to="first review"/>
     </start>
     <task name="first review">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="accept" to="final review"/>
         <transition name="reject" to="end"/>
     </task>
     <task name="final review">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="publish" to="publication"/>
         <transition name="reject" to="end"/>
         <transition name="correction needed" to="first review"/>

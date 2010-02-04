@@ -173,9 +173,9 @@ public class WorkflowService {
         return workflowActions;
     }
 
-    public void assignTask(String taskName,String processId,String provider,JahiaUser user) {
-        logger.debug("Assigning user "+user+" to task "+taskName);
-        providers.get(provider).assignTask(processId,taskName,user);
+    public void assignTask(String taskId,String provider,JahiaUser user) {
+        logger.debug("Assigning user "+user+" to task "+taskId);
+        providers.get(provider).assignTask(taskId, user);
     }
 
     public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {

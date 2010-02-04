@@ -60,7 +60,7 @@ public interface WorkflowProvider {
 
     List<WorkflowTask> getTasksForUser(JahiaUser user);
 
-    void assignTask(String processId, String taskName, JahiaUser user);
+    void assignTask(String taskId, JahiaUser user);
 
     void completeTask(String taskId, String outcome, Map<String, Object> args);
 

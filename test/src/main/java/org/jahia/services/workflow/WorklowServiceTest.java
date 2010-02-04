@@ -171,7 +171,7 @@ public class WorklowServiceTest extends TestCase {
         WorkflowTask task = (WorkflowTask) action;
         JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
         assertNotNull(user);
-        service.assignTask(task.getName(), processId, "jBPM", user);
+        service.assignTask(task.getId(), "jBPM", user);
         List<WorkflowTask> forUser = service.getTasksForUser(user);
         assertTrue(forUser.size() > 0);
         final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
@@ -209,7 +209,7 @@ public class WorklowServiceTest extends TestCase {
         List<WorkflowTask> johnDoeList = service.getTasksForUser(johndoe);
         List<WorkflowTask> johnSmoeList = service.getTasksForUser(johnsmoe);
         assertTrue("John Doe and John Smoe should have the same tasks list", johnDoeList.equals(johnSmoeList));
-        service.assignTask(johnDoeList.get(0).getName(), processId, PROVIDER, johndoe);
+        service.assignTask(johnDoeList.get(0).getId(), PROVIDER, johndoe);
         johnSmoeList = service.getTasksForUser(johnsmoe);
         johnDoeList = service.getTasksForUser(johndoe);
         assertFalse("John Doe and John Smoe should not have same tasks list", johnDoeList.equals(johnSmoeList));
@@ -240,7 +240,7 @@ public class WorklowServiceTest extends TestCase {
         WorkflowAction action = actionSet.iterator().next();
         assertTrue(action instanceof WorkflowTask);
         WorkflowTask task = (WorkflowTask) action;
-        service.assignTask(task.getName(), processId, PROVIDER, johndoe);
+        service.assignTask(task.getId(), PROVIDER, johndoe);
         List<WorkflowTask> forUser = service.getTasksForUser(johndoe);
         assertTrue(forUser.size() > 0);
         WorkflowTask workflowTask = forUser.get(0);
@@ -249,7 +249,7 @@ public class WorklowServiceTest extends TestCase {
         assertFalse(service.getActiveWorkflows(stageNode).equals(actionSet));
         // Assign john smoe to the next task
         actionSet = service.getAvailableActions(processId, PROVIDER);
-        service.assignTask(actionSet.iterator().next().getName(), processId, PROVIDER, johnsmoe);
+        service.assignTask(((WorkflowTask)actionSet.iterator().next()).getId(), PROVIDER, johnsmoe);
         // Rollback to previous task
         forUser = service.getTasksForUser(johnsmoe);
         assertTrue("John Smoe task list should not be empty", forUser.size() > 0);
@@ -262,12 +262,12 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("Current Task should be first review as we have asked for corrections", service.getAvailableActions(
                 processId, PROVIDER).iterator().next().getName().equals("first review"));
         // Assign john doe to task
-        service.assignTask(service.getAvailableActions(processId, PROVIDER).iterator().next().getName(), processId,
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER).iterator().next()).getId(),
                            PROVIDER, johndoe);
         // Complete task
         service.completeTask(service.getTasksForUser(johndoe).get(0).getId(), PROVIDER, "accept", emptyMap);
         // Assign john smoe to the next task
-        service.assignTask(service.getAvailableActions(processId, PROVIDER).iterator().next().getName(), processId,
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER).iterator().next()).getId(),
                            PROVIDER, johnsmoe);
         // Complete Task with accept
         service.completeTask(service.getTasksForUser(johnsmoe).get(0).getId(), PROVIDER, "publish", emptyMap);

@@ -214,9 +214,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         return action;
     }
 
-    public void assignTask(String processId, String taskName, JahiaUser user) {
+    public void assignTask(String taskId, JahiaUser user) {
         User jBPMUser = getJBPMUser(user);
-        Task task = taskService.createTaskQuery().processInstanceId(processId).activityName(taskName).uniqueResult();
+        Task task = taskService.getTask(taskId);
         taskService.takeTask(task.getId(), jBPMUser.getId());
     }
 

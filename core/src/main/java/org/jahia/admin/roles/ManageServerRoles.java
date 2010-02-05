@@ -29,10 +29,9 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.admin.permissions;
+package org.jahia.admin.roles;
 
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.params.ProcessingContext;
 import org.jahia.data.JahiaData;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -50,7 +49,7 @@ import java.io.IOException;
  * Time: 14:16:23
  * Copyright (C) Jahia Inc.
  */
-public class ManageServerPermissions extends AbstractAdministrationModule {
+public class ManageServerRoles extends AbstractAdministrationModule {
 
     public static final String SERVER_PERMISSIONS_PREFIX = "org.jahia.actions.server.";
 
@@ -58,7 +57,7 @@ public class ManageServerPermissions extends AbstractAdministrationModule {
      * logging
      */
     private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ManageServerPermissions.class);
+            org.apache.log4j.Logger.getLogger(ManageServerRoles.class);
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 

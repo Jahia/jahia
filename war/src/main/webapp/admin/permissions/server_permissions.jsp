@@ -35,7 +35,7 @@
 <%@page import = "org.jahia.bin.*" %>
 <%@page import = "java.util.*" %>
 <%@ page import="org.jahia.hibernate.model.JahiaAclName" %>
-<%@ page import="org.jahia.admin.permissions.ManageServerPermissions" %>
+<%@ page import="org.jahia.admin.roles.ManageServerRoles" %>
 <%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.usermanager.JahiaGroup" %>

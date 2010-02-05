@@ -64,7 +64,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageServerPermissions" parent="abstractAdministrationModule">
+    <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.roles.ManageServerRoles" parent="abstractAdministrationModule">
         <property name="urlKey" value="serverPermissions" />
         <property name="permissionName" value="admin.permissions.ManageServerPermissions" />
         <property name="name" value="serverPermissions" />
@@ -176,7 +176,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageSitePermissions" parent="abstractAdministrationModule">
+    <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.roles.ManageSiteRoles" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="sitePermissions" />
         <property name="permissionName" value="admin.permissions.ManageSitePermissions" />

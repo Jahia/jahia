@@ -34,7 +34,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.jahia.admin.permissions.ManageSitePermissions;
+import org.jahia.admin.roles.ManageSiteRoles;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
@@ -435,7 +435,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportSitePermissions(ContentHandler ch, JahiaSite site) throws JahiaException, SAXException {
-        exportPermissions(ch, ManageSitePermissions.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
+        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
     }
 
     private void exportPermissions(ContentHandler ch, String prefix, String nodeName) throws SAXException {
@@ -870,7 +870,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void importSitePermissions(JahiaSite site, InputStream is) {
-        handleImport(is, new PermissionsImportHandler(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission", site.getID()));
+        handleImport(is, new PermissionsImportHandler(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission", site.getID()));
     }
 
     public List<String[]> importUsers(File file) throws IOException {

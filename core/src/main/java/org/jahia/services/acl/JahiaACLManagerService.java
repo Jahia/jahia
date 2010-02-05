@@ -31,8 +31,8 @@
  */
 package org.jahia.services.acl;
 
-import org.jahia.admin.permissions.ManageServerPermissions;
-import org.jahia.admin.permissions.ManageSitePermissions;
+import org.jahia.admin.roles.ManageServerRoles;
+import org.jahia.admin.roles.ManageSiteRoles;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -473,7 +473,7 @@ public class JahiaACLManagerService extends JahiaService {
      * Shortcut method to test permissions on an action.
      *
      * @param actionName the name of the action to retrieve (or create) permission for. This
-     *                   action will be prepended with {@link ManageServerPermissions#SERVER_PERMISSIONS_PREFIX} before passing it to getPermission.
+     *                   action will be prepended with {@link org.jahia.admin.roles.ManageServerRoles#SERVER_PERMISSIONS_PREFIX} before passing it to getPermission.
      * @param p          a security principal (user or group) for which to check the permission
      * @param permission the permission, based on JahiaBaseACL constants to check, such as
      *                   read, write, administer, ...
@@ -486,7 +486,7 @@ public class JahiaACLManagerService extends JahiaService {
      *         permission.
      */
     public int getServerActionPermission(String actionName, Principal p, int permission, int siteID) {
-        return getPermission(ManageServerPermissions.SERVER_PERMISSIONS_PREFIX + actionName, p, permission, siteID, false);
+        return getPermission(ManageServerRoles.SERVER_PERMISSIONS_PREFIX + actionName, p, permission, siteID, false);
     }
 
     /**
@@ -508,7 +508,7 @@ public class JahiaACLManagerService extends JahiaService {
      */
     public int getSiteActionPermission(String actionName, Principal p, int permission, int siteID) {
         JahiaUserAliasing userAliasing = new JahiaUserAliasing((JahiaUser)p);
-        return getPermission(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + siteID + "." + actionName,
+        return getPermission(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + siteID + "." + actionName,
                 userAliasing, permission, siteID, true);
     }
 
@@ -632,7 +632,7 @@ public class JahiaACLManagerService extends JahiaService {
                 permissionList = new ArrayList<String>(locales.size());
                 for (Locale locale : locales) {
                     permissionList
-                            .add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX
+                            .add(ManageSiteRoles.SITE_PERMISSIONS_PREFIX
                                     + "*.engines.languages." + locale);
                 }
             } catch (JahiaException e) {
@@ -647,7 +647,7 @@ public class JahiaACLManagerService extends JahiaService {
             for (Toolbar toolbar : toolbars) {
                 Visibility toolbarVisibility = toolbar.getVisibility();
                 if(toolbarVisibility != null && toolbar.getVisibility().getSiteActionPermission() != null){
-                    permissionList.add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());
+                    permissionList.add(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());
                 }else{
                     logger.debug("Toolbar["+toolbar.getName()+"] has no sitePermission");
                 }

@@ -72,7 +72,7 @@
 [jnt:role] > nt:base, mix:title
  - j:permissions (weakreference) multiple < jnt:permission
   
-[jnt:roles] > nt:base
+[jnt:roles] > nt:base, jmix:hierarchyNode
  + * (jnt:role)
  
 [jnt:permission] > nt:base, mix:title
@@ -80,7 +80,7 @@
 [jnt:permissionGroup] > nt:base
  + * (jnt:permission)
 
-[jnt:permissions] > nt:base
+[jnt:permissions] > nt:base, jmix:hierarchyNode
  + * (jnt:permissionGroup)
  
 [jmix:roleBasedAccessControlled] mixin

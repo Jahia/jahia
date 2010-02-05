@@ -672,10 +672,63 @@ shortcuts
 	width:auto;
 }
 /******************************************************************************
+*  Images
+******************************************************************************/
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+#bodywrapper .imagefloatleft {
+	float:left;
+	margin-bottom:20px;
+	padding-right:20px;
+}
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+
+#bodywrapper .itemImage {
+	background-color:#F4F4F4;
+	border:1px solid #CCC;
+	position:relative;
+	padding:1px;
+	margin-bottom:10px;
+}
+#bodywrapper .imagefloatleft .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper .imagefloatright .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper div.itemImageRight {
+	float:right;
+}
+
+#bodywrapper .itemImage img {
+	background-color:#e1e1e1;
+	padding:9px;
+}
+#bodywrapper .itemImagewhite img{
+	background-color:#fff;
+}
+/******************************************************************************
 * Generic
 ******************************************************************************/
+#bodywrapper .divButton{
+	text-align:center;
+	margin:0 0 10px 0;
+}
+#bodywrapper .divButtonRight{
+	text-align:right;
+}
+#bodywrapper input.button, #bodywrapper button {
+	margin-right:0.5em;
+}
 
-#bodywrapper .button{
+#bodywrapper .button,  #bodywrapper button{
 	background:#fff url(../img/bg-button.png) repeat-x bottom left;
 	border:1px solid #333;
 	color:#333;
@@ -685,10 +738,23 @@ shortcuts
 	font-size:80%;
 	padding:2px 15px 3px 15px;
 }
-#bodywrapper .button:hover {
+#bodywrapper .button:hover,  #bodywrapper button:hover {
 	cursor: pointer;
 	background:#fff url(../img/bg-button-on.png) repeat-x top left;
 	color:#900;
+}
+/******************************************************************************
+* Title h3
+******************************************************************************/
+#bodywrapper h3.titleIcon {
+	color:#333;
+	padding:0 50px 5px 2px;
+	position:relative;
+}
+#bodywrapper h3.titleIcon img {
+	position:absolute;
+	right:0;
+	top:-5px;
 }
 /******************************************************************************
 *  <A> Button
@@ -746,7 +812,42 @@ shortcuts
 	cursor: pointer;
 	background: url(../img/bottomanchor-on.png) no-repeat top right;
 }
-
+/******************************************************************************
+*  Sort
+******************************************************************************/
+#bodywrapper .sort{
+	text-align:right
+}
+/******************************************************************************
+*  Thumbnails
+******************************************************************************/
+#bodywrapper div.thumbnail {
+	float:left;
+	margin-right:20px;
+}
+#bodywrapper div.thumbnailRight {
+	float:right;
+	margin-left:20px;
+}
+#bodywrapper div.thumbnail img {
+	position:relative
+}
+/******************************************************************************
+* Thumbnails  List
+******************************************************************************/
+#bodywrapper div.thumbnailList{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#bodywrapper div.thumbnailList a{
+	float:left;
+	margin-right:10px;
+	margin-bottom:10px;
+	border:1px solid #fff
+}
+#bodywrapper div.thumbnailList a:hover{
+	border:1px solid #000
+}
 /******************************************************************************
 * breadcrumb
 ******************************************************************************/
@@ -1299,6 +1400,33 @@ background-color:#eaeaea
 #bodywrapper .table th.center
 {
 	text-align:center;
+}
+/******************************************************************************
+*  Visibility
+******************************************************************************/
+#bodywrapper .visibility
+{
+	display:block
+}
+#bodywrapper span.visibility
+{
+	font-weight:bold;
+	font-size:0.85em
+}
+/******************************************************************************
+*  Preferences Form
+******************************************************************************/
+#bodywrapper .preferencesForm
+{
+margin:10px 0;
+}
+#bodywrapper .preferencesForm fieldset
+{
+border:none
+}
+#bodywrapper .preferencesForm legend
+{
+display:none
 }
 /******************************************************************************
 *  idTabs

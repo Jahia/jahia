@@ -60,6 +60,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     private boolean mandatory = false;
     private boolean hidden;
     private int onParentVersion = OnParentVersionAction.COPY;
+    private int onConflict = OnConflictAction.UNRESOLVED;
     protected int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
 
@@ -125,6 +126,14 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public void setOnParentVersion(int onParentVersion) {
         this.onParentVersion = onParentVersion;
+    }
+
+    public int getOnConflict() {
+        return onConflict;
+    }
+
+    public void setOnConflict(int onConflict) {
+        this.onConflict = onConflict;
     }
 
     public int getSelector() {

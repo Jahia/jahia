@@ -144,8 +144,8 @@
  */
 [mix:lastModified]
   mixin
-  - jcr:lastModified (DATE) autocreated
-  - jcr:lastModifiedBy (STRING) autocreated nofulltext
+  - jcr:lastModified (DATE) autocreated onconflict=latest
+  - jcr:lastModifiedBy (STRING) autocreated nofulltext onconflict=latest
 
 /**
  * This mixin node type can be used to provide a standardized property that

@@ -724,6 +724,22 @@ public class JahiaCndReader {
                         pdi.setFullTextSearchable(Boolean.TRUE);
                     }
                 }
+            } else if (currentTokenEquals(Lexer.ONCONFLICT)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    if (currentTokenEquals(Lexer.USE_LATEST)) {
+                        pdi.setOnConflict(OnConflictAction.USE_LATEST);
+                    } else if (currentTokenEquals(Lexer.USE_OLDEST)) {
+                        pdi.setOnConflict(OnConflictAction.USE_OLDEST);
+                    } else if (currentTokenEquals(Lexer.NUMERIC_USE_MIN)) {
+                        pdi.setOnConflict(OnConflictAction.NUMERIC_USE_MIN);
+                    } else if (currentTokenEquals(Lexer.NUMERIC_USE_MAX)) {
+                        pdi.setOnConflict(OnConflictAction.NUMERIC_USE_MAX);
+                    } else if (currentTokenEquals(Lexer.NUMERIC_SUM)) {
+                        pdi.setOnConflict(OnConflictAction.NUMERIC_SUM);
+                    }
+                }
             } else if (currentTokenEquals(Lexer.COPY)) {
                 pdi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {

@@ -90,6 +90,13 @@ public class Lexer {
 
     public static final String[] HIDDEN = new String[]{"hidden", "Hidden", "HIDDEN"};
 
+    public static final String[] ONCONFLICT = new String[]{"onconflict"};
+    public static final String[] USE_LATEST = new String[]{"latest"};
+    public static final String[] USE_OLDEST = new String[]{"oldest"};
+    public static final String[] NUMERIC_USE_MIN = new String[]{"min"};
+    public static final String[] NUMERIC_USE_MAX = new String[]{"max"};
+    public static final String[] NUMERIC_SUM = new String[]{"sum"};
+
     public static final String[] COPY = new String[]{"copy", "Copy", "COPY"};
     public static final String[] VERSION = new String[]{"version", "Version", "VERSION"};
     public static final String[] INITIALIZE = new String[]{"initialize", "Initialize", "INITIALIZE"};
@@ -129,6 +136,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(QUERYOPS));
         attr.addAll(Arrays.asList(NOFULLTEXT));
         attr.addAll(Arrays.asList(NOQUERYORDER));
+        attr.addAll(Arrays.asList(ONCONFLICT));
         attr.addAll(Arrays.asList(COPY));
         attr.addAll(Arrays.asList(VERSION));
         attr.addAll(Arrays.asList(INITIALIZE));

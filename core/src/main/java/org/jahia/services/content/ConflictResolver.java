@@ -4,6 +4,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.OnConflictAction;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
@@ -18,15 +19,6 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ConflictResolver {
-    public static final int UNRESOLVED = 1;
-    public static final int USE_SOURCE = 2;
-    public static final int USE_TARGET = 3;
-    public static final int USE_OLDEST = 4;
-    public static final int USE_LATEST = 5;
-    public static final int NUMERIC_USE_MIN = 6;
-    public static final int NUMERIC_USE_MAX = 7;
-    public static final int NUMERIC_SUM = 8;
-    public static final int TEXT_MERGE = 9;
 
 
     private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:mixinTypes", "jcr:frozenUuid", "jcr:frozenPrimaryType", "jcr:frozenMixinTypes",
@@ -567,40 +559,40 @@ public class ConflictResolver {
                 Value v;
                 boolean targetMoreRecent = sourceDate != null && sourceDate.before(targetDate);
                 switch (resolution) {
-                    case USE_SOURCE:
+                    case OnConflictAction.USE_SOURCE:
                         v = newValue;
                         break;
-                    case USE_TARGET:
+                    case OnConflictAction.USE_TARGET:
                         return true;
-                    case USE_OLDEST:
+                    case OnConflictAction.USE_OLDEST:
                         if (targetMoreRecent) {
                             v = newValue;
                             break;
                         } else {
                             return true;
                         }
-                    case USE_LATEST:
+                    case OnConflictAction.USE_LATEST:
                         if (!targetMoreRecent) {
                             v = newValue;
                             break;
                         } else {
                             return true;
                         }
-                    case NUMERIC_USE_MIN:
+                    case OnConflictAction.NUMERIC_USE_MIN:
                         if (newValue.getLong() < newTargetValue.getLong()) {
                             v = newValue;
                             break;
                         } else {
                             return true;
                         }
-                    case NUMERIC_USE_MAX:
+                    case OnConflictAction.NUMERIC_USE_MAX:
                         if (newValue.getLong() > newTargetValue.getLong()) {
                             v = newValue;
                             break;
                         } else {
                             return true;
                         }
-                    case NUMERIC_SUM:
+                    case OnConflictAction.NUMERIC_SUM:
                         v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong());
                         break;
                     default:
@@ -613,24 +605,7 @@ public class ConflictResolver {
         }
         // todo : configure somewhere
         private int getResolutionForDefinition(ExtendedPropertyDefinition definition) {
-            String name = definition.getName();
-            if (name.equals("jcr:lastModified")) {
-                return USE_LATEST;
-            } else if (name.equals("jcr:lastModifiedBy")) {
-                return USE_LATEST;
-            } else if (name.equals("j:lastPublished")) {
-                return USE_LATEST;
-            } else if (name.equals("j:lastPublishedBy")) {
-                return USE_LATEST;
-            } else if (name.equals("j:nbOfVotes")) {
-                return NUMERIC_SUM;
-            } else if (name.equals("j:sumOfVotes")) {
-                return NUMERIC_SUM;                
-            } else if (name.equals("j:lastVote")) {
-                return USE_LATEST;
-            }
-
-            return UNRESOLVED;
+            return definition.getOnConflict();
         }
 
         @Override

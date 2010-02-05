@@ -4,18 +4,155 @@
 	width:48%;
 	list-style:none;
 }
+#bodywrapper ul.user-profile-list{
+	margin:0;
+	position:relative;
+	margin-bottom:20px;
+	list-style:none;
+}
 #bodywrapper ul.user-profile-list li {
 	padding:5px 5px 0px 5px;
-	clear:left
+	clear:left;
+	list-style:none;
 }
+
 #bodywrapper ul.user-profile-list li span.label {
 	display:block;
-	font-size:0.8em;
+	font-size:0.85em;
 	color:#666;
 	float:left;
 	text-transform:uppercase;
 	margin-right:5px;
 }
-#bodywrapper ul.user-profile-list{
-	margin-bottom:0px;
+#bodywrapper ul.user-profile-list form input{
+	margin-bottom:2px;
+	width:auto !important;
+}
+#bodywrapper .boxuserprofile input.button, #bodywrapper .boxuserprofile button{
+	padding:3px;
+	margin-bottom:2px;
+	margin:0 2px;
+	list-style:none;
+}
+
+/******************************************************************************
+*  Edit icon
+******************************************************************************/
+#bodywrapper span.visibilityEdit, #bodywrapper div.prefEdit{
+	background:transparent url(img/visibilityedit.png) no-repeat scroll 0 70%;
+	display:inline;
+	margin-right:8px;
+	padding:5px 0 5px 18px;
+	font-size:0.85em;
+	font-weight:bold;
+	clear:both;
+}
+/******************************************************************************
+*  add form 
+******************************************************************************/
+#bodywrapper form#newAddress input, #bodywrapper form#newPhone input {
+margin-bottom:2px
+}
+
+/******************************************************************************
+*  boxuserprofile
+******************************************************************************/
+#bodywrapper div.boxuserprofile {
+	position:relative;
+	clear:both;
+}
+
+#bodywrapper div.boxuserprofile h3.boxuserprofiletitleh3 {
+	margin:0;
+	padding:0;
+	display:inline
+}
+#bodywrapper div.boxuserprofile-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	height:1%;
+
+}
+#bodywrapper div.boxuserprofile-inner p {
+	padding:0px 0px 10px 0px;
+}
+#bodywrapper .boxuserprofile-inner .boxuserprofile-inner-border {
+	border:1px solid #fff;
+	height:1%;
+	background-color:#fff;
+}
+/*boxuserprofileshadow*/
+#bodywrapper div.boxuserprofileshadow {
+	border:1px solid #cecece;
+}
+
+#bodywrapper div.boxuserprofileshadow div.boxuserprofile-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	margin:-2px 0 0 -2px;
+}
+/*boxuserprofile color*/
+#bodywrapper .boxuserprofilegrey .boxuserprofile-inner .boxuserprofile-inner-border {
+	background-color:#e1e1e1
+}
+#bodywrapper .boxuserprofileyellow .boxuserprofile-inner .boxuserprofile-inner-border {
+	background-color:#FCF0BA
+}
+#bodywrapper .boxuserprofilewhite .boxuserprofile-inner {
+	background-color:#fff
+}
+#bodywrapper .boxuserprofilewhite .boxuserprofile-inner .boxuserprofile-inner-border {
+	background-color:#fff
+}
+
+/*boxuserprofile padding*/
+#bodywrapper .boxuserprofilepadding16 .boxuserprofile-inner .boxuserprofile-inner-border {
+	padding:16px;
+}
+
+/*boxuserprofile margin*/
+#bodywrapper .boxuserprofilemarginbottom16{
+	margin-bottom:16px;
+}
+/*boxuserprofile title*/
+#bodywrapper h4.boxuserprofile-title {
+	background:#666666 url(img/boxuserprofile-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/******************************************************************************
+* group-list
+******************************************************************************/
+
+#bodywrapper ul.group-list  {
+	position:relative;
+	margin:0;
+	margin-bottom:20px;
+	list-style:none;
+	border:1px solid #ccc;
+}
+#bodywrapper .group-list li {
+	background-color:#e1e1e1;
+	border-color:#fff #fff #ccc ;
+	border-style:solid;
+	border-width:1px;
+	padding:10px 20px;
+	margin:0;
+	list-style:none;
+}
+#bodywrapper .group-list li p {
+	padding:0;
+}
+#bodywrapper .group-list li.last {
+	border-bottom-color:#fff;
+}
+#bodywrapper ul.group-list h4 {
+	border-bottom:none;
 }

@@ -8,7 +8,7 @@
 	<jsp:include page="user.jsp"/>
 </c:if>
 <c:if test="${renderContext.user.name == currentNode.name}">
-<%@ include file="user.profileCss.jspf" %>
+
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 <form action="${url.base}${currentNode.path}" method="post" name="userProfile">

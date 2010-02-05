@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addWrapper name="wrapper.dashboard"/>
-<template:addResources type="css" resources="960.css,userProfile.css"/>
+<template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript"
@@ -209,7 +209,7 @@
 </script>
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
-<div class="container container_16"> <!--start container_16-->
+
 <div class='grid_4'><!--start grid_4-->
     <div class="image imageEdit" id="portrait">
         <div class="itemImage itemImageRight"><jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
@@ -222,12 +222,12 @@
         </div>
     </div>
 
-    <div class="box"><!--start box -->
-        <div class="boxshadow boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border">
+            <div class="boxuserprofile">
+                <div class=" boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
 
-                    <h3 class="boxtitleh3" id="personDisplay1"><c:out value="${person}"/></h3>
+                    <h3 class="boxuserprofiletitleh3" id="personDisplay1"><c:out value="${person}"/></h3>
 
                     <div class="list3 user-profile-list">
                         <ul class="list3 user-profile-list">
@@ -264,12 +264,11 @@
         </div>
     </div>
     <!--stop box -->
-        <div class="box"><!--start box -->
-        <div class="boxshadow boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-
-                <div class="box-inner-border">
-                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.yourPreferences"/></h3>
+            <div class="boxuserprofile">
+                <div class="boxuserprofilegrey boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
+                    <h3 class="boxuserprofiletitleh3"><fmt:message key="jnt_user.yourPreferences"/></h3>
 
                     <div class="preferencesForm"><!--start preferencesForm -->
                         <jcr:preference name="preferredLanguage" var="prefLangNode"
@@ -325,11 +324,10 @@
 
 <div class='grid_8'><!--start grid_8-->
 
-    <div class="box"><!--start box -->
-        <div class="arrow-white-shadow-left"></div>
-        <div class="boxshadow boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border">
+            <div class="boxuserprofile">
+                <div class=" boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
                     <template:module node="${currentNode}" template="detailNew"/>
                     <!--stop box -->
                     <div class="clear"></div>
@@ -339,23 +337,22 @@
     </div>
     <!--stop box -->
 
-    <div class="box">
-        <div class="boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border"><!--start box -->
-
-                    <h3 class="boxtitleh3"><fmt:message key="jnt_user.j_about"/></h3>
-
+            <div class="boxuserprofile">
+                <div class=" boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
+                        
+                    <span class="visibilityEdit" id="j:aboutPublic">
+                    <c:if test="${fields['j:aboutPublic'] eq 'true'}">
+                        <fmt:message key="jnt_user.profile.public"/>
+                    </c:if>
+                    <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
+                        <fmt:message key="jnt_user.profile.nonpublic"/>
+                    </c:if>
+                    </span>
+                    
+                    <h3 class="boxuserprofiletitleh3"><fmt:message key="jnt_user.j_about"/></h3>
                     <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
-            <span class="visibilityEdit" id="j:aboutPublic">
-            <c:if test="${fields['j:aboutPublic'] eq 'true'}">
-                <fmt:message key="jnt_user.profile.public"/>
-            </c:if>
-            <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
-                <fmt:message key="jnt_user.profile.nonpublic"/>
-            </c:if>
-            </span>
-
                     <div class="clear"></div>
                 </div>
             </div>
@@ -367,16 +364,15 @@
 </div>
 <!--stop grid_8-->
 <div class='grid_4'><!--start grid_4-->
-    <%--<div class="box">
-              <div class="boxshadow boxgrey boxpadding16 boxmarginbottom16">
-
-                  <div class="box-inner">
-                      <div class="box-inner-border"><!--start box -->
+    <%--<div class="boxuserprofile">
+                <div class="boxuserprofilegrey boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
 
               <div class="thumbnail">
                 <a href="#"><img src="img-text/rss.png" alt="" border="0"/></a>
               <div class='clear'></div></div>
-              <h3 class="boxtitleh3"><a href="#">Follow me</a></h3>
+              <h3 class="boxuserprofiletitleh3"><a href="#">Follow me</a></h3>
               <p>dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing, metus non ultricies pharetra</p>
                           <div class="clear"></div>
 
@@ -388,7 +384,7 @@
     <h3 class="titleIcon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
                                                                                        src="${url.currentModule}/images/groups.png"/></a>
     </h3>
-    <ul class="list2 group-list">
+    <ul class="group-list">
         <c:forEach items="${jcr:getUserMembership(currentNode)}" var="group" varStatus="status">
             <li <c:if test="${status.last}">class="last"</c:if>>
                 <div class="thumbnail">
@@ -408,7 +404,7 @@
     <%--
 
             <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
-            <ul class="list2 friends-list">
+            <ul class="friends-list">
     <li>
                 <div class="thumbnail">
                   <a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a>            </div>
@@ -444,11 +440,11 @@
     <!--stop box -->
 
 
-    <%--<div class="box">
-        <div class="boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border"><!--start box -->
-                    <h3 class="boxtitleh3">M’envoyer un email</h3>
+    <%--            <div class="boxuserprofile">
+                <div class="boxuserprofilegrey boxuserprofilepadding16 boxuserprofilemarginbottom16">
+                    <div class="boxuserprofile-inner">
+                        <div class="boxuserprofile-inner-border"><!--start boxuserprofile -->
+                    <h3 class="boxuserprofiletitleh3">M’envoyer un email</h3>
 
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ut sapien at nulla ultrices volutpat
                         vel nec velit. Ut vel tortor tellus.
@@ -494,7 +490,4 @@
 
 
 <div class='clear'></div>
-</div>
-<!--stop container_16-->
 
-<div class="clear"></div>

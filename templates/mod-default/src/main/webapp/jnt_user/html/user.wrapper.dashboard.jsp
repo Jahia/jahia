@@ -4,8 +4,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 
-<div id="content"><!--start content-->
-    <div class="container container_16"> <!--start container_16-->
+
         <div class="idTabsContainer"><!--start idTabsContainer-->
 
             <ul class="idTabs">
@@ -32,9 +31,5 @@
         </div>
         <div class="tabContainer"><!--start tabContainer-->
             ${wrappedContent}
-        </div>
+        <div class="clear"></div></div>
         <!--stop tabContainer-->
-        <div class="clear"></div>
-    </div>
-    <!--stop content-->
-</div>

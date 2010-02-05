@@ -5,7 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<template:addResources type="css" resources="960.css,userProfile.css"/>
+<template:addResources type="css" resources="userProfile.css"/>
 
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
@@ -32,7 +32,7 @@
 
 <div class="clear"></div>
 <!-- twoCol clear -->
-<ul class="list3 user-profile-list twoCol">
+<ul class="user-profile-list twoCol">
     <c:forTokens
             items="j:firstName,j:lastName,j:organization,j:function,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
             delims="," var="key">
@@ -79,7 +79,7 @@
 </ul>
 
 <%-- Phone Numbers--%>
-<ul class="list3 user-profile-list twoCol" id="phonesList">
+<ul class="user-profile-list twoCol" id="phonesList">
     <jcr:node var="phones" path="${currentNode.path}/j:phones"/>
     <script type="text/javascript">
         function newPhone() {
@@ -118,12 +118,12 @@
         </li>
     </c:forEach>
 </ul>
-<form action="" id="newPhone">
+<form class="FormNewPhone" action="" id="newPhone">
     <input type="text" id="newPhoneNumber" size="20" value="Phone Number"/>
     <input type="text" id="newPhoneType" size="20" value="Phone Type"/>
-    <button type="button" onclick="newPhone();">Add</button>
+    <input class="button" type="button" onclick="newPhone();" value="Add"/>
 </form>
-<ul class="list3 user-profile-list twoCol" id="addressesList">
+<ul class="user-profile-list twoCol" id="addressesList">
     <jcr:node var="addresses" path="${currentNode.path}/j:addresses"/>
     <script type="text/javascript">
         function addNewAddress() {
@@ -165,11 +165,11 @@
             <jcr:nodePropertyRenderer node="${address}" name="j:country" renderer="country"/></span></li>
     </c:forEach>
 </ul>
-<form action="" id="newAddress">
+<form class="FormNewAddress" action="" id="newAddress">
     <input type="text" id="newStreet" size="20" value="Street"/>
     <input type="text" id="newZipCode" size="20" value="Zipcode"/>
     <input type="text" id="newTown" size="20" value="Town"/>
-    <button type="button" onclick="addNewAddress();">Add</button>
+    <input class="button" type="button" onclick="addNewAddress();"value="Add"/>
 </form>
 <%--
 <div class="clear"></div>

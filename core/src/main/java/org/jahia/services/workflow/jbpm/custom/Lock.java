@@ -6,11 +6,10 @@ import org.jbpm.api.activity.ExternalActivityBehaviour;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Feb 4, 2010
- * Time: 6:51:13 PM
- * To change this template use File | Settings | File Templates.
+ * Lock custom activity for jBPM workflow
+ *
+ * Lock the current node
+ *
  */
 public class Lock implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;

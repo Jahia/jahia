@@ -9,11 +9,10 @@ import org.jbpm.api.activity.ExternalActivityBehaviour;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Feb 4, 2010
- * Time: 6:47:57 PM
- * To change this template use File | Settings | File Templates.
+ * Publish custom activity for jBPM workflow
+ *
+ * Publish the current node
+ *
  */
 public class Publish implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;

@@ -187,14 +187,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public List<WorkflowTask> getTasksForUser(JahiaUser user) {
-        User jBPMUser = getJBPMUser(user);
         final List<WorkflowTask> availableActions = new LinkedList<WorkflowTask>();
-        List<Task> taskList = taskService.findPersonalTasks(jBPMUser.getId());
+        List<Task> taskList = taskService.findPersonalTasks(user.getUserKey());
         for (Task task : taskList) {
             WorkflowTask action = convertToWorkflowTask(task);
             availableActions.add(action);
         }
-        taskList = taskService.findGroupTasks(jBPMUser.getId());
+        taskList = taskService.findGroupTasks(user.getUserKey());
         for (Task task : taskList) {
             WorkflowTask action = convertToWorkflowTask(task);
             availableActions.add(action);
@@ -226,9 +225,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public void assignTask(String taskId, JahiaUser user) {
-        User jBPMUser = getJBPMUser(user);
         Task task = taskService.getTask(taskId);
-        taskService.takeTask(task.getId(), jBPMUser.getId());
+        if (user.getUserKey().equals(task.getAssignee())) {
+            return;
+        }
+        taskService.takeTask(task.getId(), user.getUserKey());
     }
 
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {
@@ -236,12 +237,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public void addParticipatingGroup(String taskId, JahiaGroup group, String role) {
-        Group jbpmGroup = getJBPMGroup(group);
         String participationType = participationRoles.get(role);
         if (participationType != null) {
-            taskService.addTaskParticipatingGroup(taskId, jbpmGroup.getId(), participationType);
+            taskService.addTaskParticipatingGroup(taskId, group.getGroupKey(), participationType);
         } else {
-            taskService.addTaskParticipatingGroup(taskId, jbpmGroup.getId(), Participation.VIEWER);
+            taskService.addTaskParticipatingGroup(taskId, group.getGroupKey(), Participation.VIEWER);
         }
     }
 
@@ -249,42 +249,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         taskService.deleteTask(taskId, reason);
     }
 
-    private User getJBPMUser(JahiaUser user) {
-        IdentityService identityService = processEngine.getIdentityService();
-        User jBPMUser = identityService.findUserById(user.getUserKey());
-        if (jBPMUser == null) {
-            identityService.createUser(user.getUserKey(), user.getProperty("j:firstName"), user.getProperty(
-                    "j:lastName"), user.getProperty("j:email"));
-            jBPMUser = identityService.findUserById(user.getUserKey());
-        }
-        return jBPMUser;
-    }
-
-    private Group getJBPMGroup(JahiaGroup group) {
-        IdentityService identityService = processEngine.getIdentityService();
-        Group jBPMGroup = identityService.findGroupById(group.getGroupKey());
-        if (jBPMGroup == null) {
-            identityService.createGroup(group.getGroupKey());
-            jBPMGroup = identityService.findGroupById(group.getGroupKey());
-        }
-        Collection<Principal> principalCollection = group.getMembers();
-        for (Principal principal : principalCollection) {
-            if (principal instanceof JahiaUser) {
-                User jbpmUser = getJBPMUser((JahiaUser) principal);
-                List<String> groupIdsByUser = identityService.findGroupIdsByUser(jbpmUser.getId());
-                if (groupIdsByUser == null || groupIdsByUser.size() == 0 || !groupIdsByUser.contains(jBPMGroup.getId())) {
-                    identityService.createMembership(jbpmUser.getId(), jBPMGroup.getId());
-                }
-            }
-        }
-        return jBPMGroup;
-    }
-
     public void setGroupManager(JahiaGroupManagerService groupManager) {
         this.groupManager = groupManager;
     }
 
     public String getGroupId(String groupName) {
-        return getJBPMGroup(groupManager.lookupGroup("users")).getId();
+        return groupManager.lookupGroup(groupName).getGroupKey();
     }
 }

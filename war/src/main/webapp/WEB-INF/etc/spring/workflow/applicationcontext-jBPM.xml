@@ -2,7 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean class="org.jbpm.pvm.internal.processengine.SpringHelper" id="springHelper"/>
+    <bean class="org.jbpm.pvm.internal.processengine.SpringHelper" id="springHelper">
+        <property name="jbpmCfg" value="jbpm.cfg.xml"/>
+    </bean>
     <bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine" />
 
     <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPMProvider" factory-method="getInstance">

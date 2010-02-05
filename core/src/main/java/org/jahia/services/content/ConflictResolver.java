@@ -143,11 +143,11 @@ public class ConflictResolver {
         differences = sourceDiff;
     }
 
-    private List<Diff> compare(JCRNodeWrapper frozenNode1, JCRNodeWrapper frozenNode2) throws RepositoryException {
+    private List<Diff> compare(JCRNodeWrapper frozenNode, JCRNodeWrapper node) throws RepositoryException {
         List<Diff> diffs = new ArrayList<Diff>();
 
-        Map<String, String> uuids1 = getChildEntries(frozenNode1);
-        Map<String, String> uuids2 = getChildEntries(frozenNode2);
+        Map<String, String> uuids1 = getChildEntries(frozenNode);
+        Map<String, String> uuids2 = getChildEntries(node);
 
         if (!uuids1.equals(uuids2)) {
             List<String> added = new ArrayList<String>(uuids2.keySet());
@@ -162,7 +162,7 @@ public class ConflictResolver {
             }
         }
 
-        PropertyIterator pi1 = frozenNode1.getProperties();
+        PropertyIterator pi1 = frozenNode.getProperties();
         while (pi1.hasNext()) {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
@@ -170,7 +170,7 @@ public class ConflictResolver {
             if (ignore.contains(propName)) {
                 continue;
             }
-            if (!frozenNode2.hasProperty(propName)) {
+            if (!node.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
                     Value[] values = prop1.getValues();
                     for (Value value : values) {
@@ -180,7 +180,7 @@ public class ConflictResolver {
                     diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(),prop1.getValue(), null));
                 }
             } else {
-                Property prop2 = frozenNode2.getProperty(propName);
+                Property prop2 = node.getProperty(propName);
 
                 if (prop1.isMultiple() != prop2.isMultiple()) {
                     throw new RepositoryException();
@@ -218,7 +218,7 @@ public class ConflictResolver {
                 }
             }
         }
-        PropertyIterator pi2 = frozenNode2.getProperties();
+        PropertyIterator pi2 = node.getProperties();
 
         while (pi2.hasNext()) {
             JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
@@ -227,7 +227,7 @@ public class ConflictResolver {
             if (ignore.contains(propName)) {
                 continue;
             }
-            if (!frozenNode1.hasProperty(propName)) {
+            if (!frozenNode.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
                     Value[] values = prop2.getValues();
                     for (Value value : values) {
@@ -300,9 +300,11 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
+            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
+                return true;
+            }
             targetNode.getRealNode().getSession().save();
             JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
-//            targetNode.getSession().getWorkspace().clone(sourceWorkspace, targetNode.getPath()+"/"+newName,targetNode.getPath()+"/"+newName, false);
             return true;
         }
 
@@ -345,6 +347,9 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
+            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
+                return true;
+            }
             targetNode.getNode(oldName).remove();
             return true;
         }
@@ -595,6 +600,8 @@ public class ConflictResolver {
                     case OnConflictAction.NUMERIC_SUM:
                         v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong());
                         break;
+                    case OnConflictAction.IGNORE:
+                        return true;
                     default:
                         return false;
                 }

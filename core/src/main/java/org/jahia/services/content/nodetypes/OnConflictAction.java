@@ -8,6 +8,7 @@ package org.jahia.services.content.nodetypes;
  * To change this template use File | Settings | File Templates.
  */
 public class OnConflictAction {
+    public static final int IGNORE = 0;
     public static final int UNRESOLVED = 1;
     public static final int USE_SOURCE = 2;
     public static final int USE_TARGET = 3;

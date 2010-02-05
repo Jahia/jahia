@@ -60,7 +60,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     private boolean mandatory = false;
     private boolean hidden;
     private int onParentVersion = OnParentVersionAction.COPY;
-    private int onConflict = OnConflictAction.UNRESOLVED;
+    private int onConflict = OnConflictAction.USE_LATEST;
     protected int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
 

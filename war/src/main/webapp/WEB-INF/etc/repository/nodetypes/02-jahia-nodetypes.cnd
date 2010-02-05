@@ -24,8 +24,8 @@
 
 [jmix:lastPublished] > jmix:metadata mixin
   - j:published (boolean) = false hidden
-  - j:lastPublished (date) protected onconflict=latest
-  - j:lastPublishedBy (string) protected nofulltext onconflict=latest
+  - j:lastPublished (date) protected onconflict=ignore
+  - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
 
 [jmix:originWS] > jmix:metadata mixin
   - j:originWS (string) protected hidden

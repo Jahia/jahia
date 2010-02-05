@@ -331,13 +331,16 @@ public class JCRPublicationService extends JahiaService {
 
                 Node destinationNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
 
+                // force conflict
+                destinationNode.checkout();
+
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
                 logger.info("Merge node : " + path + " source v=" + node.getBaseVersion().getName() +
                         " , dest node v=" + destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
 //                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
-                if (destinationNode.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
+                if (destinationNode.isNodeType("mix:versionable") && destinationNode.isCheckedOut() && !destinationNode.hasProperty("jcr:mergeFailed")) {
                     destinationVersionManager.checkin(destinationPath);
                 }
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
@@ -368,7 +371,7 @@ public class JCRPublicationService extends JahiaService {
                     }
                     if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
                         recurseCheckin(destinationNode, prunedDestPath, destinationVersionManager);
-                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
+//                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
                     }
                 }
 
@@ -716,7 +719,7 @@ public class JCRPublicationService extends JahiaService {
                 } else {
                     long mod = modProp.getTime();
                     long pub = pubProp.getTime();
-                    long liveMod = liveModProp.getTime();
+//                    long liveMod = liveModProp.getTime();
 //                    if (publishedNode.isCheckedOut()) {
 //                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
 //                    } else if (stageNode.isCheckedOut()) {
@@ -724,9 +727,10 @@ public class JCRPublicationService extends JahiaService {
 //                    } else {
 //                        info.setStatus(PublicationInfo.PUBLISHED);
 //                    }
-                    if (liveMod > pub) {
-                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
-                    } else if (mod > pub) {
+//                    if (liveMod > pub) {
+//                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
+//                    } else 
+                    if (mod > pub) {
                         info.setStatus(PublicationInfo.MODIFIED);
                     } else {
                         info.setStatus(PublicationInfo.PUBLISHED);

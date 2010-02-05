@@ -38,7 +38,8 @@ public class ReversePublishActionItem extends BaseActionItem implements IsSerial
         }
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-            setEnabled(info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.LIVE_MODIFIED));
+//            setEnabled(info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.LIVE_MODIFIED));
+            setEnabled(true);
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }
     }

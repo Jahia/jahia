@@ -1,0 +1,80 @@
+#bodywrapper .taskFormConsult label.left {
+padding:0;
+}
+#bodywrapper .tableTasks caption{ 
+display:none
+}
+/******************************************************************************
+*  boxtasks
+******************************************************************************/
+#bodywrapper div.boxtasks {
+	position:relative;
+	clear:both;
+}
+
+#bodywrapper div.boxtasks h3.boxtaskstitleh3 {
+	margin:0;
+	padding:0;
+	display:inline
+}
+#bodywrapper div.boxtasks-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	height:1%;
+
+}
+#bodywrapper div.boxtasks-inner p {
+	padding:0px 0px 10px 0px;
+}
+#bodywrapper .boxtasks-inner .boxtasks-inner-border {
+	border:1px solid #fff;
+	height:1%;
+	background-color:#fff;
+}
+/*boxtasksshadow*/
+#bodywrapper div.boxtasksshadow {
+	border:1px solid #cecece;
+}
+
+#bodywrapper div.boxtasksshadow div.boxtasks-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	margin:-2px 0 0 -2px;
+}
+/*boxtasks color*/
+#bodywrapper .boxtasksgrey .boxtasks-inner .boxtasks-inner-border {
+	background-color:#e1e1e1
+}
+#bodywrapper .boxtasksyellow .boxtasks-inner .boxtasks-inner-border {
+	background-color:#FCF0BA
+}
+#bodywrapper .boxtaskswhite .boxtasks-inner {
+	background-color:#fff
+}
+#bodywrapper .boxtaskswhite .boxtasks-inner .boxtasks-inner-border {
+	background-color:#fff
+}
+
+/*boxtasks padding*/
+#bodywrapper .boxtaskspadding16 .boxtasks-inner .boxtasks-inner-border {
+	padding:16px;
+}
+
+/*boxtasks margin*/
+#bodywrapper .boxtasksmarginbottom16{
+	margin-bottom:16px;
+}
+
+/*boxtasks title*/
+#bodywrapper h4.boxtasks-title {
+	background:#666666 url(img/boxtasks-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}

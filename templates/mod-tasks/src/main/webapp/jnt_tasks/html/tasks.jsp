@@ -1,6 +1,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="tasks.css"/>
+
 <div class="Form taskForm"><!--start Form -->
 
     <jcr:propertyInitializers nodeType="jnt:task" name="priority" var="priorities"/>

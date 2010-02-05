@@ -1,5 +1,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="tasks.css"/>
 
 <script type="text/javascript">
     function send(task, state) {
@@ -10,7 +12,7 @@
     }
 </script>
 
-<div class="Form taskForm"><!--start Form -->
+<div class="Form taskFormConsult"><!--start Form -->
     <form method="post" name="myform" action="${url.base}${currentNode.path}">
         <input type="hidden" name="nodeType" value="jnt:task">
         <input type="hidden" name="state">
@@ -25,7 +27,7 @@
             <p>
                 <label class="left">
                     <fmt:message key="mix_title.jcr_title"/>
-                </label>
+                :</label>
                 <span class="value">${currentNode.properties['jcr:title'].string}</span>
 
             <p>
@@ -39,7 +41,7 @@
                 <label class="left">
                     <fmt:message key="jnt_task.priority"/>
                     :</label>
-                <span class="value">${currentNode.properties.priority.string}</span>
+                <span class="right value">${currentNode.properties.priority.string}</span>
             </p>
             <%--<p><label for="task_dueDate" class="left">Due date:</label>--%>
             <%--<input type="text" name="dueDate" id="task_dueDate" class="field" value="" tabindex="17" /></p>--%>
@@ -49,7 +51,7 @@
                 <label class="left">
                     <fmt:message key="jnt_task.assignee"/>
                     :</label>
-                <span class="value">${currentNode.properties.assignee.node.name}</span>
+                <span class="right value">${currentNode.properties.assignee.node.name}</span>
 
             </p>
 
@@ -57,7 +59,7 @@
                 <label class="left">
                     <fmt:message key="jnt_task.state"/>
                     :</label>
-                ${currentNode.properties.state.string}
+                <span class="right value">${currentNode.properties.state.string}</span>
                 <c:choose>
                     <c:when test="${currentNode.properties.state.string == 'active'}">
                         <span><img alt="" src="${url.currentModule}/images/right_16.png"/></span>

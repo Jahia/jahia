@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="tasks.css"/>
 
 <template:addWrapper name="wrapper.dashboard"/>
 
@@ -23,10 +24,16 @@
         form.submit();
     }
 </script>
-
+<h4 class="boxtasks-title"><fmt:message key='jnt_task.myTasks'/></h4>
+<div class="boxtasks">
+    <div class=" boxtasksgrey boxtaskspadding16 boxtasksmarginbottom16">
+        <div class="boxtasks-inner">
+            <div class="boxtasks-inner-border"><!--start boxtasks -->
 <div id="${currentNode.UUID}-tasks">
 
-    <table width="100%" class="table tableTasks " summary="Mes taches en cour en table">
+
+
+    <table width="100%" class="table tableTasks" summary="Tasks">
         <caption>
             <fmt:message key='jnt_task.myTasks'/>
         </caption>
@@ -34,9 +41,8 @@
             <col span="1" width="10%" class="col1"/>
             <col span="1" width="50%" class="col2"/>
             <col span="1" width="10%" class="col3"/>
-            <col span="1" width="10%" class="col4"/>
+            <col span="1" width="25%" class="col4"/>
             <col span="1" width="15%" class="col5"/>
-            <col span="1" width="15%" class="col6"/>
         </colgroup>
         <thead>
         <tr>
@@ -147,3 +153,8 @@
     </div>
     <!--stop pagination-->
 </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>

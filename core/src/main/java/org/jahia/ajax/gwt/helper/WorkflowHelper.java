@@ -35,15 +35,13 @@ public class WorkflowHelper {
             info.setPossibleWorkflows(gwtWorkflowDefinitions);
             JCRNodeWrapper node = session.getNode(path);
 
-            Map<String, List<WorkflowDefinition>> wfs = service.getPossibleWorkflows(node);
-            for (Map.Entry<String, List<WorkflowDefinition>> entry : wfs.entrySet()) {
-                for (WorkflowDefinition workflow : entry.getValue()) {
-                    GWTJahiaWorkflowDefinition w = new GWTJahiaWorkflowDefinition();
-                    w.setProvider(entry.getKey());
-                    w.setName(workflow.getName());
-                    w.setId(workflow.getId());
-                    gwtWorkflowDefinitions.add(w);
-                }
+            List<WorkflowDefinition> wfs = service.getPossibleWorkflows(node);
+            for (WorkflowDefinition workflow : wfs) {
+                GWTJahiaWorkflowDefinition w = new GWTJahiaWorkflowDefinition();
+                w.setProvider(workflow.getProvider());
+                w.setName(workflow.getName());
+                w.setId(workflow.getId());
+                gwtWorkflowDefinitions.add(w);
             }
 
             List<GWTJahiaWorkflowAction> gwtActions = new ArrayList<GWTJahiaWorkflowAction>();

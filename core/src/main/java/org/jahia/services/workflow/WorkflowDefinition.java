@@ -45,6 +45,7 @@ public class WorkflowDefinition {
     private transient static Logger logger = Logger.getLogger(WorkflowDefinition.class);
     private final String name;
     private final String id;
+    private String provider;
 
     public WorkflowDefinition(String name, String id) {
         this.name = name;
@@ -57,5 +58,13 @@ public class WorkflowDefinition {
 
     public String getName() {
         return name;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    void setProvider(String provider) {
+        this.provider = provider;
     }
 }

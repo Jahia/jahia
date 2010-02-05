@@ -78,13 +78,16 @@ public class WorkflowService {
      * This method list all possible workflows for the specified node.
      *
      * @param node
-     * @return A map of available workflows per provider.
+     * @return A list of available workflows per provider.
      */
-    public Map<String, List<WorkflowDefinition>> getPossibleWorkflows(JCRNodeWrapper node) throws RepositoryException {
-        Map<String, List<WorkflowDefinition>> workflowsByProvider = new LinkedHashMap<String, List<WorkflowDefinition>>();
+    public List<WorkflowDefinition> getPossibleWorkflows(JCRNodeWrapper node) throws RepositoryException {
+        List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         if (node.isNodeType("jnt:page")) {
             for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-                workflowsByProvider.put(providerEntry.getKey(), providerEntry.getValue().getAvailableWorkflows());
+                for (WorkflowDefinition definition : providerEntry.getValue().getAvailableWorkflows()) {
+                    definition.setProvider(providerEntry.getKey());
+                    workflowsByProvider.add(definition);
+                }
             }
         }
         return workflowsByProvider;

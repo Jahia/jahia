@@ -59,13 +59,13 @@ public class PermissionsUtils {
     /**
      * Check if a permission is granted to the current user
      *
-     * @param permission permission name
+     * @param permissionName permission name
      * @return
      */
-    public static boolean isPermitted(String permission) {
+    public static boolean isPermitted(String permissionName) {
         GWTJahiaPermission perm = new GWTJahiaPermission();
-        perm.setLabel(permission);
-        return isPermitted(perm);
+        perm.setName(permissionName);
+        return isPermitted(permissionName);
 
     }
 

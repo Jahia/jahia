@@ -23,6 +23,14 @@ public class GWTJahiaPermission extends BaseModel {
         this.id = id;
     }
 
+    public String getName() {
+        return get("name");
+    }
+
+    public void setName(String name) {
+        set("name",name);
+    }
+
     public String getLabel() {
         return get("label");
     }
@@ -46,10 +54,8 @@ public class GWTJahiaPermission extends BaseModel {
 
         GWTJahiaPermission that = (GWTJahiaPermission) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
 
         return true;
     }
-
-
 }

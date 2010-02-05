@@ -34,12 +34,14 @@ public class LanguageHelper {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
                 for (String langCode : orderedLangs) {
-                    GWTJahiaLanguage item = new GWTJahiaLanguage();
-                    item.setCountryIsoCode(langCode);
-                    item.setDisplayName(getDisplayName(langCode));
-                    item.setImage(getLangIcon(jParams.getContextPath(),langCode));
-                    item.setCurrent(langCode.equalsIgnoreCase(jParams.getLocale().toString()));
-                    items.add(item);
+                    if (jParams.getUser().isPermitted(langCode)) {
+                        GWTJahiaLanguage item = new GWTJahiaLanguage();
+                        item.setCountryIsoCode(langCode);
+                        item.setDisplayName(getDisplayName(langCode));
+                        item.setImage(getLangIcon(jParams.getContextPath(), langCode));
+                        item.setCurrent(langCode.equalsIgnoreCase(jParams.getLocale().toString()));
+                        items.add(item);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -59,7 +61,7 @@ public class LanguageHelper {
         GWTJahiaLanguage item = new GWTJahiaLanguage();
         item.setCountryIsoCode(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setImage(getLangIcon(jParams.getContextPath(),langCode));
+        item.setImage(getLangIcon(jParams.getContextPath(), langCode));
         return item;
     }
 
@@ -69,8 +71,8 @@ public class LanguageHelper {
      * @param locale
      * @return
      */
-    public static String getLangIcon(String contextPath,String locale) {
-        return contextPath+"/css/images/flags/" + locale + "_on.png";
+    public static String getLangIcon(String contextPath, String locale) {
+        return contextPath + "/css/images/flags/" + locale + "_on.png";
     }
 
     /**

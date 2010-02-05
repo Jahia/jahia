@@ -343,7 +343,13 @@ public class RolesPermissionsHelper {
     private GWTJahiaPermission toPermission(PermissionImpl permission) {
         GWTJahiaPermission gwtPermission = new GWTJahiaPermission();
         gwtPermission.setId(permission.getPath());
-        gwtPermission.setLabel(permission.getTitle() != null ? permission.getTitle() : permission.getName());
+        gwtPermission.setName(permission.getTitle() != null ? permission.getTitle() : permission.getName());
+        if (permission.getGroup() != null && permission.getGroup().equalsIgnoreCase("languages")) {
+            gwtPermission.setLabel(LanguageHelper.getDisplayName(gwtPermission.getName()));
+
+        } else {
+            gwtPermission.setLabel(gwtPermission.getName());
+        }
         gwtPermission.setGroup(permission.getGroup());
 
         return gwtPermission;

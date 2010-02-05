@@ -72,6 +72,7 @@ public abstract class DefaultEventListener implements SynchronousEventListener {
         propertiesToIgnore.add(Constants.JCR_FROZENUUID);
         propertiesToIgnore.add(Constants.FULLPATH);
         propertiesToIgnore.add(Constants.NODENAME);
+        propertiesToIgnore.add(Constants.PROCESSID);
 
     }
 

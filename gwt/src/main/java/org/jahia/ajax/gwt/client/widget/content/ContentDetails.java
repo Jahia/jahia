@@ -867,7 +867,7 @@ public class ContentDetails extends BottomRightComponent {
             if (!principalRoleTabItem.isProcessed()) {
                 GWTJahiaRole role = new GWTJahiaRole();
                 role.setLabel(selectedNode.getName());
-                role.setId(selectedNode.getUUID());
+                role.setId(selectedNode.getPath());
                 PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(role);
                 principalRoleTabItem.add(principalRolePanel);
                 principalRoleTabItem.setProcessed(true);

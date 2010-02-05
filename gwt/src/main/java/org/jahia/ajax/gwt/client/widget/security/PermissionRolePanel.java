@@ -143,6 +143,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
 
                 final CheckBox checkbox = new CheckBox();
                 final GWTJahiaRole role = roles.get(colIndex - index);
+                checkbox.setValue(role.hasPermission(currentPermission));
+                checkbox.setToolTip(currentPermission.getLabel());
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         final List<GWTJahiaPermission> pList = new ArrayList<GWTJahiaPermission>();
@@ -166,15 +168,13 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                                 }
 
                                 public void onFailure(Throwable throwable) {
-                                    Log.error("Error removing permissin from", throwable);
+                                    Log.error("Error removing permission from", throwable);
                                 }
                             });
                         }
                     }
 
                 });
-                checkbox.setValue(role.hasPermission(currentPermission));
-                checkbox.setToolTip(currentPermission.getLabel());
                 return checkbox;
             }
         };

@@ -46,8 +46,6 @@ import org.jahia.services.rbac.Role;
  */
 public class RoleImpl extends JCRItem implements Role {
 
-    private String description;
-
     private String name;
 
     private Set<PermissionImpl> permissions = new LinkedHashSet<PermissionImpl>();
@@ -62,24 +60,9 @@ public class RoleImpl extends JCRItem implements Role {
         this.name = name;
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the role
-     * @param description a short description for this role
-     */
-    public RoleImpl(String name, String description) {
-        this(name);
-        this.description = description;
-    }
-
     @Override
     public boolean equals(Object another) {
         return another != null && another instanceof RoleImpl && ((RoleImpl) another).getName().equals(getName());
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public String getName() {
@@ -93,15 +76,6 @@ public class RoleImpl extends JCRItem implements Role {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).toHashCode();
-    }
-
-    /**
-     * Sets a short description for this role.
-     * 
-     * @param description a short description for this role
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**

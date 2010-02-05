@@ -9,9 +9,20 @@ import java.io.Serializable;
  */
 class JCRItem implements Serializable {
 
+    protected String description;
+
     private String path;
 
     private String title;
+
+    /**
+     * Returns the description property value of the corresponding JCR node.
+     * 
+     * @return the description property value of the corresponding JCR node
+     */
+    public String getDescription() {
+        return description;
+    }
 
     /**
      * Returns the JCR path of the corresponding node.
@@ -29,6 +40,15 @@ class JCRItem implements Serializable {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Sets a description of the corresponding JCR node
+     * 
+     * @param description a description of the corresponding JCR node
+     */
+    void setDescription(String description) {
+        this.description = description;
     }
 
     /**

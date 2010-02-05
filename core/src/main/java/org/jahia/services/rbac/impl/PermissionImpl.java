@@ -44,8 +44,6 @@ import org.jahia.services.rbac.Permission;
  */
 public class PermissionImpl extends JCRItem implements Permission {
 
-    private String description;
-
     private String group;
 
     private String name;
@@ -71,18 +69,6 @@ public class PermissionImpl extends JCRItem implements Permission {
         this.group = group;
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     * @param description a short description for this permission
-     */
-    public PermissionImpl(String name, String group, String description) {
-        this(name, group);
-        this.description = description;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof PermissionImpl)) {
@@ -91,15 +77,6 @@ public class PermissionImpl extends JCRItem implements Permission {
         PermissionImpl another = (PermissionImpl) obj;
         return new EqualsBuilder().append(getName(), another.getName()).append(getGroup(), another.getGroup())
                 .isEquals();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.services.rbac.impl.Permission#getDescription()
-     */
-    public String getDescription() {
-        return description;
     }
 
     /**
@@ -123,15 +100,6 @@ public class PermissionImpl extends JCRItem implements Permission {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getGroup()).toHashCode();
-    }
-
-    /**
-     * Sets a short description for this permission.
-     * 
-     * @param description a short description for this permission
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**

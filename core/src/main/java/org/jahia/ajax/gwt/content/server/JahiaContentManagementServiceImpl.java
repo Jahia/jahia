@@ -918,9 +918,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * add permission to role
      *
      * @param role
+     * @throws GWTJahiaServiceException 
      */
-    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) {
-        rolesPermissions.addRolePermissions(role,permissions);
+    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
+        rolesPermissions.addRolePermissions(role,permissions, retrieveCurrentSession());
     }
 
     /**
@@ -928,9 +929,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      * @param role
      * @param permissions
+     * @throws GWTJahiaServiceException 
      */
-    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) {
-        rolesPermissions.removeRolePermissions(role,permissions);
+    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
+        rolesPermissions.removeRolePermissions(role,permissions, retrieveCurrentSession());
     }
 
     /**
@@ -955,18 +957,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Grant role to principals
      * @param role
      * @param principals
+     * @throws GWTJahiaServiceException in case of an error
      */
-    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) {
-        rolesPermissions.grantRoleToPrincipals(role,principals);
+    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
+        rolesPermissions.grantRoleToPrincipals(role, principals, retrieveCurrentSession());
     }
 
     /**
      * remove roel to principals
      * @param role
      * @param principals
+     * @throws GWTJahiaServiceException in case of an error
      */
-    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) {
-        rolesPermissions.removeRoleToPrincipals(role,principals);
+    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
+        rolesPermissions.removeRoleToPrincipals(role, principals, retrieveCurrentSession());
     }
 
 

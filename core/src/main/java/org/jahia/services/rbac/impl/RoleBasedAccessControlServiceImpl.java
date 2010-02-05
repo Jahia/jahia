@@ -43,7 +43,7 @@ import org.jahia.services.usermanager.JahiaPrincipal;
  */
 public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlService {
 
-    private RoleManager roleManager;
+    private SystemRoleManager roleManager;
 
     public boolean hasRole(JahiaPrincipal principal, String role) {
         // TODO Auto-generated method stub
@@ -55,7 +55,7 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
         return false;
     }
 
-    public void setRoleManager(RoleManager roleManager) {
+    public void setRoleManager(SystemRoleManager roleManager) {
         this.roleManager = roleManager;
     }
 }

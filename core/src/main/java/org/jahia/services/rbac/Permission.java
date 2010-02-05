@@ -42,13 +42,6 @@ import java.io.Serializable;
 public interface Permission extends Serializable {
 
     /**
-     * Returns the permission description.
-     * 
-     * @return the permission description
-     */
-    String getDescription();
-
-    /**
      * Returns the name of this permission.
      * 
      * @return the name of this permission

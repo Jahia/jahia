@@ -43,13 +43,6 @@ import java.util.Set;
 public interface Role extends Serializable {
 
     /**
-     * Returns the role description.
-     * 
-     * @return the role description
-     */
-    String getDescription();
-
-    /**
      * Returns the name of this role.
      * 
      * @return the name of this role

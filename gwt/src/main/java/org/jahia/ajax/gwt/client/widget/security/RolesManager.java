@@ -10,11 +10,9 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactor
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 
 /**
- * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Feb 3, 2010
  * Time: 10:58:17 AM
- * To change this template use File | Settings | File Templates.
  */
 public class RolesManager extends LayoutContainer {
     
@@ -24,8 +22,8 @@ public class RolesManager extends LayoutContainer {
 
     public RolesManager(final String rootPath, final String siteKey) {
         super();
-        this.rootPath = rootPath;
-        this.siteKey = siteKey;
+        this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
+        this.siteKey = siteKey != null && siteKey.length() > 0 ? siteKey : null;
     }
 
 

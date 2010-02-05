@@ -58,19 +58,6 @@ public class SitePermissionImpl extends PermissionImpl {
         this.site = site;
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     * @param site the virtual site key current permission is limited to
-     * @param description a short description for this permission
-     */
-    public SitePermissionImpl(String name, String group, String site, String description) {
-        super(name, group, description);
-        this.site = site;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof SitePermissionImpl)) {

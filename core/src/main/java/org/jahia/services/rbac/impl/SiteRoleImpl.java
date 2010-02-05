@@ -58,18 +58,6 @@ public class SiteRoleImpl extends RoleImpl {
         this.site = site;
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the role
-     * @param site the virtual site key current role is limited to
-     * @param description the description of this role
-     */
-    public SiteRoleImpl(String name, String site, String description) {
-        super(name, description);
-        this.site = site;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof SiteRoleImpl)) {

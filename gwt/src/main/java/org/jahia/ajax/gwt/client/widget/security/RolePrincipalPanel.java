@@ -24,11 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 2:51:36 PM
- * To change this template use File | Settings | File Templates.
  */
 public class RolePrincipalPanel extends LayoutContainer {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
@@ -38,7 +36,7 @@ public class RolePrincipalPanel extends LayoutContainer {
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
     public RolePrincipalPanel(String siteKey,boolean isGroup,String principalKey) {
-        this.siteKey = siteKey;
+        this.siteKey = siteKey != null && siteKey.length() > 0 ? siteKey : null;
         this.isGroup = isGroup;
         this.principalKey = principalKey;
     }

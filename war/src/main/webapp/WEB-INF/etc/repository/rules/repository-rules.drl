@@ -257,3 +257,11 @@ rule "Create reusable component"
         Log "Creating reusable component node: " + node.getPath()
         Create reusable node
 end
+
+rule "Site languages changed"
+  when
+      A property j:languages has been set on a node
+       - the node has the type jnt:virtualsite
+  then
+      Update site node languages permissions
+end

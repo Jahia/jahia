@@ -187,6 +187,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void getPermission(boolean currentSite, AsyncCallback<List<GWTJahiaPermission>> async) ;
 
+    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async) ;
+
+
     void getRoles(String siteKey,boolean isGroup,String principalKey, AsyncCallback<List<GWTJahiaRole>> async);
 
     void getPrincipalsInRole(GWTJahiaRole role, AsyncCallback<List<GWTJahiaPrincipal>> async);

@@ -58,4 +58,8 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
     public void setRoleManager(SystemRoleManager roleManager) {
         this.roleManager = roleManager;
     }
+
+    public SystemRoleManager getRoleManager() {
+        return roleManager;
+    }
 }

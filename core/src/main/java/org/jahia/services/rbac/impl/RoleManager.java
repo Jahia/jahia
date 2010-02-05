@@ -142,6 +142,41 @@ public class RoleManager {
     }
 
     /**
+     * Looks up the permissions with the requested group for the specified site.
+     * If site is not specified considers it as a global permission. Returns $
+     * {@code null} if the requested permission is not found.
+     *
+     * @param group the permission group name
+     * @param site the site key or ${@code null} if the global permissions node
+     *            is requested
+     * @param session current JCR session
+     * @return the permission with the requested name for the specified site. If
+     *         site is not specified considers it as a global permission.
+     *         Returns ${@code null} if the requested permission is not found.
+     * @throws RepositoryException in case of an error
+     */
+    public List<PermissionImpl> getPermissions(String group, String site, JCRSessionWrapper session)
+            throws RepositoryException {
+        List<PermissionImpl> permissions = new LinkedList<PermissionImpl>();
+        JCRNodeWrapper permissionsHome = getPermissionsHome(site, session);
+        for (NodeIterator groupIterator = permissionsHome.getNodes(); groupIterator.hasNext();) {
+            Node groupNode = groupIterator.nextNode();
+            if (groupNode.isNodeType(JAHIANT_PERMISSION_GROUP)) {
+                for (NodeIterator permIterator = groupNode.getNodes(); permIterator.hasNext();) {
+                    JCRNodeWrapper permissionNode = (JCRNodeWrapper) permIterator.nextNode();
+                    if (permissionNode.isNodeType(JAHIANT_PERMISSION)) {
+                        PermissionImpl p = toPermission(permissionNode);
+                        if(p.getGroup().equalsIgnoreCase(group)){
+                           permissions.add(p);
+                        }
+                    }
+                }
+            }
+        }
+        return permissions.isEmpty() ? EMPTY_PERMISSION_LIST : permissions;
+    }
+
+    /**
      * Returns a list of permissions, defined for the specified site. If the
      * specified site is ${@code null} returns global permissions for the
      * server.

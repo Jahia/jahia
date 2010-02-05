@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -872,20 +873,30 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
+     * Get granted permission to the current user
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
+        return rolesPermissions.getGrantedPermissions(retrieveParamBean().getSiteKey(),retrieveCurrentSession());
+    }
+
+
+    /**
      * Get roles with permission
      *
      * @param principalKey
      * @return
      */
-    public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException {
-        List<GWTJahiaRole> roles =  rolesPermissions.getRoles(siteKey,retrieveCurrentSession());
-        roles.addAll(rolesPermissions.getRoles(null,retrieveCurrentSession()));
+    public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
+        List<GWTJahiaRole> roles = rolesPermissions.getRoles(siteKey, retrieveCurrentSession());
+        roles.addAll(rolesPermissions.getRoles(null, retrieveCurrentSession()));
 
 
-        for(GWTJahiaRole role: roles){
+        for (GWTJahiaRole role : roles) {
             // add the check to know of the role is granted or not to the principal
-            if(rolesPermissions.isGrant(role,isGroup,principalKey)){
-                role.set("grant","true");
+            if (rolesPermissions.isGrant(role, isGroup, principalKey)) {
+                role.set("grant", "true");
             }
         }
 
@@ -908,7 +919,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      * @param site the current site key or {@code null} if the server roles and permissions are requested
      * @return
-     * @throws GWTJahiaServiceException 
+     * @throws GWTJahiaServiceException
      */
     public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException {
         return rolesPermissions.getRolesAndPermissions(site, retrieveCurrentSession());
@@ -918,10 +929,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * add permission to role
      *
      * @param role
-     * @throws GWTJahiaServiceException 
+     * @throws GWTJahiaServiceException
      */
     public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
-        rolesPermissions.addRolePermissions(role,permissions, retrieveCurrentSession());
+        rolesPermissions.addRolePermissions(role, permissions, retrieveCurrentSession());
     }
 
     /**
@@ -929,10 +940,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      * @param role
      * @param permissions
-     * @throws GWTJahiaServiceException 
+     * @throws GWTJahiaServiceException
      */
     public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
-        rolesPermissions.removeRolePermissions(role,permissions, retrieveCurrentSession());
+        rolesPermissions.removeRolePermissions(role, permissions, retrieveCurrentSession());
     }
 
     /**
@@ -941,7 +952,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param role
      */
     public void grantRoleToUser(GWTJahiaRole role, String principalKey) {
-        rolesPermissions.grantRoleToUser(role,principalKey);
+        rolesPermissions.grantRoleToUser(role, principalKey);
     }
 
     /**
@@ -950,11 +961,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param role
      */
     public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) {
-       rolesPermissions.removeRoleToUser(role,principalKey);
+        rolesPermissions.removeRoleToUser(role, principalKey);
     }
 
     /**
      * Grant role to principals
+     *
      * @param role
      * @param principals
      * @throws GWTJahiaServiceException in case of an error
@@ -965,6 +977,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * remove roel to principals
+     *
      * @param role
      * @param principals
      * @throws GWTJahiaServiceException in case of an error

@@ -44,8 +44,8 @@ import org.jahia.ajax.gwt.client.widget.definition.ContentDefinition;
  */
 public class ContentDefinitionEntryPoint extends CommonEntryPoint {
 
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         RootPanel panel = RootPanel.get(Resources.CONTENTDEFINITION_ID) ;
         if (panel != null) {
             panel.add(new ContentDefinition()) ;

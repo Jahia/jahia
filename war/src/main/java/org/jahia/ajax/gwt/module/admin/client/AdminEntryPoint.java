@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.module.admin.client;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
@@ -54,8 +53,8 @@ import java.util.List;
  */
 public class AdminEntryPoint extends CommonEntryPoint {
 
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
         RoleEditor.init();

@@ -46,8 +46,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 public class ProcessDisplayEntryPoint extends CommonEntryPoint {
     public static final String ID= "pdisplay";
 
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         
         // init panel
         RootPanel jahiaTypePanel = RootPanel.get(ID);

@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -196,7 +197,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public List<GWTJahiaPermission> getPermission(boolean currentSite) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException;
+    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
+
+    public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey) throws GWTJahiaServiceException;
 
     public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role);
 

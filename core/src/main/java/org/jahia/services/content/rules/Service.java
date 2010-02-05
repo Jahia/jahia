@@ -51,15 +51,14 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.rbac.RoleBasedAccessControlService;
+import org.jahia.services.rbac.impl.PermissionImpl;
+import org.jahia.services.rbac.impl.SystemRoleManager;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
-import org.jahia.services.tasks.Task;
-import org.jahia.services.tasks.TaskService;
-import org.jahia.services.tasks.Task.Priority;
-import org.jahia.services.tasks.Task.State;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -69,10 +68,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.util.*;
@@ -95,6 +91,7 @@ public class Service extends JahiaService {
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManager;
+    private SystemRoleManager roleManager;
 
     public static synchronized Service getInstance() {
         if (instance == null) {
@@ -105,19 +102,19 @@ public class Service extends JahiaService {
 
     public void setPermissions(NodeWrapper node, String acl, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
-        StringTokenizer st = new StringTokenizer(acl,"|");
+        StringTokenizer st = new StringTokenizer(acl, "|");
         while (st.hasMoreTokens()) {
             String ace = st.nextToken();
             int colon = ace.lastIndexOf(':');
             String userstring = ace.substring(0, colon);
 
             if (userstring.equals("self")) {
-                userstring = "u:"+ user.getName();
+                userstring = "u:" + user.getName();
             }
 
             Node jcrNode = node.getNode();
             try {
-                JCRNodeWrapperImpl.changePermissions(jcrNode, userstring, ace.substring(colon+1));
+                JCRNodeWrapperImpl.changePermissions(jcrNode, userstring, ace.substring(colon + 1));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -169,7 +166,7 @@ public class Service extends JahiaService {
                 ContentPage page = ContentPage.getPage(dest.getPageID());
 
                 ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
-                                                                  System.currentTimeMillis(), site, member, page);
+                        System.currentTimeMillis(), site, member, page);
                 jParams.setOperationMode(ProcessingContext.EDIT);
                 jParams.setCurrentLocale(locale);
 //                jParams.setServerName(m.getRequest().getServerName());
@@ -185,15 +182,15 @@ public class Service extends JahiaService {
                 if (dest != null) {
                     Set<LockKey> locks = new HashSet<LockKey>();
                     LockKey lock = LockKey.composeLockKey(LockKey.ADD_ACTION + "_" + dest.getObjectKey().getType(),
-                                                          dest.getID());
+                            dest.getID());
                     locks.add(lock);
                     synchronized (lockRegistry) {
                         if (lockRegistry.isAlreadyAcquiredInContext(lock, jParams.getUser(),
-                                                                    jParams.getUser().getUserKey())) {
+                                jParams.getUser().getUserKey())) {
                             lockRegistry.release(lock, jParams.getUser(), jParams.getUser().getUserKey());
                         }
                         if (!lockRegistry.acquire(lock, jParams.getUser(), jobDetail.getName(),
-                                                  BackgroundJob.getMaxExecutionTime())) {
+                                BackgroundJob.getMaxExecutionTime())) {
                             logger.info("Cannot acquire lock, do not import");
                             return;
                         }
@@ -264,13 +261,13 @@ public class Service extends JahiaService {
                                     }
                                 }
                                 ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(),
-                                                                              System.currentTimeMillis(), null,
-                                                                              user.getJahiaUser(), null,
-                                                                              ProcessingContext.EDIT);
+                                        System.currentTimeMillis(), null,
+                                        user.getJahiaUser(), null,
+                                        ProcessingContext.EDIT);
                                 sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                         "description"), null, locale, tpl, "importRepositoryFile", null, uri, true,
-                                                false, ctx);
+                                        false, ctx);
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
                             }
@@ -441,7 +438,7 @@ public class Service extends JahiaService {
             throws IOException, ServletException, JahiaException {
         final JahiaUser user = userManager.lookupUser("root");
         boolean license = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.server.admin.sites.ManageSites",
-                                                                     0);
+                0);
         boolean noMoreSite = false;
 
         boolean authorizedForServerPermissions = LicenseActionChecker.isAuthorizedByLicense(
@@ -452,7 +449,7 @@ public class Service extends JahiaService {
             doImportServerPermissions = true;
         }
         ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null,
-                                                      user, null, ProcessingContext.EDIT);
+                user, null, ProcessingContext.EDIT);
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
@@ -466,7 +463,7 @@ public class Service extends JahiaService {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file,new ArrayList<ImportAction>(), null, ctx.getSite());
+                    ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, ctx.getSite());
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -483,11 +480,11 @@ public class Service extends JahiaService {
                     if (!noMoreSite) {
                         sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                                                                      null, ctx.getLocale(), tpl,
-                                                                                      "fileImport", file,
-                                                                                      (String) infos.get(
-                                                                                              "importFileName"), true,
-                                                                                      false, ctx);
+                                null, ctx.getLocale(), tpl,
+                                "fileImport", file,
+                                (String) infos.get(
+                                        "importFileName"), true,
+                                false, ctx);
                         noMoreSite = !license;
                     }
                 } catch (Exception e) {
@@ -512,7 +509,7 @@ public class Service extends JahiaService {
     }
 
     public void incrementProperty(NodeWrapper node, String propertyName,
-            KnowledgeHelper drools) {
+                                  KnowledgeHelper drools) {
         final Node jcrNode = node.getNode();
         try {
             long aLong = 0;
@@ -520,16 +517,16 @@ public class Service extends JahiaService {
                 final Property property = jcrNode.getProperty(propertyName);
                 aLong = property.getLong();
             } catch (PathNotFoundException e) {
-                logger.debug("The property to increment "+propertyName+" does not exist yet",e);
+                logger.debug("The property to increment " + propertyName + " does not exist yet", e);
             }
-            jcrNode.setProperty(propertyName, aLong +1);
+            jcrNode.setProperty(propertyName, aLong + 1);
         } catch (RepositoryException e) {
-            logger.error("Error during increment of property "+propertyName+" for node "+node,e);
+            logger.error("Error during increment of property " + propertyName + " for node " + node, e);
         }
     }
 
     public void addToProperty(NodeWrapper node, String propertyName, List<?> value,
-            KnowledgeHelper drools) {
+                              KnowledgeHelper drools) {
         final Node jcrNode = node.getNode();
         try {
             long aLong = 0;
@@ -537,35 +534,35 @@ public class Service extends JahiaService {
                 final Property property = jcrNode.getProperty(propertyName);
                 aLong = property.getLong();
             } catch (PathNotFoundException e) {
-                logger.debug("The property to increment "+propertyName+" does not exist yet",e);
+                logger.debug("The property to increment " + propertyName + " does not exist yet", e);
             }
-            jcrNode.setProperty(propertyName,aLong+Long.valueOf((String) value.get(0)));
+            jcrNode.setProperty(propertyName, aLong + Long.valueOf((String) value.get(0)));
         } catch (RepositoryException e) {
-            logger.error("Error while adding "+value+" to property "+propertyName+" for node "+node,e);
+            logger.error("Error while adding " + value + " to property " + propertyName + " for node " + node, e);
         }
     }
 
-	public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
-		String siteKey = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteKey() : null;
-		if (siteKey == null) {
-			logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
-			return;
-		}
-		taggingService.tag(node.getNode(), value, siteKey, true);
-	}
+    public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
+        String siteKey = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteKey() : null;
+        if (siteKey == null) {
+            logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
+            return;
+        }
+        taggingService.tag(node.getNode(), value, siteKey, true);
+    }
 
     public void executeLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "RULES_JOB_" + uuid + ruleToExecute;
-        final JobDetail jobDetail = new JobDetail(jobName, "RULES_JOBS", RuleJob.class,false,true,false);
+        final JobDetail jobDetail = new JobDetail(jobName, "RULES_JOBS", RuleJob.class, false, true, false);
         final JobDataMap map = jobDetail.getJobDataMap();
-        map.put("ruleToExecute",ruleToExecute);
+        map.put("ruleToExecute", ruleToExecute);
         map.put("node", uuid);
-        map.put("user",((User)drools.getWorkingMemory().getGlobal("user")).getName());
-        map.put("workspace",((String)drools.getWorkingMemory().getGlobal("workspace")));
+        map.put("user", ((User) drools.getWorkingMemory().getGlobal("user")).getName());
+        map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
         schedulerService.deleteJob(jobName, "RULES_JOBS");
-        schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName+"TRIGGER","RULES_JOBS",node.getNode().getProperty(propertyName).getDate().getTime()));
+        schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", node.getNode().getProperty(propertyName).getDate().getTime()));
     }
 
     public void createReusableComponent(final NodeWrapper node, KnowledgeHelper drools)
@@ -583,6 +580,16 @@ public class Service extends JahiaService {
                         return true;
                     }
                 });
+    }
+
+    public void updateSiteLangPermissions(final NodeWrapper node, KnowledgeHelper drools) throws RepositoryException {
+        final Value[] languages = node.getNode().getProperty("j:languages").getValues();
+        final String site = node.getNode().getName();
+        List<String> langs = new ArrayList<String>();
+        for (Value language : languages) {
+            langs.add(language.getString());
+            roleManager.savePermission(language.getString(), "languages",site);
+        }
     }
 
     public void setTaggingService(TaggingService taggingService) {
@@ -607,6 +614,14 @@ public class Service extends JahiaService {
 
     public void setUserManager(JahiaUserManagerService userManager) {
         this.userManager = userManager;
+    }
+
+    public SystemRoleManager getRoleManager() {
+        return roleManager;
+    }
+
+    public void setRoleManager(SystemRoleManager roleManager) {
+        this.roleManager = roleManager;
     }
 
     @Override

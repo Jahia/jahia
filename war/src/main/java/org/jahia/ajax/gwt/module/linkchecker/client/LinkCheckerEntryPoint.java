@@ -42,8 +42,8 @@ import org.jahia.ajax.gwt.client.widget.linkchecker.LinkChecker;
  */
 public class LinkCheckerEntryPoint extends CommonEntryPoint {
 
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         RootPanel panel = RootPanel.get("linkchecker") ;
         if (panel != null) {
             panel.add(new LinkChecker());

@@ -59,8 +59,8 @@ public class ACLEditorEntryPoint extends CommonEntryPoint {
 
     private static AclEditor aclEditor;
 
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         JahiaGWT.init();
         initJavaScriptApi();
         final RootPanel panel = RootPanel.get(ACLEDITOR_ID);

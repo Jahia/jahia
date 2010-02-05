@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.module.contentpicker.client;
 
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
-import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -55,8 +54,8 @@ import com.google.gwt.user.client.DOM;
  *         Time: 17:59:59
  */
 public class ContentPickerEntryPoint extends CommonEntryPoint {
-    public void onModuleLoad() {
-        super.onModuleLoad();
+    public void afterPermissionsLoad() {
+        super.afterPermissionsLoad();
         JahiaGWT.init();
         final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {

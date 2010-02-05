@@ -27,34 +27,63 @@
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
- */
-package org.jahia.ajax.gwt.module.jobreport.client;
+ **/
+package org.jahia.ajax.gwt.client.util.security;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
-import org.jahia.ajax.gwt.client.widget.process.JobReport;
+import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
- * User: toto
- * Date: Nov 19, 2008
- * Time: 11:51:40 AM
+ * User: ktlili
+ * Date: Feb 5, 2010
+ * Time: 11:16:25 AM
  * To change this template use File | Settings | File Templates.
  */
-public class JobReportEntryPoint extends CommonEntryPoint {
+public class PermissionsUtils {
+    private static boolean permissionsLoaded = false;
 
-    public static final String ID = "jobreport";
+    private static List<GWTJahiaPermission> grantedPermissions = new ArrayList<GWTJahiaPermission>();
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
-        // init panel
-        RootPanel jahiaTypePanel = RootPanel.get(ID);
-
-        String name = DOM.getElementAttribute(jahiaTypePanel.getElement(), "name");
-        String groupName = DOM.getElementAttribute(jahiaTypePanel.getElement(), "groupName");
-
-        jahiaTypePanel.add(new JobReport(name, groupName));
+    /**
+     * load permission. Implemented thanks to an ajax call or read from a javascript object
+     */
+    public static void loadPermissions(List<GWTJahiaPermission> permissions) {
+           grantedPermissions = permissions;       
     }
+
+
+    /**
+     * Check if a permission is granted to the current user
+     *
+     * @param permission permission name
+     * @return
+     */
+    public static boolean isPermitted(String permission) {
+        GWTJahiaPermission perm = new GWTJahiaPermission();
+        perm.setLabel(permission);
+        return isPermitted(perm);
+
+    }
+
+    /**
+     * Check if a permission is granted to the current user
+     *
+     * @param permission
+     * @return
+     */
+    public static boolean isPermitted(GWTJahiaPermission permission) {
+        if (!permissionsLoaded) {
+            Log.error("Permissions not loaded");
+            return true;
+        }
+
+        return grantedPermissions.contains(permission);
+
+    }
+
+
 }

@@ -114,19 +114,7 @@ margin-bottom:2px
 #bodywrapper .boxuserprofilemarginbottom16{
 	margin-bottom:16px;
 }
-/*boxuserprofile title*/
-#bodywrapper h4.boxuserprofile-title {
-	background:#666666 url(img/boxuserprofile-h4title.png) repeat-x top right;
-	border:1px solid #666666;
-	color:#fff;
-	font-size:1.3em;
-	margin-left:0;
-	padding:5px;
-	text-align:center;
-	font-weight:normal;
-	clear:both;
-	margin:0;
-}
+
 /******************************************************************************
 * group-list
 ******************************************************************************/

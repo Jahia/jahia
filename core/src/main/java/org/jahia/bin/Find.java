@@ -80,6 +80,14 @@ public class Find extends Render {
                 }
             }
         }
+        // now let's output some node information.
+        jsonObject.put("path", currentNode.getPath());
+        jsonObject.put("identifier", currentNode.getIdentifier());
+        jsonObject.put("index", currentNode.getIndex());
+        jsonObject.put("depth", currentNode.getDepth());
+        jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
+
+        // now let's output the children until we reach the depth limit.
         final NodeIterator childNodeIterator = currentNode.getNodes();
         if ((depthLimit -1) > 0) {
             JSONArray childMapList = new JSONArray();

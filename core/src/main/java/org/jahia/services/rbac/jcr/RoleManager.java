@@ -32,7 +32,8 @@
 
 package org.jahia.services.rbac.jcr;
 
-import static org.jahia.api.Constants.*;
+import static org.jahia.api.Constants.JCR_DESCRIPTION;
+import static org.jahia.api.Constants.JCR_TITLE;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -162,7 +163,7 @@ public class RoleManager {
      * Looks up the permissions with the requested group for the specified site.
      * If site is not specified considers it as a global permission. Returns $
      * {@code null} if the requested permission is not found.
-     *
+     * 
      * @param group the permission group name
      * @param site the site key or ${@code null} if the global permissions node
      *            is requested
@@ -183,8 +184,8 @@ public class RoleManager {
                     JCRNodeWrapper permissionNode = (JCRNodeWrapper) permIterator.nextNode();
                     if (permissionNode.isNodeType(JAHIANT_PERMISSION)) {
                         JCRPermission p = toPermission(permissionNode);
-                        if(p.getGroup().equalsIgnoreCase(group)){
-                           permissions.add(p);
+                        if (p.getGroup().equalsIgnoreCase(group)) {
+                            permissions.add(p);
                         }
                     }
                 }
@@ -348,51 +349,9 @@ public class RoleManager {
             Property prop = iterator.nextProperty();
             Node principalNode = prop.getParent();
             if (principalNode != null) {
-                if (principalNode.isNodeType(Constants.JAHIANT_USER)) {
-                    // principal is a user
-                    JahiaUser user = null;
-                    if (principalNode.hasProperty(JCRUser.J_EXTERNAL)
-                            && principalNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        // lookup external user node
-                        user = jcrUserManagerProvider.lookupExternalUser(principalNode.getName());
-                    } else {
-                        // lookup internal user node
-                        user = jcrUserManagerProvider.lookupUser(principalNode.getName());
-                    }
-                    if (user != null) {
-                        principals.add(user);
-                    } else {
-                        logger.warn("User cannot be found by name '" + principalNode.getName() + "'");
-                    }
-                } else if (principalNode.isNodeType(Constants.JAHIANT_GROUP)) {
-                    // principal is a group
-                    int siteId = 0;
-                    String siteKey = StringUtils.substringBetween(principalNode.getPath(), "/sites/", "/");
-                    if (siteKey != null) {
-                        JahiaSite site = null;
-                        try {
-                            site = sitesService.getSiteByKey(siteKey);
-                        } catch (JahiaException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        if (site != null) {
-                            siteId = site.getID();
-                        } else {
-                            logger.warn("Unable to lookup site for key '" + siteKey + "'. Skipping group '"
-                                    + principalNode.getPath() + "'");
-                            siteId = -1;
-                        }
-                    }
-                    if (siteId != -1) {
-                        JahiaGroup group = jcrGroupManagerProvider.lookupGroup(siteId, principalNode.getName());
-                        if (group != null) {
-                            principals.add(group);
-                        } else {
-                            logger.warn("Group cannot be found for name '" + principalNode.getName() + "' and site ID "
-                                    + siteId);
-                        }
-                    }
-
+                JahiaPrincipal principal = toPrincipal(principalNode);
+                if (principal != null) {
+                    principals.add(principal);
                 }
             } else {
                 logger.warn("Principal node, referencing role '" + jcrRolePath + "' in property '" + prop.getPath()
@@ -401,6 +360,112 @@ public class RoleManager {
 
         }
         return principals;
+    }
+
+    /**
+     * Returns a list of principals having the specified permission or an empty
+     * list if the permission is not granted to anyone.
+     * 
+     * @param jcrPermissionPath the JCR path of the corresponding permission
+     *            node
+     * @param session current JCR session
+     * @return a list of principals having the specified permission or an empty
+     *         list if the permission is not granted to anyone
+     * @throws RepositoryException in case of an error
+     * @throws PathNotFoundException in case the specified role cannot be found
+     */
+    public List<JahiaPrincipal> getPrincipalsInPermission(final String jcrPermissionPath, JCRSessionWrapper session)
+            throws PathNotFoundException, RepositoryException {
+        Set<JahiaPrincipal> principals = new LinkedHashSet<JahiaPrincipal>();
+        for (JCRRole role : getRolesInPermission(jcrPermissionPath, session)) {
+            principals.addAll(getPrincipalsInRole(role.getPath(), session));
+        }
+
+        return new LinkedList<JahiaPrincipal>(principals);
+    }
+
+    /**
+     * Returns a list of roles, having the specified permission or an empty list
+     * if the permission is not granted to any role.
+     * 
+     * @param jcrPermissionPath the JCR path of the corresponding permission
+     *            node
+     * @param session current JCR session
+     * @return a list of roles, having the specified permission or an empty list
+     *         if the permission is not granted to any role
+     * @throws RepositoryException in case of an error
+     * @throws PathNotFoundException in case the specified role cannot be found
+     */
+    public List<JCRRole> getRolesInPermission(final String jcrPermissionPath, JCRSessionWrapper session)
+            throws PathNotFoundException, RepositoryException {
+        List<JCRRole> roles = new LinkedList<JCRRole>();
+        JCRNodeWrapper permission = session.getNode(jcrPermissionPath);
+        for (PropertyIterator iterator = permission.getWeakReferences(PROPERTY_PERMISSSIONS); iterator.hasNext();) {
+            Property prop = iterator.nextProperty();
+            Node roleNode = prop.getParent();
+            if (roleNode != null) {
+                JCRRole role = toRole(roleNode);
+                if (role != null) {
+                    roles.add(role);
+                }
+            } else {
+                logger.warn("Role node, referencing permission '" + jcrPermissionPath + "' in property '"
+                        + prop.getPath() + "' cannot be found or is not of type " + JAHIANT_ROLE);
+            }
+
+        }
+        return roles;
+    }
+
+    protected JahiaPrincipal toPrincipal(Node principalNode) throws RepositoryException {
+        JahiaPrincipal principal = null;
+        if (principalNode.isNodeType(Constants.JAHIANT_USER)) {
+            // principal is a user
+            JahiaUser user = null;
+            if (principalNode.hasProperty(JCRUser.J_EXTERNAL)
+                    && principalNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                // lookup external user node
+                user = jcrUserManagerProvider.lookupExternalUser(principalNode.getName());
+            } else {
+                // lookup internal user node
+                user = jcrUserManagerProvider.lookupUser(principalNode.getName());
+            }
+            if (user != null) {
+                principal = user;
+            } else {
+                logger.warn("User cannot be found by name '" + principalNode.getName() + "'");
+            }
+        } else if (principalNode.isNodeType(Constants.JAHIANT_GROUP)) {
+            // principal is a group
+            int siteId = 0;
+            String siteKey = StringUtils.substringBetween(principalNode.getPath(), "/sites/", "/");
+            if (siteKey != null) {
+                JahiaSite site = null;
+                try {
+                    site = sitesService.getSiteByKey(siteKey);
+                } catch (JahiaException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                if (site != null) {
+                    siteId = site.getID();
+                } else {
+                    logger.warn("Unable to lookup site for key '" + siteKey + "'. Skipping group '"
+                            + principalNode.getPath() + "'");
+                    siteId = -1;
+                }
+            }
+            if (siteId != -1) {
+                JahiaGroup group = jcrGroupManagerProvider.lookupGroup(siteId, principalNode.getName());
+                if (group != null) {
+                    principal = group;
+                } else {
+                    logger.warn("Group cannot be found for name '" + principalNode.getName() + "' and site ID "
+                            + siteId);
+                }
+            }
+
+        }
+        return principal;
     }
 
     /**
@@ -877,7 +942,7 @@ public class RoleManager {
      * @return {@link JCRPermission} object populated with corresponding data
      * @throws RepositoryException in case of an error
      */
-    protected JCRPermission toPermission(JCRNodeWrapper permissionNode) throws RepositoryException {
+    protected JCRPermission toPermission(Node permissionNode) throws RepositoryException {
         String site = permissionNode.getPath().startsWith("/sites/") ? StringUtils.substringBetween(permissionNode
                 .getPath(), "/sites/", "/" + permissionsNodeName + "/") : null;
         String group = StringUtils.substringBetween(permissionNode.getPath(), "/" + permissionsNodeName + "/", "/");
@@ -903,7 +968,7 @@ public class RoleManager {
      * @return {@link JCRRole} object populated with corresponding data
      * @throws RepositoryException in case of an error
      */
-    protected JCRRole toRole(JCRNodeWrapper roleNode) throws RepositoryException {
+    protected JCRRole toRole(Node roleNode) throws RepositoryException {
         String site = roleNode.getPath().startsWith("/sites/") ? StringUtils.substringBetween(roleNode.getPath(),
                 "/sites/", "/" + rolesNodeName + "/") : null;
         JCRRole role = site != null ? new JCRSiteRole(roleNode.getName(), site) : new JCRRole(roleNode.getName());

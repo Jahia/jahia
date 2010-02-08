@@ -68,7 +68,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private transient JCRPublicationService publicationService;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
-    private transient Cache cache;
+    private transient Cache<String, JahiaUser> cache;
     private static transient Map<String, String> mappingOfProperties;
 
     static {
@@ -399,13 +399,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<JahiaUser> users = new HashSet<JahiaUser>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_USER + "] as u");
+                        StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[" + JCRUser.J_EXTERNAL + "] = 'false'");
                         if (searchCriterias != null && searchCriterias.size() > 0) {
                             // Avoid wildcard attribute
                             if (!(searchCriterias.containsKey(
                                     "*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals(
                                     "*"))) {
-                                query.append(" WHERE u.[" + JCRUser.J_EXTERNAL + "] = 'false' ");
                                 Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
                                 if (objectIterator.hasNext()) {
                                     query.append(" AND ");

@@ -89,7 +89,7 @@ public class WorkflowService {
 
     public void start() {
         try {
-            addWorkflowRule("defaultRule", "/", "nt:base", getWorkflows());
+            addWorkflowRule("default", "/", "nt:base", getWorkflows());
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
@@ -139,7 +139,7 @@ public class WorkflowService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
-                String permissionKey = rule.getName() + role;
+                String permissionKey = rule.getName() + " : " + role;
                 String site = null;
                 if (node.getPath().startsWith("/sites/")) {
                     site = node.getPath().substring("/sites/".length());
@@ -285,8 +285,8 @@ public class WorkflowService {
 
     public void addWorkflowRule(final String key, final String path, final String nodeTypes, final Collection<WorkflowDefinition> workflows) throws RepositoryException{
         // store the rule
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rules = session.getNode("/workflowrules");
                 JCRNodeWrapper n;
                 if (rules.hasNode(key)) {
@@ -299,7 +299,7 @@ public class WorkflowService {
                 String[] values = new String[workflows.size()];
                 int i = 0;
                 for (WorkflowDefinition workflow : workflows) {
-                    values[i++] = workflow.getProvider() + ":" + workflow.getKey();
+                    values[i++] = workflow.getProvider() + " : " + workflow.getKey();
                 }
                 n.setProperty("j:availableWorkflows", values);
                 session.save();
@@ -315,14 +315,14 @@ public class WorkflowService {
                         site = path.substring("/sites/".length());
                         site = StringUtils.substringBefore(site, "/");
                     }
-                    String permissionKey = key + role;
+                    String permissionKey = key + " : " + role;
                     JCRPermission perm = systemRoleManager.getPermission(permissionKey, "workflow", site);
                     if (perm == null) {
                         systemRoleManager.savePermission(permissionKey, "workflow", site);
                     }
                 }
 
-                return n.getUUID();
+                return null;
             }
         });
     }

@@ -185,6 +185,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             } catch (RepositoryException e) {
                 logger.error("Error while deleting user", e);
                 return false;
+            } finally {
+                updateCache(jcrUser);
             }
         }
         return false;

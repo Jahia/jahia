@@ -278,7 +278,10 @@ public class JCRWorkspaceWrapper implements Workspace {
                         JCRVersion result = (JCRVersion) node.getProvider().getNodeWrapper(versionManager.checkin(node.getRealNode().getPath()), session);
 
                         if (session.getLocale() != null) {
-                            versionManager.checkin(node.getI18N(session.getLocale()).getPath());
+                            try {
+                                versionManager.checkin(node.getI18N(session.getLocale()).getPath());
+                            } catch (ItemNotFoundException e) {
+                            }
                         }
 
                         return result;
@@ -297,7 +300,10 @@ public class JCRWorkspaceWrapper implements Workspace {
                     versionManager.checkout(node.getRealNode().getPath());
 
                     if (session.getLocale() != null) {
-                        versionManager.checkout(node.getI18N(session.getLocale()).getPath());
+                        try {
+                            versionManager.checkout(node.getI18N(session.getLocale()).getPath());
+                        } catch (ItemNotFoundException e) {
+                        }
                     }
 
                     return null;

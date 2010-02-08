@@ -33,6 +33,8 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
@@ -57,6 +59,8 @@ import java.util.*;
  */
 public class UserManagerServiceImpl extends JahiaRemoteService implements UserManagerService {
 
+    private static Logger logger = Logger.getLogger(UserManagerServiceImpl.class);
+    
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaSitesService sitesService;
@@ -112,8 +116,8 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             int size = result.size();
             result = new ArrayList<GWTJahiaUser>(result.subList(offset, Math.min(size, offset + limit)));
             return new BasePagingLoadResult<GWTJahiaUser>(result, offset, size);
-        } catch (Throwable e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -178,8 +182,8 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             result = new ArrayList(result.subList(offset, Math.min(size, offset + limit)));
             BasePagingLoadResult<GWTJahiaGroup> pagingLoadResult = new BasePagingLoadResult<GWTJahiaGroup>(result, offset, size);
             return pagingLoadResult;
-        } catch (Throwable e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -206,14 +210,18 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
 
             if (context.equals("currentSite")) {
                 JahiaSite site = retrieveParamBean().getSite();
-                list.add(site.getID());
+                if (site != null) {
+                    list.add(site.getID());
+                }
             } else if (context.startsWith("site:")) {
                 String sitekey = context.substring(5);
                 try {
                     JahiaSite site = sitesService.getSiteByKey(sitekey);
-                    list.add(site.getID());
+                    if (site != null) {
+                        list.add(site.getID());
+                    }
                 } catch (JahiaException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             } else if (context.startsWith("sharedOnly")) {
                 list.add(0);
@@ -230,14 +238,18 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
 
             if (context.equals("currentSite")) {
                 JahiaSite site = retrieveParamBean().getSite();
-                list.add(site.getID());
+                if (site != null) {
+                    list.add(site.getID());
+                }
             } else if (context.startsWith("site:")) {
                 String sitekey = context.substring(5);
                 try {
                     JahiaSite site = sitesService.getSiteByKey(sitekey);
-                    list.add(site.getID());
+                    if (site != null ) {
+                        list.add(site.getID());
+                    }
                 } catch (JahiaException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             } else if (context.startsWith("sharedOnly")) {
                 list.add(0);

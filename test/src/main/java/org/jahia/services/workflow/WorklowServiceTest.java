@@ -93,7 +93,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM",
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM",
                                                       new HashMap<String, Object>());
         assertNotNull("The startup of a process should have return an id", processId);
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
@@ -113,7 +113,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM", emptyMap);
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", emptyMap);
         assertNotNull("The startup of a process should have return an id", processId);
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflows providers", activeWorkflows.size() > 0);
@@ -149,7 +149,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getId(), "jBPM",
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM",
                                                       new HashMap<String, Object>());
         assertNotNull("The startup of a process should have return an id", processId);
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
@@ -183,7 +183,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getId(), PROVIDER,
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
                                                       new HashMap<String, Object>());
         assertNotNull("The startup of a process should have return an id", processId);
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);
@@ -216,7 +216,7 @@ public class WorklowServiceTest extends TestCase {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getId(), PROVIDER,
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
                                                       new HashMap<String, Object>());
         assertNotNull("The startup of a process should have return an id", processId);
         final Map<String, List<Workflow>> activeWorkflows = service.getActiveWorkflows(stageNode);

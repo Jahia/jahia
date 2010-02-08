@@ -70,8 +70,10 @@
 //---------------------------------------------------------
 
 [jnt:role] > nt:base, mix:referenceable, mix:title
+
+[jnt:permissionRole] > jnt:role
  - j:permissions (weakreference) protected multiple < jnt:permission
-  
+
 [jnt:roles] > nt:base, jmix:hierarchyNode
  + * (jnt:role)
  
@@ -122,6 +124,15 @@
 
 [jmix:workflow] mixin
  - j:processId (string) multiple
+
+[jnt:workflowRules] > nt:base orderable
+ + * (jnt:workflowRule)
+
+[jnt:workflowRule] > nt:base
+ - j:path (string)
+ - j:nodeType (string)
+ - j:action (string)
+ - j:availableWorkflows (string) multiple
 
 //---------------------------------------------------------
 // Hierarchy nodes

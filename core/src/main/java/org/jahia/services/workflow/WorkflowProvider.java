@@ -48,6 +48,9 @@ import java.util.Set;
  */
 public interface WorkflowProvider {
     List<WorkflowDefinition> getAvailableWorkflows();
+
+    WorkflowDefinition getWorkflowDefinitionByKey(String key);
+
     List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
 
     String startProcess(String processKey, Map<String,Object> args);
@@ -67,4 +70,6 @@ public interface WorkflowProvider {
     void addParticipatingGroup(String taskId, JahiaGroup group, String role);
 
     void deleteTask(String taskId, String reason);
+
+    List<String> getConfigurableRoles(String processKey);
 }

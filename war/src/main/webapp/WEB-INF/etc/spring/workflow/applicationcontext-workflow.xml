@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" factory-method="getInstance">
+    <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" init-method="start" factory-method="getInstance">
+        <property name="systemRoleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager"/>
         <property name="providers">
             <map>
                 <entry key="jBPM" value-ref="jBPMProvider"/>

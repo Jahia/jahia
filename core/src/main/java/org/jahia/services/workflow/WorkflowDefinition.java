@@ -44,16 +44,16 @@ import org.apache.log4j.Logger;
 public class WorkflowDefinition {
     private transient static Logger logger = Logger.getLogger(WorkflowDefinition.class);
     private final String name;
-    private final String id;
+    private final String key;
     private String provider;
 
-    public WorkflowDefinition(String name, String id) {
+    public WorkflowDefinition(String name, String key) {
         this.name = name;
-        this.id = id;
+        this.key = key;
     }
 
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
     public String getName() {

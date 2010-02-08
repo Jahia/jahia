@@ -40,7 +40,7 @@ public class WorkflowHelper {
                 GWTJahiaWorkflowDefinition w = new GWTJahiaWorkflowDefinition();
                 w.setProvider(workflow.getProvider());
                 w.setName(workflow.getName());
-                w.setId(workflow.getId());
+                w.setId(workflow.getKey());
                 gwtWorkflowDefinitions.add(w);
             }
 

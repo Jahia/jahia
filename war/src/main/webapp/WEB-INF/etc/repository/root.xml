@@ -102,6 +102,8 @@
         </j:acl>
     </roles>
 
+    <workflowrules jcr:primaryType="jnt:workflowRules"/>
+
     <sites jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder"
            j:virtualsitesFolderSkeleton="site.xml"/>
 

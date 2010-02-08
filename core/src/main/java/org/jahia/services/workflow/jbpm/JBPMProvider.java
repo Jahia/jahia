@@ -39,10 +39,16 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
+import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
+import org.jbpm.jpdl.internal.activity.TaskActivity;
+import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
+import org.jbpm.pvm.internal.model.Activity;
+import org.jbpm.pvm.internal.model.ActivityImpl;
+import org.jbpm.pvm.internal.task.AssignableDefinitionImpl;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.security.Principal;
@@ -126,13 +132,36 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     continue;
                 }
             }
-            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getId()));
+            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getKey()));
             versions.put(definition.getName(), definition.getVersion());
             if (logger.isDebugEnabled()) {
                 logger.debug("Process : " + definition);
             }
         }
         return new ArrayList<WorkflowDefinition>(workflows.values());
+    }
+
+    public WorkflowDefinition getWorkflowDefinitionByKey(String key) {
+        ProcessDefinition value = getProcessDefinitionByKey(key);
+        return new WorkflowDefinition(value.getName(),value.getKey());
+    }
+
+    private ProcessDefinition getProcessDefinitionByKey(String key) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
+                                              repositoryService.createProcessDefinitionQuery().count()));
+        }
+        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
+
+        ProcessDefinition value = null;
+
+        for (ProcessDefinition definition : definitionList) {
+            if (value != null && value.getVersion() > definition.getVersion()) {
+                continue;
+            }
+            value = definition;
+        }
+        return value;
     }
 
     public List<Workflow> getActiveWorkflowsInformations(List<String> processIds) {
@@ -149,7 +178,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public String startProcess(String processKey, Map<String, Object> args) {
-        return executionService.startProcessInstanceById(processKey, args).getId();
+        return executionService.startProcessInstanceByKey(processKey, args).getId();
     }
 
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
@@ -256,4 +285,28 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public String getGroupId(String groupName) {
         return groupManager.lookupGroup(groupName).getGroupKey();
     }
+
+    public List<String> getConfigurableRoles(String processKey) {
+        ArrayList<String> results = new ArrayList<String>();
+
+        ProcessDefinition definition = getProcessDefinitionByKey(processKey);
+
+        if (definition instanceof JpdlProcessDefinition) {
+            List<? extends Activity> list = ((JpdlProcessDefinition)definition).getActivities();
+            for (Activity activity : list) {
+                if (activity instanceof ActivityImpl) {
+                    ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
+                    if (activityBehaviour instanceof TaskActivity) {
+                        // check the assignation handler .. ?
+                        Object o = ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        results.add(activity.getName());
+                    }
+                }
+            }
+        }
+
+        return results;
+    }
+
+
 }

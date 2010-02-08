@@ -124,7 +124,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = start.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-            if (!allSubTree && n.isNodeType("jmix:publication")) {
+            if (!allSubTree && hasIndependantPublication(n)) {
                 pruneNodes.add(n);
             } else if (languages != null && n.isNodeType("jnt:translation")) {
                 String translationLanguage = n.getProperty("jcr:language").getString();
@@ -139,6 +139,11 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+    public boolean hasIndependantPublication(JCRNodeWrapper node) throws RepositoryException {
+        return node.isNodeType("jmix:publication"); // todo : do we want to add this as a configurable in admin ?
+                                                    // currently it has to be set in definitions files
+    }
+    
     /**
      * Publish a node into the live workspace.
      * Referenced nodes will also be published.

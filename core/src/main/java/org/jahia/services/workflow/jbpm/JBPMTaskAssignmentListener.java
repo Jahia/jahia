@@ -44,6 +44,7 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jbpm.api.model.OpenExecution;
 import org.jbpm.api.task.Assignable;
 import org.jbpm.api.task.AssignmentHandler;
+import org.jbpm.pvm.internal.task.TaskImpl;
 
 import java.util.List;
 
@@ -65,8 +66,11 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
 
         String id = (String) execution.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-
-        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, assignable.toString());
+        String name = null;
+        if (assignable instanceof TaskImpl) {
+            name = ((TaskImpl)assignable).getActivityName();
+        }
+        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, name);
         for (JahiaPrincipal principal : principals) {
             if (principal instanceof JahiaGroup) {
                 assignable.addCandidateGroup(((JahiaGroup)principal).getGroupKey());

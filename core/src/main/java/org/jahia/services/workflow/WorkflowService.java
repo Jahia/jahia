@@ -127,7 +127,9 @@ public class WorkflowService {
                     for (Value value : values) {
                         String workflowDefinitionKey = StringUtils.substringAfter(value.getString(), ":");
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
-                        workflowsByProvider.add(providers.get(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey));
+                        WorkflowDefinition definition = providers.get(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
+                        definition.setProvider(providerKey);
+                        workflowsByProvider.add(definition);
                     }
                 }
                 return workflowsByProvider;
@@ -141,8 +143,9 @@ public class WorkflowService {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
                 String permissionKey = rule.getName() + " - " + role;
                 String site = null;
-                if (node.getPath().startsWith("/sites/")) {
-                    site = node.getPath().substring("/sites/".length());
+                String path = rule.getProperty("j:path").toString();
+                if (path.startsWith("/sites/")) {
+                    site = path.substring("/sites/".length());
                     site = StringUtils.substringBefore(site, "/");
                 }
                 JCRPermission perm = systemRoleManager.getPermission(permissionKey, "workflow", site);
@@ -158,7 +161,7 @@ public class WorkflowService {
             JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
             if (node.getPath().startsWith(rule.getProperty("j:path").getString()) &&
                     node.isNodeType(rule.getProperty("j:nodeType").getString())) {
-                return node;
+                return rule;
             }
         }
         return null;
@@ -299,7 +302,7 @@ public class WorkflowService {
                 String[] values = new String[workflows.size()];
                 int i = 0;
                 for (WorkflowDefinition workflow : workflows) {
-                    values[i++] = workflow.getProvider() + " : " + workflow.getKey();
+                    values[i++] = workflow.getProvider() + ":" + workflow.getKey();
                 }
                 n.setProperty("j:availableWorkflows", values);
                 session.save();

@@ -70,8 +70,6 @@
 //---------------------------------------------------------
 
 [jnt:role] > nt:base, mix:referenceable, mix:title
-
-[jnt:permissionRole] > jnt:role
  - j:permissions (weakreference) protected multiple < jnt:permission
 
 [jnt:roles] > nt:base, jmix:hierarchyNode

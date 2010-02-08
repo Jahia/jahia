@@ -273,7 +273,7 @@ public class RoleManager {
         JCRNodeWrapper permissionsNode = getPermissionsHome(site, session);
         String permissionGroup = StringUtils.defaultIfEmpty(group, defaultPermissionGroup);
         try {
-            permissionsNode = session.getNode(permissionGroup);
+            permissionsNode = permissionsNode.getNode(permissionGroup);
         } catch (PathNotFoundException ex) {
             // create it
             session.checkout(permissionsNode);

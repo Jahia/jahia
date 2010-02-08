@@ -271,7 +271,7 @@ public class SystemRoleManager extends RoleManager {
     public void revokePermission(final String roleJcrPath, final String permissionJcrPath) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                revokePermission(roleJcrPath, permissionJcrPath);
+                revokePermission(roleJcrPath, permissionJcrPath, session);
                 return true;
             }
         });

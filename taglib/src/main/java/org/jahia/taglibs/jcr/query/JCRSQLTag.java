@@ -77,9 +77,10 @@ public class JCRSQLTag extends AbstractJCRTag {
      * @throws InvalidQueryException in case of bad query statement
      */
     private QueryResult executeQuery() throws InvalidQueryException, RepositoryException {
+        long startTime = System.currentTimeMillis();
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
-            logger.debug("Executing " + getQueryLanguage() + "query: " + statement);
+            logger.debug("Executing " + getQueryLanguage() + " query: " + statement);
         }
 
         Query q = getJCRSession().getWorkspace().getQueryManager().createQuery(statement, getQueryLanguage());
@@ -92,7 +93,7 @@ public class JCRSQLTag extends AbstractJCRTag {
         // execute query
         queryResult = q.execute();
         if (logger.isDebugEnabled()) {
-            logger.debug(getQueryLanguage() + "[" + statement + "] --> found [" + queryResult + "] values.");
+            logger.debug(getQueryLanguage() + "[" + statement + "] executed in " + (System.currentTimeMillis() - startTime) +" ms --> found [" + queryResult + "] values.");
         }
 
         return queryResult;

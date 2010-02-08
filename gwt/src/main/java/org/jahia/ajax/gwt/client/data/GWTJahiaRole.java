@@ -6,16 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT bean that represents a single role. 
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 11:42:48 AM
- * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaRole extends BaseModel {
   
     public GWTJahiaRole() {
         setPermissions(new ArrayList<GWTJahiaPermission>());
+    }
+
+    public GWTJahiaRole(String id, String label) {
+        this();
+        setId(id);
+        setLabel(label);
     }
 
     public String getId() {

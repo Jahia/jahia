@@ -30,7 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.impl;
+package org.jahia.services.rbac.jcr;
 
 import java.util.List;
 
@@ -58,9 +58,9 @@ public class SystemRoleManager extends RoleManager {
      *         {@code null} if the requested permission is not found
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl getPermission(final String jcrPath) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PermissionImpl>() {
-            public PermissionImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public JCRPermission getPermission(final String jcrPath) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRPermission>() {
+            public JCRPermission doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getPermission(jcrPath, session);
             }
         });
@@ -80,10 +80,10 @@ public class SystemRoleManager extends RoleManager {
      *         Returns ${@code null} if the requested permission is not found.
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl getPermission(final String name, final String group, final String site)
+    public JCRPermission getPermission(final String name, final String group, final String site)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PermissionImpl>() {
-            public PermissionImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRPermission>() {
+            public JCRPermission doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getPermission(name, group, site, session);
             }
         });
@@ -103,9 +103,9 @@ public class SystemRoleManager extends RoleManager {
      *         Returns ${@code null} if the requested permission is not found.
      * @throws RepositoryException in case of an error
      */
-    public List<PermissionImpl> getPermissions(final String group,final  String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<PermissionImpl>>() {
-            public List<PermissionImpl> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public List<JCRPermission> getPermissions(final String group,final  String site) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JCRPermission>>() {
+            public List<JCRPermission> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getPermissions(group, site, session);
             }
         });
@@ -124,9 +124,9 @@ public class SystemRoleManager extends RoleManager {
      *         the server
      * @throws RepositoryException in case of an error
      */
-    public List<PermissionImpl> getPermissions(final String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<PermissionImpl>>() {
-            public List<PermissionImpl> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public List<JCRPermission> getPermissions(final String site) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JCRPermission>>() {
+            public List<JCRPermission> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getPermissions(site, session);
             }
         });
@@ -141,9 +141,9 @@ public class SystemRoleManager extends RoleManager {
      *         requested role is not found.
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl getRole(final String jcrPath) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
-            public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public JCRRole getRole(final String jcrPath) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRRole>() {
+            public JCRRole doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getRole(jcrPath, session);
             }
         });
@@ -162,9 +162,9 @@ public class SystemRoleManager extends RoleManager {
      *         null} if the requested role is not found.
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl getRole(final String name, final String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
-            public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public JCRRole getRole(final String name, final String site) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRRole>() {
+            public JCRRole doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getRole(name, site, session);
             }
         });
@@ -179,9 +179,9 @@ public class SystemRoleManager extends RoleManager {
      *         site is ${@code null} returns global permissions for the server.
      * @throws RepositoryException in case of an error
      */
-    public List<RoleImpl> getRoles(final String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<RoleImpl>>() {
-            public List<RoleImpl> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public List<JCRRole> getRoles(final String site) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JCRRole>>() {
+            public List<JCRRole> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getRoles(site, session);
             }
         });
@@ -331,15 +331,15 @@ public class SystemRoleManager extends RoleManager {
     }
 
     /**
-     * Creates or updates the specified {@link PermissionImpl}.
+     * Creates or updates the specified {@link JCRPermission}.
      *
      * @param permission the permission to be stored
-     * @return an updated {@link PermissionImpl} instance
+     * @return an updated {@link JCRPermission} instance
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl savePermission(final PermissionImpl permission) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PermissionImpl>() {
-            public PermissionImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public JCRPermission savePermission(final JCRPermission permission) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRPermission>() {
+            public JCRPermission doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 savePermission(permission, session);
                 return permission;
             }
@@ -347,37 +347,37 @@ public class SystemRoleManager extends RoleManager {
     }
 
     /**
-     * Creates or updates the specified {@link PermissionImpl}.
+     * Creates or updates the specified {@link JCRPermission}.
      *
-     * @return an updated {@link PermissionImpl} instance
+     * @return an updated {@link JCRPermission} instance
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl savePermission(final String name, final String group) throws RepositoryException {
-        return savePermission(new PermissionImpl(name, group));
+    public JCRPermission savePermission(final String name, final String group) throws RepositoryException {
+        return savePermission(new JCRPermission(name, group));
     }
 
     /**
-     * Creates or updates the specified {@link PermissionImpl}.
+     * Creates or updates the specified {@link JCRPermission}.
      *
-     * @return an updated {@link PermissionImpl} instance
+     * @return an updated {@link JCRPermission} instance
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl savePermission(final String name, final String group,final String site) throws RepositoryException {
-        return savePermission(new SitePermissionImpl(name, group,site));
+    public JCRPermission savePermission(final String name, final String group,final String site) throws RepositoryException {
+        return savePermission(new JCRSitePermission(name, group,site));
     }
 
     
 
     /**
-     * Creates or updates the specified {@link RoleImpl}.
+     * Creates or updates the specified {@link JCRRole}.
      *
      * @param role the role to be stored
-     * @return an updated {@link RoleImpl} instance
+     * @return an updated {@link JCRRole} instance
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl saveRole(final RoleImpl role) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
-            public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    public JCRRole saveRole(final JCRRole role) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRRole>() {
+            public JCRRole doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 saveRole(role, session);
                 return role;
             }

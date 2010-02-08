@@ -71,7 +71,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private static JCRGroupManagerProvider mGroupManagerProvider;
     private transient JahiaSitesService sitesService;
     private transient CacheService cacheService;
-    private transient Cache cache;
+    private transient Cache<String, JCRGroup> cache;
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -187,7 +187,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * group keys of a site.
      *
      * @return Return a List of identifier of all groups of this site.
-     * @auhtor NK
+     * @author NK
      */
     public List<String> getGroupList() {
         try {
@@ -221,7 +221,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * group keys of a site.
      *
      * @return Return a List of identifier of all groups of this site.
-     * @auhtor NK
+     * @author NK
      */
     public List<String> getGroupList(final int siteID) {
         try {
@@ -394,7 +394,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     }
 
     /**
-     * This function checks on a gived site if the groupname has already been
+     * This function checks on a given site if the groupname has already been
      * assigned to another group.
      *
      * @param siteID       siteID the site id
@@ -432,9 +432,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     }
 
     /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
+     * load it into the cache from the database.
      *
      * @param groupKey Group's unique identification key.
      * @return Return a reference on a the specified group name. Return null
@@ -490,16 +490,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             logger.warn("Error while looking up group " + groupKey, e);
         } catch (JahiaInitializationException e) {
             logger.error("Error while looking up group " + groupKey, e);
-        } catch (JahiaException e) {
-            logger.error("Error while looking up group " + groupKey, e);
         }
         return null;
     }
 
     /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
+     * load it into the cache from the database.
      *
      * @param siteID the site id
      * @param name Group's unique identification name.

@@ -30,7 +30,9 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.impl;
+package org.jahia.services.rbac.jcr;
+
+import static org.jahia.api.Constants.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,20 +45,27 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
@@ -68,9 +77,9 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
  */
 public class RoleManager {
 
-    private static final List<PermissionImpl> EMPTY_PERMISSION_LIST = Collections.emptyList();
+    private static final List<JCRPermission> EMPTY_PERMISSION_LIST = Collections.emptyList();
 
-    private static final List<RoleImpl> EMPTY_ROLE_LIST = Collections.emptyList();
+    private static final List<JCRRole> EMPTY_ROLE_LIST = Collections.emptyList();
 
     public static final String JAHIANT_PERMISSION = "jnt:permission";
 
@@ -86,13 +95,21 @@ public class RoleManager {
 
     private static Logger logger = Logger.getLogger(RoleManager.class);
 
+    public static final String PROPERTY_ROLES = "j:roles";
+
+    public static final String PROPERTY_PERMISSSIONS = "j:permissions";
+
     protected String defaultPermissionGroup = "global";
+
+    protected JCRGroupManagerProvider jcrGroupManagerProvider;
 
     protected JCRUserManagerProvider jcrUserManagerProvider;
 
     protected String permissionsNodeName = "permissions";
 
     protected String rolesNodeName = "roles";
+
+    protected JahiaSitesService sitesService;
 
     /**
      * Looks up the permission by its corresponding JCR node path. Returns $
@@ -104,8 +121,8 @@ public class RoleManager {
      *         {@code null} if the requested permission is not found
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl getPermission(String jcrPath, JCRSessionWrapper session) throws RepositoryException {
-        PermissionImpl perm = null;
+    public JCRPermission getPermission(String jcrPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRPermission perm = null;
         try {
             perm = toPermission(session.getNode(jcrPath));
         } catch (PathNotFoundException e) {
@@ -129,9 +146,9 @@ public class RoleManager {
      *         Returns ${@code null} if the requested permission is not found.
      * @throws RepositoryException in case of an error
      */
-    public PermissionImpl getPermission(String name, String group, String site, JCRSessionWrapper session)
+    public JCRPermission getPermission(String name, String group, String site, JCRSessionWrapper session)
             throws RepositoryException {
-        PermissionImpl perm = null;
+        JCRPermission perm = null;
         JCRNodeWrapper permissionsHome = getPermissionsHome(site, group, session);
         try {
             perm = toPermission(permissionsHome.getNode(name));
@@ -155,9 +172,9 @@ public class RoleManager {
      *         Returns ${@code null} if the requested permission is not found.
      * @throws RepositoryException in case of an error
      */
-    public List<PermissionImpl> getPermissions(String group, String site, JCRSessionWrapper session)
+    public List<JCRPermission> getPermissions(String group, String site, JCRSessionWrapper session)
             throws RepositoryException {
-        List<PermissionImpl> permissions = new LinkedList<PermissionImpl>();
+        List<JCRPermission> permissions = new LinkedList<JCRPermission>();
         JCRNodeWrapper permissionsHome = getPermissionsHome(site, session);
         for (NodeIterator groupIterator = permissionsHome.getNodes(); groupIterator.hasNext();) {
             Node groupNode = groupIterator.nextNode();
@@ -165,7 +182,7 @@ public class RoleManager {
                 for (NodeIterator permIterator = groupNode.getNodes(); permIterator.hasNext();) {
                     JCRNodeWrapper permissionNode = (JCRNodeWrapper) permIterator.nextNode();
                     if (permissionNode.isNodeType(JAHIANT_PERMISSION)) {
-                        PermissionImpl p = toPermission(permissionNode);
+                        JCRPermission p = toPermission(permissionNode);
                         if(p.getGroup().equalsIgnoreCase(group)){
                            permissions.add(p);
                         }
@@ -188,8 +205,8 @@ public class RoleManager {
      *         the server
      * @throws RepositoryException in case of an error
      */
-    public List<PermissionImpl> getPermissions(final String site, JCRSessionWrapper session) throws RepositoryException {
-        List<PermissionImpl> permissions = new LinkedList<PermissionImpl>();
+    public List<JCRPermission> getPermissions(final String site, JCRSessionWrapper session) throws RepositoryException {
+        List<JCRPermission> permissions = new LinkedList<JCRPermission>();
         JCRNodeWrapper permissionsHome = getPermissionsHome(site, session);
         for (NodeIterator groupIterator = permissionsHome.getNodes(); groupIterator.hasNext();) {
             Node groupNode = groupIterator.nextNode();
@@ -313,6 +330,80 @@ public class RoleManager {
     }
 
     /**
+     * Returns a list of principals having the specified role or an empty list
+     * if the role is not granted to anyone.
+     * 
+     * @param jcrRolePath the JCR path of the corresponding role node
+     * @param session current JCR session
+     * @return a list of principals having the specified role or an empty list
+     *         if the role is not granted to anyone
+     * @throws RepositoryException in case of an error
+     * @throws PathNotFoundException in case the specified role cannot be found
+     */
+    public List<JahiaPrincipal> getPrincipalsInRole(final String jcrRolePath, JCRSessionWrapper session)
+            throws PathNotFoundException, RepositoryException {
+        List<JahiaPrincipal> principals = new LinkedList<JahiaPrincipal>();
+        JCRNodeWrapper role = session.getNode(jcrRolePath);
+        for (PropertyIterator iterator = role.getWeakReferences(PROPERTY_ROLES); iterator.hasNext();) {
+            Property prop = iterator.nextProperty();
+            Node principalNode = prop.getParent();
+            if (principalNode != null) {
+                if (principalNode.isNodeType(Constants.JAHIANT_USER)) {
+                    // principal is a user
+                    JahiaUser user = null;
+                    if (principalNode.hasProperty(JCRUser.J_EXTERNAL)
+                            && principalNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                        // lookup external user node
+                        user = jcrUserManagerProvider.lookupExternalUser(principalNode.getName());
+                    } else {
+                        // lookup internal user node
+                        user = jcrUserManagerProvider.lookupUser(principalNode.getName());
+                    }
+                    if (user != null) {
+                        principals.add(user);
+                    } else {
+                        logger.warn("User cannot be found by name '" + principalNode.getName() + "'");
+                    }
+                } else if (principalNode.isNodeType(Constants.JAHIANT_GROUP)) {
+                    // principal is a group
+                    int siteId = 0;
+                    String siteKey = StringUtils.substringBetween(principalNode.getPath(), "/sites/", "/");
+                    if (siteKey != null) {
+                        JahiaSite site = null;
+                        try {
+                            site = sitesService.getSiteByKey(siteKey);
+                        } catch (JahiaException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        if (site != null) {
+                            siteId = site.getID();
+                        } else {
+                            logger.warn("Unable to lookup site for key '" + siteKey + "'. Skipping group '"
+                                    + principalNode.getPath() + "'");
+                            siteId = -1;
+                        }
+                    }
+                    if (siteId != -1) {
+                        JahiaGroup group = jcrGroupManagerProvider.lookupGroup(siteId, principalNode.getName());
+                        if (group != null) {
+                            principals.add(group);
+                        } else {
+                            logger.warn("Group cannot be found for name '" + principalNode.getName() + "' and site ID "
+                                    + siteId);
+                        }
+                    }
+
+                }
+            } else {
+                logger.warn("Principal node, referencing role '" + jcrRolePath + "' in property '" + prop.getPath()
+                        + "' cannot be found");
+            }
+
+        }
+        return principals;
+    }
+
+    /**
      * Looks up the role by its JCR path. Returns ${@code null} if the requested
      * role is not found.
      * 
@@ -322,8 +413,8 @@ public class RoleManager {
      *         requested role is not found.
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl getRole(final String jcrPath, JCRSessionWrapper session) throws RepositoryException {
-        RoleImpl role = null;
+    public JCRRole getRole(final String jcrPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRRole role = null;
         try {
             role = toRole(session.getNode(jcrPath));
         } catch (PathNotFoundException e) {
@@ -346,8 +437,8 @@ public class RoleManager {
      *         null} if the requested role is not found.
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl getRole(final String name, final String site, JCRSessionWrapper session) throws RepositoryException {
-        RoleImpl role = null;
+    public JCRRole getRole(final String name, final String site, JCRSessionWrapper session) throws RepositoryException {
+        JCRRole role = null;
         JCRNodeWrapper rolesHome = getRolesHome(site, session);
         try {
             role = toRole(rolesHome.getNode(name));
@@ -367,8 +458,8 @@ public class RoleManager {
      *         site is ${@code null} returns global permissions for the server.
      * @throws RepositoryException in case of an error
      */
-    public List<RoleImpl> getRoles(final String site, JCRSessionWrapper session) throws RepositoryException {
-        List<RoleImpl> roles = new LinkedList<RoleImpl>();
+    public List<JCRRole> getRoles(final String site, JCRSessionWrapper session) throws RepositoryException {
+        List<JCRRole> roles = new LinkedList<JCRRole>();
         JCRNodeWrapper rolesHome = getRolesHome(site, session);
         for (NodeIterator iterator = rolesHome.getNodes(); iterator.hasNext();) {
             JCRNodeWrapper roleNode = (JCRNodeWrapper) iterator.nextNode();
@@ -450,8 +541,8 @@ public class RoleManager {
         }
 
         List<Value> newValues = new LinkedList<Value>();
-        if (roleNode.hasProperty("j:permissions")) {
-            Value[] oldValues = roleNode.getProperty("j:permissions").getValues();
+        if (roleNode.hasProperty(PROPERTY_PERMISSSIONS)) {
+            Value[] oldValues = roleNode.getProperty(PROPERTY_PERMISSSIONS).getValues();
             for (Value oldOne : oldValues) {
                 newValues.add(oldOne);
                 toBeGranted.remove(oldOne.getString());
@@ -462,7 +553,7 @@ public class RoleManager {
             newValues.add(new ValueImpl(granted, PropertyType.WEAKREFERENCE));
         }
         session.checkout(roleNode);
-        roleNode.setProperty("j:permissions", newValues.toArray(new Value[] {}));
+        roleNode.setProperty(PROPERTY_PERMISSSIONS, newValues.toArray(new Value[] {}));
         session.save();
     }
 
@@ -515,8 +606,8 @@ public class RoleManager {
             }
 
             List<Value> newValues = new LinkedList<Value>();
-            if (principalNode.hasProperty("j:roles")) {
-                Value[] oldValues = principalNode.getProperty("j:roles").getValues();
+            if (principalNode.hasProperty(PROPERTY_ROLES)) {
+                Value[] oldValues = principalNode.getProperty(PROPERTY_ROLES).getValues();
                 for (Value oldOne : oldValues) {
                     newValues.add(oldOne);
                     toBeGranted.remove(oldOne.getString());
@@ -525,7 +616,7 @@ public class RoleManager {
             for (String granted : toBeGranted) {
                 newValues.add(new ValueImpl(granted, PropertyType.WEAKREFERENCE));
             }
-            principalNode.setProperty("j:roles", newValues.toArray(new Value[] {}));
+            principalNode.setProperty(PROPERTY_ROLES, newValues.toArray(new Value[] {}));
             session.save();
 
             invalidateCache(principal);
@@ -572,8 +663,8 @@ public class RoleManager {
         }
         JCRNodeWrapper roleNode = session.getNode(roleJcrPath);
         Set<String> toRevoke = new HashSet<String>(permissionJcrPaths);
-        if (roleNode.hasProperty("j:permissions")) {
-            Value[] values = roleNode.getProperty("j:permissions").getValues();
+        if (roleNode.hasProperty(PROPERTY_PERMISSSIONS)) {
+            Value[] values = roleNode.getProperty(PROPERTY_PERMISSSIONS).getValues();
             if (values != null) {
                 List<Value> newValues = new LinkedList<Value>();
                 for (Value value : values) {
@@ -584,7 +675,7 @@ public class RoleManager {
                 }
                 if (values.length != newValues.size()) {
                     session.checkout(roleNode);
-                    roleNode.setProperty("j:permissions", newValues.toArray(new Value[] {}));
+                    roleNode.setProperty(PROPERTY_PERMISSSIONS, newValues.toArray(new Value[] {}));
                     session.save();
                 }
             }
@@ -624,8 +715,8 @@ public class RoleManager {
 
         JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
         if (principalNode != null && principalNode.isNodeType(JMIX_ROLE_BASED_ACCESS_CONTROLLED)
-                && principalNode.hasProperty("j:roles")) {
-            Value[] values = principalNode.getProperty("j:roles").getValues();
+                && principalNode.hasProperty(PROPERTY_ROLES)) {
+            Value[] values = principalNode.getProperty(PROPERTY_ROLES).getValues();
             if (values != null) {
                 Set<String> toRevoke = new HashSet<String>(roleJcrPaths);
                 List<Value> newValues = new LinkedList<Value>();
@@ -637,7 +728,7 @@ public class RoleManager {
                 }
                 if (values.length != newValues.size()) {
                     session.checkout(principalNode);
-                    principalNode.setProperty("j:roles", newValues.toArray(new Value[] {}));
+                    principalNode.setProperty(PROPERTY_ROLES, newValues.toArray(new Value[] {}));
                     session.save();
 
                     invalidateCache(principal);
@@ -655,17 +746,17 @@ public class RoleManager {
     }
 
     /**
-     * Creates or updates the specified {@link PermissionImpl}.
+     * Creates or updates the specified {@link JCRPermission}.
      * 
      * @param permission the permission to be stored
      * @param session current JCR session
      * @return the corresponding permission node
      * @throws RepositoryException in case of an error
      */
-    public JCRNodeWrapper savePermission(PermissionImpl permission, JCRSessionWrapper session)
+    public JCRNodeWrapper savePermission(JCRPermission permission, JCRSessionWrapper session)
             throws RepositoryException {
         JCRNodeWrapper permissionsNode = getPermissionsHome(
-                permission instanceof SitePermissionImpl ? ((SitePermissionImpl) permission).getSite() : null, session);
+                permission instanceof JCRSitePermission ? ((JCRSitePermission) permission).getSite() : null, session);
         JCRNodeWrapper target = null;
         try {
             String group = StringUtils.defaultIfEmpty(permission.getGroup(), defaultPermissionGroup);
@@ -678,11 +769,11 @@ public class RoleManager {
             }
             permission.setGroup(group);
             target = permissionsNode.getNode(permission.getName());
-            if (target.hasProperty("jcr:title")) {
-                permission.setTitle(target.getProperty("jcr:title").getString());
+            if (target.hasProperty(JCR_TITLE)) {
+                permission.setTitle(target.getProperty(JCR_TITLE).getString());
             }
-            if (target.hasProperty("jcr:description")) {
-                permission.setDescription(target.getProperty("jcr:description").getString());
+            if (target.hasProperty(JCR_DESCRIPTION)) {
+                permission.setDescription(target.getProperty(JCR_DESCRIPTION).getString());
             }
         } catch (PathNotFoundException e) {
             // does not exist yet
@@ -698,24 +789,24 @@ public class RoleManager {
     }
 
     /**
-     * Creates or updates the specified {@link RoleImpl}.
+     * Creates or updates the specified {@link JCRRole}.
      * 
      * @param role the role to be stored
      * @param session current JCR session
      * @return the corresponding role node
      * @throws RepositoryException in case of an error
      */
-    public JCRNodeWrapper saveRole(RoleImpl role, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper rolesHome = getRolesHome(role instanceof SiteRoleImpl ? ((SiteRoleImpl) role).getSite() : null,
+    public JCRNodeWrapper saveRole(JCRRole role, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper rolesHome = getRolesHome(role instanceof JCRSiteRole ? ((JCRSiteRole) role).getSite() : null,
                 session);
         JCRNodeWrapper roleNode = null;
         try {
             roleNode = rolesHome.getNode(role.getName());
-            if (roleNode.hasProperty("jcr:title")) {
-                role.setTitle(roleNode.getProperty("jcr:title").getString());
+            if (roleNode.hasProperty(JCR_TITLE)) {
+                role.setTitle(roleNode.getProperty(JCR_TITLE).getString());
             }
-            if (roleNode.hasProperty("jcr:description")) {
-                role.setDescription(roleNode.getProperty("jcr:description").getString());
+            if (roleNode.hasProperty(JCR_DESCRIPTION)) {
+                role.setDescription(roleNode.getProperty(JCR_DESCRIPTION).getString());
             }
         } catch (PathNotFoundException e) {
             // does not exist yet
@@ -726,10 +817,10 @@ public class RoleManager {
         role.setPath(roleNode.getPath());
 
         List<Value> values = new LinkedList<Value>();
-        for (PermissionImpl permission : role.getPermissions()) {
+        for (JCRPermission permission : role.getPermissions()) {
             values.add(new ValueImpl(savePermission(permission, session).getIdentifier(), PropertyType.WEAKREFERENCE));
         }
-        roleNode.setProperty("j:permissions", values.toArray(new Value[] {}));
+        roleNode.setProperty(PROPERTY_PERMISSSIONS, values.toArray(new Value[] {}));
 
         session.save();
 
@@ -741,6 +832,13 @@ public class RoleManager {
      */
     public void setDefaultPermissionGroup(String defaultPermissionGroup) {
         this.defaultPermissionGroup = defaultPermissionGroup;
+    }
+
+    /**
+     * @param jcrGroupManagerProvider the jcrGroupManagerProvider to set
+     */
+    public void setJCRGroupManagerProvider(JCRGroupManagerProvider jcrGroupManagerProvider) {
+        this.jcrGroupManagerProvider = jcrGroupManagerProvider;
     }
 
     /**
@@ -765,52 +863,59 @@ public class RoleManager {
     }
 
     /**
-     * Converts the provided JCR node to a {@link PermissionImpl} object
+     * @param sitesService the sitesService to set
+     */
+    public void setSitesService(JahiaSitesService sitesService) {
+        this.sitesService = sitesService;
+    }
+
+    /**
+     * Converts the provided JCR node to a {@link JCRPermission} object
      * populating corresponding fields.
      * 
      * @param permissionNode the underlying JCR node
-     * @return {@link PermissionImpl} object populated with corresponding data
+     * @return {@link JCRPermission} object populated with corresponding data
      * @throws RepositoryException in case of an error
      */
-    protected PermissionImpl toPermission(JCRNodeWrapper permissionNode) throws RepositoryException {
+    protected JCRPermission toPermission(JCRNodeWrapper permissionNode) throws RepositoryException {
         String site = permissionNode.getPath().startsWith("/sites/") ? StringUtils.substringBetween(permissionNode
                 .getPath(), "/sites/", "/" + permissionsNodeName + "/") : null;
         String group = StringUtils.substringBetween(permissionNode.getPath(), "/" + permissionsNodeName + "/", "/");
 
-        PermissionImpl perm = site != null ? new SitePermissionImpl(permissionNode.getName(), group, site)
-                : new PermissionImpl(permissionNode.getName(), group);
+        JCRPermission perm = site != null ? new JCRSitePermission(permissionNode.getName(), group, site)
+                : new JCRPermission(permissionNode.getName(), group);
         perm.setPath(permissionNode.getPath());
-        if (permissionNode.hasProperty("jcr:title")) {
-            perm.setTitle(permissionNode.getProperty("jcr:title").getString());
+        if (permissionNode.hasProperty(JCR_TITLE)) {
+            perm.setTitle(permissionNode.getProperty(JCR_TITLE).getString());
         }
-        if (permissionNode.hasProperty("jcr:description")) {
-            perm.setDescription(permissionNode.getProperty("jcr:description").getString());
+        if (permissionNode.hasProperty(JCR_DESCRIPTION)) {
+            perm.setDescription(permissionNode.getProperty(JCR_DESCRIPTION).getString());
         }
 
         return perm;
     }
 
     /**
-     * Converts the provided JCR node to a {@link RoleImpl} object populating
+     * Converts the provided JCR node to a {@link JCRRole} object populating
      * corresponding fields.
      * 
      * @param roleNode the underlying JCR node
-     * @return {@link RoleImpl} object populated with corresponding data
+     * @return {@link JCRRole} object populated with corresponding data
      * @throws RepositoryException in case of an error
      */
-    protected RoleImpl toRole(JCRNodeWrapper roleNode) throws RepositoryException {
+    protected JCRRole toRole(JCRNodeWrapper roleNode) throws RepositoryException {
         String site = roleNode.getPath().startsWith("/sites/") ? StringUtils.substringBetween(roleNode.getPath(),
                 "/sites/", "/" + rolesNodeName + "/") : null;
-        RoleImpl role = site != null ? new SiteRoleImpl(roleNode.getName(), site) : new RoleImpl(roleNode.getName());
+        JCRRole role = site != null ? new JCRSiteRole(roleNode.getName(), site) : new JCRRole(roleNode.getName());
         role.setPath(roleNode.getPath());
-        if (roleNode.hasProperty("jcr:title")) {
-            role.setTitle(roleNode.getProperty("jcr:title").getString());
+        if (roleNode.hasProperty(JCR_TITLE)) {
+            role.setTitle(roleNode.getProperty(JCR_TITLE).getString());
         }
-        if (roleNode.hasProperty("jcr:description")) {
-            role.setDescription(roleNode.getProperty("jcr:description").getString());
+        if (roleNode.hasProperty(JCR_DESCRIPTION)) {
+            role.setDescription(roleNode.getProperty(JCR_DESCRIPTION).getString());
         }
-        if (roleNode.hasProperty("j:permissions")) {
-            Value[] values = roleNode.getProperty("j:permissions").getValues();
+        if (roleNode.hasProperty(PROPERTY_PERMISSSIONS)) {
+            Value[] values = roleNode.getProperty(PROPERTY_PERMISSSIONS).getValues();
             if (values != null) {
                 for (Value value : values) {
                     JCRNodeWrapper permissionNode = (JCRNodeWrapper) ((JCRValueWrapper) value).getNode();

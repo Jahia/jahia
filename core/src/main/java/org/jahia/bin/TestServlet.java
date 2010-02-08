@@ -40,7 +40,10 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.exceptions.JahiaException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
@@ -52,25 +55,21 @@ import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.URLConnection;
-import java.util.jar.JarFile;
-import java.util.jar.JarEntry;
-import java.util.Enumeration;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 /**
- * Created by IntelliJ IDEA.
+ * JUnit test runner servlet.
  * User: toto
  * Date: Feb 11, 2009
  * Time: 4:07:40 PM
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class TestServlet  extends HttpServlet {
     private transient static Logger logger = Logger.getLogger(TestServlet.class);
     @Override
+    @SuppressWarnings("unchecked")
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
 //    should be protected in production
@@ -105,7 +104,7 @@ public class TestServlet  extends HttpServlet {
             // Execute one test
             String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
             try {
-                XMLJUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
+                JUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
                 unitResultFormatter.setOutput(httpServletResponse.getOutputStream());
                 JUnitTestRunner runner =  new JUnitTestRunner(new JUnitTest(className,false,false,false), false,false,false);
                 runner.addFormatter(unitResultFormatter);
@@ -116,25 +115,15 @@ public class TestServlet  extends HttpServlet {
         } else {
             PrintWriter pw = httpServletResponse.getWriter();
             // Return the lists of available tests
-            URLConnection url = getClass().getClassLoader().getResource("Test.properties").openConnection();
-            if (url instanceof JarURLConnection) {
-                JarFile file = ((JarURLConnection) getClass().getClassLoader().getResource("Test.properties").openConnection()).getJarFile();
-                Enumeration<JarEntry> en = file.entries();
-                while (en.hasMoreElements()) {
-                    JarEntry jarEntry = en.nextElement();
-                    String n = jarEntry.getName();
-                    if (n.endsWith(".class")) {
-                        try {
-                            Class<?> c = Class.forName(n.replace('/','.').substring(0, n.lastIndexOf('.')));
-                            if (TestCase.class.isAssignableFrom(c)) {
-                                pw.println(c.getName());
-                            } else if (isMethodAnnotationPresent(c, org.junit.Test.class)) {
-                                pw.println(c.getName());
-                            }
-                        } catch (ClassNotFoundException e) {
-                            logger.error("Error finding class", e);
-                        }
-
+            InputStream is = getClass().getClassLoader().getResourceAsStream("Test.properties");
+            
+            if (is != null) {
+                List<String> lines = IOUtils.readLines(is);
+                IOUtils.closeQuietly(is);
+                for (String line : lines) {
+                    Class<?> c = getTestClass(line);
+                    if (c != null) {
+                        pw.println(c.getName());
                     }
                 }
             }
@@ -151,5 +140,30 @@ public class TestServlet  extends HttpServlet {
             }
         }
         return isPresent;
+    }
+    
+    private Class<?> getTestClass(String line) {
+        Class<?> clazz = null;
+        if (StringUtils.isNotBlank(line) && !line.trim().startsWith("#") && !line.trim().startsWith("//")) {
+            String clazzName = null;
+            if (line.contains("/")) {
+                // assume that it is a path for .class file
+                clazzName = line.trim();
+                clazzName = clazzName.replace('/','.').substring(0, clazzName.lastIndexOf('.'));
+            } else {
+                // assume it is fully qualified class name
+                clazzName = line.trim();
+            }
+            try {
+                Class<?> c = Class.forName(clazzName);
+                if (TestCase.class.isAssignableFrom(c) || isMethodAnnotationPresent(c, org.junit.Test.class)) {
+                    clazz = c;
+                }
+            } catch (ClassNotFoundException e) {
+                logger.error("Error finding class for name " + line, e);
+            }
+        }
+        
+        return clazz;
     }
 }

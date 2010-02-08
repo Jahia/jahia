@@ -859,16 +859,16 @@ public class ContentDetails extends BottomRightComponent {
     }
 
     /**
-     * Displa principal mapping
+     * Display principal mapping
      */
     public void displayPrincipalRole() {
         if (selectedNodes.size() == 1) {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
             if (!principalRoleTabItem.isProcessed()) {
-                GWTJahiaRole role = new GWTJahiaRole();
-                role.setLabel(selectedNode.getName());
-                role.setId(selectedNode.getPath());
-                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(role);
+                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(new GWTJahiaRole(selectedNode.getPath(), selectedNode.getName()));
+                if (principalRoleTabItem.getItemCount() > 0) {
+                    principalRoleTabItem.getItem(0).removeFromParent();
+                }
                 principalRoleTabItem.add(principalRolePanel);
                 principalRoleTabItem.setProcessed(true);
                 principalRoleTabItem.layout();

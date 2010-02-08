@@ -248,7 +248,7 @@
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="schedulerService" ref="SchedulerService" />
                 <property name="sitesService" ref="JahiaSitesService" />
-                <property name="roleManager" ref="org.jahia.services.rbac.impl.SystemRoleManager" />
+                <property name="roleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager" />
             </bean>
         </property>
     </bean>

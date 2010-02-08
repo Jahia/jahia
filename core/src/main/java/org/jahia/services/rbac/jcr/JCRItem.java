@@ -1,4 +1,4 @@
-package org.jahia.services.rbac.impl;
+package org.jahia.services.rbac.jcr;
 
 import java.io.Serializable;
 

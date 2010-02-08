@@ -1821,6 +1821,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences() throws RepositoryException {
+        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
         return objectNode.getReferences();
     }
 
@@ -2158,17 +2159,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
+        return objectNode.getReferences(name);
     }
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public PropertyIterator getWeakReferences() throws RepositoryException {
+        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
         return objectNode.getWeakReferences();
     }
 
@@ -2177,7 +2178,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
+        return objectNode.getWeakReferences(name);
     }
 
     /**

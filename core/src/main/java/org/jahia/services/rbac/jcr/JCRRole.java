@@ -30,94 +30,73 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.impl;
+package org.jahia.services.rbac.jcr;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jahia.services.rbac.Permission;
+import org.jahia.services.rbac.Role;
 
 /**
- * Default implementation of a permission in Jahia.
+ * Default implementation of the role in Jahia that uses JCR persistence.
  * 
  * @author Sergiy Shyrkov
  */
-public class PermissionImpl extends JCRItem implements Permission {
-
-    private String group;
+public class JCRRole extends JCRItem implements Role {
 
     private String name;
+
+    private Set<JCRPermission> permissions = new LinkedHashSet<JCRPermission>();
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param name the name of the the permission
+     * @param name the name of the the role
      */
-    public PermissionImpl(String name) {
+    public JCRRole(String name) {
         super();
         this.name = name;
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     */
-    public PermissionImpl(String name, String group) {
-        this(name);
-        this.group = group;
-    }
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof PermissionImpl)) {
-            return false;
-        }
-        PermissionImpl another = (PermissionImpl) obj;
-        return new EqualsBuilder().append(getName(), another.getName()).append(getGroup(), another.getGroup())
-                .isEquals();
+    public boolean equals(Object another) {
+        return another != null && another instanceof JCRRole && ((JCRRole) another).getName().equals(getName());
     }
 
-    /**
-     * Returns the name of the permission group
-     * 
-     * @return the the name of the permission group
-     */
-    public String getGroup() {
-        return group;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.services.rbac.impl.Permission#getName()
-     */
     public String getName() {
         return name;
     }
 
+    public Set<JCRPermission> getPermissions() {
+        return permissions;
+    }
+
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getGroup()).toHashCode();
+        return new HashCodeBuilder().append(getName()).toHashCode();
     }
 
     /**
-     * Sets the name of the permission group
+     * Sets the name of this role.
      * 
-     * @param group the name of the permission group
-     */
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    /**
-     * Sets the name of this permission.
-     * 
-     * @param name the name of this permission
+     * @param name the name of this role
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets a set of permissions for this role.
+     * 
+     * @param permissions a set of permissions for this role
+     */
+    public void setPermissions(Set<JCRPermission> permissions) {
+        this.permissions.clear();
+        if (permissions != null) {
+            this.permissions.addAll(permissions);
+        }
     }
 
     @Override

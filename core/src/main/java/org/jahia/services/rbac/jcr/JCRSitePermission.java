@@ -30,47 +30,48 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.impl;
+package org.jahia.services.rbac.jcr;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Implementation of the role in Jahia that uses JCR persistence and is targeted
- * for a particular virtual site.
+ * Default implementation of a permission in Jahia that is targeted for a
+ * particular virtual site.
  * 
  * @author Sergiy Shyrkov
  */
-public class SiteRoleImpl extends RoleImpl {
+public class JCRSitePermission extends JCRPermission {
 
     private String site;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param name the name of the the role
-     * @param site the virtual site key current role is limited to
-     * @param description the description of this role
+     * @param name the name of the the permission
+     * @param group the name of the permission group
+     * @param site the virtual site key current permission is limited to
      */
-    public SiteRoleImpl(String name, String site) {
-        super(name);
+    public JCRSitePermission(String name, String group, String site) {
+        super(name, group);
         this.site = site;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof SiteRoleImpl)) {
+        if (obj == null || !(obj instanceof JCRSitePermission)) {
             return false;
         }
-        SiteRoleImpl another = (SiteRoleImpl) obj;
-        return new EqualsBuilder().append(getName(), another.getName()).append(getSite(), another.getSite()).isEquals();
+        JCRSitePermission another = (JCRSitePermission) obj;
+        return new EqualsBuilder().append(getName(), another.getName()).append(getGroup(), another.getGroup()).append(
+                getSite(), another.getSite()).isEquals();
     }
 
     /**
-     * The virtual site key current role is limited to.
+     * The virtual site key current permission is limited to.
      * 
-     * @return virtual site key current role is limited to
+     * @return virtual site key current permission is limited to
      */
     public String getSite() {
         return site;
@@ -78,7 +79,7 @@ public class SiteRoleImpl extends RoleImpl {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getSite()).toHashCode();
+        return new HashCodeBuilder().append(getName()).append(getGroup()).toHashCode();
     }
 
     /**
@@ -94,4 +95,5 @@ public class SiteRoleImpl extends RoleImpl {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
 }

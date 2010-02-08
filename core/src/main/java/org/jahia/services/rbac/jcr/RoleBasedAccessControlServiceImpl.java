@@ -73,8 +73,8 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
                     if (principalNode != null) {
                         String searchRole = role.charAt(0) == '/' ? StringUtils.substringAfterLast(role, "/") : role;
                         QueryResult result = session.getWorkspace().getQueryManager().createQuery(
-                                "/jcr:root" + principalNode.getPath() + "/jcr:deref(@" + PROPERTY_ROLES + ", '"
-                                        + JCRContentUtils.stringToQueryLiteral(searchRole) + "')", Query.XPATH)
+                                "/jcr:root" + principalNode.getPath() + "/jcr:deref(@" + PROPERTY_ROLES + ", "
+                                        + JCRContentUtils.stringToQueryLiteral(searchRole) + ")", Query.XPATH)
                                 .execute();
                         if (role.charAt(0) == '/') {
                             // the role is specified by path
@@ -116,8 +116,8 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
                                 permission, "/") : permission;
                         QueryResult result = session.getWorkspace().getQueryManager().createQuery(
                                 "/jcr:root" + principalNode.getPath() + "/jcr:deref(@" + PROPERTY_ROLES
-                                        + ", '*')/jcr:deref(@" + PROPERTY_PERMISSSIONS + ", '"
-                                        + JCRContentUtils.stringToQueryLiteral(searchPermission) + "')", Query.XPATH)
+                                        + ", '*')/jcr:deref(@" + PROPERTY_PERMISSSIONS + ", "
+                                        + JCRContentUtils.stringToQueryLiteral(searchPermission) + ")", Query.XPATH)
                                 .execute();
                         if (permission.charAt(0) == '/') {
                             // the permission is specified by path

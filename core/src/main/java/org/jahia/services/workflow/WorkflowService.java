@@ -139,7 +139,7 @@ public class WorkflowService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
-                String permissionKey = rule.getName() + " : " + role;
+                String permissionKey = rule.getName() + " - " + role;
                 String site = null;
                 if (node.getPath().startsWith("/sites/")) {
                     site = node.getPath().substring("/sites/".length());
@@ -315,7 +315,7 @@ public class WorkflowService {
                         site = path.substring("/sites/".length());
                         site = StringUtils.substringBefore(site, "/");
                     }
-                    String permissionKey = key + " : " + role;
+                    String permissionKey = key + " - " + role;
                     JCRPermission perm = systemRoleManager.getPermission(permissionKey, "workflow", site);
                     if (perm == null) {
                         systemRoleManager.savePermission(permissionKey, "workflow", site);

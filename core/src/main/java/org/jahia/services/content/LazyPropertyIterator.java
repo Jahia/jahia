@@ -14,6 +14,7 @@ import java.util.*;
 public class LazyPropertyIterator implements PropertyIterator, Map {
     private JCRNodeWrapper node;
     private Locale locale;
+    private String pattern;
     private PropertyIterator propertyIterator;
     private PropertyIterator i18nPropertyIterator;
     private Property tempNext = null;
@@ -28,6 +29,12 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         this.locale = locale;
     }
 
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern) {
+        this.node = node;
+        this.locale = locale;
+        this.pattern = pattern;
+    }
+
     public int size() {
         return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize());
     }
@@ -35,7 +42,11 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     private PropertyIterator getPropertiesIterator() {
         if (propertyIterator == null) {
             try {
-                propertyIterator = node.getRealNode().getProperties();
+                if (pattern == null) {
+                    propertyIterator = node.getRealNode().getProperties();
+                } else {
+                    propertyIterator = node.getRealNode().getProperties(pattern);
+                }
             } catch (RepositoryException e) {
                 throw new RuntimeException("getI18NPropertyIterator",e);
             }
@@ -49,12 +60,16 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 if (locale != null) {
                     final Node localizedNode = node.getI18N(locale);
                     fallbackLocale = localizedNode.getProperty("jcr:language").getString();
-                    i18nPropertyIterator = localizedNode.getProperties();
+                    if (pattern == null) {
+                        i18nPropertyIterator = localizedNode.getProperties();
+                    } else {
+                        i18nPropertyIterator = localizedNode.getProperties(pattern);
+                    }
                 } else {
-                    i18nPropertyIterator = new PropertyIteratorImpl(Collections.<JCRPropertyWrapperImpl>emptyList(),0);
+                    i18nPropertyIterator = new EmptyPropertyIterator();
                 }
             } catch (ItemNotFoundException e) {
-                i18nPropertyIterator = new PropertyIteratorImpl(Collections.<JCRPropertyWrapperImpl>emptyList(),0);
+                i18nPropertyIterator = new EmptyPropertyIterator();
             } catch (RepositoryException e) {
                 throw new RuntimeException("getI18NPropertyIterator",e);
             }

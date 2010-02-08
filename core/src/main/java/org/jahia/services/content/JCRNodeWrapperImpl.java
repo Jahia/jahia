@@ -928,7 +928,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return new LazyPropertyIterator(this);
         } else {
-            return new PropertyIteratorImpl(new ArrayList<JCRPropertyWrapperImpl>(), 0);
+            return new EmptyPropertyIterator();
         }
     }
 
@@ -936,34 +936,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getProperties(String s) throws RepositoryException {
-        List<JCRPropertyWrapperImpl> res = new ArrayList<JCRPropertyWrapperImpl>();
         if (checkValidity()) {
-            PropertyIterator pi = objectNode.getProperties(s);
-            while (pi.hasNext()) {
-                Property property = pi.nextProperty();
-                ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(property.getName());
-                res.add(new JCRPropertyWrapperImpl(this, property, session, provider, epd));
-            }
-
             final Locale locale = getSession().getLocale();
             if (locale != null) {
-                try {
-                    pi = getI18N(locale).getProperties(s);
-                    while (pi.hasNext()) {
-                        final Property property = pi.nextProperty();
-                        final String name = property.getName();
-                        if (name.endsWith("_" + locale.toString())) {
-                            final String name1 = property.getName();
-                            final String s1 = name1.substring(0, name1.length() - locale.toString().length() - 1);
-                            res.add(new JCRPropertyWrapperImpl(this, property, session, provider,
-                                                               getApplicablePropertyDefinition(s1), s1));
-                        }
-                    }
-                } catch (ItemNotFoundException e) {
-                }
+                return new LazyPropertyIterator(this, locale,s);
             }
+            return new LazyPropertyIterator(this, null, s);
+        } else {
+            return new EmptyPropertyIterator();
         }
-        return new PropertyIteratorImpl(res.iterator(), res.size());
     }
 
 
@@ -1821,8 +1802,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences() throws RepositoryException {
-        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
-        return objectNode.getReferences();
+        return new PropertyIteratorImpl(objectNode.getReferences(), this);
     }
 
     /**
@@ -2135,16 +2115,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
-        return objectNode.getReferences(name);
+        return new PropertyIteratorImpl(objectNode.getReferences(name), this);
     }
 
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
-        return objectNode.getWeakReferences();
+        return new PropertyIteratorImpl(objectNode.getWeakReferences(), this);
     }
 
     /**
@@ -2152,8 +2130,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        // TODO need to wrap the iterator to get JCRPropertyWrapper instances?
-        return objectNode.getWeakReferences(name);
+        return new PropertyIteratorImpl(objectNode.getWeakReferences(name), this);
     }
 
     /**

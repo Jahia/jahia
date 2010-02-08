@@ -36,7 +36,7 @@ import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.io.IOUtils;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.PropertyIteratorImpl;
+import org.jahia.services.content.impl.vfs.PropertyIteratorImpl;
 import org.jahia.api.Constants;
 
 import javax.jcr.*;

@@ -143,7 +143,35 @@ public class JCRPublicationService extends JahiaService {
         return node.isNodeType("jmix:publication"); // todo : do we want to add this as a configurable in admin ?
                                                     // currently it has to be set in definitions files
     }
+
+    public void lockForPublication(final String path, final String workspace, Set<String> languages, boolean allSubTree) throws RepositoryException {
+        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
+        JCRNodeWrapper n = session.getNode(path);
+        ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
+        ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
+        ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
+        getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
+        for (JCRNodeWrapper node : toLock) {
+            if (node.isLockable()) {
+                node.lockAsSystemAndStoreToken();
+            }
+        }
+    }
     
+    public void unlockForPublication(final String path, final String workspace, Set<String> languages, boolean allSubTree) throws RepositoryException {
+        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
+        JCRNodeWrapper n = session.getNode(path);
+        ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
+        ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
+        ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
+        getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
+        for (JCRNodeWrapper node : toLock) {
+            if (node.isLockable()) {
+                node.forceUnlock();
+            }
+        }
+    }
+
     /**
      * Publish a node into the live workspace.
      * Referenced nodes will also be published.

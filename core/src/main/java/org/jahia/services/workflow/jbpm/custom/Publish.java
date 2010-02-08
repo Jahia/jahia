@@ -25,7 +25,6 @@ public class Publish implements ExternalActivityBehaviour {
     }
 
     public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
-        System.out.println("-- signal publish : " + signalName);
     }
 
 }

@@ -1,10 +1,10 @@
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.springframework.web.context.ServletContextAware;
 
@@ -13,10 +13,6 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.*;
 
 /**
@@ -134,11 +130,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             localeString = locale.toString();
         }
 
-        String fallbackLocaleString = "default";
-        if (fallbackLocale != null) {
-            fallbackLocaleString = fallbackLocale.toString();
-        }
-
         final String key = workspace + "-" + localeString + "-" + eventsDisabled + "-" + fallbackLocale;
         JCRSessionWrapper s = wsMap.get(key);
 
@@ -146,7 +137,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             if (!JahiaLoginModule.GUEST.equals(username)) {
                 s = login(JahiaLoginModule.getCredentials(username), workspace, locale, eventsDisabled, fallbackLocale);
                 // should be done somewhere else, call can be quite expensive
-                mountPoints.get("/").deployExternalUser(username, user.getProviderName());
+                if (!(user instanceof JCRUser)) {
+                    mountPoints.get("/").deployExternalUser(username, user.getProviderName());
+                }
             } else {
                 s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, eventsDisabled, fallbackLocale);
             }

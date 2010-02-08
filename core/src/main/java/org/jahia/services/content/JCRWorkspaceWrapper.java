@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.query.QueryManagerImpl;
 import org.xml.sax.ContentHandler;
@@ -73,7 +74,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     public JCRWorkspaceWrapper(String name, JCRSessionWrapper session, JCRSessionFactory service) {
         this.name = name;
         this.service = service;
-        this.session = session;;
+        this.session = session;
     }
 
     public JCRSessionWrapper getSession() {
@@ -245,7 +246,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {      
+    public VersionManagerWrapper getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         return new VersionManagerWrapper(getSession().getProviderSession(service.getProvider("/")).getWorkspace().getVersionManager());
     }
 
@@ -268,12 +269,19 @@ public class JCRWorkspaceWrapper implements Workspace {
             this.versionManager = versionManager;
         }
 
-        public Version checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+        public JCRVersion checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
             System.out.println("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
-            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<Version>() {
-                public Version doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>() {
+                public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        return versionManager.checkin(absPath);
+                        JCRNodeWrapper node = session.getNode(absPath);
+                        JCRVersion result = (JCRVersion) node.getProvider().getNodeWrapper(versionManager.checkin(node.getRealNode().getPath()), session);
+
+                        if (session.getLocale() != null) {
+                            versionManager.checkin(node.getI18N(session.getLocale()).getPath());
+                        }
+
+                        return result;
                     } finally {
                         System.out.println(" now "+getBaseVersion(absPath).getName());
                     }
@@ -285,7 +293,13 @@ public class JCRWorkspaceWrapper implements Workspace {
             System.out.println("Checkout "+absPath +" in "+getName());
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    versionManager.checkout(absPath);
+                    JCRNodeWrapper node = session.getNode(absPath);
+                    versionManager.checkout(node.getRealNode().getPath());
+
+                    if (session.getLocale() != null) {
+                        versionManager.checkout(node.getI18N(session.getLocale()).getPath());
+                    }
+
                     return null;
                 }
             });

@@ -1854,19 +1854,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        logger.info("Checkin "+getPath()  +" in "+getSession().getWorkspace().getName()+", was "+getBaseVersion().getName());
-        return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>(){
-            public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
-                JCRVersion result = (JCRVersion) provider.getNodeWrapper(versionManager.checkin(objectNode.getPath()), session);
-                if (session.getLocale() != null) {
-                    versionManager.checkin(getI18N(session.getLocale()).getPath());
-                }
-
-                logger.info(" now : "+getBaseVersion().getName());
-                return result;
-            }
-        });
+        return session.getWorkspace().getVersionManager().checkin(getPath());
     }
 
     /**
@@ -1874,21 +1862,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
         if (!isCheckedOut()) {
-        logger.info("Checkout "+getPath() +" in "+getSession().getWorkspace().getName());
-        JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback(){
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
-                versionManager.checkout(objectNode.getPath());
-                if (session.getLocale() != null) {
-                    try {
-                        versionManager.checkout(getI18N(session.getLocale()).getPath());
-                    } catch (ItemNotFoundException e) {
-                        // no i18n node
-                    }
-                }
-                return null;
-            }
-        });
+            session.getWorkspace().getVersionManager().checkout(getPath());
         }
     }
 

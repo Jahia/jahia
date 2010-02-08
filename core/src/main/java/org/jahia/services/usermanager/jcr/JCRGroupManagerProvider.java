@@ -231,7 +231,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE ISCHILDNODE(group, '/sites/" + siteName + "/groups') ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
@@ -304,7 +304,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE ISCHILDNODE(group, '/sites/" + siteName + "/groups') ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();

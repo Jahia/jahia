@@ -1854,7 +1854,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        return session.getWorkspace().getVersionManager().checkin(getPath());
+        return (JCRVersion) session.getWorkspace().getVersionManager().checkin(getPath());
     }
 
     /**

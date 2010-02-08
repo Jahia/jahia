@@ -246,7 +246,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public VersionManagerWrapper getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         return new VersionManagerWrapper(getSession().getProviderSession(service.getProvider("/")).getWorkspace().getVersionManager());
     }
 

@@ -36,17 +36,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.rbac.jcr.JCRPermission;
 import org.jahia.services.rbac.jcr.JCRRole;
 import org.jahia.services.rbac.jcr.SystemRoleManager;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.TestHelper;
 import org.junit.After;
@@ -106,7 +111,7 @@ public class RoleManagerTest {
     private SystemRoleManager getService() {
         return (SystemRoleManager) SpringContextSingleton.getBean("org.jahia.services.rbac.jcr.SystemRoleManager");
     }
-
+    
     @Before
     public void setUp() {
     }
@@ -291,35 +296,44 @@ public class RoleManagerTest {
         assertNotNull("The permissions are not persisted in the role", readRole.getPermissions().iterator().next()
                 .getPath());
     }
+    
+    @Test
+    public void testRolePrincipalAssignment() throws Exception {
+        JCRRole role1 = new JCRRole(getNextRoleName());
+        role1.getPermissions().add(new JCRPermission(getNextPermissionName()));
+        role1.getPermissions().add(new JCRPermission(getNextPermissionName()));
 
-    // TODO correct this test case and enable it
-    public void testServerRoleGrant() throws Exception {
-        JCRRole contributor = new JCRRole(getNextRoleName());
-        contributor.getPermissions().add(new JCRPermission(getNextPermissionName()));
-        contributor.getPermissions().add(new JCRPermission(getNextPermissionName()));
-        contributor.getPermissions().add(new JCRPermission(getNextPermissionName()));
+        getService().saveRole(role1);
 
-        getService().saveRole(contributor);
+        JCRRole role2 = new JCRRole(getNextRoleName());
+        role2.getPermissions().add(new JCRPermission(getNextPermissionName()));
+        role2.getPermissions().add(new JCRPermission(getNextPermissionName()));
 
-        JCRRole reviewer = new JCRRole(getNextRoleName());
-        reviewer.getPermissions().add(new JCRPermission(getNextPermissionName()));
-        reviewer.getPermissions().add(new JCRPermission(getNextPermissionName()));
-        getService().saveRole(reviewer);
+        getService().saveRole(role2);
+        JCRStoreService jcrService = ServicesRegistry.getInstance()
+                .getJCRStoreService();
+        JCRSessionWrapper session = jcrService.getSessionFactory()
+                .getCurrentUserSession();
 
-        JCRRole admin = new JCRRole(getNextRoleName());
-        getService().saveRole(admin);
+        List<JahiaPrincipal> users = new ArrayList<JahiaPrincipal>();
+        users.add(session.getUser());
 
-        getService().saveRole(contributor);
+        testRoleAssignmentForPrincipals(role1, role2, users, session);
+        testRoleAssignmentForPrincipals(role1, role2, users, null);
 
-        JahiaUser user = JCRUserManagerProvider.getInstance().createUser("role-tester", "password", new Properties());
+        JahiaUser user = JCRUserManagerProvider.getInstance().createUser(
+                "role-tester", "password", new Properties());
         try {
-            getService().grantRoles(user, Arrays.asList(new String[] { contributor.getPath(), admin.getPath() }));
+            users.clear();
+            users.add(user);
 
-            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user.getName());
+            testRoleAssignmentForPrincipals(role1, role2, users, session);
+            testRoleAssignmentForPrincipals(role1, role2, users, null);
 
-            assertTrue("Role was not granted", user.hasRole(contributor.getPath()));
-            assertTrue("Role was not granted", user.hasRole(admin.getPath()));
-            assertFalse("Role was incorrectly granted", user.hasRole(reviewer.getPath()));
+            users.add(session.getUser());
+
+            testRoleAssignmentForPrincipals(role1, role2, users, session);
+            testRoleAssignmentForPrincipals(role1, role2, users, null);
         } finally {
             if (user != null) {
                 JCRUserManagerProvider.getInstance().deleteUser(user);
@@ -327,4 +341,123 @@ public class RoleManagerTest {
         }
     }
 
+    private void testRoleAssignmentForPrincipals(JCRRole role1, JCRRole role2,
+            List<JahiaPrincipal> users, JCRSessionWrapper currentSession)
+            throws Exception {
+        JCRStoreService jcrService = ServicesRegistry.getInstance()
+                .getJCRStoreService();
+        JCRSessionWrapper session = jcrService.getSessionFactory()
+                .getCurrentUserSession();
+        List<String> allRoles = new ArrayList<String>();
+        allRoles.add(role1.getPath());
+        allRoles.add(role2.getPath());
+        List<String> allRoleNames = new ArrayList<String>();
+        allRoleNames.add(role1.getName());
+        allRoleNames.add(role2.getName());
+
+        List<JahiaPrincipal> principalsInRole = getService()
+                .getPrincipalsInRole(role1.getPath(),
+                        currentSession != null ? currentSession : session);
+
+        assertTrue("No prinipals should be assigned to role1",
+                principalsInRole.size() == 0);
+        for (JahiaPrincipal user : users) {
+            assertFalse("Current principal should not have role1 assigned",
+                    user.hasRole(role1.getName()) && !isRootUser(user));
+            assertFalse("Current principal should not have role2 assigned",
+                    user.hasRole(role1.getName()) && !isRootUser(user));            
+        }
+        
+        for (JahiaPrincipal user : users) {
+            if (currentSession != null) {
+                getService().grantRole(user, role1.getPath(), currentSession);
+            } else {
+                getService().grantRole(user, role1.getPath());
+            }
+        }
+        principalsInRole = getService().getPrincipalsInRole(role1.getPath(),
+                currentSession != null ? currentSession : session);
+
+        assertTrue("Current user should be assigned to role1", principalsInRole
+                .size() > 0
+                && principalsInRole.containsAll(users));
+        for (JahiaPrincipal user : users) {
+            assertTrue("Current principal should have role1 assigned", user
+                    .hasRole(role1.getName()));
+            assertFalse("Current principal should not have role2 assigned", user
+                    .hasRole(role2.getName()) && !isRootUser(user));            
+        }
+
+        for (JahiaPrincipal user : users) {
+            if (currentSession != null) {
+                getService().revokeRole(user, role1.getPath(), currentSession);
+            } else {
+                getService().revokeRole(user, role1.getPath());
+            }
+        }
+        principalsInRole = getService().getPrincipalsInRole(role1.getPath(),
+                currentSession != null ? currentSession : session);
+
+        assertTrue("No prinipals should be assigned to role1",
+                principalsInRole.size() == 0);
+        for (JahiaPrincipal user : users) {
+            assertFalse("Current principal should not have role1 assigned",
+                    user.hasRole(role1.getName()) && !isRootUser(user));
+            assertFalse("Current principal should not have role2 assigned",
+                    user.hasRole(role2.getName()) && !isRootUser(user));            
+        }
+
+        for (JahiaPrincipal user : users) {
+            if (currentSession != null) {
+                getService().grantRoles(user, allRoles, currentSession);
+            } else {
+                getService().grantRoles(user, allRoles);
+            }
+        }
+        principalsInRole = getService().getPrincipalsInRole(role2.getPath(),
+                currentSession != null ? currentSession : session);
+
+        assertTrue("Current users should be assigned to role2",
+                principalsInRole.size() > 0
+                        && principalsInRole.containsAll(users));
+        for (JahiaPrincipal user : users) {
+            assertTrue("Current principal should have the roles assigned", user
+                    .hasRoles(allRoleNames));
+            assertTrue("Current principal should have role1 assigned", user
+                    .hasRole(role1.getName()));
+            assertTrue("Current principal should have role2 assigned", user
+                    .hasRole(role2.getName()));
+        }
+
+        for (JahiaPrincipal user : users) {
+            if (currentSession != null) {
+                getService().revokeRoles(user, allRoles, currentSession);
+            } else {
+                getService().revokeRoles(user, allRoles);
+            }
+        }
+        principalsInRole = getService().getPrincipalsInRole(role2.getPath(),
+                currentSession != null ? currentSession : session);
+
+        assertTrue("No prinipals should be assigned to role2",
+                principalsInRole.size() == 0);
+        for (JahiaPrincipal user : users) {
+            assertFalse("Current principal should not have the roles assigned",
+                    user.hasRoles(allRoleNames) && !isRootUser(user));
+            assertFalse(
+                    "Current principal should not have role1 assigned",
+                    user.hasRole(role1.getName()) && !isRootUser(user));
+            assertFalse(
+                    "Current principal should not have role2 assigned",
+                    user.hasRole(role2.getName()) && !isRootUser(user));
+        }
+    }
+    
+    private boolean isRootUser(JahiaPrincipal user) {
+        boolean isRootUser = false;
+        if (user instanceof JCRUser) {
+            isRootUser = ((JCRUser) user).isRoot();
+        }
+        return isRootUser;
+    }
 }

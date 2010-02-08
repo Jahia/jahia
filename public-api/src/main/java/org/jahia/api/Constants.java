@@ -57,6 +57,7 @@ public class Constants {
     public static final String JCR_DATA = "jcr:data";
     public static final String JCR_DEFAULTPRIMARYTYPE = "jcr:defaultPrimaryType";
     public static final String JCR_DEFAULTVALUES = "jcr:defaultValues";
+    public static final String JCR_DESCRIPTION = "jcr:description";    
     public static final String JCR_ENCODING = "jcr:encoding";
     public static final String JCR_FROZENMIXINTYPES = "jcr:frozenMixinTypes";
     public static final String JCR_FROZENNODE = "jcr:frozenNode";

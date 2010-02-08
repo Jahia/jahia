@@ -53,7 +53,7 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
 
         try {
             final JahiaSite currentSite = jahiaData.getProcessingContext().getSite();
-            final Set<String> languageSettings = currentSite.getLanguages();
+            final Set<String> languageSettings = currentSite != null ? currentSite.getLanguages() : null;
             final Locale selectedLang = jahiaData.getProcessingContext().getLocale();
             if (languageSettings != null && languageSettings.size() > 0) {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();

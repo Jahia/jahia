@@ -306,11 +306,30 @@ public class JCRGroup extends JahiaGroup {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node group = getNode(session);
                     Node members = group.getNode("j:members");
+                    String memberUuid = null;
                     if (principal instanceof JCRUser) {
-                        JCRUser jcrUser = (JCRUser) principal;
-                        return removeMember(session, members, jcrUser);
+                        // internal user
+                        memberUuid = ((JCRUser) principal).getNodeUuid();
+                    } else if (principal instanceof JCRGroup) {
+                        // internal group
+                        memberUuid = ((JCRGroup) principal).getNodeUuid();
+                    } else if (principal instanceof JahiaUser) {
+                        // external user
+                        JCRUser externalUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
+                        if (externalUser != null) {
+                            memberUuid = externalUser.getNodeUuid();
+                        } else {
+                            logger.warn("User node for an external user with the name '" + principal.getName()
+                                    + " cannot be found. Skip removing user from group " + group.getPath());
+                        }
+                    } else if (principal instanceof JahiaGroup) {
+                        // external group 
+                        // TODO implement it
+                    } else {
+                        logger.warn("Cannot remove membership for principal " + principal + " in group "
+                                + group.getPath() + ". Do not know how to handle this principal type.");
                     }
-                    return Boolean.FALSE;
+                    return memberUuid != null ? removeMember(session, members, memberUuid) : Boolean.FALSE;
                 }
             });
         } catch (RepositoryException e) {
@@ -319,9 +338,9 @@ public class JCRGroup extends JahiaGroup {
         return false;
     }
 
-    private boolean removeMember(JCRSessionWrapper session, Node members, JCRUser jcrUser) throws RepositoryException {
+    private boolean removeMember(JCRSessionWrapper session, Node members, String memberIdentifier) throws RepositoryException {
         if (session.getWorkspace().getQueryManager() != null) {
-            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' AND ISCHILDNODE(m, '" + members.getPath() + "') ORDER BY m.[j:nodename]";
+            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + memberIdentifier + "' AND ISCHILDNODE(m, '" + members.getPath() + "') ORDER BY m.[j:nodename]";
             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator nodes = qr.getNodes();

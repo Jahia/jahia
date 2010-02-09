@@ -426,7 +426,8 @@ public class PublicationTest extends TestCase {
         JCRNodeWrapper liveRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home");
 
-        createList(stageNode, "contentList1", 20, "English text");
+        createList(stageNode, "contentList1", 5, "English text");
+        createList(stageNode, "contentList2", 5, "English text");
         
         englishEditSession.save();
 
@@ -438,7 +439,7 @@ public class PublicationTest extends TestCase {
 
         JCRNodeWrapper liveNode = liveRootNode.getNode("home");
         JCRNodeWrapper liveContentList1Node = liveNode.getNode("contentList1");
-        JCRNodeWrapper liveTextNode1 = liveContentList1Node.getNode("text1");
+        JCRNodeWrapper liveTextNode1 = liveContentList1Node.getNode("contentList1_text1");
         JCRPropertyWrapper liveTextNodeProperty = liveTextNode1.getProperty("text");
 
         assertNotNull("Text node 1 was not found in live workspace !", liveTextNodeProperty);
@@ -446,10 +447,12 @@ public class PublicationTest extends TestCase {
         String liveTextNodePropertyString = liveTextNodeProperty.getString();
         assertEquals("Text node 1 value is not correct !", "English text1", liveTextNodePropertyString);
 
+        testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text1", "contentList1_text2" );
+
         // now let's modify the node, republish and check.
 
         //englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        JCRNodeWrapper textNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+        JCRNodeWrapper textNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1");
 
         englishEditSession.checkout(textNode1);
 
@@ -470,7 +473,7 @@ public class PublicationTest extends TestCase {
         // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         boolean nodeWasFoundInLive = true;
         try {
-            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1");
         } catch (PathNotFoundException pnfe) {
             // this is what we expect, so let's just signal it.
             nodeWasFoundInLive = false;
@@ -482,7 +485,7 @@ public class PublicationTest extends TestCase {
         jcrService.publish(textNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         nodeWasFoundInLive = false;
         try {
-            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1");
             nodeWasFoundInLive = true;
         } catch (PathNotFoundException pnfe) {
             // this is what we expect, so let's just signal it.
@@ -491,14 +494,76 @@ public class PublicationTest extends TestCase {
         assertTrue("Text node 1 was re-published, it should have been present in the live workspace", nodeWasFoundInLive);
 
         // now we must move the text node inside the list, and check that the move is properly propagated in live mode
+        JCRNodeWrapper editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
 
+        englishEditSession.checkout(editContentList1);
+        editContentList1.orderBefore("contentList1_text1", "contentList1_text0");
+        englishEditSession.save();
+        testChildOrdering(editContentList1, "contentList1_text1", "contentList1_text0", "contentList1_text2" );
+
+        jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
+
+        liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
+
+        testChildOrdering(liveContentList1Node, "contentList1_text1", "contentList1_text0", "contentList1_text2" );
+
+        // now let's move the node to another container list.
+        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList1/text1", SITECONTENT_ROOT_NODE + "/home/contentList2");
+        JCRNodeWrapper editContentList2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
+        englishEditSession.checkout(editContentList2);
+        editContentList2.orderBefore("contentList1_text1", "contentList2_text0");
+
+        jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editContentList2.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+
+        liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
+        JCRNodeWrapper liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
+        testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text2", "contentList1_text3");
+        testChildOrdering(liveContentList2Node, "contentList1_text1", "contentList2_text0", "contentList2_text1");
+    }
+
+    private void testChildOrdering(JCRNodeWrapper liveContentList1Node, String child0NodeName, String child1NodeName, String child2NodeName) throws RepositoryException {
+        int index = 0;
+        boolean orderIsValid = true;
+        String expectedValue = null;
+        String foundValue = null;
+        NodeIterator childNodeIterator = liveContentList1Node.getNodes();
+        while (childNodeIterator.hasNext()) {
+            Node currentChildNode = childNodeIterator.nextNode();
+            if (index == 0) {
+                if (!child0NodeName.equals(currentChildNode.getName())) {
+                    orderIsValid = false;
+                    expectedValue = child0NodeName;
+                    foundValue = currentChildNode.getName();
+                    break;
+                }
+            } else if (index == 1) {
+                if (!child1NodeName.equals(currentChildNode.getName())) {
+                    orderIsValid = false;
+                    expectedValue = child1NodeName;
+                    foundValue = currentChildNode.getName();
+                    break;
+                }
+            } else if (index == 2) {
+                if (!child2NodeName.equals(currentChildNode.getName())) {
+                    orderIsValid = false;
+                    expectedValue = child2NodeName;
+                    foundValue = currentChildNode.getName();
+                    break;
+                }
+            } else {
+                break;
+            }
+            index++;
+        }
+        assertTrue("Move inside the same list has not been properly propagated to live mode ! Expected value=" + expectedValue + " but found value=" + foundValue, orderIsValid);
     }
 
     private void createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         JCRNodeWrapper contentList1 = parentNode.addNode(listName, "jnt:contentList");
 
         for (int i=0; i < elementCount; i++) {
-            JCRNodeWrapper textNode1 = contentList1.addNode("text" + Integer.toString(i), "jnt:text");
+            JCRNodeWrapper textNode1 = contentList1.addNode(listName + "_text" + Integer.toString(i), "jnt:text");
             textNode1.setProperty("text", textPrefix + Integer.toString(i));
         }        
     }

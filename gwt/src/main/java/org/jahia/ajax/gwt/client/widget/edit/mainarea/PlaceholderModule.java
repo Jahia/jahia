@@ -111,7 +111,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         @Override
         protected void onDragEnter(DNDEvent e) {
-            if (parentModule.getNode().isWriteable()) {
+            if (parentModule.getNode().isWriteable() && !parentModule.getNode().isLocked()) {
                 boolean allowed = checkNodeType(e, nodetypes);
                 if (allowed) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);

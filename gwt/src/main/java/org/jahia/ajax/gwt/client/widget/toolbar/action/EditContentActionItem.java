@@ -1,4 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -14,9 +15,7 @@ public class EditContentActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode != null) {
-            setEnabled(gwtJahiaNode.isWriteable());
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        setEnabled(lh.isWriteable());
     }
 }

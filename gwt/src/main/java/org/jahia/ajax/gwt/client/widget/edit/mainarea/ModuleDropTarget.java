@@ -51,7 +51,7 @@ public class ModuleDropTarget extends DropTarget {
 //                Element parent = DOM.getParent(row);
 //                parent.insertBefore(toDrag, row);
 //            }
-        if (module.getParentModule().getNode().isWriteable()) {
+        if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
             Insert insert = Insert.get();
             insert.setVisible(true);
             Rectangle rect = El.fly(row).getBounds();

@@ -321,7 +321,7 @@ public class ManageComponents extends AbstractAdministrationModule {
 
         locationFolder.getUrl();
 
-        if (!locationFolder.isWriteable()) {
+        if (!locationFolder.isWriteable() || locationFolder.isLocked()) {
             logger.debug("destination is not writable for user " + user.getName());
             return null;
         }

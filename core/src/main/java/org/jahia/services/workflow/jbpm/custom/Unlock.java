@@ -14,13 +14,13 @@ import java.util.Map;
  * Lock the current node
  *
  */
-public class Lock implements ExternalActivityBehaviour {
+public class Unlock implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
 
     public void execute(ActivityExecution execution) throws Exception {
         String id = (String) execution.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        JCRPublicationService.getInstance().lockForPublication(node.getPath(), "default",null, false);
+        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), "default",null, false);
         execution.takeDefaultTransition();
     }
 

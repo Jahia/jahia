@@ -20,10 +20,12 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
         if (!module.isSelectable()) {
             return;
         }
-        if (module.getNode().isWriteable()) {
-            new EditContentEngine(module.getNode(),editLinker).show();
-        } else {
+        if (!module.getNode().isWriteable()) {
             Info.display("Rights Restriction", "You do not have rights to edit this content");
+        } else if (module.getNode().isLocked()) {
+            Info.display("Lock", "This module is currently locked");
+        } else {
+            new EditContentEngine(module.getNode(),editLinker).show();
         }
     }
 }

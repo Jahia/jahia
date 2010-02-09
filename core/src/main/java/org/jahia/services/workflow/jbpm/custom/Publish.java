@@ -20,6 +20,7 @@ public class Publish implements ExternalActivityBehaviour {
     public void execute(ActivityExecution execution) throws Exception {
         String id = (String) execution.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
+        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), "default",null, false);
         JCRPublicationService.getInstance().publish(node.getPath(), "default","live",null, false, false);
         execution.takeDefaultTransition();
     }

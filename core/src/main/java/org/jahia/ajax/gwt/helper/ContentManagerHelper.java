@@ -110,7 +110,7 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile() && parentNode.isWriteable()) {
+        if (!parentNode.isFile() && parentNode.isWriteable() && parentNode.isLocked()) {
             try {
                 if (!parentNode.isCheckedOut()) {
                     parentNode.checkout();
@@ -408,7 +408,7 @@ public class ContentManagerHelper {
                     if (targetParent.isCollection()) {
                         try {
                             name = findAvailableName(targetParent, name, currentUserSession);
-                            if (targetParent.isWriteable()) {
+                            if (targetParent.isWriteable() && !targetParent.isLocked()) {
                                 res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference)));
                                 if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                     targetParent.orderBefore(name, targetNode.getName());

@@ -41,26 +41,28 @@ public class WorkflowActionItem extends BaseActionItem {
             menu.removeAll();
             GWTJahiaWorkflowInfo info = node.getWorkflowInfo();
             List<GWTJahiaWorkflowDefinition> wfs = info.getPossibleWorkflows();
-            for (final GWTJahiaWorkflowDefinition wf : wfs) {
-                isEnabled = true;
-                MenuItem item = new MenuItem("Start new : " + wf.getName());
-                item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        JahiaContentManagementService.App.getInstance().startWorkflow(node.getPath(), wf, new AsyncCallback() {
-                            public void onSuccess(Object result) {
-                                Info.display("Workflow started","Workflow started");
-                                linker.refresh();
-                            }
+            if (!node.isLocked() && node.isWriteable()) {
+                for (final GWTJahiaWorkflowDefinition wf : wfs) {
+                    isEnabled = true;
+                    MenuItem item = new MenuItem("Start new : " + wf.getName());
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                        @Override
+                        public void componentSelected(MenuEvent ce) {
+                            JahiaContentManagementService.App.getInstance().startWorkflow(node.getPath(), wf, new AsyncCallback() {
+                                public void onSuccess(Object result) {
+                                    Info.display("Workflow started","Workflow started");
+                                    linker.refresh();
+                                }
 
-                            public void onFailure(Throwable caught) {
-                                Info.display("Workflow not started","Workflow not started");
+                                public void onFailure(Throwable caught) {
+                                    Info.display("Workflow not started","Workflow not started");
+                                }
                             }
+                            );
                         }
-                        );
-                    }
-                });
-                menu.add(item);
+                    });
+                    menu.add(item);
+                }
             }
             List<GWTJahiaWorkflowAction> actions = info.getAvailableActions();
             for (final GWTJahiaWorkflowAction action : actions) {

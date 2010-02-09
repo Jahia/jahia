@@ -179,7 +179,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         @Override
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
-            if (getModule().getParentModule().getNode().isWriteable()) {
+            if (getModule().getParentModule().getNode().isWriteable() && !getModule().getParentModule().getNode().isLocked()) {
                 boolean allowed = checkNodeType(e, nodetypes);
                 if (allowed) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);

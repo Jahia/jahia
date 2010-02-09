@@ -36,7 +36,7 @@ public class ModuleDragSource extends EditModeDragSource {
     protected void onDragStart(DNDEvent e) {
         if (module.isDraggable()) {
             super.onDragStart(e);
-            if (module.getNode().isWriteable()) {
+            if (module.getNode().isWriteable() && !module.getNode().isLocked()) {
                 e.setCancelled(false);
                 e.setData(this);
                 e.setOperation(DND.Operation.COPY);

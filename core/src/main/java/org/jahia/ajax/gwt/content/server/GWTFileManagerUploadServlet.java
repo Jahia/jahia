@@ -222,7 +222,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             return BAD_LOCATION;
         }
 
-        if (!locationFolder.isWriteable()) {
+        if (!locationFolder.isWriteable() || locationFolder.isLocked()) {
             logger.debug("destination is not writable for user " + user.getName());
             return READONLY;
         }

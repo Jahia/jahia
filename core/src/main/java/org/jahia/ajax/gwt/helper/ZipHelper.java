@@ -267,7 +267,7 @@ public class ZipHelper {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
             }
-            if (parent.isWriteable()) {
+            if (parent.isWriteable() && !parent.isLocked()) {
                 List<String> errorPaths = zipFiles(parent, archiveName, nodesToZip);
                 if (errorPaths != null) {
                     errorPaths.addAll(missedPaths);
@@ -324,7 +324,7 @@ public class ZipHelper {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
             }
-            if (parent.isWriteable()) {
+            if (parent.isWriteable() && !parent.isLocked()) {
                 for (JCRNodeWrapper nodeToUnzip : nodesToUnzip) {
                     try {
                         if (!unzipFile(nodeToUnzip, parent, currentUserSession)) {

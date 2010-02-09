@@ -187,7 +187,7 @@ public class ListModule extends ContentPanel implements Module {
         @Override
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
-            if (getModule().getParentModule().getNode().isWriteable()) {
+            if (getModule().getParentModule().getNode().isWriteable() && !getModule().getParentModule().getNode().isLocked()) {
                 e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());

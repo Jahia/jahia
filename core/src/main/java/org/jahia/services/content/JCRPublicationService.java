@@ -166,7 +166,7 @@ public class JCRPublicationService extends JahiaService {
         ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
         getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
         for (JCRNodeWrapper node : toLock) {
-            if (node.isLockable()) {
+            if (node.isLocked()) {
                 node.forceUnlock();
             }
         }

@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
@@ -13,4 +15,10 @@ public class CreatePageActionItem extends BaseActionItem {
     public void onComponentSelection() {
         EditActions.createPage(linker);
     }
+
+    public void handleNewLinkerSelection() {
+        GWTJahiaNode node = linker.getMainNode();
+        setEnabled(node != null && node.isWriteable() && !node.isLocked());
+    }
+
 }

@@ -1,4 +1,4 @@
-package org.jahia.wiki;
+package org.jahia.modules.wiki;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.Requirement;

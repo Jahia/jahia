@@ -1,4 +1,4 @@
-package org.jahia.wiki;
+package org.jahia.modules.wiki;
 
 import org.xwiki.rendering.syntax.SyntaxFactory;
 import org.xwiki.rendering.renderer.printer.WikiPrinter;

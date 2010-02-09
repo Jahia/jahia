@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
+import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.filter.RenderFilter;
@@ -70,8 +72,10 @@ class TemplatePackageRegistry {
             } else if (bean instanceof Action) {
                 Action action = (Action) bean;
                 templatePackageRegistry.actions.put(action.getName(), action);
-            } else if (bean instanceof ChoiceListInitializer) {
-
+            } else if (bean instanceof ModuleChoiceListInitializer) {
+                ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
+                ChoiceListInitializerService cli = org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService.getInstance();
+                cli.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
             } else if(bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
                 if(moduleGlobalObject.getGlobalRulesObject()!=null) {
@@ -101,7 +105,7 @@ class TemplatePackageRegistry {
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions = new HashMap<String,Action>();
-
+    private Map<String,ChoiceListInitializer> choiceListInitializer = new HashMap<String,ChoiceListInitializer>();
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;

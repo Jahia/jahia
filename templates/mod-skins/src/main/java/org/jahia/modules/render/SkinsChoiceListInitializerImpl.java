@@ -30,13 +30,17 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.content.nodetypes.initializers;
+package org.jahia.modules.render;
 
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 
@@ -54,7 +58,15 @@ import java.util.SortedSet;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class SkinsChoiceListInitializerImpl implements ChoiceListInitializer {
+public class SkinsChoiceListInitializerImpl implements ModuleChoiceListInitializer {
+    private String key;
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+    public String getKey() {
+        return this.key;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition epd,
                                                      ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {

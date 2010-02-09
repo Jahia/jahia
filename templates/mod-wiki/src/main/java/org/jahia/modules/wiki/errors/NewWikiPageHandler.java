@@ -1,4 +1,4 @@
-package org.jahia.wiki.errors;
+package org.jahia.modules.wiki.errors;
 
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.utils.LanguageCodeConverters;

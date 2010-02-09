@@ -1,8 +1,10 @@
-package org.jahia.services.render.filter;
+package org.jahia.modules.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.RenderChain;
 
 /**
  * SkinFilter

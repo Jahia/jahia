@@ -1,4 +1,4 @@
-package org.jahia.wiki.filter;
+package org.jahia.modules.wiki.filter;
 
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -6,7 +6,7 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.wiki.WikiRenderer;
+import org.jahia.modules.wiki.WikiRenderer;
 import org.xwiki.rendering.syntax.SyntaxFactory;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.converter.Converter;

@@ -378,8 +378,17 @@
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
                         <ref bean="cacheFilter"/>
-                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
-                            <property name="priority" value="30" />
+                        <!-- 
+                        <ref bean="mainResourceCacheFilter"/>
+                        <ref bean="nonMainResourceCacheFilter"/>
+                         -->
+                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" />
+                        <bean class="org.jahia.services.render.filter.URLFilter" />
+                        <bean class="org.jahia.services.render.filter.WrapperFilter" />
+                        <bean class="org.jahia.services.render.filter.SkinFilter" />
+                        <bean class="org.jahia.services.render.filter.OptionsFilter" />
+                        <bean class="org.jahia.services.render.filter.ModuleFilter">
+                        	<property name="templateManagerService" ref="JahiaTemplateManagerService" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                             <property name="priority" value="35" />

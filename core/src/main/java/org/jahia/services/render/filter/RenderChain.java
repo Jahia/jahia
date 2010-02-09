@@ -15,7 +15,7 @@ import java.util.*;
  * Date: Nov 24, 2009
  * Time: 12:33:52 PM
  */
-public class RenderChain implements RenderFilter {
+public class RenderChain {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
     private int index = 0;
 
@@ -46,6 +46,7 @@ public class RenderChain implements RenderFilter {
      */
     public void addFilter(RenderFilter filter) {
         this.filters.add(filter);
+        Collections.sort(this.filters);
     }
 
     /**
@@ -55,6 +56,7 @@ public class RenderChain implements RenderFilter {
      */
     public void addFilters(Collection<RenderFilter> filters) {
         this.filters.addAll(filters);
+        Collections.sort(this.filters);
     }
 
     /**

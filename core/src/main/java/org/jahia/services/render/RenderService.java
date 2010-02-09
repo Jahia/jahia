@@ -41,11 +41,11 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.ServletRequest;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -86,6 +86,7 @@ public class RenderService extends JahiaService {
     }
 
     private JCRStoreService storeService;
+    private JahiaTemplateManagerService templateManagerService;
 
     private Collection<ScriptResolver> scriptResolvers;
 
@@ -97,6 +98,10 @@ public class RenderService extends JahiaService {
 
     public void setStoreService(JCRStoreService storeService) {
         this.storeService = storeService;
+    }
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
@@ -130,7 +135,7 @@ public class RenderService extends JahiaService {
 
         RenderChain renderChain = new RenderChain();
         renderChain.addFilters(filters);
-
+        renderChain.addFilters(templateManagerService.getRenderFilters());
         String output = renderChain.doFilter(context, resource);
 
         return output;

@@ -344,6 +344,7 @@
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="storeService" ref="JCRStoreService" />
+                <property name="templateManagerService" ref="JahiaTemplateManagerService" />
                 <property name="scriptResolvers">
                     <list>
                         <bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
@@ -363,28 +364,38 @@
                 <property name="filters" >
                     <list>
                         <bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
+                            <property name="priority" value="0" />
                             <property name="applyOnMainResource" value="true"/>
                         </bean>
-
-                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" />
-                        <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" />
+                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
+                            <property name="priority" value="5" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
+                            <property name="priority" value="10" />
+                        </bean>
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
+                            <property name="priority" value="15" />
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
                         <ref bean="cacheFilter"/>
-                        <!-- 
-                        <ref bean="mainResourceCacheFilter"/>
-                        <ref bean="nonMainResourceCacheFilter"/>
-                         -->
-                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" />
-                        <bean class="org.jahia.services.render.filter.URLFilter" />
-                        <bean class="org.jahia.services.render.filter.WrapperFilter" />
-                        <bean class="org.jahia.services.render.filter.SkinFilter" />
-                        <bean class="org.jahia.services.render.filter.OptionsFilter" />
-                        <bean class="org.jahia.services.render.filter.ModuleFilter">
-                        	<property name="templateManagerService" ref="JahiaTemplateManagerService" />
+                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
+                            <property name="priority" value="30" />
                         </bean>
-                        <bean class="org.jahia.services.render.filter.TemplateScriptFilter" />
+                        <bean class="org.jahia.services.render.filter.URLFilter" >
+                            <property name="priority" value="35" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.WrapperFilter" >
+                            <property name="priority" value="40" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.SkinFilter" >
+                            <property name="priority" value="45" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.OptionsFilter" >
+                            <property name="priority" value="50" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >
+                            <property name="priority" value="99" />
+                        </bean>
                     </list>
                 </property>
             </bean>

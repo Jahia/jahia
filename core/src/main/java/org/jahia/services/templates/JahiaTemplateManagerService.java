@@ -244,12 +244,10 @@ public class JahiaTemplateManagerService extends JahiaService {
     /**
      * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
      * 
-     * @param module
-     *            the template module name to search for
      * @return a list of {@link RenderFilter} instances, configured for the specified templates package
      */
-    public List<RenderFilter> getRenderFiltersForModule(String module) {
-        return templatePackageRegistry.getRenderFiltersForModule(module);
+    public List<RenderFilter> getRenderFilters() {
+        return templatePackageRegistry.getRenderFilters();
     }
 
     /**

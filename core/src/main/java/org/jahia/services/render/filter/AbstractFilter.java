@@ -269,6 +269,8 @@ public abstract class AbstractFilter implements RenderFilter {
 
     protected RenderService service;
 
+    private int priority = 99;
+
     /**
      * Initializes an instance of this class.
      */
@@ -287,6 +289,19 @@ public abstract class AbstractFilter implements RenderFilter {
         for (ExecutionCondition cond : conditions) {
             addCondition(cond);
         }
+    }
+
+    /**
+     * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
+     *
+     * @return priority
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     /**
@@ -361,7 +376,7 @@ public abstract class AbstractFilter implements RenderFilter {
      * Comma-separated list of node type names this filter will be executed for
      * (all others are skipped).
      * 
-     * @param modules comma-separated list of node type names this filter will
+     * @param nodeTypes comma-separated list of node type names this filter will
      *            be executed for (all others are skipped)
      */
     public void setApplyOnNodeTypes(String nodeTypes) {
@@ -399,7 +414,7 @@ public abstract class AbstractFilter implements RenderFilter {
      * Comma-separated list of template type names this filter will be executed
      * for (all others are skipped).
      * 
-     * @param modules comma-separated list of template type names this filter
+     * @param templateTypes comma-separated list of template type names this filter
      *            will be executed for (all others are skipped)
      */
     public void setApplyOnTemplateTypes(String templateTypes) {
@@ -520,5 +535,10 @@ public abstract class AbstractFilter implements RenderFilter {
             condition = new TemplateTypeCondition(templateTypes);
         }
         addCondition(new NotCondition(condition));
+    }
+
+    public int compareTo(RenderFilter o) {
+        int i = getPriority() - o.getPriority();
+        return i != 0 ? i : getClass().getName().compareTo(o.getClass().getName());
     }
 }

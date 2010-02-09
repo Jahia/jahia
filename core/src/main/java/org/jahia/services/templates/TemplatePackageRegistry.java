@@ -31,8 +31,6 @@
  */
 package org.jahia.services.templates;
 
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -40,7 +38,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
-import org.jahia.services.render.filter.ModuleFilters;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
@@ -66,13 +63,8 @@ class TemplatePackageRegistry {
         private TemplatePackageRegistry templatePackageRegistry;
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-            if (bean instanceof ModuleFilters) {
-                ModuleFilters filters = (ModuleFilters) bean;
-                if (filters.getModule() != null) {
-                    templatePackageRegistry.filtersPerModule.get(filters.getModule()).addAll(filters.getFilters());
-                } else {
-                    templatePackageRegistry.commonFilters.addAll(filters.getFilters());
-                }
+            if (bean instanceof RenderFilter) {
+                templatePackageRegistry.filters.add((RenderFilter) bean);
             } else if (bean instanceof ErrorHandler) {
                 templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
             } else if (bean instanceof Action) {
@@ -106,12 +98,7 @@ class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
     @SuppressWarnings("unchecked")
-    private Map<String, List<RenderFilter>> filtersPerModule = LazyMap.decorate(new HashMap<String, List<RenderFilter>>(), new Factory() {
-        public Object create() {
-            return new LinkedList<RenderFilter>();
-        }
-    });
-    private List<RenderFilter> commonFilters = new LinkedList<RenderFilter>();
+    private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions = new HashMap<String,Action>();
 
@@ -175,13 +162,9 @@ class TemplatePackageRegistry {
     /**
      * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
      * 
-     * @param moduleName
-     *            the template package name to search for
      * @return a list of {@link RenderFilter} instances, configured for the specified templates package
      */
-    public List<RenderFilter> getRenderFiltersForModule(String moduleName) {
-        List<RenderFilter> filters = new LinkedList<RenderFilter>(filtersPerModule.get(moduleName));
-        filters.addAll(commonFilters);
+    public List<RenderFilter> getRenderFilters() {
         return filters;
     }
 
@@ -347,8 +330,7 @@ class TemplatePackageRegistry {
     }
 
     public void resetBeanModules() {
-        commonFilters.clear();
-        filtersPerModule.clear();
+        filters.clear();
         errorHandlers.clear();
         actions.clear();
     }

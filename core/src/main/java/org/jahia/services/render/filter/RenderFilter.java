@@ -12,8 +12,15 @@ import org.jahia.services.render.Resource;
  * Date: Nov 24, 2009
  * Time: 12:08:45 PM
  */
-public interface RenderFilter extends RenderServiceAware {
-    
+public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilter> {
+
+    /**
+     * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
+     *
+     * @return priority
+     */
+    int getPriority();
+
     /**
      * Execute filtering on output. Return the final filtered output.
      *

@@ -94,6 +94,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         this.key = key;
     }
 
+    public WorkflowService getWorkflowService() {
+        return workflowService;
+    }
+
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }
@@ -339,7 +343,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public void registerListeners() {
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
 
-        JBPMListener listener = new JBPMListener();
+        JBPMListener listener = new JBPMListener(this);
 
         for (ProcessDefinition definition : definitionList) {
             if (definition instanceof JpdlProcessDefinition) {

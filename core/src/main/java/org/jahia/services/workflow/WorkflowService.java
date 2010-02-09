@@ -241,6 +241,10 @@ public class WorkflowService {
             throws RepositoryException {
         args.put("nodeId", stageNode.getIdentifier());
         final String processId = providers.get(provider).startProcess(processKey, args);
+        return processId;
+    }
+
+    public void addProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
         stageNode.checkout();
         if (!stageNode.isNodeType("jmix:workflow")) {
             stageNode.addMixin("jmix:workflow");
@@ -254,7 +258,20 @@ public class WorkflowService {
         values.add(stageNode.getSession().getValueFactory().createValue(provider + ":" + processId));
         stageNode.setProperty(Constants.PROCESSID, values.toArray(new Value[values.size()]));
         stageNode.getSession().save();
-        return processId;
+    }
+
+    public void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
+        stageNode.checkout();
+        List<Value> values = new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
+        Value[] newValues = new Value[values.size()-1];
+        int i = 0;
+        for (Value value : values) {
+            if (!value.getString().equals(provider + ":" + processId)) {
+                newValues[i++] = value;
+            }
+        }
+        stageNode.setProperty(Constants.PROCESSID, values.toArray(new Value[values.size()]));
+        stageNode.getSession().save();
     }
 
     public List<WorkflowTask> getTasksForUser(JahiaUser user) {

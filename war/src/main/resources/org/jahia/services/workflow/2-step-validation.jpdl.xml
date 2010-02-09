@@ -10,14 +10,17 @@
     <task name="first review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="accept" to="final review"/>
-        <transition name="reject" to="end"/>
+        <transition name="reject" to="unlock"/>
     </task>
     <task name="final review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="publish" to="publication"/>
-        <transition name="reject" to="end"/>
+        <transition name="reject" to="unlock"/>
         <transition name="correction needed" to="first review"/>
     </task>
+    <custom name="unlock" class="org.jahia.services.workflow.jbpm.custom.Unlock" >
+        <transition to="end"/>
+    </custom>
     <custom name="publication" class="org.jahia.services.workflow.jbpm.custom.Publish" >
         <transition to="end"/>
     </custom>

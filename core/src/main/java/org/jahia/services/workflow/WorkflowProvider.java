@@ -47,6 +47,8 @@ import java.util.Set;
  *        Created : 2 févr. 2010
  */
 public interface WorkflowProvider {
+    String getKey();
+
     List<WorkflowDefinition> getAvailableWorkflows();
 
     WorkflowDefinition getWorkflowDefinitionByKey(String key);

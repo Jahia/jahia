@@ -63,7 +63,7 @@ public class WorkflowService {
     private transient static Logger logger = Logger.getLogger(WorkflowService.class);
 
 
-    private Map<String, WorkflowProvider> providers;
+    private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
     private static WorkflowService instance;
     public static final String CANDIDATE = "candidate";
     private SystemRoleManager systemRoleManager;
@@ -79,19 +79,19 @@ public class WorkflowService {
         this.systemRoleManager = systemRoleManager;
     }
 
-    public void setProviders(Map<String, WorkflowProvider> providers) {
-        this.providers = providers;
-    }
-
     public Map<String, WorkflowProvider> getProviders() {
         return providers;
     }
 
     public void start() {
+    }
+
+    public void addProvider(WorkflowProvider provider) {
+        providers.put(provider.getKey(), provider);
         try {
             addWorkflowRule("default", "/", "nt:base", getWorkflows());
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Cannot register default workflow rule",e);
         }
     }
 
@@ -103,10 +103,7 @@ public class WorkflowService {
     public List<WorkflowDefinition> getWorkflows() throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            for (WorkflowDefinition definition : providerEntry.getValue().getAvailableWorkflows()) {
-                definition.setProvider(providerEntry.getKey());
-                workflowsByProvider.add(definition);
-            }
+            workflowsByProvider.addAll(providerEntry.getValue().getAvailableWorkflows());
         }
         return workflowsByProvider;
     }
@@ -128,7 +125,6 @@ public class WorkflowService {
                         String workflowDefinitionKey = StringUtils.substringAfter(value.getString(), ":");
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
                         WorkflowDefinition definition = providers.get(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
-                        definition.setProvider(providerKey);
                         workflowsByProvider.add(definition);
                     }
                 }

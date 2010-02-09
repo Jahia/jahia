@@ -47,9 +47,10 @@ public class WorkflowDefinition {
     private final String key;
     private String provider;
 
-    public WorkflowDefinition(String name, String key) {
+    public WorkflowDefinition(String name, String key, String provider) {
         this.name = name;
         this.key = key;
+        this.provider = provider;
     }
 
     public String getKey() {

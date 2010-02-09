@@ -5,11 +5,6 @@
 
     <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" init-method="start" factory-method="getInstance">
         <property name="systemRoleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager"/>
-        <property name="providers">
-            <map>
-                <entry key="jBPM" value-ref="jBPMProvider"/>
-            </map>
-        </property>
     </bean>
 
 </beans>

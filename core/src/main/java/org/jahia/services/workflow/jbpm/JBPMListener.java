@@ -14,7 +14,6 @@ import org.jbpm.pvm.internal.model.ExecutionImpl;
  */
 public class JBPMListener implements EventListener {
     public void notify(EventListenerExecution eventListenerExecution) throws Exception {
-        System.out.println(eventListenerExecution.getState());
         if (Execution.STATE_ACTIVE_ROOT.equals(eventListenerExecution.getState())) {
 
         } else if (Execution.STATE_ENDED.equals(eventListenerExecution.getState())) {

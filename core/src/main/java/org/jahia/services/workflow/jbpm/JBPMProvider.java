@@ -68,6 +68,8 @@ import java.util.*;
  */
 public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private transient static Logger logger = Logger.getLogger(JBPMProvider.class);
+    private String key;
+    private WorkflowService workflowService;
     private RepositoryService repositoryService;
     private ExecutionService executionService;
     private ProcessEngine processEngine;
@@ -78,11 +80,30 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private static JBPMProvider instance;
-    private static final String PROVIDER = "jBPM";
 
     static {
         participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
         participationRolesInverted.put(Participation.CANDIDATE, WorkflowService.CANDIDATE);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
+
+    public void setGroupManager(JahiaGroupManagerService groupManager) {
+        this.groupManager = groupManager;
+    }
+
+    public void setUserManager(JahiaUserManagerService userManager) {
+        this.userManager = userManager;
     }
 
     public void setProcessEngine(ProcessEngine processEngine) {
@@ -101,6 +122,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public void start() {
         registerListeners();
+        workflowService.addProvider(this);
     }
 
     /**
@@ -141,7 +163,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     continue;
                 }
             }
-            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getKey()));
+            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getKey(), key));
             versions.put(definition.getName(), definition.getVersion());
             if (logger.isDebugEnabled()) {
                 logger.debug("Process : " + definition);
@@ -152,7 +174,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public WorkflowDefinition getWorkflowDefinitionByKey(String key) {
         ProcessDefinition value = getProcessDefinitionByKey(key);
-        return new WorkflowDefinition(value.getName(),value.getKey());
+        return new WorkflowDefinition(value.getName(),value.getKey(), this.key);
     }
 
     private ProcessDefinition getProcessDefinitionByKey(String key) {
@@ -178,7 +200,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (String processId : processIds) {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
             if (instance != null) {
-                final Workflow workflow = new Workflow(instance.getName(), instance.getId(), PROVIDER);
+                final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
                 workflow.setAvailableActions(getAvailableActions(instance.getId()));
                 workflows.add(workflow);
             }
@@ -215,7 +237,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     }
                 }
             } else {
-                workflowAction = new WorkflowAction(action, PROVIDER);
+                workflowAction = new WorkflowAction(action, key);
             }
             if (workflowAction != null) {
                 availableActions.add(workflowAction);
@@ -240,7 +262,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     private WorkflowTask convertToWorkflowTask(Task task) {
-        WorkflowTask action = new WorkflowTask(task.getActivityName(), PROVIDER);
+        WorkflowTask action = new WorkflowTask(task.getActivityName(), key);
         action.setDueDate(task.getDuedate());
         action.setDescription(task.getDescription());
         action.setCreateTime(task.getCreateTime());
@@ -290,14 +312,6 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public void deleteTask(String taskId, String reason) {
         taskService.deleteTask(taskId, reason);
-    }
-
-    public void setGroupManager(JahiaGroupManagerService groupManager) {
-        this.groupManager = groupManager;
-    }
-
-    public void setUserManager(JahiaUserManagerService userManager) {
-        this.userManager = userManager;
     }
 
     public List<String> getConfigurableRoles(String processKey) {

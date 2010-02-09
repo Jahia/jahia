@@ -26,6 +26,22 @@ public class I18NInterceptor implements PropertyInterceptor {
         return !definition.isInternationalized() && node.hasNode("j:translation") && !skippedProperties.contains(definition.getName());
     }
 
+    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        NodeIterator ni = node.getNodes("j:translation");
+
+        // duplicate on all translation nodes
+
+        while (ni.hasNext()) {
+            Node translation =  ni.nextNode();
+            if (translation.hasProperty(name)) {
+                if (!translation.isCheckedOut()) {
+                    translation.checkout();
+                }
+            }
+            translation.getProperty(name).remove();
+        }        
+    }
+
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         NodeIterator ni = node.getNodes("j:translation");
 

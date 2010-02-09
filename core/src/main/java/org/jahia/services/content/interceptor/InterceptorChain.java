@@ -44,6 +44,16 @@ public class InterceptorChain {
         Collections.reverse(revInterceptors);
     }
 
+    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (node.getSession().isInterceptorsEnabled()) {
+            for (PropertyInterceptor interceptor : interceptors) {
+                if (interceptor.canApplyOnProperty(node, definition)) {
+                    interceptor.beforeRemove(node, name, definition);
+                }
+            }
+        }
+    }
+
     /**
      * Calls all property interceptors in a chain. Interceptors are called one after the other.
      * <p/>

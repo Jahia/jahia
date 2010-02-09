@@ -276,6 +276,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        JCRStoreService.getInstance().getInterceptorChain().beforeRemove(node, name, def);
         property.remove();
     }
 

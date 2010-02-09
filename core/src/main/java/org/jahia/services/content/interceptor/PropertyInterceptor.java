@@ -30,6 +30,8 @@ public interface PropertyInterceptor {
      */
     boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException;
 
+    void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException;
+
     /**
      * Called before setting the value on the property. Can throw an exception if the value is not valid, and transform
      * the value into another value.

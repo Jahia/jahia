@@ -13,23 +13,46 @@ Rendering filters
   Default filter chain is defined in the <<<applicationContext-services.xml>>>, in the <<<filters>>> property of the
   <<<RenderService>>> bean.
 
+  Every filter needs to define a priority, which defines the order in which the filters will be executed.
+
 -------------------------------
     <bean id="RenderService" parent="proxyTemplate">
     ...
 	      <property name="filters" >
 	          <list>
-	              <bean class="org.jahia.services.render.filter.AttributesFilter" />
-	              <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
-	                  <property name="loggingService" ref="loggingService"/>
-	              </bean>
-	              <bean class="org.jahia.services.render.filter.URLFilter" />
-	              <bean class="org.jahia.services.render.filter.WrapperFilter" />
-	              <bean class="org.jahia.services.render.filter.SkinFilter" />
-	              <bean class="org.jahia.services.render.filter.OptionsFilter" />
-	              <bean class="org.jahia.services.render.filter.ModuleFilter">
-	                  <property name="templateManagerService" ref="JahiaTemplateManagerService" />
-	              </bean>
-	              <bean class="org.jahia.services.render.filter.TemplateScriptFilter" />
+                    <bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
+                        <property name="priority" value="0" />
+                        <property name="applyOnMainResource" value="true"/>
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
+                        <property name="priority" value="5" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
+                        <property name="priority" value="10" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
+                        <property name="priority" value="15" />
+                        <property name="loggingService" ref="loggingService"/>
+                    </bean>
+                    <ref bean="cacheFilter"/>
+                    <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
+                        <property name="priority" value="30" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.URLFilter" >
+                        <property name="priority" value="35" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.WrapperFilter" >
+                        <property name="priority" value="40" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.SkinFilter" >
+                        <property name="priority" value="45" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.OptionsFilter" >
+                        <property name="priority" value="50" />
+                    </bean>
+                    <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >
+                        <property name="priority" value="99" />
+                    </bean>
 	          </list>
 	      </property>
 	...
@@ -40,29 +63,22 @@ Rendering filters
 
   Any template module can define its own filters to be executed.
   Filters are defined in a Spring bean definition file in an XML file (with any arbitrary name) in the <<<templates/\<module-name\>/META-INF/spring/>>> folder.
-  In order to define module filters, you need to create a bean definition which uses <<<org.jahia.services.render.filter.ModuleFilters>>> class
-  and provide a list of filter beans for the <<<filters>>> property.
+  In order to define module filters, you simply need to provide a list of filter beans. The filters will be added to the render chain
+  and executed for every request for all modules.
 
-  Module filters are by default shared among all modules. If you need to limit the filter execution to only one module,
-  you have to provide a module name as a value for the <<<module>>> property.
+  The priority defines where the filter will be inserted in the render chain.
 
   An {example} of a filter definition for the Jahia Wiki module, located in the the <<<templates/wiki/META-INF/spring/>>> folder, is:
   
 ------------------
-<bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
-        <property name="module" value="Jahia Wiki"/>
-        <property name="filters">
-            <list>
                 <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
+                    <property name="priority" value="90" />
                     <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
                     <property name="inputSyntax" value="xwiki/2.0"/>
                     <property name="outputSyntax" value="xhtml/1.0"/>
                     <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
                     <property name="applyOnTemplates" value="syntax"/>
                 </bean>
-            </list>
-        </property>
-    </bean>
 ------------------
 
 ** {Conditional} execution of filters

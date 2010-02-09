@@ -81,3 +81,10 @@
 	background: #404d6c	 url(img/box2-style1-header.png) repeat-x left top;
 	color:#fff;
 }
+
+/******************************************************************************
+* Hide title
+******************************************************************************/
+#bodywrapper .box2 .box2-text .title{
+    display:none;        
+}

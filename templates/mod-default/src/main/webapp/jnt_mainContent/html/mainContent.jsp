@@ -5,7 +5,7 @@
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
 <div class="maincontent">
-    <h3><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+    <h3 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
         <c:if test="${!empty image}">
             <img src="${image.node.url}" alt="${image.node.url}" align="${currentNode.properties.align.string}"/>
         </c:if>

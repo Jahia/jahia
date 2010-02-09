@@ -36,6 +36,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box.css"/>
 
+
+
 <div class="box">
     <div class="box-content">
         ${wrappedContent}

@@ -12,7 +12,7 @@
 <div class="teaser teaser-fixed-height">
     <img src="${image.node.url}" class="floatleft" />
     <div class="teaser-content">
-        <h3 class="teaser-title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+        <h3 class="teaser-title title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
         <p> ${currentNode.properties.abstract.string}</p>
     </div>
     <div class="more">

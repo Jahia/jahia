@@ -3,19 +3,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean name="filter" class="org.jahia.services.render.filter.ModuleFilters">
-        <property name="module" value="Jahia Wiki"/>
-        <property name="filters">
-            <list>
-                <bean name="WikiFilter" class="org.jahia.modules.wiki.filter.WikiFilter">
-                    <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
-                    <property name="inputSyntax" value="xwiki/2.0"/>
-                    <property name="outputSyntax" value="xhtml/1.0"/>
-                    <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
-                    <property name="applyOnTemplates" value="syntax"/>
-                </bean>
-            </list>
-        </property>
+    <bean name="WikiFilter" class="org.jahia.modules.wiki.filter.WikiFilter">
+        <property name="priority" value="90"/>
+        <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
+        <property name="inputSyntax" value="xwiki/2.0"/>
+        <property name="outputSyntax" value="xhtml/1.0"/>
+        <property name="applyOnNodeTypes" value="jnt:wikiPage"/>
+        <property name="applyOnTemplates" value="syntax"/>
     </bean>
 
     <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>

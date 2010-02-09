@@ -5,6 +5,7 @@
 
     <bean id="org.jahia.services.rbac.RoleBasedAccessControlService" class="org.jahia.services.rbac.jcr.RoleBasedAccessControlServiceImpl">
     	<property name="roleManager" ref="org.jahia.services.rbac.jcr.RoleManager"/>
+    	<property name="groupManager" ref="JahiaGroupManagerService"/>
     </bean>
 
     <bean id="org.jahia.services.rbac.jcr.RoleManager" class="org.jahia.services.rbac.jcr.RoleManager">

@@ -68,7 +68,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private transient JCRPublicationService publicationService;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
-    private transient Cache<String, JahiaUser> cache;
+    private transient Cache<String, JCRUser> cache;
     private static transient Map<String, String> mappingOfProperties;
 
     static {
@@ -109,10 +109,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      *
      * @param password User password
      */
-    public JahiaUser createUser(final String name, final String password, final Properties properties) {
+    public JCRUser createUser(final String name, final String password, final Properties properties) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
-                public JahiaUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
+                public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
                     jcrSessionWrapper.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
@@ -174,7 +174,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             try {
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Node node = session.getNodeByUUID(jcrUser.getNodeUuid());
+                        Node node = jcrUser.getNode(session);
                         session.checkout(node.getParent());
                         session.checkout(node);                        
                         node.remove();
@@ -274,8 +274,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return boolean true if the login succeeded, false otherwise
      */
     public boolean login(String userKey, String userPassword) {
-        JahiaUser jahiaUser = lookupUser(userKey);
-        return jahiaUser.verifyPassword(userPassword);
+        return lookupUser(userKey).verifyPassword(userPassword);
     }
 
     /**
@@ -284,17 +283,17 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public JahiaUser lookupUserByKey(String userKey) {
+    public JCRUser lookupUserByKey(String userKey) {
         try {
             final String name = userKey.split("}")[1];
             if (cache == null) {
                 start();
             }
             if (cache.containsKey(name)) {
-                return (JahiaUser) cache.get(name);
+                return cache.get(name);
             }
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
-                public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
+                public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode( "/users/" + name);
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
@@ -320,16 +319,16 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public JahiaUser lookupUser(final String name) {
+    public JCRUser lookupUser(final String name) {
         try {
             if (cache == null) {
                 start();
             }
             if (cache.containsKey(name)) {
-                return (JahiaUser) cache.get(name);
+                return cache.get(name);
             }
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
-                public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
+                public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode("/users/" + name.trim());
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
@@ -349,16 +348,16 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         return null;
     }
 
-    public JahiaUser lookupExternalUser(final String name) {
+    public JCRUser lookupExternalUser(final String name) {
         try {
             if (cache == null) {
                 start();
             }
             if (cache.containsKey(name)) {
-                return (JahiaUser) cache.get(name);
+                return cache.get(name);
             }
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
-                public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
+                public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode( "/users/" + name.trim());
                     if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
@@ -379,7 +378,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     }
 
 
-    public JahiaUser lookupUserByKey(String name, String searchAttributeName) {
+    public JCRUser lookupUserByKey(String name, String searchAttributeName) {
         // TODO this should be removed, implemented or throw an unsupported exception
         return null;
     }
@@ -485,7 +484,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "'";
+                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "' AND u.[" + JCRUser.J_EXTERNAL + "] = 'false'";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();

@@ -36,6 +36,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -59,11 +60,13 @@ import java.util.Properties;
  * @since : JAHIA 6.1
  *        Created : 8 juil. 2009
  */
-public class JCRGroup extends JahiaGroup {
+public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     private transient static Logger logger = Logger.getLogger(JCRGroup.class);
     private String nodeUuid;
     private final JCRTemplate jcrTemplate;
     static final String J_HIDDEN = "j:hidden";
+    public static final String J_EXTERNAL = "j:external";
+    public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private static final String PROVIDER_NAME = "jcr";
 
     public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
@@ -204,7 +207,7 @@ public class JCRGroup extends JahiaGroup {
                         Node members = node.getNode("j:members");
                         if (!members.hasNode(principal.getName())) {
                             Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
-                            member.setProperty("j:member", jcrUser.getNodeUuid());
+                            member.setProperty("j:member", jcrUser.getIdentifier());
                             session.save();
                         }
                         return true;
@@ -236,7 +239,7 @@ public class JCRGroup extends JahiaGroup {
      */
     public boolean setHomepageID(int id) {
         // TODO we will need to implement this if we want to support group homepages again.
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
@@ -307,24 +310,27 @@ public class JCRGroup extends JahiaGroup {
                     Node group = getNode(session);
                     Node members = group.getNode("j:members");
                     String memberUuid = null;
-                    if (principal instanceof JCRUser) {
-                        // internal user
-                        memberUuid = ((JCRUser) principal).getNodeUuid();
-                    } else if (principal instanceof JCRGroup) {
-                        // internal group
-                        memberUuid = ((JCRGroup) principal).getNodeUuid();
+                    if (principal instanceof JCRPrincipal) {
+                        // internal user/group
+                        memberUuid = ((JCRPrincipal) principal).getIdentifier();
                     } else if (principal instanceof JahiaUser) {
                         // external user
-                        JCRUser externalUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
+                        JCRUser externalUser = JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
                         if (externalUser != null) {
-                            memberUuid = externalUser.getNodeUuid();
+                            memberUuid = externalUser.getIdentifier();
                         } else {
                             logger.warn("User node for an external user with the name '" + principal.getName()
                                     + " cannot be found. Skip removing user from group " + group.getPath());
                         }
                     } else if (principal instanceof JahiaGroup) {
-                        // external group 
-                        // TODO implement it
+                        // external user
+                        JCRGroup externalGroup = JCRGroupManagerProvider.getInstance().lookupExternalGroup(((JahiaGroup)principal).getGroupname());
+                        if (externalGroup != null) {
+                            memberUuid = externalGroup.getIdentifier();
+                        } else {
+                            logger.warn("JCR node for an external group with the name '" + principal.getName()
+                                    + " cannot be found. Skip removing principal from group " + group.getPath());
+                        }
                     } else {
                         logger.warn("Cannot remove membership for principal " + principal + " in group "
                                 + group.getPath() + ". Do not know how to handle this principal type.");
@@ -363,7 +369,7 @@ public class JCRGroup extends JahiaGroup {
     public String toString() {
         StringBuffer output = new StringBuffer("Details of group [" + mGroupname + "] :\n");
 
-        output.append("  - ID : ").append(getNodeUuid()).append("\n");
+        output.append("  - ID : ").append(getIdentifier()).append("\n");
 
         output.append("  - properties :");
 
@@ -408,12 +414,8 @@ public class JCRGroup extends JahiaGroup {
         return PROVIDER_NAME;
     }
 
-    private Node getNode(JCRSessionWrapper session) throws RepositoryException {
-        return session.getNodeByUUID(nodeUuid);
-    }
-
-    public String getNodeUuid() {
-        return nodeUuid;
+    public JCRNodeWrapper getNode(JCRSessionWrapper session) throws RepositoryException {
+        return session.getNodeByIdentifier(getIdentifier());
     }
 
     @Override
@@ -429,5 +431,9 @@ public class JCRGroup extends JahiaGroup {
 
         return nodeUuid.equals(jcrGroup.nodeUuid);
 
+    }
+
+    public String getIdentifier() {
+        return nodeUuid;
     }
 }

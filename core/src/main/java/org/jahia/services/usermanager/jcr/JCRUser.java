@@ -34,6 +34,7 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.JCRCallback;
@@ -52,7 +53,7 @@ import java.util.Properties;
  * @since : JAHIA 6.1
  *        Created : 7 juil. 2009
  */
-public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
+public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincipal {
     private transient static Logger logger = Logger.getLogger(JCRUser.class);
     private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
@@ -95,8 +96,8 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
         }
     }
 
-    private Node getNode(JCRSessionWrapper session) throws RepositoryException {
-        return session.getNodeByUUID(nodeUuid);
+    public JCRNodeWrapper getNode(JCRSessionWrapper session) throws RepositoryException {
+        return session.getNodeByIdentifier(getIdentifier());
     }
 
     /**
@@ -379,10 +380,6 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
         return PROVIDER_NAME;
     }
 
-    public String getNodeUuid() {
-        return nodeUuid;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -394,7 +391,7 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
 
         JCRUser jcrUser = (JCRUser) o;
 
-        return nodeUuid.equals(jcrUser.nodeUuid);
+        return getIdentifier().equals(jcrUser.getIdentifier());
 
     }
 
@@ -406,5 +403,9 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser {
     @Override
     public String toString() {
         return "JCRUser{" + "nodeUuid='" + nodeUuid + '\'' + "name='" + getName() + '\'' + '}';
+    }
+
+    public String getIdentifier() {
+        return nodeUuid;
     }
 }

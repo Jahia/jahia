@@ -32,24 +32,34 @@
 
 package org.jahia.services.rbac.jcr;
 
+import static org.jahia.services.rbac.jcr.RoleManager.JMIX_ROLE_BASED_ACCESS_CONTROLLED;
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_PERMISSSIONS;
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_ROLES;
 
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.RoleBasedAccessControlService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Service implementation for the Role Based Access Control.
@@ -61,85 +71,86 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
 
     private static Logger logger = Logger.getLogger(RoleBasedAccessControlServiceImpl.class);
 
+    private JahiaGroupManagerService groupManager;
+
     private RoleManager roleManager;
 
-    public boolean hasRole(final JahiaPrincipal principal, final String role) {
-        boolean hasRole = false;
-        try {
-            hasRole = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    boolean hasIt = false;
-                    JCRNodeWrapper principalNode = roleManager.getPrincipalNode(principal, session);
-                    if (principalNode != null) {
-                        String searchRole = role.charAt(0) == '/' ? StringUtils.substringAfterLast(role, "/") : role;
-                        QueryResult result = session.getWorkspace().getQueryManager().createQuery(
-                                "/jcr:root" + principalNode.getPath() + "/jcr:deref(@" + PROPERTY_ROLES + ", "
-                                        + JCRContentUtils.stringToQueryLiteral(searchRole) + ")", Query.XPATH)
-                                .execute();
-                        if (role.charAt(0) == '/') {
-                            // the role is specified by path
-                            for (RowIterator iterator = result.getRows(); iterator.hasNext();) {
-                                Row row = iterator.nextRow();
-                                if (row.getValue("jcr:path").getString().equals(role)) {
-                                    hasIt = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            // assuming the role is specified by unique name
-                            hasIt = result.getNodes().hasNext();
-                        }
-
-                        if (!hasIt) {
-                            // check groups this principal is member of
-                        }
-                    }
-                    return hasIt;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+    private boolean hasDirectPermission(String principal, String permission, JCRSessionWrapper session)
+            throws InvalidQueryException, RepositoryException {
+        boolean hasIt = false;
+        QueryResult result = session.getWorkspace().getQueryManager().createQuery(
+                "/jcr:root" + principal + "/jcr:deref(@" + PROPERTY_ROLES + ", '*')/jcr:deref(@"
+                        + PROPERTY_PERMISSSIONS + ", "
+                        + JCRContentUtils.stringToQueryLiteral(StringUtils.substringAfterLast(permission, "/")) + ")",
+                Query.XPATH).execute();
+        // the permission is specified by path
+        for (NodeIterator iterator = result.getNodes(); iterator.hasNext();) {
+            Node node = iterator.nextNode();
+            if (node.getPath().equals(permission)) {
+                hasIt = true;
+                break;
+            }
         }
 
-        return hasRole;
+        return hasIt;
     }
 
-    public boolean isPermitted(final JahiaPrincipal principal, final String permission) {
+    private boolean hasDirectRole(JCRNodeWrapper principal, JCRNodeWrapper role, JCRSessionWrapper session)
+            throws InvalidQueryException, RepositoryException {
+        boolean hasIt = false;
+        JCRPropertyWrapper rolesProperty = null;
+        try {
+            rolesProperty = principal.isNodeType(JMIX_ROLE_BASED_ACCESS_CONTROLLED) ? principal
+                    .getProperty(PROPERTY_ROLES) : null;
+        } catch (PathNotFoundException ex) {
+            // no roles property found
+        }
+        Value[] roles = rolesProperty != null ? rolesProperty.getValues() : null;
+
+        if (roles != null && roles.length > 0) {
+            String targetIdentifier = role.getIdentifier();
+            for (Value roleValue : roles) {
+                if (targetIdentifier.equals(roleValue.getString())) {
+                    hasIt = true;
+                    break;
+                }
+            }
+        }
+
+        return hasIt;
+    }
+
+    private boolean hasInheritedPermission(JahiaPrincipal principal, JCRNodeWrapper principalNode, String permission,
+            JCRSessionWrapper session) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean hasInheritedRole(JahiaPrincipal principal, JCRNodeWrapper principalNode, String role,
+            JCRSessionWrapper session) {
+        boolean hasIt = false;
+        if (principal instanceof JahiaUser) {
+            List<String> groups = groupManager.getUserMembership((JahiaUser) principal);
+        } else if (principal instanceof JahiaGroup) {
+
+        } else {
+
+        }
+
+        // TODO check for group or groups membership case
+
+        return hasIt;
+    }
+
+    @Override
+    protected boolean isPermissionGranted(final JahiaPrincipal principal, final String permission) {
         boolean hasPermisson = false;
         try {
             hasPermisson = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    boolean hasIt = false;
                     JCRNodeWrapper principalNode = roleManager.getPrincipalNode(principal, session);
-                    if (principalNode != null) {
-                        String searchPermission = permission.charAt(0) == '/' ? StringUtils.substringAfterLast(
-                                permission, "/") : permission;
-                        QueryResult result = session.getWorkspace().getQueryManager().createQuery(
-                                "/jcr:root" + principalNode.getPath() + "/jcr:deref(@" + PROPERTY_ROLES
-                                        + ", '*')/jcr:deref(@" + PROPERTY_PERMISSSIONS + ", "
-                                        + JCRContentUtils.stringToQueryLiteral(searchPermission) + ")", Query.XPATH)
-                                .execute();
-                        if (permission.charAt(0) == '/') {
-                            // the permission is specified by path
-                            for (RowIterator iterator = result.getRows(); iterator.hasNext();) {
-                                Row row = iterator.nextRow();
-                                if (row.getValue("jcr:path").getString().equals(permission)) {
-                                    hasIt = true;
-                                    break;
-                                }
-
-                            }
-                        } else {
-                            // assuming the permission is specified by unique
-                            // name
-                            hasIt = result.getNodes().hasNext();
-                        }
-
-                        if (!hasIt) {
-                            // check groups this principal is member of
-                        }
-                    }
-                    return hasIt;
+                    return principalNode != null ? hasDirectPermission(principalNode.getPath(), permission, session)
+                            || hasInheritedPermission(principal, principalNode, permission, session) : false;
                 }
             });
         } catch (RepositoryException e) {
@@ -149,8 +160,39 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
         return hasPermisson;
     }
 
+    @Override
+    protected boolean isPrincipalInRole(final JahiaPrincipal principal, final String role) {
+        boolean hasRole = false;
+        try {
+            hasRole = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper principalNode = roleManager.getPrincipalNode(principal, session);
+                    JCRNodeWrapper roleNode = null;
+                    try {
+                        roleNode = session.getNode(role);
+                    } catch (PathNotFoundException e) {
+                        logger.debug("Corresponding role node for path " + role + " cannot be found.", e);
+                    }
+                    return principalNode != null && roleNode != null ? hasDirectRole(principalNode, roleNode, session)
+                            || hasInheritedRole(principal, principalNode, role, session) : false;
+                }
+
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return hasRole;
+    }
+
+    /**
+     * @param groupManager the groupManager to set
+     */
+    public void setGroupManager(JahiaGroupManagerService groupManager) {
+        this.groupManager = groupManager;
+    }
+
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
     }
-
 }

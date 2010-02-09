@@ -71,7 +71,7 @@
 
 [jnt:role] > nt:base, mix:referenceable, mix:title
  - j:permissions (weakreference) protected multiple < jnt:permission
-
+  
 [jnt:roles] > nt:base, jmix:hierarchyNode
  + * (jnt:role)
  
@@ -235,7 +235,7 @@
 
 [jnt:user] > jnt:folder
  - j:password (string)
- - j:external (boolean)=false
+ - j:external (boolean)=false autocreated
  - j:externalSource (string)
  - j:firstName (string)
  - j:firstNamePublic (boolean)=true
@@ -280,6 +280,8 @@
 
 [jnt:group] > jnt:folder
  - j:hidden (boolean)
+ - j:external (boolean)=false autocreated
+ - j:externalSource (string)
  - * (string)
  + j:members (jnt:members) = jnt:members mandatory autocreated
 

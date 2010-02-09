@@ -360,8 +360,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         final FileUpload fileUpload = paramBean.getFileUpload();
         if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0 && fileUpload.getParameterMap().size()==0) {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-            final JCRNodeWrapper uuid = session.getNodeByUUID(((JCRUser) paramBean.getUser()).getNodeUuid());
-            final JCRNodeWrapper privateFiles = uuid.getNode("files");
+            final JCRNodeWrapper privateFiles = ((JCRUser) paramBean.getUser()).getNode(session).getNode("files");
             final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
             List<String> uuids = new ArrayList<String>();
             for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {

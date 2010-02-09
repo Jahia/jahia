@@ -30,45 +30,37 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.usermanager;
+package org.jahia.services.usermanager.jcr;
 
-import java.util.Collection;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.services.rbac.RoleBasedAccessControlService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 
 /**
- * Abstract implementation of the {@link JahiaPrincipal} that adds role and
- * permission checking.
+ * Common interface for JCR-base users and groups in Jahia.
  * 
  * @author Sergiy Shyrkov
+ * @since 6.5
  */
-public abstract class JahiaBasePrincipal implements JahiaPrincipal {
+public interface JCRPrincipal {
 
-    private transient RoleBasedAccessControlService service;
+    /**
+     * Returns the identifier (a.k.a. UUID) of the corresponding JCR node.
+     * 
+     * @return the identifier (a.k.a. UUID) of the corresponding JCR node
+     */
+    String getIdentifier();
 
-    protected RoleBasedAccessControlService getRoleBasedAccessControlService() {
-        if (service == null) {
-            service = (RoleBasedAccessControlService) SpringContextSingleton
-                    .getBean(RoleBasedAccessControlService.class.getName());
-        }
-        return service;
-    }
-
-    public boolean hasRole(String role) {
-        return getRoleBasedAccessControlService().hasRole(this, role);
-    }
-
-    public boolean hasRoles(Collection<String> roles) {
-        return getRoleBasedAccessControlService().hasRoles(this, roles);
-    }
-
-    public boolean isPermitted(Collection<String> permissions) {
-        return getRoleBasedAccessControlService().isPermitted(this, permissions);
-    }
-
-    public boolean isPermitted(String permission) {
-        return getRoleBasedAccessControlService().isPermitted(this, permission);
-    }
+    /**
+     * Returns the JCR node that corresponds to the this principal.
+     * 
+     * @param session current JCR session
+     * @return the JCR node that corresponds to the this principal
+     * @throws ItemNotFoundException in case the node cannot be found
+     * @throws RepositoryException in case of an error
+     */
+    JCRNodeWrapper getNode(JCRSessionWrapper session) throws ItemNotFoundException, RepositoryException;
 
 }

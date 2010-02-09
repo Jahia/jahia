@@ -614,10 +614,6 @@ public class Service extends JahiaService {
         this.userManager = userManager;
     }
 
-    public SystemRoleManager getRoleManager() {
-        return roleManager;
-    }
-
     public void setRoleManager(SystemRoleManager roleManager) {
         this.roleManager = roleManager;
     }

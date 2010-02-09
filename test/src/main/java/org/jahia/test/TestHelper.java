@@ -45,6 +45,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.codec.binary.Base64;
 
+import javax.jcr.ItemExistsException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
@@ -330,4 +337,16 @@ public class TestHelper {
         ps.execute();
         ps.close();
     } // end query
+
+
+    public static void createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+        if (level <= 0) return;
+        for (int i=0; i < nbChildren; i++) {
+            Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
+            createSubPages(newSubPage, level-1, nbChildren);
+        }
+    }
+
+
+
 }

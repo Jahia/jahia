@@ -41,8 +41,13 @@ import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -76,7 +81,7 @@ public class PublicationTest extends TestCase {
     private static Logger logger = Logger.getLogger(PublicationTest.class);
     private JahiaSite site;
     private ProcessingContext ctx;
-    private final static String TESTSITE_NAME = "jcrWorkflowTest";
+    private final static String TESTSITE_NAME = "jcrPublicationTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     protected void setUp() throws Exception {
@@ -404,6 +409,98 @@ public class PublicationTest extends TestCase {
                         publishedDateForObjects);
             }
         }
+    }
+
+    public void testSimpleNodePublish() throws RepositoryException {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                .getJCRPublicationService();
+
+        String defaultLanguage = site.getDefaultLanguage();
+        
+        Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
+        Locale frenchLocale = LanguageCodeConverters.languageCodeToLocale("fr");
+        
+        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper liveRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home");
+
+        createList(stageNode, "contentList1", 20, "English text");
+        
+        englishEditSession.save();
+
+        Set<String> languages = null;
+
+        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
+
+        // let's check the existence of the node property value in the live workspace.
+
+        JCRNodeWrapper liveNode = liveRootNode.getNode("home");
+        JCRNodeWrapper liveContentList1Node = liveNode.getNode("contentList1");
+        JCRNodeWrapper liveTextNode1 = liveContentList1Node.getNode("text1");
+        JCRPropertyWrapper liveTextNodeProperty = liveTextNode1.getProperty("text");
+
+        assertNotNull("Text node 1 was not found in live workspace !", liveTextNodeProperty);
+
+        String liveTextNodePropertyString = liveTextNodeProperty.getString();
+        assertEquals("Text node 1 value is not correct !", "English text1", liveTextNodePropertyString);
+
+        // now let's modify the node, republish and check.
+
+        //englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRNodeWrapper textNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+
+        englishEditSession.checkout(textNode1);
+
+        textNode1.setProperty("text", "English text updated.");
+        englishEditSession.save();
+
+        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
+
+        liveTextNodeProperty = textNode1.getProperty("text");
+
+        liveTextNodePropertyString = liveTextNodeProperty.getString();
+        assertEquals("Text node 1 value is not correct !", "English text updated.", liveTextNodePropertyString);
+
+        // not let's unpublish the node and test it's presence in the live workspace.
+
+        jcrService.unpublish(textNode1.getPath(), languages);
+
+        // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        boolean nodeWasFoundInLive = true;
+        try {
+            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+        } catch (PathNotFoundException pnfe) {
+            // this is what we expect, so let's just signal it.
+            nodeWasFoundInLive = false;
+        }
+
+        assertFalse("Text node 1 was unpublished, should not be available in the live workspace anymore !", nodeWasFoundInLive);
+
+        // now let's publish the parent node once again, and check if it is published properly.
+        jcrService.publish(textNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        nodeWasFoundInLive = false;
+        try {
+            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/text1");
+            nodeWasFoundInLive = true;
+        } catch (PathNotFoundException pnfe) {
+            // this is what we expect, so let's just signal it.
+            nodeWasFoundInLive = false;
+        }
+        assertTrue("Text node 1 was re-published, it should have been present in the live workspace", nodeWasFoundInLive);
+
+        // now we must move the text node inside the list, and check that the move is properly propagated in live mode
+
+    }
+
+    private void createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+        JCRNodeWrapper contentList1 = parentNode.addNode(listName, "jnt:contentList");
+
+        for (int i=0; i < elementCount; i++) {
+            JCRNodeWrapper textNode1 = contentList1.addNode("text" + Integer.toString(i), "jnt:text");
+            textNode1.setProperty("text", textPrefix + Integer.toString(i));
+        }        
     }
 
     @Override

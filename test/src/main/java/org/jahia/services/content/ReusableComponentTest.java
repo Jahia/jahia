@@ -78,15 +78,6 @@ public class ReusableComponentTest extends TestCase {
         // no need to clean up inside the site, since we will remove it completely anyway.
     }
 
-    private void createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
-        if (level <= 0) return;
-        for (int i=0; i < nbChildren; i++) {
-            Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
-            createSubPages(newSubPage, level-1, nbChildren);
-        }
-    }
-
-
     private Object getNode(Document jdomDocument, String xPathExpression, String prefix) throws JDOMException {
         Element rootElement = jdomDocument.getRootElement();
         String namespaceURI = rootElement.getNamespaceURI();
@@ -140,7 +131,7 @@ public class ReusableComponentTest extends TestCase {
         JCRNodeWrapper pageReusableComponentHomeNode = (JCRNodeWrapper) session.getNode(PAGE_REUSABLE_COMPONENT_HOME_NODE_PATH);
 
         // we need to create some content to export, that we can check after export.
-        createSubPages(siteHomePageNode, 5, 2);
+        TestHelper.createSubPages(siteHomePageNode, 5, 2);
 
         JCRNodeWrapper newReusableComponentNode = pageReusableComponentHomeNode.addNode("newTestReusableComponent", "jnt:reusableComponent");
         newReusableComponentNode.setProperty("j:targetReference", siteHomePageNode);

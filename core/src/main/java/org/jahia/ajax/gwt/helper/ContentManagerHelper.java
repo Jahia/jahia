@@ -110,7 +110,7 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile() && parentNode.isWriteable() && parentNode.isLocked()) {
+        if (!parentNode.isFile() && parentNode.isWriteable() && !parentNode.isLocked()) {
             try {
                 if (!parentNode.isCheckedOut()) {
                     parentNode.checkout();

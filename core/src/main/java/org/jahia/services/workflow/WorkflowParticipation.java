@@ -33,7 +33,7 @@
 package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,15 +45,15 @@ import org.jahia.services.usermanager.JahiaGroup;
 public class WorkflowParticipation {
     private transient static Logger logger = Logger.getLogger(WorkflowParticipation.class);
     private final String role;
-    private final JahiaGroup jahiaGroup;
+    private final JahiaPrincipal principal;
 
-    public WorkflowParticipation(String role, JahiaGroup jahiaGroup) {
+    public WorkflowParticipation(String role, JahiaPrincipal principal) {
         this.role = role;
-        this.jahiaGroup = jahiaGroup;
+        this.principal = principal;
     }
 
-    public JahiaGroup getJahiaGroup() {
-        return jahiaGroup;
+    public JahiaPrincipal getJahiaPrincipal() {
+        return principal;
     }
 
     public String getRole() {

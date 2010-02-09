@@ -7,6 +7,8 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 
 import javax.jcr.RepositoryException;
@@ -56,7 +58,8 @@ public class WorkflowHelper {
                             List<WorkflowParticipation> participations = workflowTask.getParticipations();
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
-                                    if (participation.getJahiaGroup().isMember(session.getUser())) {
+                                    if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup)participation.getJahiaPrincipal()).isMember(session.getUser())) ||
+                                            (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser)participation.getJahiaPrincipal()).getUserKey().equals(session.getUser().getUserKey()))) {
                                         GWTJahiaWorkflowAction action = new GWTJahiaWorkflowAction();
                                         gwtActions.add(action);
                                         List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();

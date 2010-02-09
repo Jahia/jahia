@@ -37,6 +37,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
@@ -44,11 +45,14 @@ import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
+import org.jbpm.jpdl.internal.activity.EndActivity;
+import org.jbpm.jpdl.internal.activity.StartActivity;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.pvm.internal.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.task.AssignableDefinitionImpl;
+import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.security.Principal;
@@ -71,6 +75,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
     private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
+    private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private static JBPMProvider instance;
     private static final String PROVIDER = "jBPM";
@@ -92,6 +97,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             instance = new JBPMProvider();
         }
         return instance;
+    }
+
+    public void start() {
+        registerListeners();
     }
 
     /**
@@ -245,8 +254,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         if (participationList.size() > 0) {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
             for (Participation participation : participationList) {
-                participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                                             groupManager.lookupGroup(participation.getGroupId())));
+                if (participation.getGroupId() != null) {
+                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                            groupManager.lookupGroup(participation.getGroupId())));
+                } else {
+                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                            userManager.lookupUser(participation.getUserId())));                    
+                }
             }
             action.setParticipations(participations);
         }
@@ -282,8 +296,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         this.groupManager = groupManager;
     }
 
-    public String getGroupId(String groupName) {
-        return groupManager.lookupGroup(groupName).getGroupKey();
+    public void setUserManager(JahiaUserManagerService userManager) {
+        this.userManager = userManager;
     }
 
     public List<String> getConfigurableRoles(String processKey) {
@@ -306,6 +320,42 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
 
         return results;
+    }
+
+    public void registerListeners() {
+        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
+
+        JBPMListener listener = new JBPMListener();
+
+        for (ProcessDefinition definition : definitionList) {
+            if (definition instanceof JpdlProcessDefinition) {
+                ((JpdlProcessDefinition)definition).createEvent("start").createEventListenerReference(listener);
+                ((JpdlProcessDefinition)definition).createEvent("end").createEventListenerReference(listener);
+            }
+
+        }
+    }
+
+    public String getProcessDefinitionType(ProcessDefinition definition) {
+        ArrayList<String> results = new ArrayList<String>();
+
+        if (definition instanceof JpdlProcessDefinition) {
+            List<? extends Activity> list = ((JpdlProcessDefinition)definition).getActivities();
+
+            for (Activity activity : list) {
+                if (activity instanceof ActivityImpl) {
+                    ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
+                    if (activityBehaviour instanceof UserCodeActivityBehaviour) {
+
+                        // check the assignation handler .. ?
+                        Object o = ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        results.add(activity.getName());
+                    }
+                }
+            }
+        }
+
+        return "";
     }
 
 

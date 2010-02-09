@@ -64,35 +64,15 @@ public class WorkflowActionItem extends BaseActionItem {
                     menu.add(item);
                 }
             }
-            List<GWTJahiaWorkflowAction> actions = info.getAvailableActions();
-            for (final GWTJahiaWorkflowAction action : actions) {
-                List<GWTJahiaWorkflowOutcome> outcomes = action.getOutcomes();
-                for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
-                    isEnabled = true;
-                    MenuItem item = new MenuItem(action.getName() +" : " +outcome.getLabel());
-                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                        @Override
-                        public void componentSelected(MenuEvent ce) {
-                            JahiaContentManagementService.App.getInstance().assignAndCompleteTask(node.getPath(), action, outcome, new AsyncCallback() {
-                                public void onSuccess(Object result) {
-                                    Info.display("Workflow started","Workflow started");
-                                    linker.refresh();
-                                }
+            ViewWorkflowStatusActionItem statusActionItem = new ViewWorkflowStatusActionItem();
+            statusActionItem.init(getGwtToolbarItem(), linker);
+            MenuItem workflowItem = statusActionItem.getMenuItem();
+            statusActionItem.updateTitle("Show Workflow Status");
+            menu.add(workflowItem);
 
-                                public void onFailure(Throwable caught) {
-                                    Info.display("Workflow not started","Workflow not started");
-                                }
-                            }
-                            );
-                        }
-                    });
-                    menu.add(item);
-                }
-            }
         } else {
             menu.removeAll();
         }
-
         Button button = (Button) getTextToolitem();
         if (isEnabled) {
             button.setEnabled(true);

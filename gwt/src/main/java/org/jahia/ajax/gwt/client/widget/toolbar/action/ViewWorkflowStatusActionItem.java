@@ -2,28 +2,23 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.ScrollListener;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
-import com.google.gwt.user.client.Event;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +27,7 @@ import java.util.Map;
  * Time: 6:59:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ViewPublishStatusActionItem extends ViewStatusActionItem {
+public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
 
     @Override
     public void viewStatus(final Linker linker) {
@@ -73,34 +68,16 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
         boolean allPublished = true;
         for (Module module : list) {
             if (module.getNode() != null) {
-                GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
-                if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+                GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
+                if (info.getAvailableActions().size()>0) {
                     allPublished = false;
-                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                        if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
-                            continue;
-                        }
-                        lastUnpublished = module.getNode().getPath();
-                        if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
-                            addInfoLayer(module, "Never published - publish parent first", "black", "black", left, top, right, bottom, removeListener, false);
-                        } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                            addInfoLayer(module, ("Unpublished"), "black", "black", left, top, right, bottom, removeListener, false);
-                        } else {
-                            addInfoLayer(module, "Never published", "black", "black", left, top, right, bottom, removeListener, false);
-                        }
-                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                        addInfoLayer(module, "Modified", "red", "red", left, top, right, bottom, removeListener, true);
-                    } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
-                        addInfoLayer(module, "Modified in live", "blue", "blue", left, top, right, bottom, removeListener, true);
-                    } else if (info.getStatus() == GWTJahiaPublicationInfo.CONFLICT) {
-                        addInfoLayer(module, "Conflict", "red", "red", left, top, right, bottom, removeListener, true);
-                    }
+                    addInfoLayer(module, "Workflow(s) currently started", "red", "red", left, top, right, bottom, removeListener, true);
                 }
             }
         }
 
         if (allPublished) {
-            addInfoLayer(modules.iterator().next(), "Everything published", "black", "white", left,top,right,bottom,removeListener, false);
+            addInfoLayer(modules.iterator().next(), "No actual worflow(s) started", "black", "white", left,top,right,bottom,removeListener, false);
         }
 
         ((EditLinker) linker).getMainModule().addScrollListener(new ScrollListener() {

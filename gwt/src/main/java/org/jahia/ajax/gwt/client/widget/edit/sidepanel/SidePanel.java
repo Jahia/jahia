@@ -30,6 +30,7 @@ public class SidePanel extends ContentPanel {
     private final FilesBrowseTabItem filesBrowseTabItem  ;
     private final MashupBrowseTabItem mashupBrowseTabItem ;
     private final SearchTabItem searchTabItem;
+    private final WorkflowTabItem workflowTabItem;
 
     public SidePanel() {
         super(new FitLayout());
@@ -62,6 +63,9 @@ public class SidePanel extends ContentPanel {
         searchTabItem = new SearchTabItem();
         tabs.add(searchTabItem);
 
+        workflowTabItem = new WorkflowTabItem();
+        tabs.add(workflowTabItem);
+
         TabPanel tabPanel = new TabPanel();
 
         for (TabItem tab : tabs) {
@@ -77,6 +81,7 @@ public class SidePanel extends ContentPanel {
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
+        workflowTabItem.initList(selectedModule);
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {

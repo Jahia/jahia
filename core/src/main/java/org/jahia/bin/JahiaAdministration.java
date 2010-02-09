@@ -560,7 +560,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                 actionUrl = module.getActionURL(ctx);
             } catch (Exception e) {
                 logger.error(
-                        "Error computing an URL for the administraion module '"
+                        "Error computing an URL for the administration module '"
                                 + module.getName() + "'", e);
             }
             menuItems.add(new MenuItem(module.getName(), actionUrl != null

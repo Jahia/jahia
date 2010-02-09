@@ -78,22 +78,6 @@ public class GWTJahiaGroup extends BaseModelData implements GWTJahiaPrincipal {
         set("key", userKey) ;
     }
 
-    public Collection<String> getMembers() {
-        return get("members") ;
-    }
-
-    public void setMembers(Collection<String> members) {
-        set("members", members) ;
-    }
-
-    public String getDisplayMembers() {
-        return get("displaymembers") ;
-    }
-
-    public void setDisplayMembers(String displaymembers) {
-        set("displaymembers", displaymembers) ;
-    }
-
     public void setSiteName (String serverName) {
         set("siteName",serverName);
     }

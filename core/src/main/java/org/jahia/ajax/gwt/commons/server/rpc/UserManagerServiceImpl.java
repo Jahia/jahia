@@ -45,7 +45,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.exceptions.JahiaException;
 
 import java.security.Principal;
@@ -145,22 +144,6 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
-                        Collection<Principal> members = group.getMembers();
-                        Collection<String> memberStrings = new ArrayList<String>();
-                        String displayMembers = "";
-                        for (Principal member : members) {
-                            memberStrings.add(member.getName());
-                            displayMembers += ", " + member.getName();
-                        }
-                        if (displayMembers.length() > 0) displayMembers = displayMembers.substring(2);
-                        data.setMembers(memberStrings);
-                        if (group instanceof UsersGroup) {
-                            displayMembers = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.users.label", retrieveParamBean().getLocale());
-                        }
-                        if (group instanceof GuestGroup) {
-                            displayMembers = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.guest.label", retrieveParamBean().getLocale());
-                        }
-                        data.setDisplayMembers(displayMembers);
                         if (group.getSiteID() > 0) {
                             JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
                             if (jahiaSite != null) {

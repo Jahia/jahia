@@ -267,10 +267,9 @@ public class UserGroupSelect extends Window {
         ListStore<GWTJahiaGroup> store = new ListStore<GWTJahiaGroup>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("groupname", "Group name", 120));
-        columns.add(new ColumnConfig("displaymembers", "Members", 200));
-        columns.add(new ColumnConfig("siteName", "Site name", 80));
-        columns.add(new ColumnConfig("provider", "Provider", 80));
+        columns.add(new ColumnConfig("groupname", "Group name", 240));
+        columns.add(new ColumnConfig("siteName", "Site name", 120));
+        columns.add(new ColumnConfig("provider", "Provider", 120));
 
         ColumnModel cm = new ColumnModel(columns);
 

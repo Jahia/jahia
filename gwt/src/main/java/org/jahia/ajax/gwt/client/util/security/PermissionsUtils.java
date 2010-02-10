@@ -65,7 +65,7 @@ public class PermissionsUtils {
     public static boolean isPermitted(String permissionName) {
         GWTJahiaPermission perm = new GWTJahiaPermission();
         perm.setName(permissionName);
-        return isPermitted(permissionName);
+        return isPermitted(perm);
 
     }
 

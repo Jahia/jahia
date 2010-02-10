@@ -63,12 +63,12 @@ public abstract class JahiaBasePrincipal implements JahiaPrincipal {
         return getRoleBasedAccessControlService().hasRoles(this, roles);
     }
 
-    public boolean isPermitted(Collection<String> permissions) {
-        return getRoleBasedAccessControlService().isPermitted(this, permissions);
-    }
-
     public boolean isPermitted(String permission) {
-        return getRoleBasedAccessControlService().isPermitted(this, permission);
+        return getRoleBasedAccessControlService().isPermitted(this, permission, null);
     }
+    
+    public boolean isPermitted(String permission, String siteKey) {
+        return getRoleBasedAccessControlService().isPermitted(this, permission, siteKey);
+    }    
 
 }

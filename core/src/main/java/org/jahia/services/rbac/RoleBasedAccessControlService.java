@@ -141,35 +141,6 @@ public abstract class RoleBasedAccessControlService {
     protected abstract boolean isPermissionGranted(JahiaPrincipal principal, String permission);
 
     /**
-     * Returns {@code true} if this principal is permitted to perform all of the
-     * actions or access a resource summarized by the specified permission
-     * collection.
-     * 
-     * @param principal the principal to check for permissions
-     * @param permissions a collection of the permissions that is being checked
-     * @return {@code true} if this principal is permitted to perform all of the
-     *         actions or access a resource summarized by the specified
-     *         permission collection
-     */
-    public final boolean isPermitted(JahiaPrincipal principal, Collection<String> permissions) {
-        if (permissions == null || permissions.isEmpty() || grantAllToRoot && isRoot(principal)) {
-            return true;
-        }
-        if (denyAllToGuest && isGuest(principal)) {
-            return false;
-        }
-
-        boolean satisfies = true;
-        for (String permission : permissions) {
-            if (!isPermissionGranted(principal, permission)) {
-                satisfies = false;
-                break;
-            }
-        }
-        return satisfies;
-    }
-
-    /**
      * Returns {@code true} if this principal is permitted to perform an action
      * or access a resource summarized by the specified permission string.
      * 
@@ -180,14 +151,15 @@ public abstract class RoleBasedAccessControlService {
      *         or access a resource summarized by the specified permission
      *         string
      */
-    public final boolean isPermitted(JahiaPrincipal principal, String permission) {
+    public final boolean isPermitted(JahiaPrincipal principal, String permission, String site) {
         if (grantAllToRoot && isRoot(principal)) {
             return true;
         }
         if (denyAllToGuest && isGuest(principal)) {
             return false;
         }
-
+        permission = (site != null ? "/sites/" + site : "") + "/permissions"
+                + (!permission.startsWith("/") ? "/" : "") + permission;
         return isPermissionGranted(principal, permission);
     }
 

@@ -79,8 +79,6 @@ import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
@@ -310,19 +308,11 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
 
 
     private boolean hasServerPermission(String permissionName, ProcessingContext jParams) {
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        return aclService.getServerActionPermission(permissionName,
-                jParams.getUser(),
-                JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0;
+        return jParams.getUser().isPermitted(permissionName);
     }
 
     private boolean hasSitePermission(String permissionName, ProcessingContext jParams) {
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        return aclService.getSiteActionPermission(permissionName,
-                jParams.getUser(),
-                JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0;
+        return jParams.getUser().isPermitted(permissionName, jParams.getSiteKey());
     }
 
     //-------------------------------------------------------------------------
@@ -564,7 +554,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                                 + module.getName() + "'", e);
             }
             menuItems.add(new MenuItem(module.getName(), actionUrl != null
-                    && module.isEnabled(ctx.getUser(), ctx.getSiteID()), module
+                    && module.isEnabled(ctx.getUser(), ctx.getSiteKey()), module
                     .getLabel(), actionUrl, module.getIcon(), module.getIconSmall(), module
                     .getTooltip(), module.isSelected(ctx)));
         }
@@ -851,31 +841,41 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         // check if the user has really admin access to this site...
         JahiaUser theUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(siteID);
-
         JahiaSite currentSite = null;
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
+        try {
+            currentSite = ServicesRegistry.getInstance()
+                    .getJahiaSitesService().getSite(siteID);
 
-        if ((group != null && group.isMember(theUser)) ||
-                (aclService.getSiteActionPermission("admin.JahiaAdministration", theUser, JahiaBaseACL.READ_RIGHTS, siteID) > 0)) {
-            try {
-                currentSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                List<Locale> languageSettingsAsLocales = currentSite.getLanguagesAsLocales();
-                final Locale localeSession = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
-                if (languageSettingsAsLocales != null && languageSettingsAsLocales.size() > 0 && !languageSettingsAsLocales.contains(localeSession)) {
+            if ((group != null && group.isMember(theUser))
+                    || (theUser.isPermitted("admin/jahia-administration",
+                            currentSite.getSiteKey()))) {
+                List<Locale> languageSettingsAsLocales = currentSite
+                        .getLanguagesAsLocales();
+                final Locale localeSession = (Locale) session
+                        .getAttribute(ProcessingContext.SESSION_LOCALE);
+                if (languageSettingsAsLocales != null
+                        && languageSettingsAsLocales.size() > 0
+                        && !languageSettingsAsLocales.contains(localeSession)) {
                     Locale locale = languageSettingsAsLocales.get(0);
                     session.setAttribute(Globals.LOCALE_KEY, locale);
-                    session.setAttribute(ProcessingContext.SESSION_LOCALE, locale);
+                    session.setAttribute(ProcessingContext.SESSION_LOCALE,
+                            locale);
                 }
-                session.setAttribute(ProcessingContext.SESSION_SITE, currentSite);
-            } catch (JahiaException je) {
-                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
-                        request.getLocale());
-                request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+                session.setAttribute(ProcessingContext.SESSION_SITE,
+                        currentSite);
+            } else {
+                // System.out.println(" --> no admin access on this site <--");
+                currentSite = (JahiaSite) session
+                        .getAttribute(ProcessingContext.SESSION_SITE);
+                siteID = currentSite.getID();
             }
-        } else {
-            //System.out.println(" --> no admin access on this site <--");
-            currentSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
-            siteID = currentSite.getID();
+        } catch (JahiaException je) {
+            String dspMsg = JahiaResourceBundle
+                    .getJahiaInternalResource(
+                            "org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                            request.getLocale());
+            request.setAttribute(JahiaAdministration.CLASS_NAME
+                    + "jahiaDisplayMessage", dspMsg);
         }
 
         // set the new site id to administrate...
@@ -951,11 +951,8 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     return false; // group might have been deleted
                 }
                 if (theGroup.isMember(theUser) ||
-                        (ServicesRegistry.getInstance().getJahiaACLManagerService().
-                                getSiteActionPermission("admin.JahiaAdministration",
-                                        theUser,
-                                        JahiaBaseACL.READ_RIGHTS,
-                                        theSite.getID()) > 0)) {
+                        (theUser.isPermitted("admin/jahia-administration",
+                                        theSite.getSiteKey()))) {
                     // check if the user is a super admin or not...
                     JahiaGroup superAdminGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {
@@ -1105,7 +1102,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     "",
                     "",
                     "",
-                    null,
                     new Properties());
             site = fakeSite;
             session.setAttribute(ProcessingContext.SESSION_SITE, fakeSite);
@@ -1208,8 +1204,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         Iterator<JahiaSite> sitesList = ServicesRegistry.getInstance().
                 getJahiaSitesService().getSites();
 
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-
         while (sitesList.hasNext()) {
             JahiaSite jahiaSite = sitesList.next();
             logger.debug("check granted site " + jahiaSite.getServerName());
@@ -1218,7 +1212,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     JahiaSiteTools.getAdminGroup(jahiaSite).isMember(user)) {
                 logger.debug("granted site for " + jahiaSite.getServerName());
                 grantedSites.add(jahiaSite);
-            } else if (aclService.getSiteActionPermission("admin.JahiaAdministration", user, JahiaBaseACL.READ_RIGHTS, jahiaSite.getID()) > 0) {
+            } else if (user.isPermitted("admin/jahia-administration", jahiaSite.getSiteKey())) {
                 logger.debug("granted site for " + jahiaSite.getServerName());
                 grantedSites.add(jahiaSite);
             }

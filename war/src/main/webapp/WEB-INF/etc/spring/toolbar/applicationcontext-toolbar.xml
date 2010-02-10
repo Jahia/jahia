@@ -146,7 +146,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="editmode"/>
+                <property name="siteActionPermission" value="actions/edit-mode"/>
             </bean>
         </property>
     </bean>
@@ -162,7 +162,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="categories.menu"/>
+                <property name="siteActionPermission" value="toolbar/categories-menu"/>
             </bean>
         </property>
         <property name="contextMenu" value="true"/>
@@ -178,7 +178,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="categories.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/categories-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -199,7 +199,7 @@
         <property name="contextMenu" value="true"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="content.menu"/>
+                <property name="siteActionPermission" value="toolbar/content-menu"/>
             </bean>
         </property>
     </bean>
@@ -214,7 +214,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="content.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/content-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -235,7 +235,7 @@
         <property name="contextMenu" value="true"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="documents.menu"/>
+                <property name="siteActionPermission" value="toolbar/documents-menu"/>
             </bean>
         </property>
     </bean>
@@ -251,7 +251,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="documents.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/documents-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -269,7 +269,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="mashups.menu"/>
+                <property name="siteActionPermission" value="toolbar/mashups-menu"/>
             </bean>
         </property>
     </bean>
@@ -285,7 +285,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="mashups.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/mashups-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -302,7 +302,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="portletDefinitions.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/portletDefinitions-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -320,7 +320,7 @@
         <property name="contextMenu" value="true"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="sites.menu"/>
+                <property name="siteActionPermission" value="toolbar/sites-menu"/>
             </bean>
         </property>
     </bean>
@@ -336,7 +336,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="sites.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/sites-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -353,7 +353,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="tags.menu"/>
+                <property name="siteActionPermission" value="toolbar/tags-menu"/>
             </bean>
         </property>
         <property name="contextMenu" value="true"/>
@@ -369,7 +369,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="tags.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/tags-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -386,7 +386,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="tags.menu"/>
+                <property name="siteActionPermission" value="toolbar/roles-menu"/>
             </bean>
         </property>
         <property name="contextMenu" value="true"/>
@@ -402,7 +402,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="tags.shortcuts"/>
+                <property name="siteActionPermission" value="toolbar/roles-shortcuts"/>
             </bean>
         </property>
     </bean>
@@ -1428,7 +1428,7 @@
         <property name="descriptionKey" value="label.administration"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="admin.JahiaAdministration"/>
+                <property name="siteActionPermission" value="admin/jahia-administration"/>
             </bean>
         </property>
         <property name="properties">
@@ -1452,7 +1452,7 @@
         <property name="descriptionKey" value="label.documentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.filemanager"/>
+                <property name="siteActionPermission" value="managers/filemanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1476,7 +1476,7 @@
         <property name="descriptionKey" value="label.contentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.contentmanager"/>
+                <property name="siteActionPermission" value="managers/contentmanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1500,7 +1500,7 @@
         <property name="descriptionKey" value="label.documentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.mashupmanager"/>
+                <property name="siteActionPermission" value="managers/mashupmanager"/>
             </bean>
         </property>
 
@@ -1525,7 +1525,7 @@
         <property name="descriptionKey" value="label.categorymanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.categorymanager"/>
+                <property name="siteActionPermission" value="managers/categorymanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1549,7 +1549,7 @@
         <property name="descriptionKey" value="label.tagmanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.categorymanager"/>
+                <property name="siteActionPermission" value="managers/categorymanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1573,7 +1573,7 @@
         <property name="descriptionKey" value="label.sitemanager"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="siteActionPermission" value="engines.sitemanager"/>
+                <property name="siteActionPermission" value="managers/sitemanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1748,7 +1748,7 @@
           parent="org.jahia.toolbar.item.AjaxAction">
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="serverActionPermission" value="admin.status.ManageStatus"/>
+                <property name="serverActionPermission" value="global/server-and-cache"/>
             </bean>
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-flushall-min"/>
@@ -1774,7 +1774,7 @@
           parent="org.jahia.toolbar.item.AjaxAction">
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="serverActionPermission" value="admin.status.ManageStatus"/>
+                <property name="serverActionPermission" value="global/server-and-cache"/>
             </bean>
         </property>
         <property name="minIconStyle" value="gwt-toolbar-icon-flushall-min"/>

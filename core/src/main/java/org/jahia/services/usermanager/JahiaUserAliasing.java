@@ -131,11 +131,11 @@ public class JahiaUserAliasing implements JahiaUser {
         return getUser().hasRoles(roles);
     }
 
-    public boolean isPermitted(Collection<String> permissions) {
-        return getUser().isPermitted(permissions);
-    }
-
     public boolean isPermitted(String permission) {
         return getUser().isPermitted(permission);
     }
+    
+    public boolean isPermitted(String permission, String siteKey) {
+        return getUser().isPermitted(permission, siteKey);
+    }    
 }

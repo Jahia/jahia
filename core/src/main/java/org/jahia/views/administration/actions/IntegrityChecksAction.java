@@ -97,11 +97,8 @@ public class IntegrityChecksAction extends AdminAction {
             throws Exception {
         JahiaData jData = (JahiaData) request
                 .getAttribute("org.jahia.data.JahiaData");
-        if (ServicesRegistry.getInstance().getJahiaACLManagerService()
-                .getSiteActionPermission("admin.htmleditors.HtmlEditorsAdmin",
-                        jData.getProcessingContext().getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        jData.getProcessingContext().getSiteID()) <= 0) {
+        if (!jData.getProcessingContext().getUser().isPermitted("admin/html-editors-admin",
+                        jData.getProcessingContext().getSiteKey())) {
 
             throw new JahiaForbiddenAccessException();
         }

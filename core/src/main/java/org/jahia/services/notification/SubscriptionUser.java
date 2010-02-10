@@ -230,12 +230,11 @@ public class SubscriptionUser implements JahiaUser {
         return false;
     }
 
-    public boolean isPermitted(Collection<String> permissions) {
-        return false;
-    }
-
     public boolean isPermitted(String permission) {
         return false;
     }
 
+    public boolean isPermitted(String permission, String siteKey) {
+        return false;
+    }    
 }

@@ -59,7 +59,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.ACLInfo;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -131,11 +130,8 @@ public class HtmlSettingsAction extends AdminAction {
             throws Exception {
         JahiaData jData = (JahiaData) request
                 .getAttribute("org.jahia.data.JahiaData");
-        if (ServicesRegistry.getInstance().getJahiaACLManagerService()
-                .getSiteActionPermission("admin.htmleditors.HtmlEditorsAdmin",
-                        jData.getProcessingContext().getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        jData.getProcessingContext().getSiteID()) <= 0) {
+        if (!jData.getProcessingContext().getUser().isPermitted("admin/html-editors-admin",
+                        jData.getProcessingContext().getSiteKey())) {
 
             throw new JahiaForbiddenAccessException();
         }
@@ -170,20 +166,18 @@ public class HtmlSettingsAction extends AdminAction {
 
     private void prepareToolbarData(int siteId, HttpServletRequest request) {
 
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance()
-                .getJahiaACLManagerService();
-        request.setAttribute("toolbarFullAclId", aclService.getJahiaAclName(
-                "org.jahia.actions.sites." + siteId
-                        + ".htmlsettings.toolbar.Full", siteId).getAcl()
-                .getId());
-        request.setAttribute("toolbarBasicAclId", aclService.getJahiaAclName(
-                "org.jahia.actions.sites." + siteId
-                        + ".htmlsettings.toolbar.Basic", siteId).getAcl()
-                .getId());
-        request.setAttribute("toolbarLightAclId", aclService.getJahiaAclName(
-                "org.jahia.actions.sites." + siteId
-                        + ".htmlsettings.toolbar.Light", siteId).getAcl()
-                .getId());
+//        request.setAttribute("toolbarFullAclId", aclService.getJahiaAclName(
+//                "org.jahia.actions.sites." + siteId
+//                        + ".htmlsettings.toolbar.Full", siteId).getAcl()
+//                .getId());
+//        request.setAttribute("toolbarBasicAclId", aclService.getJahiaAclName(
+//                "org.jahia.actions.sites." + siteId
+//                        + ".htmlsettings.toolbar.Basic", siteId).getAcl()
+//                .getId());
+//        request.setAttribute("toolbarLightAclId", aclService.getJahiaAclName(
+//                "org.jahia.actions.sites." + siteId
+//                        + ".htmlsettings.toolbar.Light", siteId).getAcl()
+//                .getId());
     }
 
     /**
@@ -264,34 +258,34 @@ public class HtmlSettingsAction extends AdminAction {
             HttpServletRequest request) {
         List<Principal> members = getToolbarPricipals(toolbarName, siteId,
                 request);
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance()
-                .getJahiaACLManagerService();
-        JahiaAclName aclName = aclService.getJahiaAclName(
-                "org.jahia.actions.sites." + siteId + ".htmlsettings.toolbar."
-                        + toolbarName, siteId);
-        aclName.getAcl().clearEntries(ACLInfo.GROUP_TYPE_ENTRY);
-        aclName.getAcl().clearEntries(ACLInfo.USER_TYPE_ENTRY);
-        for (Principal principal : members) {
-            if (principal instanceof JahiaGroup) {
-                JahiaGroup group = (JahiaGroup) principal;
-                JahiaAclEntry aclEntry = new JahiaAclEntry(new JahiaAclEntryPK(
-                        aclName.getAcl(), Integer
-                                .valueOf(ACLInfo.GROUP_TYPE_ENTRY), group
-                                .getGroupKey()), 0, 0);
-                aclEntry.setPermission(JahiaBaseACL.READ_RIGHTS,
-                        JahiaAclEntry.ACL_YES);
-                aclName.getAcl().setGroupEntry(group, aclEntry);
-            } else if (principal instanceof JahiaUser) {
-                JahiaUser user = (JahiaUser) principal;
-                JahiaAclEntry aclEntry = new JahiaAclEntry(new JahiaAclEntryPK(
-                        aclName.getAcl(), Integer
-                                .valueOf(ACLInfo.GROUP_TYPE_ENTRY), user
-                                .getUserKey()), 0, 0);
-                aclEntry.setPermission(JahiaBaseACL.READ_RIGHTS,
-                        JahiaAclEntry.ACL_YES);
-                aclName.getAcl().setUserEntry(user, aclEntry);
-            }
-        }
-        aclService.updateCache(aclName.getAcl());
+//        JahiaACLManagerService aclService = ServicesRegistry.getInstance()
+//                .getJahiaACLManagerService();
+//        JahiaAclName aclName = aclService.getJahiaAclName(
+//                "org.jahia.actions.sites." + siteId + ".htmlsettings.toolbar."
+//                        + toolbarName, siteId);
+//        aclName.getAcl().clearEntries(ACLInfo.GROUP_TYPE_ENTRY);
+//        aclName.getAcl().clearEntries(ACLInfo.USER_TYPE_ENTRY);
+//        for (Principal principal : members) {
+//            if (principal instanceof JahiaGroup) {
+//                JahiaGroup group = (JahiaGroup) principal;
+//                JahiaAclEntry aclEntry = new JahiaAclEntry(new JahiaAclEntryPK(
+//                        aclName.getAcl(), Integer
+//                                .valueOf(ACLInfo.GROUP_TYPE_ENTRY), group
+//                                .getGroupKey()), 0, 0);
+//                aclEntry.setPermission(JahiaBaseACL.READ_RIGHTS,
+//                        JahiaAclEntry.ACL_YES);
+//                aclName.getAcl().setGroupEntry(group, aclEntry);
+//            } else if (principal instanceof JahiaUser) {
+//                JahiaUser user = (JahiaUser) principal;
+//                JahiaAclEntry aclEntry = new JahiaAclEntry(new JahiaAclEntryPK(
+//                        aclName.getAcl(), Integer
+//                                .valueOf(ACLInfo.GROUP_TYPE_ENTRY), user
+//                                .getUserKey()), 0, 0);
+//                aclEntry.setPermission(JahiaBaseACL.READ_RIGHTS,
+//                        JahiaAclEntry.ACL_YES);
+//                aclName.getAcl().setUserEntry(user, aclEntry);
+//            }
+//        }
+//        aclService.updateCache(aclName.getAcl());
     }
 }

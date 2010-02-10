@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
@@ -104,14 +105,14 @@ public class RolesPermissionsHelper {
 
             // site permission
             for (JCRPermission permission : roleManager.getPermissions(site, jcrSession)) {
-                if (user.isPermitted(permission.getName())) {
+                if (user.isPermitted((StringUtils.isEmpty(permission.getGroup()) ? "" : permission.getGroup() + "/") + permission.getName(), site)) {
                     permissions.add(toPermission(permission));
                 }
             }
 
             // server permission
             for (JCRPermission permission : roleManager.getPermissions(null, jcrSession)) {
-                if (user.isPermitted(permission.getName())) {
+                if (user.isPermitted((StringUtils.isEmpty(permission.getGroup()) ? "" : permission.getGroup() + "/") + permission.getName())) {
                     permissions.add(toPermission(permission));
                 }
             }

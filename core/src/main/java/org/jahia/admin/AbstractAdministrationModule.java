@@ -35,9 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -64,20 +61,12 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     private boolean serverModule;
     private AdministrationModulesRegistry registry;
 
-    private boolean hasServerPermission(String permissionName, JahiaUser user, int siteID) {
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        return aclService.getServerActionPermission(permissionName,
-                user,
-                JahiaBaseACL.READ_RIGHTS,
-                siteID) > 0;
+    private boolean hasServerPermission(String permissionName, JahiaUser user, String siteKey) {
+        return user.isPermitted(permissionName);
     }
 
-    private boolean hasSitePermission(String permissionName, JahiaUser user, int siteID) {
-        JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        return aclService.getSiteActionPermission(permissionName,
-                user,
-                JahiaBaseACL.READ_RIGHTS,
-                siteID) > 0;
+    private boolean hasSitePermission(String permissionName, JahiaUser user, String siteKey) {
+        return user.isPermitted(permissionName, siteKey);
     }
 
     public String getIcon() {
@@ -136,15 +125,15 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
         this.registry = registry;
     }
 
-    public boolean isEnabled(JahiaUser user, int siteID) {
+    public boolean isEnabled(JahiaUser user, String siteKey) {
         if (StringUtils.isEmpty(permissionName)) {
             // no permission check required
             return true;
         }
         if (isServerModule()) {
-            return hasServerPermission(permissionName, user, siteID);
+            return hasServerPermission(permissionName, user, siteKey);
         } else {
-            return hasSitePermission(permissionName, user, siteID);
+            return hasSitePermission(permissionName, user, siteKey);
         }
     }
     

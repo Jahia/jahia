@@ -66,7 +66,7 @@ public interface AdministrationModule {
 
     public String getActionURL(ParamBean paramBean) throws Exception;
 
-    public boolean isEnabled(JahiaUser user, int siteID);
+    public boolean isEnabled(JahiaUser user, String siteKey);
 
     public String getPermissionName();
 

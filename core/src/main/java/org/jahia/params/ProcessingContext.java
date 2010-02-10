@@ -3114,8 +3114,8 @@ public class ProcessingContext {
             }
             setCanEdit(Boolean.valueOf((getContentPage().checkWriteAccess(getTheUser(), true) ||
                                         getContentPage().checkAdminAccess(getTheUser(), true) ) &&
-                                        REGISTRY.getJahiaACLManagerService().getSiteActionPermission( "engines.actions.editMode",
-                                                getUser(), JahiaBaseACL.READ_RIGHTS, getSiteID()) > 0));
+                                        getUser().isPermitted("actions/edit-mode",
+                                                getSiteKey())));
         }
 
         return getCanEdit().booleanValue();

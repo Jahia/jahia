@@ -31,9 +31,9 @@
  */
 package org.jahia.services.toolbar.bean;
 
+import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
 import org.jahia.services.usermanager.JahiaUser;
@@ -225,15 +225,14 @@ public class Visibility {
      * @param jData
      * @return
      */
-    private boolean isAllowedServerPermission(org.jahia.data.JahiaData jData) {
+    private boolean isAllowedServerPermission(JahiaData jData) {
         if (serverActionPermission != null) {
             ProcessingContext processingContext = jData.getProcessingContext();
-            JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
             Object o = processingContext.getAttribute(serverActionPermission);
             if (o != null) {
                 return ((Boolean) o).booleanValue();
             } else {
-                boolean isAllowedServerPermission = aclService.getServerActionPermission(serverActionPermission, processingContext.getUser(), JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0;
+                boolean isAllowedServerPermission = processingContext.getUser().isPermitted(serverActionPermission);
                 processingContext.setAttribute(serverActionPermission, new Boolean(isAllowedServerPermission));
                 return isAllowedServerPermission;
             }
@@ -248,18 +247,17 @@ public class Visibility {
      * @param jahiaData
      * @return
      */
-    private boolean isAllowedSitePermission(org.jahia.data.JahiaData jahiaData) {
+    private boolean isAllowedSitePermission(JahiaData jahiaData) {
         if (siteActionPermission != null) {
             ProcessingContext processingContext = jahiaData.getProcessingContext();
-            JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
             Object o = processingContext.getAttribute(siteActionPermission);
             logger.debug("Site action permission value: " + siteActionPermission);
             if (o != null) {
                 logger.debug("Site permission value(from request): " + ((Boolean) o).booleanValue());
                 return ((Boolean) o).booleanValue();
             } else {
-                boolean isAllowedSitePermission = aclService.getSiteActionPermission(siteActionPermission, 
-                        processingContext.getUser(), JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0;
+                boolean isAllowedSitePermission = processingContext.getUser().isPermitted(siteActionPermission, 
+                        processingContext.getSiteKey());
                 logger.debug("Site permission value: " + isAllowedSitePermission);
                 processingContext.setAttribute(siteActionPermission, new Boolean(isAllowedSitePermission));
                 return isAllowedSitePermission;

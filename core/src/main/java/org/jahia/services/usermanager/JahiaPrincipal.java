@@ -70,29 +70,30 @@ public interface JahiaPrincipal extends Principal, Serializable {
     boolean hasRoles(Collection<String> roles);
 
     /**
-     * Returns {@code true} if this principal is permitted to perform all of the
-     * actions or access a resource summarized by the specified permission
-     * collection.
+     * Returns {@code true} if this principal is permitted to perform a server action
+     * or access a resource summarized by the specified permission string ("<group>/<name>").
      * 
-     * @param permissions a collection of the permissions that is being checked
-     * @return {@code true} if this principal is permitted to perform all of the
-     *         actions or access a resource summarized by the specified
-     *         permission collection
-     * @since 6.5
-     */
-    boolean isPermitted(Collection<String> permissions);
-
-    /**
-     * Returns {@code true} if this principal is permitted to perform an action
-     * or access a resource summarized by the specified permission string.
-     * 
-     * @param permission the String representation of a permission that is being
-     *            checked
-     * @return {@code true} if this principal is permitted to perform an action
+     * @param permission the String representation of a server permission ("<group>/<name>")
+     *            that is being checked
+     * @return {@code true} if this principal is permitted to perform a server action
      *         or access a resource summarized by the specified permission
      *         string
      * @since 6.5
      */
     boolean isPermitted(String permission);
+    
+    /**
+     * Returns {@code true} if this principal is permitted to perform a site action
+     * or access a resource summarized by the specified permission string.
+     * 
+     * @param permission the String representation of a site permission ("<group>/<name>")
+     *            that is being checked
+     * @param siteKey the site key      
+     * @return {@code true} if this principal is permitted to perform a site action
+     *         or access a resource summarized by the specified permission
+     *         string
+     * @since 6.5
+     */
+    boolean isPermitted(String permission, String siteKey);    
 
 }

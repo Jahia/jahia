@@ -48,7 +48,6 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.integrity.Link;
@@ -168,13 +167,11 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
         return viewObject;
     }
     
-    private JahiaACLManagerService aclManagerService;
-    
     private AdministrationModule linkCheckerAdministrationModule;
     
     public Boolean checkLinks() {
         ProcessingContext ctx = retrieveParamBean();
-        if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteID())) {
+        if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteKey())) {
             linkChecker.startCheckingLinks(ctx.getSiteID());
             return Boolean.TRUE;
         } else {
@@ -182,12 +179,10 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
         }
     }
 
-    private boolean hasAccess(JahiaUser user, int siteID) {
-        return aclManagerService.getSiteActionPermission(
+    private boolean hasAccess(JahiaUser user, String siteKey) {
+        return user.isPermitted(
                 linkCheckerAdministrationModule.getPermissionName(),
-                user,
-                JahiaBaseACL.READ_RIGHTS,
-                siteID) > 0;
+                siteKey);
     }
 
     /**
@@ -232,10 +227,6 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
         return status;
     }
     
-    public void setAclManagerService(JahiaACLManagerService aclManagerService) {
-        this.aclManagerService = aclManagerService;
-    }
-
     public void setLinkCheckerAdministrationModule(
             AdministrationModule linkCheckerAdministrationModule) {
         this.linkCheckerAdministrationModule = linkCheckerAdministrationModule;

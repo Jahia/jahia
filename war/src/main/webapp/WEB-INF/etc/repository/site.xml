@@ -23,6 +23,48 @@
             <GRANT_jcr_write_live_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:write_live" j:aceType="GRANT"/>
         </j:acl>
+ 	    <admin jcr:primaryType="jnt:permissionGroup">
+   		    <jahia-administration jcr:primaryType="jnt:permission"/> 	    
+   		    <users jcr:primaryType="jnt:permission"/>
+   		    <groups jcr:primaryType="jnt:permission"/>
+   		    <site-languages jcr:primaryType="jnt:permission"/>
+   		    <site-permissions jcr:primaryType="jnt:permission"/>
+   		    <html-editors-admin jcr:primaryType="jnt:permission"/>
+   		    <integrity-checks jcr:primaryType="jnt:permission"/>
+   		    <analytics jcr:primaryType="jnt:permission"/>
+   	    </admin>
+   	    <actions jcr:primaryType="jnt:permissionGroup">
+   		    <edit-mode jcr:primaryType="jnt:permission"/>
+   		    <import jcr:primaryType="jnt:permission"/> 	    
+   	    </actions>   	    
+   	    <managers jcr:primaryType="jnt:permissionGroup">
+   	        <filemanager jcr:primaryType="jnt:permission"/>
+   	        <contentmanager jcr:primaryType="jnt:permission"/>
+   	        <mashupmanager jcr:primaryType="jnt:permission"/>
+   	        <categorymanager jcr:primaryType="jnt:permission"/>
+   	        <sitemanager jcr:primaryType="jnt:permission"/>
+   	    </managers>
+   	    <toolbar jcr:primaryType="jnt:permissionGroup">
+   		    <categories-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <categories-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <content-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <content-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <documents-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <documents-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <mashups-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <mashups-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <portletDefinitions-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <sites-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <sites-shortcuts jcr:primaryType="jnt:permission"/>
+   		    <tags-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <tags-shortcuts jcr:primaryType="jnt:permission"/>   		       		       		       		       		       		    
+   		    <roles-menu jcr:primaryType="jnt:permission"/> 	    
+   		    <roles-shortcuts jcr:primaryType="jnt:permission"/>   		    
+   	    </toolbar>   	             	               	            	    
+   	    <integrity jcr:primaryType="jnt:permissionGroup">
+   		    <link-integrity jcr:primaryType="jnt:permission"/> 	    
+   		    <wai-compliance jcr:primaryType="jnt:permission"/>
+   	    </integrity>   	    
     </permissions>
     
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">

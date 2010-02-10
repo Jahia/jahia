@@ -8,6 +8,7 @@
    		<categories jcr:primaryType="jnt:permission"/>
    		<portlets jcr:primaryType="jnt:permission"/>
    		<audit-logs jcr:primaryType="jnt:permission"/>
+   		<email-settings jcr:primaryType="jnt:permission"/>
    		<root-user jcr:primaryType="jnt:permission"/>
    		<server-and-cache jcr:primaryType="jnt:permission"/>
    		<server-permissions jcr:primaryType="jnt:permission"/>

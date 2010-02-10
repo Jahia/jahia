@@ -511,13 +511,16 @@ public class PublicationTest extends TestCase {
         testChildOrdering(liveContentList1Node, "contentList1_text1", "contentList1_text0", "contentList1_text2" );
 
         // Case 6 : now let's move the node to another container list.
-        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList2");
+        editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
+        englishEditSession.checkout(editContentList1);
         JCRNodeWrapper editContentList2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
         englishEditSession.checkout(editContentList2);
+        englishEditSession.move(editTextNode1.getPath(), SITECONTENT_ROOT_NODE + "/home/contentList2/contentList1_text1");
         editContentList2.orderBefore("contentList1_text1", "contentList2_text0");
         englishEditSession.save();
 
-        jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        // jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editContentList2.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         JCRNodeWrapper liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
@@ -525,16 +528,20 @@ public class PublicationTest extends TestCase {
         testChildOrdering(liveContentList2Node, "contentList1_text1", "contentList2_text0", "contentList2_text1");
 
         // Case 7 : now let's move it to yet another list, modify it, then publish it.
-        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList2/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList3");
+        editContentList2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
+        englishEditSession.checkout(editContentList2);
+        JCRNodeWrapper editContentList3 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
+        englishEditSession.checkout(editContentList3);
+        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList2/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
+        englishEditSession.save();
         editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
         englishEditSession.checkout(editTextNode1);
         editTextNode1.setProperty("text", "English text update 2");
-        JCRNodeWrapper editContentList3 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
-        englishEditSession.checkout(editContentList3);
+        englishEditSession.save();
         editContentList3.orderBefore("contentList1_text1", "contentList3_text0");
         englishEditSession.save();
 
-        jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editContentList3.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
         JCRNodeWrapper liveContentList3Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
@@ -542,15 +549,17 @@ public class PublicationTest extends TestCase {
         testChildOrdering(liveContentList3Node, "contentList1_text1", "contentList3_text0", "contentList3_text1");
 
         // Case 8 : Let's move to yet another list, and then modify it's location in the list twice.
-        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList4");
-        JCRNodeWrapper editContentList4 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");
+        editContentList3 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
         englishEditSession.checkout(editContentList3);
+        JCRNodeWrapper editContentList4 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");
+        englishEditSession.checkout(editContentList4);
+        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
         editContentList4.orderBefore("contentList1_text1", "contentList4_text1");
         editContentList4.orderBefore("contentList1_text1", "contentList4_text0");
         englishEditSession.save();
         editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
 
-        jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editContentList4.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         liveContentList3Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
         JCRNodeWrapper liveContentList4Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");

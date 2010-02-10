@@ -261,13 +261,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--
-    <filter-mapping>
-        <filter-name>ResponseOverrideFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    -->
-
     <filter-mapping>
         <filter-name>ErrorLoggingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -841,8 +834,6 @@
     </servlet>
 <!-- End of Quercus PHP servlet -->
 
-
-    <!-- [INSERT FRAGMENT HERE] -->
 
     <!-- Servlet mappings -->
 

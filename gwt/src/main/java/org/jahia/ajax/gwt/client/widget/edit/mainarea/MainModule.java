@@ -105,6 +105,7 @@ public class MainModule extends ContentPanel implements Module {
                 list.add(path);
                 editLinker.getMainModule().unmask();                
                 editLinker.onModuleSelection(MainModule.this);
+                editLinker.getSidePanel().refreshWorkflowTabItem();
                 switchStaticAssets(result.getStaticAssets());
             }
 

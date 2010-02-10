@@ -97,4 +97,8 @@ public class SidePanel extends ContentPanel {
     public void refreshPageTabItem() {
         pagesTabItem.refresh();
     }
+
+    public void refreshWorkflowTabItem() {
+        workflowTabItem.refresh();
+    }
 }

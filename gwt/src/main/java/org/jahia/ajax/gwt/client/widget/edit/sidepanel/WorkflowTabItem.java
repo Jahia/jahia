@@ -43,6 +43,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
     private ColumnModel cm;
     private LayoutContainer contentContainer;
     private JahiaContentManagementServiceAsync jahiaContentManagementServiceAsync;
+    private boolean isInitialized;
 
     public WorkflowTabItem() {
         setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
@@ -50,9 +51,6 @@ public class WorkflowTabItem extends SidePanelTabItem {
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
         jahiaContentManagementServiceAsync = JahiaContentManagementService.App.getInstance();
-    }
-
-    public void initList(Module selectedModule) {
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
         contentContainer.setScrollMode(Style.Scroll.AUTO);
@@ -82,7 +80,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
                                                                                          outcome, new AsyncCallback() {
                                             public void onSuccess(Object result) {
                                                 Info.display("Workflow started", "Workflow started");
-                                                editLinker.refresh();
+                                                editLinker.getSidePanel().refresh();
                                             }
 
                                             public void onFailure(Throwable caught) {
@@ -113,14 +111,22 @@ public class WorkflowTabItem extends SidePanelTabItem {
                 }
             }
         });
+        grid.getStore().setMonitorChanges(true);
         contentContainer.add(grid);
         add(contentContainer);
-        fillStore();
+        isInitialized = false;
+    }
+
+    public void initList(Module selectedModule) {
+        if(!isInitialized) {
+            fillStore();
+            layout();
+            isInitialized = true;
+        }
     }
 
     private void fillStore() {
         contentStore.removeAll();
-        contentContainer.layout(true);
         List<Module> modules = ModuleHelper.getModules();
         List<String> list = new ArrayList<String>();
         for (Module m : modules) {
@@ -154,5 +160,6 @@ public class WorkflowTabItem extends SidePanelTabItem {
     @Override
     public void refresh() {
         fillStore();
+        layout();
     }
 }

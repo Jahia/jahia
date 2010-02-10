@@ -119,10 +119,6 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      * @return
      */
     private List<ColumnConfig> createColumnsConfig() {
-        if (roles == null || roles.isEmpty()) {
-            return null;
-        }
-
         final List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig();
         column.setId("label");

@@ -234,13 +234,13 @@ public class EditContentEngine extends AbstractContentEngine {
                     // handle multilang
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
-                        langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap());
+                        langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
                         if (pe != null) {
-                            properties.addAll(pe.getProperties(false, true));
+                            properties.addAll(pe.getProperties(false, true, true));
                         }
                     } else {
                         if (pe != null) {
-                            properties.addAll(pe.getProperties());
+                            properties.addAll(pe.getProperties(true,true,true));
                         }
                     }
 

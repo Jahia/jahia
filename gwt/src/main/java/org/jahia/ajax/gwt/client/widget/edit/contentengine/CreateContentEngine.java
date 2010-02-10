@@ -6,15 +6,11 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -220,9 +216,9 @@ public class CreateContentEngine extends AbstractContentEngine {
                 // handle multilang
                 if (propertiesTabItem.isMultiLang()) {
                     // for now only contentTabItem  has multilang. properties
-                    langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap());
+                    langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
                     if (pe != null) {
-                        props.addAll(pe.getProperties(false, true));
+                        props.addAll(pe.getProperties(false, true, false));
                     }
                 } else {
                     if (pe != null) {

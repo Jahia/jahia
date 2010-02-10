@@ -160,7 +160,11 @@
                 	<property name="skippedProperties">
                 		<set>
                 			<value>jcr:language</value>
-                			<value>j:tags</value>
+                            <value>jcr:lastModified</value>
+                            <value>jcr:lastModifiedBy</value>
+                            <value>j:lastPublished</value>
+                            <value>j:lastPublishedBy</value>
+                            <value>j:tags</value>
                 		</set>
                 	</property>
                 </bean>

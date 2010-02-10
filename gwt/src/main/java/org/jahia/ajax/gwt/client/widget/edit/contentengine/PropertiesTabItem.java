@@ -86,7 +86,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 addSharedLangLabel = false;
                 propertiesEditor.setVisible(false);
                 // keep tarck of the old values
-                previousNon18nProperties = propertiesEditor.getProperties(false, true);
+                previousNon18nProperties = propertiesEditor.getProperties(false, true, false);
             }
             if (!isMultiLang()) {
                 setProcessed(true);
@@ -151,13 +151,14 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
      * Get lang properties per map
      *
      * @return
+     * @param modifiedOnly
      */
-    public Map<String, List<GWTJahiaNodeProperty>> getLangPropertiesMap() {
+    public Map<String, List<GWTJahiaNodeProperty>> getLangPropertiesMap(boolean modifiedOnly) {
         Map<String, List<GWTJahiaNodeProperty>> mapProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
         Iterator<String> langCodes = langPropertiesEditorMap.keySet().iterator();
         while (langCodes.hasNext()) {
             String langCode = langCodes.next();
-            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false));
+            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false, modifiedOnly));
         }
         return mapProperties;
     }

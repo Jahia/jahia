@@ -108,7 +108,7 @@ public class LangPropertiesEditor extends LayoutContainer {
             boolean addSharedLangLabel = true;
             if (displayedPropertiesEditor != null) {
                 displayedPropertiesEditor.setVisible(false);
-                previousNon18nProperties = displayedPropertiesEditor.getProperties(false, true);
+                previousNon18nProperties = displayedPropertiesEditor.getProperties(false, true, false);
 
             }
 
@@ -247,7 +247,7 @@ public class LangPropertiesEditor extends LayoutContainer {
         Iterator<String> langCodes = langPropertiesEditorMap.keySet().iterator();
         while (langCodes.hasNext()) {
             String langCode = langCodes.next();
-            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties());
+            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true,false,true));
         }
         return mapProperties;
     }

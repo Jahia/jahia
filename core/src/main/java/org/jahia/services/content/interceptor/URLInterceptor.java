@@ -74,6 +74,15 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         return definition.getRequiredType() == PropertyType.STRING && definition.getSelector() == SelectorType.RICHTEXT;
     }
 
+    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (node.hasProperty(name)) {
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+        }
+        node.getProperty(name).remove();
+    }
+
     /**
      * Transform user URL with servlet context and links placeholders for storage.
      *
@@ -97,6 +106,8 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
+
+
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 

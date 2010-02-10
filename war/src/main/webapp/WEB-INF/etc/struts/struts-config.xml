@@ -74,49 +74,6 @@
                 input="engines.helloworld.input">
         </action>
 
-        <!-- Hello World engine -->
-        <action path="/hello"
-                name="helloForm"
-                type="org.jahia.views.engines.helloworld.actions.HelloAction"
-                scope="request"
-                input="engines.helloworld.input"
-                validate="true">
-            <forward name="welcome" path="engines.helloworld.welcome"/>
-            <forward name="input" path="engines.helloworld.input"/>
-        </action>
-
-        <!-- Pages Versioning engine -->
-        <action path="/PagesVersioning"
-                name="mainForm"
-                type="org.jahia.views.engines.versioning.pages.actions.PagesVersioningAction"
-                scope="request"
-                input="engines.versioning.pages.revisions-list"
-                parameter="method"
-                validate="false">
-            <forward name="operationChoices" path="engines.versioning.pages.operation-choices"/>
-            <forward name="sitemap" path="engines.versioning.pages.sitemap"/>
-            <forward name="revisionsList" path="engines.versioning.pages.revisions-list"/>
-            <forward name="confirmRestore" path="engines.versioning.pages.confirm-restore"/>
-            <forward name="confirmUndoStaging" path="engines.versioning.pages.confirm-undo-staging"/>
-            <forward name="confirmUndelete" path="engines.versioning.pages.confirm-page-undelete"/>
-            <forward name="revisionsDetail" path="/do/RevisionEntrySetDetail?method=revisionsDetail&amp;reloaded=yes"/>
-            <forward name="close" path="engines.close"/>
-            <forward name="pageTreeLocked" path="engines.versioning.pages.tree-locked">
-            </forward>
-        </action>
-
-
-        <!-- Versioning Revisions Detail -->
-        <action path="/RevisionEntrySetDetail"
-                name="mainForm"
-                type="org.jahia.views.engines.versioning.revisionsdetail.actions.RevisionEntrySetDetailAction"
-                scope="request"
-                input="engines.versioning.revisionsdetail"
-                parameter="method"
-                validate="false">
-            <forward name="revisionsDetail" path="engines.versioning.revisionsdetail"/>
-        </action>
-
         <!-- Date Picker engine -->
         <action path="/DatePicker"
                 type="org.jahia.views.engines.datepicker.actions.DatePickerAction"

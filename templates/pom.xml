@@ -90,6 +90,7 @@
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
         <module>mod-skins</module>
+        <module>mod-portal</module>
     </modules>
 
 

@@ -55,7 +55,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -258,7 +257,6 @@ public class ManageSites extends AbstractAdministrationModule {
                             // is active
                             // default page (homepage id)
                             "",        // description
-                            null,    // the acl
                             null);
                 }
 
@@ -317,7 +315,6 @@ public class ManageSites extends AbstractAdministrationModule {
                     // is active
                     // default page (homepage id)
                     "",        // description
-                    null,    // the acl
                     null);
         }
 
@@ -483,7 +480,6 @@ public class ManageSites extends AbstractAdministrationModule {
                         // is active
                         // default page (homepage id)... subject to update in terminateAdd().
                         siteDescr,
-                        null,
                         null);
 //                site.setTemplatesAutoDeployMode(true);
 //                site.setWebAppsAutoDeployMode(true);
@@ -512,7 +508,6 @@ public class ManageSites extends AbstractAdministrationModule {
                         siteServerName,
                         siteKey,
                         siteDescr,
-                        null,
                         null);
 
 
@@ -1740,7 +1735,7 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaSite siteToUseNow = sMgr.getDefaultSite() != null ? sMgr
                     .getDefaultSite()
                     : new JahiaSite(-1, "", "", "", "",
-                    null, new Properties());
+                    new Properties());
             jParams.setSite(siteToUseNow);
             jParams.setContentPage(siteToUseNow.getHomeContentPage());
         }

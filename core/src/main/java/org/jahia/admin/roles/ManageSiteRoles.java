@@ -51,8 +51,6 @@ import java.io.IOException;
  */
 public class ManageSiteRoles extends AbstractAdministrationModule {
 
-    public static final String SITE_PERMISSIONS_PREFIX = "org.jahia.actions.sites.";
-
     /**
      * logging
      */

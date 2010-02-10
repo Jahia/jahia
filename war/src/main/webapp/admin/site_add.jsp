@@ -136,7 +136,7 @@
 
             </td>
         </tr>
-        <% if (ServicesRegistry.getInstance().getJahiaACLManagerService().getServerActionPermission("admin.pwdpolicy.ManagePasswordPolicies", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) { %>
+        <% if (jParams.getUser().isPermitted("global/password-policy")) { %>
         <tr>
             <td>
                 <label for="enforcePasswordPolicy">

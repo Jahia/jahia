@@ -50,7 +50,7 @@ public class JahiaLinkManagerTest extends MockObjectTestCase {
     // -------------------------- STATIC METHODS --------------------------
 
     public static Test suite() {
-        return new TestSuite(JahiaAclManagerTest.class);
+        return new TestSuite(JahiaLinkManagerTest.class);
     }
 
 // --------------------------- CONSTRUCTORS ---------------------------

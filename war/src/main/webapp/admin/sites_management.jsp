@@ -321,7 +321,7 @@
                     </td>
 
                     <td>
-                        <% if ((ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.importexport.ManageImport", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, 0) > 0)
+                        <% if (jParams.getUser().isPermitted("actions/import", site.getSiteKey()) 
                                 && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
@@ -466,7 +466,7 @@ else { %>
                     </td>
 
                     <td>
-                        <% if ((ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.importexport.ManageImport", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, 0) > 0)
+                        <% if (jParams.getUser().isPermitted("actions/import")
                                 && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">

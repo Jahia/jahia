@@ -36,7 +36,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.utils.JahiaTools;
@@ -71,8 +70,6 @@ public class JahiaUserManagerDBProvider extends JahiaUserManagerProvider impleme
     private static JahiaUserManagerDBProvider mUserManagerDBService;
 
     private Cache mProvidersUserCache;
-
-    private JahiaACLManagerService aclService = null;
 
     private JahiaUserManager userManager = null;
 
@@ -116,10 +113,6 @@ public class JahiaUserManagerDBProvider extends JahiaUserManagerProvider impleme
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
-
-    public void setAclService(JahiaACLManagerService aclService) {
-        this.aclService = aclService;
-    }
 
     public void setUserManager(JahiaUserManager userManager) {
         this.userManager = userManager;
@@ -298,9 +291,8 @@ public class JahiaUserManagerDBProvider extends JahiaUserManagerProvider impleme
 
             logger.debug("User removed from groups");
 
-            aclService.removeUserFromAllACLs(user);
-
-            logger.debug("User removed from acls");
+//            aclService.removeUserFromAllACLs(user);
+//            logger.debug("User removed from acls");
 
             // and now ... KILL THE VICTIM !!!!!!!
             user = null;

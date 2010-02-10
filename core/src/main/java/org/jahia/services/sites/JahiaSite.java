@@ -46,7 +46,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
@@ -121,7 +120,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      */
     public JahiaSite(int id, String title, String serverName, String siteKey,
                      String descr,
-                     JahiaBaseACL acl, Properties settings) {
+                     Properties settings) {
         this();
         mSiteID = id;
         mTitle = title;
@@ -132,8 +131,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
             descr = "no desc";
         }
         mDescr = descr;
-
-        mACL = acl;
 
         if (settings != null) {
             mSettings = settings;

@@ -34,7 +34,6 @@ package org.jahia.registries;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.JahiaService;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;
 import org.jahia.services.cache.CacheService;
@@ -302,13 +301,6 @@ public class ServicesRegistry {
      */
     public JahiaGroupManagerService getJahiaGroupManagerService() {
         return (JahiaGroupManagerService) getService(JAHIA_GROUP_MANAGER_SERVICE);
-    }
-
-    /**
-     *
-     */
-    public JahiaACLManagerService getJahiaACLManagerService() {
-        return (JahiaACLManagerService) getService(JAHIA_ACL_MANAGER_SERVICE);
     }
 
     /**

@@ -169,7 +169,6 @@
         </property>
         <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager"/>
         <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
-        <property name="jahiaAclService" ref="JahiaACLManagerService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 

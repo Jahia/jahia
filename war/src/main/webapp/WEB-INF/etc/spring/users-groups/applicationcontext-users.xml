@@ -24,7 +24,6 @@
     <!-- 
     <bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
         <property name="key" value="jahia_db"/>
-        <property name="aclService" ref="JahiaACLManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager"/>
         <property name="defaultProvider" value="false"/>

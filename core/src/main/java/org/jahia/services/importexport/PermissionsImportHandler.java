@@ -93,85 +93,85 @@ public class PermissionsImportHandler extends DefaultHandler {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (localName.equals(nodeName)) {
-            boolean importingServerPermissions = "serverPermission".equals(nodeName); 
-            String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
-            String userlist = attributes.getValue(ImportExportBaseService.JAHIA_URI, "acl");
-
-            JahiaAclName aclName = ServicesRegistry.getInstance().getJahiaACLManagerService().getJahiaAclName(prefix+"."+name, siteId);
-            JahiaAcl jAcl = aclName.getAcl();
-            jAcl.clearEntries(ACLInfo.USER_TYPE_ENTRY);
-            jAcl.clearEntries(ACLInfo.GROUP_TYPE_ENTRY);
-            JahiaAclEntry permissions = new JahiaAclEntry (1,0); // grant rwa , no tristate
-
-            if (userlist != null && userlist.length()>0) {
-                StringTokenizer st = new StringTokenizer(userlist, "|");
-                while (st.hasMoreElements()) {
-                    String principal = st.nextToken();
-                    String username = principal.substring(2);
-                    int siteId = this.siteId;
-                    int pos = username.indexOf(':');
-                    if (importingServerPermissions && pos != -1 && pos < username.length()) {
-                        String siteKey = username.substring(pos + 1);
-                        username = username.substring(0, pos);
-                        if (!siteKey.equals("0")) {
-                            try {
-                                JahiaSite site = null;
-                                if (siteKeyMapping.containsKey(siteKey)) {
-                                    // the site key was changed during import
-                                    // (there is an existing site with the same
-                                    // key)
-                                    site = siteService
-                                            .getSiteByKey((String) siteKeyMapping
-                                                    .get(siteKey));
-                                }
-                                if (null == site) {
-                                    site = siteService.getSiteByKey(siteKey);
-                                }
-                                if (site != null) {
-                                    siteId = site.getID();
-                                }
-                            } catch (JahiaException e) {
-                                logger.warn("Site cannot be found for key '"
-                                        + siteKey + "'", e);
-                            }
-                        } else {
-                            siteId = 0;
-                        }
-                    }
-                    
-                    if (principal.charAt(0) == 'u') {
-                        JahiaUser user = su.getMember(siteId, username);
-                        if (user != null) {
-                            jAcl.setUserEntry(user, permissions);
-                        } else {
-                            logger
-                                    .warn("User '"
-                                            + username
-                                            + "' cannot be found for site with ID '"
-                                            + siteId + "'");
-                        }
-                    } else {
-                        JahiaGroup group = g.lookupGroup(siteId, username);
-                        if (group != null) {
-                            jAcl.setGroupEntry(group, permissions);
-                        } else {
-                            logger
-                                    .warn("Group '"
-                                            + username
-                                            + "' cannot be found for site with ID '"
-                                            + siteId + "'");
-                        }
-                    }
-                }
-            }
-            aclName.setAcl(jAcl);
-            ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(jAcl);
-        }
+//        if (localName.equals(nodeName)) {
+//            boolean importingServerPermissions = "serverPermission".equals(nodeName); 
+//            String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
+//            String userlist = attributes.getValue(ImportExportBaseService.JAHIA_URI, "acl");
+//
+//            JahiaAclName aclName = ServicesRegistry.getInstance().getJahiaACLManagerService().getJahiaAclName(prefix+"."+name, siteId);
+//            JahiaAcl jAcl = aclName.getAcl();
+//            jAcl.clearEntries(ACLInfo.USER_TYPE_ENTRY);
+//            jAcl.clearEntries(ACLInfo.GROUP_TYPE_ENTRY);
+//            JahiaAclEntry permissions = new JahiaAclEntry (1,0); // grant rwa , no tristate
+//
+//            if (userlist != null && userlist.length()>0) {
+//                StringTokenizer st = new StringTokenizer(userlist, "|");
+//                while (st.hasMoreElements()) {
+//                    String principal = st.nextToken();
+//                    String username = principal.substring(2);
+//                    int siteId = this.siteId;
+//                    int pos = username.indexOf(':');
+//                    if (importingServerPermissions && pos != -1 && pos < username.length()) {
+//                        String siteKey = username.substring(pos + 1);
+//                        username = username.substring(0, pos);
+//                        if (!siteKey.equals("0")) {
+//                            try {
+//                                JahiaSite site = null;
+//                                if (siteKeyMapping.containsKey(siteKey)) {
+//                                    // the site key was changed during import
+//                                    // (there is an existing site with the same
+//                                    // key)
+//                                    site = siteService
+//                                            .getSiteByKey((String) siteKeyMapping
+//                                                    .get(siteKey));
+//                                }
+//                                if (null == site) {
+//                                    site = siteService.getSiteByKey(siteKey);
+//                                }
+//                                if (site != null) {
+//                                    siteId = site.getID();
+//                                }
+//                            } catch (JahiaException e) {
+//                                logger.warn("Site cannot be found for key '"
+//                                        + siteKey + "'", e);
+//                            }
+//                        } else {
+//                            siteId = 0;
+//                        }
+//                    }
+//                    
+//                    if (principal.charAt(0) == 'u') {
+//                        JahiaUser user = su.getMember(siteId, username);
+//                        if (user != null) {
+//                            jAcl.setUserEntry(user, permissions);
+//                        } else {
+//                            logger
+//                                    .warn("User '"
+//                                            + username
+//                                            + "' cannot be found for site with ID '"
+//                                            + siteId + "'");
+//                        }
+//                    } else {
+//                        JahiaGroup group = g.lookupGroup(siteId, username);
+//                        if (group != null) {
+//                            jAcl.setGroupEntry(group, permissions);
+//                        } else {
+//                            logger
+//                                    .warn("Group '"
+//                                            + username
+//                                            + "' cannot be found for site with ID '"
+//                                            + siteId + "'");
+//                        }
+//                    }
+//                }
+//            }
+//            aclName.setAcl(jAcl);
+//            ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(jAcl);
+//        }
     }
 
     public void endDocument() throws SAXException {
-        ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
+        // ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {

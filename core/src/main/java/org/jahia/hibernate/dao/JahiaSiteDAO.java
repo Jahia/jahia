@@ -238,8 +238,6 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         Map<Serializable, Integer> acls = new HashMap<Serializable, Integer>(1024);
         List<ContentDefinitionKey> definitions = new ArrayList<ContentDefinitionKey>(1024);
         ApplicationContext context = SpringContextSingleton.getInstance().getContext();
-        JahiaAclDAO aclDAO = (JahiaAclDAO) context.getBean("jahiaAclDAO");
-        JahiaAclNamesDAO aclNamesDAO = (JahiaAclNamesDAO) context.getBean("jahiaAclNamesDAO");
         JahiaBigTextDataDAO bigTextDataDAO = (JahiaBigTextDataDAO) context.getBean("jahiaBigTextDataDAO");
         JahiaContainerDAO containerDAO = (JahiaContainerDAO) context.getBean("jahiaContainerDAO");
         JahiaContainerDefinitionDAO containerDefinitionDAO = (JahiaContainerDefinitionDAO) context.getBean("jahiaContainerDefinitionDAO");
@@ -323,30 +321,30 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         acls.putAll(map);
 
         // We delete all Aclnames
-        acls.putAll(aclNamesDAO.removeBySiteID(siteID));
+//        acls.putAll(aclNamesDAO.removeBySiteID(siteID));
         // We delete all Acls
-        List<Integer> collection = new ArrayList<Integer>(acls.values());
-        Collections.sort(collection);
-        for (int i = collection.size() - 1; i >= 0; i--) {
-            Integer aclID = collection.get(i);
-            try {
-                aclDAO.removeAcl(aclID);
-            } catch (Exception e) {
-                ;
-            }
-        }
+//        List<Integer> collection = new ArrayList<Integer>(acls.values());
+//        Collections.sort(collection);
+//        for (int i = collection.size() - 1; i >= 0; i--) {
+//            Integer aclID = collection.get(i);
+//            try {
+//                aclDAO.removeAcl(aclID);
+//            } catch (Exception e) {
+//                ;
+//            }
+//        }
         // We delete all groups
-        for (String groupKey : groupDAO.getGroupKeys(siteID)) {
-            groupAccessDAO.delete(groupKey);
-        }
-
-        for (String groupKey : groupDAO.deleteAllFromSite(siteID)) {
-            aclDAO.removeGroupAclEntries(groupKey);            
-        }
-        // We delete all users
-        for (String userKey : userDAO.deleteAllFromSite(siteID)) {
-            aclDAO.removeUserAclEntries(userKey);
-        }
+//        for (String groupKey : groupDAO.getGroupKeys(siteID)) {
+//            groupAccessDAO.delete(groupKey);
+//        }
+//
+//        for (String groupKey : groupDAO.deleteAllFromSite(siteID)) {
+//            aclDAO.removeGroupAclEntries(groupKey);            
+//        }
+//        // We delete all users
+//        for (String userKey : userDAO.deleteAllFromSite(siteID)) {
+//            aclDAO.removeUserAclEntries(userKey);
+//        }
         template.delete(findById(siteID));
     }
 

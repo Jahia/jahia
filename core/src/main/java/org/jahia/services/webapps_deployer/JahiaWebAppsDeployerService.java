@@ -288,20 +288,20 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
             context = "/" + context;
 
         //System.out.println("registerWebApps app context " + appContext + " not used");
-        int parentAclID = 0;
-
-        // Create a new ACL.
-        JahiaBaseACL acl = new JahiaBaseACL();
-        try {
-            acl.create(parentAclID);
-            JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
-            acl.setUserEntry(guest, new JahiaAclEntry(1,0));
-        } catch (ACLNotFoundException ex) {
-            throw new JahiaException("Could not create the page def.",
-                    "The parent ACL ID [" + parentAclID + "] could not be found," +
-                            " while trying to create a new page def.",
-                    JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
-        }
+//        int parentAclID = 0;
+//
+//        // Create a new ACL.
+//        JahiaBaseACL acl = new JahiaBaseACL();
+//        try {
+//            acl.create(parentAclID);
+//            JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
+//            acl.setUserEntry(guest, new JahiaAclEntry(1,0));
+//        } catch (ACLNotFoundException ex) {
+//            throw new JahiaException("Could not create the page def.",
+//                    "The parent ACL ID [" + parentAclID + "] could not be found," +
+//                            " while trying to create a new page def.",
+//                    JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
+//        }
 
         // save definition in db
         ApplicationBean theWebApp = new ApplicationBean(
@@ -349,20 +349,20 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
             if (theWebApp == null) {
 
                 //System.out.println("registerWebApps app context " + appContext + " not used");
-                int parentAclID = 0;
-
-                // Create a new ACL.
-                JahiaBaseACL acl = new JahiaBaseACL ();
-                try {
-                    acl.create (parentAclID);
-                    JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
-                    acl.setUserEntry(guest, new JahiaAclEntry(1,0));
-                } catch (ACLNotFoundException ex) {
-                    throw new JahiaException ("Could not create the page def.",
-                            "The parent ACL ID [" + parentAclID + "] could not be found," +
-                                    " while trying to create a new page def.",
-                            JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
-                }
+//                int parentAclID = 0;
+//
+//                // Create a new ACL.
+//                JahiaBaseACL acl = new JahiaBaseACL ();
+//                try {
+//                    acl.create (parentAclID);
+//                    JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
+//                    acl.setUserEntry(guest, new JahiaAclEntry(1,0));
+//                } catch (ACLNotFoundException ex) {
+//                    throw new JahiaException ("Could not create the page def.",
+//                            "The parent ACL ID [" + parentAclID + "] could not be found," +
+//                                    " while trying to create a new page def.",
+//                            JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
+//                }
 
                 // save definition in db
                 theWebApp = new ApplicationBean (

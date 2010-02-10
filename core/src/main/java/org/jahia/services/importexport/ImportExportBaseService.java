@@ -431,11 +431,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportServerPermissions(ContentHandler ch) throws JahiaException, SAXException {
-        exportPermissions(ch, "org.jahia.actions.server", "serverPermission");
+//        exportPermissions(ch, "org.jahia.actions.server", "serverPermission");
     }
 
     private void exportSitePermissions(ContentHandler ch, JahiaSite site) throws JahiaException, SAXException {
-        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
+//        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
     }
 
     private void exportPermissions(ContentHandler ch, String prefix, String nodeName) throws SAXException {
@@ -448,55 +448,55 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, nodeName + "s", "jahia:" + nodeName + "s", attr);
 
-        List<JahiaAclName> list = ServicesRegistry.getInstance().getJahiaACLManagerService().getAclNamesStartingWith(prefix);
-        for (Iterator<JahiaAclName> iterator = list.iterator(); iterator.hasNext();) {
-            attr = new AttributesImpl();
-            JahiaAclName jahiaAclName = (JahiaAclName) iterator.next();
-
-            String name = jahiaAclName.getAclName().substring(prefix.length() + 1);
-            attr.addAttribute(JAHIA_URI, "name", "jahia:name", CDATA, name);
-
-            String perms = "";
-            JahiaAcl acl = jahiaAclName.getAcl();
-            Collection<JahiaAclEntry> entries = acl.getEntries();
-            for (Iterator<JahiaAclEntry> iterator1 = entries.iterator(); iterator1.hasNext();) {
-                JahiaAclEntry ace = (JahiaAclEntry) iterator1.next();
-                if (ace.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
-                    if (ace.getComp_id().getType().intValue() == 1) {
-                        JahiaUser user = userManagerService.lookupUserByKey(ace.getComp_id().getTarget());
-                        if (user != null) {
-                            perms += "|u:" + user.getUsername();
-                        }
-                    } else {
-                        JahiaGroup group = groupManagerService.lookupGroup(ace.getComp_id().getTarget());
-                        if (group != null) {
-                            perms += "|g:" + group.getGroupname();
-                            if ("serverPermission".equals(nodeName)) {
-                                // also add site key information
-                                try {
-                                    perms += ":"
-                                            + (group.getSiteID() == 0 ? "0"
-                                            : sitesService.getSite(
-                                            group.getSiteID())
-                                            .getSiteKey());
-                                } catch (Exception e) {
-                                    logger.error(
-                                            "Unable to obtain site key for site with ID '"
-                                                    + group.getSiteID() + "'", e);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (perms.length() > 0) {
-                perms = perms.substring(1);
-                attr.addAttribute(JAHIA_URI, "acl", "jahia:acl", CDATA, perms);
-            }
-
-            ch.startElement(JAHIA_URI, nodeName, "jahia:" + nodeName, attr);
-            ch.endElement(JAHIA_URI, nodeName, "jahia:" + nodeName);
-        }
+//        List<JahiaAclName> list = ServicesRegistry.getInstance().getJahiaACLManagerService().getAclNamesStartingWith(prefix);
+//        for (Iterator<JahiaAclName> iterator = list.iterator(); iterator.hasNext();) {
+//            attr = new AttributesImpl();
+//            JahiaAclName jahiaAclName = (JahiaAclName) iterator.next();
+//
+//            String name = jahiaAclName.getAclName().substring(prefix.length() + 1);
+//            attr.addAttribute(JAHIA_URI, "name", "jahia:name", CDATA, name);
+//
+//            String perms = "";
+//            JahiaAcl acl = jahiaAclName.getAcl();
+//            Collection<JahiaAclEntry> entries = acl.getEntries();
+//            for (Iterator<JahiaAclEntry> iterator1 = entries.iterator(); iterator1.hasNext();) {
+//                JahiaAclEntry ace = (JahiaAclEntry) iterator1.next();
+//                if (ace.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
+//                    if (ace.getComp_id().getType().intValue() == 1) {
+//                        JahiaUser user = userManagerService.lookupUserByKey(ace.getComp_id().getTarget());
+//                        if (user != null) {
+//                            perms += "|u:" + user.getUsername();
+//                        }
+//                    } else {
+//                        JahiaGroup group = groupManagerService.lookupGroup(ace.getComp_id().getTarget());
+//                        if (group != null) {
+//                            perms += "|g:" + group.getGroupname();
+//                            if ("serverPermission".equals(nodeName)) {
+//                                // also add site key information
+//                                try {
+//                                    perms += ":"
+//                                            + (group.getSiteID() == 0 ? "0"
+//                                            : sitesService.getSite(
+//                                            group.getSiteID())
+//                                            .getSiteKey());
+//                                } catch (Exception e) {
+//                                    logger.error(
+//                                            "Unable to obtain site key for site with ID '"
+//                                                    + group.getSiteID() + "'", e);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            if (perms.length() > 0) {
+//                perms = perms.substring(1);
+//                attr.addAttribute(JAHIA_URI, "acl", "jahia:acl", CDATA, perms);
+//            }
+//
+//            ch.startElement(JAHIA_URI, nodeName, "jahia:" + nodeName, attr);
+//            ch.endElement(JAHIA_URI, nodeName, "jahia:" + nodeName);
+//        }
         ch.endElement(JAHIA_URI, nodeName + "s", "jahia:" + nodeName + "s");
         ch.endDocument();
     }
@@ -866,11 +866,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importServerPermissions(ProcessingContext jParams, InputStream is) {
-        handleImport(is, new PermissionsImportHandler("org.jahia.actions.server", "serverPermission", (Map) jParams.getAttribute("sitePermissions_siteKeyMapping")));
+//        handleImport(is, new PermissionsImportHandler("org.jahia.actions.server", "serverPermission", (Map) jParams.getAttribute("sitePermissions_siteKeyMapping")));
     }
 
     private void importSitePermissions(JahiaSite site, InputStream is) {
-        handleImport(is, new PermissionsImportHandler(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission", site.getID()));
+//        handleImport(is, new PermissionsImportHandler(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission", site.getID()));
     }
 
     public List<String[]> importUsers(File file) throws IOException {

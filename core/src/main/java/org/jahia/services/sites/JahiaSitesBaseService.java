@@ -42,10 +42,8 @@ import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -102,7 +100,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     protected JahiaGroupManagerService groupService;
     protected JahiaFileWatcherService fileWatcherService;
-    protected JahiaACLManagerService jahiaAclService;
     protected JCRSessionFactory sessionFactory;
 
     public void setCacheService(CacheService cacheService) {
@@ -123,10 +120,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setFileWatcherService(JahiaFileWatcherService fileWatcherService) {
         this.fileWatcherService = fileWatcherService;
-    }
-
-    public void setJahiaAclService(JahiaACLManagerService jahiaAclService) {
-        this.jahiaAclService = jahiaAclService;
     }
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
@@ -310,7 +303,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (settings == null) {
             settings = new Properties();
         }
-        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,null,settings);
+        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,settings);
 
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);

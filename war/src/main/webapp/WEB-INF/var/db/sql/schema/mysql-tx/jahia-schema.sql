@@ -1,5 +1,3 @@
-alter table jahia_acl_entries drop foreign key FKDBE729858C498B01;
-alter table jahia_acl_names drop foreign key FK3C5F357D48212BE1;
 alter table jahia_app_def drop foreign key FKE6C84991455C901A;
 alter table jahia_appdef_prop drop foreign key FK8D4A0C287FCEE0FB;
 alter table jahia_apps_share drop foreign key FK7FE512E81F78D07;
@@ -30,9 +28,6 @@ alter table jahia_site_lang_list drop foreign key FK1DDBC16D7EED26D3;
 alter table jahia_site_lang_maps drop foreign key FK1DDC17667EED26D3;
 alter table jahia_sites_grps drop foreign key FK7B245597F46755FE;
 alter table jahia_slideindexjobserver drop foreign key FK17554649A2228D92;
-drop table if exists jahia_acl;
-drop table if exists jahia_acl_entries;
-drop table if exists jahia_acl_names;
 drop table if exists jahia_app_def;
 drop table if exists jahia_appdef_prop;
 drop table if exists jahia_appentry;
@@ -94,33 +89,6 @@ drop table if exists jahia_user_prop;
 drop table if exists jahia_users;
 drop table if exists jahia_version;
 drop table if exists jahia_workflow;
-
-CREATE TABLE jahia_acl (
-    id_jahia_acl INTEGER NOT NULL,
-    inheritance_jahia_acl INTEGER,
-    hasentries_jahia_acl INTEGER,
-    parent_id_jahia_acl INTEGER,
-    picked_id_jahia_acl INTEGER,    
-    PRIMARY KEY(id_jahia_acl)
-);
-ALTER TABLE jahia_acl TYPE=InnoDB;
-
-CREATE TABLE jahia_acl_entries (
-    id_jahia_acl INTEGER NOT NULL,
-    type_jahia_acl_entries INTEGER NOT NULL,
-    target_jahia_acl_entries VARCHAR (50) NOT NULL,
-    entry_state_jahia_acl_entries INTEGER NOT NULL,
-    entry_trist_jahia_acl_entries INTEGER NOT NULL,
-    PRIMARY KEY(id_jahia_acl,type_jahia_acl_entries,target_jahia_acl_entries)
-);
-ALTER TABLE jahia_acl_entries TYPE=InnoDB;
-
-CREATE TABLE jahia_acl_names (
-    acl_name VARCHAR (255) NOT NULL,
-    acl_id INTEGER UNIQUE,
-    PRIMARY KEY(acl_name)
-);
-ALTER TABLE jahia_acl_names TYPE=InnoDB;
 
 CREATE TABLE jahia_app_def (
     id_jahia_app_def INTEGER NOT NULL,
@@ -753,16 +721,6 @@ CREATE TABLE jahia_workflow (
 );
 ALTER TABLE jahia_workflow TYPE=InnoDB;  
 
-alter table jahia_acl_entries 
-    add index FKDBE729858C498B01 (id_jahia_acl), 
-    add constraint FKDBE729858C498B01 
-    foreign key (id_jahia_acl) 
-    references jahia_acl (id_jahia_acl);
-alter table jahia_acl_names 
-    add index FK3C5F357D48212BE1 (acl_id), 
-    add constraint FK3C5F357D48212BE1 
-    foreign key (acl_id) 
-    references jahia_acl (id_jahia_acl);
 alter table jahia_app_def 
     add index FKE6C84991455C901A (rights_jahia_app_def), 
     add constraint FKE6C84991455C901A 

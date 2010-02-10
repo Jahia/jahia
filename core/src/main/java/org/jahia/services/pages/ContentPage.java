@@ -451,7 +451,7 @@ public class ContentPage extends ContentObject implements
                                                      int permission, int parentAclId, Map<Integer, Map<?,?>> deniedAclTree, List<Integer> acls) {
         boolean allowed = true;
         acls.add(parentAclId);
-        List<JahiaAcl> children = ServicesRegistry.getInstance().getJahiaACLManagerService().getChildAcls(parentAclId);
+        List<JahiaAcl> children = Collections.emptyList();//ServicesRegistry.getInstance().getJahiaACLManagerService().getChildAcls(parentAclId);
         for (JahiaAcl childAcl : children) {
             if (!acls.contains(childAcl.getAclID())) {
                 boolean childAllowed = childAcl.getPermission(user, permission);
@@ -474,8 +474,7 @@ public class ContentPage extends ContentObject implements
     private boolean isPermissionInChildAclOnPage(JahiaUser user, int permission, List<Integer> parentAclIds) {
         boolean allowed = false;
 
-        List<JahiaAcl> children = ServicesRegistry.getInstance().getJahiaACLManagerService().getChildAclsOnPage(parentAclIds,
-                getPageID());
+        List<JahiaAcl> children = Collections.emptyList(); //ServicesRegistry.getInstance().getJahiaACLManagerService().getChildAclsOnPage(parentAclIds, getPageID());
         List<Integer> aclIds = new ArrayList<Integer>(children.size());
         for (Iterator<JahiaAcl> it = children.iterator(); !allowed && it.hasNext();) {
             JahiaAcl childAcl = it.next();

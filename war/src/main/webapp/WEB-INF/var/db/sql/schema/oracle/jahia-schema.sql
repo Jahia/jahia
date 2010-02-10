@@ -1,10 +1,3 @@
-
-    drop table jahia_acl cascade constraints;
-
-    drop table jahia_acl_entries cascade constraints;
-
-    drop table jahia_acl_names cascade constraints;
-
     drop table jahia_audit_log cascade constraints;
 
     drop table jahia_bigtext_data cascade constraints;
@@ -108,30 +101,6 @@
     drop table jahia_version cascade constraints;
 
     drop table jahia_workflow cascade constraints;
-
-    create table jahia_acl (
-        id_jahia_acl number(10,0) not null,
-        inheritance_jahia_acl number(10,0),
-        hasentries_jahia_acl number(10,0),
-        parent_id_jahia_acl number(10,0),
-        picked_id_jahia_acl number(10,0),
-        primary key (id_jahia_acl)
-    );
-
-    create table jahia_acl_entries (
-        id_jahia_acl number(10,0) not null,
-        type_jahia_acl_entries number(10,0) not null,
-        target_jahia_acl_entries varchar2(50 char) not null,
-        entry_state_jahia_acl_entries number(10,0) not null,
-        entry_trist_jahia_acl_entries number(10,0) not null,
-        primary key (id_jahia_acl, type_jahia_acl_entries, target_jahia_acl_entries)
-    );
-
-    create table jahia_acl_names (
-        acl_name varchar2(255 char) not null,
-        acl_id number(10,0) unique,
-        primary key (acl_name)
-    );
 
     create table jahia_audit_log (
         id_jahia_audit_log number(10,0) not null,
@@ -620,16 +589,6 @@
         MAINOBJECTKEY varchar2(255 char),
         primary key (OBJECTKEY)
     );
-
-    alter table jahia_acl_entries 
-        add constraint FKDBE729858C498B01 
-        foreign key (id_jahia_acl) 
-        references jahia_acl;
-
-    alter table jahia_acl_names 
-        add constraint FK3C5F357D48212BE1 
-        foreign key (acl_id) 
-        references jahia_acl;
 
     alter table jahia_audit_log 
         add constraint FKF4669B0AC75E28FD 

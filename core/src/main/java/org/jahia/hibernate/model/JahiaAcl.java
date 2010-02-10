@@ -49,7 +49,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaAclManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -247,19 +246,19 @@ public class JahiaAcl implements Serializable,Cloneable, ParentACLFinder, ACLRes
     }
 
     public JahiaAcl getParent() {
-        if (parentId == null) {
-            return null;
-        }
-        if (parent == null) {
-            try {
-                parent = ((JahiaAclManager)SpringContextSingleton.getInstance().getContext().getBean(JahiaAclManager.class.getName())).findJahiaAclById(""+getParentId());
-            } catch (BeansException e) {
-                logger.error("Error we cannot find the ACL Manager",e);
-            } catch(ObjectRetrievalFailureException e) {
-                parent = null;
-                logger.warn("We cannot find the parent acl for this acl, current acl id = "+id+" parentid = "+parentId,e);
-            }
-        }
+//        if (parentId == null) {
+//            return null;
+//        }
+//        if (parent == null) {
+//            try {
+//                parent = ((JahiaAclManager)SpringContextSingleton.getInstance().getContext().getBean(JahiaAclManager.class.getName())).findJahiaAclById(""+getParentId());
+//            } catch (BeansException e) {
+//                logger.error("Error we cannot find the ACL Manager",e);
+//            } catch(ObjectRetrievalFailureException e) {
+//                parent = null;
+//                logger.warn("We cannot find the parent acl for this acl, current acl id = "+id+" parentid = "+parentId,e);
+//            }
+//        }
         return parent;
     }
 
@@ -273,19 +272,19 @@ public class JahiaAcl implements Serializable,Cloneable, ParentACLFinder, ACLRes
     }
 
     public JahiaAcl getPickedAcl() {
-        if (pickedAclId == null) {
-            return null;
-        }
-        if (pickedAcl == null) {
-            try {
-                pickedAcl = ((JahiaAclManager)SpringContextSingleton.getInstance().getContext().getBean(JahiaAclManager.class.getName())).findJahiaAclById(""+getPickedAclId());
-            } catch (BeansException e) {
-                logger.error("Error we cannot find the ACL Manager",e);
-            } catch(ObjectRetrievalFailureException e) {
-                pickedAcl = null;
-                logger.warn("We cannot find the parent acl for this acl, current acl id = "+id+" parentid = "+pickedAclId,e);
-            }
-        }
+//        if (pickedAclId == null) {
+//            return null;
+//        }
+//        if (pickedAcl == null) {
+//            try {
+//                pickedAcl = ((JahiaAclManager)SpringContextSingleton.getInstance().getContext().getBean(JahiaAclManager.class.getName())).findJahiaAclById(""+getPickedAclId());
+//            } catch (BeansException e) {
+//                logger.error("Error we cannot find the ACL Manager",e);
+//            } catch(ObjectRetrievalFailureException e) {
+//                pickedAcl = null;
+//                logger.warn("We cannot find the parent acl for this acl, current acl id = "+id+" parentid = "+pickedAclId,e);
+//            }
+//        }
         return pickedAcl;
     }
 

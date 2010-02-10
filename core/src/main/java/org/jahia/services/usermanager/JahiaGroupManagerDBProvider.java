@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaGroupManager;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.utils.JahiaTools;
@@ -237,21 +236,6 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
                   }
          */
 
-        JahiaACLManagerService aclService = null;
-
-        // Get the ACL Manager Service.
-        try {
-            aclService = ServicesRegistry.getInstance ().
-                    getJahiaACLManagerService ();
-            if (aclService == null) {
-                logger.error ("ACL Manager Service instance is null !!");
-                return false;
-            }
-        } catch (NullPointerException ex) {
-            logger.error ("Could not get the ACL Manager Service !!", ex);
-            return false;
-        }
-
         // delete the group from the database and from the cache.
         boolean result = false;
 
@@ -259,7 +243,7 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
             // remove the group from the cache
 
             // invalidate the group in the ACL manager
-            aclService.removeGroupFromAllACLs (group);
+//            aclService.removeGroupFromAllACLs (group);
 
             // invalidate the group
             group = null;

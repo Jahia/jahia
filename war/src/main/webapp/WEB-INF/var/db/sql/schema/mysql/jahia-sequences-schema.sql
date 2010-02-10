@@ -1,6 +1,3 @@
-drop table if exists seq_acl;
-create table seq_acl ( next_val bigint );
-insert into seq_acl values ( 1 );
 drop table if exists seq_audit_log;
 create table seq_audit_log ( next_val bigint );
 insert into seq_audit_log values ( 1 );

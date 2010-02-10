@@ -2120,7 +2120,7 @@ public abstract class ContentObject extends JahiaObject {
                 JahiaAcl pickerAcl = picker.getACL().getACL();
                 if (pickerAcl.getPickedAclId().intValue()  == old) {
                     pickerAcl.setPickedAclId(new Integer(aclid));
-                    ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(pickerAcl);
+//                    ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(pickerAcl);
                 }
             }            
             List<? extends ContentObject> l = getChilds(null,null);

@@ -1,5 +1,3 @@
-drop sequence seq_acl;
-create sequence seq_acl start with 1 increment by 20;
 drop sequence seq_audit_log;
 create sequence seq_audit_log start with 1 increment by 20;
 drop sequence seq_ctn_def;

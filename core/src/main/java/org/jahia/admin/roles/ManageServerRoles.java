@@ -51,8 +51,6 @@ import java.io.IOException;
  */
 public class ManageServerRoles extends AbstractAdministrationModule {
 
-    public static final String SERVER_PERMISSIONS_PREFIX = "org.jahia.actions.server.";
-
     /**
      * logging
      */

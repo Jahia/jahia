@@ -10,8 +10,6 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="jahiaAclDAO" class="org.jahia.hibernate.dao.JahiaAclDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaAclNamesDAO" class="org.jahia.hibernate.dao.JahiaAclNamesDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaAuditLogDAO" class="org.jahia.hibernate.dao.JahiaAuditLogDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaBigTextDataDAO" class="org.jahia.hibernate.dao.JahiaBigTextDataDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaContainerDAO" class="org.jahia.hibernate.dao.JahiaContainerDAO" parent="abstractGeneratorDAO"/>
@@ -56,7 +54,6 @@
     		  <!-- For DB sequences, the key is the table name, and the value is the column name that we use as initial max values
     		       The sequence name will be table_name.column_name -->
     			<map>
-    			  <entry key="org.jahia.hibernate.model.JahiaAcl" value="jahia_acl.id_jahia_acl"/>
     			  <entry key="org.jahia.hibernate.model.JahiaAuditLog" value="jahia_audit_log.id_jahia_audit_log"/>
     			  <entry key="org.jahia.hibernate.model.JahiaCtnDef" value="jahia_ctn_def.id_jahia_ctn_def"/>
     			  <entry key="org.jahia.hibernate.model.JahiaCtnDefProperty"

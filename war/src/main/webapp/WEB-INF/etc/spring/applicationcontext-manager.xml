@@ -57,16 +57,6 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaAclManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaAclManager">
-                <property name="jahiaAclDAO" ref="jahiaAclDAO" />
-                <property name="jahiaContainerDAO" ref="jahiaContainerDAO" />
-                <property name="jahiaContainerListDAO" ref="jahiaContainerListDAO" />
-            </bean>
-        </property>
-    </bean>
-
     <bean id="org.jahia.hibernate.manager.JahiaContainerStructureManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaContainerStructureManager">
@@ -149,7 +139,6 @@
     <bean id="org.jahia.hibernate.manager.JahiaUserManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaUserManager">
-                <property name="jahiaAclDAO" ref="jahiaAclDAO" />
                 <property name="jahiaUserDAO" ref="jahiaUserDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
             </bean>

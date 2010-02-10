@@ -254,7 +254,7 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void groupUpdated(JahiaEvent je) {
         log("groupUpdated", je);
-        ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
+//        ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
 
     }
 

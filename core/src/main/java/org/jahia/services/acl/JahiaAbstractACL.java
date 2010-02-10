@@ -75,9 +75,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
     protected JahiaAcl mACL;
     protected JahiaAclName mACLName = null;
 
-    /** Reference on the ACL Manager Service */
-    private JahiaACLManagerService mACLService;
-
     protected static volatile char[] sharedActions = null;
     protected static volatile char[] uppercaseSharedActions = null;    
 
@@ -181,48 +178,18 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
      */
     public boolean create (int parentID)
             throws ACLNotFoundException {
-        // get the parent ACL reference if found
-        JahiaAcl parent = null;
-        if (parentID > 0) {
-            parent = getService().lookupACL (parentID);
-        }
-
-        // Create the new ACL object.
-        mACL = getService().createACL (parent);
 
         return (mACL != null);
     }
 
     public boolean create(int parentID, int pickedID)
             throws ACLNotFoundException {
-        // get the parent ACL reference if found
-        JahiaAcl parent = null;
-        if (parentID > 0) {
-            parent = getService().lookupACL (parentID);
-        }
-        JahiaAcl picked = null;
-        if (pickedID > 0) {
-            picked = getService().lookupACL (pickedID);
-        }
-
-        // Create the new ACL object.
-        mACL = getService().createACL (parent, picked);
 
         return (mACL != null);
     }
 
     public boolean create (String name, int parentID)
             throws ACLNotFoundException {
-        // get the parent ACL reference if found
-        JahiaAcl parent = null;
-        if (parentID > 0) {
-            parent = getService().lookupACL (parentID);
-        }
-
-        // Create the new ACL object.
-        mACLName = getService().createACLName (name, parent);
-        mACL = mACLName.getAcl();
-
         return (mACLName != null);
     }
 
@@ -240,15 +207,8 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
      */
     public synchronized boolean delete ()
             throws JahiaACLException {
-        testProxy ();
-
         boolean result = false;
-        synchronized (mACL) {
-            if (getService().deleteACL (mACL)) {
-                mACL = null;
-                result = true;
-            }
-        }
+
         return result;
     }
 
@@ -262,14 +222,10 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
      */
     public void load (int aclID)
             throws ACLNotFoundException {
-        if(aclID>0)
-        mACL = getService().lookupACL (aclID);
-        else throw new ACLNotFoundException(aclID);
     }
 
     public void load (String name)
             throws ACLNotFoundException {
-        mACL = getService().lookupACL (name);
     }
 
     //-------------------------------------------------------------------------
@@ -277,12 +233,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
     // for future operations.
     private void init ()
             throws JahiaException {
-        mACLService = JahiaACLManagerService.getInstance ();
-        if (mACLService == null) {
-            throw new JahiaException ("JahiaAbstractACL",
-                    "Abstract ACL could not get the ACL Manager Instance.",
-                    JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
-        }
     }
 
     //-------------------------------------------------------------------------
@@ -343,7 +293,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.setInheritance(new Integer(inheritance));
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -401,7 +350,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.setUserEntry(user, entry);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -424,7 +372,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.removeUserEntry(user);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -446,7 +393,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.clearEntries(JahiaAcl.USER_TYPE_ENTRY);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -553,7 +499,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.setGroupEntry(group, entry);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -576,7 +521,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone();            
             boolean result = newACL.removeGroupEntry(group);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -598,7 +542,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         synchronized (mACL) {
             JahiaAcl newACL = (JahiaAcl) mACL.clone(); 
             boolean result = newACL.clearEntries(JahiaAcl.GROUP_TYPE_ENTRY);
-            getService().updateCache(newACL);
             mACL = newACL;
             return result;
         }
@@ -1039,28 +982,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
      */
     public void setParentID (int parentID)
             throws ACLNotFoundException {
-        JahiaAcl parentACL = null;
-
-        synchronized (mACL) {
-            if (parentID > 0) {
-                parentACL = getService().lookupACL(parentID);
-
-                JahiaAcl current = parentACL;
-                do {
-                    if (mACL.getId().intValue() == current.getId().intValue()) {
-                        ACLNotFoundException aclNotFoundException = new ACLNotFoundException(parentID);
-                        logger.error("Permission loop detected : " + mACL.getId() +" --> " + parentID, aclNotFoundException);
-                        throw aclNotFoundException;
-                    }
-                    current = current.getParent();
-                } while(current != null);
-            }
-
-            JahiaAcl newACL = (JahiaAcl) mACL.clone();
-            newACL.setParent(parentACL);
-            getService().updateCache(newACL);
-            mACL = newACL;
-        }
     }
 
     // -------------------------------------------------------------------------
@@ -1094,20 +1015,5 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
     private void readObject(java.io.ObjectInputStream in)
         throws IOException, ClassNotFoundException {
         mACL = (JahiaAcl) in.readObject();
-        mACLService = null;
-    }
-
-    /**
-     * Used to reconnect to ACL service, notably after an object is
-     * unserialized. We can't reconnect while unserializing because the
-     * services might not yet have been initialized yet (as in the case when
-     * restoring objects from serialized session).
-     * @return JahiaACLManagerService
-     */
-    private JahiaACLManagerService getService() {
-        if (mACLService == null) {
-            mACLService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        }
-        return mACLService;
     }
 }

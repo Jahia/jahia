@@ -1,9 +1,3 @@
-DROP INDEX jahia_acl_index ON jahia_acl ;
-
-DROP INDEX jahia_acl_index2 ON jahia_acl ;
-
-DROP INDEX jahia_acl_entries_index ON acl_entries;
-
 DROP INDEX jahia_ctn_def_index ON jahia_ctn_def ;
 
 DROP INDEX jahia_ctn_def_properties_index ON jahia_ctn_def_properties ;
@@ -115,10 +109,6 @@ DROP INDEX jahia_user_prop_index ON jahia_user_prop ;
 DROP INDEX jahia_users_index ON jahia_users ;
 
 DROP INDEX jahia_workflow_index ON jahia_workflow ;
-
-CREATE INDEX jahia_acl_index ON jahia_acl (parent_id_jahia_acl, id_jahia_acl);
-
-CREATE INDEX jahia_acl_entries_index ON jahia_acl_entries (type_jahia_acl_entries);
 
 CREATE INDEX jahia_ctn_def_index ON jahia_ctn_def (name_jahia_ctn_def, jahiaid_jahia_ctn_def);
 

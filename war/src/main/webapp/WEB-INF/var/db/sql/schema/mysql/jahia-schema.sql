@@ -1,12 +1,3 @@
-
-    alter table jahia_acl_entries 
-        drop 
-        foreign key FKDBE729858C498B01;
-
-    alter table jahia_acl_names 
-        drop 
-        foreign key FK3C5F357D48212BE1;
-
     alter table jahia_audit_log 
         drop 
         foreign key FKF4669B0AC75E28FD;
@@ -78,12 +69,6 @@
     alter table jahia_sites_users 
         drop 
         foreign key FKEA2BF1BF6CF683C0;
-
-    drop table if exists jahia_acl;
-
-    drop table if exists jahia_acl_entries;
-
-    drop table if exists jahia_acl_names;
 
     drop table if exists jahia_audit_log;
 
@@ -188,30 +173,6 @@
     drop table if exists jahia_version;
 
     drop table if exists jahia_workflow;
-
-    create table jahia_acl (
-        id_jahia_acl integer not null,
-        inheritance_jahia_acl integer,
-        hasentries_jahia_acl integer,
-        parent_id_jahia_acl integer,
-        picked_id_jahia_acl integer,
-        primary key (id_jahia_acl)
-    );
-
-    create table jahia_acl_entries (
-        id_jahia_acl integer not null,
-        type_jahia_acl_entries integer not null,
-        target_jahia_acl_entries varchar(50) not null,
-        entry_state_jahia_acl_entries integer not null,
-        entry_trist_jahia_acl_entries integer not null,
-        primary key (id_jahia_acl, type_jahia_acl_entries, target_jahia_acl_entries)
-    );
-
-    create table jahia_acl_names (
-        acl_name varchar(255) not null,
-        acl_id integer unique,
-        primary key (acl_name)
-    );
 
     create table jahia_audit_log (
         id_jahia_audit_log integer not null,
@@ -700,18 +661,6 @@
         MAINOBJECTKEY varchar(255),
         primary key (OBJECTKEY)
     );
-
-    alter table jahia_acl_entries 
-        add index FKDBE729858C498B01 (id_jahia_acl), 
-        add constraint FKDBE729858C498B01 
-        foreign key (id_jahia_acl) 
-        references jahia_acl (id_jahia_acl);
-
-    alter table jahia_acl_names 
-        add index FK3C5F357D48212BE1 (acl_id), 
-        add constraint FK3C5F357D48212BE1 
-        foreign key (acl_id) 
-        references jahia_acl (id_jahia_acl);
 
     alter table jahia_audit_log 
         add index FKF4669B0AC75E28FD (parent_id_jahia_audit_log), 

@@ -40,7 +40,6 @@
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.usermanager.JahiaGroup" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUser" %>
-<%@ page import="org.jahia.services.acl.JahiaACLManagerService" %>
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <% List aclNameList = (List) request.getAttribute("aclNameList");
 final Integer userNameWidth = new Integer(15);

@@ -545,7 +545,7 @@ public class PublicationTest extends TestCase {
 
         liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
         JCRNodeWrapper liveContentList3Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
-        testChildOrdering(liveContentList2Node, "contentList2_text0", "contentList2_text2", "contentList2_text3");
+        testChildOrdering(liveContentList2Node, "contentList2_text0", "contentList2_text1", "contentList2_text2");
         testChildOrdering(liveContentList3Node, "contentList1_text1", "contentList3_text0", "contentList3_text1");
 
         // Case 8 : Let's move to yet another list, and then modify it's location in the list twice.
@@ -563,16 +563,18 @@ public class PublicationTest extends TestCase {
 
         liveContentList3Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3");
         JCRNodeWrapper liveContentList4Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");
-        testChildOrdering(liveContentList3Node, "contentList3_text0", "contentList3_text2", "contentList3_text3");
-        testChildOrdering(liveContentList4Node, "contentList4_text1", "contentList4_text0", "contentList4_text1");
+        testChildOrdering(liveContentList3Node, "contentList3_text0", "contentList3_text1", "contentList3_text2");
+        testChildOrdering(liveContentList4Node, "contentList1_text1", "contentList4_text0", "contentList4_text1");
 
         // Case 9 : Delete the node, publish it and check that it has disappeared in live mode.
+        editContentList4 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");
+        englishEditSession.checkout(editContentList4);
         editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
         englishEditSession.checkout(editTextNode1);
         editTextNode1.remove();
         englishEditSession.save();
 
-        jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editContentList4.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         nodeWasFoundInLive = true;
         try {

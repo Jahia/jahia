@@ -762,8 +762,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param path the path to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
-        publication.publish(path, languages, allSubTree, reverse, retrieveCurrentSession());
+    public void publish(String path, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
+        JCRSessionWrapper session = retrieveCurrentSession();
+        publication.publish(path, Collections.singleton(session.getLocale().toString()), allSubTree, reverse, session);
     }
 
     /**
@@ -773,7 +774,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void publish(List<String> paths, boolean reverse) throws GWTJahiaServiceException {
-        publication.publish(paths, null, retrieveParamBean().getUser(), false, retrieveCurrentSession());
+        JCRSessionWrapper session = retrieveCurrentSession();
+        publication.publish(paths, Collections.singleton(session.getLocale().toString()), retrieveParamBean().getUser(), false, session);
     }
 
     /**
@@ -784,7 +786,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void unpublish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
-        publication.unpublish(path, null, retrieveParamBean().getUser());
+        JCRSessionWrapper session = retrieveCurrentSession();
+        publication.unpublish(path, Collections.singleton(session.getLocale().toString()), session.getUser());
         System.out.println("-->" + (System.currentTimeMillis() - l));
     }
 
@@ -796,7 +799,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean full) throws GWTJahiaServiceException {
-        return publication.getPublicationInfo(path, null, full, retrieveCurrentSession());
+        JCRSessionWrapper session = retrieveCurrentSession();
+        return publication.getPublicationInfo(path, Collections.singleton(session.getLocale().toString()), full, session);
     }
 
 
@@ -814,7 +818,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
         for (String path : pathes) {
-            map.put(path, publication.getPublicationInfo(path, null, false, retrieveCurrentSession()));
+            JCRSessionWrapper session = retrieveCurrentSession();
+            map.put(path, publication.getPublicationInfo(path, Collections.singleton(session.getLocale().toString()), false, session));
         }
 
         return map;

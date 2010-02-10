@@ -27,7 +27,9 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: toto
@@ -143,7 +145,7 @@ public class EditActions {
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
 
-            JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, "", true, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), false, "", true, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -287,7 +289,7 @@ public class EditActions {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
                     List<String> selectedPaths = new ArrayList<String>();
-                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, true, comments.getValue(), false, new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), true, comments.getValue(), false, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

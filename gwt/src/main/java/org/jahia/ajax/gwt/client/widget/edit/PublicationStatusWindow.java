@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -25,7 +26,9 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
 * Created by IntelliJ IDEA.
@@ -152,7 +155,7 @@ class PublicationStatusWindow extends Window {
             public void componentSelected(ButtonEvent event) {
                 ok.setEnabled(false);
                 cancel.setEnabled(false);
-                JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, comments.getValue(), false, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), false, comments.getValue(), false, new AsyncCallback() {
                     public void onFailure(Throwable caught) {
                         Log.error("Cannot publish", caught);
                         com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

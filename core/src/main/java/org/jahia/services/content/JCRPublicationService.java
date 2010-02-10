@@ -441,11 +441,11 @@ public class JCRPublicationService extends JahiaService {
 
         doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
 
-        VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
+//        VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 //        destinationVersionManager.checkin(sourceNode.getParent().getPath());
     }
 
-    void doClone(JCRNodeWrapper sourceNode, List<String> deniedPath, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+    void doClone(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper parent = sourceNode.getParent();
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
@@ -457,7 +457,15 @@ public class JCRPublicationService extends JahiaService {
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
 
         try {
-            JahiaAccessManager.setDeniedPathes(deniedPath);
+            Set<String> denied = new HashSet<String>();
+            NodeIterator it = sourceNode.getNodes();
+            while (it.hasNext()) {
+                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
+                if (nodeWrapper.isVersioned()) {
+                    denied.add(nodeWrapper.getPath());
+                }
+            }
+            JahiaAccessManager.setDeniedPathes(denied);
 
             final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
             if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
@@ -528,8 +536,16 @@ public class JCRPublicationService extends JahiaService {
             JahiaAccessManager.setDeniedPathes(null);
         }
 
+        NodeIterator it = sourceNode.getNodes();
+        while (it.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
+            if (!pruneNodes.contains(nodeWrapper.getPath()) && nodeWrapper.isVersioned()) {
+                doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+            }
+        }
+
         logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
-                " , dest node v=" + destinationSession.getNode(sourceNode.getPath()).getBaseVersion().getName() +
+                " , dest node v=" + destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName)).getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
     }
@@ -682,7 +698,7 @@ public class JCRPublicationService extends JahiaService {
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
-    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> pathes)
+    private PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> pathes)
             throws RepositoryException {
         pathes.add(path);
 
@@ -690,16 +706,16 @@ public class JCRPublicationService extends JahiaService {
         JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         PublicationInfo info = new PublicationInfo();
 
+        JCRNodeWrapper stageNode = session.getNode(path);
+
         JCRNodeWrapper publishedNode = null;
         try {
-            publishedNode = liveSession.getNode(path);
-        } catch (PathNotFoundException e) {
+            publishedNode = liveSession.getNode(stageNode.getCorrespondingNodePath(liveSession.getWorkspace().getName()));
+        } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(e);
-            }
+            }        
         }
-
-        JCRNodeWrapper stageNode = session.getNode(path);
 
         if (includesReferences || includesSubnodes) {
             List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();

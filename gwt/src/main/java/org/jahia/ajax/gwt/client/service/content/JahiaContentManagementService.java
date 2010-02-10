@@ -227,7 +227,7 @@ public interface JahiaContentManagementService extends RemoteService {
      *
      * @param path the path to publish, will not auto publish the parents
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
+    public void publish(String path, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified paths.

@@ -1,5 +1,7 @@
 package org.jahia.services.content;
 
+import org.apache.commons.collections.map.ListOrderedMap;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -30,8 +32,8 @@ public class PublicationInfo {
     private Map<String, PublicationInfo> subnodes;
 
     public PublicationInfo() {
-        this.references = new HashMap<String, PublicationInfo>();
-        this.subnodes = new HashMap<String, PublicationInfo>();
+        this.references = new ListOrderedMap();
+        this.subnodes = new ListOrderedMap();
     }
 
     public int getStatus() {

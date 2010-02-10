@@ -218,7 +218,7 @@ public interface JahiaContentManagementServiceAsync {
      * @param path the path to publish, will not auto publish the parents
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(String path, Set<String> languages, boolean allSubTree, String comments, boolean reverse, AsyncCallback async);
+    void publish(String path, boolean allSubTree, String comments, boolean reverse, AsyncCallback async);
 
     /**
      * Publish the specified paths.

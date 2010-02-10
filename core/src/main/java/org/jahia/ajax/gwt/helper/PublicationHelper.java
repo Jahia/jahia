@@ -51,7 +51,7 @@ public class PublicationHelper {
 
     }
 
-    public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo, boolean full, JCRSessionWrapper currentUserSession) {
+    private GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo, boolean full, JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
         if (full) {
             try {
@@ -66,14 +66,16 @@ public class PublicationHelper {
             }
         }
 
+        GWTJahiaPublicationInfo lastPub = gwtInfo;
         for (Map.Entry<String, PublicationInfo> entry : pubInfo.getSubnodes().entrySet()) {
             PublicationInfo pi = entry.getValue();
-            if (entry.getKey().startsWith(path+"/j:translation")) {
+            if (entry.getKey().contains(lastPub.getPath()+"/j:translation")) {
                 if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
-                    gwtInfo.setStatus(pi.getStatus());
+                    lastPub.setStatus(pi.getStatus());
                 }
             } else if (full && entry.getKey().indexOf("/j:translation") == -1) {
-                gwtInfo.add(convert(entry.getKey(), pi, full, currentUserSession));
+                lastPub = convert(entry.getKey(), pi, full, currentUserSession);
+                gwtInfo.add(lastPub);
             }
             gwtInfo.addSubnodesStatus(pi.getStatus());
         }

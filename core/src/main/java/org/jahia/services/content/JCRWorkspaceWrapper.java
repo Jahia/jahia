@@ -320,7 +320,16 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public boolean isCheckedOut(String absPath) throws RepositoryException {
-            return versionManager.isCheckedOut(absPath);
+            boolean result = true;
+            JCRNodeWrapper node = getSession().getNode(absPath);
+            if (getSession().getLocale() != null) {
+                try {
+                    result = versionManager.isCheckedOut(node.getI18N(getSession().getLocale()).getPath());
+                } catch (ItemNotFoundException e) {
+                }
+            }
+            result &= versionManager.isCheckedOut(absPath);
+            return result;
         }
 
         public VersionHistory getVersionHistory(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {

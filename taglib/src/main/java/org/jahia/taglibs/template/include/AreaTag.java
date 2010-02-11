@@ -90,6 +90,8 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     private Map<String, String> parameters = new HashMap<String, String>();
 
+    private boolean forceCreation = false;
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -120,6 +122,10 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public void setForceCreation(boolean forceCreation) {
+        this.forceCreation = forceCreation;
     }
 
     @Override
@@ -159,7 +165,9 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
                 JCRNodeWrapper nodeWrapper = currentResource.getNode();
                 if (!path.equals("*") && nodeWrapper.hasNode(path)) {
                     node = nodeWrapper.getNode(path);
-                } else if (!path.equals("*") && renderContext.isEditMode()) {
+                } else if (!path.equals("*") && (forceCreation || renderContext.isEditMode())) {
+                    if(!nodeWrapper.isCheckedOut())
+                        nodeWrapper.checkout();
                     node = nodeWrapper.addNode(path, areaType);
                     currentResource.getNode().getSession().save();
                 }
@@ -170,6 +178,8 @@ public class AreaTag extends BodyTagSupport implements ParamParent {
                 } catch (PathNotFoundException e) {
                     if (renderContext.isEditMode()) {
                         JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+                        if(!parent.isCheckedOut())
+                            parent.checkout();
                         node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
                         session.save();
                     }

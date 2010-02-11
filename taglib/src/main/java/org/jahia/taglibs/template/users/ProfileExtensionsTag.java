@@ -21,6 +21,7 @@ public class ProfileExtensionsTag extends TagSupport {
         //todo do something better
         Map m = new HashMap();
         m.put("tasklist", "Task list");
+        m.put("portal", "My portal");
         pageContext.setAttribute(var, m.entrySet());
         return super.doStartTag();
     }

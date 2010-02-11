@@ -1,6 +1,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -296,7 +297,12 @@ public class ConflictResolver {
             if (v.getName().equals("jcr:rootVersion")) {
                 return res;
             }
-            v = v.getLinearPredecessor();
+            Version[] vs = v.getPredecessors();
+            SortedMap<Integer,Version> pred = new TreeMap<Integer,Version>();
+            for (int i = 0; i < vs.length; i++) {
+                pred.put(StringUtils.countMatches(vs[i].getName(), "."), vs[i]) ;
+            }
+            v = pred.get(pred.firstKey());
         }
         return res;
     }

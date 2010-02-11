@@ -245,7 +245,7 @@ public class WorkflowService {
         return processId;
     }
 
-    public void addProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
+    public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
         stageNode.checkout();
         if (!stageNode.isNodeType("jmix:workflow")) {
             stageNode.addMixin("jmix:workflow");
@@ -261,7 +261,7 @@ public class WorkflowService {
         stageNode.getSession().save();
     }
 
-    public void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
+    public synchronized void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
         stageNode.checkout();
         List<Value> values = new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
         Value[] newValues = new Value[values.size()-1];

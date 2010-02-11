@@ -18,20 +18,6 @@ a {color:white;}
 	{color:#FFF;}
 /* End Colors */
 
-/* Head section */
-#head {
-    background: #000 url(img/head-bg.png) repeat-x;
-    height: 100px;
-}
-#head h1 {
-    line-height: 100px;
-    color: #FFF;
-    text-align: center;
-    background: url(img/inettuts.png) no-repeat center;
-    text-indent: -9999em
-}
-/* End Head Section */
-
 /* Columns section */
 #columns .column {
     float: left;
@@ -42,10 +28,6 @@ a {color:white;}
 		height: 400px;
     margin-left:0;
 }
-
-/* Column dividers (background-images) : */
-	#columns #column1 { background: url(img/column-bg-left.png) no-repeat right top; }
-	#columns #column3 { background: url(img/column-bg-right.png) no-repeat left top; }
 
 #columns #column1 .widget { margin: 30px 35px 0 25px; }
 #columns #column3 .widget { margin: 30px 25px 0 35px; }

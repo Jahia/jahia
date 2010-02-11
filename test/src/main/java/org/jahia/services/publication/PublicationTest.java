@@ -75,7 +75,7 @@ import java.util.*;
  *
  * TestB - shareable nodes - same scenarios
  * TestC - pages node with sub pages - same scenarios. sub pages should not be published.
- * TestD - modify content in live and merge with edit workspace.
+ * TestD - modify content in live AND edit and merge with edit workspace.
  *
  */
 public class PublicationTest extends TestCase {

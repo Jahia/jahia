@@ -90,6 +90,8 @@ import javax.jcr.RepositoryException;
 import java.io.*;
 import java.security.Principal;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -111,6 +113,9 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private static final String CLASS_NAME = JahiaAdministration.CLASS_NAME;
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
+    
+    private static final Pattern LANGUAGE_RANK_PATTERN = Pattern
+            .compile("(?:language.)(\\w+)(?:.rank)");
 
     private static JahiaSitesService sMgr;
 
@@ -2087,10 +2092,11 @@ public class ManageSites extends AbstractAdministrationModule {
                         // site import
                         String tpl = (String) infos.get("templates");
                         if ("".equals(tpl)) tpl = null;
+                        Locale defaultLocale = determineDefaultLocale(jParams, infos);
                         try {
                             if (!noMoreSite) {
                                 ServicesRegistry.getInstance().getJahiaSitesService().addSite(jParams.getUser(), (String) infos.get("sitetitle"),
-                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", null, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"), true, false, jParams);
+                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", null, defaultLocale, tpl, "fileImport", file, (String) infos.get("importFileName"), true, false, jParams);
 
 //                                createSite(jParams.getUser(), (String) infos.get("sitetitle"),
 //                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", false, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"),true);
@@ -2122,6 +2128,39 @@ public class ManageSites extends AbstractAdministrationModule {
 
             redirectAfterAdd(request, response, session);
         }
+    }
+    
+    private Locale determineDefaultLocale(ProcessingContext jParams,
+            Map<Object, Object> infos) {
+        Locale defaultLocale = jParams.getLocale();
+        SortedMap<Integer, String> activeLanguageCodesByRank = new TreeMap<Integer, String>();
+        for (Map.Entry<Object, Object> info : infos.entrySet()) {
+            if (info.getKey() instanceof String) {
+                Matcher m = LANGUAGE_RANK_PATTERN.matcher((String) info
+                        .getKey());
+                if (m.find()) {
+                    String languageCode = m.group(1);
+                    boolean activated = Boolean.parseBoolean((String) infos
+                            .get("language." + languageCode + ".activated"));
+
+                    if (activated) {
+                        if ("1".equals(info.getValue())) {
+                            return LanguageCodeConverters
+                                    .languageCodeToLocale(languageCode);
+                        } else {
+                            activeLanguageCodesByRank.put(new Integer(
+                                    (String) info.getValue()), languageCode);
+                        }
+                    }
+                }
+            }
+        }
+        if (!activeLanguageCodesByRank.isEmpty()) {
+            defaultLocale = LanguageCodeConverters
+                    .languageCodeToLocale(activeLanguageCodesByRank
+                            .get(activeLanguageCodesByRank.firstKey()));
+        }
+        return defaultLocale;
     }
 
     private void redirectAfterAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException, ServletException {

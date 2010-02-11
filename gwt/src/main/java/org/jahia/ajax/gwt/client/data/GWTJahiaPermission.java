@@ -46,6 +46,14 @@ public class GWTJahiaPermission extends BaseModel {
     public void setGroup(String g) {
         set("group",g);
     }
+    
+    public String getSite() {
+        return get("site");
+    }
+
+    public void setSite(String s) {
+        set("site",s);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -55,6 +63,8 @@ public class GWTJahiaPermission extends BaseModel {
         GWTJahiaPermission that = (GWTJahiaPermission) o;
 
         if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+        if (getGroup() != null ? !getGroup().equals(that.getGroup()) : that.getGroup() != null) return false;        
+        if (getSite() != null ? !getSite().equals(that.getSite()) : that.getSite() != null) return false;        
 
         return true;
     }

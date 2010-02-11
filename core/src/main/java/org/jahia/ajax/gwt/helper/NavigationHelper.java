@@ -678,9 +678,9 @@ public class NavigationHelper {
         }
 
         if (node.isFile() || node.isPortlet()) {
-            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.getFileContent().getContentLength(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned());
+            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.getFileContent().getContentLength(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned(), node.getLanguage());
         } else {
-            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned());
+            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned(), node.getLanguage());
 
             n.setCollection(node.isCollection());
 

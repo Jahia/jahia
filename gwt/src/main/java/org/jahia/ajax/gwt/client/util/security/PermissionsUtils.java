@@ -44,8 +44,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PermissionsUtils {
-    private static boolean permissionsLoaded = false;
-
     private static List<GWTJahiaPermission> grantedPermissions = new ArrayList<GWTJahiaPermission>();
 
     /**
@@ -63,12 +61,34 @@ public class PermissionsUtils {
      * @return
      */
     public static boolean isPermitted(String permissionName) {
-        GWTJahiaPermission perm = new GWTJahiaPermission();
-        perm.setName(permissionName);
-        return isPermitted(perm);
+        return isPermitted(permissionName, null);
 
     }
 
+    /**
+     * Check if a site based permission is granted to the current user
+     *
+     * @param permissionName permission name
+     * @param siteKey site key 
+     * @return
+     */
+    public static boolean isPermitted(String permissionName, String siteKey) {
+        GWTJahiaPermission perm = new GWTJahiaPermission();
+        String[] splittedName = permissionName.split("/");
+        if (splittedName.length > 1) {
+            perm.setGroup(splittedName[0]);
+            perm.setName(splittedName[1]);            
+        } else {
+            perm.setName(permissionName);            
+        }
+        if (siteKey != null) {
+            perm.setSite(siteKey);
+        }
+        return isPermitted(perm);
+
+    }
+    
+    
     /**
      * Check if a permission is granted to the current user
      *
@@ -76,13 +96,7 @@ public class PermissionsUtils {
      * @return
      */
     public static boolean isPermitted(GWTJahiaPermission permission) {
-        if (!permissionsLoaded) {
-            Log.error("Permissions not loaded");
-            return true;
-        }
-
         return grantedPermissions.contains(permission);
-
     }
 
 

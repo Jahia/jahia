@@ -34,7 +34,7 @@ public class LanguageHelper {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
                 for (String langCode : orderedLangs) {
-                    if (jParams.getUser().isPermitted(langCode)) {
+                    if (jParams.getUser().isPermitted("languages/" + langCode, currentSite.getSiteKey())) {
                         GWTJahiaLanguage item = new GWTJahiaLanguage();
                         item.setCountryIsoCode(langCode);
                         item.setDisplayName(getDisplayName(langCode));

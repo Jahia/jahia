@@ -64,6 +64,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
+    private String languageCode;
     private boolean expandOnLoad = false;
     private boolean selectedOnLoad = false;
     private GWTJahiaNode referencedNode;
@@ -79,7 +80,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setCollection(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned, String languageCode) {
         this();
         setUUID(uuid);
         setName(name);
@@ -100,10 +101,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setLockOwner(lockOwner);
         setThumbnailsMap(new HashMap<String, String>());
         setVersioned(versioned);
+        setLanguageCode(languageCode);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
-        this(uuid, name, description, path, url, lastModified, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner, versioned);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned, String languageCode) {
+        this(uuid, name, description, path, url, lastModified, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner, versioned, languageCode);
         setSize(size);
         setFile(Boolean.TRUE);
     }
@@ -490,6 +492,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public String getSelectedVersion() {
         return selectedVersion;
     }
+    
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }    
 
     public String getTemplate() {
         return get("template");

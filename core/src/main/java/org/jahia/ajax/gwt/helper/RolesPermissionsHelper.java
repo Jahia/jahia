@@ -14,7 +14,9 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.jcr.JCRPermission;
 import org.jahia.services.rbac.jcr.JCRRole;
 import org.jahia.services.rbac.jcr.RoleManager;
@@ -98,24 +100,38 @@ public class RolesPermissionsHelper {
      * @param jcrSession
      * @return
      */
-    public List<GWTJahiaPermission> getGrantedPermissions(String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaPermission> getGrantedPermissions(final String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
         final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
-            JahiaUser user = jcrSession.getUser();
+            final JahiaUser user = jcrSession.getUser();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            // site permission
+                            for (JCRPermission permission : roleManager
+                                    .getPermissions(site, session)) {
+                                if (user.isPermitted((StringUtils
+                                        .isEmpty(permission.getGroup()) ? ""
+                                        : permission.getGroup() + "/")
+                                        + permission.getName(), site)) {
+                                    permissions.add(toPermission(permission));
+                                }
+                            }
 
-            // site permission
-            for (JCRPermission permission : roleManager.getPermissions(site, jcrSession)) {
-                if (user.isPermitted((StringUtils.isEmpty(permission.getGroup()) ? "" : permission.getGroup() + "/") + permission.getName(), site)) {
-                    permissions.add(toPermission(permission));
-                }
-            }
-
-            // server permission
-            for (JCRPermission permission : roleManager.getPermissions(null, jcrSession)) {
-                if (user.isPermitted((StringUtils.isEmpty(permission.getGroup()) ? "" : permission.getGroup() + "/") + permission.getName())) {
-                    permissions.add(toPermission(permission));
-                }
-            }
+                            // server permission
+                            for (JCRPermission permission : roleManager
+                                    .getPermissions(null, session)) {
+                                if (user.isPermitted((StringUtils
+                                        .isEmpty(permission.getGroup()) ? ""
+                                        : permission.getGroup() + "/")
+                                        + permission.getName())) {
+                                    permissions.add(toPermission(permission));
+                                }
+                            }
+                            return permissions;
+                        }
+                    });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

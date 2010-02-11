@@ -28,7 +28,7 @@ http://extranet.jahia.com/jahia/Jahia/op/edit/documentation/pid/634
 
 4. Configure your Jahia
 
-5. When restarting you Jahia server after the installation, please point your browser to the following address  http://localhost:8080/cms
+5. When restarting you Jahia server after the installation, please point your browser to the following address  http://localhost:8080/
 
 
 Troubleshooting and useful links in Jahia

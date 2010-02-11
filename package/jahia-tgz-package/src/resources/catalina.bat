@@ -1,4 +1,19 @@
 @echo off
+rem Licensed to the Apache Software Foundation (ASF) under one or more
+rem contributor license agreements.  See the NOTICE file distributed with
+rem this work for additional information regarding copyright ownership.
+rem The ASF licenses this file to You under the Apache License, Version 2.0
+rem (the "License"); you may not use this file except in compliance with
+rem the License.  You may obtain a copy of the License at
+rem
+rem     http://www.apache.org/licenses/LICENSE-2.0
+rem
+rem Unless required by applicable law or agreed to in writing, software
+rem distributed under the License is distributed on an "AS IS" BASIS,
+rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+rem See the License for the specific language governing permissions and
+rem limitations under the License.
+
 if "%OS%" == "Windows_NT" setlocal
 rem ---------------------------------------------------------------------------
 rem Start/Stop Script for the CATALINA Server
@@ -27,10 +42,6 @@ rem
 rem   JAVA_OPTS       (Optional) Java runtime options used when the "start",
 rem                   "stop", or "run" command is executed.
 rem
-rem   JSSE_HOME       (Optional) May point at your Java Secure Sockets Extension
-rem                   (JSSE) installation, whose JAR files will be added to the
-rem                   system class path used to start Tomcat.
-rem
 rem   JPDA_TRANSPORT  (Optional) JPDA transport used when the "jpda start"
 rem                   command is executed. The default is "dt_shmem".
 rem
@@ -46,12 +57,26 @@ rem                   command is executed. If used, JPDA_TRANSPORT, JPDA_ADDRESS
 rem                   and JPDA_SUSPEND are ignored. Thus, all required jpda
 rem                   options MUST be specified. The default is:
 rem
-rem                   -Xdebug -Xrunjdwp:transport=%JPDA_TRANSPORT%,
+rem                   -agentlib:jdwp=transport=%JPDA_TRANSPORT%,
 rem                       address=%JPDA_ADDRESS%,server=y,suspend=%JPDA_SUSPEND%
 rem
-rem $Id: catalina.bat 537517 2007-05-12 21:11:17Z markt $
+rem   LOGGING_CONFIG  (Optional) Override Tomcat's logging config file
+rem                   Example (all one line)
+rem                   set LOGGING_CONFIG="-Djava.util.logging.config.file=%CATALINA_BASE%\conf\logging.properties"
+rem
+rem   LOGGING_MANAGER (Optional) Override Tomcat's logging manager 
+rem                   Example (all one line)
+rem                   set LOGGING_CONFIG="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+rem
+rem   TITLE           (Optional) Specify the title of Tomcat window. The default
+rem                   TITLE is Tomcat if it's not specified.
+rem                   Example (all one line)
+rem                   set TITLE=Tomcat.Cluster#1.Server#1 [%DATE% %TIME%]
+rem
+rem
+rem
+rem $Id: catalina.bat 898474 2010-01-12 19:20:59Z kkolinko $
 rem ---------------------------------------------------------------------------
-set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=128m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc
 
 rem Guess CATALINA_HOME if not defined
 set CURRENT_DIR=%cd%
@@ -68,8 +93,17 @@ echo This environment variable is needed to run this program
 goto end
 :okHome
 
+rem Ensure that any user defined CLASSPATH variables are not used on startup,
+rem but allow them to be specified in setenv.bat, in rare case when it is needed.
+set CLASSPATH=
+
 rem Get standard environment variables
+if "%CATALINA_BASE%" == "" goto gotSetenvHome
+if exist "%CATALINA_BASE%\bin\setenv.bat" call "%CATALINA_BASE%\bin\setenv.bat"
+goto gotSetenvBase
+:gotSetenvHome
 if exist "%CATALINA_HOME%\bin\setenv.bat" call "%CATALINA_HOME%\bin\setenv.bat"
+:gotSetenvBase
 
 rem Get standard Java environment variables
 if exist "%CATALINA_HOME%\bin\setclasspath.bat" goto okSetclasspath
@@ -81,12 +115,6 @@ set BASEDIR=%CATALINA_HOME%
 call "%CATALINA_HOME%\bin\setclasspath.bat" %1
 if errorlevel 1 goto end
 
-rem Add on extra jar files to CLASSPATH
-if "%JSSE_HOME%" == "" goto noJsse
-set CLASSPATH=%CLASSPATH%;%JSSE_HOME%\lib\jcert.jar;%JSSE_HOME%\lib\jnet.jar;%JSSE_HOME%\lib\jsse.jar
-:noJsse
-set CLASSPATH=%CLASSPATH%;%CATALINA_HOME%\bin\bootstrap.jar
-
 if not "%CATALINA_BASE%" == "" goto gotBase
 set CATALINA_BASE=%CATALINA_HOME%
 :gotBase
@@ -95,9 +123,32 @@ if not "%CATALINA_TMPDIR%" == "" goto gotTmpdir
 set CATALINA_TMPDIR=%CATALINA_BASE%\temp
 :gotTmpdir
 
-if not exist "%CATALINA_HOME%\bin\tomcat-juli.jar" goto noJuli
-set JAVA_OPTS=%JAVA_OPTS% -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.util.logging.config.file="%CATALINA_BASE%\conf\logging.properties"
-:noJuli
+rem Add tomcat-juli.jar and bootstrap.jar to classpath
+rem tomcat-juli.jar can be over-ridden per instance
+rem Note that there are no quotes as we do not want to introduce random
+rem quotes into the CLASSPATH
+if "%CLASSPATH%" == "" goto emptyClasspath
+set CLASSPATH=%CLASSPATH%;
+:emptyClasspath
+if "%CATALINA_BASE%" == "%CATALINA_HOME%" goto juliClasspathHome
+if not exist "%CATALINA_BASE%\bin\tomcat-juli.jar" goto juliClasspathHome
+set CLASSPATH=%CLASSPATH%%CATALINA_BASE%\bin\tomcat-juli.jar;%CATALINA_HOME%\bin\bootstrap.jar
+goto juliClasspathDone
+:juliClasspathHome
+set CLASSPATH=%CLASSPATH%%CATALINA_HOME%\bin\bootstrap.jar
+:juliClasspathDone
+
+if not "%LOGGING_CONFIG%" == "" goto noJuliConfig
+set LOGGING_CONFIG=-Dnop
+if not exist "%CATALINA_BASE%\conf\logging.properties" goto noJuliConfig
+set LOGGING_CONFIG=-Djava.util.logging.config.file="%CATALINA_BASE%\conf\logging.properties"
+:noJuliConfig
+set JAVA_OPTS=%JAVA_OPTS% %LOGGING_CONFIG%
+
+if not "%LOGGING_MANAGER%" == "" goto noJuliManager
+set LOGGING_MANAGER=-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+:noJuliManager
+set JAVA_OPTS=%JAVA_OPTS% %LOGGING_MANAGER%
 
 rem ----- Execute The Requested Command ---------------------------------------
 
@@ -110,6 +161,7 @@ goto java_dir_displayed
 :use_jdk
 echo Using JAVA_HOME:       %JAVA_HOME%
 :java_dir_displayed
+echo Using CLASSPATH:       %CLASSPATH%
 
 set _EXECJAVA=%_RUNJAVA%
 set MAINCLASS=org.apache.catalina.startup.Bootstrap
@@ -121,16 +173,16 @@ set JPDA=
 if not ""%1"" == ""jpda"" goto noJpda
 set JPDA=jpda
 if not "%JPDA_TRANSPORT%" == "" goto gotJpdaTransport
-set JPDA_TRANSPORT=dt_shmem
+set JPDA_TRANSPORT=dt_socket
 :gotJpdaTransport
 if not "%JPDA_ADDRESS%" == "" goto gotJpdaAddress
-set JPDA_ADDRESS=jdbconn
+set JPDA_ADDRESS=8000
 :gotJpdaAddress
 if not "%JPDA_SUSPEND%" == "" goto gotJpdaSuspend
 set JPDA_SUSPEND=n
 :gotJpdaSuspend
 if not "%JPDA_OPTS%" == "" goto gotJpdaOpts
-set JPDA_OPTS=-Xdebug -Xrunjdwp:transport=%JPDA_TRANSPORT%,address=%JPDA_ADDRESS%,server=y,suspend=%JPDA_SUSPEND%
+set JPDA_OPTS=-agentlib:jdwp=transport=%JPDA_TRANSPORT%,address=%JPDA_ADDRESS%,server=y,suspend=%JPDA_SUSPEND%
 :gotJpdaOpts
 shift
 :noJpda
@@ -157,7 +209,7 @@ goto end
 :doDebug
 shift
 set _EXECJAVA=%_RUNJDB%
-set DEBUG_OPTS=-sourcepath "%CATALINA_HOME%\..\..\jakarta-tomcat-catalina\catalina\src\share"
+set DEBUG_OPTS=-sourcepath "%CATALINA_HOME%\..\..\java"
 if not ""%1"" == ""-security"" goto execCmd
 shift
 echo Using Security Manager
@@ -175,7 +227,8 @@ goto execCmd
 :doStart
 shift
 if not "%OS%" == "Windows_NT" goto noTitle
-set _EXECJAVA=start "Tomcat" %_RUNJAVA%
+if "%TITLE%" == "" set TITLE=Tomcat
+set _EXECJAVA=start "%TITLE%" %_RUNJAVA%
 goto gotTitle
 :noTitle
 set _EXECJAVA=start %_RUNJAVA%
@@ -193,7 +246,7 @@ set CATALINA_OPTS=
 goto execCmd
 
 :doVersion
-%_EXECJAVA% -classpath "%CATALINA_HOME%\server\lib\catalina.jar" org.apache.catalina.util.ServerInfo
+%_EXECJAVA% -classpath "%CATALINA_HOME%\lib\catalina.jar" org.apache.catalina.util.ServerInfo
 goto end
 
 

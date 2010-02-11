@@ -121,7 +121,13 @@ public class GWTInitializer {
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
         if (renderContext != null) {
-            params.put(JahiaGWTParameters.WORKSPACE, renderContext.getMainResource().getWorkspace());
+            params.put(JahiaGWTParameters.WORKSPACE, renderContext
+                    .getMainResource().getWorkspace());
+
+            if (renderContext.getSite() != null) {
+                params.put(JahiaGWTParameters.SITE_KEY, renderContext.getSite()
+                        .getSiteKey());
+            }
         }
 
         // put live workspace url

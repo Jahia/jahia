@@ -48,6 +48,7 @@ public class JahiaGWTParameters {
     public static final String CURRENT_USER_NAME = "currentUser";
     public static final String COPYRIGHT = "copyright";
     public static final String LANGUAGE = "lang";
+    public static final String SITE_KEY = "siteKey";
     public static final String WORKSPACE = "workspace";
     public static final String PATH_INFO = "pathInfo";
     public static final String CONTEXT_PATH = "contextPath";
@@ -107,6 +108,10 @@ public class JahiaGWTParameters {
 
     public static String getLanguage() {
         return jahiaParamDictionary.get(LANGUAGE);
+    }
+    
+    public static String getSiteKey() {
+        return jahiaParamDictionary.get(SITE_KEY);
     }
 
     public static String getContextPath() {

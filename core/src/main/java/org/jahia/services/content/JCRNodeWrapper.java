@@ -518,6 +518,12 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     String getPublicationUser();
 
     /**
+     * Returns the language code of this node
+     * @return the language code of this node
+     */
+    String getLanguage();    
+    
+    /**
      * Returns the property value as <code>String</code> at <code>name</code> relative to <code>this</code>
      * node. 
      * @param name The relative path of the property to retrieve.

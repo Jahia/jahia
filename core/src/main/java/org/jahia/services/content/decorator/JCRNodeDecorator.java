@@ -228,6 +228,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getPublicationUser() {
         return node.getPublicationUser();
     }
+    
+    public String getLanguage() {
+        return node.getLanguage();
+    }
 
     public String getPropertyAsString(String name) {
         return node.getPropertyAsString(name);

@@ -826,6 +826,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return null;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getLanguage() {
+        String language = null;
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            try {
+                language = getI18N(locale).getProperty("jcr:language").getString();
+            } catch (Exception e) {
+                language = getSession().getLocale().toString();
+            }            
+        }
+        return language;
+    }
 
     /**
      * Return the internationalization node, containing localized properties

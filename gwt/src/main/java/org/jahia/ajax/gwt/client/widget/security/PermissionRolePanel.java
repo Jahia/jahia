@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.security;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -89,6 +90,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         final GroupingStore<GWTJahiaPermission> store = new GroupingStore<GWTJahiaPermission>();
         store.add(permissions);
         store.groupBy("group");
+        store.sort("label", SortDir.ASC);
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
             final ColumnModel cm = new ColumnModel(createColumnsConfig());

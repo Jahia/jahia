@@ -1,0 +1,31 @@
+###############################################################################
+package org.jahia.modules.roles.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global RoleService roleService
+###############################################################################
+
+rule "Create roles/permissions for new site"
+	when
+		A new node is created
+			- the node has the type jnt:virtualsite
+	then
+    	Import file "/templates/roles/site-roles.xml" into node
+end
+
+rule "Create permission for site languages"
+  when
+      A property j:languages has been set on a node
+       - the node has the type jnt:virtualsite
+  then
+      Update site language permissions for node
+end

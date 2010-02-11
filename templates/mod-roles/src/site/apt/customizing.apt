@@ -1,0 +1,52 @@
+Built-in roles/permissions
+
+  Jahia Roles/Permissions module provide a built-in set of roles and permission for the server and virtual site level.
+
+  Server level roles and permissions are defined in the <<</templates/roles/import.xml>>> file in the JCR document view format.
+  These entries are imported during module first time deployment.
+  
+  Site level roles and permissions are defined in the <<</templates/roles/site-roles.xml>>> file also in the JCR document view format.
+  Those entries are imported (triggered using rules) on each new site creation.
+
+  Both built-in server and site level roles/permissions can be extended or adjusted.
+
+  An example of the server-level roles/permissions is given below:
+  
+-------------
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0"
+                    xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+                    xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+                    xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+                    
+    <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+        </j:acl>
+	 	<global jcr:primaryType="jnt:permissionGroup">
+	   		<virtual-sites jcr:primaryType="jnt:permission"/>
+	   		<categories jcr:primaryType="jnt:permission"/>
+	   		<portlets jcr:primaryType="jnt:permission"/>
+...	   		
+	   	</global>
+	 	<test jcr:primaryType="jnt:permissionGroup">
+	   		<my-permission-1 jcr:primaryType="jnt:permission"/>
+	   		<my-permission-2 jcr:primaryType="jnt:permission"/>
+	   		<my-permission-3 jcr:primaryType="jnt:permission"/>
+	   	</test>
+    </permissions>
+    
+    <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+        </j:acl>
+	 	<contributor jcr:primaryType="jnt:role"/>
+	 	<content-editor jcr:primaryType="jnt:role"/>
+	 	<user-manager jcr:primaryType="jnt:role"/>
+    </roles>
+
+</content>
+-------------
+  

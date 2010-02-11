@@ -1,0 +1,40 @@
+Roles/permissions management UI
+
+  Roles and permissions can be created on the server and on a virtual-site level.
+  This allows having global roles/permissions for the server and more flexible access control
+  for a each virtual site.
+
+  Management UI can be accessed via <Jahia Administration> -> <Server Settings> -> <Manager server roles> menu for the server-level
+  and via <Jahia Administration> -> <Site settings> -> <Manage site roles> for a per-site role/permission management.
+  Management includes:
+
+  * {{{creation} Role creation}} - role manager with the overview of available roles and the possibility to create new roles or modify existing.
+
+  * {{{permissions} Granting permissions to roles}} - this screen allows selection of particular permissions for each available role.
+
+  * {{{roles} Granting roles to principals}} - this panel allows granting/revoking of roles to users and groups.
+
+* Role {creation}
+
+  The overview panel provides simple actions for managing roles: create, rename, edit, delete etc.
+  
+[./images/ui-roles.png]
+
+
+* Granting {permissions} to roles
+
+  Selection of permissions for each role in a grid view.
+  
+[./images/ui-permissions.png]
+
+
+* Granting {roles} to principals
+
+  By selecting a particular role in the overview panel and switching to <Principal mapping> tab
+  the user/group role assignment takes place.
+  
+[./images/ui-granting-roles.png]
+
+  Besides the <Principal mapping> panel, roles can be granted in the user/group details view (accessed via <Manage Users>/<Manager Groups>):
+
+[./images/ui-granting-roles-details.png]

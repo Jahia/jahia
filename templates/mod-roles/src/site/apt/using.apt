@@ -1,0 +1,45 @@
+Using roles/permissions
+
+  Jahia provides ways to utilize role/permission concept in JSP templates as well as in custom Java services.
+  
+* {JSP} templates
+
+  By including two functions into the <Jahia functions> taglib (uri: <<<http://www.jahia.org/tags/functions>>>)
+  template developers can restrict access to particular areas of their templates.
+  
+  Here are simple examples that show the usage of those functions:
+  
+  * Querying roles for current user
+  
+-------------
+  <c:if test="${functions:isUserInRole('user-manager')}">
+      Current user has 'user-manager' role and is authorized to perform users/groups management tasks
+  </c:if>
+-------------
+
+  * Checking permissions for current user
+  
+-------------
+  <c:if test="${functions:isUserPermitted('global/password-policy')}">
+      The user is allowed to manage password policies
+  </c:if>
+
+  <c:if test="${functions:isUserPermitted('admin/site-languages', renderContext.site.siteKey)}">
+      The user is authorized to manage languages for the current site
+  </c:if>
+-------------
+
+    
+* {Java} API
+
+  We provide a dedicated services and API to manage roles/permissions from creation and assignment
+  to applying different policies.
+  
+  Following services are provided:
+  
+  * <<<org.jahia.services.rbac.jcr.RoleManager>>> - provides mean for creating, modifying and removing
+    roles and permissions as well as granting/revoking them to principals. 
+
+  * <<<org.jahia.services.usermanager.JahiaPrincipal>>> - is the common interface of all Jahia principals,
+    including users and groups. It provides methods for checking roles and permissions of a current principal.
+

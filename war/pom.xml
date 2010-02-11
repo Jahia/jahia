@@ -509,6 +509,13 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>mod-roles</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
             <artifactId>webtemplates</artifactId>
             <version>${jahia.package.version}</version>

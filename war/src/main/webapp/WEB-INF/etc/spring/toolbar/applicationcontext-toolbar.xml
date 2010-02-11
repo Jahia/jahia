@@ -727,7 +727,7 @@
                 <ref bean="org.jahia.toolbar.item.unlock"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
-
+                <ref bean="org.jahia.toolbar.item.saveAsPortalComponent"/>
             </list>
         </property>
     </bean>
@@ -841,6 +841,7 @@
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
+                <ref bean="org.jahia.toolbar.item.saveAsPortalComponent"/>
             </list>
         </property>
     </bean>
@@ -1007,6 +1008,7 @@
                 <ref bean="org.jahia.toolbar.item.paste"/>
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
+                <ref bean="org.jahia.toolbar.item.saveAsPortalComponent"/>
             </list>
         </property>
     </bean>
@@ -2476,6 +2478,15 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsReusableComponentActionItem"/>
         </property>
         <property name="titleKey" value="label.saveAsReusableComponent"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.saveAsPortalComponent" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsPortalComponentActionItem"/>
+        </property>
+        <property name="titleKey" value="label.saveAsPortalComponent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsReusableComponent"/>
     </bean>

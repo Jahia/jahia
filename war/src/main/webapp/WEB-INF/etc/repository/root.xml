@@ -18,7 +18,7 @@
 
         <files jcr:primaryType="jnt:folder"/>
         <mashups jcr:primaryType="jnt:folder"/>
-
+        <portalComponents jcr:primaryType="jnt:folder"/> 
         <templates jcr:primaryType="jnt:folder"/>
         <contents jcr:primaryType="jnt:folder"/>
     </shared>

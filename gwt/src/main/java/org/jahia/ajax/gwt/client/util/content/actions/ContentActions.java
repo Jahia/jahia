@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.util.content.actions;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -64,11 +65,7 @@ import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -973,6 +970,21 @@ public class ContentActions {
                             }
                         }
                     });
+                }
+            });
+        }
+    }
+
+    public static void saveAsPortalComponent(final Linker linker) {
+        final GWTJahiaNode target = linker.getSelectedNode();
+        if (target != null) {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/shared/portalComponents",null,new AsyncCallback() {
+                public void onFailure(Throwable caught) {
+                    Info.display("Portal Components","Error while making your component available ofr users in their portal page.");
+                }
+
+                public void onSuccess(Object result) {
+                    Info.display("Portal Components","Your components is now available for users in their portal page.");
                 }
             });
         }

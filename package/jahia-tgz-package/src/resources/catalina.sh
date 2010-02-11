@@ -77,6 +77,8 @@
 #
 # $Id: catalina.sh 885002 2009-11-27 20:51:03Z markt $
 # -----------------------------------------------------------------------------
+CATALINA_OPTS="$CATALINA_OPTS -Xms1024m -Xmx1024m -Djava.awt.headless=true -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc"
+export CATALINA_OPTS
 
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false

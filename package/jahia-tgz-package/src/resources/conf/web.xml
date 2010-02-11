@@ -240,7 +240,23 @@
         <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
         <init-param>
             <param-name>fork</param-name>
-            <param-value>false</param-value>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>trimSpaces</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>genStrAsCharArray</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>development</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>checkInterval</param-name>
+            <param-value>300</param-value>
         </init-param>
         <init-param>
             <param-name>xpoweredBy</param-name>

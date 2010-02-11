@@ -68,7 +68,12 @@
     -->
     <Connector port="8080" protocol="HTTP/1.1" 
                connectionTimeout="20000" 
-               redirectPort="8443" />
+               redirectPort="8443" 
+               maxThreads="150" acceptCount="100"
+               enableLookups="false" 
+               emptySessionPath="true" URIEncoding="UTF-8"
+               compression="on" 
+               compressableMimeType="text/plain,text/html,text/xml,text/css,text/javascript,application/x-javascript,application/javascript" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -87,7 +92,7 @@
     -->
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" enableLookups="false" emptySessionPath="true" URIEncoding="UTF-8" />
 
 
     <!-- An Engine represents the entry point (within Catalina) that processes
@@ -138,9 +143,9 @@
         <!-- Access log processes all example.
              Documentation at: /docs/config/valve.html -->
         <!--
-        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"  
-               prefix="localhost_access_log." suffix=".txt" pattern="common" resolveHosts="false"/>
         -->
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"  
+               prefix="access-log." suffix=".txt" pattern="common" resolveHosts="false"/>
 
       </Host>
     </Engine>

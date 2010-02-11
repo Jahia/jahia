@@ -1,5 +1,8 @@
 package org.jahia.taglibs.template.users;
 
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.utils.profile.ProfileExtensions;
+
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import java.util.Map;
@@ -18,11 +21,8 @@ public class ProfileExtensionsTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        //todo do something better
-        Map m = new HashMap();
-        m.put("tasklist", "Task list");
-        m.put("portal", "My portal");
-        pageContext.setAttribute(var, m.entrySet());
+        ProfileExtensions profileExtensions = (ProfileExtensions) SpringContextSingleton.getInstance().getContext().getBean("profileExtensions");
+        pageContext.setAttribute(var, profileExtensions.getProfileExtensions().entrySet());
         return super.doStartTag();
     }
 

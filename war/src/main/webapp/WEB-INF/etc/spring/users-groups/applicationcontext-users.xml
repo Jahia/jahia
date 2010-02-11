@@ -39,5 +39,7 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="profileExtensions" class="org.jahia.utils.profile.ProfileExtensions"/>
     
 </beans>

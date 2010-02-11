@@ -13,4 +13,8 @@
             </map>
         </property>
     </bean>
+    <bean id="myTaskProfileExtension" class="org.jahia.utils.profile.ProfileExtension">
+        <property name="key" value="tasklist"/>
+        <property name="displayName" value="My Tasks"/>
+    </bean>
 </beans>

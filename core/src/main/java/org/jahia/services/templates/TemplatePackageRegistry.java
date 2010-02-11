@@ -34,6 +34,7 @@ package org.jahia.services.templates;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
@@ -44,6 +45,8 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.Action;
+import org.jahia.utils.profile.ProfileExtension;
+import org.jahia.utils.profile.ProfileExtensions;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -85,6 +88,10 @@ class TemplatePackageRegistry {
                         }
                     }
                 }
+            } else if (bean instanceof ProfileExtension) {
+                ProfileExtension profileExtension = (ProfileExtension) bean;
+                ProfileExtensions profileExtensions = (ProfileExtensions) SpringContextSingleton.getInstance().getContext().getBean("profileExtensions");
+                profileExtensions.registerExtension(profileExtension);
             }
             return bean;
         }

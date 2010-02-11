@@ -32,6 +32,7 @@
  */
 package org.jahia.services.usermanager.jcr;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -50,6 +51,7 @@ import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -118,13 +120,17 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     jcrSessionWrapper.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
+                        InputStream is = null;
                         try {
-                            jcrSessionWrapper.importXML(parentNodeWrapper.getPath() + "/" + name, new FileInputStream(
+                            is = new FileInputStream(
                                     org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + parentNodeWrapper.getProperty(
-                                            "j:usersFolderSkeleton").getString()),
+                                    "j:usersFolderSkeleton").getString());
+                            jcrSessionWrapper.importXML(parentNodeWrapper.getPath() + "/" + name, is,
                                                       ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                         } catch (IOException e) {
                             throw new RepositoryException("Could not create user due to some import issues", e);
+                        } finally {
+                            IOUtils.closeQuietly(is);
                         }
                         JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
                     } else {

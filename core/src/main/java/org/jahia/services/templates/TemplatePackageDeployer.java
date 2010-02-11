@@ -33,6 +33,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
@@ -50,6 +51,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -294,7 +296,13 @@ class TemplatePackageDeployer {
             logger.info("... importing " + imp + " into " + targetPath);
             try {
                 if (imp.toLowerCase().endsWith(".xml")) {
-                    importExportService.importXML(targetPath, new FileInputStream(new File(pack.getFilePath(), imp)), true);
+                    InputStream is = null;
+                    try {
+                        is = new FileInputStream(new File(pack.getFilePath(), imp));
+                        importExportService.importXML(targetPath, is, true);
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                    }
                 } else {
                     importExportService.importZip(targetPath, new File(pack.getFilePath(), imp), true);
                 }

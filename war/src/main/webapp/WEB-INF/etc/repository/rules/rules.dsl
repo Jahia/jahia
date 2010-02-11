@@ -57,6 +57,7 @@
 [consequence][]Extract the properties from the file=extractionService.extractProperties(node, drools);
 [consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);
+[consequence][]Import file {xmlFile} into {node}=service.importXML(node, {xmlFile}, drools);
 [consequence][]Log {message}= logger.info({message});
 [consequence][]Remove this property=insert (new DeletedPropertyWrapper(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
@@ -79,4 +80,3 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeLater(node, "{property}",{ruleName}, drools);
 [consequence][]Create reusable {node}=service.createReusableComponent(node, drools);
-[consequence][]Update site {node} languages permissions =service.updateSiteLangPermissions({node},drools);

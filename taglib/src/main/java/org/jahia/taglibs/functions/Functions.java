@@ -42,6 +42,7 @@ import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.JahiaTools;
 
 import java.util.List;
@@ -210,4 +211,78 @@ public class Functions {
         final String[] fullString = ("||||" + initString + "||||").split(searchString);
         return fullString.length - 1;
     }
+
+    /**
+     * Checks if the current user is included in the specified logical role or
+     * has all specified roles if multiple are specified (comma-separated).
+     * 
+     * @param role the role identifier to check for. Multiple roles can be
+     *            specified in a comma-separated form. In such case this method
+     *            evaluates to <code>true</code> only if the current user has
+     *            all the specified roles.
+     * @return if the current user is included in the specified logical role or
+     *         has all specified roles if multiple are specified (comma-separated)
+     */
+    public static Boolean isUserInRole(String role) {
+        boolean hasIt = false;
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        if (user != null) {
+            final String[] roles = StringUtils.split(role, ',');
+            for (String roleToCheck : roles) {
+                hasIt = user.hasRole(roleToCheck.trim());
+                if (!hasIt) {
+                    break;
+                }
+            }
+        }
+
+        return hasIt;
+    }
+
+    /**
+     * Checks if the current user has the specified permission or
+     * has all specified permissions if multiple are specified (comma-separated).
+     * 
+     * @param permission the permission identifier to check for. Multiple permissions can be
+     *            specified in a comma-separated form. In such case this method
+     *            evaluates to <code>true</code> only if the current user has
+     *            all the specified permissions.
+     * @return if the current user has the specified permission or
+     * has all specified permissions if multiple are specified (comma-separated)
+     */
+    public static Boolean isUserPermitted(String permission) {
+        return isUserPermittedForSite(permission, null);
+    }
+
+    /**
+     * Checks if the current user has the specified site-level permission or
+     * has all specified permissions if multiple are specified (comma-separated).
+     * 
+     * @param permission the permission identifier to check for. Multiple permissions can be
+     *            specified in a comma-separated form. In such case this method
+     *            evaluates to <code>true</code> only if the current user has
+     *            all the specified permissions.
+     * @param siteKey the site key in case the site-level permission is checked
+     * @return if the current user has the specified permission or
+     * has all specified permissions if multiple are specified (comma-separated)
+     */
+    public static Boolean isUserPermittedForSite(String permission, String siteKey) {
+        boolean hasIt = false;
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        String site = StringUtils.defaultIfEmpty(siteKey, null);
+        if (user != null) {
+            final String[] roles = StringUtils.split(permission, ',');
+            for (String permissionToCheck : roles) {
+                hasIt = site != null ? user.isPermitted(permissionToCheck.trim(), site) : user.isPermitted(permissionToCheck.trim());
+                if (!hasIt) {
+                    break;
+                }
+            }
+        }
+
+        return hasIt;
+    }
+
 }

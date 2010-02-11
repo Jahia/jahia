@@ -5,9 +5,9 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
         version="2.0">
 
-    <description>Jahia functions 6.0 library</description>
+    <description>Jahia functions library</description>
     <display-name>Jahia functions</display-name>
-    <tlib-version>6.0</tlib-version>
+    <tlib-version>6.5</tlib-version>
     <short-name>functions</short-name>
     <uri>http://www.jahia.org/tags/functions</uri>
 
@@ -207,6 +207,52 @@
         <function-signature>int round(float)</function-signature>
         <example>
             &lt;c:out value="${functions:round(9 * tag.references.size / totalTagUsage)}"&gt;
+        </example>
+    </function>
+    
+    
+    <function>
+        <description>
+			Checks if the current user is included in the specified logical role or
+			has all specified roles if multiple are specified (comma-separated)
+        </description>
+        <name>isUserInRole</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.Boolean isUserInRole(java.lang.String)</function-signature>
+        <example>
+            &lt;c:if test="${functions:isUserInRole('user-manager')}"&gt;
+            The user is authorized to manage users
+            &lt;/c:if&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>
+			Checks if the current user has the specified permission or
+     		has all specified permissions if multiple are specified (comma-separated)
+        </description>
+        <name>isUserPermitted</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.Boolean isUserPermitted(java.lang.String)</function-signature>
+        <example>
+            &lt;c:if test="${functions:isUserPermitted('global/password-policy')}"&gt;
+            The user is authorized to manage password policies
+            &lt;/c:if&gt;
+        </example>
+    </function>
+    
+    <function>
+        <description>
+			Checks if the current user has the specified site-level permission or
+     		has all specified permissions if multiple are specified (comma-separated)
+        </description>
+        <name>isUserPermittedForSite</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.Boolean isUserPermitted(java.lang.String, java.lang.String)</function-signature>
+        <example>
+            &lt;c:if test="${functions:isUserPermitted('admin/site-languages', renderContext.site.siteKey)}"&gt;
+            The user is authorized to manage languages for the current site
+            &lt;/c:if&gt;
         </example>
     </function>
 </taglib>

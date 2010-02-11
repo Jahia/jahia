@@ -164,7 +164,7 @@
                             <value>jcr:lastModifiedBy</value>
                             <value>j:lastPublished</value>
                             <value>j:lastPublishedBy</value>
-                            <value>j:tags</value>
+                			<value>j:tags</value>
                 		</set>
                 	</property>
                 </bean>
@@ -251,7 +251,6 @@
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="schedulerService" ref="SchedulerService" />
                 <property name="sitesService" ref="JahiaSitesService" />
-                <property name="roleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager" />
             </bean>
         </property>
     </bean>

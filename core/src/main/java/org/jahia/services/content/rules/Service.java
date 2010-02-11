@@ -51,7 +51,6 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.rbac.jcr.SystemRoleManager;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
@@ -89,7 +88,6 @@ public class Service extends JahiaService {
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManager;
-    private SystemRoleManager roleManager;
 
     public static synchronized Service getInstance() {
         if (instance == null) {
@@ -289,6 +287,30 @@ public class Service extends JahiaService {
             }
         }
 
+    }
+    
+    public void importXML(final NodeWrapper targetNode, final String path, KnowledgeHelper drools)
+            throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                InputStream is = null;
+                try {
+                    is = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
+                    if (is == null) {
+                        throw new FileNotFoundException("Unable to locate resource at the specified path: " + path);
+                    }
+                    session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                    session.save();
+                } catch (IOException e) {
+                    logger.error("Error reading content of file " + path, e);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
+                logger.info("Content of the file '" + path + "' for target node " + targetNode
+                        + " imported successfully");
+                return true;
+            }
+        });
     }
 
     private List<Map<Object, Object>> prepareFileImports(NodeWrapper node, String name) {
@@ -580,16 +602,6 @@ public class Service extends JahiaService {
                 });
     }
 
-    public void updateSiteLangPermissions(final NodeWrapper node, KnowledgeHelper drools) throws RepositoryException {
-        final Value[] languages = node.getNode().getProperty("j:languages").getValues();
-        final String site = node.getNode().getName();
-        List<String> langs = new ArrayList<String>();
-        for (Value language : languages) {
-            langs.add(language.getString());
-            roleManager.savePermission(language.getString(), "languages",site);
-        }
-    }
-
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
     }
@@ -612,10 +624,6 @@ public class Service extends JahiaService {
 
     public void setUserManager(JahiaUserManagerService userManager) {
         this.userManager = userManager;
-    }
-
-    public void setRoleManager(SystemRoleManager roleManager) {
-        this.roleManager = roleManager;
     }
 
     @Override

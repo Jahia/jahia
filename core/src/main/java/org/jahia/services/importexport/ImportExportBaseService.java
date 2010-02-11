@@ -34,20 +34,14 @@ package org.jahia.services.importexport;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.jahia.admin.roles.ManageSiteRoles;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.model.JahiaAcl;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
@@ -57,10 +51,6 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
@@ -68,7 +58,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
@@ -92,7 +81,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
-    private static final String CDATA = "CDATA";
     private static final String FILESACL_XML = "filesacl.xml";
     private static final String REPOSITORY_XML = "repository.xml";
     private static final String CATEGORIES_XML = "categories.xml";
@@ -106,8 +94,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 
     private JahiaSitesService sitesService;
-    private JahiaUserManagerService userManagerService;
-    private JahiaGroupManagerService groupManagerService;
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
@@ -161,7 +147,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {
@@ -193,14 +179,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
-    }
-
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
-    }
-
-    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
     }
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
@@ -437,73 +415,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private void exportSitePermissions(ContentHandler ch, JahiaSite site) throws JahiaException, SAXException {
 //        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
     }
-
-    private void exportPermissions(ContentHandler ch, String prefix, String nodeName) throws SAXException {
-        ch.startDocument();
-        ch.startPrefixMapping("jahia", JAHIA_URI);
-        ch.endPrefixMapping("jahia");
-        AttributesImpl attr = new AttributesImpl();
-
-        attr.addAttribute(NS_URI, "jahia", "xmlns:jahia", CDATA, JAHIA_URI);
-
-        ch.startElement(JAHIA_URI, nodeName + "s", "jahia:" + nodeName + "s", attr);
-
-//        List<JahiaAclName> list = ServicesRegistry.getInstance().getJahiaACLManagerService().getAclNamesStartingWith(prefix);
-//        for (Iterator<JahiaAclName> iterator = list.iterator(); iterator.hasNext();) {
-//            attr = new AttributesImpl();
-//            JahiaAclName jahiaAclName = (JahiaAclName) iterator.next();
-//
-//            String name = jahiaAclName.getAclName().substring(prefix.length() + 1);
-//            attr.addAttribute(JAHIA_URI, "name", "jahia:name", CDATA, name);
-//
-//            String perms = "";
-//            JahiaAcl acl = jahiaAclName.getAcl();
-//            Collection<JahiaAclEntry> entries = acl.getEntries();
-//            for (Iterator<JahiaAclEntry> iterator1 = entries.iterator(); iterator1.hasNext();) {
-//                JahiaAclEntry ace = (JahiaAclEntry) iterator1.next();
-//                if (ace.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
-//                    if (ace.getComp_id().getType().intValue() == 1) {
-//                        JahiaUser user = userManagerService.lookupUserByKey(ace.getComp_id().getTarget());
-//                        if (user != null) {
-//                            perms += "|u:" + user.getUsername();
-//                        }
-//                    } else {
-//                        JahiaGroup group = groupManagerService.lookupGroup(ace.getComp_id().getTarget());
-//                        if (group != null) {
-//                            perms += "|g:" + group.getGroupname();
-//                            if ("serverPermission".equals(nodeName)) {
-//                                // also add site key information
-//                                try {
-//                                    perms += ":"
-//                                            + (group.getSiteID() == 0 ? "0"
-//                                            : sitesService.getSite(
-//                                            group.getSiteID())
-//                                            .getSiteKey());
-//                                } catch (Exception e) {
-//                                    logger.error(
-//                                            "Unable to obtain site key for site with ID '"
-//                                                    + group.getSiteID() + "'", e);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            if (perms.length() > 0) {
-//                perms = perms.substring(1);
-//                attr.addAttribute(JAHIA_URI, "acl", "jahia:acl", CDATA, perms);
-//            }
-//
-//            ch.startElement(JAHIA_URI, nodeName, "jahia:" + nodeName, attr);
-//            ch.endElement(JAHIA_URI, nodeName, "jahia:" + nodeName);
-//        }
-        ch.endElement(JAHIA_URI, nodeName + "s", "jahia:" + nodeName + "s");
-        ch.endDocument();
-    }
-
-    // *****************************************
-    // Import methods
-    // *****************************************
 
     public void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site) throws RepositoryException, IOException {
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
@@ -960,17 +871,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 case XMLFormatDetectionHandler.JCR_DOCVIEW: {
                     if (JcrSessionFilter.getCurrentUser() != null) {
                         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, true,null);
-                        session.importXML(parentNodePath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                        InputStream is = new FileInputStream(tempFile);
+                        try {
+                            session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                        } finally {
+                            IOUtils.closeQuietly(is);
+                        }
                         session.save();
                     } else {
                         final File contentFile = tempFile;
                         JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, true, new JCRCallback<Boolean>() {
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                InputStream is = null;
                                 try {
-                                    session.importXML(parentNodePath, new FileInputStream(contentFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
+                                    is = new FileInputStream(contentFile);
+                                    session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
                                     session.save();
                                 } catch (IOException e) {
                                     throw new RepositoryException(e);
+                                } finally {
+                                    IOUtils.closeQuietly(is);
                                 }
                                 return Boolean.TRUE;
                             }
@@ -1006,32 +926,36 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
-        while (true) {
-            ZipEntry zipentry = zis.getNextEntry();
-            if (zipentry == null) break;
-            String name = zipentry.getName();
-            if (name.endsWith(".xml")) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(zis));
-                long i = 0;
-                while (br.readLine() != null) {
-                    i++;
+        try {
+            while (true) {
+                ZipEntry zipentry = zis.getNextEntry();
+                if (zipentry == null) break;
+                String name = zipentry.getName();
+                if (name.endsWith(".xml")) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(zis));
+                    long i = 0;
+                    while (br.readLine() != null) {
+                        i++;
+                    }
+                    sizes.put(name, i);
+                } else {
+                    sizes.put(name, zipentry.getSize());
                 }
-                sizes.put(name, i);
-            } else {
-                sizes.put(name, zipentry.getSize());
+                if (name.contains("/")) {
+                    fileList.add("/" + name);
+                }
+                zis.closeEntry();
             }
-            if (name.contains("/")) {
-                fileList.add("/" + name);
-            }
-            zis.closeEntry();
+        } finally {
+            zis.reallyClose();
         }
-        zis.reallyClose();
 
         Map<String, String> pathMapping = new HashMap<String, String>();
 
 //        if (sizes.containsKey(REPOSITORY_XML)) {
             // Import repository content
             zis = new NoCloseZipInputStream(new FileInputStream(file));
+        try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
@@ -1052,7 +976,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 zis.closeEntry();
             }
+        } finally {
             zis.reallyClose();
+        }
 //        }
 
         session.save();

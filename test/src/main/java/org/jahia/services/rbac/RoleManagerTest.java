@@ -359,7 +359,7 @@ public class RoleManagerTest {
                 .getPrincipalsInRole(role1.getPath(),
                         currentSession != null ? currentSession : session);
 
-        assertTrue("No prinipals should be assigned to role1",
+        assertTrue("No principals should be assigned to role1",
                 principalsInRole.size() == 0);
         for (JahiaPrincipal user : users) {
             assertFalse("Current principal should not have role1 assigned",
@@ -398,7 +398,7 @@ public class RoleManagerTest {
         principalsInRole = getService().getPrincipalsInRole(role1.getPath(),
                 currentSession != null ? currentSession : session);
 
-        assertTrue("No prinipals should be assigned to role1",
+        assertTrue("No principals should be assigned to role1",
                 principalsInRole.size() == 0);
         for (JahiaPrincipal user : users) {
             assertFalse("Current principal should not have role1 assigned",
@@ -421,8 +421,6 @@ public class RoleManagerTest {
                 principalsInRole.size() > 0
                         && principalsInRole.containsAll(users));
         for (JahiaPrincipal user : users) {
-            assertTrue("Current principal should have the roles assigned", user
-                    .hasRoles(allRoleNames));
             assertTrue("Current principal should have role1 assigned", user
                     .hasRole(role1.getName()));
             assertTrue("Current principal should have role2 assigned", user
@@ -439,11 +437,9 @@ public class RoleManagerTest {
         principalsInRole = getService().getPrincipalsInRole(role2.getPath(),
                 currentSession != null ? currentSession : session);
 
-        assertTrue("No prinipals should be assigned to role2",
+        assertTrue("No principals should be assigned to role2",
                 principalsInRole.size() == 0);
         for (JahiaPrincipal user : users) {
-            assertFalse("Current principal should not have the roles assigned",
-                    user.hasRoles(allRoleNames) && !isRootUser(user));
             assertFalse(
                     "Current principal should not have role1 assigned",
                     user.hasRole(role1.getName()) && !isRootUser(user));

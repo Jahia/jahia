@@ -36,17 +36,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.model.JahiaAcl;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.ACLInfo;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -58,11 +52,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:36
- * To change this template use File | Settings | File Templates.
  */
 public class PermissionsImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(PermissionsImportHandler.class);

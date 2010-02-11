@@ -32,13 +32,9 @@
 
 package org.jahia.services.rbac;
 
-import java.util.Collection;
-
-import org.jahia.services.usermanager.GuestGroup;
+import org.jahia.services.rbac.EnforcementPolicy.EnforcementPolicyResult;
+import org.jahia.services.rbac.EnforcementPolicy.GrantAllEnforcementPolicy;
 import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 
 /**
  * Service implementation for the Role Based Access Control.
@@ -48,9 +44,7 @@ import org.jahia.services.usermanager.jcr.JCRUser;
  */
 public abstract class RoleBasedAccessControlService {
 
-    private boolean denyAllToGuest = true;
-
-    private boolean grantAllToRoot = true;
+    protected EnforcementPolicy policy = new GrantAllEnforcementPolicy();
 
     /**
      * Returns {@code true} if this principal has the specified role, {@code
@@ -63,68 +57,12 @@ public abstract class RoleBasedAccessControlService {
      *         false} otherwise
      */
     public final boolean hasRole(JahiaPrincipal principal, String role) {
-        if (grantAllToRoot && isRoot(principal)) {
-            return true;
-        }
-        if (denyAllToGuest && isGuest(principal)) {
-            return false;
+        EnforcementPolicyResult result = policy.enforce(principal);
+        if (result.isApplied()) {
+            return result.getResult();
         }
 
         return isPrincipalInRole(principal, role);
-    }
-
-    /**
-     * Returns {@code true} if this principal has all the specified roles,
-     * {@code false} otherwise.
-     * 
-     * @param principal the principal to check for roles
-     * @param role the collection of application-specific role identifiers
-     *            (usually a role id or role name) to be checked
-     * @return {@code true} if this principal has all the specified roles,
-     *         {@code false} otherwise
-     */
-    public final boolean hasRoles(JahiaPrincipal principal, Collection<String> roles) {
-        if (roles == null || roles.isEmpty() || grantAllToRoot && isRoot(principal)) {
-            return true;
-        }
-        if (denyAllToGuest && isGuest(principal)) {
-            return false;
-        }
-
-        boolean satisfies = true;
-        for (String role : roles) {
-            if (!isPrincipalInRole(principal, role)) {
-                satisfies = false;
-                break;
-            }
-        }
-        return satisfies;
-    }
-
-    /**
-     * Returns {@code true} if the guest user/group is silently denied all
-     * roles/permissions, i.e. the role/permission check always evaluates to $
-     * {@code false}.
-     * 
-     * @return {@code true} if the guest user/group is silently denied all
-     *         roles/permissions, i.e. the role/permission check always
-     *         evaluates to ${@code false}
-     */
-    protected boolean isDenyAllToGuest() {
-        return denyAllToGuest;
-    }
-
-    /**
-     * Returns {@code true} if the system root user is silently granted all
-     * roles/permissions, i.e. the role/permission check always evaluates to $
-     * {@code true}.
-     * 
-     * @return {@code true} if the system root user is silently granted all
-     *         roles/permissions, i.e. the role/permission check always
-     *         evaluates to ${@code true}
-     */
-    protected boolean isGrantAllToRoot() {
-        return grantAllToRoot;
     }
 
     /**
@@ -152,14 +90,13 @@ public abstract class RoleBasedAccessControlService {
      *         string
      */
     public final boolean isPermitted(JahiaPrincipal principal, String permission, String site) {
-        if (grantAllToRoot && isRoot(principal)) {
-            return true;
+        EnforcementPolicyResult result = policy.enforce(principal);
+        if (result.isApplied()) {
+            return result.getResult();
         }
-        if (denyAllToGuest && isGuest(principal)) {
-            return false;
-        }
-        permission = (site != null ? "/sites/" + site : "") + "/permissions"
-                + (!permission.startsWith("/") ? "/" : "") + permission;
+
+        permission = (site != null ? "/sites/" + site : "") + "/permissions" + (!permission.startsWith("/") ? "/" : "")
+                + permission;
         return isPermissionGranted(principal, permission);
     }
 
@@ -176,40 +113,12 @@ public abstract class RoleBasedAccessControlService {
     protected abstract boolean isPrincipalInRole(JahiaPrincipal principal, String role);
 
     /**
-     * Sets the value for the <code>denyAllToGuest</code> property
+     * Injects the enforcement policy to use.
      * 
-     * @param denyAllToGuest the denyAllToGuest to set
-     * @see ${@link #isDenyAllToGuest()}
+     * @param policy the policy to set
      */
-    public void setDenyAllToGuest(boolean denyAllToGuest) {
-        this.denyAllToGuest = denyAllToGuest;
+    protected void setEnformcementPolicy(EnforcementPolicy policy) {
+        this.policy = policy;
     }
 
-    /**
-     * Sets the value for the <code>grantAllToRoot</code> property.
-     * 
-     * @param grantAllToRoot the grantAllToRoot to set
-     * @see ${@link #isGrantAllToRoot()}
-     */
-    public void setGrantAllToRoot(boolean grantAllToRoot) {
-        this.grantAllToRoot = grantAllToRoot;
-    }
-
-    /**
-     * Test if the current principal is the guest user.
-     * 
-     * @return {@code true} if this principal is the guest user
-     */
-    protected boolean isGuest(JahiaPrincipal principal) {
-        return (principal instanceof GuestGroup) || (principal instanceof JahiaUser) && JahiaUserManagerService.isGuest((JahiaUser) principal);
-    }
-
-    /**
-     * Test if the current principal is the root system user.
-     * 
-     * @return {@code true} if this principal is the root system user
-     */
-    protected boolean isRoot(JahiaPrincipal principal) {
-        return (principal instanceof JCRUser) && ((JCRUser) principal).isRoot();
-    }
 }

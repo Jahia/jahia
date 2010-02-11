@@ -34,7 +34,6 @@ package org.jahia.services.usermanager;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Collection;
 
 /**
  * Represents a common notion of a principal in Jahia, including users and
@@ -58,18 +57,6 @@ public interface JahiaPrincipal extends Principal, Serializable {
     boolean hasRole(String role);
 
     /**
-     * Returns {@code true} if this principal has all the specified roles,
-     * {@code false} otherwise.
-     * 
-     * @param role the collection of application-specific role identifiers
-     *            (usually a role id or role name) to be checked
-     * @return {@code true} if this principal has all the specified roles,
-     *         {@code false} otherwise
-     * @since 6.5
-     */
-    boolean hasRoles(Collection<String> roles);
-
-    /**
      * Returns {@code true} if this principal is permitted to perform a server action
      * or access a resource summarized by the specified permission string ("<group>/<name>").
      * 
@@ -86,7 +73,7 @@ public interface JahiaPrincipal extends Principal, Serializable {
      * Returns {@code true} if this principal is permitted to perform a site action
      * or access a resource summarized by the specified permission string.
      * 
-     * @param permission the String representation of a site permission ("<group>/<name>")
+     * @param permission the String representation of a site permission ("&lt;group&gt;/&lt;name&gt;")
      *            that is being checked
      * @param siteKey the site key      
      * @return {@code true} if this principal is permitted to perform a site action

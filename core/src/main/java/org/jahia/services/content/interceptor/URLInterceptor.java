@@ -2,18 +2,18 @@ package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.render.filter.URLFilter;
-import org.springframework.web.context.ServletContextAware;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import javax.servlet.ServletContext;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +32,7 @@ import net.htmlparser.jericho.*;
  * jmix:referenceInField child nodes.
  *
  */
-public class URLInterceptor implements PropertyInterceptor, ServletContextAware {
+public class URLInterceptor implements PropertyInterceptor, InitializingBean {
     private static Logger logger = Logger.getLogger(URLInterceptor.class);
 
     private String dmsContext;
@@ -44,25 +44,6 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
     private Pattern refPattern;
-
-    public void setServletContext(ServletContext servletContext) {
-        String context = servletContext.getInitParameter("contextPath");
-        if (context.equals("/")) {
-            dmsContext = "/files/";
-            cmsContext = "/cms/";
-        } else {
-            dmsContext = context + "/files/";
-            cmsContext = context + "/cms/";
-        }
-
-        String pattern = "(((render|edit)/[a-zA-Z]+)|" + 
-                escape(URLFilter.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
-                escape(URLFilter.LANG_PLACEHOLDER) + ")/(.*)";
-
-        refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
-        cmsPattern = Pattern.compile(cmsContext + pattern);
-        cmsPatternWithContextPlaceholder = Pattern.compile(escape(CMS_CONTEXT_PLACEHOLDER) + pattern);
-    }
 
     private String escape(String s) {
         s = s.replace("{","\\{");
@@ -286,7 +267,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
 
         final String path = "/" + pathPart;
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 String ext = null;
@@ -377,7 +358,7 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
 
         final String path = "/" + pathPart;
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     Matcher matcher = refPattern.matcher(path);
@@ -411,6 +392,19 @@ public class URLInterceptor implements PropertyInterceptor, ServletContextAware 
         });
 
 
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        dmsContext = Jahia.getContextPath() + "/files/";
+        cmsContext = Jahia.getContextPath() + "/cms/";
+
+        String pattern = "(((render|edit)/[a-zA-Z]+)|" + 
+                escape(URLFilter.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
+                escape(URLFilter.LANG_PLACEHOLDER) + ")/(.*)";
+
+        refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
+        cmsPattern = Pattern.compile(cmsContext + pattern);
+        cmsPatternWithContextPlaceholder = Pattern.compile(escape(CMS_CONTEXT_PLACEHOLDER) + pattern);
     }
 
 

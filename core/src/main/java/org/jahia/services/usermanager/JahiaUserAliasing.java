@@ -31,7 +31,6 @@
  */
 package org.jahia.services.usermanager;
 
-import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -125,10 +124,6 @@ public class JahiaUserAliasing implements JahiaUser {
 
     public boolean hasRole(String role) {
         return getUser().hasRole(role);
-    }
-
-    public boolean hasRoles(Collection<String> roles) {
-        return getUser().hasRoles(roles);
     }
 
     public boolean isPermitted(String permission) {

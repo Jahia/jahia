@@ -16,6 +16,7 @@
         <property name="jcrTemplate" ref="jcrTemplate"/>
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="userManagerProvider" ref="JCRUserManagerProvider"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>
         <property name="priority" value="1"/>

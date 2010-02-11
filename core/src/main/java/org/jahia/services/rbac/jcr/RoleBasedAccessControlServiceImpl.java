@@ -36,6 +36,7 @@ import static org.jahia.services.rbac.jcr.RoleManager.JMIX_ROLE_BASED_ACCESS_CON
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_PERMISSSIONS;
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_ROLES;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -60,6 +61,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 
 /**
  * Service implementation for the Role Based Access Control.
@@ -73,7 +75,23 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
 
     private JahiaGroupManagerService groupManager;
 
+    private JCRGroupManagerProvider jcrGroupManagerProvider;
+
     private RoleManager roleManager;
+
+    private List<String> getMembership(JahiaPrincipal principal) {
+        List<String> groups = Collections.emptyList();
+        if (principal instanceof JahiaUser) {
+            groups = groupManager.getUserMembership((JahiaUser) principal);
+        } else if (principal instanceof JahiaGroup) {
+            groups = jcrGroupManagerProvider.getMembership(principal);
+        } else {
+            logger.warn("Unknown principal type " + principal.getClass().getName() + " for principal "
+                    + principal.getName());
+        }
+
+        return groups;
+    }
 
     private boolean hasDirectPermission(String principal, String permission, JCRSessionWrapper session)
             throws InvalidQueryException, RepositoryException {
@@ -122,22 +140,36 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
 
     private boolean hasInheritedPermission(JahiaPrincipal principal, JCRNodeWrapper principalNode, String permission,
             JCRSessionWrapper session) {
-        // TODO Auto-generated method stub
-        return false;
+        boolean hasIt = false;
+        for (String groupKey : getMembership(principal)) {
+            JahiaGroup group = groupManager.lookupGroup(groupKey);
+            if (group != null) {
+                hasIt = group.isPermitted(permission);
+                if (hasIt) {
+                    break;
+                }
+            } else {
+                logger.warn("Unable to find group for key '" + groupKey + "'");
+            }
+        }
+
+        return hasIt;
     }
 
     private boolean hasInheritedRole(JahiaPrincipal principal, JCRNodeWrapper principalNode, String role,
             JCRSessionWrapper session) {
         boolean hasIt = false;
-        if (principal instanceof JahiaUser) {
-            List<String> groups = groupManager.getUserMembership((JahiaUser) principal);
-        } else if (principal instanceof JahiaGroup) {
-
-        } else {
-
+        for (String groupKey : getMembership(principal)) {
+            JahiaGroup group = groupManager.lookupGroup(groupKey);
+            if (group != null) {
+                hasIt = group.hasRole(role);
+                if (hasIt) {
+                    break;
+                }
+            } else {
+                logger.warn("Unable to find group for key '" + groupKey + "'");
+            }
         }
-
-        // TODO check for group or groups membership case
 
         return hasIt;
     }
@@ -186,12 +218,29 @@ public class RoleBasedAccessControlServiceImpl extends RoleBasedAccessControlSer
     }
 
     /**
-     * @param groupManager the groupManager to set
+     * Injects the dependency to the {@link JahiaGroupManagerService}.
+     * 
+     * @param groupManager the {@link JahiaGroupManagerService} instance
      */
     public void setGroupManager(JahiaGroupManagerService groupManager) {
         this.groupManager = groupManager;
     }
 
+    /**
+     * Injects the dependency to the {@link JCRGroupManagerProvider}.
+     * 
+     * @param jcrGroupManagerProvider the {@link JCRGroupManagerProvider}
+     *            instance
+     */
+    public void setJCRGroupManagerProvider(JCRGroupManagerProvider jcrGroupManagerProvider) {
+        this.jcrGroupManagerProvider = jcrGroupManagerProvider;
+    }
+
+    /**
+     * Injects the dependency to the {@link RoleManager}.
+     * 
+     * @param roleManager the {@link RoleManager} instance
+     */
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
     }

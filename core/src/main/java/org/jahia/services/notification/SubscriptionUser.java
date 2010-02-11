@@ -31,7 +31,6 @@
  */
 package org.jahia.services.notification;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
@@ -223,10 +222,6 @@ public class SubscriptionUser implements JahiaUser {
     }
 
     public boolean hasRole(String role) {
-        return false;
-    }
-
-    public boolean hasRoles(Collection<String> roles) {
         return false;
     }
 

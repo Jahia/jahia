@@ -40,7 +40,6 @@ import java.util.List;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,7 +72,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
 
     /** Reference to the ACL object */
     protected JahiaAcl mACL;
-    protected JahiaAclName mACLName = null;
 
     protected static volatile char[] sharedActions = null;
     protected static volatile char[] uppercaseSharedActions = null;    
@@ -159,10 +157,6 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
         return mACL;
     }
 
-    public JahiaAclName getACLName() {
-        return mACLName;
-    }
-
     //-------------------------------------------------------------------------
     /**
      * Create a new ACL object. If the specified parent can not be found, then
@@ -190,7 +184,7 @@ public abstract class JahiaAbstractACL implements Cloneable, Serializable {
 
     public boolean create (String name, int parentID)
             throws ACLNotFoundException {
-        return (mACLName != null);
+        return false;
     }
 
 

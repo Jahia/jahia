@@ -230,8 +230,6 @@
         <property name="target">
             <bean class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="sitesService" ref="JahiaSitesService" />
-                <property name="userManagerService" ref="JahiaUserManagerService" />
-                <property name="groupManagerService" ref="JahiaGroupManagerService" />
                 <property name="jcrStoreService" ref="JCRStoreService" />
                 <property name="fileWatcherService" ref="JahiaFileWatcherService" />
                 <property name="categoryService" ref="CategoryService"/>

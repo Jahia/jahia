@@ -52,17 +52,10 @@ import org.jahia.bin.AdminAction;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAclEntryPK;
-import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.services.acl.ACLInfo;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * Action handler for the HTML settings administration part.

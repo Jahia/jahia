@@ -33,7 +33,7 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
-//import org.apache.jackrabbit.api.XASession;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -62,6 +62,7 @@ import javax.servlet.ServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -388,10 +389,8 @@ public class JCRStoreProvider {
                 }
                 session.save();
             } finally {
+                IOUtils.closeQuietly(stream);
                 session.logout();
-                if(stream!=null) {
-                    stream.close();
-                }
             }
         }
     }
@@ -628,7 +627,13 @@ public class JCRStoreProvider {
                             session.getWorkspace().getVersionManager().checkout(f.getPath());
                             f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
                             if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                                session.importXML(f.getPath()+"/"+site.getSiteKey(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                InputStream is = null;
+                                try {
+                                    is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString());
+                                    session.importXML(f.getPath()+"/"+site.getSiteKey(), is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                } finally {
+                                    IOUtils.closeQuietly(is);
+                                }
                             }
 
                             Node siteNode = f.getNode(site.getSiteKey());
@@ -690,7 +695,12 @@ public class JCRStoreProvider {
                                     session.getWorkspace().getVersionManager().checkout(f.getPath());
                                     Node userNode = f.addNode(username, Constants.JAHIANT_USER);
                                     if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        session.importXML(f.getPath()+"/"+username, new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                        InputStream is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString());
+                                        try {
+                                            session.importXML(f.getPath()+"/"+username, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                        } finally {
+                                            IOUtils.closeQuietly(is);
+                                        }
                                     }
 
                                     userNode.setProperty(JCRUser.J_EXTERNAL,true);

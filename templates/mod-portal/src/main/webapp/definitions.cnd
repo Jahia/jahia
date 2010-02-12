@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:portal] > jnt:content, mix:title, jmix:interactiveContent
-- columns (long) = 3
+- columns (long) = 3 autocreated
  + * (nt:base) = nt:base version
 
 

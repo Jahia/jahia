@@ -19,6 +19,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.jcr.JCRPermission;
 import org.jahia.services.rbac.jcr.JCRRole;
+import org.jahia.services.rbac.jcr.JCRSitePermission;
 import org.jahia.services.rbac.jcr.RoleManager;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -399,6 +400,9 @@ public class RolesPermissionsHelper {
             gwtPermission.setLabel(gwtPermission.getName());
         }
         gwtPermission.setGroup(permission.getGroup());
+        if (permission instanceof JCRSitePermission) {
+            gwtPermission.setSite(((JCRSitePermission) permission).getSite());
+        }
 
         return gwtPermission;
     }

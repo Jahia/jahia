@@ -19,7 +19,7 @@
 		<jcr:sql var="result" sql="${query.string}" limit="${maxItems.long}"/>
 		<c:set var="currentList" value="${result.nodes}" scope="request" />
 	</c:when>
-	<c:when test="${lang.string == 'XPath'}">
+	<c:when test="${lang.string == 'xpath'}">
 		<jcr:xpath var="result" xpath="${query.string}" limit="${maxItems.long}"/>
 		<c:set var="currentList" value="${result.nodes}" scope="request" />
 	</c:when>

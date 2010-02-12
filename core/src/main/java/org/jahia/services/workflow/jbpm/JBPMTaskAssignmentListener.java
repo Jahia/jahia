@@ -33,6 +33,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
+import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -78,5 +79,6 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                 assignable.addCandidateUser(((JahiaUser)principal).getUserKey());
             }
         }
+        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());
     }
 }

@@ -16,7 +16,7 @@ var iNettuts = {
             movable: true,
             removable: true,
             collapsible: true,
-            editable: true,
+            editable: false,
             colorClasses : ['color-yellow', 'color-red', 'color-blue', 'color-white', 'color-orange', 'color-green']
         },
         widgetIndividual : {
@@ -30,7 +30,7 @@ var iNettuts = {
     },
 
     init : function () {
-        this.attachStylesheet('inettuts.js.css');
+        //this.attachStylesheet('inettuts.js.css');
         this.addWidgetControls();
         this.makeSortable();
     },
@@ -182,6 +182,15 @@ var iNettuts = {
             stop: function (e,ui) {
                 $(ui.item).css({width:''}).removeClass('dragging');
                 $(settings.columns).sortable('enable');
+            },
+            update: function(event, ui) {
+                var data = {};
+                data["source"]=ui.item[0].id;
+                data["target"]= ui.placeholder[0].nextElementSibling?ui.placeholder[0].nextElementSibling.id:"";
+                data["name"]="moveNode";
+                $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {
+                    alert("node is moved");
+                }, "json");
             }
         });
     }

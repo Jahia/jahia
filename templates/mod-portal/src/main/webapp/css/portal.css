@@ -27,10 +27,8 @@ a {color:white;}
 		height: auto !important;
 		height: 400px;
     margin-left:0;
+        list-style:none;
 }
-
-#columns #column1 .widget { margin: 30px 35px 0 25px; }
-#columns #column3 .widget { margin: 30px 25px 0 35px; }
 #columns .widget {
     margin: 30px 20px 0 20px;
     padding: 2px;
@@ -96,6 +94,7 @@ a {color:white;}
 
 /* JS-Enabled CSS */
 
+
 .widget-head a.remove  {
     float: right;
     display: inline;
@@ -130,9 +129,6 @@ a {color:white;}
 }
 
 .widget-placeholder { border: 2px dashed #999;}
-#column1 .widget-placeholder { margin: 30px 35px 0 25px; }
-#column2 .widget-placeholder { margin: 30px 20px 0 20px; }
-#column3 .widget-placeholder { margin: 30px 25px 0 35px; }
 
 .edit-box {
     overflow: hidden;

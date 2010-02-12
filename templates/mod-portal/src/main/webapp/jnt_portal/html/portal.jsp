@@ -10,9 +10,12 @@
 <div id="columns">
 <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
     <ul id="column${column}" class="column">
-            <template:area path="column${column}" forcedTemplate="portal"/>
+            <template:area path="column${column}" template="portal" forcedTemplate="portal" forceCreation="true"/>
     </ul>
 </c:forEach>
+</div>
+<div id="widgets">
+    <template:module node="${currentNode}" forcedTemplate="select"/>
 </div>
 <script type="text/javascript">
     iNettuts.addWidgetControls();

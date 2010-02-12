@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean name="ACLHelper" class="org.jahia.ajax.gwt.helper.ACLHelper" >
+        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
+        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
+    </bean>
+
+    <bean name="ContentDefinitionHelper" class="org.jahia.ajax.gwt.helper.ContentDefinitionHelper" >
+        <property name="navigation" ref="NavigationHelper" />
+        <property name="choiceListInitializerService" ref="choiceListInitializers"/>
+    </bean>
+
+    <bean name="ContentHubHelper" class="org.jahia.ajax.gwt.helper.ContentHubHelper" >
+        <property name="sessionFactory" ref="jcrSessionFactory" />
+    </bean>
+
+    <bean name="ContentManagerHelper" class="org.jahia.ajax.gwt.helper.ContentManagerHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="captchaService"  ref="captchaService"/>
+        <property name="importExport"  ref="ImportExportService"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+        <property name="versioning"  ref="VersioningHelper"/>
+        <property name="sitesService"  ref="JahiaSitesService"/>
+        <property name="properties" ref="PropertiesHelper"/>
+    </bean>
+
+    <bean name="MashupHelper" class="org.jahia.ajax.gwt.helper.MashupHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="acl" ref="ACLHelper"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="applicationsManager" ref="ApplicationsManagerService"/>
+    </bean>
+
+    <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+        <property name="renderService" ref="RenderService"/>
+        <property name="publication" ref="PublicationHelper"/>
+        <property name="nodetypeIcons">
+            <map>
+                <entry key="unknown" value="file"/>
+                <entry key="jmix:queryContent" value="query"/>
+                <entry key="jmix:interactiveContent" value="interactive"/>
+                <entry key="jmix:structuredContent" value="structured"/>
+                <entry key="jmix:containerContent" value="contentlist"/>
+                <entry key="jnt:page" value="page"/>
+                <entry key="jnt:user" value="user"/>
+                <entry key="jnt:group" value="user-group"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>
+
+    <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper" >
+        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="navigation"  ref="NavigationHelper"/>
+    </bean>
+
+    <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >
+        <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
+
+    <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper" >
+        <property name="service" ref="workflowService"/>
+    </bean>
+
+    <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">
+    	<property name="roleManager" ref="org.jahia.services.rbac.jcr.RoleManager"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+    </bean>
+
+
+    <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+    </bean>
+
+    <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper" >
+        <property name="renderService" ref="RenderService"/>
+    </bean>
+
+    <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper" >
+        <property name="cacheService" ref="JahiaCacheService"/>
+    </bean>
+
+    <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance" />
+
+</beans>

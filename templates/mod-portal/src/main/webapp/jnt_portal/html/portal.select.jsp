@@ -19,7 +19,7 @@
     <c:forEach items="${widgets.children}" var="node" varStatus="status">
         <li>
             <div onclick="addWidget('${node.identifier}')">
-                <h3><jcr:nodeProperty node="${node}" name="jcr:title"/></h3>
+                <h3><jcr:nodeProperty node="${node}" name="jcr:title" var="title"/><c:if test="${not empty title}">${title}</c:if><c:if test="${empty title}">${node.name}</c:if></h3>
             </div>
         </li>
     </c:forEach>

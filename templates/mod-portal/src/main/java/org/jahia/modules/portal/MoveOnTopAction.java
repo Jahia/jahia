@@ -4,10 +4,14 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 
 /**
@@ -37,12 +41,16 @@ public class MoveOnTopAction implements org.jahia.bin.Action {
         name = req.getParameter("name");
         String sourcePath = req.getParameter("source");
         String targetPath = req.getParameter("target");
-        String position = req.getParameter("position");
-        if ("before".equals(position)) {
-            contentManager.moveOnTopOf(null,sourcePath,targetPath, JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale()));
+        String action = req.getParameter("action");
+        JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
+        if ("moveBefore".equals(action)) {
+            contentManager.moveOnTopOf(null,sourcePath,targetPath, jcrSessionWrapper);
         }
-        else {
-            contentManager.moveAtEnd(sourcePath,targetPath, JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale()));            
+        else if ("moveAfter".equals(action)) {
+            contentManager.moveAtEnd(sourcePath,targetPath, jcrSessionWrapper);
+        }
+        else if ("delete".equals(action)) {
+            contentManager.deletePaths(Arrays.asList(sourcePath),jcrSessionWrapper.getUser(), jcrSessionWrapper);
         }
     }
 }

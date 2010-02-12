@@ -60,6 +60,13 @@ var iNettuts = {
                                 $(this).remove();
                             });
                         });
+                        var data = {};
+                        data["action"] = "delete";
+                        data["name"] = "deleteNode";
+                        data["source"] = this.parentNode.parentNode.id;
+                        $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {
+                                    alert("node is deleted");
+                                }, "json");
                     }
                     return false;
                 }).appendTo($(settings.handleSelector, this));
@@ -188,7 +195,7 @@ var iNettuts = {
                 data["source"]=ui.item[0].id;
                 if (ui.placeholder[0].nextElementSibling) {
                     data["target"]= ui.placeholder[0].nextElementSibling.id;
-                    data["position"] = "before";
+                    data["action"] = "moveBefore";
                 } else if (ui.placeholder[0].previousElementSibling) {
                     str = ui.placeholder[0].parentNode.firstElementChild.id;
                     str = str.substr(0,str.lastIndexOf("/"));
@@ -196,7 +203,7 @@ var iNettuts = {
                         str = str.substr(0,str.lastIndexOf("/")) + "/" + ui.placeholder[0].parentNode.id;
                     }
                     data["target"] = str;
-                    data["position"] = "after";
+                    data["action"] = "moveAfter";
                 }
                 data["name"]="moveNode";
                 $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {

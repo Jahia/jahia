@@ -81,6 +81,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
                                             public void onSuccess(Object result) {
                                                 Info.display("Workflow started", "Workflow started");
                                                 editLinker.getSidePanel().refresh();
+                                                editLinker.refresh();
                                             }
 
                                             public void onFailure(Throwable caught) {

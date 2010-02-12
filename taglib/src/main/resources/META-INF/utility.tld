@@ -315,6 +315,31 @@
         </attribute>
     </tag>
 
+    <tag>
+        <description>Utility date tag in order to add/subtract days, hours, etc. to an existing date
+        </description>
+        <name>dateDiff</name>
+        <tag-class>org.jahia.taglibs.utility.DateDiffTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>startDate</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Date</type>
+        </attribute>
+        <attribute>
+            <name>endDate</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Date</type>
+        </attribute>
+        <attribute>
+            <name>format</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>                
+    </tag>
+
     <tag-file>
         <description>add declaration of GWT common application resource bundles</description>
         <name>applicationResources</name>

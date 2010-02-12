@@ -232,7 +232,7 @@
                     <div class="list3 user-profile-list">
                         <ul class="list3 user-profile-list">
                             <li><span class="label"><fmt:message
-                                    key="jnt_user.profile.age"/> : </span> ${currentYear - birthYear} <fmt:message key="jnt_user.profile.years"/>
+                                    key="jnt_user.profile.age"/> : </span> <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/> <fmt:message key="jnt_user.profile.years"/>
                             </li>
                             <li><span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span> <span
                                     class="genderEdit"

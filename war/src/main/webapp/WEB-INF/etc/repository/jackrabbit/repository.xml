@@ -67,6 +67,7 @@
             <param name="supportHighlighting" value="true"/>
             <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>
             <param name="indexingConfiguration" value="${rep.home}/indexing_configuration.xml"/>
+            <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>            
         </SearchIndex>
 
     </Workspace>
@@ -123,7 +124,6 @@
     <SearchIndex class="org.jahia.services.query.impl.jackrabbit.JahiaSearchIndex">
         <param name="path" value="${rep.home}/repository/index"/>
         <param name="supportHighlighting" value="true"/>
-        <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>
     </SearchIndex>
 
 

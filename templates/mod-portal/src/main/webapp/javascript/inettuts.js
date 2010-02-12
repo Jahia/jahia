@@ -64,7 +64,7 @@ var iNettuts = {
                         data["action"] = "delete";
                         data["name"] = "deleteNode";
                         data["source"] = this.parentNode.parentNode.id;
-                        $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {
+                        $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".delete.do", data, function(result) {
                                     alert("node is deleted");
                                 }, "json");
                     }
@@ -206,7 +206,7 @@ var iNettuts = {
                     data["action"] = "moveAfter";
                 }
                 data["name"]="moveNode";
-                $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {
+                $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".move.do", data, function(result) {
                     alert("node is moved");
                 }, "json");
             }

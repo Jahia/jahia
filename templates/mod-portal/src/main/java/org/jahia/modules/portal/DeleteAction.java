@@ -21,7 +21,7 @@ import java.util.List;
  * Time: 6:09:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MoveOnTopAction implements org.jahia.bin.Action {
+public class DeleteAction implements org.jahia.bin.Action {
     private String name;
     private ContentManagerHelper contentManager;
 
@@ -40,16 +40,9 @@ public class MoveOnTopAction implements org.jahia.bin.Action {
     public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws Exception {
         name = req.getParameter("name");
         String sourcePath = req.getParameter("source");
-        String targetPath = req.getParameter("target");
         String action = req.getParameter("action");
         JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
-        if ("moveBefore".equals(action)) {
-            contentManager.moveOnTopOf(null,sourcePath,targetPath, jcrSessionWrapper);
-        }
-        else if ("moveAfter".equals(action)) {
-            contentManager.moveAtEnd(sourcePath,targetPath, jcrSessionWrapper);
-        }
-        else if ("delete".equals(action)) {
+        if ("delete".equals(action)) {
             contentManager.deletePaths(Arrays.asList(sourcePath),jcrSessionWrapper.getUser(), jcrSessionWrapper);
         }
     }

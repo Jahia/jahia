@@ -38,7 +38,7 @@ public class MoveOnTopAction implements org.jahia.bin.Action {
         String sourcePath = req.getParameter("source");
         String targetPath = req.getParameter("target");
         String position = req.getParameter("position");
-        if ("after".equals(position)) {
+        if ("before".equals(position)) {
             contentManager.moveOnTopOf(null,sourcePath,targetPath, JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale()));
         }
         else {

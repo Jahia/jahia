@@ -186,7 +186,18 @@ var iNettuts = {
             update: function(event, ui) {
                 var data = {};
                 data["source"]=ui.item[0].id;
-                data["target"]= ui.placeholder[0].nextElementSibling?ui.placeholder[0].nextElementSibling.id:"";
+                if (ui.placeholder[0].nextElementSibling) {
+                    data["target"]= ui.placeholder[0].nextElementSibling.id;
+                    data["position"] = "after";
+                } else if (ui.placeholder[0].previousElementSibling) {
+                    str = ui.placeholder[0].parentNode.firstElementChild.id;
+                    str = str.substr(0,str.lastIndexOf("/"));
+                    if (ui.placeholder[0].parentNode.childElementCount < 3) {
+                        str = str.substr(0,str.lastIndexOf("/")) + "/" ui.placeholder[0].parentNode.id;
+                    }
+                    data["target"] = str;
+                    data["position"] = "before";
+                }
                 data["name"]="moveNode";
                 $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".portal.do", data, function(result) {
                     alert("node is moved");

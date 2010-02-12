@@ -28,11 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Panel for managing permission to role assignment.
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 11:38:47 AM
- * To change this template use File | Settings | File Templates.
  */
 public class PermissionRolePanel extends LayoutContainer implements LinkerComponent {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
@@ -58,7 +57,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         mainPanel.setBodyBorder(false);
         mainPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
         mainPanel.setLayout(new FitLayout());
-        mainPanel.setSize(600, 500);
+        mainPanel.setSize(600, 480);
+        mainPanel.setFrame(true);
         add(mainPanel);
         // refresh data
         refresh();
@@ -87,20 +87,21 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      */
     public void refreshUI() {
         mainPanel.removeAll();
+        
         final GroupingStore<GWTJahiaPermission> store = new GroupingStore<GWTJahiaPermission>();
         store.add(permissions);
         store.groupBy("group");
         store.sort("label", SortDir.ASC);
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
-            final ColumnModel cm = new ColumnModel(createColumnsConfig());
+            final ColumnModel cm = new ColumnModel(configs);
             Grid<GWTJahiaPermission> grid = new Grid<GWTJahiaPermission>(store, cm);
             grid.setStyleAttribute("borderTop", "none");
             grid.setBorders(true);
 
             GroupingView view = new GroupingView();
             view.setShowGroupedColumn(false);
-            view.setForceFit(true);
+            view.setForceFit(false);
             view.setGroupRenderer(new GridGroupRenderer() {
                 public String render(GroupColumnData data) {
                     return data.group;
@@ -183,6 +184,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
             column.setId(role.getLabel());
             column.setHeader(role.getLabel());
             column.setWidth(100);
+            column.setSortable(false);
+            column.setGroupable(false);
             configs.add(column);
         }
         return configs;

@@ -38,11 +38,11 @@ public class RolesManager extends LayoutContainer {
         TabPanel tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setSize(600, 500);
-        TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Roles manager"));
+        TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Role manager"));
         managerItem.add(cm);
         tabPanel.add(managerItem);
 
-        TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Roles/permission mapping"));
+        TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Role/permission mapping"));
         rolePermisionItem.add(pr);
         tabPanel.add(rolePermisionItem);
 

@@ -685,15 +685,8 @@ public class PublicationTest extends TestCase {
 
         // Case 4 : now let's publish the parent node once again, and check if it is published properly.
         jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
-        nodeWasFoundInLive = false;
-        try {
-            liveTextNode1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1");
-            nodeWasFoundInLive = true;
-        } catch (PathNotFoundException pnfe) {
-            // this is what we expect, so let's just signal it.
-            nodeWasFoundInLive = false;
-        }
-        assertTrue("Text node 1 was re-published, it should have been present in the live workspace", nodeWasFoundInLive);
+        testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "Shared Text node 1 was re-published, it should have been present in the live workspace");
+        testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list0", "Shared Text node 0 was re-published, it should have been present in the live workspace");
 
         // Case 5 : now we must move the text node inside the list, and check that the move is properly propagated in live mode
         editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
@@ -784,6 +777,20 @@ public class PublicationTest extends TestCase {
         }
         assertFalse("Text node 1 was deleted, should not be available in the live workspace anymore !", nodeWasFoundInLive);
 
+    }
+
+    private void testNodeInLive(JCRSessionWrapper englishLiveSession, String absoluteNodePath, String failureMessage) throws RepositoryException {
+        boolean nodeWasFoundInLive;
+        JCRNodeWrapper liveTextNode1;
+        nodeWasFoundInLive = false;
+        try {
+            liveTextNode1 = englishLiveSession.getNode(absoluteNodePath);
+            nodeWasFoundInLive = true;
+        } catch (PathNotFoundException pnfe) {
+            // this is what we expect, so let's just signal it.
+            nodeWasFoundInLive = false;
+        }
+        assertTrue(failureMessage, nodeWasFoundInLive);
     }
 
     private void testNodeNotInLive(JCRSessionWrapper englishLiveSession, String absoluteNodePath, String failureMessage) throws RepositoryException {

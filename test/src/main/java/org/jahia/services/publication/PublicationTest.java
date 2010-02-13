@@ -618,19 +618,19 @@ public class PublicationTest extends TestCase {
         // now let's create a shared node and share it in two lists.
         JCRNodeWrapper editContentList0 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList0");
         englishEditSession.checkout(editContentList0);
-        JCRNodeWrapper editSharedNode = editContentList0.addNode("shared_node_list0", "jnt:text");
-        editSharedNode.setProperty("text", "English shared text");
+        JCRNodeWrapper editSharedNode0 = editContentList0.addNode("shared_node_list0", "jnt:text");
+        editSharedNode0.setProperty("text", "English shared text");
         JCRNodeWrapper editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         englishEditSession.checkout(editContentList1);
-        JCRNodeWrapper editSharedNode2 = editContentList1.clone(editSharedNode, "shared_node_list1");
+        JCRNodeWrapper editSharedNode1 = editContentList1.clone(editSharedNode0, "shared_node_list1");
         englishEditSession.save();
-        jcrService.publish(editSharedNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editSharedNode0.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         // Case 1 : let's check the existence of the node property value in the live workspace.
 
         JCRNodeWrapper liveNode = liveRootNode.getNode("home");
-        JCRNodeWrapper liveContentList1Node = liveNode.getNode("contentList0");
-        JCRNodeWrapper liveTextNode1 = liveContentList1Node.getNode("shared_node_list0");
+        JCRNodeWrapper liveContentList0Node = liveNode.getNode("contentList0");
+        JCRNodeWrapper liveTextNode1 = liveContentList0Node.getNode("shared_node_list0");
         JCRPropertyWrapper liveTextNodeProperty = liveTextNode1.getProperty("text");
 
         assertNotNull("Shared Text node 0 was not found in live workspace !", liveTextNodeProperty);
@@ -638,7 +638,7 @@ public class PublicationTest extends TestCase {
         String liveTextNodePropertyString = liveTextNodeProperty.getString();
         assertEquals("Shared Text node 0 value is not correct !", "English shared text", liveTextNodePropertyString);
 
-        testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text1", "contentList1_text2" );
+        testChildOrdering(liveContentList0Node, "contentList0_text0", "contentList0_text1", "contentList0_text2" );
 
         boolean nodeWasFoundInLive = true;
         try {
@@ -650,22 +650,23 @@ public class PublicationTest extends TestCase {
         assertFalse("Shared text node 1 was not published should not be available in the live workspace !", nodeWasFoundInLive);
 
         // now let's publish the second location of the node, and check that it was made available in live...
-        jcrService.publish(editSharedNode2.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editSharedNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         JCRNodeWrapper liveSharedTextNode = liveRootNode.getNode("home/contentList1/shared_node_list1");
         assertNotNull("Shared text node 1 was published but it is not available in the live workspace.", liveSharedTextNode);
 
         // Case 2 : now let's modify the node, republish and check.
 
         //englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list0");
+        editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1");
 
-        englishEditSession.checkout(editTextNode1);
+        englishEditSession.checkout(editSharedNode1);
 
-        editTextNode1.setProperty("text", "English text update 1");
+        editSharedNode1.setProperty("text", "English text update 1");
         englishEditSession.save();
 
         jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
 
+        liveTextNode1 = liveRootNode.getNode("home/contentList0/shared_node_list0");
         liveTextNodeProperty = liveTextNode1.getProperty("text");
         liveTextNodePropertyString = liveTextNodeProperty.getString();
         assertEquals("Text node 0 value is not correct !", "English text update 1", liveTextNodePropertyString);
@@ -677,38 +678,40 @@ public class PublicationTest extends TestCase {
 
         // Case 3 : not let's unpublish the node and test it's presence in the live workspace.
 
-        jcrService.unpublish(editTextNode1.getPath(), languages);
+        jcrService.unpublish(editSharedNode1.getPath(), languages);
 
         // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         testNodeNotInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "Shared Text node 1 was unpublished, should not be available in the live workspace anymore !");
         testNodeNotInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "Shared Text node 0 was unpublished, should not be available in the live workspace anymore !");
 
         // Case 4 : now let's publish the parent node once again, and check if it is published properly.
-        jcrService.publish(editTextNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        jcrService.publish(editSharedNode1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "Shared Text node 1 was re-published, it should have been present in the live workspace");
-        testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list0", "Shared Text node 0 was re-published, it should have been present in the live workspace");
+        testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "Shared Text node 0 was re-published, it should have been present in the live workspace");
 
         // Case 5 : now we must move the text node inside the list, and check that the move is properly propagated in live mode
         editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
 
         englishEditSession.checkout(editContentList1);
-        editContentList1.orderBefore("contentList1_text1", "contentList1_text0");
+        editContentList1.orderBefore("shared_node_list1", "contentList1_text0");
         englishEditSession.save();
-        testChildOrdering(editContentList1, "contentList1_text1", "contentList1_text0", "contentList1_text2" );
+        testChildOrdering(editContentList1, "shared_node_list1", "contentList1_text0", "contentList1_text1" );
 
         jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
 
-        liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
+        JCRNodeWrapper liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
 
-        testChildOrdering(liveContentList1Node, "contentList1_text1", "contentList1_text0", "contentList1_text2" );
+        testChildOrdering(liveContentList0Node, "contentList0_text0", "contentList0_text1", "contentList0_text2" );
+        testChildOrdering(liveContentList1Node, "shared_node_list1", "contentList1_text0", "contentList1_text1" );
 
         // Case 6 : now let's move the node to another container list.
         editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         englishEditSession.checkout(editContentList1);
         JCRNodeWrapper editContentList2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
         englishEditSession.checkout(editContentList2);
-        englishEditSession.move(editTextNode1.getPath(), SITECONTENT_ROOT_NODE + "/home/contentList2/contentList1_text1");
-        editContentList2.orderBefore("contentList1_text1", "contentList2_text0");
+        englishEditSession.checkout(editSharedNode1); // we have to check it out because of a property being sent during move !
+        englishEditSession.move(editSharedNode1.getPath(), SITECONTENT_ROOT_NODE + "/home/contentList2/shared_node_list2");
+        editContentList2.orderBefore("shared_node_list2", "contentList2_text0");
         englishEditSession.save();
 
         // jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
@@ -717,7 +720,7 @@ public class PublicationTest extends TestCase {
         liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         JCRNodeWrapper liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
         testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text2", "contentList1_text3");
-        testChildOrdering(liveContentList2Node, "contentList1_text1", "contentList2_text0", "contentList2_text1");
+        testChildOrdering(liveContentList2Node, "shared_node_list2", "contentList2_text0", "contentList2_text1");
 
         // Case 7 : now let's move it to yet another list, modify it, then publish it.
         editContentList2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
@@ -726,9 +729,9 @@ public class PublicationTest extends TestCase {
         englishEditSession.checkout(editContentList3);
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList2/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
         englishEditSession.save();
-        editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
-        englishEditSession.checkout(editTextNode1);
-        editTextNode1.setProperty("text", "English text update 2");
+        editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
+        englishEditSession.checkout(editSharedNode1);
+        editSharedNode1.setProperty("text", "English text update 2");
         englishEditSession.save();
         editContentList3.orderBefore("contentList1_text1", "contentList3_text0");
         englishEditSession.save();
@@ -749,7 +752,7 @@ public class PublicationTest extends TestCase {
         editContentList4.orderBefore("contentList1_text1", "contentList4_text1");
         editContentList4.orderBefore("contentList1_text1", "contentList4_text0");
         englishEditSession.save();
-        editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
+        editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
 
         jcrService.publish(editContentList4.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
@@ -761,9 +764,9 @@ public class PublicationTest extends TestCase {
         // Case 9 : Delete the node, publish it and check that it has disappeared in live mode.
         editContentList4 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4");
         englishEditSession.checkout(editContentList4);
-        editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
-        englishEditSession.checkout(editTextNode1);
-        editTextNode1.remove();
+        editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList4/contentList1_text1");
+        englishEditSession.checkout(editSharedNode1);
+        editSharedNode1.remove();
         englishEditSession.save();
 
         jcrService.publish(editContentList4.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);

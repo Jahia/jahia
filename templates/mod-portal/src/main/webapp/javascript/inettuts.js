@@ -63,9 +63,11 @@ var iNettuts = {
                         var data = {};
                         data["action"] = "delete";
                         data["source"] = this.parentNode.parentNode.id;
-                        $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".delete.do", data, function(result) {
-                                    alert("node is deleted");
-                                }, "json");
+                        url = this.baseURI.substr(0,this.baseURI.lastIndexOf("/"));
+                        node = this.baseURI.substr(this.baseURI.lastIndexOf("/"),this.baseURI.substr(this.baseURI.lastIndexOf("/")).indexOf("."));
+                        $.post(url+node+".delete.do", data, function(result) {
+                            alert("node is deleted");
+                        }, "json");
                     }
                     return false;
                 }).appendTo($(settings.handleSelector, this));

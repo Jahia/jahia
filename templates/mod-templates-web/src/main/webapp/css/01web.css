@@ -25,6 +25,9 @@ body {
 #bodywrapper .clear 	{
 	clear:both;
 }
+#bodywrapper .clearitem 	{
+	clear:both;
+}
 
 #bodywrapper br.clear {
 	clear:both;
@@ -50,6 +53,10 @@ body {
 }
 #bodywrapper .rightside{
 	float: right
+}
+#bodywrapper .clearMaringPadding{
+	padding:0;
+	margin:0;
 }
 /******************************************************************************
 *  topheader
@@ -416,7 +423,7 @@ shortcuts
 	padding-bottom:20px;
 	position:relative;
 	z-index:700;
-	width:960px
+
 }
 /******************************************************************************
 * footer
@@ -667,9 +674,9 @@ shortcuts
 #bodywrapper input.gobutton{
 	background:none;
 	border:none;
-	margin:5px 0;
-	padding:0;
-	width:auto;
+	margin:0;
+		padding:0;
+	vertical-align: bottom;
 }
 /******************************************************************************
 *  Images
@@ -706,7 +713,9 @@ shortcuts
 #bodywrapper div.itemImageRight {
 	float:right;
 }
-
+#bodywrapper div.itemImageLeft {
+	float:left;
+}
 #bodywrapper .itemImage img {
 	background-color:#e1e1e1;
 	padding:9px;
@@ -736,7 +745,7 @@ shortcuts
 	font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
 	text-align:center;
 	font-size:80%;
-	padding:2px 15px 3px 15px;
+	padding:6px 15px 4px 15px;
 }
 #bodywrapper .button:hover,  #bodywrapper button:hover {
 	cursor: pointer;
@@ -1207,7 +1216,7 @@ background-color:#eaeaea
 	background:#900;
 	color:#fff;
 }
-#bodywrapper .alphabeticalNavigation .currentPage{
+#bodywrapper .alphabeticalNavigation .current{
 	background:#900;
 	color:#fff;
 	padding:0.2em 0.5em;
@@ -1361,8 +1370,7 @@ background-color:#eaeaea
 
 #bodywrapper .table
 {
-    border-collapse: separate;
-    empty-cells: hide;
+    border-collapse:collapse;
 	margin-bottom:1em;
 	font-size:0.85em;
 	border:none;
@@ -1374,8 +1382,12 @@ background-color:#eaeaea
 	font-size:2em;
 	margin:0 ;
 	padding:0;
+	
 }
-
+table,th, td
+{
+border: 1px solid #ccc;
+}
 #bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
@@ -1384,13 +1396,14 @@ background-color:#eaeaea
 }
 #bodywrapper .table td
 {
+	background-color:#fff;
 	padding:5px;
 }
 #bodywrapper .table tr:hover{
 	background-color:#f0f0f0
 }
-#bodywrapper .table .odd td{}
-#bodywrapper .table .even td{}
+#bodywrapper .table .odd td{background-color:#eaeaea}
+#bodywrapper .table .even td{ background-color:#fff}
 #bodywrapper .col1{}
 #bodywrapper .col2{}
 #bodywrapper .col3{}
@@ -1621,6 +1634,7 @@ display:none
 }
 #bodywrapper .formMarginLeft{ 
 	margin:0 0 0 25%;
+	padding:0 1em 0 2.3em;
 }
 #bodywrapper .Form label.left {
 	float:left; 
@@ -1629,13 +1643,7 @@ display:none
 	padding:2px;
 	text-align:right;
 }
-#bodywrapper .divButton{
-	text-align:center;
-	margin:0.5em 0;
-}
-#bodywrapper .Form input.button {
-	margin-left:0.5em;
-}
+
 /******************************************************************************
 *  error
 ******************************************************************************/

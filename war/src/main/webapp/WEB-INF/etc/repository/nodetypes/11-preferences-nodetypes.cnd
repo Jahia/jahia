@@ -12,8 +12,8 @@
 + * (nt:base) multiple
 
 [jnt:toolbarPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:toolbarName (string)
-- j:type (string)
+- j:toolbarName (string) nofulltext
+- j:type (string) nofulltext
 - j:state (long)
 - j:toolbarIndex (long)
 - j:positionX (long)
@@ -21,23 +21,23 @@
 - j:display (boolean)
 
 [jnt:simplePreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:prefName (string)
+- j:prefName (string) nofulltext
 - j:prefValue (string)
 
 [jnt:pagePreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:page (weakreference)
-- j:prefName (string)
+- j:prefName (string) nofulltext
 - j:prefValue (string)
 
 [jnt:bookmarkPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:page (string)
+- j:page (string) nofulltext
 
 //[jnt:layoutItemPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 //- j:page (string)
 //+ j:layout (jnt:layout)
 
 [jnt:portletPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:portletName (string)
-- j:prefName (string)
+- j:portletName (string) nofulltext
+- j:prefName (string) nofulltext
 - j:readOnly (boolean)
 - j:values (string) multiple

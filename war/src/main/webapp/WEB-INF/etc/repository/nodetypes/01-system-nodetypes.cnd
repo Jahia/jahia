@@ -176,8 +176,8 @@
  */
 [mix:mimeType]
   mixin
-  - jcr:mimeType (STRING)
-  - jcr:encoding (STRING)
+  - jcr:mimeType (STRING) nofulltext
+  - jcr:encoding (STRING) nofulltext
 
 /**
  * This node type may be used to represent the location of a JCR item not just
@@ -212,11 +212,11 @@
  * @since 2.0
  */
 [nt:address]
-  - jcr:protocol (STRING)
-  - jcr:host (STRING)
-  - jcr:port (STRING)
-  - jcr:repository (STRING)
-  - jcr:workspace (STRING)
+  - jcr:protocol (STRING) nofulltext
+  - jcr:host (STRING) nofulltext
+  - jcr:port (STRING) nofulltext
+  - jcr:repository (STRING) nofulltext
+  - jcr:workspace (STRING) nofulltext
   - jcr:path (PATH)
   - jcr:id (WEAKREFERENCE)
 
@@ -242,7 +242,7 @@
  */
 [mix:etag]
   mixin
-  - jcr:etag (STRING) protected autocreated
+  - jcr:etag (STRING) protected autocreated nofulltext
 
 //------------------------------------------------------------------------------
 // U N S T R U C T U R E D   C O N T E N T
@@ -283,7 +283,7 @@
  */
 [mix:referenceable]
   mixin
-  - jcr:uuid (STRING) mandatory autocreated protected INITIALIZE
+  - jcr:uuid (STRING) mandatory autocreated protected INITIALIZE nofulltext
 
 //------------------------------------------------------------------------------
 // L O C K I N G
@@ -294,8 +294,8 @@
  */
 [mix:lockable]
   mixin
-  - jcr:lockOwner (STRING) protected IGNORE
-  - jcr:lockIsDeep (BOOLEAN) protected IGNORE
+  - jcr:lockOwner (STRING) protected IGNORE nofulltext
+  - jcr:lockIsDeep (BOOLEAN) protected IGNORE 
 
 //------------------------------------------------------------------------------
 // S H A R E A B L E   N O D E S
@@ -336,7 +336,7 @@
  * @since 1.0
  */
 [nt:versionHistory] > mix:referenceable
-  - jcr:versionableUuid (STRING) mandatory autocreated protected ABORT
+  - jcr:versionableUuid (STRING) mandatory autocreated protected ABORT nofulltext
     /** @since 2.0 */
   - jcr:copiedFrom (WEAKREFERENCE) protected ABORT < 'nt:version'
   + jcr:rootVersion (nt:version) = nt:version mandatory autocreated protected ABORT
@@ -367,7 +367,7 @@
   orderable
   - jcr:frozenPrimaryType (NAME) mandatory autocreated protected ABORT
   - jcr:frozenMixinTypes (NAME) protected multiple ABORT
-  - jcr:frozenUuid (STRING) mandatory autocreated protected ABORT
+  - jcr:frozenUuid (STRING) mandatory autocreated protected ABORT nofulltext
   - * (UNDEFINED) protected ABORT
   - * (UNDEFINED) protected multiple ABORT
   + * (nt:base) protected sns ABORT
@@ -422,14 +422,14 @@
   - jcr:name (NAME) protected
   - jcr:autoCreated (BOOLEAN) protected mandatory
   - jcr:mandatory (BOOLEAN) protected mandatory
-  - jcr:onParentVersion (STRING) protected mandatory
+  - jcr:onParentVersion (STRING) protected mandatory nofulltext
       < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
   - jcr:protected (BOOLEAN) protected mandatory
-  - jcr:requiredType (STRING) protected mandatory
+  - jcr:requiredType (STRING) protected mandatory nofulltext
     < 'STRING', 'URI', 'BINARY', 'LONG', 'DOUBLE',
       'DECIMAL', 'BOOLEAN', 'DATE', 'NAME', 'PATH',
       'REFERENCE', 'WEAKREFERENCE', 'UNDEFINED'
-  - jcr:valueConstraints (STRING) protected multiple
+  - jcr:valueConstraints (STRING) protected multiple nofulltext
   - jcr:defaultValues (UNDEFINED) protected multiple
   - jcr:multiple (BOOLEAN) protected mandatory
   - jcr:availableQueryOperators (NAME) protected mandatory multiple
@@ -446,7 +446,7 @@
   - jcr:name (NAME) protected
   - jcr:autoCreated (BOOLEAN) protected mandatory
   - jcr:mandatory (BOOLEAN) protected mandatory
-  - jcr:onParentVersion (STRING) protected mandatory
+  - jcr:onParentVersion (STRING) protected mandatory nofulltext
       < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
   - jcr:protected (BOOLEAN) protected mandatory
   - jcr:requiredPrimaryTypes (NAME) = 'nt:base' protected mandatory multiple
@@ -461,7 +461,7 @@
  * @since 1.0
  */
 [nt:query]
-  - jcr:statement (STRING)
+  - jcr:statement (STRING) indexed=no
   - jcr:language (STRING, choicelist) = 'JCR-SQL2' indexed=no < 'JCR-SQL2', 'xpath'
 
 //------------------------------------------------------------------------------
@@ -484,4 +484,4 @@
 [mix:lifecycle]
   mixin
   - jcr:lifecyclePolicy (REFERENCE) protected INITIALIZE
-  - jcr:currentLifecycleState (STRING) protected INITIALIZE
+  - jcr:currentLifecycleState (STRING) protected INITIALIZE nofulltext

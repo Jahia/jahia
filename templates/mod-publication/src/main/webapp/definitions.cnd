@@ -5,5 +5,5 @@
  - preview (weakreference, file) i18n
  - author (string) i18n analyzer='simple'
  - source (string) i18n
- - date (string) i18n indexed=untokenized
+ - date (string) i18n indexed=untokenized nofulltext
  - body (string, richtext) i18n

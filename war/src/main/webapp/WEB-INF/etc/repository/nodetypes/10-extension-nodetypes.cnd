@@ -14,8 +14,8 @@
  - j:pageCount (long) protected
  - j:wordCount (long) protected
  - j:charCount (long) protected
- - j:appName (string) protected
- - j:codePage (string) protected
+ - j:appName (string) protected nofulltext
+ - j:codePage (string) protected nofulltext
 
 [jmix:image] > jmix:extension mixin
  + * (jnt:extraResource)
@@ -23,7 +23,7 @@
  - j:width (long) protected
  
 [jmix:photo] > jmix:extension mixin
- - j:model (string)
+ - j:model (string) nofulltext
 
                           
 [jmix:test] > jmix:extension mixin
@@ -54,5 +54,5 @@
  
 [jmix:doc] > jmix:extension mixin
  - j:dateCreation (date, datetimepicker)
- - j:codeProjet (string,category[root=Projets])
- - j:codeStatutDocument (string,choicelist) < 'Ouvert','Ferme'
+ - j:codeProjet (string,category[root=Projets]) nofulltext
+ - j:codeStatutDocument (string,choicelist) nofulltext < 'Ouvert','Ferme'

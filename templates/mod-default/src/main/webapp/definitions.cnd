@@ -8,20 +8,20 @@
 [jmix:sendAsNewsletter] mixin
 
 [jmix:filter] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
- - firstField (string, choicelist[sortableFieldnames])
- - secondField (string, choicelist[sortableFieldnames])
- - thirdField (string, choicelist[sortableFieldnames])
+ - firstField (string, choicelist[sortableFieldnames]) indexed=no
+ - secondField (string, choicelist[sortableFieldnames]) indexed=no
+ - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
 [jmix:pager] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
  - pageSize (long)
 
 [jmix:orderedList] > jmix:layout, jmix:listMixin mixin
- - firstField (string, choicelist[sortableFieldnames])
- - firstDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
- - secondField (string, choicelist[sortableFieldnames])
- - secondDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
- - thirdField (string, choicelist[sortableFieldnames])
- - thirdDirection (string, choicelist[resourceBundle]) = 'asc' < 'asc','desc'
+ - firstField (string, choicelist[sortableFieldnames]) indexed=no
+ - firstDirection (string, choicelist[resourceBundle]) = 'asc' indexed=no < 'asc','desc'
+ - secondField (string, choicelist[sortableFieldnames]) indexed=no
+ - secondDirection (string, choicelist[resourceBundle]) = 'asc' indexed=no < 'asc','desc'
+ - thirdField (string, choicelist[sortableFieldnames]) indexed=no
+ - thirdDirection (string, choicelist[resourceBundle]) = 'asc' indexed=no < 'asc','desc'
 
 [jnt:fileList] > jnt:content, jmix:structuredContent
  - folder (weakreference, file[folder])
@@ -69,7 +69,7 @@
  - align (string, choicelist[resourceBundle]) indexed=no < 'l','r','t','b'
  - salign (string, choicelist[resourceBundle]) indexed=no < 'l','r','t','b','tl','tr','bl','br'
  - wmode (string, choicelist[resourceBundle]) indexed=no < 'window','opaque','transparent'
- - bgcolor (string, color)
+ - bgcolor (string, color) indexed=no
  - base (string) indexed=no
  - flashvars (string) indexed=no
 

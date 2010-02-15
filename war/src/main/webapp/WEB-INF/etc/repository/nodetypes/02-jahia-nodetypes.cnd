@@ -28,7 +28,7 @@
   - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
 
 [jmix:originWS] > jmix:metadata mixin
-  - j:originWS (string) protected hidden
+  - j:originWS (string) protected nofulltext hidden
 
 [jmix:tagged] > jmix:metadata, jmix:contentMixin mixin
  - j:tags (weakreference, category[autoSelectParent=false]) multiple
@@ -52,9 +52,9 @@
 //---------------------------------------------------------
 
 [jnt:ace] > nt:base
- - j:aceType (string) mandatory < 'GRANT', 'DENY'
- - j:principal (string) mandatory
- - j:privileges (name) mandatory multiple
+ - j:aceType (string) mandatory nofulltext < 'GRANT', 'DENY'
+ - j:principal (string) mandatory nofulltext
+ - j:privileges (name) mandatory multiple 
  - j:protected (boolean) mandatory
 
 [jnt:acl] > nt:base
@@ -121,16 +121,16 @@
 //---------------------------------------------------------
 
 [jmix:workflow] mixin
- - j:processId (string) multiple
+ - j:processId (string) multiple nofulltext
 
 [jnt:workflowRules] > nt:base orderable
  + * (jnt:workflowRule)
 
 [jnt:workflowRule] > nt:base
- - j:path (string)
- - j:nodeType (string)
- - j:action (string)
- - j:availableWorkflows (string) multiple
+ - j:path (string) nofulltext
+ - j:nodeType (string) nofulltext
+ - j:action (string) nofulltext
+ - j:availableWorkflows (string) multiple nofulltext
 
 //---------------------------------------------------------
 // Hierarchy nodes
@@ -178,7 +178,7 @@
 [jnt:textExtract] > nt:base
  - j:extractedText (string)
  - j:lastExtractionDate (date)
- - j:originalUuid (string)
+ - j:originalUuid (string) nofulltext
 
 //---------------------------------------------------------
 // Categories
@@ -210,12 +210,12 @@
 //---------------------------------------------------------
 
 [jmix:usersFolder] mixin
- - j:usersFolderConfig (string)
- - j:usersFolderSkeleton (string)
+ - j:usersFolderConfig (string) nofulltext
+ - j:usersFolderSkeleton (string) nofulltext
 
 [jnt:address] > nt:base, jmix:hierarchyNode
  - j:street (string)
- - j:zipcode (string)
+ - j:zipcode (string) 
  - j:town (string)
  - j:country (string,choicelist[country])
  - j:private (boolean)=false
@@ -234,9 +234,9 @@
  + * (jnt:phoneNumber)
 
 [jnt:user] > jnt:folder
- - j:password (string)
+ - j:password (string) indexed=no
  - j:external (boolean)=false autocreated
- - j:externalSource (string)
+ - j:externalSource (string) nofulltext
  - j:firstName (string)
  - j:firstNamePublic (boolean)=true
  - j:lastName (string)
@@ -269,8 +269,8 @@
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
 
 [jmix:groupsFolder] mixin
- - j:groupsFolderConfig (string)
- - j:groupsFolderSkeleton (string)
+ - j:groupsFolderConfig (string) nofulltext
+ - j:groupsFolderSkeleton (string) nofulltext
 
 [jnt:member] > nt:base, jmix:hierarchyNode
  - j:member (weakreference) < jnt:user, jnt:group
@@ -281,7 +281,7 @@
 [jnt:group] > jnt:folder
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
- - j:externalSource (string)
+ - j:externalSource (string) nofulltext
  - * (string)
  + j:members (jnt:members) = jnt:members mandatory autocreated
 
@@ -296,7 +296,7 @@
 
 [jnt:axisProperty] > nt:base
  - j:name (name) mandatory
- - j:format (string)
+ - j:format (string) nofulltext
 
 [jnt:axisFolder] > jnt:systemfolder
 
@@ -306,18 +306,18 @@
 
 [jmix:virtualsitesFolder] mixin
  - j:defaultSite (weakreference) < jnt:virtualsite
- - j:virtualsitesFolderConfig (string)
- - j:virtualsitesFolderSkeleton (string)
+ - j:virtualsitesFolderConfig (string) nofulltext
+ - j:virtualsitesFolderSkeleton (string) nofulltext
 
 [jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
- - j:title (string) protected
- - j:serverName (string) protected
+ - j:title (string) protected nofulltext
+ - j:serverName (string) protected nofulltext
  - j:description (string) protected
  - j:siteId (long) protected
- - j:installedModules (string) multiple
- - j:languages (string) multiple
- - j:mandatoryLanguages (string) multiple
- - j:defaultLanguage (string)
+ - j:installedModules (string) multiple nofulltext
+ - j:languages (string) multiple nofulltext
+ - j:mandatoryLanguages (string) multiple nofulltext
+ - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
  + * (jmix:hierarchyNode)
 
@@ -334,7 +334,7 @@
 [jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
 
 [jnt:vfsMountPoint] > jnt:mountPoint
- - j:root (string)
+ - j:root (string) nofulltext
 
 //---------------------------------------------------------
 // Rendering
@@ -343,13 +343,13 @@
 [jmix:layout] mixin
 
 [jmix:renderable] > jmix:layout, jmix:contentMixin mixin
- - j:template (string, choicelist[templates,resourceBundle,image])
+ - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:renderableList] > jmix:layout, jmix:listMixin mixin
- - j:subNodesTemplate (string, choicelist[templates,resourceBundle,image])
+ - j:subNodesTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:renderableReference] > jmix:layout mixin
- - j:referenceTemplate (string, choicelist[templates,resourceBundle,image])
+ - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:positionable] > jmix:layout mixin
  - j:columnIndex (long)
@@ -368,13 +368,13 @@
 
 [jmix:link] mixin
  - j:alt (string)
- - j:target (string, choicelist) < '_blank','_self'
+ - j:target (string, choicelist) nofulltext < '_blank','_self'
 
 [jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:node (weakreference)
 
 [jmix:shareable] > mix:shareable mixin
- - j:movedFrom (string) multiple
+ - j:movedFrom (string) multiple nofulltext
 
 [jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  + j:node (mix:shareable)
@@ -385,7 +385,7 @@
  - j:url (string)
 
 [jnt:referenceInField] > nt:base
- - j:fieldName (string)
+ - j:fieldName (string) nofulltext
  - j:id (long)
  - j:reference (weakreference)
 
@@ -463,20 +463,20 @@
 //---------------------------------------------------------
 
 [jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled
- - j:name (string)
+ - j:name (string) nofulltext
  - j:description (string)
  - j:isVisible (boolean) = true
- - j:type (string)
- - j:context (string)
+ - j:type (string) nofulltext
+ - j:context (string) nofulltext
 
 [jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
 + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
- - j:application (string,portletdefinition) hidden
+ - j:application (string,portletdefinition) hidden nofulltext
  - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)
- - j:cacheScope (string, choicelist) < 'private','public'
+ - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
 
 //---------------------------------------------------------
@@ -491,8 +491,8 @@
 
 [jnt:reference] > nt:base, jmix:hierarchyNode
  - j:node (weakreference)
- - j:propertyName (string)
- - j:originalUuid (string)
+ - j:propertyName (string) nofulltext
+ - j:originalUuid (string) nofulltext
 
 [jnt:referencesKeeper] > nt:base, jmix:hierarchyNode, jmix:collection
  + j:reference (jnt:reference) multiple
@@ -514,7 +514,7 @@
 [jnt:layoutItem]  > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:columnIndex (long)
  - j:rowIndex (long)
- - j:status (string)
+ - j:status (string) nofulltext
  - j:portlet (reference) < jnt:portlet
 
 [jnt:layout]  > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata

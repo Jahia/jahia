@@ -1,2 +1,2 @@
 [jnt:googleGadgetPortlet] > jnt:portlet
- - code (string, text[multiline])
+ - code (string, text[multiline]) indexed=no

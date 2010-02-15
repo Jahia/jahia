@@ -46,7 +46,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
     private boolean isInitialized;
 
     public WorkflowTabItem() {
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
+        setIconStyle("gwt-toolbar-icon-workflowaction-min");
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
@@ -127,6 +127,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
     }
 
     private void fillStore() {
+
         contentStore.removeAll();
         List<Module> modules = ModuleHelper.getModules();
         List<String> list = new ArrayList<String>();

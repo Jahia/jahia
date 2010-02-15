@@ -427,7 +427,7 @@ public class JCRPublicationService extends JahiaService {
 
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
-//                node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                doClone(node, prunedSourcePath, sourceSession, destinationSession);
             }
         }
     }
@@ -450,7 +450,7 @@ public class JCRPublicationService extends JahiaService {
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
-        final String destinationParentPath = parent.getPath();
+        final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
         logger.info("Cloning node : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getParent().getBaseVersion().getName() +
@@ -537,15 +537,25 @@ public class JCRPublicationService extends JahiaService {
         }
 
         NodeIterator it = sourceNode.getNodes();
+        JCRNodeWrapper destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
         while (it.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
             if (!pruneNodes.contains(nodeWrapper.getPath()) && nodeWrapper.isVersioned()) {
-                doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                try {
+                    // Check if the child has a corresponding path - if not, clone it
+                    nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);
+                    // Check if parent node has a child with that name - if not, clone it (shareable)
+                    if (!destinationNode.hasNode(nodeWrapper.getName())) {
+                        doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                    } 
+                } catch (ItemNotFoundException e) {
+                    doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                }
             }
         }
 
         logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
-                " , dest node v=" + destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName)).getBaseVersion().getName() +
+                " , dest node v=" + destinationNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
     }

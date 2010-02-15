@@ -375,6 +375,9 @@
                             <property name="loggingService" ref="loggingService"/>
                         </bean>
                         <ref bean="cacheFilter"/>
+                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
+                            <property name="priority" value="30" />
+                        </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                             <property name="priority" value="35" />
                         </bean>

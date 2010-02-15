@@ -5,12 +5,12 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui-personalized-1.6rc2.min.js,inettuts.js"/>
 <jcr:node path="/shared/portalComponents" var="widgets"/>
 <script>
-    function addWidget(id) {
+    function addWidget(source, newName) {
         var data = {};
-        data["nodeType"] = "jnt:nodeReference";
-        data["j:node"] = id;
-        data['methodToCall'] = 'post';
-        $.post("${url.base}${currentNode.path}/column1/*", data, function(result) {
+        data["source"] = source;
+        data["target"] = "${currentNode.path}/column1";
+        data["newName"] = newName;
+        $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(result) {
             alert("widget has been added to your portal page");
         }, "json");
     }
@@ -18,8 +18,9 @@
 <ul>
     <c:forEach items="${widgets.children}" var="node" varStatus="status">
         <li>
-            <div onclick="addWidget('${node.identifier}')">
-                <h3><jcr:nodeProperty node="${node}" name="jcr:title" var="title"/><c:if test="${not empty title}">${title}</c:if><c:if test="${empty title}">${node.name}</c:if></h3>
+            <div onclick="addWidget('${node.path}','${node.name}')">
+                <h3><jcr:nodeProperty node="${node}" name="jcr:title" var="title"/><c:if
+                        test="${not empty title}">${title.string}</c:if><c:if test="${empty title}">${node.name}</c:if></h3>
             </div>
         </li>
     </c:forEach>

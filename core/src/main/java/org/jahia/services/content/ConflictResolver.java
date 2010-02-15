@@ -162,7 +162,8 @@ public class ConflictResolver {
             Map<String,String> newOrdering = getOrdering(uuids2, added);
             for (Map.Entry<String, String> entry : oldOrdering.entrySet()) {
                 if (!newOrdering.get(entry.getKey()).equals(entry.getValue())) {
-                    diffs.add(new ChildNodeReorderedDiff(entry.getKey(), newOrdering.get(entry.getKey())));
+                    diffs.add(new ChildNodeReorderedDiff(entry.getKey(), newOrdering.get(entry.getKey()),
+                            (String) uuids2.get(entry.getKey()), (String) uuids2.get(newOrdering.get(entry.getKey()))));
                 }
             }
 
@@ -418,17 +419,20 @@ public class ConflictResolver {
     }
 
     class ChildNodeReorderedDiff implements Diff {
+        private String name;
+        private String orderBeforeName;
         private String uuid;
-        private String orderBefore;
+        private String orderBeforeUuid;
 
-        ChildNodeReorderedDiff(String uuid, String orderBefore) {
+        ChildNodeReorderedDiff(String uuid, String orderBeforeUuid, String name, String orderBeforeName) {
+            this.name = name;
+            this.orderBeforeName = orderBeforeName;
             this.uuid = uuid;
-            this.orderBefore = orderBefore;
+            this.orderBeforeUuid = orderBeforeUuid;
         }
 
         public boolean apply() throws RepositoryException {
-            targetNode.orderBefore(targetNode.getSession().getNodeByUUID(uuid).getName(),
-                    orderBefore.equals("") ? null : targetNode.getSession().getNodeByUUID(orderBefore).getName());
+            targetNode.orderBefore(name, orderBeforeName);
             return true;
         }
 
@@ -439,7 +443,7 @@ public class ConflictResolver {
 
             ChildNodeReorderedDiff that = (ChildNodeReorderedDiff) o;
 
-            if (orderBefore != null ? !orderBefore.equals(that.orderBefore) : that.orderBefore != null) return false;
+            if (orderBeforeUuid != null ? !orderBeforeUuid.equals(that.orderBeforeUuid) : that.orderBeforeUuid != null) return false;
             if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
             return true;
@@ -448,7 +452,7 @@ public class ConflictResolver {
         @Override
         public int hashCode() {
             int result = uuid != null ? uuid.hashCode() : 0;
-            result = 31 * result + (orderBefore != null ? orderBefore.hashCode() : 0);
+            result = 31 * result + (orderBeforeUuid != null ? orderBeforeUuid.hashCode() : 0);
             return result;
         }
     }

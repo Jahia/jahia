@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,9 +31,11 @@
  */
 package org.jahia.services.search;
 
-import org.jahia.params.ProcessingContext;
+import java.util.Locale;
+
 import org.jahia.services.JahiaService;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Abstract class for the new Jahia search service. 
@@ -55,7 +57,7 @@ import org.jahia.services.render.RenderContext;
  * individual plug-ins to third party search engines (like Google Appliance).
  *
  * @author Benjamin Papez
- *
+ * 
  */
 public abstract class SearchService extends JahiaService {
     /**
@@ -68,4 +70,20 @@ public abstract class SearchService extends JahiaService {
      * @return SearchResponse object with the list of hits matching the criteria
      */
     public abstract SearchResponse search(SearchCriteria criteria, RenderContext context);
+    
+    /**
+     * Returns a modified suggestion for the original query based on the spell
+     * checker dictionary. If the spelling is correct or the spell checker does
+     * not know how to correct the query or the provider does not support this
+     * feature <code>null</code> is returned.
+     * 
+     * @param originalQuery original query string
+     * @param siteKey current site key
+     * @param locale current locale
+     * @return a modified suggestion for the original query based on the spell
+     *         checker dictionary. If the spelling is correct or the spell
+     *         checker does not know how to correct the query <code>null</code>
+     *         is returned.
+     */
+    public abstract Suggestion suggest(String originalQuery, String siteKey, Locale locale);
 }

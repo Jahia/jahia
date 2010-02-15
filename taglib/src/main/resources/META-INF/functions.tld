@@ -210,6 +210,15 @@
         </example>
     </function>
     
+    <function>
+        <description>Returns the smaller of two long values.</description>
+        <name>min</name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>long min(long, long)</function-signature>
+        <example>
+            &lt;c:out value="${functions:min(hitCount, 10)}"&gt;
+        </example>
+    </function>
     
     <function>
         <description>

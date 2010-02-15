@@ -31,8 +31,10 @@
  */
 package org.jahia.services.search;
 
-import org.jahia.params.ProcessingContext;
+import java.util.Locale;
+
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Interface for different provider implementations used by the SearchService.
@@ -51,4 +53,20 @@ public interface SearchProvider {
      * @return SearchResponse object with the list of hits matching the criteria
      */
     public abstract SearchResponse search(SearchCriteria criteria, RenderContext context);
+    
+    /**
+     * Returns a modified suggestion for the original query based on the spell
+     * checker dictionary. If the spelling is correct or the spell checker does
+     * not know how to correct the query or the provider does not support this
+     * feature <code>null</code> is returned.
+     * 
+     * @param originalQuery original query string
+     * @param siteKey current site key
+     * @param locale current locale
+     * @return a modified suggestion for the original query based on the spell
+     *         checker dictionary. If the spelling is correct or the spell
+     *         checker does not know how to correct the query <code>null</code>
+     *         is returned.
+     */
+    public abstract Suggestion suggest(String originalQuery, String siteKey, Locale locale);
 }

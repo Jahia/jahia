@@ -31,24 +31,24 @@
  */
 package org.jahia.services.search;
 
+import java.util.Locale;
+
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
 
 /**
- * Default implementation of the SearchService
+ * Default implementation of the {@link SearchService}.
  *
  * @author Benjamin Papez
  *
  */
 public class SearchServiceImpl extends SearchService {
     
-    private static JahiaJCRSearchProvider searchProvider = new JahiaJCRSearchProvider(); 
+    private SearchProvider searchProvider; 
 
     /**
-     * The unique instance of this service *
+     * The unique instance of this service
      */
     protected static SearchServiceImpl theObject;    
     
@@ -68,18 +68,37 @@ public class SearchServiceImpl extends SearchService {
     
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
-        // @TODO add logic to pick the right search provider
-        return searchProvider.search(criteria, context);
+        return getProvider().search(criteria, context);
     }
 
     @Override
     public void start() throws JahiaInitializationException {
-
+        // do nothing
     }
 
     @Override
     public void stop() throws JahiaException {
-
+        // do nothing
     }
 
+    @Override
+    public Suggestion suggest(String originalQuery, String siteKey, Locale locale) {
+        return getProvider().suggest(originalQuery, siteKey, locale);
+    }
+    
+    /**
+     * Returns an instance of the search provider for handling query requests.
+     * @return an instance of the search provider for handling query requests
+     */
+    protected SearchProvider getProvider() {
+        // TODO add logic to pick the right search provider
+        return searchProvider;
+    }
+
+    /**
+     * @param searchProvider the searchProvider to set
+     */
+    public void setSearchProvider(SearchProvider searchProvider) {
+        this.searchProvider = searchProvider;
+    }
 }

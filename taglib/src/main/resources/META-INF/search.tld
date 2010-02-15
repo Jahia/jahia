@@ -109,6 +109,7 @@
         <tag-class>org.jahia.taglibs.search.ResultsTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+        	<description>The name of the page scope variable the hit count will be exposed under. [count]</description>
             <name>countVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -124,6 +125,44 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+        	<description>The name of the page scope variable the list of found hits will be exposed under. [hits]</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Performs the suggested search (using spell checker) and exposes search results to be displayed</description>
+        <name>suggestions</name>
+        <tag-class>org.jahia.taglibs.search.SuggestionsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+        	<description>The name of the page scope variable the hit count will be exposed under. [suggestedCount]</description>
+            <name>countVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                If specified, the SearchCriteria bean will be taken from the page scope bean with the corresponding name.
+            </description>
+            <name>searchCriteriaBeanName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+        	<description>The name of the page scope variable the found suggestion will be exposed under. [suggestion]</description>
+            <name>suggestionVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+        	<description>The name of the page scope variable the list of found hits will be exposed under. [suggestedHits]</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -188,8 +227,16 @@
         <path>/META-INF/tags/search/rawQuery.tag</path>
     </tag-file>
     <tag-file>
+        <name>searchUrl</name>
+        <path>/META-INF/tags/search/searchUrl.tag</path>
+    </tag-file>
+    <tag-file>
         <name>site</name>
         <path>/META-INF/tags/search/site.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>suggestedSearchUrl</name>
+        <path>/META-INF/tags/search/suggestedSearchUrl.tag</path>
     </tag-file>
     <tag-file>
         <name>term</name>

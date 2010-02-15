@@ -64,7 +64,10 @@
 <s:lastModifiedBy/>
 <s:pagePath/>
 <s:rawQuery/>
+<s:searchUrl/>
 <s:site/>
+<s:suggestions/>
+<s:suggestedSearchUrl suggestion="a"/>
 <s:termFields/>
 <s:termMatch/>
 <s:term/>

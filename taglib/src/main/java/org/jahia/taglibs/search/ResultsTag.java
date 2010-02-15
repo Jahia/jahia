@@ -31,6 +31,11 @@
  */
 package org.jahia.taglibs.search;
 
+import java.util.List;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
@@ -38,36 +43,27 @@ import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import java.util.List;
-
 /**
  * Performs the content search and exposes search results for being displayed.
- *
+ * 
  * @author Sergiy Shyrkov
  */
-@SuppressWarnings("serial")
 public class ResultsTag extends AbstractJahiaTag {
 
-    private static final String DEF_COUNT_VAR = "count";
+    private static final long serialVersionUID = 2848686280888802590L;
 
-    private static final String DEF_VAR = "hits";
-
-    private int count;
-
-    private String countVar = DEF_COUNT_VAR;
+    private String countVar;
 
     private List<Hit<?>> hits;
 
     private String searchCriteriaBeanName;
 
-    private String var = DEF_VAR;
+    private String var;
 
     @Override
     public int doEndTag() throws JspException {
-        pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
-        pageContext.removeAttribute(countVar, PageContext.PAGE_SCOPE);
+        pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
+        pageContext.removeAttribute(getCountVar(), PageContext.PAGE_SCOPE);
         resetState();
 
         return EVAL_PAGE;
@@ -77,42 +73,73 @@ public class ResultsTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
 
         RenderContext renderContext = getRenderContext();
-        SearchCriteria criteria = searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName) : SearchCriteriaFactory.getInstance(renderContext);
+        SearchCriteria criteria = getSearchCriteria(renderContext);
 
         if (null == criteria) {
             return SKIP_BODY;
         }
         hits = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext).getResults();
-        count = hits.size();
+        int count = hits.size();
 
-        pageContext.setAttribute(var, hits);
-
-        pageContext.setAttribute(countVar, Integer.valueOf(count));
+        pageContext.setAttribute(getVar(), hits);
+        pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
 
         return EVAL_BODY_INCLUDE;
     }
 
-    public int getCount() {
-        return count;
+    /**
+     * Returns the default name of the <code>countVar</code> variable if not
+     * provided.
+     * 
+     * @return the default name of the <code>countVar</code> variable if not
+     *         provided
+     */
+    private String getCountVar() {
+        return countVar != null ? countVar : getDefaultCountVarName();
     }
 
-    public String getCountVar() {
-        return countVar;
+    protected String getDefaultCountVarName() {
+        return "count";
     }
 
+    /**
+     * Returns the default name of the <code>var</code> variable if not
+     * provided.
+     * 
+     * @return the default name of the <code>var</code> variable if not provided
+     */
+    protected String getDefaultVarName() {
+        return "hits";
+    }
+
+    /**
+     * Returns a list of {@link Hit} objects that are results of the query.
+     * 
+     * @return a list of {@link Hit} objects that are results of the query
+     */
     public List<Hit<?>> getHits() {
         return hits;
     }
 
-    public String getVar() {
-        return var;
+    /**
+     * Obtains the {@link SearchCriteria} bean to execute the search with.
+     * 
+     * @param ctx current rendering context
+     * @return the {@link SearchCriteria} bean to execute the search with
+     */
+    protected SearchCriteria getSearchCriteria(RenderContext ctx) {
+        return searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
+                : SearchCriteriaFactory.getInstance(ctx);
+    }
+
+    private String getVar() {
+        return var != null ? var : getDefaultVarName();
     }
 
     @Override
     protected void resetState() {
-        var = DEF_VAR;
-        countVar = DEF_COUNT_VAR;
-        count = 0;
+        var = null;
+        countVar = null;
         hits = null;
         searchCriteriaBeanName = null;
         super.resetState();

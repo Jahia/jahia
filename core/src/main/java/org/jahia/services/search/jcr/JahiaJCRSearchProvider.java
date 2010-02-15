@@ -37,6 +37,7 @@ import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
@@ -68,6 +69,7 @@ import org.jahia.services.search.PageHit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
+import org.jahia.services.search.Suggestion;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.Term;
@@ -253,7 +255,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         query = appendConstraints(params, query);
         xpathQuery = query.toString();
 
-        logger.info("XPath query built: " + xpathQuery);
+        if (logger.isDebugEnabled()) {
+            logger.debug("XPath query built: " + xpathQuery);
+        }
 
         return xpathQuery;
     }
@@ -588,5 +592,49 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private String cleanMultipleWhiteSpaces(String term) {
         return term.replaceAll("\\s{2,}", " ");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
+     */
+    public Suggestion suggest(String originalQuery, String siteKey, Locale locale) {
+        if (StringUtils.isBlank(originalQuery)) {
+            return null;
+        }
+
+        Suggestion suggestion = null;
+        JCRSessionWrapper session;
+        try {
+            session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession(
+                    null, locale);
+            QueryManager qm = session.getWorkspace().getQueryManager();
+            StringBuilder xpath = new StringBuilder(64);
+            xpath.append("/jcr:root[rep:spellcheck(").append(stringToJCRSearchExp(originalQuery)).append(")");
+            if (locale != null) {
+                xpath.append(" or @jcr:language='" + locale + "'");
+            }
+            xpath.append("]");
+            if (siteKey != null) {
+                xpath.append("/sites/").append(siteKey);
+            }
+            xpath.append("/(rep:spellcheck())");
+            
+            Query query = qm.createQuery(xpath.toString(), Query.XPATH);
+            RowIterator rows = query.execute().getRows();
+            Row r = rows.nextRow();
+            Value v = r.getValue("rep:spellcheck()");
+            if (v != null) {
+                suggestion = new Suggestion(originalQuery, v.getString());
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Making spell check suggestion for '" + originalQuery + "' site '" + siteKey
+                        + "' and locale '" + locale + "' using XPath query [" + xpath.toString()
+                        + "]. Result suggestion: " + suggestion);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return suggestion;
     }
 }

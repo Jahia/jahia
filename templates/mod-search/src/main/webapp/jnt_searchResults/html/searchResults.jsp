@@ -34,6 +34,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
@@ -45,26 +46,47 @@
 </c:if>
 <s:results>
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
+	<jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
 	<c:if test="${not empty title.string}">
 		<h3>${fn:escapeXml(title.string)}</h3>
 	</c:if>
-<div class="resultsList">
+	<div class="resultsList">
+        <c:if test="${autoSuggest.boolean}">
+        	<%-- spelling auto suggestions are enabled --%>
+        	<jcr:nodeProperty name="autoSuggestMinimumHitCount" node="${currentNode}" var="autoSuggestMinimumHitCount"/>
+        	<jcr:nodeProperty name="autoSuggestHitCount" node="${currentNode}" var="autoSuggestHitCount"/>
+        	<c:if test="${count <= functions:default(autoSuggestMinimumHitCount.long, 2)}">
+        		<%-- the number of original results is less than the configured threshold, we can start auto-suggest  --%>
+	        	<s:suggestions>
+	        		<%-- we have a suggestion --%>
+		        	<c:if test="${suggestedCount > count}">
+		        		<%-- found more hits for the suggestion than the original query brings --%>
+						<h4>
+							<fmt:message key="search.results.didYouMean" />:&nbsp;<a href="<s:suggestedSearchUrl/>"><em>${fn:escapeXml(suggestion.suggestedQuery)}</em></a>.&nbsp;
+							<fmt:message key="search.results.didYouMean.topResults"><fmt:param value="${functions:min(functions:default(autoSuggestHitCount.long, 2), suggestedCount)}" /></fmt:message>
+						</h4>
+						<ol>
+							<s:resultIterator begin="0" end="${functions:default(autoSuggestHitCount.long, 2) - 1}">
+								<li><%@ include file="searchHit.jspf" %></li>
+							</s:resultIterator>
+						</ol>
+						<hr/>
+						<h4><fmt:message key="search.results.didYouMean.resultsFor"/>:&nbsp;<strong>${fn:escapeXml(suggestion.originalQuery)}</strong></h4>
+			        </c:if>
+	        	</s:suggestions>
+        	</c:if>
+        </c:if>
 		<c:if test="${count > 0}">
-    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
-         <ol>
-			<s:resultIterator>
-				<li> 
-					<h4><a href="${hit.link}">${fn:escapeXml(hit.title)}</a></h4>
-                    <div class="resultslistDesc">${hit.excerpt}</div>
-                    <div class="resultsListFileType">${hit.contentType}</div>
-                    <div class="resultsListDate"><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
-				</li>
-			</s:resultIterator>
-        </ol>
+	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
+        	<ol>
+				<s:resultIterator>
+					<li><%@ include file="searchHit.jspf" %></li>
+				</s:resultIterator>
+	        </ol>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>
-        </c:if>
+		</c:if>
     </div>
 </s:results>
 <c:if test="${renderContext.editMode}">

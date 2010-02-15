@@ -58,6 +58,10 @@ import org.jahia.utils.DateUtils;
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
 
+    private static abstract class SerializableFactory implements Factory, Serializable {
+        
+    }
+    
     /**
      * Supports comma separated multiple values.
      * 
@@ -376,7 +380,7 @@ public class SearchCriteria implements Serializable {
      * 
      * @author Sergiy Shyrkov
      */
-    public static class NodePropertyDescriptor {
+    public static class NodePropertyDescriptor implements Serializable {
 
         private String[] allowedValues;
 
@@ -703,11 +707,11 @@ public class SearchCriteria implements Serializable {
 
     private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
-                    new Factory() {
+                    new SerializableFactory() {
                         public Object create() {
                             return LazyMap.decorate(
                                     new HashMap<String, NodeProperty>(),
-                                    new Factory() {
+                                    new SerializableFactory() {
                                         public Object create() {
                                             return new NodeProperty();
                                         }
@@ -720,7 +724,7 @@ public class SearchCriteria implements Serializable {
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
     
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
-            new Factory() {
+            new SerializableFactory() {
                 public Object create() {
                     return new Term();
                 }
@@ -831,7 +835,7 @@ public class SearchCriteria implements Serializable {
                 && isValueEmpty(getFileType()) && isValueEmpty(getCreatedBy())
                 && getCreated().isEmpty() && isValueEmpty(getLastModifiedBy())
                 && getLastModified().isEmpty() && getPagePath().isEmpty()
-                && getFilePath().isEmpty();
+                && getFilePath().isEmpty() && getSites().isEmpty();
 
         if (empty) {
             for (Term term : getTerms()) {

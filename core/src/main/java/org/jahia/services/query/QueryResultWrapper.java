@@ -101,7 +101,7 @@ class QueryResultWrapper implements QueryResult {
      * 
      * @author Sergiy Shyrkov
      */
-    class RowDecorator implements Row {
+    public class RowDecorator implements Row {
         private Node node;
         private Map<String, Node> nodesBySelector = new HashMap<String, Node>(1);
         private Row row;
@@ -166,6 +166,11 @@ class QueryResultWrapper implements QueryResult {
         
         private Node wrap(Node node) throws RepositoryException {
             return getProvider().getNodeWrapper(node, getSession());
+        }
+        
+        public String getSpellcheck() throws ItemNotFoundException, RepositoryException {
+            Value suggestion = row.getValue("rep:spellcheck()");
+            return suggestion != null ? suggestion.getString() : null; 
         }
     };
 

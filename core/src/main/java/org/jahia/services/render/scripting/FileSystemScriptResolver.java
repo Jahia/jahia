@@ -93,6 +93,31 @@ public class FileSystemScriptResolver implements ScriptResolver {
 
             }
         }
+        ExtendedNodeType[] mixinNodeTypes = resource.getNode().getMixinNodeTypes();
+        if (mixinNodeTypes.length > 0) {
+            for (String template : resource.getTemplates()) {
+                for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
+                    SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                            mixinNodeType.getAlias().replace(":", "_"), context);
+                    for (JahiaTemplatesPackage aPackage : sortedPackages) {
+                        if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(
+                                context.getSite().getTemplatePackageName())) {
+                            continue;
+                        }
+                        String currentTemplatePath = aPackage.getRootFolderPath();
+                        String templatePath = getTemplatePath(resource.getTemplateType(), template, mixinNodeType,
+                                                              currentTemplatePath);
+                        if (templatePath != null) {
+                            JahiaTemplatesPackage module = aPackage;
+                            String templateName = template;
+                            Template resolvedTemplate = new FileSystemTemplate(templatePath, templateName, module,
+                                                                               templateName);
+                            return resolvedTemplate;
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 

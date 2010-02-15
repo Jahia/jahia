@@ -1,27 +1,43 @@
-#bodywrapper .teaser .floatLeft {
-	clear:both;
+
+/******************************************************************************
+* Box teaser
+******************************************************************************/
+
+#bodywrapper .boxteaser {
+
 	position: relative;
 	height:1%;
-}
-#bodywrapper .teaser .floatLeft {
+	background-color:#fff;
+	background:#fff url(img/boxteaser-bg.png) no-repeat top right;
+	margin-bottom:10px;
 	float:left;
-	margin: 0 5px 5px 0px;
+	width:50%
 }
+
 #bodywrapper .teaser p, #bodywrapper .teaser h3.teaser-title {
 	margin: 0;
 	padding: 0;
+	line-height:110%;
+	font-size:1em
+}
+#bodywrapper .teaser h3.teaser-title {
+font-weight:bold
 }
 
 #bodywrapper .teaser .more{
 	position:absolute;
-	bottom:1em;
-	right:1em;
+	bottom:0.2em;
+	right:1em;	
 }
 #bodywrapper .teaser-fixed-height {
-	height:6em;
+
+	height:5.5em;
 	overflow:hidden;
+	position:relative;
+	padding-bottom:2em;
+	margin:0.5em;
 }
 #bodywrapper .teaser-fixed-height .teaser-content{
 	overflow: hidden;
-	height:5.5em;
+	height:5.6em;
 }

@@ -96,6 +96,8 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
         addGwtDictionaryMessage("fm_newrssmashup", getJahiaInternalResourceValue("label.newRssMashup"));
         addGwtDictionaryMessage("fm_newgadgetmashup", getJahiaInternalResourceValue("label.newGoogleGadgetMashup"));
         addGwtDictionaryMessage("fm_copy", getJahiaInternalResourceValue("label.copy"));
+        addGwtDictionaryMessage("fm_info_name", getJahiaInternalResourceValue("label.name"));
+        addGwtDictionaryMessage("fm_workflow_status", getJahiaInternalResourceValue("label.status"));
         addGwtDictionaryMessage("fm_cut", getJahiaInternalResourceValue("label.cut"));
         addGwtDictionaryMessage("fm_paste", getJahiaInternalResourceValue("label.paste"));
         addGwtDictionaryMessage("fm_pasteref", getJahiaInternalResourceValue("label.pasteReference"));

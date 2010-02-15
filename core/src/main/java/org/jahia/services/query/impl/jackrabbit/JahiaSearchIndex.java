@@ -56,6 +56,7 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setSupportHighlighting(getSupportHighlighting());
         indexer.setIndexingConfiguration(getIndexingConfig());
         indexer.setIndexFormatVersion(indexFormatVersion);
+        indexer.setSupportSpellchecking(getSpellChecker() != null);
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;

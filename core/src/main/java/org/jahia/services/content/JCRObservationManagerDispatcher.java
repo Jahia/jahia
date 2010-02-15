@@ -1,17 +1,20 @@
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.observation.SynchronousEventListener;
+
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.Event;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * This listener gets all event from the repository synchronously and store them in the observation manager.
+ * Events will be consumed by all listeners when JCRObservationManager.consume() is called.
+ *
  * User: toto
  * Date: Nov 25, 2009
  * Time: 1:59:20 PM
- * To change this template use File | Settings | File Templates.
  */
-public class JCRObservationManagerDispatcher extends DefaultEventListener {
+public class JCRObservationManagerDispatcher implements SynchronousEventListener {
 
     protected JCRStoreProvider provider;
 

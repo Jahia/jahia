@@ -78,19 +78,9 @@ public class DefaultValueListener extends DefaultEventListener {
 
     public void onEvent(EventIterator eventIterator) {
         try {
+            final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
             final List<Event> events = new ArrayList<Event>();
-            String username = null;
-            while (eventIterator.hasNext()) {
-                Event event = eventIterator.nextEvent();
-                username = event.getUserID();
-                events.add(event);
-            }
-
-            if (username != null && username.equals("system")) {
-                username = null;
-            }
-
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Iterator<Event> it = events.iterator();
                     while (it.hasNext()) {

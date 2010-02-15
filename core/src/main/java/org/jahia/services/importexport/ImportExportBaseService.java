@@ -880,7 +880,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         session.save();
                     } else {
                         final File contentFile = tempFile;
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, true, new JCRCallback<Boolean>() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, false, new JCRCallback<Boolean>() {
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 InputStream is = null;
                                 try {

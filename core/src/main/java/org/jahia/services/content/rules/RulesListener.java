@@ -251,6 +251,10 @@ public class RulesListener extends DefaultEventListener {
             return;
         }
 
+        JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
+        final String userId = session.getUserID();
+        final Locale locale = session.getLocale();
+
         final Map<String, NodeWrapper> eventsMap = new HashMap<String, NodeWrapper>();
 
         if (Boolean.TRUE.equals(inRules.get())) {
@@ -269,18 +273,12 @@ public class RulesListener extends DefaultEventListener {
 
         try {
             final List<Event> events = new ArrayList<Event>();
-            String username = null;
             while (eventIterator.hasNext()) {
                 Event event = eventIterator.nextEvent();
-                username = event.getUserID();
                 events.add(event);
             }
-            if (username != null && username.equals("system")) {
-                username = null;
-            }
-            final String finalusername = username;
             JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    username, workspace, new JCRCallback<Object>() {
+                    userId, workspace, locale, false, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                             Iterator<Event> it = events.iterator();
 
@@ -379,7 +377,7 @@ public class RulesListener extends DefaultEventListener {
                                 final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
 
-                                Map<String, Object> globals = getGlobals(finalusername, delayedUpdates);
+                                Map<String, Object> globals = getGlobals(userId, delayedUpdates);
 
                                 executeRules(list, globals);
 
@@ -396,7 +394,7 @@ public class RulesListener extends DefaultEventListener {
                                 }
 
                                 if (!delayedUpdates.isEmpty()) {
-                                    TimerTask t = new DelayedUpdatesTimerTask(finalusername, delayedUpdates);
+                                    TimerTask t = new DelayedUpdatesTimerTask(userId, delayedUpdates);
                                     rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                                 }
 

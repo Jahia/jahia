@@ -42,18 +42,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Listener for flushing container HTML cache entries.
+ * Listener for flushing file content cache
  * User: toto
  * Date: 25 févr. 2008
  * Time: 14:36:14
  */
-public class CacheListener extends DefaultEventListener {
+public class FilesCacheListener extends DefaultEventListener {
     private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(CacheListener.class);
+            org.apache.log4j.Logger.getLogger(FilesCacheListener.class);
 
     private Cache<String, ?> cache;
 
-    public CacheListener() {
+    public FilesCacheListener() {
         try {
             cache = CacheFactory.getInstance().createCacheInstance("WebdavCache");
         } catch (JahiaInitializationException e) {

@@ -65,7 +65,8 @@ public class FullpathListener extends DefaultEventListener {
 
     public void onEvent(final EventIterator eventIterator) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();

@@ -339,7 +339,6 @@ public class JCRStoreProvider {
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
             listener.setProvider(this);
-            listener.setWorkspace(ws);
             observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), true, null, listener.getNodeTypes(), false);
 
             // The thread should always checks if the session is still alive and reconnect it if lost

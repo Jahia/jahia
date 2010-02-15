@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.query.QueryManagerImpl;
@@ -66,6 +67,7 @@ import java.util.List;
  * @author toto
  */
 public class JCRWorkspaceWrapper implements Workspace {
+    private static Logger logger = Logger.getLogger(JCRWorkspaceWrapper.class);
     private JCRSessionFactory service;
     private String name;
     private JCRSessionWrapper session;
@@ -270,7 +272,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public JCRVersion checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-            System.out.println("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
+            logger.debug("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
             return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>() {
                 public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
@@ -286,14 +288,14 @@ public class JCRWorkspaceWrapper implements Workspace {
 
                         return result;
                     } finally {
-                        System.out.println(" now "+getBaseVersion(absPath).getName());
+                        logger.debug(" now "+getBaseVersion(absPath).getName());
                     }
                 }
             });
         }
 
         public void checkout(final String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-            System.out.println("Checkout "+absPath +" in "+getName());
+            logger.debug("Checkout "+absPath +" in "+getName());
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode(absPath);

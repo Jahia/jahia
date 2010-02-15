@@ -109,6 +109,7 @@
                 <entry key="default">
                     <list>
                         <bean class="org.jahia.services.content.FullpathListener"/>
+                        <bean class="org.jahia.services.content.LastModifiedListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}"/>
@@ -122,7 +123,7 @@
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
-                        <bean class="org.jahia.services.content.CacheListener"/>
+                        <bean class="org.jahia.services.content.FilesCacheListener"/>
                         <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
                             <property name="loggingService" ref="loggingService"/>
                             <property name="nodeTypesList">
@@ -133,6 +134,7 @@
                 </entry>
                 <entry key="live">
                     <list>
+                        <bean class="org.jahia.services.content.LastModifiedListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}" />
@@ -144,7 +146,7 @@
                                 </map>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.content.CacheListener"/>
+                        <bean class="org.jahia.services.content.FilesCacheListener"/>
                         <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
                             <property name="cacheProvider" ref="ModuleCacheProvider"/>
                             <property name="jcrTemplate" ref="jcrTemplate"/>

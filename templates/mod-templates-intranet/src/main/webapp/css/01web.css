@@ -25,7 +25,9 @@ body {
 #bodywrapper .clear {
 	clear:both;
 }
-
+#bodywrapper .clearitem 	{
+	clear:both;
+}
 #bodywrapper br.clear {
 	clear:both;
 	font-family: Arial, Helvetica, sans-serif;
@@ -50,6 +52,10 @@ body {
 }
 #bodywrapper .rightside{
 	float: right
+}
+#bodywrapper .clearMaringPadding{
+	padding:0;
+	margin:0;
 }
 
 /******************************************************************************
@@ -508,9 +514,9 @@ shortcuts
 #bodywrapper input.gobutton{
 	background:none;
 	border:none;
-	margin:5px 0;
+	margin:0;
 	padding:0;
-	width:auto;
+	vertical-align: bottom;
 }
 /******************************************************************************
 *  Images
@@ -547,6 +553,10 @@ shortcuts
 #bodywrapper div.itemImageRight {
 	float:right;
 }
+#bodywrapper div.itemImageLeft {
+	float:left;
+}
+
 
 #bodywrapper .itemImage img {
 	background-color:#e1e1e1;
@@ -710,27 +720,7 @@ background-color:#FFFFFF
 	padding-right:0.5em
 }
 
-/*Template User profile*/
-#bodywrapper ul.twoCol{
-	float:left;
-	width:48%;
-	list-style:none;
-}
-#bodywrapper ul.user-profile-list li {
-	padding:5px 5px 0px 5px;
-	clear:left
-}
-#bodywrapper ul.user-profile-list li span.label {
-	display:block;
-	font-size:0.85em;
-	color:#666;
-	float:left;
-	text-transform:uppercase;
-	margin-right:5px;
-}
-#bodywrapper ul.user-profile-list{
-	margin-bottom:0px;
-}
+
 /******************************************************************************
 * liste4 Arrow
 ******************************************************************************/
@@ -792,6 +782,60 @@ background-color:#FFFFFF
 	padding:0;
 }
 /******************************************************************************
+*  AlphabeticalMenu
+******************************************************************************/
+#bodywrapper div.alphabeticalMenu {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	border: 1px solid #ccc;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+	background:#e1e1e1  url(../img/1px-white.png) repeat-x top left;
+}
+#bodywrapper .alphabeticalLabel {
+	float:left;
+	font-size:0.9em;
+	font-weight:bold;
+	color:#333;
+}
+#bodywrapper .alphabeticalNavigation {
+	float:right;
+
+}
+#bodywrapper .alphabeticalNavigation a:link,
+#bodywrapper .alphabeticalNavigation a:visited,
+#bodywrapper .alphabeticalNavigation a:hover,
+#bodywrapper .alphabeticalNavigation a:active {
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#eaeaea;
+		padding:6px 10px;
+		text-decoration:none;
+}
+
+#bodywrapper .alphabeticalNavigation a:hover {
+		background:#333;
+		color:#fff;
+}
+#bodywrapper .alphabeticalNavigation a.current{
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#333;
+		color:#fff;
+		padding:6px 10px;
+		text-decoration:none;
+}
+
+
+#bodywrapper .alphabeticalNavigation span {
+		text-decoration:none;
+		color:#666;
+		padding:0;
+}
+/******************************************************************************
 *  Button
 ******************************************************************************/
 #bodywrapper .divButton{
@@ -801,11 +845,11 @@ background-color:#FFFFFF
 #bodywrapper .divButtonRight{
 	text-align:right;
 }
-#bodywrapper input.button {
-	margin-left:0.5em;
+#bodywrapper input.button, #bodywrapper button {
+	margin-right:0.5em;
 }
 
-#bodywrapper input.button{
+#bodywrapper input.button, #bodywrapper button {
 	background:#043b9d url(../img/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 	color:#fff;
@@ -815,11 +859,12 @@ background-color:#FFFFFF
 	-webkit-border-radius: 3px;
 
 }
-#bodywrapper input.button:hover {
+#bodywrapper button:hover,  #bodywrapper button:hover {
 	cursor: pointer;
 	background:#3297cb url(../img/bg-button-on.png) repeat-x bottom left;
 	color:#fff;
 }
+
 /******************************************************************************
 *  <A> Button
 ******************************************************************************/
@@ -1053,13 +1098,15 @@ AddItemForm
 
 #bodywrapper .table
 {
-    border-collapse: separate;
-    empty-cells: hide;
+    border-collapse:collapse;
 	margin-bottom:1em;
 	font-size:0.85em;
 	border:none;
 }
-
+table,th, td
+{
+border: 1px solid #fff;
+}
 #bodywrapper .table caption
 {
 	font-weight:normal;
@@ -1076,13 +1123,14 @@ AddItemForm
 }
 #bodywrapper .table td
 {
+	background-color:#fff;
 	padding:5px;
 }
 #bodywrapper .table tr:hover{
-	background-color:#f0f0f0
+	background-color:#ccc
 }
-#bodywrapper .table .odd td{}
-#bodywrapper .table .even td{}
+#bodywrapper .table .odd td{background-color:#eaeaea}
+#bodywrapper .table .even td{ background-color:#fff}
 #bodywrapper .col1{}
 #bodywrapper .col2{}
 #bodywrapper .col3{}
@@ -1106,7 +1154,7 @@ AddItemForm
 	font-size:0.85em
 }
 /******************************************************************************
-*  Languages Form
+*  Preferences Form
 ******************************************************************************/
 #bodywrapper .preferencesForm
 {
@@ -1236,7 +1284,7 @@ color:#666;
 ******************************************************************************/
 #bodywrapper .Form  p{
 	clear:both;
-	margin:0.5em 0;
+	margin:0.2em 0;
 	padding:0px
 }
 #bodywrapper .Form { 
@@ -1245,6 +1293,7 @@ color:#666;
 }
 #bodywrapper .formMarginLeft{ 
 	margin:0 0 0 25%;
+	padding:0 1em 0 2.3em;
 }
 #bodywrapper .Form label.left {
 	float:left; 
@@ -1257,9 +1306,7 @@ color:#666;
 	text-align:center;
 	margin:0.5em 0;
 }
-#bodywrapper .Form input.button {
-	margin-left:0.5em;
-}
+
 /******************************************************************************
 *  error
 ******************************************************************************/

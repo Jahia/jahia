@@ -204,7 +204,9 @@ var iNettuts = {
                     data["target"] = str;
                     data["action"] = "moveAfter";
                 }
-                $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".move.do", data, function(result) {
+                url = this.baseURI.substr(0,this.baseURI.lastIndexOf("/"));
+                node = this.baseURI.substr(this.baseURI.lastIndexOf("/"),this.baseURI.substr(this.baseURI.lastIndexOf("/")).indexOf("."));
+                $.post(url+node+".move.do", data, function(result) {
                     alert("node is moved");
                 }, "json");
             }

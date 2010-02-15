@@ -23,7 +23,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:mixinTypes", "jcr:frozenUuid", "jcr:frozenPrimaryType", "jcr:frozenMixinTypes",
-            "jcr:created", "jcr:createdBy", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:versionHistory");
+            "jcr:created", "jcr:createdBy", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:versionHistory", "jcr:predecessors");
     
     // "jcr:lastModified", "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");

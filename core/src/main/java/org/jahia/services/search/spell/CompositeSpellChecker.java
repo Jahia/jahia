@@ -1,28 +1,47 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.search.spell;
 
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.QueryHandler;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.query.LocationStepQueryNode;
+import org.apache.jackrabbit.spi.commons.query.PathQueryNode;
 import org.apache.jackrabbit.spi.commons.query.QueryRootNode;
 import org.apache.jackrabbit.spi.commons.query.RelationQueryNode;
 import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
-import org.apache.lucene.search.spell.SpellChecker;
+import org.apache.log4j.Logger;
+import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.store.Directory;
@@ -32,28 +51,46 @@ import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Token;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.jcr.JCRSitesProvider;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
  * <code>LuceneSpellChecker</code> implements a spell checker based on the terms
  * present in a lucene index.
  */
-public class CompositeSpellChecker
-        implements org.apache.jackrabbit.core.query.lucene.SpellChecker {
+public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.lucene.SpellChecker {
 
     /**
      * Logger instance for this class.
      */
-    private static final Logger log = LoggerFactory.getLogger(CompositeSpellChecker.class);
+    private static final Logger logger = Logger.getLogger(CompositeSpellChecker.class);
 
     public static final class FiveSecondsRefreshInterval extends CompositeSpellChecker {
         public FiveSecondsRefreshInterval() {
@@ -126,18 +163,17 @@ public class CompositeSpellChecker
 
     /**
      * Initializes this spell checker.
-     *
-     * @param handler the query handler that created this spell checker.
-     * @throws IOException if <code>handler</code> is not of type {@link
-     *                     SearchIndex}.
+     * 
+     * @param handler
+     *            the query handler that created this spell checker.
+     * @throws IOException
+     *             if <code>handler</code> is not of type {@link SearchIndex}.
      */
-    public void init(QueryHandler handler)
-            throws IOException {
+    public void init(QueryHandler handler) throws IOException {
         if (handler instanceof SearchIndex) {
             this.spellChecker = new InternalSpellChecker((SearchIndex) handler);
         } else {
-            throw new IOException("CompositeSpellChecker only works with " +
-                    SearchIndex.class.getName());
+            throw new IOException("CompositeSpellChecker only works with " + SearchIndex.class.getName());
         }
     }
 
@@ -145,42 +181,62 @@ public class CompositeSpellChecker
      * {@inheritDoc}
      */
     public String check(QueryRootNode aqt) throws IOException {
-        String stmt = getFulltextStatement(aqt);
-        if (stmt == null) {
-            // no spellcheck operation in query
-            return null;
+        final Map<String, String> spellcheckInfo = new HashMap<String, String>();
+        try {
+            aqt.accept(new TraversingQueryNodeVisitor() {
+                public Object visit(RelationQueryNode node, Object data) throws RepositoryException {
+                    if (!spellcheckInfo.containsKey("statement")
+                            && node.getOperation() == RelationQueryNode.OPERATION_SPELLCHECK) {
+                        spellcheckInfo.put("statement", node.getStringValue());
+                    } else if (!spellcheckInfo.containsKey("language") && node.getRelativePath() != null
+                            && node.getRelativePath().getNumOperands() > 0) {
+                        Name propertyName = ((LocationStepQueryNode) node.getRelativePath().getOperands()[0])
+                                .getNameTest();
+                        if ("language".equals(propertyName.getLocalName())) {
+                            spellcheckInfo.put("language", node.getStringValue());
+                        }
+                    }
+                    return super.visit(node, data);
+                }
+
+                public Object visit(PathQueryNode node, Object data) throws RepositoryException {
+                    for (int i : new int[] { 0, 1 }) {
+                        if (node.getPathSteps().length > i + 1
+                                && "sites".equals(node.getPathSteps()[i].getNameTest().getLocalName())) {
+                            spellcheckInfo.put("site", node.getPathSteps()[++i].getNameTest().getLocalName());
+                        }
+                    }
+                    return super.visit(node, data);
+                }
+            }, null);
+            if (!spellcheckInfo.containsKey("statement")) {
+                // no spellcheck operation in query
+                return null;
+            }
+            if (!spellcheckInfo.containsKey("language")) {
+                JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
+                JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
+                Locale locale = session.getLocale();
+                if (locale == null) {
+                    locale = Jahia.getThreadParamBean().getLocale();
+                } 
+                if (locale != null) {
+                    spellcheckInfo.put("language", locale.toString());
+                }
+            }       
+        } catch (RepositoryException e) {
         }
-        return spellChecker.suggest(stmt);
+
+        return spellChecker.suggest(spellcheckInfo.get("statement"), spellcheckInfo
+                .get("site"), spellcheckInfo.get("language"));
     }
 
     public void close() {
         spellChecker.close();
     }
 
-    //------------------------------< internal >--------------------------------
-
-    /**
-     * Returns the fulltext statement of a spellcheck relation query node or
-     * <code>null</code> if none exists in the abstract query tree.
-     *
-     * @param aqt the abstract query tree.
-     * @return the fulltext statement or <code>null</code>.
-     */
-    private String getFulltextStatement(QueryRootNode aqt) {
-        final String[] stmt = new String[1];
-        try {
-            aqt.accept(new TraversingQueryNodeVisitor() {
-                public Object visit(RelationQueryNode node, Object o) throws RepositoryException {
-                    if (stmt[0] == null && node.getOperation() == RelationQueryNode.OPERATION_SPELLCHECK) {
-                        stmt[0] = node.getStringValue();
-                    }
-                    return super.visit(node, o);
-                }
-            }, null);
-        } catch (RepositoryException e) {
-        }
-        return stmt[0];
-    }
+    // ------------------------------< internal
+    // >--------------------------------
 
     private final class InternalSpellChecker {
 
@@ -207,21 +263,22 @@ public class CompositeSpellChecker
         /**
          * The underlying spell checker.
          */
-        private SpellChecker spellChecker;
+        private JahiaExtendedSpellChecker spellChecker;
 
         /**
          * Creates a new internal spell checker.
-         * @param handler the associated query handler.
+         * 
+         * @param handler
+         *            the associated query handler.
          */
         InternalSpellChecker(SearchIndex handler) throws IOException {
             this.handler = handler;
             String path = handler.getPath() + File.separatorChar + "spellchecker";
-            this.spellIndexDirectory = FSDirectory.getDirectory(
-                    path, new NativeFSLockFactory(path));
+            this.spellIndexDirectory = FSDirectory.getDirectory(path, new NativeFSLockFactory(path));
             if (IndexReader.indexExists(spellIndexDirectory)) {
                 this.lastRefresh = System.currentTimeMillis();
             }
-            this.spellChecker = new SpellChecker(spellIndexDirectory);
+            this.spellChecker = new JahiaExtendedSpellChecker(spellIndexDirectory);
             refreshSpellChecker();
         }
 
@@ -229,18 +286,18 @@ public class CompositeSpellChecker
          * Checks a fulltext query statement and suggests a spell checked
          * version of the statement. If the spell checker thinks the spelling is
          * correct <code>null</code> is returned.
-         *
-         * @param statement the fulltext query statement.
+         * 
+         * @param statement
+         *            the fulltext query statement.
          * @return a suggestion or <code>null</code>.
          */
-        String suggest(String statement) throws IOException {
+        String suggest(String statement, String site, String language) throws IOException {
             // tokenize the statement (field name doesn't matter actually...)
-            List words = new ArrayList();
-            List tokens = new ArrayList();
+            List<String> words = new ArrayList<String>();
+            List<Token> tokens = new ArrayList<Token>();
             tokenize(statement, words, tokens);
 
-            String[] suggestions = check(
-                    (String[]) words.toArray(new String[words.size()]));
+            String[] suggestions = check((String[]) words.toArray(new String[words.size()]), site, language);
             if (suggestions != null) {
                 // replace words in statement in reverse order because length
                 // of statement will change
@@ -271,18 +328,20 @@ public class CompositeSpellChecker
 
         /**
          * Tokenizes the statement into words and tokens.
-         *
-         * @param statement the fulltext query statement.
-         * @param words     this list will be filled with the original words
-         *                  extracted from the statement.
-         * @param tokens    this list will be filled with the tokens parsed from
-         *                  the statement.
-         * @throws IOException if an error occurs while parsing the statement.
+         * 
+         * @param statement
+         *            the fulltext query statement.
+         * @param words
+         *            this list will be filled with the original words extracted
+         *            from the statement.
+         * @param tokens
+         *            this list will be filled with the tokens parsed from the
+         *            statement.
+         * @throws IOException
+         *             if an error occurs while parsing the statement.
          */
-        private void tokenize(String statement, List words, List tokens)
-                throws IOException {
-            TokenStream ts = handler.getTextAnalyzer().tokenStream(
-                    FieldNames.FULLTEXT, new StringReader(statement));
+        private void tokenize(String statement, List<String> words, List<Token> tokens) throws IOException {
+            TokenStream ts = handler.getTextAnalyzer().tokenStream(FieldNames.FULLTEXT, new StringReader(statement));
             try {
                 Token t;
                 while ((t = ts.next()) != null) {
@@ -294,8 +353,8 @@ public class CompositeSpellChecker
                         // very simple implementation: use termText with length
                         // closer to original word
                         Token current = (Token) tokens.get(tokens.size() - 1);
-                        if (Math.abs(origWord.length() - current.termText().length()) >
-                                Math.abs(origWord.length() - t.termText().length())) {
+                        if (Math.abs(origWord.length() - current.termText().length()) > Math.abs(origWord.length()
+                                - t.termText().length())) {
                             // replace current token and word
                             words.set(words.size() - 1, t.termText());
                             tokens.set(tokens.size() - 1, t);
@@ -310,14 +369,16 @@ public class CompositeSpellChecker
         /**
          * Checks the spelling of the passed <code>words</code> and returns a
          * suggestion.
-         *
-         * @param words the words to check.
+         * 
+         * @param words
+         *            the words to check.
          * @return a suggestion of correctly spelled <code>words</code> or
          *         <code>null</code> if this spell checker thinks
          *         <code>words</code> are spelled correctly.
-         * @throws IOException if an error occurs while spell checking.
+         * @throws IOException
+         *             if an error occurs while spell checking.
          */
-        private String[] check(String words[]) throws IOException {
+        private String[] check(String words[], String site, String language) throws IOException {
             refreshSpellChecker();
             boolean hasSuggestion = false;
             IndexReader reader = handler.getIndexReader();
@@ -326,8 +387,8 @@ public class CompositeSpellChecker
                     try {
                         String[] suggestion = new String[words.length];
                         for (int i = 0; i < words.length; i++) {
-                            String[] similar = spellChecker.suggestSimilar(words[i], 5, reader,
-                                    FieldNames.FULLTEXT, true);
+                            String[] similar = spellChecker.suggestSimilar(words[i], 5, reader, FieldNames.FULLTEXT,
+                                    true, site, language);
                             if (similar.length > 0) {
                                 suggestion[i] = similar[0];
                                 hasSuggestion = true;
@@ -336,7 +397,7 @@ public class CompositeSpellChecker
                             }
                         }
                         if (hasSuggestion) {
-                            log.debug("Successful after {} retries", new Integer(retries));
+                            logger.debug("Successful after {} retries " + retries);
                             return suggestion;
                         } else {
                             return null;
@@ -357,8 +418,8 @@ public class CompositeSpellChecker
 
         /**
          * Refreshes the underlying spell checker in a background thread.
-         * Synchronization is done on this <code>CompositeSpellChecker</code> instance.
-         * While the refresh takes place {@link #refreshing} is set to
+         * Synchronization is done on this <code>CompositeSpellChecker</code>
+         * instance. While the refresh takes place {@link #refreshing} is set to
          * <code>true</code>.
          */
         private void refreshSpellChecker() {
@@ -371,25 +432,68 @@ public class CompositeSpellChecker
                         Runnable refresh = new Runnable() {
                             public void run() {
                                 try {
-                                    IndexReader reader = handler.getIndexReader();
-                                    try {
-                                        long time = System.currentTimeMillis();
-                                        Dictionary dict = new LuceneDictionary(
-                                                reader, FieldNames.FULLTEXT);
-                                        log.debug("Starting spell checker index refresh");
-                                        spellChecker.indexDictionary(dict);
-                                        time = System.currentTimeMillis() - time;
-                                        time = time / 1000;
-                                        log.info("Spell checker index refreshed in: {} s.",
-                                                new Long(time));
-                                    } finally {
-                                        reader.close();
-                                        synchronized (InternalSpellChecker.this) {
-                                            refreshing = false;
+                                    Set<String> sites = JCRTemplate.getInstance().doExecuteWithSystemSession(
+                                            new JCRCallback<Set<String>>() {
+                                                public Set<String> doInJCR(JCRSessionWrapper session)
+                                                        throws RepositoryException {
+                                                    Set<String> sites = new HashSet<String>();
+                                                    if (session.nodeExists("/sites")) {
+                                                        Node sitesRoot = session.getNode("/sites");
+                                                        for (NodeIterator it = sitesRoot.getNodes(); it.hasNext();) {
+                                                            Node child = (Node) it.next();
+                                                            if (child.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+                                                                sites.add(child.getName());
+                                                            }
+                                                        }
+                                                    }
+                                                    return sites;
+                                                }
+                                            });
+
+                                    if (!sites.isEmpty()) {
+                                        IndexReader reader = handler.getIndexReader();
+                                        try {
+
+                                            long time = System.currentTimeMillis();
+                                            logger.debug("Starting spell checker index refresh");
+                                            for (String site : sites) {
+                                                for (String language : JahiaSitesBaseService.getInstance()
+                                                        .getSiteByKey(site).getLanguages()) {
+                                                    StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
+                                                    if (site != null) {
+                                                        fullTextName.append("-").append(site);
+                                                    }
+                                                    // add language independend
+                                                    // fulltext values first
+                                                    spellChecker.indexDictionary(new LuceneDictionary(reader,
+                                                            fullTextName.toString()), 300, 10, site, language);
+
+                                                    // add language dependend
+                                                    // fulltext values
+                                                    if (language != null) {
+                                                        fullTextName.append("-").append(language);
+                                                    }
+                                                    spellChecker.indexDictionary(new LuceneDictionary(reader,
+                                                            fullTextName.toString()), 300, 10, site, language);
+                                                }
+                                            }
+                                            time = System.currentTimeMillis() - time;
+                                            time = time / 1000;
+                                            logger.info("Spell checker index refreshed in: {} s." + time);
+                                        } finally {
+                                            reader.close();
                                         }
                                     }
+                                } catch (RepositoryException e) {
+                                    logger.warn("Error creating spellcheck index", e);
+                                } catch (JahiaException e) {
+                                    logger.warn("Error creating spellcheck index", e);
                                 } catch (IOException e) {
                                     // ignore
+                                } finally {
+                                    synchronized (InternalSpellChecker.this) {
+                                        refreshing = false;
+                                    }
                                 }
                             }
                         };

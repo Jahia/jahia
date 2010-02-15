@@ -38,7 +38,6 @@ public class MoveAction implements org.jahia.bin.Action {
     }
 
     public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws Exception {
-        name = req.getParameter("name");
         String sourcePath = req.getParameter("source");
         String targetPath = req.getParameter("target");
         String action = req.getParameter("action");
@@ -48,9 +47,6 @@ public class MoveAction implements org.jahia.bin.Action {
         }
         else if ("moveAfter".equals(action)) {
             contentManager.moveAtEnd(sourcePath,targetPath, jcrSessionWrapper);
-        }
-        else if ("delete".equals(action)) {
-            contentManager.deletePaths(Arrays.asList(sourcePath),jcrSessionWrapper.getUser(), jcrSessionWrapper);
         }
     }
 }

@@ -38,12 +38,8 @@ public class DeleteAction implements org.jahia.bin.Action {
     }
 
     public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws Exception {
-        name = req.getParameter("name");
         String sourcePath = req.getParameter("source");
-        String action = req.getParameter("action");
         JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
-        if ("delete".equals(action)) {
-            contentManager.deletePaths(Arrays.asList(sourcePath),jcrSessionWrapper.getUser(), jcrSessionWrapper);
-        }
+        contentManager.deletePaths(Arrays.asList(sourcePath),jcrSessionWrapper.getUser(), jcrSessionWrapper);
     }
 }

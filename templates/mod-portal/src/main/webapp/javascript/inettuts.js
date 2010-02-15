@@ -62,7 +62,6 @@ var iNettuts = {
                         });
                         var data = {};
                         data["action"] = "delete";
-                        data["name"] = "deleteNode";
                         data["source"] = this.parentNode.parentNode.id;
                         $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".delete.do", data, function(result) {
                                     alert("node is deleted");
@@ -205,7 +204,6 @@ var iNettuts = {
                     data["target"] = str;
                     data["action"] = "moveAfter";
                 }
-                data["name"]="moveNode";
                 $.post(this.baseURI.substr(0,this.baseURI.lastIndexOf("."))+".move.do", data, function(result) {
                     alert("node is moved");
                 }, "json");

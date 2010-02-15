@@ -4,10 +4,8 @@
 ******************************************************************************/
 
 #bodywrapper .boxteaser {
-
 	position: relative;
 	height:1%;
-	background-color:#fff;
 	background:#fff url(img/boxteaser-bg.png) no-repeat top right;
 	margin-bottom:10px;
 	float:left;

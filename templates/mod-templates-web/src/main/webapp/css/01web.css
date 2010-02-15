@@ -1384,7 +1384,7 @@ background-color:#eaeaea
 	padding:0;
 	
 }
-table,th, td
+#bodywrapper table,#bodywrapper th,#bodywrapper td
 {
 border: 1px solid #ccc;
 }

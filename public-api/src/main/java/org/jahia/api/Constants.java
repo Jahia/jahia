@@ -148,6 +148,8 @@ public class Constants {
     
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
     
+    public static final String JAHIAMIX_VIRTUALSITES_FOLDER = "jmix:virtualsitesFolder";    
+    
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
@@ -201,7 +203,6 @@ public class Constants {
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
 
-    public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";
     public static final String JAHIANT_MEMBER = "jnt:member";

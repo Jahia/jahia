@@ -643,7 +643,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (parentDir == null) {
                 return null;
             }
-            if (Constants.JAHIANT_VIRTUALSITES_FOLDER.equals(parentDir.getPrimaryNodeTypeName())) {
+            if (parentDir.isNodeType(Constants.JAHIAMIX_VIRTUALSITES_FOLDER)) {
                 dir = parentDir.getNode(site.getSiteKey());
             } else {
                 try {

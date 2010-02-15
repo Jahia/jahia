@@ -189,7 +189,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 }
                 values.add(getSession().getValueFactory().createValue(v));
                 sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
-                sourceNode.remove();
+                sourceNode.removeShare();
             } else {
                 if (sessionMove) {
                     session.getProviderSession(provider).move(source, dest);

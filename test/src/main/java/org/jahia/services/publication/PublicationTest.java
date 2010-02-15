@@ -720,7 +720,7 @@ public class PublicationTest extends TestCase {
 
         liveContentList1Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         JCRNodeWrapper liveContentList2Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList2");
-        testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text2", "contentList1_text3");
+        testChildOrdering(liveContentList1Node, "contentList1_text0", "contentList1_text1", "contentList1_text2");
         testChildOrdering(liveContentList2Node, "shared_node_list2", "contentList2_text0", "contentList2_text1");
         testNodeInLive(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "Shared Text node 0 was not touched, it should be available in live work space.");
 

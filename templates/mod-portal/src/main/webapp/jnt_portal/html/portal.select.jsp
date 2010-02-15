@@ -14,6 +14,15 @@
             alert("widget has been added to your portal page");
         }, "json");
     }
+    function addRSSWidget() {
+        var data = {};
+        data["nodeType"] = "jnt:rss";
+        data["url"] = $("#feedUrl").val();
+        data["nbEntries"] = $("#nbFeeds").val();
+        $.post("${url.base}${currentNode.path}/column1/*", data, function(result) {
+            alert("rss widget has been added to your portal page");
+        }, "json");
+    }
 </script>
 <ul>
     <c:forEach items="${widgets.children}" var="node" varStatus="status">
@@ -24,4 +33,13 @@
             </div>
         </li>
     </c:forEach>
+    <li>
+        <form action="" method="post">
+            <label>Rss feed URL :</label>
+            <input type="text" name="feedUrl" id="feedUrl" maxlength="256"/>
+            <label>Number of feeds :</label>
+            <input type="text" name="nbFeeds" id="nbFeeds" maxlength="2" value="5"/>
+        </form>
+        <button name="addRss" type="button" value="Add Rss" onclick="addRSSWidget()">Add Rss Widget</button>
+    </li>
 </ul>

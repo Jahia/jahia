@@ -47,6 +47,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 
@@ -55,10 +56,8 @@
 <c:set var="value" value="${functions:default(param[valueParamName], value)}"/>
 <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
     <c:set var="org.apache.jsp.tag.web.search.dateTag.included" value="true" scope="request"/>
-    <script type="text/javascript">
-        /* <![CDATA[ */
-        function searchDateTypeToggle(dateType) {
-            var range = dateType.nextSibling;
+	<template:addResources type="inlineJavaScript">
+        function searchDateTypeToggle(dateType, range) {
             if (dateType.value == 'range' && range.style.display != 'none' || dateType.value != 'range' && range.style.display == 'none') {
                 return;
             }
@@ -69,11 +68,11 @@
                 }
             }
         }
-        /* ]]> */
-    </script>
+    </template:addResources>
 </c:if>
 <c:if test="${display}">
-    <select name="${valueParamName}" onchange="searchDateTypeToggle(this);">
+    <c:set var="rangeId" value="${functions:nextLongIdentifier()}"/>
+    <select name="${valueParamName}" onchange="searchDateTypeToggle(this, document.getElementById('range-${rangeId}'));">
         <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.anytime"/></option>
         <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.today"/></option>
         <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.lastWeek"/></option>
@@ -83,7 +82,7 @@
         <option value="last_six_months" ${value == 'last_six_months' ? 'selected="selected"' : ''}>
             <fmt:message key="searchForm.date.lastSixMonths"/></option>
         <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.range"/></option>
-    </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
+    </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange" id="range-${rangeId}">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
             <fmt:message key="searchForm.date.from"/>:&nbsp;
             <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>

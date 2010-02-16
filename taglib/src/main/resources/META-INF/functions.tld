@@ -221,6 +221,16 @@
     </function>
     
     <function>
+        <description>Returns the smaller of two long values.</description>
+        <name>nextLongIdentifier</name>
+        <function-class>org.apache.commons.id.IdentifierUtils</function-class>
+        <function-signature>long nextLongIdentifier()</function-signature>
+        <example>
+            &lt;input type="text" name="date" id="date-${functions:nextLongIdentifier()}"/&gt;
+        </example>
+    </function>
+    
+    <function>
         <description>
 			Checks if the current user is included in the specified logical role or
 			has all specified roles if multiple are specified (comma-separated)

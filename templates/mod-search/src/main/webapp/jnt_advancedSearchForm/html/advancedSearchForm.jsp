@@ -3,19 +3,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 <c:if test="${not empty title.string}">
 	<h3>${fn:escapeXml(title.string)}</h3>
 </c:if>
-<script type="text/javascript">
-/* <![CDATA[ */
+<template:addResources type="inlineJavaScript">
 function toggleSearchMode(field) {
-    document.getElementById('search-pages-criteria').style.display = field == 'siteContent' ? '' : 'none';
+	document.getElementById('search-pages-criteria').style.display = field == 'siteContent' ? '' : 'none';
     document.getElementById('search-documents-criteria').style.display = field == 'siteContent' ? 'none' : '';
 }
-/* ]]> */
-</script>
+</template:addResources>
 
 <div>
     <s:form name="advancedSearchForm" class="Form advancedSearchForm" method="get">

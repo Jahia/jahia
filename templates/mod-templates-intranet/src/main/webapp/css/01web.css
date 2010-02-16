@@ -1103,7 +1103,7 @@ AddItemForm
 	font-size:0.85em;
 	border:none;
 }
-#bodywrapper table,#bodywrapper  th,#bodywrapper td
+#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
 {
 border: 1px solid #fff;
 }

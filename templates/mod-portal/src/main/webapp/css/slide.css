@@ -108,7 +108,7 @@ vertical-align:middle
     position: absolute;   /*Panel will overlap  content */
     /*position: relative;*/   /*Panel will "push" the content down */
     top: 0;
-    width: 100%;
+    width: 940px;
     z-index: 9999;
     text-align: center;
     margin-left: auto;

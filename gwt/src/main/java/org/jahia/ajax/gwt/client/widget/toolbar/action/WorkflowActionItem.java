@@ -74,13 +74,9 @@ public class WorkflowActionItem extends BaseActionItem {
             menu.removeAll();
         }
         Button button = (Button) getTextToolitem();
-        if (isEnabled) {
-            button.setEnabled(true);
-            button.setMenu(menu);
-        } else {
-            button.setEnabled(false);
-            button.setMenu(null);
-        }
+
+        button.setEnabled(true);
+        button.setMenu(menu);
 
 
     }

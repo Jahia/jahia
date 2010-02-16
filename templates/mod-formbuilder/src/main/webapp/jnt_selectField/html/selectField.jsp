@@ -4,6 +4,8 @@
 
 <p class="field"> ${props.label}</br>
           <select name="${currentNode.name}">
-              <option>${props.option}</option>
+              <c:forTokens items="${props.option}" delims="," var="option">
+                <option>${option}</option>
+              </c:forTokens>
           </select>
 </p>

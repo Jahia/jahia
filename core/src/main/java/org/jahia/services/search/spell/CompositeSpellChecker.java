@@ -42,7 +42,6 @@ import org.apache.jackrabbit.spi.commons.query.RelationQueryNode;
 import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
-import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -54,15 +53,13 @@ import org.apache.lucene.analysis.Token;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.services.sites.jcr.JCRSitesProvider;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -70,7 +67,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -78,7 +74,6 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
@@ -304,7 +299,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 StringBuffer sb = new StringBuffer(statement);
                 for (int i = suggestions.length - 1; i >= 0; i--) {
                     Token t = (Token) tokens.get(i);
-                    // only replace if word acutally changed
+                    // only replace if word actually changed
                     if (!t.termText().equalsIgnoreCase(suggestions[i])) {
                         sb.replace(t.startOffset(), t.endOffset(), suggestions[i]);
                     }
@@ -431,6 +426,14 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                         refreshing = true;
                         Runnable refresh = new Runnable() {
                             public void run() {
+                                while (!SpringContextSingleton.getInstance().isInitialized()) {
+                                    // wait until services are started
+                                    try {
+                                        Thread.sleep(5000);
+                                    } catch (InterruptedException ex) {
+                                        // do nothing
+                                    }
+                                }
                                 try {
                                     Set<String> sites = JCRTemplate.getInstance().doExecuteWithSystemSession(
                                             new JCRCallback<Set<String>>() {

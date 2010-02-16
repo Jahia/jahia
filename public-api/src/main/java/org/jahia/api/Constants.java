@@ -197,6 +197,7 @@ public class Constants {
     public static final String NODE = "j:node";    
     public static final String ALT = "j:alt";
     public static final String TARGET = "j:target";
+    public static final String LOCKTOKEN = "j:locktoken";
 
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";

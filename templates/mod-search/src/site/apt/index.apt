@@ -11,3 +11,7 @@ Jahia Search Module
   * Building custom search templates
 
     A "How To" for {{{./forms.html} developing custom search forms}} and displaying search results using Jahia Search JSP Tag Library.
+    
+  * Advanced features
+
+    Description of {{{./advanced.html} advanced search features}} provided by this module.    

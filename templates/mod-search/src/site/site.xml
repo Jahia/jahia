@@ -38,6 +38,9 @@ under the License.
                 <item name="Advanced document search with metadata" href="./forms.html#document"/>
                 <item name="Displaying search results" href="./forms.html#results"/>
             </item>
+            <item name="Advanced search featues" href="./advanced.html">
+                <item name="Did you mean" href="./advanced.html#mean"/>
+            </item>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

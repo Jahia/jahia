@@ -45,6 +45,7 @@ Search components
   
 [./images/searchResults.png]
 
+  For enabling additional features in search results, like {{{./advanced.html#mean} "Did you mean"}} kind of searches, see {{{./advanced.html} Advanced search features}} section.
 
   Corresponding template: <<</templates/search/jnt_searchResults/html/searchResults.jsp>>>
   

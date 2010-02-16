@@ -1,0 +1,28 @@
+Advanced search features
+
+  This module provides support for the following features:
+
+  * {{{mean} Did you mean}} - spell checker based search suggestion functionality.
+
+* Did you {mean}
+
+  The {{{./components.html#results} search results}} component allows enabling the so called "Did you mean" kind of search.
+  In this case an eventual typing mistake can be automatically corrected by the search engine based on the language-dependent spell checker dictionary, built for the current virtual site.
+  
+  Auto-suggestion feature can be activated and configured in the edit engine for the search results component as in the following screenshot: 
+  Following parameters are available:
+  
+  * <Allow suggestions (Did you mean)> - enables/disables auto-suggestion based on the spelling correction. Enabled by default.
+
+  * <Minimum hit count to start suggesting> - the number of hit count for the search query to perform the suggestion. Default value is 2.
+
+  * <Number of suggested hits shown> - how many hits for the corrected query we will show? Defaults to 2.
+
+  []
+  
+[./images/autoSuggest.png]
+  
+  Now, when searching for a term with a spelling mistake the search engine tries to find the best suggestion
+  and display the "Did you mean" term with a link to refine the search:
+  
+[./images/suggestions.png]

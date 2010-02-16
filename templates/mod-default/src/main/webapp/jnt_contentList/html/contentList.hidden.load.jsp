@@ -19,6 +19,6 @@
   <c:set value="${sortedChildren.nodes}" var="currentList" scope="request"/>  
 </c:when>
 <c:otherwise>
-  <c:set value="${currentNode.editableChildren}" var="currentList" scope="request"/>
+  <c:set value="${currentNode.children}" var="currentList" scope="request"/>
 </c:otherwise>
 </c:choose>

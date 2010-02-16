@@ -61,7 +61,7 @@
         </c:if>
     </c:forEach>
     <c:if test="${results.nodes.size == 0 && empty param.jobsSearchKeyword}">
-        <c:forEach items="${currentNode.editableChildren}" var="job">
+        <c:forEach items="${currentNode.children}" var="job">
             <template:module node="${job}" template="list" editable="true"/>
         </c:forEach>
     </c:if>

@@ -23,3 +23,6 @@
         </c:if>
     </template:module>
 </c:forEach>
+<c:if test="${editable and renderContext.editMode}">
+    <template:module path="*"/>
+</c:if>

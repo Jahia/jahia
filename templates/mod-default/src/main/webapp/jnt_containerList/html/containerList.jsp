@@ -3,8 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<c:forEach items="${currentNode.editableChildren}" var="subchild">
+<c:forEach items="${currentNode.children}" var="subchild">
 <p>
     <template:module node="${subchild}" template="${subNodesTemplate}" />
 </p>
 </c:forEach>
+<c:if test="${renderContext.editMode}">
+    <p>
+        <template:module path="*" />
+    </p>
+</c:if>

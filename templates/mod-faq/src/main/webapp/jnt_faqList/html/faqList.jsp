@@ -7,16 +7,22 @@
 
 <div class="summary faqSummary">
     <ol>
-        <c:forEach items="${currentNode.editableChildren}" var="subchild">
+        <c:forEach items="${currentNode.children}" var="subchild">
             <li><template:module node="${subchild}" template="summary" /></li>
         </c:forEach>
     </ol>
+    <c:if test="${renderContext.editMode}">
+        <li><template:module path="*" /></li>
+    </c:if>
 </div>
 
 <div class="faqList">
     <ol>
-        <c:forEach items="${currentNode.editableChildren}" var="subchild">
+        <c:forEach items="${currentNode.children}" var="subchild">
             <li><template:module node="${subchild}"/></li>
         </c:forEach>
+        <c:if test="${renderContext.editMode}">
+            <li><template:module path="*" /></li>
+        </c:if>
     </ol>
 </div>

@@ -11,8 +11,8 @@
         <template:module node="${subchild}" editable="true"/>
     </c:forEach>
 </c:if>
-<c:if test="${currentNode.nodes.size <= 0}">
-    <c:forEach items="${currentNode.editableChildren}" var="subchild">
-        <template:module node="${subchild}" editable="true"/>
-    </c:forEach>
+<c:if test="${renderContext.editMode}">
+    <c:if test="${currentNode.nodes.size <= 0}">
+        <template:module path="*" />
+    </c:if>
 </c:if>

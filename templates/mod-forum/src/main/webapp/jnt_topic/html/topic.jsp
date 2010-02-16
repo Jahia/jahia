@@ -42,12 +42,10 @@
 
 
             <ul class="forum-list forums">
-                <c:forEach items="${currentNode.editableChildren}" var="thread" varStatus="status">
-                    <c:if test="${not status.last and not renderContext.editMode}">
-                        <li class="row">
-                            <template:module node="${thread}" template="summary"/>
-                        </li>
-                    </c:if>
+                <c:forEach items="${currentNode.children}" var="thread" varStatus="status">
+                    <li class="row">
+                        <template:module node="${thread}" template="summary"/>
+                    </li>
                 </c:forEach>
             </ul>
             <div class="clear"></div>

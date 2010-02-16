@@ -12,9 +12,12 @@
 <div class="intro">
     ${currentNode.properties.intro.string}
 </div>
-<c:forEach items="${currentNode.editableChildren}" var="paragraph">
+<c:forEach items="${currentNode.children}" var="paragraph">
     <template:module node="${currentNode.properties.paragraph}" template="default"/>
 </c:forEach>
+<c:if test="${renderContext.editMode}">
+    <template:module path="*"/>
+</c:if>
 <div class="tagthisarticle">
 	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
 	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>

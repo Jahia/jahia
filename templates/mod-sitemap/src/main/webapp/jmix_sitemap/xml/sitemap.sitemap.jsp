@@ -17,7 +17,9 @@
     <c:set var="serverUrl" value="${pageContext.request.scheme}://${pageContext.request.serverName}"/>
 </c:if>
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ">
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
         <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModif"/>
         <url>

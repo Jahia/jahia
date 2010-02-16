@@ -9,6 +9,143 @@
 /*fix jahia-gxt , with:5000px ---> with:100%*/
 ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
+/** styles added for list module in order to make them as nice as jahia6 **/
+
+.x-panel-header-listmodule {
+    background:transparent url(../images/jahiapanel.gif) repeat-x scroll left top !important;
+    color: rgb(64, 150, 238) !important;
+    font-size: 9px;
+    font-weight: normal;
+    border-bottom: 1px solid rgb(183, 203, 216);
+    border-right: 1px solid rgb(183, 203, 216);
+    height: 16px !important;
+    line-height:16px;
+	padding: 2px 2px 0 2px;
+	vertical-align: middle;
+}
+
+.x-panel-header-areamodule {
+    background:transparent url(../images/jahiapanel.gif) repeat-x scroll left top !important;
+    color: #00cc00 !important;
+    font-size: 9px;
+    font-weight: normal;
+    border-bottom: 1px solid rgb(183, 203, 216);
+    border-right: 1px solid rgb(183, 203, 216);
+    height: 16px !important;
+    line-height:16px;
+	padding: 2px 2px 0 2px;
+	vertical-align: middle;
+}
+
+.selection-top-list {
+    border-top: 1px solid rgb(12, 150, 243);
+}
+.selection-bottom-list {
+    border-bottom: 1px solid rgb(12, 150, 243);
+}
+.selection-left-list {
+    border-left: 1px solid rgb(12, 150, 243);
+}
+.selection-right-list {
+    border-right: 1px solid rgb(12, 150, 243);
+}
+.selection-top-simple {
+    border-top: 1px solid red;
+}
+.selection-bottom-simple {
+    border-bottom: 1px solid red;
+}
+.selection-left-simple {
+    border-left: 1px solid red;
+}
+.selection-right-simple {
+    border-right: 1px solid red;
+}
+.selection-top-area {
+    border-top: 1px solid rgb(0,250,0);
+}
+.selection-bottom-area {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.selection-left-area {
+    border-left: 1px solid rgb(0,250,0);
+}
+.selection-right-area {
+    border-right: 1px solid rgb(0,250,0);
+}
+.hover-top-list {
+    border-top: 1px dashed rgb(12, 150, 243);
+}
+.hover-bottom-list {
+    border-bottom: 1px dashed rgb(12, 150, 243);
+}
+.hover-left-list {
+    border-left: 1px dashed rgb(12, 150, 243);
+}
+.hover-right-list {
+    border-right: 1px dashed rgb(12, 150, 243);
+}
+.hover-top-simple {
+    border-top: 1px dashed red;
+}
+.hover-bottom-simple {
+    border-bottom: 1px dashed red;
+}
+.hover-left-simple {
+    border-left: 1px dashed red;
+}
+.hover-right-simple {
+    border-right: 1px dashed red;
+}
+.hover-top-area {
+    border-top: 1px solid rgb(0,250,0);
+}
+.hover-bottom-area {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.hover-left-area {
+    border-left: 1px solid rgb(0,250,0);
+}
+.hover-right-area {
+    border-right: 1px solid rgb(0,250,0);
+}
+.hover-top-list-secondary {
+    border-top: 1px dashed rgb(183, 203, 216);
+}
+.hover-bottom-list-secondary {
+    border-bottom: 1px dashed rgb(183, 203, 216);
+}
+.hover-left-list-secondary {
+    border-left: 1px dashed rgb(183, 203, 216);
+}
+.hover-right-list-secondary {
+    border-right: 1px dashed rgb(183, 203, 216);
+}
+.hover-top-simple-secondary {
+    border-top: 1px dashed rgb(183, 203, 216);
+}
+.hover-bottom-simple-secondary {
+    border-bottom: 1px dashed rgb(183, 203, 216);
+}
+.hover-left-simple-secondary {
+    border-left: 1px dashed rgb(183, 203, 216);
+}
+.hover-right-simple-secondary {
+    border-right: 1px dashed rgb(183, 203, 216);
+}
+.hover-top-area-secondary {
+    border-top: 1px solid rgb(0,250,0);
+}
+.hover-bottom-area-secondary {
+    border-bottom: 1px solid rgb(0,250,0);
+}
+.hover-left-area-secondary {
+    border-left: 1px solid rgb(0,250,0);
+}
+.hover-right-area-secondary {
+    border-right: 1px solid rgb(0,250,0);
+}
+
 /****************************************************************************/
 
 .x-panel {
@@ -694,164 +831,3 @@ margin:5px 10px;
 fieldset.x-panel-collapsed {
 background-color:#E1E9EE;
 }
-/** styles added for list module in order to make them as nice as jahia6 **/
-
-.x-panel-header-listmodule {
-    background : #333333 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom2.png) top left;
-	padding: 4px;
-    color: #fff !important;
-	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
-	margin-bottom:2px;
-	display:inline;
-}
-
-.x-panel-header-areamodule {
-	padding: 4px;
-    color: #333 !important;
-	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
-	margin-bottom:2px;
-	display:inline;
-}
-
-.selection-top-list {
-    border-top: 1px solid #cc0033;
-}
-.selection-bottom-list {
-    border-bottom: 1px solid #cc0033;
-}
-.selection-left-list {
-    border-left: 1px solid #cc0033;
-}
-.selection-right-list {
-    border-right: 1px solid #cc0033;
-}
-
-
-
-.selection-top-simple {
-    border-top: 1px solid #cc0033;
-}
-.selection-bottom-simple {
-    border-bottom: 1px solid #cc0033;
-}
-.selection-left-simple {
-    border-left: 1px solid #cc0033;
-}
-.selection-right-simple {
-    border-right: 1px solid #cc0033;
-}
-
-
-.selection-top-area {
-    border-top: 1px solid #cc0033;
-}
-.selection-bottom-area {
-    border-bottom: 1px solid #cc0033;
-}
-.selection-left-area {
-    border-left: 1px solid #cc0033;
-}
-.selection-right-area {
-    border-right: 1px solid #cc0033;
-}
-
-
-.hover-top-list {
-    border-top: 1px solid #333;
-}
-.hover-bottom-list {
-    border-bottom: 1px solid #333;
-}
-.hover-left-list {
-    border-left: 1px solid #333;
-}
-.hover-right-list {
-    border-right: 1px solid #333;
-}
-
-.hover-top-simple {
-    border-top: 1px solid #333;
-}
-.hover-bottom-simple {
-    border-bottom: 1px solid #333;
-}
-.hover-left-simple {
-    border-left: 1px solid #333;
-}
-.hover-right-simple {
-    border-right: 1px solid #333;
-}
-
-
-.hover-top-area {
-    border-top: 1px solid #333;
-}
-.hover-bottom-area {
-    border-bottom: 1px solid #333;
-}
-.hover-left-area {
-    border-left: 1px solid #333;
-}
-.hover-right-area {
-    border-right: 1px solid #333;
-}
-
-
-.hover-top-list-secondary {
-    border-top: 1px solid #999;
-}
-.hover-bottom-list-secondary {
-    border-bottom: 1px solid #999;
-}
-.hover-left-list-secondary {
-    border-left: 1px solid #999;
-}
-.hover-right-list-secondary {
-    border-right: 1px solid #999;
-}
-
-
-.hover-top-simple-secondary {
-    border-top: 1px solid #999;
-}
-.hover-bottom-simple-secondary {
-    border-bottom: 1px solid #999;
-}
-.hover-left-simple-secondary {
-    border-left: 1px solid #999;
-}
-.hover-right-simple-secondary {
-    border-right: 1px solid #999;
-}
-
-
-.hover-top-area-secondary {
-    border-top: 1px solid #999;
-}
-.hover-bottom-area-secondary {
-    border-bottom: 1px solid #999;
-}
-.hover-left-area-secondary {
-    border-left: 1px solid #999;
-}
-.hover-right-area-secondary {
-    border-right: 1px solid #999;
-}
-
-/****************************************************************************/

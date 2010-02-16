@@ -370,7 +370,7 @@
 <% } %>
 <tr>
 	<td colspan="2">
-		<div id="gwtroleprincipal"  principalKey="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
+		<div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>"  principalKey="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
 	</td>
 </tr>
 

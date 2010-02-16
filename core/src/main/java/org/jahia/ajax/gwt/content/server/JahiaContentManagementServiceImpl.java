@@ -957,8 +957,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      * @param role
      */
-    public void grantRoleToUser(GWTJahiaRole role, String principalKey) {
-        rolesPermissions.grantRoleToUser(role,principalKey);
+    public void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey) throws GWTJahiaServiceException {
+        rolesPermissions.grantRoleToUser(role,isGroup,principalKey,retrieveCurrentSession());
     }
 
     /**

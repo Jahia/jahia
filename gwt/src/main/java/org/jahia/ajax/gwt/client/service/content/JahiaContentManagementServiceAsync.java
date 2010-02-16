@@ -201,7 +201,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
 
-    void grantRoleToUser(GWTJahiaRole role, String principalKey, AsyncCallback async);
+    void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey, AsyncCallback async);
 
     void removeRoleToPrincipal(GWTJahiaRole role, String principalKey, AsyncCallback async);
 

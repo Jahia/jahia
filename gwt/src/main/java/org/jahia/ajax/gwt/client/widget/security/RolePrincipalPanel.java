@@ -35,7 +35,7 @@ public class RolePrincipalPanel extends LayoutContainer {
     private boolean isGroup;
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
-    public RolePrincipalPanel(String siteKey,boolean isGroup,String principalKey) {
+    public RolePrincipalPanel(String siteKey, boolean isGroup, String principalKey) {
         this.siteKey = siteKey != null && siteKey.length() > 0 ? siteKey : null;
         this.isGroup = isGroup;
         this.principalKey = principalKey;
@@ -48,7 +48,8 @@ public class RolePrincipalPanel extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         //setLayout(new FitLayout());
-        JahiaContentManagementService.App.getInstance().getRoles(siteKey,isGroup,principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
+        Log.debug("Get role fort site: " + siteKey);
+        JahiaContentManagementService.App.getInstance().getRoles(siteKey, isGroup, principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
             public void onSuccess(List<GWTJahiaRole> gwtRoles) {
                 roles = gwtRoles;
                 updateUI();
@@ -131,6 +132,11 @@ public class RolePrincipalPanel extends LayoutContainer {
         column.setWidth(550);
         configs.add(column);
 
+        column = new ColumnConfig();
+        column.setId("site");
+        column.setHeader(" ");
+        column.setWidth(50);
+        configs.add(column);
 
         final int index = configs.size();
         final GridCellRenderer<GWTJahiaRole> rolePermissionRenderer = new GridCellRenderer<GWTJahiaRole>() {
@@ -139,28 +145,29 @@ public class RolePrincipalPanel extends LayoutContainer {
 
                 final CheckBox checkbox = new CheckBox();
                 final GWTJahiaRole role = roles.get(colIndex - index);
-                checkbox.setValue(true);
+                Log.debug("*********** "+role.get("grant"));
+                checkbox.setValue(role.get("grant") != null);
                 checkbox.setToolTip(currentRole.getLabel());
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
-                            contentService.grantRoleToUser(role,principalKey, new AsyncCallback(){
+                            contentService.grantRoleToUser(role,isGroup, principalKey, new AsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role granted");
                                 }
 
                                 public void onFailure(Throwable throwable) {
-                                    Log.error("Error while granting role to user",throwable);
+                                    Log.error("Error while granting role to user", throwable);
                                 }
                             });
                         } else {
-                            contentService.removeRoleToPrincipal(role,principalKey, new AsyncCallback(){
+                            contentService.removeRoleToPrincipal(role, principalKey, new AsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role granted");
                                 }
 
                                 public void onFailure(Throwable throwable) {
-                                    Log.error("Error while removing role to user",throwable);
+                                    Log.error("Error while removing role to user", throwable);
                                 }
                             });
                         }

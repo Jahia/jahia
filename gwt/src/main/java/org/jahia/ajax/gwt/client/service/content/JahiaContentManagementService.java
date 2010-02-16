@@ -210,7 +210,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
 
-    public void grantRoleToUser(GWTJahiaRole role, String principalKey) throws GWTJahiaServiceException;
+    public void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey) throws GWTJahiaServiceException;
 
     public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) throws GWTJahiaServiceException;
 

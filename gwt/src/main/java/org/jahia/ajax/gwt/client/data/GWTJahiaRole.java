@@ -31,6 +31,14 @@ public class GWTJahiaRole extends BaseModel {
         set("id",id);
     }
 
+    public String getSite() {
+        return get("site");
+    }
+
+    public void setSite(String site) {
+        set("site",site);
+    }
+
     public String getLabel() {
         return get("label");
     }

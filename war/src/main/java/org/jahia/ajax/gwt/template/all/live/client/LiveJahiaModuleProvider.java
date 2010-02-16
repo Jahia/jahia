@@ -32,8 +32,6 @@
 package org.jahia.ajax.gwt.template.all.live.client;
 
 import org.jahia.ajax.gwt.client.core.JahiaModule;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.client.module.LayoutManagerJahiaModule;
 
 /**
  * User: jahia
@@ -42,11 +40,7 @@ import org.jahia.ajax.gwt.client.module.LayoutManagerJahiaModule;
  */
 public class LiveJahiaModuleProvider extends org.jahia.ajax.gwt.template.common.live.client.LiveJahiaModuleProvider {
     public JahiaModule getJahiaModuleByJahiaType(String jahiaType) {
-        if (jahiaType != null) {
-            if (jahiaType.equalsIgnoreCase(JahiaType.LAYOUT_MANAGER)) {
-                return new LayoutManagerJahiaModule();
-            } 
-        }
+        
         return super.getJahiaModuleByJahiaType(jahiaType);
     }
 }

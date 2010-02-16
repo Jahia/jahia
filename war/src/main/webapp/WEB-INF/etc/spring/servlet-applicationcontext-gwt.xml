@@ -11,9 +11,7 @@
                 /**/base.gwt=baseServiceController
                 /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
-                /**/layoutmanager.gwt=layoutServiceController
                 /**/contentManager.gwt=contentManagerServiceController
-                /**/opensearch.gwt=openSearchServiceController
                 /**/pdisplay.gwt=pdisplayServiceController
                 /**/sessionManager.gwt=sessionManagerServiceController
                 /**/subscription.gwt=subscriptionServiceController
@@ -47,14 +45,6 @@
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
     </bean>
 
-    <bean name="layoutServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtJahiaLayoutService"/>
-    </bean>
-    <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype">
-        <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="navigation" ref="NavigationHelper"/>
-    </bean>
-
     <bean name="contentManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentManagenentService"/>
     </bean>
@@ -78,11 +68,6 @@
 
     </bean>
 
-    <bean name="openSearchServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtOpenSearchService"/>
-    </bean>
-    <bean name="gwtOpenSearchService" class="org.jahia.ajax.gwt.templates.components.opensearch.server.JahiaOpenSearchServiceImpl" scope="prototype"/>
-    
     <bean name="pdisplayServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtProcessDisplayService"/>
     </bean>

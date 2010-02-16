@@ -54,7 +54,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
         final JspWriter out = pageContext.getOut();
         try {
             //define area
-            out.print("<div uuid='"+node.getUUID()+"' id='layoutManager' " + JahiaType.JAHIA_TYPE + "=\"" + JahiaType.LAYOUT_MANAGER + "\"");
+            out.print("<div uuid='"+node.getUUID()+"' id='layoutManager'\"");
             if (width != null) {
                 out.print(" jahia-layoutmanager-width='" + width + "'");
             }
@@ -63,55 +63,6 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             // begin box declaration
             out.print("<div id='layout'  style='display:none;'>\n");
 
-            // add resouces bundels
-            addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("label.user"));
-            addGwtDictionaryMessage("mw_mashups", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
-            addGwtDictionaryMessage("mw_select_portlet_def", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
-            addGwtDictionaryMessage("mw_ok", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.ok.label"));
-            addGwtDictionaryMessage("mw_params", getJahiaInternalResourceValue("label.parameters"));
-            addGwtDictionaryMessage("mw_edit_params", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.edit.label"));
-            addGwtDictionaryMessage("mw_prop_load_error", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.props.load.error.label"));
-            addGwtDictionaryMessage("mw_modes_permissions", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modesperm.label"));
-            addGwtDictionaryMessage("mw_modes_permissions_description", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modesperm.description.label"));
-            addGwtDictionaryMessage("mw_modes_adduser", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modes.adduser.label"));
-            addGwtDictionaryMessage("mw_modes_addgroup", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label"));
-            addGwtDictionaryMessage("mw_roles_adduser", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.adduser.label"));
-            addGwtDictionaryMessage("mw_roles_addgroup", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.addgroup.label"));
-            addGwtDictionaryMessage("mw_roles_perm", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.label"));
-            addGwtDictionaryMessage("mw_roles_perm_desc", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
-            addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("label.finish"));
-            addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
-            addGwtDictionaryMessage("mw_name",getJahiaInternalResourceValue("label.portletName"));
-            addGwtDictionaryMessage("mw_description",getJahiaInternalResourceValue("label.portletDescription"));
-            addGwtDictionaryMessage("mw_finish_description",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
-            addGwtDictionaryMessage("mw_no_role",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.any"));
-            addGwtDictionaryMessage("p_add_mashups", getJahiaInternalResourceValue("org.jahia.myportal.addMashup"));
-            addGwtDictionaryMessage("p_save_default", getJahiaInternalResourceValue("org.jahia.myportal.saveAsDefault"));
-            addGwtDictionaryMessage("p_confirm_save_default", getJahiaInternalResourceValue("org.jahia.myportal.saveAsDefault.confirm"));
-            addGwtDictionaryMessage("p_restore_default", getJahiaInternalResourceValue("org.jahia.myportal.restoreDefault"));
-            addGwtDictionaryMessage("p_restore_confirm", getJahiaInternalResourceValue("org.jahia.myportal.restoreDefault.confirm"));
-            addGwtDictionaryMessage("p_my_config", getJahiaInternalResourceValue("org.jahia.myportal.myconfig"));
-            addGwtDictionaryMessage("p_config_title", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.title"));
-            addGwtDictionaryMessage("p_number_columns", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.numberColumns"));
-            addGwtDictionaryMessage("p_portal_editable_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.editableLiveMode"));
-            addGwtDictionaryMessage("p_add_mashup_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.addMashupLiveMode"));
-            addGwtDictionaryMessage("p_save", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.save"));
-            addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("label.newMashup"));
-            addGwtDictionaryMessage("p_my_portal", getJahiaInternalResourceValue("org.jahia.myportal.myPortal"));
-            addGwtDictionaryMessage("p_mashup_added_myPortal", getJahiaInternalResourceValue("org.jahia.myportal.mashupAdded"));
-            addGwtDictionaryMessage("p_mashup_added", getJahiaInternalResourceValue("org.jahia.myportal.mashupAddedLabel"));
-            addGwtDictionaryMessage("p_add_mashup_to_portal", getJahiaInternalResourceValue("org.jahia.myportal.addToPortal"));
-            addGwtDictionaryMessage("p_delete_confirm", getJahiaInternalResourceValue("org.jahia.myportal.delete.confirm"));
-
-            addGwtDictionaryMessage("wizard_button_cancel", getJahiaInternalResourceValue("label.cancel"));
-            addGwtDictionaryMessage("wizard_button_finish", getJahiaInternalResourceValue("label.finish"));
-            addGwtDictionaryMessage("wizard_button_next", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.next"));
-            addGwtDictionaryMessage("wizard_button_prev", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.prev"));
-            addGwtDictionaryMessage("wizard_steps_of", getJahiaInternalResourceValue("label.of"));
-            addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("label.step"));
-            addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
-
-            addGwtDictionaryMessage("mw_title", getJahiaInternalResourceValue("label.newMashup"));
         } catch (Exception e) {
             logger.error(e, e);
         }

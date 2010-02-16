@@ -68,18 +68,6 @@ public class JahiaPreferencesQueryHelper {
         return convertToSQL(properties);
     }
 
-    public static String getLayoutmanagerSQL(int pid, String windowId) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:page", pid);
-        properties.put("j:windowId", windowId);
-        return convertToSQL(properties);
-    }
-
-    public static String getLayoutmanagerSQL(int pid) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:page", getPageUUID(pid));
-        return convertToSQL(properties);
-    }
 
     public static String getPortletSQL(String portletName, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();

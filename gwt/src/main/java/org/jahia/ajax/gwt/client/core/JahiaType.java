@@ -44,7 +44,6 @@ public class JahiaType {
     public final static String FORM = "form";
     public final static String INLINE_EDITING = "inlineediting";
     public final static String JAHIA_TYPE = "jahiatype";
-    public final static String LAYOUT_MANAGER = "layoutmanager";
     public final static String MEDIA_GALLERY = "mediaGallery";
     public final static String MY_SETTINGS = "mySettings";
     public final static String PORTLET_RENDER = "portletrender";

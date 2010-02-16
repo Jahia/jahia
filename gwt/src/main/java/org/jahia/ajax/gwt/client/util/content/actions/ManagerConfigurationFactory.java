@@ -121,6 +121,9 @@ public class ManagerConfigurationFactory {
 
         configuration.addTab(JCRClientUtils.ROLES_ACL);
         configuration.addTab(JCRClientUtils.MODES_ACL);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
 
         return configuration;
     }

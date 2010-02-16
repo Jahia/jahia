@@ -59,10 +59,7 @@ import org.jahia.services.webdav.UsageEntry;
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.*;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
@@ -1901,10 +1898,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getCorrespondingNodePath(String s) throws ItemNotFoundException, NoSuchWorkspaceException, AccessDeniedException, RepositoryException {
+        Session ses = provider.getCurrentUserSession(s);
         if (provider.getMountPoint().equals("/")) {
-            return objectNode.getCorrespondingNodePath(s);
+            return ses.getNodeByIdentifier(objectNode.getIdentifier()).getPath();
         } else {
-            return provider.getMountPoint() + objectNode.getCorrespondingNodePath(s);
+            return provider.getMountPoint() + ses.getNodeByIdentifier(objectNode.getIdentifier()).getPath();
         }
     }
 
@@ -2055,25 +2053,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return getParent().getApplicablePropertyDefinition(propertyName);
             }
         }
+
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
-        types.add(getPrimaryNodeType());
-        ExtendedNodeType[] mixin = getMixinNodeTypes();
-        for (int i = 0; i < mixin.length; i++) {
-            ExtendedNodeType mixinType = mixin[i];
-            types.add(mixinType);
-        }
-
-
-        if (objectNode.isNodeType("nt:frozenNode")) {
-            types.add(NodeTypeRegistry.getInstance().getNodeType(objectNode.getProperty("jcr:frozenPrimaryType").getString()));
-        }
-
-
-        for (ExtendedNodeType type : types) {
+        Iterator<ExtendedNodeType> iterator = getNodeTypesIterator();
+        while (iterator.hasNext()) {
+            ExtendedNodeType type = iterator.next();
             final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
             if (definitionMap.containsKey(propertyName)) {
                 return definitionMap.get(propertyName);
             }
+            types.add(type);
         }
         for (ExtendedNodeType type : types) {
             for (ExtendedPropertyDefinition epd : type.getUnstructuredPropertyDefinitions().values()) {
@@ -2084,6 +2073,55 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
     }
 
+    private Iterator<ExtendedNodeType> getNodeTypesIterator() {
+        return new Iterator<ExtendedNodeType>() {
+            int i = 0;
+            ExtendedNodeType next;
+            boolean fetched = false;
+            Iterator<ExtendedNodeType> mix = null;
+
+            public boolean hasNext() {
+                if (!fetched) {
+                    try {
+                        if (i == 0) {
+                            next = getPrimaryNodeType();
+                        } else if (i == 1 && objectNode.isNodeType("nt:frozenNode")) {
+                            next = NodeTypeRegistry.getInstance().getNodeType(objectNode.getProperty("jcr:frozenPrimaryType").getString());
+                        } else {
+                            if (mix == null) {
+                                mix = Arrays.asList(getMixinNodeTypes()).iterator();
+                            }
+                            if (mix.hasNext()) {
+                                next = mix.next();
+                            } else {
+                                next = null;
+                            }
+                        }
+                        i++;
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
+                    }
+                    fetched = true;
+                }
+                return (next != null);
+            }
+
+            public ExtendedNodeType next() {
+                if (!fetched) {
+                    hasNext();
+                }
+                if (next != null) {
+                    fetched = false;
+                    return next;
+                }
+                throw new NoSuchElementException();
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 
     /**
      * {@inheritDoc}

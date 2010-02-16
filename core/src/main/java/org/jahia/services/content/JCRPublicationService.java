@@ -797,8 +797,9 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
-        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-
+        // todo : performance problem on permission check
+//        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
+        info.setCanPublish(true);
         return info;
     }
 

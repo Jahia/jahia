@@ -36,16 +36,15 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
@@ -343,7 +342,7 @@ public class NavigationHelper {
                     userNodes.add(root);
                 }
             } else if (key.equals(JCRClientUtils.WEBSITE_REPOSITORY)) {
-                GWTJahiaNode root = getNode("/sites/" + site.getSiteKey() + "/files",currentUserSession);
+                GWTJahiaNode root = getNode("/sites/" + site.getSiteKey() + "/files", currentUserSession);
                 if (root != null) {
                     root.setDisplayName(site.getSiteKey());
                     userNodes.add(root);
@@ -519,7 +518,7 @@ public class NavigationHelper {
     /**
      * Return a node if existing exception otherwise
      *
-     * @param path      the path to test an dget the node if existing
+     * @param path               the path to test an dget the node if existing
      * @param currentUserSession
      * @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
@@ -591,7 +590,7 @@ public class NavigationHelper {
             while (references.hasNext()) {
                 JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
                 Node refNode = reference.getNode();
-                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(),refNode.getPath()));
+                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath()));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -629,15 +628,15 @@ public class NavigationHelper {
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, boolean versioned) {
-        List<String> inherited = new ArrayList<String>();
-        List<String> list = null;
+        List<String> inheritedTypes = new ArrayList<String>();
+        List<String> nodeTypes = null;
         try {
-            list = node.getNodeTypes();
-            for (String s : list) {
+            nodeTypes = node.getNodeTypes();
+            for (String s : nodeTypes) {
                 ExtendedNodeType[] inh = NodeTypeRegistry.getInstance().getNodeType(s).getSupertypes();
                 for (ExtendedNodeType extendedNodeType : inh) {
-                    if (!inherited.contains(extendedNodeType.getName())) {
-                        inherited.add(extendedNodeType.getName());
+                    if (!inheritedTypes.contains(extendedNodeType.getName())) {
+                        inheritedTypes.add(extendedNodeType.getName());
                     }
                 }
             }
@@ -677,39 +676,70 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
         }
 
-        if (node.isFile() || node.isPortlet()) {
-            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.getFileContent().getContentLength(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned(), node.getLanguage());
-        } else {
-            n = new GWTJahiaNode(uuid, node.getName(), description, node.getProvider().decodeInternalName(node.getPath()), node.getUrl(), node.getLastModifiedAsDate(), list, inherited, aclContext, node.getProvider().getKey(), node.isWriteable(), node.isWriteable(), node.isLockable(), node.isLocked(), node.getLockOwner(), node.isVersioned(), node.getLanguage());
+        n = new GWTJahiaNode();
+        n.setUUID(uuid);
+        n.setName(node.getName());
+        n.setDisplayName(node.getName());
+        n.setDescription(description);
+        n.setPath(node.getProvider().decodeInternalName(node.getPath()));
+        n.setUrl(node.getUrl());
+        n.setLastModified(node.getLastModifiedAsDate());
+        n.setNodeTypes(nodeTypes);
+        n.setInheritedNodeTypes(inheritedTypes);
+        n.setAclContext(aclContext);
+        n.setProviderKey(node.getProvider().getKey());
+        n.setWriteable(node.isWriteable());
+        n.setDeleteable(node.isWriteable());
+        n.setLockable(node.isLockable());
+        n.setExt("icon-dir");
+        n.setLocked(node.isLocked());
+        n.setLockOwner(node.getLockOwner());
+        n.setThumbnailsMap(new HashMap<String, String>());
+        n.setVersioned(versioned);
+        n.setLanguageCode(node.getLanguage());
 
-            n.setCollection(node.isCollection());
+        if (node.isFile()) {
+            n.setSize(node.getFileContent().getContentLength());
 
-            if (sessionFactory.getMountPoints().containsKey(node.getPath())) {
-                n.setDeleteable(false);
+        }
+        n.setFile(node.isFile());
+        n.setCollection(node.isCollection());
+
+        try {
+            List<Locale> locales = node.getLockedLocales();
+            for (Locale locale : locales) {
+                n.setLanguageLocked(locale.toString(), true);
             }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting locks", e);
+        }
 
-            boolean hasChildren = false;
-            boolean hasFolderChildren = false;
-            if (node instanceof JCRMountPointNode) {
-                hasChildren = true;
-                hasFolderChildren = true;
-            } else {
-                // TODO consider current node types, mime types and filters when checking for children
-                for (JCRNodeWrapper w : node.getChildren()) {
-                    try {
-                        hasChildren = true;
-                        if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                            hasFolderChildren = true;
-                            break;
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
+        if (sessionFactory.getMountPoints().containsKey(node.getPath())) {
+            n.setDeleteable(false);
+        }
+
+        boolean hasChildren = false;
+        boolean hasFolderChildren = false;
+        if (node instanceof JCRMountPointNode) {
+            hasChildren = true;
+            hasFolderChildren = true;
+        } else if (!node.isFile()) {
+            // TODO consider current node types, mime types and filters when checking for children
+            for (JCRNodeWrapper w : node.getChildren()) {
+                try {
+                    hasChildren = true;
+                    if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                        hasFolderChildren = true;
+                        break;
                     }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 }
             }
-            n.setHasChildren(hasChildren);
-            n.setHasFolderChildren(hasFolderChildren);
         }
+        n.setHasChildren(hasChildren);
+        n.setHasFolderChildren(hasFolderChildren);
+
         n.setLastModifiedBy(node.getModificationUser());
         n.setCreated(node.getCreationDateAsDate());
         n.setCreatedBy(node.getCreationUser());

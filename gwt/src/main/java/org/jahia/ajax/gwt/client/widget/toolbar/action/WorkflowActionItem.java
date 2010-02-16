@@ -41,7 +41,7 @@ public class WorkflowActionItem extends BaseActionItem {
             menu.removeAll();
             GWTJahiaWorkflowInfo info = node.getWorkflowInfo();
             List<GWTJahiaWorkflowDefinition> wfs = info.getPossibleWorkflows();
-            if (!node.isLocked() && node.isWriteable()) {
+            if (!node.isLanguageLocked(node.getLanguageCode()) && node.isWriteable()) {
                 for (final GWTJahiaWorkflowDefinition wf : wfs) {
                     isEnabled = true;
                     MenuItem item = new MenuItem("Start new : " + wf.getName());

@@ -115,7 +115,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
-import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.content.ContentPageKey;
 import org.jahia.engines.importexport.ExportEngine;
 import org.jahia.engines.login.Login_Engine;
@@ -124,7 +123,7 @@ import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
-import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
@@ -3231,7 +3230,7 @@ public class ProcessingContext {
      * @param aUser JahiaUser
      */
     public void setTheUser(final JahiaUser aUser) {
-        JcrSessionFilter.setCurrentUser(aUser);
+        JCRSessionFactory.getInstance().setCurrentUser(aUser);
         this.theUser = aUser;
     }
 

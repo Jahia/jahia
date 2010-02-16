@@ -93,8 +93,8 @@ public class JCRPublicationService extends JahiaService {
                     for (Value v : vs) {
                         try {
                             JCRNodeWrapper ref = start.getSession().getNodeByUUID(v.getString());
-                            if (!referencedNode.contains(ref.getPath())) {
-                                if (!ref.isNodeType("jnt:page")) {
+                            if (!referencedNode.contains(ref)) {
+                                if (!hasIndependantPublication(ref)) {
                                     referencedNode.add(ref);
                                 }
                             }
@@ -110,8 +110,8 @@ public class JCRPublicationService extends JahiaService {
                 } else {
                     try {
                         JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-                        if (!referencedNode.contains(ref.getPath())) {
-                            if (!ref.isNodeType("jnt:page")) {
+                        if (!referencedNode.contains(ref)) {
+                            if (!hasIndependantPublication(ref)) {
                                 referencedNode.add(ref);
                             }
                         }
@@ -144,7 +144,7 @@ public class JCRPublicationService extends JahiaService {
                                                     // currently it has to be set in definitions files
     }
 
-    public void lockForPublication(final String path, final String workspace, Set<String> languages, boolean allSubTree) throws RepositoryException {
+    public void lockForPublication(final String path, final String workspace, Set<String> languages, boolean system, boolean allSubTree) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
         JCRNodeWrapper n = session.getNode(path);
         ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
@@ -152,23 +152,34 @@ public class JCRPublicationService extends JahiaService {
         ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
         getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
         for (JCRNodeWrapper node : toLock) {
-            if (node.isLockable()) {
-                node.lockAsSystemAndStoreToken();
+            if (node.isLockable() && !node.isLocked()) {
+                node.lockAndStoreToken();
+            } else if (node.isLocked()) {
+                logger.warn("Node was already locked : "+node.getPath());
             }
+        }
+        for (JCRNodeWrapper reference : references) {
+            lockForPublication(reference.getPath(), workspace, languages, system, false);
         }
     }
     
-    public void unlockForPublication(final String path, final String workspace, Set<String> languages, boolean allSubTree) throws RepositoryException {
+    public void unlockForPublication(final String path, final String workspace, Set<String> languages, boolean system, boolean allSubTree) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
         JCRNodeWrapper n = session.getNode(path);
         ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
         ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
         ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
         getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
+        Collections.reverse(toLock);
         for (JCRNodeWrapper node : toLock) {
             if (node.isLocked()) {
                 node.forceUnlock();
+            } else {
+                logger.warn("Node was not locked : "+node.getPath());
             }
+        }
+        for (JCRNodeWrapper reference : references) {
+            unlockForPublication(reference.getPath(), workspace, languages, system, false);
         }
     }
 
@@ -380,8 +391,6 @@ public class JCRPublicationService extends JahiaService {
 
                 if (ni.hasNext()) {
                     while (ni.hasNext()) {
-                        logger.info("Merge conflict");
-                        // Conflict : node has been modified in live. Resolve conflict.
                         Node failed = ni.nextNode();
                         destinationVersionManager.checkout(failed.getPath());
 

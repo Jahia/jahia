@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -869,8 +868,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             switch (format) {
                 case XMLFormatDetectionHandler.JCR_DOCVIEW: {
-                    if (JcrSessionFilter.getCurrentUser() != null) {
-                        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, true,null);
+                    if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+                        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, true, null);
                         InputStream is = new FileInputStream(tempFile);
                         try {
                             session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);

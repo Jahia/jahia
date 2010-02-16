@@ -855,20 +855,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (i18NobjectNodes == null) {
             i18NobjectNodes = new HashMap<Locale, Node>();
         }
+        Node node;
         if (i18NobjectNodes.containsKey(locale)) {
-            Node node = i18NobjectNodes.get(locale);
-            if (node == null) {
-                throw new ItemNotFoundException(locale.toString());
+            node = i18NobjectNodes.get(locale);
+            if (node != null) {
+                return node;
             }
-            return node;
-        }
-        NodeIterator ni = objectNode.getNodes("j:translation");
-        while (ni.hasNext()) {
-            Node n = ni.nextNode();
-            if (locale.toString().equals(n.getProperty("jcr:language").getString())) {
-                i18NobjectNodes.put(locale, n);
-                return n;
+        } else {
+            NodeIterator ni = objectNode.getNodes("j:translation");
+            while (ni.hasNext()) {
+                node = ni.nextNode();
+                i18NobjectNodes.put(locale, node);
+                if (locale.toString().equals(node.getProperty("jcr:language").getString())) {
+                    return node;
+                }
             }
+            i18NobjectNodes.put(locale, null);
         }
         if(fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
@@ -876,7 +878,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return getI18N(fallbackLocale);
             }
         }
-        i18NobjectNodes.put(locale, null);
         throw new ItemNotFoundException(locale.toString());
     }
 
@@ -1334,44 +1335,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean lockAsSystemAndStoreToken() {
-        try {
-            Session systemSession = provider.getSystemSession();
-            Node systemNode = (Node) systemSession.getItem(objectNode.getPath());
-            if (!systemNode.isCheckedOut()) {
-                systemNode.checkout();
-            }
-            Lock lock = systemNode.lock(false, false);
-            systemNode.setProperty("j:locktoken", lock.getLockToken());
-            systemNode.save();
-            systemSession.removeLockToken(lock.getLockToken());
-            systemSession.logout();
-            objectNode.refresh(true);
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-            return false;
-        }
-        return true;
-    }
+    public boolean lockAndStoreToken() throws RepositoryException  {
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean lockAndStoreToken() {
-        try {
-            Lock lock = objectNode.lock(false, false);
-            if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
-                try {
-                    objectNode.setProperty("j:locktoken", lock.getLockToken());
-                    objectNode.getSession().removeLockToken(lock.getLockToken());
-                } catch (RepositoryException e) {
-                    return true;
-                }
+        Lock lock = objectNode.lock(false, false);
+        if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
+            try {
+                objectNode.setProperty("j:locktoken", lock.getLockToken());
+                objectNode.getSession().removeLockToken(lock.getLockToken());
+            } catch (RepositoryException e) {
+                return true;
             }
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-            return false;
         }
+        if (session.getLocale() != null && !isNodeType("jnt:translation")) {
+            Node trans = getOrCreateI18N(session.getLocale());
+            lock = trans.lock(false, false);
+            if (lock.getLockToken() != null) {
+                trans.setProperty("j:locktoken", lock.getLockToken());
+                trans.getSession().removeLockToken(lock.getLockToken());
+            }
+        }
+        objectNode.getSession().save();
         return true;
     }
 
@@ -1396,6 +1379,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (RepositoryException e) {
             return false;
         }
+    }
+
+    public List<Locale> getLockedLocales() throws RepositoryException {
+        List<Locale> r = new ArrayList<Locale>();
+        NodeIterator ni = objectNode.getNodes("j:translation");
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            if (n.isLocked()) {
+                r.add(new Locale(n.getProperty("jcr:language").getString()));
+            }
+        }
+        return r;
     }
 
     /**
@@ -1456,31 +1451,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean forceUnlock() {
+    public boolean forceUnlock() throws RepositoryException  {
         if (!isLocked()) {
             return false;
         }
-        try {
-            Session systemSession = provider.getSystemSession();
-            Node systemNode = (Node) systemSession.getItem(objectNode.getPath());
-            if (hasProperty("j:locktoken")) {
-                Property property = getProperty("j:locktoken");
-                String v = property.getString();
-                systemSession.addLockToken(v);
-                systemNode.unlock();
-                property.remove();
-            } else {
-                systemNode.unlock();
-            }
 
-            systemNode.save();
-            systemSession.logout();
-            objectNode.refresh(true);
-        } catch (RepositoryException e) {
-            logger.error(e, e);
+        if (!isNodeType("jnt:translation") && !getLockedLocales().isEmpty())  {
             return false;
         }
+        if (hasProperty("j:locktoken")) {
+            Property property = getProperty("j:locktoken");
+            String v = property.getString();
+            session.addLockToken(v);
+            objectNode.unlock();
+            property.remove();
+        } else {
+            objectNode.unlock();
+        }
 
+        objectNode.refresh(true);
+        objectNode.getSession().save();
         return true;
     }
 

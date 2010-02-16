@@ -6,6 +6,8 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 
+import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -19,8 +21,10 @@ public class Unlock implements ExternalActivityBehaviour {
 
     public void execute(ActivityExecution execution) throws Exception {
         String id = (String) execution.getVariable("nodeId");
+        String workspace = (String) execution.getVariable("workspace");
+        Locale locale = (Locale) execution.getVariable("locale");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), "default",null, false);
+        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), false, false);
         execution.takeDefaultTransition();
     }
 

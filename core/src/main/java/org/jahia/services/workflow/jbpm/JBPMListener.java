@@ -7,6 +7,8 @@ import org.jbpm.api.listener.EventListener;
 import org.jbpm.api.listener.EventListenerExecution;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
 
+import java.util.Locale;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -23,7 +25,9 @@ public class JBPMListener implements EventListener {
 
     public void notify(EventListenerExecution execution) throws Exception {
         String id = (String) execution.getVariable("nodeId");
-        JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
+        String workspace = (String) execution.getVariable("workspace");
+        Locale locale = (Locale) execution.getVariable("locale");
+        JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNodeByUUID(id);
 
         if (Execution.STATE_ACTIVE_ROOT.equals(execution.getState())) {
             provider.getWorkflowService().addProcessId(node, provider.getKey(), execution.getId());

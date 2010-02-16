@@ -687,7 +687,12 @@ public class ContentManagerHelper {
                     if (node.getLockOwner() != null && !node.getLockOwner().equals(user.getUsername()) && !user.isRoot()) {
                         missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(node.getLockOwner()).toString());
                     } else {
-                        if (!node.forceUnlock()) {
+                        try {
+                            if (!node.forceUnlock()) {
+                                missedPaths.add(new StringBuilder(node.getName()).append(": repository exception").toString());
+                            }
+                        } catch (RepositoryException e) {
+                            logger.error(e.toString(), e);
                             missedPaths.add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
                     }
@@ -696,19 +701,24 @@ public class ContentManagerHelper {
                 }
             } else {
                 if (locked) {
-                    if (!node.lockAndStoreToken()) {
-                        missedPaths.add(new StringBuilder(node.getName()).append(": repository exception").toString());
-                    }
                     try {
-                        node.saveSession();
+                        if (!node.lockAndStoreToken()) {
+                            missedPaths.add(new StringBuilder(node.getName()).append(": repository exception").toString());
+                        }
                     } catch (RepositoryException e) {
-                        logger.error("error", e);
-                        throw new GWTJahiaServiceException("Could not save file " + node.getName());
+                        logger.error(e.toString(), e);
+                        missedPaths.add(new StringBuilder(node.getName()).append(": repository exception").toString());
                     }
                 } else {
                     // already unlocked
                 }
             }
+        }
+        try {
+            currentUserSession.save();
+        } catch (RepositoryException e) {
+            logger.error("error", e);
+            throw new GWTJahiaServiceException("Could not save session");
         }
         if (missedPaths.size() > 0) {
             StringBuilder errors = new StringBuilder("The following files could not be ").append(locked ? "locked:" : "unlocked:");

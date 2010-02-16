@@ -129,12 +129,12 @@ public class ContentFileField extends ContentField {
         boolean shouldBeUnlocked = toEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
         if (wasLocked && shouldBeUnlocked) {
             if (usageCount <= 1) {
-                file.forceUnlock();
+//                file.forceUnlock();
             }
         } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
             if (usageCount == 0) {
-                file.forceUnlock();
-                file.lockAsSystemAndStoreToken();
+//                file.forceUnlock();
+//                file.lockAsSystemAndStoreToken();
             }
         }
 

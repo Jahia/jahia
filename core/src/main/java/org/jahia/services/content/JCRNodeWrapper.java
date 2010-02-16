@@ -573,23 +573,17 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean copyFile(JCRNodeWrapper node, String name) throws RepositoryException;
 
     /**
-     * Get a lock on the system session and store the lock token
-     * @return true if lock was successfully set
-     */
-    boolean lockAsSystemAndStoreToken();
-
-    /**
      * Get a lock on this node and store the lock token
      * @see #lock(boolean, boolean)
      * @return true if action was successful, or false if not
      */
-    boolean lockAndStoreToken();
+    boolean lockAndStoreToken() throws RepositoryException ;
 
     /**
      * Force an unlock on this node and remove the lock token if one existed
      * @return true if node was unlocked
      */
-    boolean forceUnlock();
+    boolean forceUnlock() throws RepositoryException ;
 
     /**
      * Get the name of the user who locked the node
@@ -699,6 +693,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return true if node can be locked
      */
     boolean isLockable();
+
+    public List<Locale> getLockedLocales() throws RepositoryException;
 
     /**
      * {@inheritDoc}

@@ -6,7 +6,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Lock custom activity for jBPM workflow
@@ -19,8 +19,14 @@ public class Lock implements ExternalActivityBehaviour {
 
     public void execute(ActivityExecution execution) throws Exception {
         String id = (String) execution.getVariable("nodeId");
+        String workspace = (String) execution.getVariable("workspace");
+        Locale locale = (Locale) execution.getVariable("locale");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        JCRPublicationService.getInstance().lockForPublication(node.getPath(), "default",null, false);
+        if (!node.isNodeType("jmix:publication")) {
+            node.addMixin("jmix:publication");
+        }
+        node.getSession().save();
+        JCRPublicationService.getInstance().lockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), false, false);
         execution.takeDefaultTransition();
     }
 

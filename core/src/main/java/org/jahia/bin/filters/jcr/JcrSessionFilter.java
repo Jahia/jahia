@@ -49,33 +49,24 @@ import java.io.IOException;
  */
 public class JcrSessionFilter implements Filter {
 
-    private static ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
-
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
 
-    public static JahiaUser getCurrentUser() {
-        return currentUser.get();
-    }
-
-    public static void setCurrentUser(JahiaUser user) {
-        currentUser.set(user);
-    }
-
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
             if (Jahia.isInitiated()) {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
                 if (httpServletRequest.getSession(false) != null) {
-                    currentUser.set((JahiaUser) httpServletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER));
+                    sessionFactory.setCurrentUser((JahiaUser) httpServletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER));
                 }
             }
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
             if (Jahia.isInitiated()) {
-                currentUser.set(null);
-                JCRSessionFactory.getInstance().closeAllSessions();
+                sessionFactory.setCurrentUser(null);
+                sessionFactory.closeAllSessions();
             }
         }
     }

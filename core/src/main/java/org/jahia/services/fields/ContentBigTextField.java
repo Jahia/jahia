@@ -243,23 +243,23 @@ public class ContentBigTextField extends ContentField {
         for (String s : fieldLinkManager.getFieldReferences(getID(), fromEntryState.getLanguageCode(), fromEntryState.getWorkflowState())) {
             if (s.startsWith("file:")) {
                 s = s.substring("file:".length());
-
-                JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(s, jParams.getUser());
-                int usageCount = fieldLinkManager.countUsages("file:" + file.getPath(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
-                boolean wasLocked = fromEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || fromEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-                boolean wasUnlocked = fromEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && fromEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-                boolean shouldBeLocked = toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || toEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-                boolean shouldBeUnlocked = toEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-                if (wasLocked && shouldBeUnlocked) {
-                    if (usageCount <= 1) {
-                        file.forceUnlock();
-                    }
-                } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
-                    if (usageCount == 0) {
-                        file.forceUnlock();
-                        file.lockAsSystemAndStoreToken();
-                    }
-                }
+//
+//                JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(s, jParams.getUser());
+//                int usageCount = fieldLinkManager.countUsages("file:" + file.getPath(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
+//                boolean wasLocked = fromEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || fromEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
+//                boolean wasUnlocked = fromEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && fromEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
+//                boolean shouldBeLocked = toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || toEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
+//                boolean shouldBeUnlocked = toEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
+//                if (wasLocked && shouldBeUnlocked) {
+//                    if (usageCount <= 1) {
+//                        file.forceUnlock();
+//                    }
+//                } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
+//                    if (usageCount == 0) {
+//                        file.forceUnlock();
+//                        file.lockAsSystemAndStoreToken();
+//                    }
+//                }
             }
         }
         if (toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {

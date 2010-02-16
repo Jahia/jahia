@@ -5,7 +5,6 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
@@ -38,6 +37,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private static JCRSessionFactory instance;
     private String servletContextAttributeName;
     private ServletContext servletContext;
+    public ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
 
 
     private JCRSessionFactory() {
@@ -102,12 +102,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         userSession.set(smap);
         String username;
 
-        if (JcrSessionFilter.getCurrentUser() == null) {
+        if (getCurrentUser() == null) {
             logger.error("null thread parambean");
             throw new RepositoryException("Null thread parambean");
         }
 
-        JahiaUser user = JcrSessionFilter.getCurrentUser();
+        JahiaUser user = getCurrentUser();
 
         if (JahiaUserManagerService.isGuest(user)) {
             username = JahiaLoginModule.GUEST;
@@ -347,5 +347,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
         return namespaceRegistry;
+    }
+
+    public JahiaUser getCurrentUser() {
+        return currentUser.get();
+    }
+
+    public void setCurrentUser(JahiaUser user) {
+        currentUser.set(user);
     }
 }

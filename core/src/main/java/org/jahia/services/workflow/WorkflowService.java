@@ -240,6 +240,7 @@ public class WorkflowService {
     public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
             throws RepositoryException {
         args.put("nodeId", stageNode.getIdentifier());
+        args.put("workspace", stageNode.getSession().getWorkspace().getName());
         args.put("locale", stageNode.getSession().getLocale());
         final String processId = providers.get(provider).startProcess(processKey, args);
         return processId;

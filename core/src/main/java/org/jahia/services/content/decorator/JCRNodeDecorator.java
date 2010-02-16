@@ -31,7 +31,6 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
@@ -261,15 +260,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.copyFile(dest, name);
     }
 
-    public boolean lockAsSystemAndStoreToken() {
-        return node.lockAsSystemAndStoreToken();
-    }
-
-    public boolean lockAndStoreToken() {
+    public boolean lockAndStoreToken() throws RepositoryException  {
         return node.lockAndStoreToken();
     }
 
-    public boolean forceUnlock() {
+    public boolean forceUnlock() throws RepositoryException  {
         return node.forceUnlock();
     }
 
@@ -623,6 +618,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean isLockable() {
         return node.isLockable();
+    }
+
+    public List<Locale> getLockedLocales() throws RepositoryException {
+        return node.getLockedLocales();
     }
 
     public String getPath() {

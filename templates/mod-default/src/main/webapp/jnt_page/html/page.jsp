@@ -36,12 +36,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
-<div id="pageData">
-    <div id="wrapper">
-        <div class="spacer">
+
             <template:area path="maincontent"/>
-        </div>
-    </div>
-    <div class="clear"></div>
-</div>
-<div>&nbsp;</div>
+

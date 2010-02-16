@@ -1338,6 +1338,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Session systemSession = provider.getSystemSession();
             Node systemNode = (Node) systemSession.getItem(objectNode.getPath());
+            if (!systemNode.isCheckedOut()) {
+                systemNode.checkout();
+            }
             Lock lock = systemNode.lock(false, false);
             systemNode.setProperty("j:locktoken", lock.getLockToken());
             systemNode.save();

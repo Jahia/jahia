@@ -363,7 +363,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 
 /* Borders go last for specificity */
 .x-panel-noborder .x-panel-body-noborder {
-    border-width:1px;
+    border-width:0px;
 }
 
 .x-panel-noborder .x-panel-header-noborder {

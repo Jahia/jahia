@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -51,10 +50,9 @@ import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Remote GWT service for content management tasks.
  *
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
@@ -205,6 +203,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
 
     public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException;
+
+    GWTJahiaPermission createPermission(String name, String group, String siteKey) throws GWTJahiaServiceException;
 
     public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
 

@@ -1002,4 +1002,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private JahiaUser getUser() {
         return getRemoteJahiaUser();
     }
+
+    public GWTJahiaPermission createPermission(String name, String group, String siteKey) throws GWTJahiaServiceException {
+        return rolesPermissions.createPermission(name, group, siteKey, retrieveCurrentSession());
+    }
 }

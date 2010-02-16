@@ -43,14 +43,12 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Remote GWT service for content management tasks.
  *
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
@@ -196,6 +194,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getRolesAndPermissions(String site, AsyncCallback<GWTRolesPermissions> async);
 
+    void createPermission(String name, String group, String siteKey, AsyncCallback<GWTJahiaPermission> async);
 
     void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
 

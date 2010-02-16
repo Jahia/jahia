@@ -72,4 +72,16 @@ public class GWTJahiaBasicDataBean extends BaseModelData implements Serializable
     public String toString() {
         return get(VALUE);
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaBasicDataBean that = (GWTJahiaBasicDataBean) o;
+        
+        return getValue() == null && that.getValue() == null || getValue() != null && that.getValue() != null
+                && getValue().equals(that.getValue());
+    }
+    
 }

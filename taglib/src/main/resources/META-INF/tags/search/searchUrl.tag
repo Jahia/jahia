@@ -37,7 +37,7 @@
               description="Comma-separated list of parameter names to exclude from the final search URL. None is excluded by default."
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
-%><c:set var="exclude" value=",${fn:replace(exclude, ' ', '')},"/><c:url value="${pageContext.request.requestURI}">
+%><c:set var="exclude" value=",${fn:replace(exclude, ' ', '')},"/><c:url value="${pageContext.request.requestURI}" context="/">
 <c:forEach var="aParam" items="${paramValues}">
 	<c:set var="paramToCheck" value=",${aParam.key},"/>
 	<c:if test="${fn:startsWith(aParam.key, 'src_') && !fn:contains(exclude, paramToCheck)}">

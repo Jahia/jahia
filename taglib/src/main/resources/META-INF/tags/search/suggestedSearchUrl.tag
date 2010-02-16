@@ -46,6 +46,6 @@ if (parent == null) {
              " or by nesting this tag into <s:suggestions/> tag");
 }
 jspContext.setAttribute("suggestion", parent.getSuggestion().getSuggestedQuery());
-%></c:if><c:set var="searchUrl"><search:searchUrl exclude='src_terms[0].term'/></c:set><c:url value="${searchUrl}">
+%></c:if><c:set var="searchUrl"><search:searchUrl exclude='src_terms[0].term'/></c:set><c:url value="${searchUrl}" context="/">
 	<c:param name="src_terms[0].term" value="${suggestion}"/>
 </c:url>

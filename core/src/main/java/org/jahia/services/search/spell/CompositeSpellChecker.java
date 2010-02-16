@@ -81,7 +81,7 @@ import javax.jcr.RepositoryException;
  * present in a lucene index.
  */
 public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.lucene.SpellChecker {
-
+    
     /**
      * Logger instance for this class.
      */
@@ -135,6 +135,18 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         }
     }
 
+    private static Map<String, InternalSpellChecker> spellCheckers = new HashMap<String, InternalSpellChecker>(2);
+    
+    /**
+     * Triggers update of the spell checker dictionary index.
+     */
+    public static void updateSpellCheckerIndex() {
+        for (InternalSpellChecker checker : spellCheckers.values()) {
+            checker.lastRefresh = 0;
+            checker.refreshSpellChecker();
+        }
+    }
+    
     /**
      * The internal spell checker.
      */
@@ -167,6 +179,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
     public void init(QueryHandler handler) throws IOException {
         if (handler instanceof SearchIndex) {
             this.spellChecker = new InternalSpellChecker((SearchIndex) handler);
+            spellCheckers.put(((SearchIndex) handler).getPath(), spellChecker);
         } else {
             throw new IOException("CompositeSpellChecker only works with " + SearchIndex.class.getName());
         }
@@ -227,7 +240,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
     }
 
     public void close() {
-        spellChecker.close();
+        try {
+            spellChecker.close();
+        } finally {
+            spellCheckers.remove(spellChecker.handler.getPath());
+        }
     }
 
     // ------------------------------< internal

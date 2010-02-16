@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="Columns.css"/>
 
 <c:remove var="currentList" scope="request"/>
 <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false" >
@@ -16,16 +17,17 @@
 <div class="columns2"><!--start 2columns -->
     <c:forEach items="${currentList}" var="subchild">
         <div class="column-item">
-            <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
-                <c:if test="${not empty forcedSkin}">
-                    <template:param name="forcedSkin" value="${forcedSkin}"/>
-                </c:if>
-                <c:if test="${not empty renderOptions}">
-                    <template:param name="renderOptions" value="${renderOptions}"/>
-                </c:if>
-            </template:module>
+        	<div class="spacer">
+                <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+                    <c:if test="${not empty forcedSkin}">
+                        <template:param name="forcedSkin" value="${forcedSkin}"/>
+                    </c:if>
+                    <c:if test="${not empty renderOptions}">
+                        <template:param name="renderOptions" value="${renderOptions}"/>
+                    </c:if>
+                </template:module>
+            </div>
         </div>
     </c:forEach>
-
-    <div class="clear"> </div>
+    <div class="clear"></div>
 </div>

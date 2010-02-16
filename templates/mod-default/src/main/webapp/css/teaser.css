@@ -7,9 +7,8 @@
 	position: relative;
 	height:1%;
 	background:#fff url(img/boxteaser-bg.png) no-repeat top right;
-	margin-bottom:10px;
-	float:left;
-	width:50%
+	padding-top:5px;
+	margin-bottom:5px;
 }
 
 #bodywrapper .teaser p, #bodywrapper .teaser h3.teaser-title {

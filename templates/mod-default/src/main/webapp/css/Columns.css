@@ -1,0 +1,85 @@
+/******************************************************************************
+* columns LAYOUT
+******************************************************************************/
+/*2columns*/
+#bodywrapper .columns2 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+}
+
+#bodywrapper .columns2 .column-item {
+    float: left;
+    width: 50%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns2 .column-item .spacer {
+    padding: 10px;
+}
+
+/*3columns*/
+#bodywrapper .columns3 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+}
+
+#bodywrapper .columns3 .column-item {
+    float: left;
+    width: 33.33%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns3 .column-item .spacer {
+    padding: 10px;
+}
+
+/*4columns*/
+#bodywrapper .columns4 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+}
+
+#bodywrapper .columns4 .column-item {
+    float: left;
+    width: 25%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns4 .column-item .spacer {
+    padding: 10px;
+}
+
+/*5columns*/
+#bodywrapper .columns5 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+}
+
+#bodywrapper .columns5 .column-item {
+    float: left;
+    width: 19%;
+    overflow: hidden;
+    display: block;
+    padding-left:8px;
+}
+
+#bodywrapper .columns5 .column-item .spacer {
+    padding: 10px;
+}
+
+
+/*columns without bottom space*/
+#bodywrapper .nobottomspace .column-item .spacer {
+    padding: 10px 10px 0 10px;
+}

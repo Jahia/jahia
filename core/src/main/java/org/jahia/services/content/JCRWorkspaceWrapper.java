@@ -155,7 +155,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         move(source, dest, false);
     }
 
-    void move(String source, String dest, boolean sessionMove) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+    void move(String source, String dest, final boolean sessionMove) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
         final JCRStoreProvider provider = service.getProvider(source);
         JCRStoreProvider destProvider = service.getProvider(dest);
         if (destProvider != provider) {
@@ -172,11 +172,13 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            final JCRNodeWrapper sourceNode = session.getNode(source);
+            final String sourcePath = source;
+            JCRNodeWrapper sourceNode = session.getNode(source);
             if (sourceNode.isNodeType("jmix:shareable")) {
                 final String destination = dest;
                 final JCRCallback callback = new JCRCallback() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper sourceNode = session.getNode(sourcePath);
                         JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(destination,"/"));
                         parentNode.clone(sourceNode, StringUtils.substringAfterLast(destination,"/"));
                         List<Value> values = new ArrayList<Value>();
@@ -195,6 +197,9 @@ public class JCRWorkspaceWrapper implements Workspace {
                         values.add(getSession().getValueFactory().createValue(v));
                         sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
                         sourceNode.removeShare();
+                        if (!sessionMove) {
+                            session.save();
+                        }
                         return null;
                     }
                 };

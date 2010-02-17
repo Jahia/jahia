@@ -1,6 +1,5 @@
 package org.jahia.services.content;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.io.IOUtils;
@@ -237,7 +236,7 @@ public class ContentTest extends TestCase {
             final String newname = "renamed" + name;
             boolean result = false;
             try {
-                result = testFile.renameFile(newname);
+                result = testFile.rename(newname);
 
                 assertTrue("rename returned false", result);
 

@@ -244,8 +244,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getAncestors();
     }
 
-    public boolean renameFile(String newName) throws RepositoryException {
-        return node.renameFile(newName);
+    public boolean rename(String newName) throws RepositoryException {
+        return node.rename(newName);
     }
 
     public boolean copyFile(String dest) throws RepositoryException {

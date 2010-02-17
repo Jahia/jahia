@@ -96,18 +96,34 @@ public class ConflictResolver {
 
         JCRVersion base = null;
 
-        List<String> vsh = getLinearHistory(s);
-        List<String> vth = getLinearHistory(t);
+        List<String> vsh = new ArrayList<String>();
+//        List<String> vth = getLinearHistory(t);
 
-        for (String v: vsh) {
-            if (vth.contains(v)) {
-                base = vh.getVersion(v);
-                break;
+        JCRVersion[] sourcePreds = s.getPredecessors();
+        while (sourcePreds.length == 1) {
+            vsh.add(sourcePreds[0].getName());
+            sourcePreds = sourcePreds[0].getPredecessors();
+        }
+        if (sourcePreds.length > 1) {
+            for (JCRVersion pred : sourcePreds) {
+                vsh.add(pred.getName());
             }
         }
-        if (base == null) {
-            throw new RepositoryException();
+        JCRVersion[] targetPreds = t.getPredecessors();
+        while (base == null) {
+            for (JCRVersion pred : targetPreds) {
+                if (vsh.contains(pred.getName())) {
+                    base = pred;
+                    break;
+                }
+            }
+            if (targetPreds.length == 0) {
+                base = vh.getRootVersion();
+            } else {
+                targetPreds = targetPreds[0].getPredecessors();
+            }
         }
+
         computeDifferences(base.getFrozenNode());
     }
 
@@ -150,12 +166,20 @@ public class ConflictResolver {
         ListOrderedMap uuids1 = getChildEntries(frozenNode);
         ListOrderedMap uuids2 = getChildEntries(node);
 
+        if (!uuids1.values().equals(uuids2.values())) {
+            for (Iterator iterator = uuids2.keySet().iterator(); iterator.hasNext();) {
+                String key = (String) iterator.next();
+                if (uuids1.containsKey(key) && !uuids1.get(key).equals(uuids2.get(key))) {
+                    diffs.add(new ChildRenamedDiff(key, (String) uuids1.get(key), (String) uuids2.get(key)));
+                }
+            }
+        }
+
         if (!uuids1.keyList().equals(uuids2.keyList())) {
             List<String> added = new ArrayList<String>(uuids2.keySet());
             added.removeAll(uuids1.keySet());
             List<String> removed = new ArrayList<String>(uuids1.keySet());
             removed.removeAll(uuids2.keySet());
-
 
             // Ordering
             Map<String,String> oldOrdering = getOrdering(uuids1, removed);
@@ -291,23 +315,6 @@ public class ConflictResolver {
         return childEntries;
     }
 
-    List<String> getLinearHistory(Version v) throws RepositoryException {
-        List<String> res = new ArrayList<String>();
-        while (v != null) {
-            res.add(v.getName());
-            if (v.getName().equals("jcr:rootVersion")) {
-                return res;
-            }
-            Version[] vs = v.getPredecessors();
-            SortedMap<Integer,Version> pred = new TreeMap<Integer,Version>();
-            for (int i = 0; i < vs.length; i++) {
-                pred.put(StringUtils.countMatches(vs[i].getName(), "."), vs[i]) ;
-            }
-            v = pred.get(pred.firstKey());
-        }
-        return res;
-    }
-
     public boolean equalsValue (Value o1, Value o2) {
         try {
             if (o1.getType() != o2.getType()) {
@@ -322,6 +329,44 @@ public class ConflictResolver {
 
     interface Diff {
         boolean apply() throws RepositoryException;
+    }
+
+    class ChildRenamedDiff implements Diff {
+        private String uuid;
+        private String oldName;
+        private String newName;
+
+        ChildRenamedDiff(String uuid, String oldName, String newName) {
+            this.uuid = uuid;
+            this.oldName = oldName;
+            this.newName = newName;
+        }
+
+        public boolean apply() throws RepositoryException {
+            return targetNode.getNode(oldName).rename(newName);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ChildRenamedDiff that = (ChildRenamedDiff) o;
+
+            if (!newName.equals(that.newName)) return false;
+            if (!oldName.equals(that.oldName)) return false;
+            if (!uuid.equals(that.uuid)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = uuid.hashCode();
+            result = 31 * result + oldName.hashCode();
+            result = 31 * result + newName.hashCode();
+            return result;
+        }
     }
 
     class ChildAddedDiff implements Diff {

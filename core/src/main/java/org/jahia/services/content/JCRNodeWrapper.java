@@ -544,7 +544,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean renameFile(String newName) throws RepositoryException;
+    boolean rename(String newName) throws RepositoryException;
 
     /**
      * Copy the current file node to another destination

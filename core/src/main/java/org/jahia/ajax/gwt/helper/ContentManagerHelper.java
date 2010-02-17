@@ -533,7 +533,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" is locked by ").append(currentUserSession.getUser().getUsername()).toString());
             } else if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
                 throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
-            } else if (!node.renameFile(newName)) {
+            } else if (!node.rename(newName)) {
                 throw new GWTJahiaServiceException(new StringBuilder("Could not rename file ").append(node.getName()).append(" into ").append(newName).toString());
             }
         } catch (ItemExistsException e) {

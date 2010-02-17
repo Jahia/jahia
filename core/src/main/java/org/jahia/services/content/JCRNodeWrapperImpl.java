@@ -1216,7 +1216,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean renameFile(String newName) throws RepositoryException {
+    public boolean rename(String newName) throws RepositoryException {
         if (!isCheckedOut()) {
             checkout();
         }
@@ -1224,8 +1224,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!parent.isCheckedOut()) {
             parent.checkout();
         }
-        getSession().move(getPath(), parent.getPath() + "/" + newName);
 
+        getSession().move(getPath(), parent.getPath() + "/" + newName);
         return true;
     }
 

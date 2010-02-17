@@ -417,6 +417,8 @@ public class JCRPublicationService extends JahiaService {
                         oldParent.checkout();
                         node.remove();
                         node.getRealNode().getSession().save();
+                    } catch (PathNotFoundException e) {
+                        // already removed
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }
@@ -589,7 +591,6 @@ public class JCRPublicationService extends JahiaService {
 
     private void recurseSetPublicationDate(Node node, List<String> prune, Calendar c, String userID) throws RepositoryException {
         if (node.isNodeType("jmix:lastPublished")) {
-            System.out.println("-- setting last published/clone : "+node.getPath());
             if (!node.isCheckedOut()) {
                 node.checkout();
             }

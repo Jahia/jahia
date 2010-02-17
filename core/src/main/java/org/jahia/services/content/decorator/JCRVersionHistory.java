@@ -74,8 +74,8 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
         return getRealNode().getVersionableUUID();
     }
 
-    public Version getRootVersion() throws RepositoryException {
-        return (Version) getProvider().getNodeWrapper((Node) getRealNode().getRootVersion(), (JCRSessionWrapper) getSession());
+    public JCRVersion getRootVersion() throws RepositoryException {
+        return (JCRVersion) getProvider().getNodeWrapper((Node) getRealNode().getRootVersion(), (JCRSessionWrapper) getSession());
     }
 
     public VersionIterator getAllVersions() throws RepositoryException {

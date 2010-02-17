@@ -73,7 +73,7 @@ body {
 *  bottomheader
 ******************************************************************************/
 #bodywrapper #bottomheader{
-	background:#dad0c7 url(../img/bottomheader-bg.png) repeat-x bottom left;
+	background:#dad0c7 url(img/bottomheader-bg.png) repeat-x bottom left;
 	padding-top:10px;
 	position:relative;
 	z-index:800;
@@ -95,7 +95,7 @@ body {
 	width: 940px;
 }
 #bodywrapper #navigation #navbar {
-	background-image: url('../img/navbar-bg.png');
+	background-image: url('img/navbar-bg.png');
 	background-repeat: no-repeat;
 	width: 820px;
 	float: left;
@@ -126,7 +126,7 @@ body {
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover {
-	background-image: url(../img/nav-bg.png);
+	background-image: url(img/nav-bg.png);
 	background-color: #2050a8;
 	background-repeat: repeat-x;
 	background-position:top left;
@@ -151,7 +151,7 @@ body {
 	white-space: normal
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu {
-	background-image: url(../img/arrow-down.png);
+	background-image: url(img/arrow-down.png);
 	background-repeat: no-repeat; background-position: right 17px;
 	position: relative;
 }
@@ -204,11 +204,11 @@ body {
 	padding-right: 0px;
 	margin-right: 0px;
 	margin-top: 13px;
-	background-image: url(../img/icon-home.png);
+	background-image: url(img/icon-home.png);
 	background-repeat: no-repeat;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.home a:hover {
-	background-image: url(../img/icon-home-over.png);
+	background-image: url(img/icon-home-over.png);
 }
 
 #bodywrapper #breadcrumbs{
@@ -224,7 +224,7 @@ shortcuts
 #navigation #shortcuts{
 }
 #navigation #shortcuts h3 {
-	background-image:url(../img/shortcuts-bg.png);
+	background-image:url(img/shortcuts-bg.png);
 	padding:8px 10px 10px 10px;
 	width:82px;
 	height:20px;
@@ -236,7 +236,7 @@ shortcuts
 	color:#fff
 }
 #navigation #shortcuts h3:hover {
-	background-image:url(../img/shortcuts-bg-on.png);
+	background-image:url(img/shortcuts-bg-on.png);
 }
 #navigation #shortcuts h3 a,
 #navigation #shortcuts h3 a:link,
@@ -283,7 +283,7 @@ shortcuts
 	position:relative;
 }
 #bodywrapper #search-bar form .text-input {
-	background-image:url(../img/search-bar-bg.png);
+	background-image:url(img/search-bar-bg.png);
 	border:1px solid #e7e2de;
 	color:#666666;
 	height:20px;
@@ -292,7 +292,7 @@ shortcuts
 	width:304px;
 }
 #bodywrapper #search-bar form .submit {
-	background:transparent url(../img/search-submit.png) no-repeat;
+	background:transparent url(img/search-submit.png) no-repeat;
 	border:none;
 	cursor:pointer;
 	height:26px;
@@ -436,7 +436,7 @@ shortcuts
 	padding-bottom:20px;
 	margin-bottom:10px;
 	margin-top:15px;
-	background:transparent url(../img/hr-bg.png) repeat-x bottom left;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
 
 }
 
@@ -467,7 +467,7 @@ shortcuts
 	font-size:1em;
 	color:#333;
 	padding:0 0.5em;
-	background:#3297cb url(../img/contactformlegend.png) repeat-x bottom left;
+	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
 	border:1px solid #ccc;
 	display:inline;
 	color:#fff;
@@ -477,7 +477,7 @@ shortcuts
 
 #bodywrapper hr {
 	height:2px;
-	background:transparent url(../img/hr-bg.png) repeat-x bottom left;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
 	border: none;
 	margin : 18px 0;
 }
@@ -503,7 +503,7 @@ shortcuts
 #bodywrapper select,
 #bodywrapper textarea {
 	background-color:transparent;
-	background:#f6f6f6 url(../img/input_bg.png) repeat-x top left;
+	background:#f6f6f6 url(img/input_bg.png) repeat-x top left;
 	border:1px solid #ccc;
 	color:#666;
 	padding:4px 5px;
@@ -621,7 +621,7 @@ background-color:#FFFFFF
 	padding:1em 40px;
 	position:relative;
 	margin-bottom:5px;
-	background:#e1e1e1  url(../img/1px-white.png) repeat-x top left;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
 }
 #bodywrapper .author {
 	line-height:20px;
@@ -730,7 +730,7 @@ background-color:#FFFFFF
 	list-style:none;
 }
 #bodywrapper .list4 li {
-	background: url(../img/arrow.png) no-repeat 0 5px;
+	background: url(img/arrow.png) no-repeat 0 5px;
 	padding:0 0 0 12px;
 	clear:left
 }
@@ -745,7 +745,7 @@ background-color:#FFFFFF
 	border: 1px solid #ccc;
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
-	background:#e1e1e1  url(../img/1px-white.png) repeat-x top left;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
 }
 #bodywrapper .paginationPosition {
 	float:left;
@@ -791,7 +791,7 @@ background-color:#FFFFFF
 	border: 1px solid #ccc;
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
-	background:#e1e1e1  url(../img/1px-white.png) repeat-x top left;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
 }
 #bodywrapper .alphabeticalLabel {
 	float:left;
@@ -850,7 +850,7 @@ background-color:#FFFFFF
 }
 
 #bodywrapper input.button, #bodywrapper button {
-	background:#043b9d url(../img/bg-button.png) repeat-x top left;
+	background:#043b9d url(img/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 	color:#fff;
 	text-align:center;
@@ -861,7 +861,7 @@ background-color:#FFFFFF
 }
 #bodywrapper button:hover,  #bodywrapper button:hover {
 	cursor: pointer;
-	background:#3297cb url(../img/bg-button-on.png) repeat-x bottom left;
+	background:#3297cb url(img/bg-button-on.png) repeat-x bottom left;
 	color:#fff;
 }
 
@@ -872,7 +872,7 @@ background-color:#FFFFFF
 #bodywrapper  a.aButton,
 #bodywrapper  a.aButton:link,
 #bodywrapper  a.aButton:visited {
-	background: transparent url(../img/button-right.png) no-repeat scroll top right;
+	background: transparent url(img/button-right.png) no-repeat scroll top right;
 	display: block;
 	float: left;
 	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
@@ -885,7 +885,7 @@ background-color:#FFFFFF
 }
 #bodywrapper  a.aButton span {
 	/* Background left image */
-	background: transparent url(../img/button-left.png) no-repeat;
+	background: transparent url(img/button-left.png) no-repeat;
 	display: block;
 	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
 	padding: 6px 0 6px 18px;
@@ -911,7 +911,7 @@ background-color:#FFFFFF
 #bodywrapper .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
-	background: url(../img/bottomanchor.png) no-repeat top right;
+	background: url(img/bottomanchor.png) no-repeat top right;
 	padding-right:20px;
 	text-transform:uppercase
 }
@@ -1178,7 +1178,7 @@ display:none
 	clear:both;
 	list-style-type:none;
 	overflow:hidden;
-	background:transparent url(../img/tab-bg.png) repeat-x bottom left;
+	background:transparent url(img/tab-bg.png) repeat-x bottom left;
 	margin:0 0 10px 0;
 	padding:0;
 
@@ -1194,7 +1194,7 @@ display:none
 }
 
 #bodywrapper .idTabs li a {
-	background:transparent url(../img/tab-left.png) no-repeat scroll 0 0;
+	background:transparent url(img/tab-left.png) no-repeat scroll 0 0;
 	color:#fff;
 	display:inline;
 	float:left;
@@ -1214,7 +1214,7 @@ display:none
 
 
 #bodywrapper .idTabs li a span {
-	background:transparent url(../img/tab-right.png) no-repeat scroll 100% 0;
+	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
 	color:#cccccc;
 	cursor:pointer;
 	display:inline;

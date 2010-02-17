@@ -3,7 +3,7 @@
 	width: 940px;
 }
 #bodywrapper #navigation #navbar {
-	background-image: url('../img/navbar-bg.png');
+	background-image: url('img/navbar-bg.png');
 	background-repeat: no-repeat;
 	width: 820px;
 	float: left;
@@ -34,7 +34,7 @@
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover {
-	background-image: url(../img/nav-bg.png);
+	background-image: url(img/nav-bg.png);
 	background-color: #ea822c;
 	background-repeat: repeat-x;
 	background-position:top left;
@@ -59,7 +59,7 @@
 	white-space: normal
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu {
-	background-image: url(../img/arrow-down.png);
+	background-image: url(img/arrow-down.png);
 	background-repeat: no-repeat; background-position: right 17px;
 	position: relative;
 }
@@ -108,14 +108,14 @@
 	padding-right: 0px;
 	margin-right: 0px;
 	margin-top: 13px;
-	background-image: url(../img/icon-home.png);
+	background-image: url(img/icon-home.png);
 	background-repeat: no-repeat;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.home a:hover {
-	background-image: url(../img/icon-home-over.png);
+	background-image: url(img/icon-home-over.png);
 }
 #navigation #shortcuts h3 {
-	background-image:url(../img/shortcuts-bg.png);
+	background-image:url(img/shortcuts-bg.png);
 	padding:8px 10px 10px 10px;
 	position:absolute;
 	width:82px;

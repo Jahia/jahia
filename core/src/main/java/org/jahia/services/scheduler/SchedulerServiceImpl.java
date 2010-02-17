@@ -111,8 +111,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
             throws JahiaInitializationException {
 
         try {
-            scheduler = getScheduler(new File(settingsBean.getSchedulerConfigFile()));
-            ramscheduler = getScheduler(new File(settingsBean.getRamSchedulerConfigFile()));
             schedulerRunning = true;
             clusterService.addListener(this);
             scheduler.setJobFactory(new SimpleJobFactory() {
@@ -978,5 +976,13 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
      public long getLastJobCompletedTime(){
         return lastJobCompletedTime;
+    }
+
+    public void setRamscheduler(Scheduler ramscheduler) {
+        this.ramscheduler = ramscheduler;
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <bean id="sitemapCronTrigger" class="org.quartz.CronTrigger">
+        <property name="name" value="SitemapCronTrigger"/>
+        <!-- Will start the process at 4 a.m -->
+        <property name="cronExpression" value="0 0 4 * * ?" />
+    </bean>
+    <bean id="sitemapJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.jahia.modules.sitemap.SitemapJob"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="searchEngines">
+                    <list>
+                        <value>http://www.google.com/webmasters/tools/ping?sitemap=</value>
+                    </list>
+                </entry>
+                <entry key="sites">
+                    <list>
+                        <value>http://example.domain.com</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="sitemapJob" class="org.jahia.services.scheduler.ModuleJob">
+        <property name="trigger" ref="sitemapCronTrigger"/>
+        <property name="jobDetail" ref="sitemapJobDetail"/>
+        <property name="schedulerService" ref="SchedulerService"/>
+        <property name="ramJob" value="true"/>
+    </bean>
+</beans>

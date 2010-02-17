@@ -116,16 +116,7 @@
             <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
             </bean>
         </property>
-    </bean>
-    <!-- The scheduler service is required for the file watchers to work properly -->
-    <bean id="SchedulerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.scheduler.SchedulerServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="clusterService" ref="clusterService" />
-                <property name="lockService" ref="LockService" />
-            </bean>
-        </property>
-    </bean>
+    </bean>    
     <bean id="JahiaWebAppsDeployerService" parent="proxyTemplate">
         <property name="target">
             <bean class="${JahiaWebAppsDeployerService}" parent="jahiaServiceTemplate" factory-method="getInstance">

@@ -23,7 +23,7 @@
     <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
         <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModif"/>
         <url>
-            <loc>${serverUrl}${url.base}${sitemapEL.path}.html</loc>
+            <loc>${serverUrl}<c:url value="${sitemapEL.path}.html" context="${url.base}"/></loc>
             <lastmod><fmt:formatDate value="${lastModif.date.time}" pattern="yyyy-MM-dd"/></lastmod>
             <changefreq>${sitemapEL.properties.changefreq.string}</changefreq>
             <priority>${sitemapEL.properties.priority.string}</priority>

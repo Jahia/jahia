@@ -480,15 +480,17 @@ public class PublicationTest extends TestCase {
         JCRNodeWrapper editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         englishEditSession.checkout(editContentList1);
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed");
+        englishEditSession.save();
         jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
-        testNodeInWorkspace(englishEditSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed", "Text node 1 was renamed, should have been available under the new name in the live workspace !");
-        testNodeNotInWorkspace(englishEditSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "Text node 1 was renamed, should not have been available under the old name in the live workspace !");
+        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed", "Text node 1 was renamed, should have been available under the new name in the live workspace !");
+        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "Text node 1 was renamed, should not have been available under the old name in the live workspace !");
         // now let's move it back to continue the tests.
         englishEditSession.checkout(editContentList1);
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed", SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1");
+        englishEditSession.save();
         jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
-        testNodeInWorkspace(englishEditSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "Text node 1 was renamed, should have been available under the new name in the live workspace !");
-        testNodeNotInWorkspace(englishEditSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed", "Text node 1 was renamed, should not have been available under the old name in the live workspace !");
+        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "Text node 1 was renamed, should have been available under the new name in the live workspace !");
+        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1_renamed", "Text node 1 was renamed, should not have been available under the old name in the live workspace !");
 
         // Case 6 : now we must move the text node inside the list, and check that the move is properly propagated in live mode
 
@@ -679,6 +681,7 @@ public class PublicationTest extends TestCase {
         englishEditSession.checkout(editContentList1);
         editSharedNode1.removeShare();
         editSharedNode1 = editContentList1.clone(editSharedNode0, "shared_node_list1_renamed");
+        englishEditSession.save();
         jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         englishEditSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishEditSession, Constants.EDIT_WORKSPACE);
         englishLiveSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishLiveSession, Constants.LIVE_WORKSPACE);
@@ -692,6 +695,7 @@ public class PublicationTest extends TestCase {
         editSharedNode1.removeShare();
         editSharedNode0 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0");
         editSharedNode1 = editContentList1.clone(editSharedNode0, "shared_node_list1");
+        englishEditSession.save();
         jcrService.publish(editContentList1.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         englishEditSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishEditSession, Constants.EDIT_WORKSPACE);
         englishLiveSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishLiveSession, Constants.LIVE_WORKSPACE);
@@ -876,6 +880,7 @@ public class PublicationTest extends TestCase {
         // Case 5 : let's rename the page and check it's been properly renamed in the live workspace.
         englishEditSession.checkout(englishEditSiteHomeNode);
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1", SITECONTENT_ROOT_NODE + "/home/page1_renamed");
+        englishEditSession.save();
         jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed", "Page 1 should have be published !");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed/subpage1", "Sub Page 1 should have been published");
@@ -883,11 +888,20 @@ public class PublicationTest extends TestCase {
         // now let's move it back to continue the tests.
         englishEditSession.checkout(englishEditSiteHomeNode);
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1_renamed", SITECONTENT_ROOT_NODE + "/home/page1");
+        englishEditSession.save();
         jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1", "Page 1 should have be published !");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/subpage1", "Sub Page 1 should have been published");
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/subpage2", "Sub Page 2 should not have been published");
-        
+
+        // Case 6 : now we must move the page inside the list of the parent page, and check that the move is properly propagated in live mode
+        englishEditSession.checkout(englishEditSiteHomeNode);
+        englishEditSiteHomeNode.orderBefore("page1", null); // this should put it at the end of the list.
+        englishEditSession.save();
+        testChildOrdering(englishEditSiteHomeNode, "page2", "page1");
+        jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
+        JCRNodeWrapper englishLiveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
+        testChildOrdering(englishLiveSiteHomeNode, "page2", "page1");
     }
 
 /* @todo Still to be implemted... 
@@ -982,6 +996,36 @@ public class PublicationTest extends TestCase {
                 if (!child2NodeName.equals(currentChildNode.getName())) {
                     orderIsValid = false;
                     expectedValue = child2NodeName;
+                    foundValue = currentChildNode.getName();
+                    break;
+                }
+            } else {
+                break;
+            }
+            index++;
+        }
+        assertTrue("Move inside the same list has not been properly propagated to live mode ! Expected value=" + expectedValue + " but found value=" + foundValue, orderIsValid);
+    }
+
+    private void testChildOrdering(JCRNodeWrapper liveContentList1Node, String child0NodeName, String child1NodeName) throws RepositoryException {
+        int index = 0;
+        boolean orderIsValid = true;
+        String expectedValue = null;
+        String foundValue = null;
+        NodeIterator childNodeIterator = liveContentList1Node.getNodes();
+        while (childNodeIterator.hasNext()) {
+            Node currentChildNode = childNodeIterator.nextNode();
+            if (index == 0) {
+                if (!child0NodeName.equals(currentChildNode.getName())) {
+                    orderIsValid = false;
+                    expectedValue = child0NodeName;
+                    foundValue = currentChildNode.getName();
+                    break;
+                }
+            } else if (index == 1) {
+                if (!child1NodeName.equals(currentChildNode.getName())) {
+                    orderIsValid = false;
+                    expectedValue = child1NodeName;
                     foundValue = currentChildNode.getName();
                     break;
                 }

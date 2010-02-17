@@ -177,8 +177,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     public boolean deleteUser(JahiaUser user) {
         if (user instanceof JCRUser) {
             final JCRUser jcrUser = (JCRUser) user;
+            final String name = jcrUser.getName();
             try {
-                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                JCRCallback<Boolean> deleteCallcback = new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Node node = jcrUser.getNode(session);
                         session.checkout(node.getParent());
@@ -187,13 +188,17 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         session.save();
                         return true;
                     }
-                });
+                };
+                jcrTemplate.doExecuteWithSystemSession(deleteCallcback);
+                // Now let's delete the live workspace user
+                jcrTemplate.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallcback);
             } catch (RepositoryException e) {
                 logger.error("Error while deleting user", e);
                 return false;
             } finally {
-                updateCache(jcrUser);
+                updateCache(name);
             }
+            return true;
         }
         return false;
     }
@@ -475,7 +480,18 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @param jahiaUser JahiaUser the user to be updated in the cache.
      */
     public void updateCache(JahiaUser jahiaUser) {
-        cache.remove(jahiaUser.getName());
+        updateCache(jahiaUser.getName());
+    }
+
+    /**
+     * This method indicates that any internal cache for a provider should be
+     * updated because the value has changed and needs to be transmitted to the
+     * other nodes in a clustering environment.
+     *
+     * @param name the name of the user to be updated in the cache
+     */
+    public void updateCache(String name) {
+        cache.remove(name);
     }
 
     /**

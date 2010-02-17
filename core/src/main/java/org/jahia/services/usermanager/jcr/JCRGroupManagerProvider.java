@@ -181,6 +181,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
             } catch (RepositoryException e) {
                 logger.error("Error while deleting group", e);
+            } finally {
+                updateCache(group);
             }
         }
         return false;

@@ -41,11 +41,12 @@
 </c:forEach>
 </div>
 
+
 <c:if test="${!renderContext.editMode}">
 <div id="toppanel">
     <div id="panel">
         <div class="content clearfix">
-            <div class="left" id="selectWidgetsArea">
+            <div id="selectWidgetsArea">
             </div>
         </div>
     </div>
@@ -53,7 +54,7 @@
         <ul class="login">
             <li class="left">&nbsp;</li>
             <li id="toggle">
-                <a id="open" class="open" href="#">Add Widget to the page</a>
+                <a id="open" class="open" href="#">Add Widget</a>
                 <a id="close" style="display: none;" class="close" href="#">Close Panel</a>			</li>
             <li class="right">&nbsp;</li>
         </ul>

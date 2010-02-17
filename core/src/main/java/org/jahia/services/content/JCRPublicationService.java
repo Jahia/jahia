@@ -666,7 +666,7 @@ public class JCRPublicationService extends JahiaService {
             node.addMixin("jmix:publication");
         }
         if (languages != null) {
-            NodeIterator ni = node.getNodes("jnt:translation");
+            NodeIterator ni = node.getNodes("j:translation");
             while (ni.hasNext()) {
                 JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
                 if (languages.contains(i18n.getProperty("jcr:language").getString())) {

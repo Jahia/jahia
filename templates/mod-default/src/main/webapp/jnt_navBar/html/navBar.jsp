@@ -24,7 +24,8 @@
             <jcr:nodeProperty node="${navMenuBean.node}" name="jcr:title" var="title"/>
 
             <li class="item_${navMenuBean.itemCount + 2} standard ">
-            <a href="${url.base}${navMenuBean.node.path}.html">${title.string}</a>
+
+            <a href='<c:url value="${navMenuBean.node.path}.html" context="${url.base}"/>'>${title.string}</a>
             </li>
 
         </c:forEach>

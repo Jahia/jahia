@@ -1,0 +1,73 @@
+Jahia Crazy Jane - Web Module - Use an apache http server as a frontal
+
+  For url rewriting we suggest that you use an apache HTTP server with the http proxy module activated.
+
+  First you will have to modify the WEB-INF/urlrewrite.xml file inside JAHIA. Uncomment the following lines to activate
+  rewriting of urls.
+
+---------------------------------
+<!--
+    <outbound-rule>
+        <from>/jahia/cms/render/live/en/sites/mySite/([a-zA-Z_0-9/\.]+html)$</from>
+        <to last="true">/$1</to>
+    </outbound-rule>
+    <outbound-rule>
+        <from>/jahia/cms/render/live/en/users/([a-zA-Z_0-9/\.]+html)$</from>
+        <to last="true">/users/$1</to>
+    </outbound-rule>
+    -->
+---------------------------------
+
+  Replace /jahia by your context name (nothing if context is ROOT). This rules will only rewrite urls in live mode.
+
+  In apache HTTP server you need to declare a virtual host for your web site like the example below :
+
+---------------------------------
+<VirtualHost *:80>
+	Options +FollowSymlinks
+	RewriteEngine on
+	RewriteCond %{REQUEST_URI} ^/jahia/cms/render/live.*$
+	RewriteRule ^/jahia/cms/render/live/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/render/live/$1 [P,L]
+	RewriteRule ^/users/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/render/live/en/users/$1 [P,L]
+	RewriteRule ^/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/render/live/en/sites/mySite/$1 [P,L]
+	RewriteLog "/var/log/apache2/rewrite.log"
+	RewriteLogLevel 3
+    ProxyRequests Off
+    ProxyPreservehost on
+    ServerName example.domain.com
+    ProxyPass  /sitemap.xml http://localhost:8080/jahia/cms/render/live/en/sites/mySite/home.sitemap.xml
+    ProxyPassReverse /sitemap.xml http://localhost:8080/jahia/cms/render/live/en/sites/mySite/home.sitemap.xml
+	ProxyPass  / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
+    <Proxy>
+        Order Allow,Deny
+        Allow from all
+    </Proxy>
+</VirtualHost>
+---------------------------------
+
+  This virtual host will only handle live mode and you can define another one for edit/preview mode
+
+---------------------------------
+<VirtualHost *:80>
+	Options +FollowSymlinks
+	RewriteEngine on
+	RewriteCond %{REQUEST_URI} ^/jahia/cms/edit/default.*$
+	RewriteRule ^/jahia/cms/edit/default/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/edit/default/$1 [P,L]
+	RewriteCond %{REQUEST_URI} ^/jahia/cms/render/default.*$
+	RewriteRule ^/jahia/cms/render/default/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/render/default/$1 [P,L]
+	RewriteCond %{REQUEST_URI} !^/jahia/cms/.*$
+	RewriteRule ^/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/edit/default/en/sites/mySite/$1 [P,L]
+	RewriteLog "/var/log/apache2/rewrite.log"
+	RewriteLogLevel 3
+        ProxyRequests Off
+        ProxyPreservehost on
+        ServerName edit.tata.mondomaine.com
+	ProxyPass  / http://localhost:8080/
+        ProxyPassReverse / http://localhost:8080/
+        <Proxy>
+            Order Allow,Deny
+            Allow from all
+        </Proxy>
+</VirtualHost>
+---------------------------------

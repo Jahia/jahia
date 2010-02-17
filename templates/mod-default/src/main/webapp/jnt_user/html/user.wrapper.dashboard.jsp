@@ -4,32 +4,36 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 
+<div class="idTabsContainer"><!--start idTabsContainer-->
 
-        <div class="idTabsContainer"><!--start idTabsContainer-->
-
-            <ul class="idTabs">
-                <c:if test="${currentResource.resolvedTemplate == 'page'}">
-                    <li><a class="on selected" href="${url.base}${currentNode.path}.page.html"><span>Profile</span></a>
-                    </li>
-                </c:if>
-                <c:if test="${currentResource.resolvedTemplate != 'page'}">
-                    <li><a class="off" href="${url.base}${currentNode.path}.page.html"><span>Profile</span></a>
-                    </li>
-                </c:if>
-                <template:profileExtensions var="profileExtensions" />
-                <c:forEach items="${profileExtensions}" var="ext">
-                    <c:if test="${currentResource.resolvedTemplate == ext.key}">
-                        <li><a class="on selected" href="${url.base}${currentNode.path}.${ext.key}.html"><span>${ext.value}</span></a>
-                        </li>
-                    </c:if>
-                    <c:if test="${currentResource.resolvedTemplate != ext.key}">
-                        <li><a class="off" href="${url.base}${currentNode.path}.${ext.key}.html"><span>${ext.value}</span></a>
-                        </li>
-                    </c:if>
-                </c:forEach>
-            </ul>
-        </div>
-        <div class="tabContainer"><!--start tabContainer-->
-            ${wrappedContent}
-        <div class="clear"></div></div>
-        <!--stop tabContainer-->
+    <ul class="idTabs">
+        <c:if test="${currentResource.resolvedTemplate == 'page'}">
+            <li><a class="on selected"
+                   href='<c:url value="${currentNode.path}.page.html" context="${url.base}"/>'><span>Profile</span></a>
+            </li>
+        </c:if>
+        <c:if test="${currentResource.resolvedTemplate != 'page'}">
+            <li><a class="off"
+                   href='<c:url value="${currentNode.path}.page.html" context="${url.base}"/>'><span>Profile</span></a>
+            </li>
+        </c:if>
+        <template:profileExtensions var="profileExtensions"/>
+        <c:forEach items="${profileExtensions}" var="ext">
+            <c:if test="${currentResource.resolvedTemplate == ext.key}">
+                <li><a class="on selected"
+                       href='<c:url value="${currentNode.path}.${ext.key}.html" context="${url.base}"/>'><span>${ext.value}</span></a>
+                </li>
+            </c:if>
+            <c:if test="${currentResource.resolvedTemplate != ext.key}">
+                <li><a class="off"
+                       href='<c:url value="${currentNode.path}.${ext.key}.html" context="${url.base}"/>'><span>${ext.value}</span></a>
+                </li>
+            </c:if>
+        </c:forEach>
+    </ul>
+</div>
+<div class="tabContainer"><!--start tabContainer-->
+    ${wrappedContent}
+    <div class="clear"></div>
+</div>
+<!--stop tabContainer-->

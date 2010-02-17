@@ -156,5 +156,13 @@
         <!--<to>/page$1.html</to>-->
     <!--</outbound-rule>-->
 
+    <!--<outbound-rule>
+        <from>/jahia/cms/render/live/en/sites/mySite/([a-zA-Z_0-9/\.]+html)$</from>
+        <to>/$1</to>
+    </outbound-rule>
+    <outbound-rule>
+        <from>/jahia/cms/render/live/en/users/([a-zA-Z_0-9/\.]+html)$</from>
+        <to>/users/$1</to>        
+    </outbound-rule>-->
 </urlrewrite>
 

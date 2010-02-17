@@ -30,7 +30,7 @@
                 <c:set var="submenu" value="nosubmenu"/>
             </c:if>
             <li class="${submenu}">
-                <a href="${url.base}${navNode.path}.html">${title.string}</a>
+                <a href='<c:url value="${navNode.path}.html" context="${url.base}"/>'>${title.string}</a>
                 <jcr:simpleNavigationMenu node="${navNode}" var="innerMenu"/>
                 <c:if test="${not empty innerMenu}">
                     <div class="box-inner">
@@ -38,7 +38,7 @@
                             <c:forEach items="${innerMenu}" var="navInnerMenu">
                                 <jcr:nodeProperty node="${navInnerMenu}" name="jcr:title" var="title"/>
                                 <li class="box-inner-border">
-                                    <a href="${url.base}${navInnerMenu.path}.html">${title.string}</a>
+                                    <a href='<c:url value="${navInnerMenu.path}.html" context="${url.base}"/>'>${title.string}</a>
                                 </li>
                             </c:forEach>
                         </ul>

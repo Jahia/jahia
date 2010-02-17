@@ -450,7 +450,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
         addGwtDictionaryMessage("fm_authorizations", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.authorizations.label"));
         addGwtDictionaryMessage("fm_alreadyExists", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label"));
         addGwtDictionaryMessage("fm_usages", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.label"));
-        addGwtDictionaryMessage("fm_info_name", getJahiaInternalResourceValue("label.in"));
         addGwtDictionaryMessage("fm_info_path", getJahiaInternalResourceValue("label.path"));
         addGwtDictionaryMessage("fm_info_size", getJahiaInternalResourceValue("label.size"));
         addGwtDictionaryMessage("fm_info_lastModif", getJahiaInternalResourceValue("label.lastModif"));

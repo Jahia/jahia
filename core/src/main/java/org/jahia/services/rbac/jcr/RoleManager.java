@@ -102,6 +102,7 @@ public class RoleManager {
     public void deletePermission(final Permission permission, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper permissionNode = loadPermissionNode(permission, session);
         session.checkout(permissionNode.getParent());
+        session.checkout(permissionNode);
         permissionNode.remove();
         session.save();
     }
@@ -118,6 +119,7 @@ public class RoleManager {
     public void deleteRole(final Role role, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper roleNode = loadRoleNode(role, session);
         session.checkout(roleNode.getParent());
+        session.checkout(roleNode);
         roleNode.remove();
         session.save();
     }
@@ -455,7 +457,8 @@ public class RoleManager {
      * @return the corresponding role node
      * @throws RepositoryException in case of an error
      */
-    public RoleImpl saveRole(RoleImpl role, JCRSessionWrapper session) throws RepositoryException {
+    public RoleImpl saveRole(RoleImpl role, boolean updatePermisisons, JCRSessionWrapper session)
+            throws RepositoryException {
         JCRNodeWrapper rolesHome = getRolesHome(role.getSite(), true, session);
         JCRNodeWrapper roleNode = null;
         try {
@@ -468,85 +471,9 @@ public class RoleManager {
 
         populateJCRData(roleNode, role);
 
-        updatePermissions(role, true, session);
-
-        session.save();
-
-        return role;
-    }
-
-    /**
-     * Creates or updates the specified {@link RoleImpl}, considering that the
-     * permissions are already persisted.
-     * 
-     * @param role the role to be stored
-     * @param session current JCR session
-     * @return the corresponding role node
-     * @throws RepositoryException in case of an error
-     */
-    public RoleImpl saveRole1(RoleImpl role, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper rolesHome = getRolesHome(role.getSite(), true, session);
-        JCRNodeWrapper roleNode = null;
-        try {
-            roleNode = rolesHome.getNode(role.getName());
-        } catch (PathNotFoundException e) {
-            // does not exist yet
-            session.checkout(rolesHome);
-            roleNode = rolesHome.addNode(role.getName(), JAHIANT_ROLE);
+        if (updatePermisisons) {
+            updatePermissions(role, true, session);
         }
-
-        populateJCRData(roleNode, role);
-
-        List<Value> values = new LinkedList<Value>();
-        for (PermissionImpl permission : role.getPermissions()) {
-            try {
-                values.add(new ValueImpl(loadPermissionNode(permission, session).getIdentifier(),
-                        PropertyType.WEAKREFERENCE));
-            } catch (PathNotFoundException ex) {
-                logger.warn("Permission to be granted for role '" + role.getName() + "' cannot be found " + permission
-                        + ". It will be skipped.", ex);
-            }
-        }
-        roleNode.setProperty(PROPERTY_PERMISSSIONS, values.toArray(new Value[] {}));
-
-        session.save();
-
-        return role;
-    }
-
-    /**
-     * Creates or updates the specified {@link RoleImpl}, ignoring the
-     * permissions.
-     * 
-     * @param role the role to be stored
-     * @param session current JCR session
-     * @return the corresponding role node
-     * @throws RepositoryException in case of an error
-     */
-    public RoleImpl saveRole2(RoleImpl role, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper rolesHome = getRolesHome(role.getSite(), true, session);
-        JCRNodeWrapper roleNode = null;
-        try {
-            roleNode = rolesHome.getNode(role.getName());
-        } catch (PathNotFoundException e) {
-            // does not exist yet
-            session.checkout(rolesHome);
-            roleNode = rolesHome.addNode(role.getName(), JAHIANT_ROLE);
-        }
-
-        populateJCRData(roleNode, role);
-
-        List<Value> values = new LinkedList<Value>();
-        for (PermissionImpl permission : role.getPermissions()) {
-            try {
-                values.add(new ValueImpl(loadPermissionNode(permission, session).getIdentifier(),
-                        PropertyType.WEAKREFERENCE));
-            } catch (PathNotFoundException ex) {
-                logger.warn("Permission to be granted for role '" + role.getName() + "' cannot be found " + permission
-                        + ". It will be skipped.", ex);
-            }
-        }
-        roleNode.setProperty(PROPERTY_PERMISSSIONS, values.toArray(new Value[] {}));
 
         session.save();
 
@@ -639,7 +566,7 @@ public class RoleManager {
                         PropertyType.WEAKREFERENCE));
             } catch (PathNotFoundException ex) {
                 logger.warn("Permission to be granted for role '" + role.getName() + "' cannot be found " + permission
-                        + ". It will be skipped.", ex);
+                        + ". It will be skipped.");
             }
         }
         session.checkout(roleNode);

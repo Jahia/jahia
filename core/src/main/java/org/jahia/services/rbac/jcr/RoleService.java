@@ -33,6 +33,7 @@
 package org.jahia.services.rbac.jcr;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -167,6 +168,24 @@ public class RoleService {
     }
 
     /**
+     * Grants the specified permission to the provided role. This operation does
+     * not revoke currently assigned permissions, but rather adds the specified
+     * one.
+     * 
+     * @param roleId the role to be modified
+     * @param permission the permission to be granted
+     * @return updated role object
+     * @throws PathNotFoundException in case the corresponding role cannot be
+     *             found
+     * @throws RepositoryException in case of an error
+     */
+    public RoleImpl grantPermission(final Role roleId, final Permission permission) throws RepositoryException {
+        List<Permission> perms = new LinkedList<Permission>();
+        perms.add(permission);
+        return grantPermissions(roleId, perms);
+    }
+
+    /**
      * Grants specified permissions to the provided role. This operation does
      * not revoke currently assigned permissions, but rather adds the specified
      * ones.
@@ -220,6 +239,22 @@ public class RoleService {
     }
 
     /**
+     * Revokes the specified permission from the provided role.
+     * 
+     * @param roleId the role to be modified
+     * @param permission permission to be revoked
+     * @return updated role object
+     * @throws PathNotFoundException in case the corresponding role cannot be
+     *             found
+     * @throws RepositoryException in case of an error
+     */
+    public RoleImpl revokePermission(final Role roleId, final Permission permission) throws RepositoryException {
+        List<Permission> perms = new LinkedList<Permission>();
+        perms.add(permission);
+        return revokePermissions(roleId, perms);
+    }
+
+    /**
      * Revokes specified permissions from the provided role.
      * 
      * @param roleId the role to be modified
@@ -265,6 +300,21 @@ public class RoleService {
     }
 
     /**
+     * Creates or updates the specified role without touching permissions.
+     * 
+     * @param role the role to be modified
+     * @return updated role object
+     * @throws RepositoryException in case of an error
+     */
+    public RoleImpl saveRole(final Role role) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
+            public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                return roleManager.saveRole(new RoleImpl(role.getName(), role.getSite()), false, session);
+            }
+        });
+    }
+
+    /**
      * Creates or updates the specified role, recursively creating or updating
      * the assigned permissions.
      * 
@@ -275,7 +325,7 @@ public class RoleService {
     public RoleImpl saveRole(final RoleImpl role) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
             public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return roleManager.saveRole(role, session);
+                return roleManager.saveRole(role, true, session);
             }
         });
     }

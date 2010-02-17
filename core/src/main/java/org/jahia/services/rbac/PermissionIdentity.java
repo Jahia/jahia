@@ -72,6 +72,9 @@ public class PermissionIdentity extends BaseIdentity implements Permission {
     public PermissionIdentity(String name, String group, String site) {
         super(group == null ? (name.contains("/") ? StringUtils.substringAfter(name, "/") : name) : name, site);
         this.group = group != null ? group : (name.contains("/") ? StringUtils.substringBefore(name, "/") : null);
+        if (this.group == null) {
+            this.group = "global";
+        } 
     }
 
     /*

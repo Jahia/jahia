@@ -185,6 +185,28 @@ public class RoleBasedAccessControlManager {
     }
 
     /**
+     * Returns a list of principals having the specified permission or an empty
+     * list if the permission is not granted to anyone.
+     * 
+     * @param permission the permission to check for
+     * @param session current JCR session
+     * @return a list of principals having the specified permission or an empty
+     *         list if the permission is not granted to anyone
+     * @throws RepositoryException in case of an error
+     * @throws PathNotFoundException in case the specified permission cannot be
+     *             found
+     */
+    public List<JahiaPrincipal> getPrincipalsInPermission(Permission permission, JCRSessionWrapper session)
+            throws PathNotFoundException, RepositoryException {
+        Set<JahiaPrincipal> principals = new LinkedHashSet<JahiaPrincipal>();
+        for (RoleImpl role : roleManager.getRolesInPermission(permission, session)) {
+            principals.addAll(getPrincipalsInRole(role, session));
+        }
+
+        return principals.isEmpty() ? EMPTY_PRINCIPAL_LIST : new LinkedList<JahiaPrincipal>(principals);
+    }
+
+    /**
      * Returns a list of principals having the specified role or an empty list
      * if the role is not granted to anyone.
      * 
@@ -283,15 +305,15 @@ public class RoleBasedAccessControlManager {
     private boolean hasDirectPermission(String principalPath, Permission permission, JCRSessionWrapper session)
             throws InvalidQueryException, RepositoryException {
         boolean hasIt = false;
+        JCRNodeWrapper permissionNode = roleManager.loadPermissionNode(permission, session);
         QueryResult result = session.getWorkspace().getQueryManager().createQuery(
                 "/jcr:root" + principalPath + "/jcr:deref(@" + PROPERTY_ROLES + ", '*')/jcr:deref(@"
                         + PROPERTY_PERMISSSIONS + ", " + JCRContentUtils.stringToQueryLiteral(permission.getName())
                         + ")", Query.XPATH).execute();
         // the permission is specified by path
-        // TODO correctly check the path
         for (NodeIterator iterator = result.getNodes(); iterator.hasNext();) {
             Node node = iterator.nextNode();
-            if (node.getPath().equals(permission)) {
+            if (node.getIdentifier().equals(permissionNode.getIdentifier())) {
                 hasIt = true;
                 break;
             }
@@ -405,6 +427,38 @@ public class RoleBasedAccessControlManager {
         JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
         return principalNode != null ? hasDirectPermission(principalNode.getPath(), permission, session)
                 || hasInheritedPermission(principal, principalNode, permission, session) : false;
+    }
+
+    /**
+     * Revokes all roles from the specified principal.
+     * 
+     * @param principal principal to revoke roles from
+     * @param session current JCR session
+     * @throws RepositoryException in case of an error
+     */
+    public void revokeAllRoles(final JahiaPrincipal principal, JCRSessionWrapper session) throws RepositoryException {
+
+        JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
+        if (principalNode != null && principalNode.isNodeType(JMIX_ROLE_BASED_ACCESS_CONTROLLED)
+                && principalNode.hasProperty(PROPERTY_ROLES)) {
+            Value[] values = principalNode.getProperty(PROPERTY_ROLES).getValues();
+            if (values != null) {
+                if (values.length != 0) {
+                    session.checkout(principalNode);
+                    principalNode.setProperty(PROPERTY_ROLES, new Value[] {});
+                    session.save();
+                    invalidateCache(principal);
+                }
+            }
+        } else {
+            if (principalNode == null) {
+                logger.warn("Unable to find corresponding JCR node for principal " + principal
+                        + ". Skip revoking roles.");
+            } else {
+                logger.warn("Principal '" + principal.getName()
+                        + "' does not have any roles assigned. Skip revoking roles.");
+            }
+        }
     }
 
     /**
@@ -558,27 +612,6 @@ public class RoleBasedAccessControlManager {
 
         }
         return principal;
-    }
-
-    /**
-     * Returns a list of principals having the specified permission or an empty
-     * list if the permission is not granted to anyone.
-     * 
-     * @param permission the permission to check for
-     * @param session current JCR session
-     * @return a list of principals having the specified permission or an empty
-     *         list if the permission is not granted to anyone
-     * @throws RepositoryException in case of an error
-     * @throws PathNotFoundException in case the specified permission cannot be found
-     */
-    public List<JahiaPrincipal> getPrincipalsInPermission(Permission permission, JCRSessionWrapper session)
-            throws PathNotFoundException, RepositoryException {
-        Set<JahiaPrincipal> principals = new LinkedHashSet<JahiaPrincipal>();
-        for (RoleImpl role : roleManager.getRolesInPermission(permission, session)) {
-            principals.addAll(getPrincipalsInRole(role, session));
-        }
-
-        return principals.isEmpty() ? EMPTY_PRINCIPAL_LIST : new LinkedList<JahiaPrincipal>(principals);
     }
 
 }

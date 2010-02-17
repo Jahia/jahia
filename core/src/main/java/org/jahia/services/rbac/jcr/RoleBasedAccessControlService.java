@@ -64,6 +64,23 @@ public class RoleBasedAccessControlService {
     private RoleBasedAccessControlManager rbacManager;
 
     /**
+     * Returns a list of principals having the specified permission or an empty
+     * list if the permission is not granted to anyone.
+     * 
+     * @param permission the permission to check for
+     * @return a list of principals having the specified permission or an empty
+     *         list if the permission is not granted to anyone
+     * @throws RepositoryException in case of an error
+     */
+    public List<JahiaPrincipal> getPrincipalsInPermission(final Permission permission) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
+            public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                return rbacManager.getPrincipalsInPermission(permission, session);
+            }
+        });
+    }
+
+    /**
      * Returns a list of principals having the specified role or an empty list
      * if the role is not granted to anyone.
      * 
@@ -94,19 +111,6 @@ public class RoleBasedAccessControlService {
     }
 
     /**
-     * Revokes a role from the specified principal.
-     * 
-     * @param principal principal to revoke the role from
-     * @param role the role to be revoked
-     * @throws RepositoryException in case of an error
-     */
-    public void revokeRole(final JahiaPrincipal principal, final Role role) throws RepositoryException {
-        List<Role> revoked = new LinkedList<Role>();
-        revoked.add(role);
-        revokeRoles(principal, revoked);
-    }
-
-    /**
      * Grants roles to the specified principal.
      * 
      * @param principal principal to grant roles to
@@ -121,26 +125,6 @@ public class RoleBasedAccessControlService {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 rbacManager.grantRoles(principal, roles, session);
-                return true;
-            }
-        });
-    }
-
-    /**
-     * Revokes roles from the specified principal.
-     * 
-     * @param principal principal to revoke roles from
-     * @param roles the list of roles to be revoked
-     * @throws RepositoryException in case of an error
-     */
-    public void revokeRoles(final JahiaPrincipal principal, final List<Role> roles) throws RepositoryException {
-        if (roles == null || roles.isEmpty()) {
-            return;
-        }
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                rbacManager.revokeRoles(principal, roles, session);
                 return true;
             }
         });
@@ -172,6 +156,7 @@ public class RoleBasedAccessControlService {
             });
         } catch (PathNotFoundException e) {
             logger.debug("Corresponding node cannot be found for role: " + role);
+            hasIt = policy.isPermitNonExistingRoles();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -203,11 +188,60 @@ public class RoleBasedAccessControlService {
             });
         } catch (PathNotFoundException e) {
             logger.debug("Corresponding node cannot be found for permission: " + permission);
+            hasIt = policy.isPermitNonExistingPermissions();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 
         return hasIt;
+    }
+
+    /**
+     * Revokes all roles from the specified principal.
+     * 
+     * @param principal principal to revoke roles from
+     * @throws RepositoryException in case of an error
+     */
+    public void revokeAllRoles(final JahiaPrincipal principal) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                rbacManager.revokeAllRoles(principal, session);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Revokes a role from the specified principal.
+     * 
+     * @param principal principal to revoke the role from
+     * @param role the role to be revoked
+     * @throws RepositoryException in case of an error
+     */
+    public void revokeRole(final JahiaPrincipal principal, final Role role) throws RepositoryException {
+        List<Role> revoked = new LinkedList<Role>();
+        revoked.add(role);
+        revokeRoles(principal, revoked);
+    }
+
+    /**
+     * Revokes roles from the specified principal.
+     * 
+     * @param principal principal to revoke roles from
+     * @param roles the list of roles to be revoked
+     * @throws RepositoryException in case of an error
+     */
+    public void revokeRoles(final JahiaPrincipal principal, final List<Role> roles) throws RepositoryException {
+        if (roles == null || roles.isEmpty()) {
+            return;
+        }
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                rbacManager.revokeRoles(principal, roles, session);
+                return true;
+            }
+        });
     }
 
     /**
@@ -227,23 +261,6 @@ public class RoleBasedAccessControlService {
      */
     public void setRoleBasedAccessControlManager(RoleBasedAccessControlManager roleBasedAccessControlManager) {
         this.rbacManager = roleBasedAccessControlManager;
-    }
-
-    /**
-     * Returns a list of principals having the specified permission or an empty
-     * list if the permission is not granted to anyone.
-     * 
-     * @param permission the permission to check for
-     * @return a list of principals having the specified permission or an empty
-     *         list if the permission is not granted to anyone
-     * @throws RepositoryException in case of an error
-     */
-    public List<JahiaPrincipal> getPrincipalsInPermission(final Permission permission) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
-            public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return rbacManager.getPrincipalsInPermission(permission, session);
-            }
-        });
     }
 
 }

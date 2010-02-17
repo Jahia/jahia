@@ -19,7 +19,7 @@ public class EnforcementPolicy {
         public boolean isDenyAll() {
             return true;
         }
-        
+
     }
 
     public static class EnforcementPolicyResult {
@@ -40,14 +40,14 @@ public class EnforcementPolicy {
         }
 
     }
-    
+
     public static class GrantAllEnforcementPolicy extends EnforcementPolicy {
 
         @Override
         public boolean isGrantAll() {
             return true;
         }
-        
+
     }
 
     private static final EnforcementPolicyResult NON_MATCHED_POLICY_RESULT = new EnforcementPolicyResult(false) {
@@ -71,6 +71,10 @@ public class EnforcementPolicy {
     private boolean grantAll = true;
 
     private boolean grantAllToRoot = true;
+
+    private boolean permitNonExistingPermissions = false;
+
+    private boolean permitNonExistingRoles = false;
 
     /**
      * Initializes an instance of this class.
@@ -174,6 +178,31 @@ public class EnforcementPolicy {
     }
 
     /**
+     * If the requested permission is not found in the system the
+     * {@link JahiaPrincipal#isPermitted(Permission)} will always evaluate to
+     * <code>true</code> for this permission.
+     * 
+     * @return <code>true</code> if the
+     *         {@link JahiaPrincipal#isPermitted(Permission)} will always
+     *         evaluate to <code>true</code> for non-existing permissions
+     */
+    public boolean isPermitNonExistingPermissions() {
+        return permitNonExistingPermissions;
+    }
+
+    /**
+     * Returns <code>true</code> if the {@link JahiaPrincipal#hasRole(Role)} is
+     * forced to always evaluate to <code>true</code> for non-existing roles.
+     * 
+     * @return <code>true</code> if the {@link JahiaPrincipal#hasRole(Role)} is
+     *         forced to always evaluate to <code>true</code> for non-existing
+     *         roles
+     */
+    public boolean isPermitNonExistingRoles() {
+        return permitNonExistingRoles;
+    }
+
+    /**
      * Test if the current principal is the root system user.
      * 
      * @return {@code true} if this principal is the root system user
@@ -220,6 +249,30 @@ public class EnforcementPolicy {
      */
     public void setGrantAllToRoot(boolean grantAllToRoot) {
         this.grantAllToRoot = grantAllToRoot;
+    }
+
+    /**
+     * Set this to true to force {@link JahiaPrincipal#isPermitted(Permission)}
+     * always evaluate to <code>true</code> for non-existing permissions.
+     * 
+     * @param permitNonExistingPermission <code>true</code> if the
+     *            {@link JahiaPrincipal#isPermitted(Permission)} will always
+     *            evaluate to <code>true</code> for non-existing permissions
+     */
+    public void setPermitNonExistingPermission(boolean permitNonExistingPermission) {
+        this.permitNonExistingPermissions = permitNonExistingPermission;
+    }
+
+    /**
+     * Set this to true to force {@link JahiaPrincipal#hasRole(Role)} always
+     * evaluate to <code>true</code> for non-existing roles.
+     * 
+     * @param permitNonExistingRoles <code>true</code> if the
+     *            {@link JahiaPrincipal#hasRole(Role)} will always evaluate to
+     *            <code>true</code> for non-existing roles
+     */
+    public void setPermitNonExistingRoles(boolean permitNonExistingRoles) {
+        this.permitNonExistingRoles = permitNonExistingRoles;
     }
 
 }

@@ -73,6 +73,9 @@ public class PublicationHelper {
                 if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
                     lastPub.setStatus(pi.getStatus());
                 }
+                if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    lastPub.setStatus(pi.getStatus());
+                }
             } else if (full && entry.getKey().indexOf("/j:translation") == -1) {
                 lastPub = convert(entry.getKey(), pi, full, currentUserSession);
                 gwtInfo.add(lastPub);

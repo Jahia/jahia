@@ -51,6 +51,7 @@ import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -235,7 +236,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
 
-
     public int doEndTag() {
         final StringBuilder buf = new StringBuilder("\n\t</div>\n");
 
@@ -254,6 +254,18 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 // Generate jahia_gwt_dictionnary
                 Map<String, String> dictionaryMap = getJahiaGwtDictionary();
                 if (dictionaryMap != null) {
+                    Locale currentLocale = request.getLocale();
+                    if (renderContext != null) {
+                        addMandatoryGwtMessages(renderContext.getUILocale(), currentLocale);
+                    } else {
+                        // we fall back to JahiaData for the administration interface, where this tag is also used.
+                        JahiaData jahiaData = (JahiaData) pageContext.findAttribute("org.jahia.data.JahiaData");
+                        if (jahiaData != null) {
+                            addMandatoryGwtMessages(jahiaData.getProcessingContext().getUILocale(), currentLocale);
+                        } else {
+                            addMandatoryGwtMessages(null, currentLocale);
+                        }
+                    }
                     buf.append("<script type='text/javascript'>\n");
                     buf.append(generateJahiaGwtDictionary());
                     buf.append("</script>\n");
@@ -291,6 +303,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     // google analytics
+
     private String gaTrackingCode(JahiaData jData) {
 
         String GATC = "\n<script type=\"text/javascript\">\n" + "var gaJsHost = ((\"https:\" == document.location.protocol) " +
@@ -333,6 +346,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     // check if there is at least one profile is enabled
+
     private boolean checkGAprofileOn(JahiaSite jahiaSite) {
         boolean atLeast1TPon = false;
         // google analytics
@@ -351,6 +365,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
     // check if there is at least one profile is configured
+
     private boolean checkGAprofilePresent(JahiaSite jahiaSite) {
         boolean atLeast1TPconf = false;
         // google analytics

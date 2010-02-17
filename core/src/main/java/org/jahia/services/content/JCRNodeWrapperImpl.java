@@ -1225,7 +1225,31 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             parent.checkout();
         }
 
+        // the following code is use to conserve the ordering when renaming a node, we do this only if the parent
+        // node is orderable.
+        String nextNodeName = null;
+        boolean nodePositionFound = false;
+        if (parent.getDefinition().getDeclaringNodeType().hasOrderableChildNodes()) {
+            NodeIterator nodeIterator = parent.getNodes();
+            while (nodeIterator.hasNext()) {
+                Node currentNode = nodeIterator.nextNode();
+                if (currentNode.getIdentifier().equals(getIdentifier())) {
+                    nodePositionFound = true;
+                    if (nodeIterator.hasNext()) {
+                        nextNodeName = nodeIterator.nextNode().getName();
+                    } else {
+                        // do nothing, we will keep null as the nextNode value
+                    }
+                    break;
+                }
+            }
+        }
+
         getSession().move(getPath(), parent.getPath() + "/" + newName);
+
+        if ((nodePositionFound) && (parent.getDefinition().getDefaultPrimaryType().hasOrderableChildNodes())) {
+            parent.orderBefore(newName, nextNodeName);
+        }
         return true;
     }
 

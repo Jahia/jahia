@@ -408,10 +408,10 @@
     <bean id="SearchService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
-            	<property name="searchProvider">
-            		<bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
-            	</property>
+            	<property name="searchProvider" ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
             </bean>
         </property>
-    </bean>    
+    </bean>
+
+    <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
 </beans>

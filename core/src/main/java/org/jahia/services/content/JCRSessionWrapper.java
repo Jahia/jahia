@@ -119,7 +119,7 @@ public class JCRSessionWrapper implements Session {
     }
 
 
-    public Node getRootNode() throws RepositoryException {
+    public JCRNodeWrapper getRootNode() throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getProvider("/");
         return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), this);
     }

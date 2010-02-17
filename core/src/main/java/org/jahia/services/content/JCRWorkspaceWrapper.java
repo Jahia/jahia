@@ -180,14 +180,25 @@ public class JCRWorkspaceWrapper implements Workspace {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper sourceNode = session.getNode(sourcePath);
                         JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(destination,"/"));
+                        String sourceParentPath = StringUtils.substringBeforeLast(sourcePath,"/");
+                        if (parentNode.getPath().equals(sourceParentPath)) {
+                            // rename case
+                            JCRNodeWrapper userFolder = session.getNode(JCRStoreService.getInstance().getUserFolders(null, session.getUser()).iterator().next().getPath());
+                            if (!userFolder.hasNode("tmp")) {
+                                userFolder.addNode("tmp", "jnt:contentList");
+                            }
+                            JCRNodeWrapper newSourceNode = userFolder.getNode("tmp").clone(sourceNode, sourceNode.getIdentifier());
+                            sourceNode.removeShare();
+                            sourceNode = newSourceNode;
+                        }
                         parentNode.clone(sourceNode, StringUtils.substringAfterLast(destination,"/"));
                         List<Value> values = new ArrayList<Value>();
-                        String v = sourceNode.getPath() + ":::" + destination;
+                        String v = sourcePath + ":::" + destination;
                         if (sourceNode.hasProperty("j:movedFrom")) {
                             values.addAll(Arrays.asList(sourceNode.getProperty("j:movedFrom").getValues()));
                             for (Value value : values) {
                                 String s = value.getString();
-                                if (s.endsWith(":::"+sourceNode.getPath())) {
+                                if (s.endsWith(":::"+sourcePath)) {
                                     v = StringUtils.substringBefore(s,":::") + ":::" + destination;
                                     values.remove(value);
                                     break;

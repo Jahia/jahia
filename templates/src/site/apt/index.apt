@@ -18,4 +18,8 @@ Jahia Crazy Jane - Templates Module
 
 	* Areas
 
-	  How to use and develop {{{areas.html} areas in a module}}.  
+	  How to use and develop {{{areas.html} areas in a module}}.
+
+	* JQuery
+
+	  Recommendations about {{{jquery.html} JQuery usages}}.

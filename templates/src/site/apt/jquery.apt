@@ -1,0 +1,7 @@
+Crazy Jane - Jahia Templates - Jquery usages
+
+Some of our modules use Jquery as javascript framework.
+
+For development we use the full version of the scripts.
+
+For production we strongly suggest developers to minified their script files.

@@ -3,17 +3,22 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="org.jahia.services.rbac.RoleBasedAccessControlService" class="org.jahia.services.rbac.jcr.RoleBasedAccessControlServiceImpl">
+    <bean id="org.jahia.services.rbac.jcr.RoleManager" class="org.jahia.services.rbac.jcr.RoleManager"/>
+    
+    <bean id="org.jahia.services.rbac.jcr.RoleService" class="org.jahia.services.rbac.jcr.RoleService">
     	<property name="roleManager" ref="org.jahia.services.rbac.jcr.RoleManager"/>
+    </bean>
+
+	<bean id="org.jahia.services.rbac.jcr.RoleBasedAccessControlManager" class="org.jahia.services.rbac.jcr.RoleBasedAccessControlManager">
+		<property name="roleManager" ref="org.jahia.services.rbac.jcr.RoleManager"/>
     	<property name="groupManager" ref="JahiaGroupManagerService"/>
     	<property name="JCRGroupManagerProvider" ref="JCRGroupManagerProvider"/>
-    </bean>
-
-    <bean id="org.jahia.services.rbac.jcr.RoleManager" class="org.jahia.services.rbac.jcr.RoleManager">
     	<property name="JCRUserManagerProvider" ref="JCRUserManagerProvider"/>
-    	<property name="JCRGroupManagerProvider" ref="JCRGroupManagerProvider"/>
     	<property name="sitesService" ref="JahiaSitesService"/>
+	</bean>
+	
+    <bean id="org.jahia.services.rbac.jcr.RoleBasedAccessControlService" class="org.jahia.services.rbac.jcr.RoleBasedAccessControlService">
+    	<property name="roleBasedAccessControlManager" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlManager"/>
     </bean>
 
-	<bean id="org.jahia.services.rbac.jcr.SystemRoleManager" class="org.jahia.services.rbac.jcr.SystemRoleManager" parent="org.jahia.services.rbac.jcr.RoleManager"/>
 </beans>

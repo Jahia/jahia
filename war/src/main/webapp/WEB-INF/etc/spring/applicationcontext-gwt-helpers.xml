@@ -71,7 +71,8 @@
     </bean>
 
     <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">
-    	<property name="roleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager"/>
+    	<property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService"/>
+    	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
     </bean>

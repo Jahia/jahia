@@ -34,6 +34,7 @@
 <%@page import="org.jahia.params.ParamBean" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
+<%@page import="org.jahia.services.rbac.PermissionIdentity"%>
 <%@include file="/admin/include/header.inc" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
@@ -161,7 +162,7 @@
                                                                                            value="true"/><% } %>
     </td>
 </tr>
-<% if (jParams.getUser().isPermitted("global/password-policy")) { %>
+<% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
 <tr>
     <td>
         <label for="enforcePasswordPolicy">

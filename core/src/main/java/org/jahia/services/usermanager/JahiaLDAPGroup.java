@@ -280,10 +280,6 @@ public class JahiaLDAPGroup extends JahiaGroup {
 
    public boolean isMember(Principal principal) {
        Principal user = principal;
-       if (user instanceof JahiaUserAliasing) {
-           JahiaUserAliasing jahiaUserAliasing = (JahiaUserAliasing) user;
-           user = jahiaUserAliasing.getUser();
-       }
        if (!(user instanceof JahiaLDAPUser) && !(user instanceof JahiaLDAPGroup)) {
            return false;
        }

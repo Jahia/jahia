@@ -53,7 +53,7 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaContentManagementServiceAsync {
+public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsync {
 
     void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
 
@@ -182,31 +182,6 @@ public interface JahiaContentManagementServiceAsync {
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getPermission(boolean currentSite, AsyncCallback<List<GWTJahiaPermission>> async) ;
-
-    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async) ;
-
-
-    void getRoles(String siteKey,boolean isGroup,String principalKey, AsyncCallback<List<GWTJahiaRole>> async);
-
-    void getPrincipalsInRole(GWTJahiaRole role, AsyncCallback<List<GWTJahiaPrincipal>> async);
-
-    void getRolesAndPermissions(String site, AsyncCallback<GWTRolesPermissions> async);
-
-    void createPermission(String name, String group, String siteKey, AsyncCallback<GWTJahiaPermission> async);
-
-    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
-
-    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
-
-    void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey, AsyncCallback async);
-
-    void removeRoleToPrincipal(GWTJahiaRole role, String principalKey, AsyncCallback async);
-
-    void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
-
-    void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, AsyncCallback async);
 

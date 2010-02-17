@@ -113,7 +113,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         final GroupingStore<GWTJahiaPermission> store = new GroupingStore<GWTJahiaPermission>();
         store.add(permissions);
         store.groupBy("group");
-        store.sort("label", SortDir.ASC);
+        store.sort("name", SortDir.ASC);
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
             final ColumnModel cm = new ColumnModel(configs);
@@ -241,25 +241,25 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                     // adding a permission
                     contentService.addRolePermissions(role, permissions, new AsyncCallback<Object>() {
                         public void onSuccess(Object o) {
-                            Log.debug("permissions added to role " + role.getId());
+                            Log.debug("permissions added to role " + role.getName());
                             role.getPermissions().clear();
                             role.getPermissions().addAll(permissions);
                             updateState();
                         }
                         public void onFailure(Throwable throwable) {
-                            Log.error("Error while adding a permissions to a role " + role.getId(), throwable);
+                            Log.error("Error while adding a permissions to a role " + role.getName(), throwable);
                         }
                     });
                 } else {
                     // removing a permission
                     contentService.removeRolePermissions(role, permissions, new AsyncCallback<Object>() {
                         public void onSuccess(Object o) {
-                            Log.debug("permissions revoked from role " + role.getId());
+                            Log.debug("permissions revoked from role " + role.getName());
                             role.getPermissions().clear();
                             updateState();
                         }
                         public void onFailure(Throwable throwable) {
-                            Log.error("Error revoking permissions from role " + role.getId(), throwable);
+                            Log.error("Error revoking permissions from role " + role.getName(), throwable);
                         }
                     });
                 }
@@ -286,7 +286,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
     private List<ColumnConfig> createColumnsConfig() {
         final List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig();
-        column.setId("label");
+        column.setId("name");
         column.setHeader("");
         column.setWidth(200);
         configs.add(column);
@@ -305,7 +305,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                 final CheckBox checkbox = new CheckBox();
                 final GWTJahiaRole role = roles.get(colIndex - index);
                 checkbox.setValue(role.hasPermission(currentPermission));
-                checkbox.setToolTip(currentPermission.getLabel());
+                checkbox.setToolTip(currentPermission.getName());
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         final List<GWTJahiaPermission> pList = new ArrayList<GWTJahiaPermission>();
@@ -349,8 +349,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         for (GWTJahiaRole role : roles) {
             column = new ColumnConfig();
             column.setRenderer(rolePermissionRenderer);
-            column.setId(role.getLabel());
-            column.setHeader(role.getLabel());
+            column.setId(role.getName());
+            column.setHeader(role.getName());
             column.setWidth(100);
             column.setSortable(false);
             column.setGroupable(false);

@@ -32,19 +32,28 @@
 
 package org.jahia.services.rbac.jcr;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.jahia.services.rbac.Role;
 
 /**
- * Implementation of the role in Jahia that uses JCR persistence and is targeted
- * for a particular virtual site.
+ * Default implementation of the role in Jahia that uses JCR persistence.
  * 
  * @author Sergiy Shyrkov
  */
-public class JCRSiteRole extends JCRRole {
+public class RoleImpl extends BaseImpl implements Role {
 
-    private String site;
+    private Set<PermissionImpl> permissions = new LinkedHashSet<PermissionImpl>();
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of the the role
+     */
+    public RoleImpl(String name) {
+        super(name);
+    }
 
     /**
      * Initializes an instance of this class.
@@ -53,45 +62,28 @@ public class JCRSiteRole extends JCRRole {
      * @param site the virtual site key current role is limited to
      * @param description the description of this role
      */
-    public JCRSiteRole(String name, String site) {
-        super(name);
-        this.site = site;
+    public RoleImpl(String name, String site) {
+        super(name, site);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JCRSiteRole)) {
-            return false;
+    /**
+     * Returns a set of permission implied by this role.
+     * 
+     * @return a set of permission implied by this role
+     */
+    public Set<PermissionImpl> getPermissions() {
+        return permissions;
+    }
+
+    /**
+     * Sets a set of permissions for this role.
+     * 
+     * @param permissions a set of permissions for this role
+     */
+    public void setPermissions(Set<PermissionImpl> permissions) {
+        this.permissions.clear();
+        if (permissions != null) {
+            this.permissions.addAll(permissions);
         }
-        JCRSiteRole another = (JCRSiteRole) obj;
-        return new EqualsBuilder().append(getName(), another.getName()).append(getSite(), another.getSite()).isEquals();
-    }
-
-    /**
-     * The virtual site key current role is limited to.
-     * 
-     * @return virtual site key current role is limited to
-     */
-    public String getSite() {
-        return site;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getSite()).toHashCode();
-    }
-
-    /**
-     * Sets the key of the target virtual site.
-     * 
-     * @param site the key of the target virtual site
-     */
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 }

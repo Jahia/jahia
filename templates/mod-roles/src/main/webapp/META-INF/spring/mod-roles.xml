@@ -3,8 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
-    <bean class="org.jahia.services.rbac.RoleBasedAccessControlServiceEnabler">
-    	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.RoleBasedAccessControlService"/>
+    <bean class="org.jahia.services.rbac.jcr.RoleBasedAccessControlServiceEnabler">
+    	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlService"/>
     	<property name="enformcementPolicy">
     		<bean class="org.jahia.services.rbac.EnforcementPolicy">
     			<property name="denyAll" value="false"/>
@@ -20,7 +20,7 @@
             <map>
                 <entry key="roleService">
                     <bean class="org.jahia.modules.roles.rules.RoleService">
-                    	<property name="roleManager" ref="org.jahia.services.rbac.jcr.SystemRoleManager" />
+                    	<property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService" />
                     </bean>
                 </entry>
             </map>

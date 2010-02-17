@@ -17,6 +17,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
@@ -48,7 +49,7 @@ public class RolePrincipalPanel extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         //setLayout(new FitLayout());
-        Log.debug("Get role fort site: " + siteKey);
+        Log.debug("Get role for site: " + siteKey);
         JahiaContentManagementService.App.getInstance().getRoles(siteKey, isGroup, principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
             public void onSuccess(List<GWTJahiaRole> gwtRoles) {
                 roles = gwtRoles;
@@ -74,7 +75,7 @@ public class RolePrincipalPanel extends LayoutContainer {
             List<GWTJahiaPermission> permissions = r.getPermissions();
             String permLabels = "";
             for (int j = 0; j < permissions.size(); j++) {
-                permLabels += permissions.get(j).getLabel();
+                permLabels += permissions.get(j).getName();
                 if (j < permissions.size()) {
                     permLabels += "<br/>";
                 }
@@ -127,27 +128,25 @@ public class RolePrincipalPanel extends LayoutContainer {
         configs.add(expander);
 
         ColumnConfig column = new ColumnConfig();
-        column.setId("label");
-        column.setHeader("Role name");
-        column.setWidth(550);
+        column.setId("name");
+        column.setHeader(Messages.get("label.roleName", "Role name"));
+        column.setWidth(475);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("site");
-        column.setHeader(" ");
-        column.setWidth(50);
+        column.setHeader(Messages.get("label.site", "Site"));
+        column.setWidth(100);
         configs.add(column);
 
-        final int index = configs.size();
         final GridCellRenderer<GWTJahiaRole> rolePermissionRenderer = new GridCellRenderer<GWTJahiaRole>() {
             public Object render(final GWTJahiaRole currentRole, String property, ColumnData config, final int rowIndex,
                                  final int colIndex, ListStore<GWTJahiaRole> store, Grid<GWTJahiaRole> grid) {
 
                 final CheckBox checkbox = new CheckBox();
-                final GWTJahiaRole role = roles.get(colIndex - index);
-                Log.debug("*********** "+role.get("grant"));
+                final GWTJahiaRole role = roles.get(rowIndex);
                 checkbox.setValue(role.get("grant") != null);
-                checkbox.setToolTip(currentRole.getLabel());
+                checkbox.setToolTip(currentRole.getName());
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
@@ -161,13 +160,13 @@ public class RolePrincipalPanel extends LayoutContainer {
                                 }
                             });
                         } else {
-                            contentService.removeRoleToPrincipal(role, principalKey, new AsyncCallback() {
+                            contentService.removeRoleToPrincipal(role, isGroup, principalKey, new AsyncCallback() {
                                 public void onSuccess(Object o) {
-                                    Log.debug("role granted");
+                                    Log.debug("role revoked");
                                 }
 
                                 public void onFailure(Throwable throwable) {
-                                    Log.error("Error while removing role to user", throwable);
+                                    Log.error("Error while removing role from principal " + principalKey, throwable);
                                 }
                             });
                         }
@@ -181,7 +180,7 @@ public class RolePrincipalPanel extends LayoutContainer {
         column = new ColumnConfig();
         column.setRenderer(rolePermissionRenderer);
         column.setId("user");
-        column.setHeader("Grant");
+        column.setHeader(Messages.get("label.grant", "Grant"));
         column.setWidth(100);
         configs.add(column);
 

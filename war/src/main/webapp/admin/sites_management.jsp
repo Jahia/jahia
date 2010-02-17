@@ -41,6 +41,7 @@
 <%@ page import="java.util.Date" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
+<%@page import="org.jahia.services.rbac.PermissionIdentity"%>
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ page import="java.io.File" %>
@@ -321,7 +322,7 @@
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted("actions/import", site.getSiteKey()) 
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey())) 
                                 && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
@@ -466,7 +467,7 @@ else { %>
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted("actions/import")
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", null))
                                 && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">

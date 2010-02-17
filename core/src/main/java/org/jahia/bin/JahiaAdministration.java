@@ -80,6 +80,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -133,7 +134,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
     private static final long serialVersionUID = 332486402871252316L;
 
     private static Logger logger = Logger.getLogger(JahiaAdministration.class);
-
+    
     private static ServletConfig config;
     private static ServletContext context;
 
@@ -308,11 +309,11 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
 
 
     private boolean hasServerPermission(String permissionName, ProcessingContext jParams) {
-        return jParams.getUser().isPermitted(permissionName);
+        return jParams.getUser().isPermitted(new PermissionIdentity(permissionName));
     }
 
     private boolean hasSitePermission(String permissionName, ProcessingContext jParams) {
-        return jParams.getUser().isPermitted(permissionName, jParams.getSiteKey());
+        return jParams.getUser().isPermitted(new PermissionIdentity(permissionName, jParams.getSiteKey()));
     }
 
     //-------------------------------------------------------------------------
@@ -847,8 +848,8 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     .getJahiaSitesService().getSite(siteID);
 
             if ((group != null && group.isMember(theUser))
-                    || (theUser.isPermitted("admin/jahia-administration",
-                            currentSite.getSiteKey()))) {
+                    || (theUser.isPermitted(new PermissionIdentity("jahia-administration", "admin",
+                            currentSite.getSiteKey())))) {
                 List<Locale> languageSettingsAsLocales = currentSite
                         .getLanguagesAsLocales();
                 final Locale localeSession = (Locale) session
@@ -951,8 +952,8 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     return false; // group might have been deleted
                 }
                 if (theGroup.isMember(theUser) ||
-                        (theUser.isPermitted("admin/jahia-administration",
-                                        theSite.getSiteKey()))) {
+                        (theUser.isPermitted(new PermissionIdentity("jahia-administration", "admin",
+                                        theSite.getSiteKey())))) {
                     // check if the user is a super admin or not...
                     JahiaGroup superAdminGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {
@@ -1212,7 +1213,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     JahiaSiteTools.getAdminGroup(jahiaSite).isMember(user)) {
                 logger.debug("granted site for " + jahiaSite.getServerName());
                 grantedSites.add(jahiaSite);
-            } else if (user.isPermitted("admin/jahia-administration", jahiaSite.getSiteKey())) {
+            } else if (user.isPermitted(new PermissionIdentity("jahia-administration", "admin", jahiaSite.getSiteKey()))) {
                 logger.debug("granted site for " + jahiaSite.getServerName());
                 grantedSites.add(jahiaSite);
             }

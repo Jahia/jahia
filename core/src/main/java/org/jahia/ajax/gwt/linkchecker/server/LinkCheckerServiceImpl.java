@@ -45,14 +45,13 @@ import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
-import org.jahia.data.fields.FieldTypes;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.integrity.Link;
 import org.jahia.services.integrity.LinkValidationResult;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -180,9 +179,7 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
     }
 
     private boolean hasAccess(JahiaUser user, String siteKey) {
-        return user.isPermitted(
-                linkCheckerAdministrationModule.getPermissionName(),
-                siteKey);
+        return user.isPermitted(new PermissionIdentity(linkCheckerAdministrationModule.getPermissionName(), siteKey));
     }
 
     /**

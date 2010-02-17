@@ -41,7 +41,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.NodeWrapper;
-import org.jahia.services.rbac.jcr.SystemRoleManager;
+import org.jahia.services.rbac.PermissionIdentity;
 
 /**
  * Roles/permissions service class that is used in right-hand-side
@@ -51,15 +51,15 @@ import org.jahia.services.rbac.jcr.SystemRoleManager;
  */
 public class RoleService {
 
-    private SystemRoleManager roleManager;
+    private org.jahia.services.rbac.jcr.RoleService roleService;
 
     /**
      * Injects an instance of the role manager service.
      * 
-     * @param roleManager an instance of the role manager service
+     * @param roleService an instance of the role manager service
      */
-    public void setRoleManager(SystemRoleManager roleManager) {
-        this.roleManager = roleManager;
+    public void setRoleService(org.jahia.services.rbac.jcr.RoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
@@ -76,7 +76,7 @@ public class RoleService {
                 final String siteKey = siteNode.getName();
                 final Value[] languages = siteNode.getProperty("j:languages").getValues();
                 for (Value language : languages) {
-                    roleManager.savePermission(language.getString(), "languages", siteKey);
+                    roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
                 }
                 return true;
             }

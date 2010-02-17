@@ -50,7 +50,6 @@
     </bean>
     <bean name="gwtJahiaContentManagenentService" class="org.jahia.ajax.gwt.content.server.JahiaContentManagementServiceImpl" scope="prototype">
     <property name="acl" ref="ACLHelper"/>
-        <property name="preferencesService" ref="JahiaPreferencesService"/>
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
         <property name="contentHub" ref="ContentHubHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>

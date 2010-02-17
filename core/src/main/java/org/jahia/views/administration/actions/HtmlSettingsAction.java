@@ -54,6 +54,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -123,8 +124,8 @@ public class HtmlSettingsAction extends AdminAction {
             throws Exception {
         JahiaData jData = (JahiaData) request
                 .getAttribute("org.jahia.data.JahiaData");
-        if (!jData.getProcessingContext().getUser().isPermitted("admin/html-editors-admin",
-                        jData.getProcessingContext().getSiteKey())) {
+        if (!jData.getProcessingContext().getUser().isPermitted(new PermissionIdentity("html-editors-admin", "admin",
+                        jData.getProcessingContext().getSiteKey()))) {
 
             throw new JahiaForbiddenAccessException();
         }

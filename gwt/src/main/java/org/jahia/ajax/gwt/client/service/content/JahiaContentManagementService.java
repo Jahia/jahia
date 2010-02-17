@@ -57,7 +57,7 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaContentManagementService extends RemoteService {
+public interface JahiaContentManagementService extends RemoteService, RoleRemoteService {
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -192,31 +192,6 @@ public interface JahiaContentManagementService extends RemoteService {
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
-
-    public List<GWTJahiaPermission> getPermission(boolean currentSite) throws GWTJahiaServiceException;
-
-    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
-
-    public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException;
-
-    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) throws GWTJahiaServiceException;
-
-
-    public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException;
-
-    GWTJahiaPermission createPermission(String name, String group, String siteKey) throws GWTJahiaServiceException;
-
-    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
-
-    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
-
-    public void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey) throws GWTJahiaServiceException;
-
-    public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) throws GWTJahiaServiceException;
-
-    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException;
-
-    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException;
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition) throws GWTJahiaServiceException;
 

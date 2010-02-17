@@ -865,7 +865,9 @@ public class ContentDetails extends BottomRightComponent {
         if (selectedNodes.size() == 1) {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
             if (!principalRoleTabItem.isProcessed()) {
-                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(new GWTJahiaRole(selectedNode.getPath(), selectedNode.getName()));
+                String path = selectedNode.getPath();
+                String site = path.startsWith("/sites/") ? path.substring("/sites/".length(), path.indexOf("/", "/sites/".length())) : null; 
+                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(new GWTJahiaRole(selectedNode.getName(), site));
                 if (principalRoleTabItem.getItemCount() > 0) {
                     principalRoleTabItem.getItem(0).removeFromParent();
                 }

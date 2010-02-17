@@ -3,17 +3,17 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.params.ParamBean;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for language-related actions.
  * User: ktlili
  * Date: Jan 18, 2010
  * Time: 2:16:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class LanguageHelper {
     private static Logger logger = Logger.getLogger(LanguageHelper.class);
@@ -34,7 +34,7 @@ public class LanguageHelper {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
                 for (String langCode : orderedLangs) {
-                    if (jParams.getUser().isPermitted("languages/" + langCode, currentSite.getSiteKey())) {
+                    if (jParams.getUser().isPermitted(new PermissionIdentity(langCode, "languages",  currentSite.getSiteKey()))) {
                         GWTJahiaLanguage item = new GWTJahiaLanguage();
                         item.setCountryIsoCode(langCode);
                         item.setDisplayName(getDisplayName(langCode));

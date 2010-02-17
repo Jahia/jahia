@@ -131,9 +131,9 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserAliasing;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.StateModificationContext;
@@ -2837,9 +2837,8 @@ public class ProcessingContext {
 
     protected void resolveJahiaPage() throws JahiaException {
         if (getContentPage() != null) {
-            JahiaUserAliasing userAliasing = new JahiaUserAliasing(getUser());
             setThePage(getContentPage().getPage(getEntryLoadRequest(),
-                    getOperationMode(), userAliasing));
+                    getOperationMode(), getUser()));
         }
     }
 
@@ -3113,8 +3112,7 @@ public class ProcessingContext {
             }
             setCanEdit(Boolean.valueOf((getContentPage().checkWriteAccess(getTheUser(), true) ||
                                         getContentPage().checkAdminAccess(getTheUser(), true) ) &&
-                                        getUser().isPermitted("actions/edit-mode",
-                                                getSiteKey())));
+                                        getUser().isPermitted(new PermissionIdentity("edit-mode", "actions", getSiteKey()))));
         }
 
         return getCanEdit().booleanValue();

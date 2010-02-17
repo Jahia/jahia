@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -60,14 +61,6 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     private String urlParams;
     private boolean serverModule;
     private AdministrationModulesRegistry registry;
-
-    private boolean hasServerPermission(String permissionName, JahiaUser user, String siteKey) {
-        return user.isPermitted(permissionName);
-    }
-
-    private boolean hasSitePermission(String permissionName, JahiaUser user, String siteKey) {
-        return user.isPermitted(permissionName, siteKey);
-    }
 
     public String getIcon() {
         return icon;
@@ -131,9 +124,9 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
             return true;
         }
         if (isServerModule()) {
-            return hasServerPermission(permissionName, user, siteKey);
+            return user.isPermitted(new PermissionIdentity(permissionName));
         } else {
-            return hasSitePermission(permissionName, user, siteKey);
+            return user.isPermitted(new PermissionIdentity(permissionName, siteKey));
         }
     }
     

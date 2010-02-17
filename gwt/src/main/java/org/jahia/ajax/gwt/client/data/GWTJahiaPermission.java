@@ -1,44 +1,31 @@
 package org.jahia.ajax.gwt.client.data;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT bean that represents single permission.
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 11:43:21 AM
- * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaPermission extends BaseModel {
-    private String id;
+public class GWTJahiaPermission extends GWTJahiaRolePermissionBase {
 
     public GWTJahiaPermission() {
+        super();
     }
 
-    public String getId() {
-        return id;
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name
+     * @param group
+     * @param site
+     */
+    public GWTJahiaPermission(String name, String group, String site) {
+        super(name, site);
+        setGroup(group);
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return get("name");
-    }
-
-    public void setName(String name) {
-        set("name",name);
-    }
-
-    public String getLabel() {
-        return get("label");
-    }
-
-    public void setLabel(String label) {
-        set("label",label);
-    }
-
+    
     public String getGroup() {
         return get("group");
     }
@@ -47,14 +34,6 @@ public class GWTJahiaPermission extends BaseModel {
         set("group",g);
     }
     
-    public String getSite() {
-        return get("site");
-    }
-
-    public void setSite(String s) {
-        set("site",s);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

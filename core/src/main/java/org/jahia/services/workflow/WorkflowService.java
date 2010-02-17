@@ -36,11 +36,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.rbac.jcr.JCRPermission;
-import org.jahia.services.rbac.jcr.SystemRoleManager;
+import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.jcr.PermissionImpl;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -49,11 +52,10 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.security.Principal;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Jahia service for managing content workflow.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -66,7 +68,8 @@ public class WorkflowService {
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
     private static WorkflowService instance;
     public static final String CANDIDATE = "candidate";
-    private SystemRoleManager systemRoleManager;
+    private RoleService roleService;
+    private RoleBasedAccessControlService rbacService;
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -75,8 +78,8 @@ public class WorkflowService {
         return instance;
     }
 
-    public void setSystemRoleManager(SystemRoleManager systemRoleManager) {
-        this.systemRoleManager = systemRoleManager;
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     public Map<String, WorkflowProvider> getProviders() {
@@ -137,15 +140,7 @@ public class WorkflowService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
-                String permissionKey = rule.getName() + " - " + role;
-                String site = null;
-                String path = rule.getProperty("j:path").toString();
-                if (path.startsWith("/sites/")) {
-                    site = path.substring("/sites/".length());
-                    site = StringUtils.substringBefore(site, "/");
-                }
-                JCRPermission perm = systemRoleManager.getPermission(permissionKey, "workflow", site);
-                return systemRoleManager.getPrincipalsInPermission(perm.getPath(), session);
+                return rbacService.getPrincipalsInPermission(new PermissionIdentity(rule.getName() + " - " + role, "workflow", JCRContentUtils.getSiteKey(rule.getProperty("j:path").toString())));
             }
         });
     }
@@ -328,16 +323,9 @@ public class WorkflowService {
                     roles.addAll(providers.get(workflow.getProvider()).getConfigurableRoles(workflow.getKey()));
                 }
                 for (String role : roles) {
-                    String site = null;
-                    if (path.startsWith("/sites/")) {
-                        site = path.substring("/sites/".length());
-                        site = StringUtils.substringBefore(site, "/");
-                    }
                     String permissionKey = key + " - " + role;
-                    JCRPermission perm = systemRoleManager.getPermission(permissionKey, "workflow", site);
-                    if (perm == null) {
-                        systemRoleManager.savePermission(permissionKey, "workflow", site);
-                    }
+                    // ensure the permission is there
+                    roleService.savePermission(new PermissionImpl(permissionKey, "workflow", JCRContentUtils.getSiteKey(path)));
                 }
 
                 return null;
@@ -354,6 +342,10 @@ public class WorkflowService {
                 return null;
             }
         });
+    }
+
+    public void setRoleBasedAccessControlService(RoleBasedAccessControlService roleBasedAccessControlService) {
+        this.rbacService = roleBasedAccessControlService;
     }
 
 }

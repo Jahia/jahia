@@ -87,40 +87,52 @@ public class PrincipalRolePanel extends LayoutContainer {
         final UserGroupAdder userGroupAdder = new UserGroupAdder() {
             public void addGroups(List<GWTJahiaGroup> groups) {
                 final List<GWTJahiaPrincipal> pList = new ArrayList<GWTJahiaPrincipal>();
-                pList.addAll(groups);
-                contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
-                    public void onSuccess(Object o) {
-                        Log.debug("Grant role to groups");
-                        for (GWTJahiaPrincipal p : pList) {
-                            if (!store.contains(p)) {
-                                store.add(p);
+                for (GWTJahiaPrincipal p : groups) {
+                    if (!store.contains(p)) {
+                        pList.add(p);
+                    }
+                }
+                if (pList.size() > 0) {
+                    contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
+                        public void onSuccess(Object o) {
+                            Log.debug("Grant role to groups");
+                            for (GWTJahiaPrincipal p : pList) {
+                                if (!store.contains(p)) {
+                                    store.add(p);
+                                }
                             }
                         }
-                    }
-
-                    public void onFailure(Throwable throwable) {
-                        Log.error("Error while granting role to groups", throwable);
-                    }
-                });
+    
+                        public void onFailure(Throwable throwable) {
+                            Log.error("Error while granting role to groups", throwable);
+                        }
+                    });
+                }
             }
 
             public void addUsers(List<GWTJahiaUser> users) {
                 final List<GWTJahiaPrincipal> pList = new ArrayList<GWTJahiaPrincipal>();
-                pList.addAll(users);
-                contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
-                    public void onSuccess(Object o) {
-                        Log.debug("Grant role to users");
-                        for (GWTJahiaPrincipal p : pList) {
-                            if (!store.contains(p)) {
-                                store.add(p);
+                for (GWTJahiaPrincipal p : users) {
+                    if (!store.contains(p)) {
+                        pList.add(p);
+                    }
+                }
+                if (pList.size() > 0) {
+                    contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
+                        public void onSuccess(Object o) {
+                            Log.debug("Grant role to users");
+                            for (GWTJahiaPrincipal p : pList) {
+                                if (!store.contains(p)) {
+                                    store.add(p);
+                                }
                             }
                         }
-                    }
-
-                    public void onFailure(Throwable throwable) {
-                        Log.error("Error while granting role to users", throwable);
-                    }
-                });
+    
+                        public void onFailure(Throwable throwable) {
+                            Log.error("Error while granting role to users", throwable);
+                        }
+                    });
+                }
             }
         };
         addUser.addSelectionListener(new SelectionListener<ButtonEvent>() {

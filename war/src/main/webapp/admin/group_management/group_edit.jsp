@@ -42,12 +42,14 @@
 <%@page import="org.jahia.params.ParamBean" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
+<%@page import="org.jahia.services.rbac.PermissionIdentity"%>
 <%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/>
 <c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
@@ -58,6 +60,7 @@
 //predrag
     String providerName = (String) session.getAttribute("providerName");
 //end predrag
+	pageContext.setAttribute("principalKey", providerName.equals("jahia") || providerName.equals("jcr") ? groupName + ":" + jParams.getSiteID() : groupName);  
     int stretcherToOpen = 1; %>
 <script type="text/javascript" src="<%=request.getContextPath()%>/javascript/selectbox.js">
 </script>
@@ -216,7 +219,7 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        <% if (jParams.getUser().isPermitted("global/password-policy")) { %>
+                                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
                                         <c:if test="${enforcePasswordPolicyForSite}">
                                             <tr>
                                                 <td>
@@ -317,7 +320,7 @@
                                         </tr>
                                         <tr>
 	                                        <td colspan="2">
-		                                        <div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>" group="true" principalKey="<%=groupName%>" class="jahia-admin-gxt"></div>
+		                                        <div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>" group="true" principalKey="${principalKey}" class="jahia-admin-gxt"></div>
 	                                        </td>
                                         </tr>
                                     </table>

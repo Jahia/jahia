@@ -33,6 +33,9 @@ package org.jahia.services.usermanager;
 
 import java.util.Properties;
 
+import org.jahia.services.rbac.Permission;
+import org.jahia.services.rbac.Role;
+
 /**
  * This user wrapper always returns true for its method <code>byPassUserAliasing()</code>
  * to force bypassing User Aliasing check on ACL for certain right,
@@ -122,15 +125,11 @@ public class JahiaUserAliasing implements JahiaUser {
         return user;
     }
 
-    public boolean hasRole(String role) {
+    public boolean hasRole(Role role) {
         return getUser().hasRole(role);
     }
 
-    public boolean isPermitted(String permission) {
+    public boolean isPermitted(Permission permission) {
         return getUser().isPermitted(permission);
     }
-    
-    public boolean isPermitted(String permission, String siteKey) {
-        return getUser().isPermitted(permission, siteKey);
-    }    
 }

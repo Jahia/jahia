@@ -34,6 +34,8 @@ package org.jahia.services.notification;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jahia.services.rbac.Permission;
+import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
@@ -221,11 +223,11 @@ public class SubscriptionUser implements JahiaUser {
         throw new UnsupportedOperationException();
     }
 
-    public boolean hasRole(String role) {
+    public boolean hasRole(Role role) {
         return false;
     }
 
-    public boolean isPermitted(String permission) {
+    public boolean isPermitted(Permission permission) {
         return false;
     }
 

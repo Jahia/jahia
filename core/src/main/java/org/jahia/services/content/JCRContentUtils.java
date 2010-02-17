@@ -237,6 +237,21 @@ public final class JCRContentUtils {
         return "'" + str.replaceAll("'", "''") + "'";
     }
     
+    /**
+     * If the node path contains site information (i.e.
+     * <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the site key
+     * part; otherwise <code>null</code> is returned.
+     * 
+     * @param jcrNodePath the JCR node path
+     * @return if the node path contains site information (i.e.
+     *         <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the
+     *         site key part; otherwise <code>null</code> is returned
+     */
+    public static String getSiteKey(String jcrNodePath) {
+        return jcrNodePath != null ? (jcrNodePath.startsWith("/sites/") ? StringUtils.substringBetween(jcrNodePath,
+                "/sites/", "/") : null) : null;
+    }
+
     private Map<String, List<String>> mimeTypes;
 
     private Map<String, String> fileExtensionIcons;

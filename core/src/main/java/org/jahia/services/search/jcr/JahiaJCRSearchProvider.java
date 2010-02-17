@@ -42,6 +42,7 @@ import java.util.Locale;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -101,29 +102,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
      * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
      */
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
-        String xpathQuery = buildXpathQuery(criteria);
-
         SearchResponse response = new SearchResponse();
 
-        if (!StringUtils.isEmpty(xpathQuery)) {
-            List<Hit<?>> results = new LinkedList<Hit<?>>();
-            try {
-                JCRSessionWrapper session = ServicesRegistry.getInstance()
-                .getJCRStoreService().getSessionFactory()
-                        .getCurrentUserSession(null, context.getMainResource().getLocale(),context.getFallbackLocale());
-                QueryManager qm = session.getWorkspace().getQueryManager();
-                Query query = qm.createQuery(xpathQuery, Query.XPATH);
-                
-                
-                if (criteria.getLimit() > 0) {
-                    // set maximum hit count
-                    query.setLimit(criteria.getLimit());
-                }
-                if (criteria.getOffset() > 0) {
-                    // set offset for pagination
-                    query.setOffset(criteria.getOffset());
-                }
-
+        List<Hit<?>> results = new LinkedList<Hit<?>>();
+        try {
+            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory()
+                    .getCurrentUserSession(null, context.getMainResource().getLocale(), context.getFallbackLocale());
+            Query query = buildQuery(criteria, session);
+            if (query != null) {
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
 
@@ -143,15 +129,15 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         logger.warn("Error resolving search hit", e);
                     }
                 }
-            } catch (Exception e) {
-                logger.error("Error while trying to perform a search", e);
             }
-            response.setResults(results);
+        } catch (Exception e) {
+            logger.error("Error while trying to perform a search", e);
         }
+        response.setResults(results);
 
         return response;
     }
-    
+
     private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context) throws RepositoryException {
         AbstractHit<?> searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
@@ -637,4 +623,37 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         return suggestion;
     }
+
+    /**
+     * Creates the {@link Query} instance by converting the provided
+     * {@link SearchCriteria} bean into XPath query.
+     * 
+     * @param criteria the search criteria to use for the query
+     * @param session current JCR session
+     * @return the {@link Query} instance created by converting the provided
+     *         {@link SearchCriteria} bean into XPath query or <code>null</code>
+     *         if the query cannot be created
+     * @throws InvalidQueryException
+     * @throws RepositoryException
+     */
+    public Query buildQuery(SearchCriteria criteria, JCRSessionWrapper session) throws InvalidQueryException,
+            RepositoryException {
+        Query query = null;
+        String xpathQuery = buildXpathQuery(criteria);
+        if (!StringUtils.isEmpty(xpathQuery)) {
+            QueryManager qm = session.getWorkspace().getQueryManager();
+            query = qm.createQuery(xpathQuery, Query.XPATH);
+            if (criteria.getLimit() > 0) {
+                // set maximum hit count
+                query.setLimit(criteria.getLimit());
+            }
+            if (criteria.getOffset() > 0) {
+                // set offset for pagination
+                query.setOffset(criteria.getOffset());
+            }
+        }
+
+        return query;
+    }
+
 }

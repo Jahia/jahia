@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -81,7 +82,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     private static final transient Logger logger = Logger.getLogger(JahiaContentManagementServiceImpl.class);
 
-    private JahiaPreferencesService preferencesService;
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
     private SearchHelper search;
@@ -122,10 +122,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
-    }
-
-    public void setPreferencesService(JahiaPreferencesService preferencesService) {
-        this.preferencesService = preferencesService;
     }
 
     public void setProperties(PropertiesHelper properties) {
@@ -836,54 +832,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Get permissions
-     *
-     * @param currentSite if false, returns server permissions
-     * @return
-     */
-    public List<GWTJahiaPermission> getPermission(boolean currentSite) {
-        List<GWTJahiaPermission> data = new ArrayList<GWTJahiaPermission>();
-
-
-        GWTJahiaPermission p = new GWTJahiaPermission();
-        p.setGroup("Admin");
-        p.setId("Role " + 0);
-        p.setLabel("Can enter Jahia administration GUI ");
-        data.add(p);
-
-        p = new GWTJahiaPermission();
-        p.setGroup("Admin");
-        p.setId("Role " + 1);
-        p.setLabel("Page settings ");
-        data.add(p);
-
-        p = new GWTJahiaPermission();
-        p.setGroup("Admin");
-        p.setId("Role " + 2);
-        p.setLabel("Manage templates");
-        data.add(p);
-
-        p = new GWTJahiaPermission();
-        p.setGroup("Edit");
-        p.setId("Role " + 3);
-        p.setLabel("Content edition");
-        data.add(p);
-
-        p = new GWTJahiaPermission();
-        p.setGroup("Edit");
-        p.setId("Role " + 4);
-        p.setLabel("Time-based publishing");
-        data.add(p);
-        return data;
-    }
-
-    /**
      * Get granted permission to the current user
      * @return
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
-        return rolesPermissions.getGrantedPermissions(retrieveParamBean().getSiteKey(),retrieveCurrentSession());
+        ProcessingContext ctx = retrieveParamBean();
+        return rolesPermissions.getGrantedPermissions(ctx.getSiteKey(), ctx.getUser());
     }
 
 
@@ -894,18 +849,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public List<GWTJahiaRole> getRoles(String siteKey,boolean isGroup,String principalKey) throws GWTJahiaServiceException {
-        List<GWTJahiaRole> roles =  rolesPermissions.getRoles(siteKey,retrieveCurrentSession());
-        roles.addAll(rolesPermissions.getRoles(null,retrieveCurrentSession()));
-
-
-        for(GWTJahiaRole role: roles){
-            // add the check to know of the role is granted or not to the principal
-            if(rolesPermissions.isGrant(role,isGroup,principalKey)){
-                role.set("grant","true");
-            }
-        }
-
-        return roles;
+        return rolesPermissions.getRoles(siteKey, isGroup, principalKey);
     }
 
     /**
@@ -916,7 +860,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException 
      */
     public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) throws GWTJahiaServiceException {
-        return rolesPermissions.getPrincipalsInRole(role, retrieveCurrentSession());
+        return rolesPermissions.getPrincipalsInRole(role);
     }
 
 
@@ -928,7 +872,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException 
      */
     public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException {
-        return rolesPermissions.getRolesAndPermissions(site, retrieveCurrentSession());
+        return rolesPermissions.getRolesAndPermissions(site);
     }
 
     /**
@@ -938,7 +882,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException 
      */
     public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
-        rolesPermissions.addRolePermissions(role,permissions, retrieveCurrentSession());
+        rolesPermissions.addRolePermissions(role,permissions);
     }
 
     /**
@@ -949,7 +893,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException 
      */
     public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException {
-        rolesPermissions.removeRolePermissions(role,permissions, retrieveCurrentSession());
+        rolesPermissions.removeRolePermissions(role,permissions);
     }
 
     /**
@@ -958,16 +902,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param role
      */
     public void grantRoleToUser(GWTJahiaRole role,boolean isGroup, String principalKey) throws GWTJahiaServiceException {
-        rolesPermissions.grantRoleToUser(role,isGroup,principalKey,retrieveCurrentSession());
+        rolesPermissions.grantRoleToUser(role,isGroup,principalKey);
     }
 
     /**
      * Remove role to user
      *
      * @param role
+     * @throws GWTJahiaServiceException 
      */
-    public void removeRoleToPrincipal(GWTJahiaRole role, String principalKey) {
-       rolesPermissions.removeRoleToUser(role,principalKey);
+    public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
+       rolesPermissions.removeRoleToPrincipal(role, isGroup, principalKey);
     }
 
     /**
@@ -978,7 +923,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException in case of an error
      */
     public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
-        rolesPermissions.grantRoleToPrincipals(role, principals, retrieveCurrentSession());
+        rolesPermissions.grantRoleToPrincipals(role, principals);
     }
 
     /**
@@ -989,7 +934,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException in case of an error
      */
     public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
-        rolesPermissions.removeRoleToPrincipals(role, principals, retrieveCurrentSession());
+        rolesPermissions.removeRoleToPrincipals(role, principals);
     }
 
 
@@ -1004,6 +949,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaPermission createPermission(String name, String group, String siteKey) throws GWTJahiaServiceException {
-        return rolesPermissions.createPermission(name, group, siteKey, retrieveCurrentSession());
+        return rolesPermissions.createPermission(name, group, siteKey);
     }
 }

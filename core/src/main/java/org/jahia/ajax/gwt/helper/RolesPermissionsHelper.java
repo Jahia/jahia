@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
@@ -14,10 +13,13 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.rbac.jcr.*;
+import org.jahia.services.rbac.Permission;
+import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.jcr.PermissionImpl;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.rbac.jcr.RoleImpl;
+import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
@@ -35,44 +37,75 @@ public class RolesPermissionsHelper {
     private static Logger logger = Logger.getLogger(RolesPermissionsHelper.class);
 
     private JahiaGroupManagerService groupManagerService;
-    private SystemRoleManager roleManager;
+    private RoleBasedAccessControlService rbacService;
+    private RoleService roleService;
     private JahiaUserManagerService userManagerService;
 
     /**
      * Grants the specified permissions to a role.
      * 
      * @param role the role to grant permissions
-     * @param permissions permissions to be granted
-     * @param jcrSession current JCR session
+     * @param gwtPermissions permissions to be granted
      * @throws GWTJahiaServiceException in case of an error
      */
-    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, JCRSessionWrapper jcrSession)
+    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> gwtPermissions)
             throws GWTJahiaServiceException {
-        List<String> permissionJcrPaths = new LinkedList<String>();
-        for (GWTJahiaPermission perm : permissions) {
-            permissionJcrPaths.add(perm.getId());
+        List<Permission> permissions = new LinkedList<Permission>();
+        for (GWTJahiaPermission perm : gwtPermissions) {
+            permissions.add(new PermissionIdentity(perm.getName(), perm.getGroup(), perm.getSite()));
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("addRolePermissions() ," + role.getId() + "," + permissionJcrPaths);
+            logger.debug("addRolePermissions() ," + role.getName() + "," + permissions);
         }
         try {
-            roleManager.grantPermissions(role.getId(), permissionJcrPaths, jcrSession);
+            roleService.grantPermissions(new RoleIdentity(role.getName(), role.getSite()), permissions);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public GWTJahiaPermission createPermission(String name, String group, String siteKey, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
-        JCRPermission permission = siteKey != null ? new JCRSitePermission(name, group, siteKey) : new JCRPermission(name, group);
+    public GWTJahiaPermission createPermission(String name, String group, String siteKey)
+            throws GWTJahiaServiceException {
         try {
-            return toPermission(roleManager.savePermission(permission));
+            return toPermission(roleService.savePermission(new PermissionIdentity(name, group, siteKey)));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
-    
+
+    /**
+     * Get list of granted permissions
+     *
+     * @param jcrSession
+     * @return
+     */
+    public List<GWTJahiaPermission> getGrantedPermissions(final String site, JahiaUser user)
+            throws GWTJahiaServiceException {
+        final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
+        try {
+            // site permission
+            for (PermissionImpl permission : roleService.getPermissions(site)) {
+                if (user.isPermitted(permission)) {
+                    permissions.add(toPermission(permission));
+                }
+            }
+
+            // server permission
+            for (PermissionImpl permission : roleService.getPermissions(null)) {
+                if (user.isPermitted(permission)) {
+                    permissions.add(toPermission(permission));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
+        return permissions;
+    }
+
     /**
      * Get all permissions for the specified site or for the server if the site
      * is not specified.
@@ -84,7 +117,7 @@ public class RolesPermissionsHelper {
      *         site is not specified
      * @throws GWTJahiaServiceException in case of an error
      */
-    public List<GWTJahiaPermission> getPermissions(String site, JCRSessionWrapper jcrSession)
+    private List<GWTJahiaPermission> getPermissions(String site)
             throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
             logger.debug("Retrieving permissions for " + (site != null ? "site " + site : "server"));
@@ -92,7 +125,7 @@ public class RolesPermissionsHelper {
 
         List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
-            for (JCRPermission permission : roleManager.getPermissions(site, jcrSession)) {
+            for (PermissionImpl permission : roleService.getPermissions(site)) {
                 permissions.add(toPermission(permission));
             }
         } catch (RepositoryException e) {
@@ -103,70 +136,14 @@ public class RolesPermissionsHelper {
         return permissions;
     }
 
-    /**
-     * Get list of granted permissions
-     *
-     * @param jcrSession
-     * @return
-     */
-    public List<GWTJahiaPermission> getGrantedPermissions(final String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
-        final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
-        try {
-            final JahiaUser user = jcrSession.getUser();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            // site permission
-                            for (JCRPermission permission : roleManager
-                                    .getPermissions(site, session)) {
-                                if (user.isPermitted((StringUtils
-                                        .isEmpty(permission.getGroup()) ? ""
-                                        : permission.getGroup() + "/")
-                                        + permission.getName(), site)) {
-                                    permissions.add(toPermission(permission));
-                                }
-                            }
-
-                            // server permission
-                            for (JCRPermission permission : roleManager
-                                    .getPermissions(null, session)) {
-                                if (user.isPermitted((StringUtils
-                                        .isEmpty(permission.getGroup()) ? ""
-                                        : permission.getGroup() + "/")
-                                        + permission.getName())) {
-                                    permissions.add(toPermission(permission));
-                                }
-                            }
-                            return permissions;
-                        }
-                    });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-
-        return permissions;
-    }
-
-    /**
-     * Get principal in role
-     * 
-     * @param role
-     * @param jcrSession current JCR session
-     * @return
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role, JCRSessionWrapper jcrSession) 
-        throws GWTJahiaServiceException {
-        
+    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
-            logger.debug("getPrincipalsInRole() ," + role.getId());
+            logger.debug("getPrincipalsInRole() ," + role.getName());
         }
 
         List<GWTJahiaPrincipal> p = new LinkedList<GWTJahiaPrincipal>();
         try {
-            for (JahiaPrincipal jahiaPrincipal : roleManager.getPrincipalsInRole(role.getId(), jcrSession)) {
+            for (JahiaPrincipal jahiaPrincipal : rbacService.getPrincipalsInRole(new RoleIdentity(role.getName(), role.getSite()))) {
                 GWTJahiaPrincipal gwtPrincipal = null;
                 if (jahiaPrincipal instanceof JahiaUser) {
                     JahiaUser user = (JahiaUser) jahiaPrincipal;
@@ -199,19 +176,18 @@ public class RolesPermissionsHelper {
      * 
      * @param site target site key or {@code null} if the server level roles are
      *            requested
-     * @param jcrSession current JCR session
      * @return all roles for the specified site or for the server if the site is
      *         not specified
      * @throws GWTJahiaServiceException in case of an error
      */
-    public List<GWTJahiaRole> getRoles(String site, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+    private List<GWTJahiaRole> getRoles(String site) throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
             logger.debug("Retrieving roles for " + (site != null ? "site " + site : "server"));
         }
 
         List<GWTJahiaRole> roles = new LinkedList<GWTJahiaRole>();
         try {
-            for (JCRRole role : roleManager.getRoles(site, jcrSession)) {
+            for (RoleImpl role : roleService.getRoles(site)) {
                 roles.add(toRole(role));
             }
         } catch (RepositoryException e) {
@@ -222,46 +198,57 @@ public class RolesPermissionsHelper {
         return roles;
     }
 
+    public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey)
+            throws GWTJahiaServiceException {
+        // get all roles for the site first
+        List<GWTJahiaRole> roles =  getRoles(siteKey);
+        
+        // add server-level roles
+        roles.addAll(getRoles(null));
+
+
+        for(GWTJahiaRole role: roles){
+            // add the check to know of the role is granted or not to the principal
+            if(isGrant(role,isGroup,principalKey)){
+                role.set("grant","true");
+            }
+        }
+
+        return roles;
+    }
+
     /**
      * Get all roles and all permissions
      * 
      * @param site the site key to retrieve roles and permissions
-     * @param jcrSession current user JCR session
-     * @return
+     * @return all roles and all permissions
      * @throws GWTJahiaServiceException in case of an error
      */
-    public GWTRolesPermissions getRolesAndPermissions(String site, JCRSessionWrapper jcrSession)
+    public GWTRolesPermissions getRolesAndPermissions(String site)
             throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
             logger.debug("getting roles and permission for " + (site != null ? "site " + site : "server"));
         }
 
         GWTRolesPermissions rp = new GWTRolesPermissions();
-        rp.setRoles(getRoles(site, jcrSession));
-        rp.setPermissions(getPermissions(site, jcrSession));
+        rp.setRoles(getRoles(site));
+        rp.setPermissions(getPermissions(site));
         return rp;
     }
 
-    /**
-     * Grant role to principals
-     * 
-     * @param role
-     * @param principals
-     * @param jcrSession current user JCR session
-     */
-    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals,
-            JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals)
+            throws GWTJahiaServiceException {
         List<JahiaPrincipal> subjects = new LinkedList<JahiaPrincipal>();
         for (GWTJahiaPrincipal principal : principals) {
             subjects.add(lookupPrincipal(principal));
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("grantRoleToPrincipals() ," + role.getId() + "," + principals);
+            logger.debug("grantRoleToPrincipals() ," + role.getName() + "," + principals);
         }
         RepositoryException ex = null;
         for (JahiaPrincipal jahiaPrincipal : subjects) {
             try {
-                roleManager.grantRole(jahiaPrincipal, role.getId(), jcrSession);
+                rbacService.grantRole(jahiaPrincipal, new RoleIdentity(role.getName(), role.getSite()));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 ex = e;
@@ -270,34 +257,21 @@ public class RolesPermissionsHelper {
         if (ex != null) {
             throw new GWTJahiaServiceException(ex.getMessage());
         }
+        
     }
 
-    /**
-     * Grant role to users
-     * 
-     * @param role
-     */
-    public void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey,JCRSessionWrapper jcrSession) throws GWTJahiaServiceException{
+    public void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey)
+            throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
-        logger.debug("grantRoleToUser() ," + role + "," + principalKey);
+            logger.debug("grantRoleToUser() ," + role + "," + principalKey);
         }
-        RepositoryException ex = null;
-        JahiaPrincipal p = null;
         try {
-            if (!isGroup) {
-                p = userManagerService.lookupUserByKey(principalKey);
-            } else {
-                p = groupManagerService.lookupGroup(principalKey);
-            }
-            roleManager.grantRole(p, role.getId(), jcrSession);
+            rbacService.grantRole(lookupPrincipal(principalKey, isGroup), new RoleIdentity(role.getName(), role
+                    .getSite()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            ex = e;
+            throw new GWTJahiaServiceException(e.getMessage());
         }
-        if (ex != null) {
-            throw new GWTJahiaServiceException(ex.getMessage());
-        }
-
     }
 
     /**
@@ -309,18 +283,8 @@ public class RolesPermissionsHelper {
      * @return
      */
     public boolean isGrant(GWTJahiaRole role, boolean isGroup, String principalKey) {
-        if (isGroup) {
-            JahiaGroup group = groupManagerService.lookupGroup(principalKey);
-            if (group != null) {
-                return group.hasRole(role.getId());
-            }
-        } else {
-            JahiaUser user = userManagerService.lookupUserByKey(principalKey);
-            if (user != null) {
-                return user.hasRole(role.getId());
-            }
-        }
-        return false;
+        JahiaPrincipal p = lookupPrincipal(principalKey, isGroup);
+        return p != null && p.hasRole(new RoleIdentity(role.getName(), role.getSite()));
     }
 
     private JahiaPrincipal lookupPrincipal(GWTJahiaPrincipal principal) {
@@ -334,28 +298,43 @@ public class RolesPermissionsHelper {
         return null;
     }
 
+    private JahiaPrincipal lookupPrincipal(String principalKey, boolean isGroup) {
+        return isGroup ? groupManagerService.lookupGroup(principalKey) : userManagerService.lookupUserByKey(principalKey);
+    }
+
     /**
      * Revokes specified permissions from a role.
      * 
      * @param role the role to revoke permissions from
-     * @param permissions permissions to be revoked
-     * @param jcrSession current JCR session
+     * @param gwtPermissions permissions to be revoked
      * @throws GWTJahiaServiceException in case of an error
      */
-    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions,
-            JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
-        List<String> permissionJcrPaths = new LinkedList<String>();
-        for (GWTJahiaPermission perm : permissions) {
-            permissionJcrPaths.add(perm.getId());
+    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> gwtPermissions) throws GWTJahiaServiceException {
+        List<Permission> permissions = new LinkedList<Permission>();
+        for (GWTJahiaPermission perm : gwtPermissions) {
+            permissions.add(new PermissionIdentity(perm.getName(), perm.getGroup(), perm.getSite()));
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("removeRolePermissions() ," + role.getId() + "," + permissionJcrPaths);
+            logger.debug("removeRolePermissions() ," + role.getName() + "," + permissions);
         }
         try {
-            roleManager.revokePermissions(role.getId(), permissionJcrPaths, jcrSession);
+            roleService.revokePermissions(new RoleIdentity(role.getName(), role.getSite()), permissions);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
+        // TODO Auto-generated method stub
+        JahiaPrincipal p = lookupPrincipal(principalKey, isGroup);
+        if (p != null) {
+            try {
+                rbacService.revokeRole(p, new RoleIdentity(role.getName(), role.getSite()));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                throw new GWTJahiaServiceException(e.getMessage()); 
+            }
         }
     }
 
@@ -367,18 +346,19 @@ public class RolesPermissionsHelper {
      * @param jcrSession current user JCR session
      * @throws GWTJahiaServiceException in case of an error 
      */
-    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, JCRSessionWrapper jcrSession) throws GWTJahiaServiceException {
+    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
         List<JahiaPrincipal> subjects = new LinkedList<JahiaPrincipal>();
         for (GWTJahiaPrincipal principal : principals) {
             subjects.add(lookupPrincipal(principal));
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("removeRoleToPrincipals() ," + role.getId() + "," + principals);
+            logger.debug("removeRoleToPrincipals() ," + role.getName() + "," + principals);
         }
+        RoleIdentity roleId = new RoleIdentity(role.getName(), role.getSite());
         RepositoryException ex = null;
         for (JahiaPrincipal jahiaPrincipal : subjects) {
             try {
-                roleManager.revokeRole(jahiaPrincipal, role.getId(), jcrSession);
+                rbacService.revokeRole(jahiaPrincipal, roleId);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 ex = e;
@@ -389,62 +369,41 @@ public class RolesPermissionsHelper {
         }
     }
 
-    /**
-     * Remove role to user
-     * 
-     * @param role
-     */
-    public void removeRoleToUser(GWTJahiaRole role, String principalKey) {
-        logger.debug("removeRoleToUser() ," + role + "," + principalKey);
-    }
-
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }
 
     /**
+     * @param roleBasedAccessControlService the roleBasedAccessControlService to set
+     */
+    public void setRoleBasedAccessControlService(RoleBasedAccessControlService roleBasedAccessControlService) {
+        this.rbacService = roleBasedAccessControlService;
+    }
+
+    /**
      * Injects the role management service instance.
      * 
-     * @param roleManager the role management service instance
+     * @param roleService the role management service instance
      */
-    public void setRoleManager(SystemRoleManager roleManager) {
-        this.roleManager = roleManager;
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
     }
 
-    private GWTJahiaPermission toPermission(JCRPermission permission) {
-        GWTJahiaPermission gwtPermission = new GWTJahiaPermission();
-        gwtPermission.setId(permission.getPath());
-        gwtPermission.setName(permission.getTitle() != null ? permission.getTitle() : permission.getName());
-        if (permission.getGroup() != null && permission.getGroup().equalsIgnoreCase("languages")) {
-            gwtPermission.setLabel(LanguageHelper.getDisplayName(gwtPermission.getName()));
-
-        } else {
-            gwtPermission.setLabel(gwtPermission.getName());
-        }
-        gwtPermission.setGroup(permission.getGroup());
-        if (permission instanceof JCRSitePermission) {
-            gwtPermission.setSite(((JCRSitePermission) permission).getSite());
-        }
-
-        return gwtPermission;
+    private GWTJahiaPermission toPermission(PermissionImpl permission) {
+        return new GWTJahiaPermission(permission.getName(), permission.getGroup(), permission.getSite());
     }
 
-    private GWTJahiaRole toRole(JCRRole role) {
-        GWTJahiaRole gwtRole = new GWTJahiaRole(role.getPath(), role.getTitle() != null ? role.getTitle() : role.getName());
+    private GWTJahiaRole toRole(RoleImpl role) {
+        GWTJahiaRole gwtRole = new GWTJahiaRole(role.getName(), role.getSite());
         List<GWTJahiaPermission> gwtPermissions = new LinkedList<GWTJahiaPermission>();
-        for (JCRPermission perm : role.getPermissions()) {
+        for (PermissionImpl perm : role.getPermissions()) {
             gwtPermissions.add(toPermission(perm));
         }
         gwtRole.setPermissions(gwtPermissions);
-        if (role instanceof JCRSiteRole) {
-            gwtRole.setSite(((JCRSiteRole) role).getSite());
-        } else {
-            gwtRole.setSite("-");
-        }
 
         return gwtRole;
     }

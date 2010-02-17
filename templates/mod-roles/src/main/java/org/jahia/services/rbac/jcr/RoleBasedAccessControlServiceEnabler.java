@@ -30,37 +30,47 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.usermanager;
+package org.jahia.services.rbac.jcr;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.EnforcementPolicy;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Abstract implementation of the {@link JahiaPrincipal} that adds role and
- * permission checking.
+ * Enables the Service RoleBasedAccessControlService by injecting the an
+ * enforcement policy.
  * 
  * @author Sergiy Shyrkov
+ * @since 6.5
  */
-public abstract class JahiaBasePrincipal implements JahiaPrincipal {
+public class RoleBasedAccessControlServiceEnabler implements InitializingBean {
 
-    private transient RoleBasedAccessControlService service;
+    private EnforcementPolicy policy = new EnforcementPolicy();
 
-    protected RoleBasedAccessControlService getRoleBasedAccessControlService() {
-        if (service == null) {
-            service = (RoleBasedAccessControlService) SpringContextSingleton
-                    .getBean(RoleBasedAccessControlService.class.getName());
-        }
-        return service;
+    private RoleBasedAccessControlService rbacService;
+
+    public void afterPropertiesSet() throws Exception {
+        // override the default policy
+        rbacService.setEnformcementPolicy(policy);
     }
 
-    public boolean hasRole(Role role) {
-        return getRoleBasedAccessControlService().hasRole(this, role);
+    /**
+     * Injects an instance of the {@link RoleBasedAccessControlService} service.
+     * 
+     * @param rbacService an instance of the
+     *            {@link RoleBasedAccessControlService} service
+     */
+    public void setRoleBasedAccessControlService(RoleBasedAccessControlService rbacService) {
+        this.rbacService = rbacService;
     }
 
-    public boolean isPermitted(Permission permission) {
-        return getRoleBasedAccessControlService().isPermitted(this, permission);
+    /**
+     * Injects the enforcement policy to use.
+     * 
+     * @param policy the policy to set
+     */
+    public void setEnformcementPolicy(EnforcementPolicy policy) {
+        this.policy = policy;
     }
 
 }

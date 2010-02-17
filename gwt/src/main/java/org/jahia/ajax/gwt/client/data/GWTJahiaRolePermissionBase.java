@@ -30,77 +30,50 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.jcr;
+package org.jahia.ajax.gwt.client.data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jahia.services.rbac.Role;
+import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
- * Default implementation of the role in Jahia that uses JCR persistence.
+ * Base item for the role/permission GWT bean
  * 
  * @author Sergiy Shyrkov
  */
-public class JCRRole extends JCRItem implements Role {
+class GWTJahiaRolePermissionBase extends BaseModel {
 
-    private String name;
-
-    private Set<JCRPermission> permissions = new LinkedHashSet<JCRPermission>();
+    /**
+     * Initializes an instance of this class.
+     */
+    public GWTJahiaRolePermissionBase() {
+        super();
+    }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param name the name of the the role
+     * @param name
+     * @param site
      */
-    public JCRRole(String name) {
-        super();
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object another) {
-        return another != null && another instanceof JCRRole && ((JCRRole) another).getName().equals(getName());
+    public GWTJahiaRolePermissionBase(String name, String site) {
+        this();
+        setName(name);
+        setSite(site);
     }
 
     public String getName() {
-        return name;
+        return get("name");
     }
 
-    public Set<JCRPermission> getPermissions() {
-        return permissions;
+    public String getSite() {
+        return get("site");
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(getName()).toHashCode();
-    }
-
-    /**
-     * Sets the name of this role.
-     * 
-     * @param name the name of this role
-     */
     public void setName(String name) {
-        this.name = name;
+        set("name", name);
     }
 
-    /**
-     * Sets a set of permissions for this role.
-     * 
-     * @param permissions a set of permissions for this role
-     */
-    public void setPermissions(Set<JCRPermission> permissions) {
-        this.permissions.clear();
-        if (permissions != null) {
-            this.permissions.addAll(permissions);
-        }
+    public void setSite(String site) {
+        set("site", site);
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 }

@@ -42,20 +42,17 @@ import org.jahia.services.rbac.Permission;
  * 
  * @author Sergiy Shyrkov
  */
-public class JCRPermission extends JCRItem implements Permission {
+public class PermissionImpl extends BaseImpl implements Permission {
 
     private String group;
-
-    private String name;
 
     /**
      * Initializes an instance of this class.
      * 
      * @param name the name of the the permission
      */
-    public JCRPermission(String name) {
-        super();
-        this.name = name;
+    public PermissionImpl(String name) {
+        super(name);
     }
 
     /**
@@ -64,19 +61,27 @@ public class JCRPermission extends JCRItem implements Permission {
      * @param name the name of the the permission
      * @param group the name of the permission group
      */
-    public JCRPermission(String name, String group) {
+    public PermissionImpl(String name, String group) {
         this(name);
+        this.group = group;
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of the the permission
+     * @param group the name of the permission group
+     * @param site the virtual site key current permission is limited to
+     */
+    public PermissionImpl(String name, String group, String site) {
+        super(name, site);
         this.group = group;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JCRPermission)) {
-            return false;
-        }
-        JCRPermission another = (JCRPermission) obj;
-        return new EqualsBuilder().append(getName(), another.getName()).append(getGroup(), another.getGroup())
-                .isEquals();
+        return obj != null && (obj instanceof PermissionImpl) && super.equals(obj)
+                && new EqualsBuilder().append(getGroup(), ((PermissionImpl) obj).getGroup()).isEquals();
     }
 
     /**
@@ -88,18 +93,9 @@ public class JCRPermission extends JCRItem implements Permission {
         return group;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.services.rbac.jcr.Permission#getName()
-     */
-    public String getName() {
-        return name;
-    }
-
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getGroup()).toHashCode();
+        return new HashCodeBuilder().append(getName()).append(getGroup()).append(getSite()).toHashCode();
     }
 
     /**
@@ -109,15 +105,6 @@ public class JCRPermission extends JCRItem implements Permission {
      */
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    /**
-     * Sets the name of this permission.
-     * 
-     * @param name the name of this permission
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

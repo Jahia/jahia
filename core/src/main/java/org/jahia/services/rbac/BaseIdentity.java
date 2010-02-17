@@ -30,48 +30,66 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac.jcr;
+package org.jahia.services.rbac;
+
+import java.io.Serializable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Default implementation of a permission in Jahia that is targeted for a
- * particular virtual site.
+ * Base identity for roles and permissions.O
  * 
  * @author Sergiy Shyrkov
  */
-public class JCRSitePermission extends JCRPermission {
+class BaseIdentity implements Serializable {
+
+    private String name;
 
     private String site;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     * @param site the virtual site key current permission is limited to
+     * @param name the name of this identity
      */
-    public JCRSitePermission(String name, String group, String site) {
-        super(name, group);
-        this.site = site;
+    public BaseIdentity(String name) {
+        this(name, null);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of this identity
+     * @param site the site key of this identity
+     */
+    public BaseIdentity(String name, String site) {
+        super();
+        this.name = name;
+        this.site = site != null && site.length() == 0 ? null : site;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JCRSitePermission)) {
-            return false;
-        }
-        JCRSitePermission another = (JCRSitePermission) obj;
-        return new EqualsBuilder().append(getName(), another.getName()).append(getGroup(), another.getGroup()).append(
-                getSite(), another.getSite()).isEquals();
+        return EqualsBuilder.reflectionEquals(obj, this);
     }
 
     /**
-     * The virtual site key current permission is limited to.
+     * Returns the name of this identity.
      * 
-     * @return virtual site key current permission is limited to
+     * @return the name of this identity
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the site key of this identity or <code>null</code> if it is a
+     * server-level identity.
+     * 
+     * @return the site key of this identity or <code>null</code> if it is a
+     *         server-level identity
      */
     public String getSite() {
         return site;
@@ -79,21 +97,11 @@ public class JCRSitePermission extends JCRPermission {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getGroup()).toHashCode();
-    }
-
-    /**
-     * Sets the key of the target virtual site.
-     * 
-     * @param site the key of the target virtual site
-     */
-    public void setSite(String site) {
-        this.site = site;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
 }

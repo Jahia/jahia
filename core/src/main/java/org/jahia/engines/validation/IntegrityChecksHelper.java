@@ -31,6 +31,7 @@
  */
 package org.jahia.engines.validation;
 
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -45,14 +46,14 @@ public final class IntegrityChecksHelper {
             JahiaSite site) {
         return !site.isURLIntegrityCheckEnabled()
                 || user.isAdminMember(site.getID())
-                || !user.isPermitted("integrity/link-integrity", site.getSiteKey());
+                || !user.isPermitted(new PermissionIdentity("link-integrity", "integrity", site.getSiteKey()));
     }
 
     public static boolean isAllowedToBypassWaiChecks(JahiaUser user,
             JahiaSite site) {
         return !site.isWAIComplianceCheckEnabled()
                 || user.isAdminMember(site.getID())
-                || !user.isPermitted("integrity/wai-compliance", site.getSiteKey());
+                || !user.isPermitted(new PermissionIdentity("wai-compliance", "integrity", site.getSiteKey()));
     }
 
     /**

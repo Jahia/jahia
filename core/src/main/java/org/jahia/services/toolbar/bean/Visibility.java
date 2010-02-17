@@ -33,8 +33,8 @@ package org.jahia.services.toolbar.bean;
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
@@ -232,7 +232,7 @@ public class Visibility {
             if (o != null) {
                 return ((Boolean) o).booleanValue();
             } else {
-                boolean isAllowedServerPermission = processingContext.getUser().isPermitted(serverActionPermission);
+                boolean isAllowedServerPermission = processingContext.getUser().isPermitted(new PermissionIdentity(serverActionPermission));
                 processingContext.setAttribute(serverActionPermission, new Boolean(isAllowedServerPermission));
                 return isAllowedServerPermission;
             }
@@ -256,8 +256,8 @@ public class Visibility {
                 logger.debug("Site permission value(from request): " + ((Boolean) o).booleanValue());
                 return ((Boolean) o).booleanValue();
             } else {
-                boolean isAllowedSitePermission = processingContext.getUser().isPermitted(siteActionPermission, 
-                        processingContext.getSiteKey());
+                boolean isAllowedSitePermission = processingContext.getUser().isPermitted(new PermissionIdentity(siteActionPermission, 
+                        processingContext.getSiteKey()));
                 logger.debug("Site permission value: " + isAllowedSitePermission);
                 processingContext.setAttribute(siteActionPermission, new Boolean(isAllowedSitePermission));
                 return isAllowedSitePermission;

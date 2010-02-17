@@ -35,6 +35,9 @@ package org.jahia.services.usermanager;
 import java.io.Serializable;
 import java.security.Principal;
 
+import org.jahia.services.rbac.Permission;
+import org.jahia.services.rbac.Role;
+
 /**
  * Represents a common notion of a principal in Jahia, including users and
  * groups.
@@ -48,39 +51,24 @@ public interface JahiaPrincipal extends Principal, Serializable {
      * Returns {@code true} if this principal has the specified role, {@code
      * false} otherwise.
      * 
-     * @param role the application-specific role identifier (usually a role id
-     *            or role name).
+     * @param role the application-specific role
      * @return {@code true} if this principal has the specified role, {@code
      *         false} otherwise
      * @since 6.5
      */
-    boolean hasRole(String role);
+    boolean hasRole(Role role);
 
     /**
-     * Returns {@code true} if this principal is permitted to perform a server action
-     * or access a resource summarized by the specified permission string ("<group>/<name>").
+     * Returns {@code true} if this principal is permitted to perform a server
+     * action or access a resource summarized by the specified permission string
+     * ("<group>/<name>").
      * 
-     * @param permission the String representation of a server permission ("<group>/<name>")
-     *            that is being checked
-     * @return {@code true} if this principal is permitted to perform a server action
-     *         or access a resource summarized by the specified permission
-     *         string
+     * @param permission a permission that is being checked
+     * @return {@code true} if this principal is permitted to perform a server
+     *         action or access a resource summarized by the specified
+     *         permission string
      * @since 6.5
      */
-    boolean isPermitted(String permission);
-    
-    /**
-     * Returns {@code true} if this principal is permitted to perform a site action
-     * or access a resource summarized by the specified permission string.
-     * 
-     * @param permission the String representation of a site permission ("&lt;group&gt;/&lt;name&gt;")
-     *            that is being checked
-     * @param siteKey the site key      
-     * @return {@code true} if this principal is permitted to perform a site action
-     *         or access a resource summarized by the specified permission
-     *         string
-     * @since 6.5
-     */
-    boolean isPermitted(String permission, String siteKey);    
+    boolean isPermitted(Permission permission);
 
 }

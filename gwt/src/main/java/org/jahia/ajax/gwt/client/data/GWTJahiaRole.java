@@ -1,7 +1,5 @@
 package org.jahia.ajax.gwt.client.data;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,40 +9,16 @@ import java.util.List;
  * Date: Feb 2, 2010
  * Time: 11:42:48 AM
  */
-public class GWTJahiaRole extends BaseModel {
+public class GWTJahiaRole extends GWTJahiaRolePermissionBase {
   
     public GWTJahiaRole() {
+        super();
         setPermissions(new ArrayList<GWTJahiaPermission>());
     }
 
-    public GWTJahiaRole(String id, String label) {
-        this();
-        setId(id);
-        setLabel(label);
-    }
-
-    public String getId() {
-        return get("id");
-    }
-
-    public void setId(String id) {
-        set("id",id);
-    }
-
-    public String getSite() {
-        return get("site");
-    }
-
-    public void setSite(String site) {
-        set("site",site);
-    }
-
-    public String getLabel() {
-        return get("label");
-    }
-
-    public void setLabel(String label) {
-        set("label",label);
+    public GWTJahiaRole(String name, String site) {
+        super(name, site);
+        setPermissions(new ArrayList<GWTJahiaPermission>());
     }
 
     public List<GWTJahiaPermission> getPermissions() {

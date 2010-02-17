@@ -30,37 +30,56 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.usermanager;
+package org.jahia.services.rbac;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.Role;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Abstract implementation of the {@link JahiaPrincipal} that adds role and
- * permission checking.
+ * Permission identifier.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class JahiaBasePrincipal implements JahiaPrincipal {
+public class PermissionIdentity extends BaseIdentity implements Permission {
 
-    private transient RoleBasedAccessControlService service;
+    private String group;
 
-    protected RoleBasedAccessControlService getRoleBasedAccessControlService() {
-        if (service == null) {
-            service = (RoleBasedAccessControlService) SpringContextSingleton
-                    .getBean(RoleBasedAccessControlService.class.getName());
-        }
-        return service;
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of this role
+     */
+    public PermissionIdentity(String name) {
+        this(name, null, null);
     }
 
-    public boolean hasRole(Role role) {
-        return getRoleBasedAccessControlService().hasRole(this, role);
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of this role
+     * @param site the site key
+     */
+    public PermissionIdentity(String name, String site) {
+        this(name, null, site);
     }
 
-    public boolean isPermitted(Permission permission) {
-        return getRoleBasedAccessControlService().isPermitted(this, permission);
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param name the name of this role
+     * @param group the permission group name
+     * @param site the site key
+     */
+    public PermissionIdentity(String name, String group, String site) {
+        super(group == null ? (name.contains("/") ? StringUtils.substringAfter(name, "/") : name) : name, site);
+        this.group = group != null ? group : (name.contains("/") ? StringUtils.substringBefore(name, "/") : null);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.services.rbac.Permission#getGroup()
+     */
+    public String getGroup() {
+        return group;
+    }
 }

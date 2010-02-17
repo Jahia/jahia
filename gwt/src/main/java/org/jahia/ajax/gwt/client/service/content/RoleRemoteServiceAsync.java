@@ -30,45 +30,44 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac;
+package org.jahia.ajax.gwt.client.service.content;
 
-import org.springframework.beans.factory.InitializingBean;
+import java.util.List;
+
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Enables the Service RoleBasedAccessControlService by injecting the an
- * enforcement policy.
+ * GWT remote service interface for managing roles and permissions.
  * 
  * @author Sergiy Shyrkov
- * @since 6.5
  */
-public class RoleBasedAccessControlServiceEnabler implements InitializingBean {
+interface RoleRemoteServiceAsync {
 
-    private EnforcementPolicy policy = new EnforcementPolicy();
+    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
 
-    private RoleBasedAccessControlService rbacService;
+    void createPermission(String name, String group, String siteKey, AsyncCallback<GWTJahiaPermission> async);
 
-    public void afterPropertiesSet() throws Exception {
-        // override the default policy
-        rbacService.setEnformcementPolicy(policy);
-    }
+    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async);
 
-    /**
-     * Injects an instance of the {@link RoleBasedAccessControlService} service.
-     * 
-     * @param rbacService an instance of the
-     *            {@link RoleBasedAccessControlService} service
-     */
-    public void setRoleBasedAccessControlService(RoleBasedAccessControlService rbacService) {
-        this.rbacService = rbacService;
-    }
+    void getPrincipalsInRole(GWTJahiaRole role, AsyncCallback<List<GWTJahiaPrincipal>> async);
 
-    /**
-     * Injects the enforcement policy to use.
-     * 
-     * @param policy the policy to set
-     */
-    public void setEnformcementPolicy(EnforcementPolicy policy) {
-        this.policy = policy;
-    }
+    void getRoles(String siteKey, boolean isGroup, String principalKey, AsyncCallback<List<GWTJahiaRole>> async);
+
+    void getRolesAndPermissions(String site, AsyncCallback<GWTRolesPermissions> async);
+
+    void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
+
+    void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey, AsyncCallback async);
+
+    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
+
+    void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey, AsyncCallback async);
+
+    void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
 
 }

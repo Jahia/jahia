@@ -536,7 +536,10 @@ public class ContentManagerHelper {
             } else if (!node.renameFile(newName)) {
                 throw new GWTJahiaServiceException(new StringBuilder("Could not rename file ").append(node.getName()).append(" into ").append(newName).toString());
             }
+        } catch (ItemExistsException e) {
+            throw new GWTJahiaServiceException(new StringBuilder(newName).append(" already exists").toString());
         } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder("Could not rename file ").append(node.getName()).append(" into ").append(newName).toString());
         }
         try {

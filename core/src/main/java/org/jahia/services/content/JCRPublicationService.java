@@ -9,6 +9,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -94,7 +95,7 @@ public class JCRPublicationService extends JahiaService {
                         try {
                             JCRNodeWrapper ref = start.getSession().getNodeByUUID(v.getString());
                             if (!referencedNode.contains(ref)) {
-                                if (!hasIndependantPublication(ref)) {
+                                if (!ref.isNodeType("jnt:page")) {
                                     referencedNode.add(ref);
                                 }
                             }
@@ -111,7 +112,7 @@ public class JCRPublicationService extends JahiaService {
                     try {
                         JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
                         if (!referencedNode.contains(ref)) {
-                            if (!hasIndependantPublication(ref)) {
+                            if (!ref.isNodeType("jnt:page")) {
                                 referencedNode.add(ref);
                             }
                         }
@@ -197,48 +198,39 @@ public class JCRPublicationService extends JahiaService {
      * @throws javax.jcr.RepositoryException in case of error
      */
     public void publish(final String path, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
-                        boolean system, final boolean allSubTree) throws RepositoryException {
-        JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession(sourceWorkspace);
-        if (system) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, sourceWorkspace, new JCRCallback() {
-                public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    return JCRTemplate.getInstance().doExecuteWithSystemSession(null, destinationWorkspace, new JCRCallback() {
-                        public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                            JCRNodeWrapper n = sourceSession.getNode(path);
-
-                            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
-                                if (type.getName().equals("jmix:publication")) {
-                                    if (!n.isCheckedOut()) {
-                                        n.checkout();
-                                    }
-                                    n.removeMixin("jmix:publication");
-                                    sourceSession.save();
-                                }
-                            }
-
-                            publish(n, destinationSession, languages, allSubTree, false, new HashSet<String>());
-                            return null;
-                        }
-                    });
-                }
-            });
+                        final boolean system, final boolean allSubTree) throws RepositoryException {
+        final String username;
+        final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        if (user != null) {
+            username = user.getUsername();
         } else {
-            JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(destinationWorkspace);
-            JCRNodeWrapper n = sourceSession.getNode(path);
-
-            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
-                if (type.getName().equals("jmix:publication")) {
-                    if (!n.isCheckedOut()) {
-                        n.checkout();
-                    }
-                    n.removeMixin("jmix:publication");
-                    sourceSession.save();
-                }
-            }
-
-            publish(n, destinationSession, languages, allSubTree, false, new HashSet<String>());
+            username = null;
         }
-//        session.save();
+        if (user == null && !system) {
+            throw new RepositoryException("User not set");
+        }
+        JCRTemplate.getInstance().doExecute(system, username, sourceWorkspace, null,  new JCRCallback() {
+            public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                return JCRTemplate.getInstance().doExecute(system, username, destinationWorkspace, new JCRCallback() {
+                    public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                        JCRNodeWrapper n = sourceSession.getNode(path);
+
+                        for (ExtendedNodeType type : n.getMixinNodeTypes()) {
+                            if (type.getName().equals("jmix:publication")) {
+                                if (!n.isCheckedOut()) {
+                                    n.checkout();
+                                }
+                                n.removeMixin("jmix:publication");
+                                sourceSession.save();
+                            }
+                        }
+
+                        publish(n, destinationSession, languages, allSubTree, false, new HashSet<String>());
+                        return null;
+                    }
+                });
+            }
+        });
     }
 
     private void publish(final JCRNodeWrapper sourceNode, JCRSessionWrapper destinationSession, Set<String> languages,

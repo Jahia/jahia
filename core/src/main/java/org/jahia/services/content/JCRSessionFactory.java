@@ -166,6 +166,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, eventsDisabled,null);
     }
 
+    protected JCRSessionWrapper getUserSession(String username, String workspace) throws RepositoryException {
+        return login(JahiaLoginModule.getCredentials(username), workspace);
+    }
+
+    protected JCRSessionWrapper getUserSession(String username, String workspace, Locale locale) throws RepositoryException {
+        return login(JahiaLoginModule.getCredentials(username), workspace, locale, false, null);
+    }
+
     public String[] getDescriptorKeys() {
         return descriptors.keySet().toArray(new String[descriptors.size()]);
     }

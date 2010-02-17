@@ -75,15 +75,6 @@ public class VFSContentStoreProvider extends JCRStoreProvider {
         return repo;
     }
 
-
-    public String encodeInternalName(String name) {
-        return name;
-    }
-
-    public String decodeInternalName(String name) {
-        return name;
-    }
-
     protected void registerNamespaces(Workspace workspace) throws RepositoryException {
     }
 

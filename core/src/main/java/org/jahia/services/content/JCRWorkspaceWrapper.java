@@ -172,26 +172,41 @@ public class JCRWorkspaceWrapper implements Workspace {
                 dest = dest.substring(provider.getMountPoint().length());
                 source = source.substring(provider.getMountPoint().length());
             }
-            JCRNodeWrapper sourceNode = session.getNode(source);
+            final JCRNodeWrapper sourceNode = session.getNode(source);
             if (sourceNode.isNodeType("jmix:shareable")) {
-                JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(dest,"/"));
-                parentNode.clone(sourceNode, StringUtils.substringAfterLast(dest,"/"));
-                List<Value> values = new ArrayList<Value>();
-                String v = sourceNode.getPath() + ":::" + dest;
-                if (sourceNode.hasProperty("j:movedFrom")) {
-                    values.addAll(Arrays.asList(sourceNode.getProperty("j:movedFrom").getValues()));
-                    for (Value value : values) {
-                        String s = value.getString();
-                        if (s.endsWith(":::"+sourceNode.getPath())) {
-                            v = StringUtils.substringBefore(s,":::") + ":::" + dest;
-                            values.remove(value);
-                            break;
+                final String destination = dest;
+                final JCRCallback callback = new JCRCallback() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(destination,"/"));
+                        parentNode.clone(sourceNode, StringUtils.substringAfterLast(destination,"/"));
+                        List<Value> values = new ArrayList<Value>();
+                        String v = sourceNode.getPath() + ":::" + destination;
+                        if (sourceNode.hasProperty("j:movedFrom")) {
+                            values.addAll(Arrays.asList(sourceNode.getProperty("j:movedFrom").getValues()));
+                            for (Value value : values) {
+                                String s = value.getString();
+                                if (s.endsWith(":::"+sourceNode.getPath())) {
+                                    v = StringUtils.substringBefore(s,":::") + ":::" + destination;
+                                    values.remove(value);
+                                    break;
+                                }
+                            }
                         }
+                        values.add(getSession().getValueFactory().createValue(v));
+                        sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
+                        sourceNode.removeShare();
+                        return null;
                     }
+                };
+                if (sessionMove) {
+                    callback.doInJCR(session);
+                } else {
+                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getUsername(), getName(), session.getLocale(), new JCRCallback() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            return JCRObservationManager.doWorkspaceWriteCall(session, JCRObservationManager.WORKSPACE_MOVE, callback);
+                        }
+                    });
                 }
-                values.add(getSession().getValueFactory().createValue(v));
-                sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
-                sourceNode.removeShare();
             } else {
                 if (sessionMove) {
                     session.getProviderSession(provider).move(source, dest);

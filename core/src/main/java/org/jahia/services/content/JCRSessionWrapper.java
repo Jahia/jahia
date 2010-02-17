@@ -94,12 +94,15 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     private boolean eventsDisabled = false;
+    private boolean isSystem;
+
     private Locale fallbackLocale;
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              boolean eventsDisabled, JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
         this.credentials = credentials;
+        this.isSystem = isSystem;
         if (workspace == null) {
             this.workspace = new JCRWorkspaceWrapper("default", this, sessionFactory);
         } else {
@@ -127,6 +130,10 @@ public class JCRSessionWrapper implements Session {
 
     public String getUserID() {
         return ((SimpleCredentials) credentials).getUserID();
+    }
+
+    public boolean isSystem() {
+        return isSystem;
     }
 
     public Object getAttribute(String s) {
@@ -195,7 +202,7 @@ public class JCRSessionWrapper implements Session {
                 String localPath = path.substring(mp.getKey().length());
                 JCRStoreProvider provider = mp.getValue();
                 Item item = getProviderSession(provider).getItem(
-                        provider.getRelativeRoot() + provider.encodeInternalName(localPath));
+                        provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {
@@ -217,7 +224,7 @@ public class JCRSessionWrapper implements Session {
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
                 Item item = getProviderSession(provider).getItem(
-                        provider.getRelativeRoot() + provider.encodeInternalName(localPath));
+                        provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {

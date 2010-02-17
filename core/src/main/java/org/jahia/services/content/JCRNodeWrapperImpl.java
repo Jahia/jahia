@@ -264,7 +264,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
-        Node n = objectNode.addNode(provider.encodeInternalName(name));
+        Node n = objectNode.addNode(name);
         return provider.getNodeWrapper(n, session);
     }
 
@@ -272,7 +272,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
-        Node n = objectNode.addNode(provider.encodeInternalName(name), type);
+        Node n = objectNode.addNode(name, type);
         return provider.getNodeWrapper(n, session);
     }
 
@@ -350,7 +350,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getUrl() {
         if (objectNode != null) {
-            return provider.getHttpPath()+"/"+getSession().getWorkspace().getName() + provider.decodeInternalName(getPath());
+            return provider.getHttpPath()+"/"+getSession().getWorkspace().getName() + getPath();
         }
         return "";
     }
@@ -371,7 +371,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public String getWebdavUrl() {
         if (objectNode != null) {
             try {
-                return provider.getWebdavPath() + provider.decodeInternalName(objectNode.getPath());
+                return provider.getWebdavPath() + objectNode.getPath();
             } catch (RepositoryException e) {
                 logger.error("Cannot get file path", e);
             }
@@ -598,7 +598,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 String mp = provider.getMountPoint();
                 return mp.substring(mp.lastIndexOf('/') + 1);
             } else {
-                return provider.decodeInternalName(objectNode.getName());
+                return objectNode.getName(); //JCRContentUtils.decodeInternalName(name);
             }
         } catch (RepositoryException e) {
             logger.error("Repository error", e);
@@ -1220,8 +1220,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!isCheckedOut()) {
             checkout();
         }
-
-        objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath() + "/" + provider.encodeInternalName(newName));
+        JCRNodeWrapper parent = getParent();
+        if (!parent.isCheckedOut()) {
+            parent.checkout();
+        }
+        getSession().move(getPath(), parent.getPath() + "/" + newName);
 
         return true;
     }
@@ -1816,7 +1819,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNode(String s) throws RepositoryException {
         // add mountpoints here
-        final boolean b = objectNode.hasNode(provider.encodeInternalName(s));
+        final boolean b = objectNode.hasNode(s);
         if(b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s) ){
             final JCRNodeWrapper wrapper;
             try {

@@ -407,7 +407,7 @@ public class JCRStoreProvider {
         try {
             repo = getRepository();
             JahiaUser root = getGroupManagerService().getAdminUser(0);
-            Session session = getSystemSession(root.getUsername());
+            Session session = getSystemSession(root.getUsername(), null);
             try {
                 Workspace workspace = session.getWorkspace();
 
@@ -605,7 +605,7 @@ public class JCRStoreProvider {
 
 
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        JCRSessionWrapper session = sessionFactory.getSystemSession(user.getUsername());
+        JCRSessionWrapper session = sessionFactory.getSystemSession(user.getUsername(), null);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
@@ -667,7 +667,7 @@ public class JCRStoreProvider {
     }
 
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
-        JCRSessionWrapper session = sessionFactory.getSystemSession(username);
+        JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
             Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:usersFolder]", Query.JCR_SQL2);
@@ -739,11 +739,11 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {
-        String username = ISO9075.encode(encodeInternalName(user.getUsername()));
+        String username = ISO9075.encode(user.getUsername());
         String sql = "select * from [jnt:user] as user where user.[j:nodename]= '"+username+"'";
 
         if (site != null) {
-            site = ISO9075.encode(encodeInternalName(site));
+            site = ISO9075.encode(site);
             sql = "select user from [jnt:user] as user right outer join [jnt:virtualsite] as site on isdescendantnode(user,site) where user.[j:nodename]= '"+username+ "' and site:[j:nodename] = '"+site+"'";
         }
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
@@ -754,11 +754,11 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
-        String username = ISO9075.encode(encodeInternalName(user.getUsername()));
+        String username = ISO9075.encode(user.getUsername());
         String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where user.[j:nodename]= '"+username+"'";
 
         if (site != null) {
-            site = ISO9075.encode(encodeInternalName(site));
+            site = ISO9075.encode(site);
             sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '"+username+ "' and site.[j:nodename] = '"+site+"'";
         }
 
@@ -770,7 +770,7 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getSiteFolders(String site) throws RepositoryException {
-        site = ISO9075.encode(encodeInternalName(site));
+        site = ISO9075.encode(site);
         String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 
         return queryFolders(sessionFactory.getCurrentUserSession(), xp);
@@ -861,14 +861,6 @@ public class JCRStoreProvider {
         return valueFactory;
     }
 
-    public String encodeInternalName(String name) {
-        return name; //JCRContentUtils.encodeInternalName(name);
-    }
-
-    public String decodeInternalName(String name) {
-        return name; //JCRContentUtils.decodeInternalName(name);
-    }
-
     public Session getCurrentUserSession() throws RepositoryException {
         return sessionFactory.getCurrentUserSession().getProviderSession(this);
     }
@@ -879,10 +871,6 @@ public class JCRStoreProvider {
 
     public Session getSystemSession() throws RepositoryException {
         return sessionFactory.getSystemSession().getProviderSession(this);
-    }
-
-    public Session getSystemSession(String user) throws RepositoryException {
-        return sessionFactory.getSystemSession(user).getProviderSession(this);
     }
 
     public Session getSystemSession(String user, String workspace) throws RepositoryException {

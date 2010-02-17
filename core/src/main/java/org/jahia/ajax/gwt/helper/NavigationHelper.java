@@ -681,7 +681,7 @@ public class NavigationHelper {
         n.setName(node.getName());
         n.setDisplayName(node.getName());
         n.setDescription(description);
-        n.setPath(node.getProvider().decodeInternalName(node.getPath()));
+        n.setPath(node.getPath());
         n.setUrl(node.getUrl());
         n.setLastModified(node.getLastModifiedAsDate());
         n.setNodeTypes(nodeTypes);

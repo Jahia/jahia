@@ -30,8 +30,8 @@ public class SearchHelper {
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
-    
-    private JahiaJCRSearchProvider jcrSearchProvider; 
+
+    private JahiaJCRSearchProvider jcrSearchProvider;
 
     public void setJcrService(JCRStoreService jcrService) {
         this.jcrService = jcrService;
@@ -55,9 +55,9 @@ public class SearchHelper {
         return new ArrayList<GWTJahiaNode>();
     }
 
-    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search,int limit,int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            Query q = createQuery(search,limit,offset, currentUserSession);
+            Query q = createQuery(search, limit, offset, currentUserSession);
             return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -96,7 +96,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> getNodesOfType(String nodeType, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
-            String s = "select * from ["+nodeType+"]";
+            String s = "select * from [" + nodeType + "]";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
         } catch (RepositoryException e) {
@@ -171,19 +171,19 @@ public class SearchHelper {
     /**
      * Add "*" at beginning and end of query if not present in original search string.
      * Ex: *query   -->   *query
-     *     query*   -->   query*
-     *     query    -->   *query*
+     * query*   -->   query*
+     * query    -->   *query*
      *
      * @param rawQuery the raw query string
      * @return formatted query string
      */
     public static String formatQuery(String rawQuery) {
         if (rawQuery == null || rawQuery.length() == 0) {
-            return "" ;
+            return "";
         } else if (rawQuery.startsWith("*") || rawQuery.endsWith("*")) {
-            return rawQuery ;
+            return rawQuery;
         } else {
-            return new StringBuilder("*").append(rawQuery).append("*").toString() ;
+            return new StringBuilder("*").append(rawQuery).append("*").toString();
         }
     }
 
@@ -193,36 +193,41 @@ public class SearchHelper {
     public void setJcrSearchProvider(JahiaJCRSearchProvider jcrSearchProvider) {
         this.jcrSearchProvider = jcrSearchProvider;
     }
-    
+
     /**
      * Creates the {@link Query} instance from the provided search criteria.
+     *
      * @param gwtQuery the search criteria bean
-     * @param session current JCR session
+     * @param session  current JCR session
      * @return the {@link Query} instance, created from the provided search criteria
-     * @throws RepositoryException 
-     * @throws InvalidQueryException 
+     * @throws RepositoryException
+     * @throws InvalidQueryException
      */
-    private Query createQuery(GWTJahiaSearchQuery gwtQuery,int limit,int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+    private Query createQuery(GWTJahiaSearchQuery gwtQuery, int limit, int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         SearchCriteria criteria = new SearchCriteria();
-        criteria.setOffset(offset);
-        criteria.setLimit(limit);
-        
+        if (offset > 0) {
+            criteria.setOffset(offset);
+        }
+        if (limit > 0) {
+            criteria.setLimit(limit);
+        }
+
         // page path
         if (!gwtQuery.getPages().isEmpty()) {
             criteria.getPagePath().setValue(gwtQuery.getPages().get(0).getPath());
             criteria.getPagePath().setIncludeChildren(true);
         }
-        
+
         // language
         if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getCountryIsoCode() != null) {
             criteria.getLanguages().setValue(gwtQuery.getLanguage().getCountryIsoCode());
         }
-        
+
         // query string
         if (gwtQuery.getQuery() != null && gwtQuery.getQuery().length() > 0) {
             criteria.getTerms().get(0).setTerm(gwtQuery.getQuery());
         }
-        
+
         return jcrSearchProvider.buildQuery(criteria, session);
     }
 }

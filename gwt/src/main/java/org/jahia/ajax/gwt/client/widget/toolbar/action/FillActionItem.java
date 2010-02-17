@@ -41,7 +41,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
  * Time: 12:29:05
  */
 public class FillActionItem extends BaseActionItem {
-    public Component getTextToolitem() {
+    public Component getTextToolItem() {
         return new FillToolItem();
     }
 

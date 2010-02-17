@@ -65,7 +65,9 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     RootPanel.get().remove(ctn);
                 }
                 containers.clear();
-                button.toggle(false);
+                if (button != null) {
+                    button.toggle(false);
+                }
             }
         };
 

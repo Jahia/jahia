@@ -47,11 +47,9 @@ import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import java.util.*;
 
 /**
@@ -70,6 +68,7 @@ public class WorkflowService {
     public static final String CANDIDATE = "candidate";
     private RoleService roleService;
     private RoleBasedAccessControlService rbacService;
+    private Map<String,List<String>> workflowTypes;
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -80,6 +79,10 @@ public class WorkflowService {
 
     public void setRoleService(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    public void setWorkflowTypes(Map<String, List<String>> workflowTypes) {
+        this.workflowTypes = workflowTypes;
     }
 
     public Map<String, WorkflowProvider> getProviders() {
@@ -107,6 +110,20 @@ public class WorkflowService {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             workflowsByProvider.addAll(providerEntry.getValue().getAvailableWorkflows());
+        }
+        return workflowsByProvider;
+    }
+
+    public List<WorkflowDefinition> getWorkflowsForAction(String actionName) throws RepositoryException {
+        List<String> l = workflowTypes.get(actionName);
+        List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
+        for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
+            List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows();
+            for (WorkflowDefinition def : defs) {
+                if (l.contains(def.getKey())) {
+                    workflowsByProvider.add(def);
+                }
+            }
         }
         return workflowsByProvider;
     }
@@ -162,32 +179,61 @@ public class WorkflowService {
      * This method list all currently active workflow for the specified node.
      *
      * @param node
-     * @return A map of active workflows per provider
+     * @return A list of active workflows per provider
      */
-    public Map<String, List<Workflow>> getActiveWorkflows(JCRNodeWrapper node) {
-        Map<String, List<Workflow>> workflowsByProvider = new LinkedHashMap<String, List<Workflow>>();
+    public List<Workflow> getActiveWorkflows(JCRNodeWrapper node) {
+        List<Workflow> workflows = new ArrayList<Workflow>();
         try {
             if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
-                Property p = node.getProperty(Constants.PROCESSID);
-                Value[] values = p.getValues();
-                for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
-                    final List<String> processIds = new ArrayList<String>(values.length);
-                    for (Value value : values) {
-                        String key = value.getString();
-                        String processId = StringUtils.substringAfter(key, ":");
-                        String providerKey = StringUtils.substringBefore(key, ":");
-                        if (providerKey.equals(entry.getKey())) {
-                            processIds.add(processId);
-                        }
+                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return workflows;
+    }
+
+    /**
+     * This method list all currently active workflow for the specified node.
+     *
+     * @param node
+     * @return A list of active workflows per provider
+     */
+    public Map<Locale,List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
+        Map<Locale,List<Workflow>> workflowsByLocale = new HashMap<Locale,List<Workflow>>();
+        try {
+            if (node.isNodeType("jmix:workflow")) {
+                NodeIterator ni = node.getNodes("j:translation");
+                while (ni.hasNext()) {
+                    Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
+                    final String lang = n.getProperty("jcr:language").getString();
+                    if (n.hasProperty(Constants.PROCESSID + "_"+lang)) {
+                        List<Workflow> l = new ArrayList<Workflow>();
+                        workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang),l);
+                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_"+lang));
                     }
-                    workflowsByProvider.put(entry.getKey(), entry.getValue().getActiveWorkflowsInformations(
-                            processIds));
                 }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        return workflowsByProvider;
+        return workflowsByLocale;
+    }
+
+    private void addActiveWorkflows(List<Workflow> workflows, Property p) throws RepositoryException {
+        Value[] values = p.getValues();
+        for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
+            final List<String> processIds = new ArrayList<String>(values.length);
+            for (Value value : values) {
+                String key = value.getString();
+                String processId = StringUtils.substringAfter(key, ":");
+                String providerKey = StringUtils.substringBefore(key, ":");
+                if (providerKey.equals(entry.getKey())) {
+                    processIds.add(processId);
+                }
+            }
+            workflows.addAll(entry.getValue().getActiveWorkflowsInformations(processIds));
+        }
     }
 
     /**

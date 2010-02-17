@@ -35,12 +35,15 @@ public class LockActionItem extends BaseActionItem   {
         if(!locked){
            style = "gwt-toolbar-icon-unlock";
         }
-        Component component = getTextToolitem();
+        Component component = getTextToolItem();
         if (component instanceof Button) {
             ((Button) component).setIconStyle(style);
         }
-        getMenuItem().setIconStyle(style);
-        getContextMenuItem().setIconStyle(style);
-
+        if (isMenuItem()) {
+            getMenuItem().setIconStyle(style);
+        }
+        if (isContextMenuItem()) {
+            getContextMenuItem().setIconStyle(style);
+        }
     }
 }

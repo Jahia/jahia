@@ -2215,6 +2215,7 @@
         <property name="descriptionKey" value="label.publish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
+        <property name="workflowAction" value="publish"/>
     </bean>
 
     <bean id="org.jahia.toolbar.item.publishall" class="org.jahia.services.toolbar.bean.Item">
@@ -2246,6 +2247,7 @@
         <property name="descriptionKey" value="label.unpublish"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-unpublish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unpublish"/>
+        <property name="workflowAction" value="unpublish"/>
     </bean>
 
     <!-- new edit mode buttons: unpublish -->

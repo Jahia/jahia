@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 
+import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
@@ -61,10 +62,13 @@ import org.jahia.content.ContentPageKey;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 
@@ -453,7 +457,24 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
         gwtToolbarItem.setProperties(pMap);
-        gwtToolbarItem.setActionItem(item.getActionItem());
+
+
+        if (item.getWorkflowAction() != null) {
+            try {
+                List<WorkflowDefinition> def = WorkflowService.getInstance().getWorkflowsForAction(item.getWorkflowAction());
+                List<String> processes = new ArrayList<String>();
+                for (WorkflowDefinition workflowDefinition : def) {
+                    processes.add(workflowDefinition.getKey());
+                }
+                gwtToolbarItem.setProcesses(processes);
+                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, true, item.getActionItem());
+                gwtToolbarItem.setActionItem(workflowActionItem);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get workflows",e);
+            }
+        } else {
+            gwtToolbarItem.setActionItem(item.getActionItem());
+        }
 
         return gwtToolbarItem;
     }

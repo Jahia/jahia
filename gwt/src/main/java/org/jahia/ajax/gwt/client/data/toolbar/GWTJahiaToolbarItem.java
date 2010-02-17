@@ -35,6 +35,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
 
@@ -55,6 +56,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private boolean disabled;
     private boolean selected;
     private int layout = -1;
+    private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
 
     private ActionItem actionItem;
@@ -178,5 +180,13 @@ public class GWTJahiaToolbarItem implements Serializable {
 
     public void setActionItem(ActionItem actionItem) {
         this.actionItem = actionItem;
+    }
+
+    public List<String> getProcesses() {
+        return processes;
+    }
+
+    public void setProcesses(List<String> processes) {
+        this.processes = processes;
     }
 }

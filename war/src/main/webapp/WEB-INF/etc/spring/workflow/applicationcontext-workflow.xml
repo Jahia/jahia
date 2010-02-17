@@ -6,6 +6,22 @@
     <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" init-method="start" factory-method="getInstance">
     	<property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService"/>
     	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlService"/>
+
+        <property name="workflowTypes">
+            <map>
+                <entry key="publish">
+                    <list>
+                        <value>2_Step_Publication_Process</value>
+                    </list>
+                </entry>
+                <entry key="unpublish">
+                    <list>
+                        <value>1_Step_Unpublication_Process</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+
     </bean>
 
 </beans>

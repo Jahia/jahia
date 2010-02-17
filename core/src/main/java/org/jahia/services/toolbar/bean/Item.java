@@ -54,6 +54,7 @@ public class Item implements Serializable, BeanNameAware {
     private Visibility visibility;
     private Selected selected;
     private String layout;
+    private String workflowAction;
     private List<Property> properties = new ArrayList();
     private ActionItem actionItem;
 
@@ -159,5 +160,13 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setLayout(String layout) {
         this.layout = layout;
+    }
+
+    public String getWorkflowAction() {
+        return workflowAction;
+    }
+
+    public void setWorkflowAction(String workflowAction) {
+        this.workflowAction = workflowAction;
     }
 }

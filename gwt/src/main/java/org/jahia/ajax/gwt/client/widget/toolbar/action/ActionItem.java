@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -47,15 +48,23 @@ public interface ActionItem extends Serializable {
 
     public void setEnabled(boolean enabled) ;
 
-    public Component getTextToolitem() ;
+    public Component getTextToolItem() ;
 
     public Item getMenuItem() ;
 
     public Item getContextMenuItem() ;
 
+    public void setTextToolitem(Component textToolitem);
+
+    public void setMenuItem(MenuItem menuItem);
+
+    public void setContextMenuItem(MenuItem contextMenuItem);
+
     public GWTJahiaToolbarItem getGwtToolbarItem();
 
-    public  void handleNewLinkerSelection();
+    public void onComponentSelection();
+
+    public void handleNewLinkerSelection();
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker);
 

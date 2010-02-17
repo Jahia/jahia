@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -46,7 +48,7 @@ public class SeparatorActionItem implements ActionItem {
 
     public void setEnabled(boolean enabled) {}
 
-    public Button getTextToolitem() {
+    public Button getTextToolItem() {
         return null ;
     }
 
@@ -67,5 +69,21 @@ public class SeparatorActionItem implements ActionItem {
 
     public void handleNewLinkerSelection() {
 
+    }
+
+    public void onComponentSelection() {
+        
+    }
+
+    public void setTextToolitem(Component textToolitem) {
+
+    }
+
+    public void setMenuItem(MenuItem menuItem) {
+
+    }
+
+    public void setContextMenuItem(MenuItem contextMenuItem) {
+        
     }
 }

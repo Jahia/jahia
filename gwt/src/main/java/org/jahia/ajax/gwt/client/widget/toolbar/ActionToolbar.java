@@ -121,7 +121,7 @@ public class ActionToolbar extends ToolBar {
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {
-                        toolItem = actionItem.getTextToolitem();
+                        toolItem = actionItem.getTextToolItem();
                         add(toolItem);
                     }
                 } else {
@@ -129,7 +129,7 @@ public class ActionToolbar extends ToolBar {
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {
-                        toolItem = actionItem.getTextToolitem();
+                        toolItem = actionItem.getTextToolItem();
                         add(toolItem);
                     }
                 }

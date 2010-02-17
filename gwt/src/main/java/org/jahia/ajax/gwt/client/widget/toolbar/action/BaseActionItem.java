@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 
 import com.extjs.gxt.ui.client.event.*;
@@ -73,7 +72,7 @@ public abstract class BaseActionItem implements ActionItem {
      *
      * @return
      */
-    public Component getTextToolitem() {
+    public Component getTextToolItem() {
         if (textToolitem != null) {
             return textToolitem;
         }
@@ -138,6 +137,30 @@ public abstract class BaseActionItem implements ActionItem {
         return contextMenuItem;
     }
 
+    public boolean isTextToolItem() {
+        return textToolitem != null;
+    }
+
+    public boolean isMenuItem() {
+        return menuItem != null;
+    }
+
+    public boolean isContextMenuItem() {
+        return contextMenuItem != null;
+    }
+
+    public void setTextToolitem(Component textToolitem) {
+        this.textToolitem = textToolitem;
+    }
+
+    public void setMenuItem(MenuItem menuItem) {
+        this.menuItem = menuItem;
+    }
+
+    public void setContextMenuItem(MenuItem contextMenuItem) {
+        this.contextMenuItem = contextMenuItem;
+    }
+
     /**
      * Create a menuItem
      *
@@ -169,9 +192,15 @@ public abstract class BaseActionItem implements ActionItem {
     }
 
     public void setEnabled(boolean enabled) {
-        Formatter.setButtonEnabled(getTextToolitem(), enabled);
-        Formatter.setMenuItemEnabled(getMenuItem(), enabled);
-        Formatter.setMenuItemEnabled(getContextMenuItem(), enabled);
+        if (isTextToolItem()) {
+            Formatter.setButtonEnabled(getTextToolItem(), enabled);
+        }
+        if (isMenuItem()) {
+            Formatter.setMenuItemEnabled(getMenuItem(), enabled);
+        }
+        if (isContextMenuItem()) {
+            Formatter.setMenuItemEnabled(getContextMenuItem(), enabled);
+        }
     }
 
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="1 Step Unpublication Process" xmlns="http://jbpm.org/4.3/jpdl">
+    <start name="start">
+        <transition to="first review"/>
+    </start>
+    <task name="first review">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+        <transition name="accept" to="unpublication"/>
+        <transition name="reject" to="end"/>
+    </task>
+    <custom name="unpublication" class="org.jahia.services.workflow.jbpm.custom.Unpublish" >
+        <transition to="end"/>
+    </custom>
+    <end name="end"/>
+</process>

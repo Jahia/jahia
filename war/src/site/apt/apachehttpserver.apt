@@ -57,7 +57,7 @@ Jahia Crazy Jane - Web Module - Use an apache http server as a frontal
 	RewriteRule ^/jahia/cms/edit/default/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/edit/default/$1 [P,L]
 	RewriteCond %{REQUEST_URI} ^/jahia/cms/render/default.*$
 	RewriteRule ^/jahia/cms/render/default/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/render/default/$1 [P,L]
-	RewriteCond %{REQUEST_URI} !^/jahia/cms/.*$
+	RewriteCond %{REQUEST_URI} !^/jahia/.*$
 	RewriteRule ^/([a-zA-Z_0-9/\.]+html)$ http://localhost:8080/jahia/cms/edit/default/en/sites/mySite/$1 [P,L]
 	RewriteLog "/var/log/apache2/rewrite.log"
 	RewriteLogLevel 3

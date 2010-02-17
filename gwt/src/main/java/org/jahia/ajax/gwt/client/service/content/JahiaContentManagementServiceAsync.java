@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -73,6 +74,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
 
     void search(String searchString, int limit, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void search(GWTJahiaSearchQuery search,int limit,int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);    
 
     void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
 

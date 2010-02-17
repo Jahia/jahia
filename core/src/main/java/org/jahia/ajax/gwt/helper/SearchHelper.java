@@ -55,6 +55,16 @@ public class SearchHelper {
         return new ArrayList<GWTJahiaNode>();
     }
 
+    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search,int limit,int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        try {
+            Query q = createQuery(search,limit,offset, currentUserSession);
+            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new ArrayList<GWTJahiaNode>();
+    }
+
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         if (nodeTypes == null) {
             nodeTypes = JCRClientUtils.FILE_NODETYPES;
@@ -95,7 +105,7 @@ public class SearchHelper {
         return result;
     }
 
-    Query createQuery(String searchString, JCRSessionWrapper currentUserSession) throws RepositoryException {
+    public Query createQuery(String searchString, JCRSessionWrapper currentUserSession) throws RepositoryException {
         String s = "select * from [jmix:hierarchyNode] as h where contains(h.[j:nodename]," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")";
         return currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
     }
@@ -192,8 +202,10 @@ public class SearchHelper {
      * @throws RepositoryException 
      * @throws InvalidQueryException 
      */
-    private Query createQuery(GWTJahiaSearchQuery gwtQuery, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+    private Query createQuery(GWTJahiaSearchQuery gwtQuery,int limit,int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         SearchCriteria criteria = new SearchCriteria();
+        criteria.setOffset(offset);
+        criteria.setLimit(limit);
         
         // page path
         if (!gwtQuery.getPages().isEmpty()) {

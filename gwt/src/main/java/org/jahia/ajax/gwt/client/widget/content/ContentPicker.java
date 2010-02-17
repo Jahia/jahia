@@ -82,8 +82,8 @@ public class ContentPicker extends TriPanelBrowserLayout {
             if (selectorOptions != null) {
                 String type = selectorOptions.get("type");
                 if (type != null) {
-                    externalAllowed = true;
-                    internalAllowed = true;
+                    externalAllowed = type.indexOf("external") != 0;
+                    internalAllowed = type.indexOf("internal") != 0;
                 }
             } else {
                 // allow only internal if no selector specified

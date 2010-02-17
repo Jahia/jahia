@@ -32,7 +32,9 @@
 package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -83,6 +85,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException;
+
+    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search,int limit,int offset) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException;
 

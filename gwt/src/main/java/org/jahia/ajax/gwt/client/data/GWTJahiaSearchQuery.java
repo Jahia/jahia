@@ -13,6 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaSearchQuery implements Serializable {
+    private int limit;
     private String query;
     private List<GWTJahiaNode> pages;
     private GWTJahiaLanguage language;
@@ -21,6 +22,14 @@ public class GWTJahiaSearchQuery implements Serializable {
     private boolean inContents;
     private boolean inFiles;
     private boolean inMetadatas;
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
 
     public String getQuery() {
         return query;

@@ -32,7 +32,9 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
@@ -213,6 +215,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
         return search.search(searchString, limit, retrieveCurrentSession());
     }
+
+    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery,int limit,int offset) throws GWTJahiaServiceException {
+        PagingLoadResult<GWTJahiaNode> result = new BasePagingLoadResult<GWTJahiaNode>(search.search(searchQuery,limit,offset, retrieveCurrentSession()));
+        result.setOffset(offset);
+        return result ;
+    }
+
 
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
         return search.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());

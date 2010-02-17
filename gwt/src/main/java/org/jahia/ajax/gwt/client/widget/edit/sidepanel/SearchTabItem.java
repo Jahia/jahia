@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -10,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
@@ -45,6 +48,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox inFileField;
     private CheckBox inMetadataField;
     private Grid<GWTJahiaNode> grid;
+    final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
 
     public SearchTabItem() {
         VBoxLayout l = new VBoxLayout();
@@ -61,23 +65,16 @@ class SearchTabItem extends SidePanelTabItem {
         searchField.setFieldLabel(Messages.getResource("fm_search"));
         searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                grid.mask("Loading", "x-mask-loading");
-                GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
-                gwtJahiaSearchQuery.setQuery(searchField.getValue());
-                gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
-                gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
-                gwtJahiaSearchQuery.setInName(inNameField.getValue());
-                gwtJahiaSearchQuery.setInTags(inTagField.getValue());
-                gwtJahiaSearchQuery.setInContents(inContentField.getValue());
-                gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
-                gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
-                doSearch(gwtJahiaSearchQuery);
+               // grid.mask("Loading", "x-mask-loading");
+                contentStore.removeAll();
+                loader.load(0,10);
             }
         });
         final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-                grid.mask("Loading", "x-mask-loading");
-                search(searchField.getValue(), null, null);
+              //  grid.mask("Loading", "x-mask-loading");
+                contentStore.removeAll();
+                loader.load(0,10);
             }
         });
 
@@ -133,7 +130,6 @@ class SearchTabItem extends SidePanelTabItem {
         fieldSet.add(inFileField);
 
 
-
         searchForm.addButton(ok);
         searchForm.addButton(drag);
 
@@ -148,7 +144,19 @@ class SearchTabItem extends SidePanelTabItem {
         panel.add(searchForm, new RowData(1, -1, new Margins(0)));
 
 
-        contentStore = new ListStore<GWTJahiaNode>();
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
+            @Override
+            public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+                doSearch((PagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        // loader
+        loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
+        loader.setRemoteSort(true);
+        final PagingToolBar toolBar = new PagingToolBar(10);
+        toolBar.bind(loader);
+        contentStore = new ListStore<GWTJahiaNode>(loader);
 
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
 
@@ -163,10 +171,20 @@ class SearchTabItem extends SidePanelTabItem {
         displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
         grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
+
         //contentContainer.add(grid);
 
         //contentVBoxData.setFlex(4);
-        panel.add(grid, new RowData(1, 1, new Margins(0, 0, 0, 0)));
+        ContentPanel gridPanel = new ContentPanel();
+        gridPanel.setLayout(new FitLayout());
+        gridPanel.setBottomComponent(toolBar);
+        gridPanel.setHeaderVisible(false);
+        gridPanel.setFrame(false);
+        gridPanel.setBodyBorder(false);
+        gridPanel.setBorders(false);
+        gridPanel.add(grid);
+
+        panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 0, 0)));
         add(panel);
 
         displayGridSource = new DisplayGridDragSource(grid);
@@ -273,52 +291,43 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>(){
+        JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
             public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
                 combo.getStore().removeAll();
                 combo.getStore().add(gwtJahiaLanguages);
             }
 
             public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                Log.error("Error while loading languages");
             }
         });
         return combo;
     }
 
-    /**
-     * Method used by the search form
-     *
-     * @param query      the query string
-     * @param date       search for items newer than date
-     * @param searchRoot search within this path
-     */
-    private void search(String query, Date date, String searchRoot) {
-        JahiaContentManagementService.App.getInstance().search(query, 500, new AsyncCallback<List<GWTJahiaNode>>() {
-            public void onFailure(Throwable throwable) {
-                grid.unmask();
-                contentStore.removeAll();
-            }
-
-            public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                grid.unmask();
-                contentStore.removeAll();
-
-                if (gwtJahiaNodes != null) {
-                    contentStore.add(gwtJahiaNodes);
-                    contentStore.sort("displayName", Style.SortDir.ASC);
-                }
-            }
-        });
-    }
 
     /**
      * Method used by seach form
-     *
-     * @param query
      */
-    private void doSearch(GWTJahiaSearchQuery query) {
-       search(query.getQuery(),null,null);
+    private void doSearch(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+        GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
+        gwtJahiaSearchQuery.setQuery(searchField.getValue());
+        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
+        gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+        gwtJahiaSearchQuery.setInName(inNameField.getValue());
+        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
+        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
+        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
+        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+        int limit = 500;
+        int offset = 0;
+        if (loadConfig != null) {
+            limit = loadConfig.getLimit();
+            offset = loadConfig.getOffset();
+        }
+
+
+        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
+
     }
 
     /**

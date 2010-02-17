@@ -68,7 +68,6 @@ public class TranslateContentEngine extends Window {
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
         ContentPanel panel = new ContentPanel();
-        panel.setHeading("RowLayout: Orientation set to horizontal");
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         panel.setWidth("100%");
         panel.setHeight("100%");

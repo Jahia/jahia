@@ -77,14 +77,20 @@ public class ContentPicker extends TriPanelBrowserLayout {
         // construction of the UI components
         BottomRightComponent bottomComponents;
         if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-            String type = selectorOptions.get("type");
             boolean externalAllowed = true;
             boolean internalAllowed = true;
-            if (type != null) {
-                externalAllowed = true;
+            if (selectorOptions != null) {
+                String type = selectorOptions.get("type");
+                if (type != null) {
+                    externalAllowed = true;
+                    internalAllowed = true;
+                }
+            } else {
+                // allow only internal if no selector specified
+                externalAllowed = false;
                 internalAllowed = true;
             }
-            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config,false);
+            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
         } else {
             bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
         }

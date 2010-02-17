@@ -91,7 +91,11 @@ public class PrincipalRolePanel extends LayoutContainer {
                 contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
                     public void onSuccess(Object o) {
                         Log.debug("Grant role to groups");
-                        store.add(pList);
+                        for (GWTJahiaPrincipal p : pList) {
+                            if (!store.contains(p)) {
+                                store.add(p);
+                            }
+                        }
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -106,7 +110,11 @@ public class PrincipalRolePanel extends LayoutContainer {
                 contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
                     public void onSuccess(Object o) {
                         Log.debug("Grant role to users");
-                        store.add(pList);
+                        for (GWTJahiaPrincipal p : pList) {
+                            if (!store.contains(p)) {
+                                store.add(p);
+                            }
+                        }
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -159,7 +167,7 @@ public class PrincipalRolePanel extends LayoutContainer {
         column.setHeader("siteName");
         column.setWidth(250);
         configs.add(column);
-        
+
         ColumnConfig action = new ColumnConfig("action", "", 100);
         action.setAlignment(Style.HorizontalAlignment.RIGHT);
         action.setRenderer(new GridCellRenderer<GWTJahiaPrincipal>() {

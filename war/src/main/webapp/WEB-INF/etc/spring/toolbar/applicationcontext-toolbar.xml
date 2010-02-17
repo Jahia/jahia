@@ -157,7 +157,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="visibility">
@@ -193,7 +192,6 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="contextMenu" value="true"/>
@@ -229,7 +227,6 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="contextMenu" value="true"/>
@@ -264,7 +261,6 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.MashupManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="visibility">
@@ -314,7 +310,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="contextMenu" value="true"/>
@@ -348,7 +343,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.TagManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="visibility">
@@ -381,7 +375,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="visibility">

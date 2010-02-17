@@ -3,21 +3,22 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.DisplayGridDragSource;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
@@ -34,36 +35,53 @@ import java.util.List;
  */
 class SearchTabItem extends SidePanelTabItem {
     protected ListStore<GWTJahiaNode> contentStore;
-    protected LayoutContainer contentContainer;
     protected DisplayGridDragSource displayGridSource;
-    
-    SearchTabItem() {
+    private TextField<String> searchField;
+    private ContentPickerField pagePickerField;
+    private ComboBox<GWTJahiaLanguage> langPickerField;
+    private CheckBox inNameField;
+    private CheckBox inTagField;
+    private CheckBox inContentField;
+    private CheckBox inFileField;
+    private CheckBox inMetadataField;
+    private Grid<GWTJahiaNode> grid;
+
+    public SearchTabItem() {
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(l);
+        setLayout(new FitLayout());
 
         setIcon(ContentModelIconProvider.CONTENT_ICONS.query());
 
-        FormPanel searchForm = new FormPanel();
+        final FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
-        searchForm.setBorders(true);
+        searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
-        final TextField<String> searchField = new TextField<String>();
+        searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.getResource("fm_search"));
         searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                contentContainer.mask("Loading","x-mask-loading");
-                search(searchField.getValue(), null,null);                
+                grid.mask("Loading", "x-mask-loading");
+                GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
+                gwtJahiaSearchQuery.setQuery(searchField.getValue());
+                gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
+                gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+                gwtJahiaSearchQuery.setInName(inNameField.getValue());
+                gwtJahiaSearchQuery.setInTags(inTagField.getValue());
+                gwtJahiaSearchQuery.setInContents(inContentField.getValue());
+                gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
+                gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+                doSearch(gwtJahiaSearchQuery);
             }
         });
-        Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
+        final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-                contentContainer.mask("Loading","x-mask-loading");
-                search(searchField.getValue(), null,null);
+                grid.mask("Loading", "x-mask-loading");
+                search(searchField.getValue(), null, null);
             }
         });
 
-        Button drag = new Button(Messages.getResource("em_drag"));
+        final Button drag = new Button(Messages.getResource("em_drag"));
         EditModeDragSource querySource = new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {
@@ -78,20 +96,57 @@ class SearchTabItem extends SidePanelTabItem {
         };
 
         searchForm.add(searchField);
-        HorizontalPanel h = new HorizontalPanel();
-        h.add(ok);
-        h.add(drag);
-        searchForm.add(h);
+        FieldSet fieldSet = new FieldSet();
+        fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
+        FormLayout layout = new FormLayout();
+        layout.setLabelWidth(50);
+        fieldSet.setLayout(layout);
+        fieldSet.setCollapsible(false);
 
-        VBoxLayoutData contentVBoxData = new VBoxLayoutData();
-        contentVBoxData.setFlex(1);
-        add(searchForm, contentVBoxData);
+        // page picker field
+        pagePickerField = createPageSelectorField();
+        fieldSet.add(pagePickerField);
+
+        // lang picker
+        langPickerField = createLanguageSelectorField();
+        fieldSet.add(langPickerField);
+        searchForm.add(fieldSet);
+
+        // scope name field
+        inNameField = createNameField();
+        fieldSet.add(inNameField);
+
+        // scope tag field
+        inTagField = createTagField();
+        fieldSet.add(inTagField);
+
+        // scope metadata field
+        inMetadataField = createMetadataField();
+        fieldSet.add(inMetadataField);
+
+        // scope content field
+        inContentField = createContentField();
+        fieldSet.add(inContentField);
+
+        // scope file field
+        inFileField = createFileField();
+        fieldSet.add(inFileField);
 
 
-        contentContainer = new LayoutContainer();
-        contentContainer.setBorders(true);
-        contentContainer.setScrollMode(Style.Scroll.AUTO);
-        contentContainer.setLayout(new FitLayout());
+
+        searchForm.addButton(ok);
+        searchForm.addButton(drag);
+
+
+        ContentPanel panel = new ContentPanel();
+        panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        panel.setWidth("100%");
+        panel.setHeight("100%");
+        panel.setFrame(true);
+        panel.setCollapsible(false);
+        panel.setHeaderVisible(false);
+        panel.add(searchForm, new RowData(1, -1, new Margins(0)));
+
 
         contentStore = new ListStore<GWTJahiaNode>();
 
@@ -106,13 +161,13 @@ class SearchTabItem extends SidePanelTabItem {
         });
         displayColumns.add(col);
         displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
-        contentContainer.add(grid);
+        //contentContainer.add(grid);
 
-        contentVBoxData = new VBoxLayoutData();
-        contentVBoxData.setFlex(4);
-        add(contentContainer, contentVBoxData);
+        //contentVBoxData.setFlex(4);
+        panel.add(grid, new RowData(1, 1, new Margins(0, 0, 0, 0)));
+        add(panel);
 
         displayGridSource = new DisplayGridDragSource(grid);
     }
@@ -121,6 +176,114 @@ class SearchTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         displayGridSource.addDNDListener(editLinker.getDndListener());
+    }
+
+    /**
+     * Create a new date selector field
+     *
+     * @return
+     */
+    private Field createDateSelectorField() {
+        return null;
+    }
+
+    /**
+     * Create new page picker field
+     *
+     * @return
+     */
+    private ContentPickerField createPageSelectorField() {
+        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), null, "/", "", null, "", ManagerConfigurationFactory.LINKPICKER, false, false);
+        field.setFieldLabel(Messages.get("picker_link_header", "Pages"));
+        return field;
+    }
+
+    /**
+     * Create a new scope fields group selector field
+     *
+     * @return
+     */
+    private CheckBox createNameField() {
+        CheckBox field = new CheckBox();
+        field.setFieldLabel(Messages.get("label_name", "Name"));
+        field.setName("name");
+        return field;
+    }
+
+    /**
+     * Create tag field
+     *
+     * @return
+     */
+    private CheckBox createTagField() {
+        CheckBox field = new CheckBox();
+        field.setFieldLabel(Messages.get("label_tag", "Tags"));
+        field.setName("tag");
+        return field;
+    }
+
+    /**
+     * Create metadataFied
+     *
+     * @return
+     */
+    private CheckBox createMetadataField() {
+        CheckBox field = new CheckBox();
+        field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
+        field.setName("metadata");
+        return field;
+    }
+
+    /**
+     * Create content field
+     *
+     * @return
+     */
+    private CheckBox createContentField() {
+        CheckBox field = new CheckBox();
+        field.setFieldLabel("Content");
+        field.setName("content");
+        return field;
+    }
+
+    /**
+     * Create file field
+     *
+     * @return
+     */
+    private CheckBox createFileField() {
+        CheckBox field = new CheckBox();
+        field.setFieldLabel(Messages.get("label_file", "File"));
+        field.setName("file");
+        return field;
+    }
+
+
+    /**
+     * Create language field
+     *
+     * @return
+     */
+    private ComboBox<GWTJahiaLanguage> createLanguageSelectorField() {
+        final ComboBox<GWTJahiaLanguage> combo = new ComboBox<GWTJahiaLanguage>();
+        combo.setFieldLabel("Language");
+        combo.setStore(new ListStore<GWTJahiaLanguage>());
+        combo.setDisplayField("displayName");
+        combo.setTemplate(getLangSwitchingTemplate());
+        combo.setTypeAhead(true);
+        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        combo.setForceSelection(true);
+        JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>(){
+            public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
+                combo.getStore().removeAll();
+                combo.getStore().add(gwtJahiaLanguages);
+            }
+
+            public void onFailure(Throwable throwable) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+        return combo;
     }
 
     /**
@@ -133,12 +296,12 @@ class SearchTabItem extends SidePanelTabItem {
     private void search(String query, Date date, String searchRoot) {
         JahiaContentManagementService.App.getInstance().search(query, 500, new AsyncCallback<List<GWTJahiaNode>>() {
             public void onFailure(Throwable throwable) {
-                contentContainer.unmask();
+                grid.unmask();
                 contentStore.removeAll();
             }
 
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                contentContainer.unmask();
+                grid.unmask();
                 contentStore.removeAll();
 
                 if (gwtJahiaNodes != null) {
@@ -148,5 +311,27 @@ class SearchTabItem extends SidePanelTabItem {
             }
         });
     }
+
+    /**
+     * Method used by seach form
+     *
+     * @param query
+     */
+    private void doSearch(GWTJahiaSearchQuery query) {
+       search(query.getQuery(),null,null);
+    }
+
+    /**
+     * LangSwithcing template
+     *
+     * @return
+     */
+    private static native String getLangSwitchingTemplate()  /*-{
+    return  [
+    '<tpl for=".">',
+    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+    '</tpl>'
+    ].join("");
+  }-*/;
 
 }

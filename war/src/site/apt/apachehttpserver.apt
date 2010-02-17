@@ -1,6 +1,7 @@
 Jahia Crazy Jane - Web Module - Use an apache http server as a frontal
 
-  For url rewriting we suggest that you use an apache HTTP server with the http proxy module activated.
+  For url rewriting we suggest that you use an apache HTTP server with the http proxy modules activated (proxy, proxy_http)
+  and rewrite module (rewrite).
 
   First you will have to modify the WEB-INF/urlrewrite.xml file inside JAHIA. Uncomment the following lines to activate
   rewriting of urls.

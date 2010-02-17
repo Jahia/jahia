@@ -3,25 +3,6 @@
  * @requires jQuery($), jQuery UI & sortable/draggable UI modules
  */
 
-    function addWidget(source, newName) {
-        var data = {};
-        data["source"] = source;
-        data["target"] = "${currentNode.path}/column1";
-        data["newName"] = newName;
-        $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(result) {
-            alert("widget has been added to your portal page");
-        }, "json");
-    }
-    function addRSSWidget() {
-        var data = {};
-        data["nodeType"] = "jnt:rss";
-        data["url"] = $("#feedUrl").val();
-        data["nbEntries"] = $("#nbFeeds").val();
-        $.post("${url.base}${currentNode.path}/column1/*", data, function(result) {
-            alert("rss widget has been added to your portal page");
-        }, "json");
-    }
-
 var iNettuts = {
     
     jQuery : $,
@@ -50,8 +31,8 @@ var iNettuts = {
 
     init : function () {
         //this.attachStylesheet('inettuts.js.css');
-        this.addWidgetControls();
-        this.makeSortable();
+        //this.addWidgetControls();
+        //this.makeSortable();
     },
     
     getWidgetSettings : function (id) {
@@ -175,6 +156,7 @@ var iNettuts = {
                         notSortable += '#' + this.id + ',';
                     }
                 });
+                if (notSortable == '') { notSortable = 'noWidgets'; }
                 return $('> li:not(' + notSortable + ')', settings.columns);
             })();
         
@@ -210,7 +192,7 @@ var iNettuts = {
                 $(ui.item).css({width:''}).removeClass('dragging');
                 $(settings.columns).sortable('enable');
             },
-            update: function(event, ui) {
+            beforeStop: function(event, ui) {
                 var data = {};
                 data["source"]=ui.item[0].id;
                 if (ui.placeholder[0].nextElementSibling) {

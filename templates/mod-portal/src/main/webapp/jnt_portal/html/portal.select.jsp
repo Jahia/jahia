@@ -2,8 +2,29 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="portal.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui-personalized-1.6rc2.min.js,inettuts.js"/>
+<template:addResources type="javascript" resources="jquery.js,ui.core.js,inettuts.js"/>
 <jcr:node path="/shared/portalComponents" var="widgets"/>
+<script type="text/javascript">
+function addWidget(source, newName) {
+    var data = {};
+    data["source"] = source;
+    data["target"] = "${currentNode.path}/column1";
+    data["newName"] = newName;
+    $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(result) {
+        alert("widget has been added to your portal page");
+    }, "json");
+}
+function addRSSWidget() {
+    var data = {};
+    data["nodeType"] = "jnt:rss";
+    data["url"] = $("#feedUrl").val();
+    data["nbEntries"] = $("#nbFeeds").val();
+    $.post("${url.base}${currentNode.path}/column1/*", data, function(result) {
+        alert("rss widget has been added to your portal page");
+    }, "json");
+}
+</script>
+
 <ul>
     <c:forEach items="${widgets.children}" var="node" varStatus="status">
         <li>

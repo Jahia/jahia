@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <template:addResources type="css" resources="portal.css,slide.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui-personalized-1.6rc2.min.js,inettuts.js"/>
+<template:addResources type="javascript" resources="jquery.js,ui.core.js,inettuts.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
 

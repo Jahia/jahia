@@ -409,7 +409,7 @@
         <property name="target">
             <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
             	<property name="searchProvider">
-            		<bean class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
+            		<bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
             	</property>
             </bean>
         </property>

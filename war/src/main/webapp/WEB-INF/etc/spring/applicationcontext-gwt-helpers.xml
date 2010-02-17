@@ -82,6 +82,7 @@
         <property name="navigation"  ref="NavigationHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="jcrService"  ref="JCRStoreService"/>
+        <property name="jcrSearchProvider" ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
     </bean>
 
     <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper" >

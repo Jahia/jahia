@@ -1,14 +1,18 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.services.content.*;
+import org.jahia.services.search.SearchCriteria;
+import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
 import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,8 @@ public class SearchHelper {
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
+    
+    private JahiaJCRSearchProvider jcrSearchProvider; 
 
     public void setJcrService(JCRStoreService jcrService) {
         this.jcrService = jcrService;
@@ -169,5 +175,42 @@ public class SearchHelper {
         } else {
             return new StringBuilder("*").append(rawQuery).append("*").toString() ;
         }
+    }
+
+    /**
+     * @param jcrSearchProvider the jcrSearchProvider to set
+     */
+    public void setJcrSearchProvider(JahiaJCRSearchProvider jcrSearchProvider) {
+        this.jcrSearchProvider = jcrSearchProvider;
+    }
+    
+    /**
+     * Creates the {@link Query} instance from the provided search criteria.
+     * @param gwtQuery the search criteria bean
+     * @param session current JCR session
+     * @return the {@link Query} instance, created from the provided search criteria
+     * @throws RepositoryException 
+     * @throws InvalidQueryException 
+     */
+    private Query createQuery(GWTJahiaSearchQuery gwtQuery, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+        SearchCriteria criteria = new SearchCriteria();
+        
+        // page path
+        if (!gwtQuery.getPages().isEmpty()) {
+            criteria.getPagePath().setValue(gwtQuery.getPages().get(0).getPath());
+            criteria.getPagePath().setIncludeChildren(true);
+        }
+        
+        // language
+        if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getCountryIsoCode() != null) {
+            criteria.getLanguages().setValue(gwtQuery.getLanguage().getCountryIsoCode());
+        }
+        
+        // query string
+        if (gwtQuery.getQuery() != null && gwtQuery.getQuery().length() > 0) {
+            criteria.getTerms().get(0).setTerm(gwtQuery.getQuery());
+        }
+        
+        return jcrSearchProvider.buildQuery(criteria, session);
     }
 }

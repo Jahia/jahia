@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="1 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
+    <start g="19,219,80,40" name="start">
+        <transition to="lock"/>
+    </start>
+    <custom class="org.jahia.services.workflow.jbpm.custom.Lock" g="88,222,80,40" name="lock">
+      <transition g="-29,8" name="to review" to="review"/>
+    </custom>
+    <task g="227,223,80,40" name="review">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+        <transition g="-26,4" name="reject" to="unlock"/>
+        <transition g="-18,-17" name="accept" to="publication"/>
+    </task>
+    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" g="380,279,80,40" name="unlock">
+        <transition to="end"/>
+    </custom>
+    <custom class="org.jahia.services.workflow.jbpm.custom.Publish" g="380,165,80,40" name="publication">
+      <transition name="to end" to="end" g="-2,-22"/>
+    </custom>
+    <end g="509,227,80,40" name="end"/>
+</process>

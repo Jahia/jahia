@@ -79,7 +79,7 @@ public class WorklowServiceTest extends TestCase {
         JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
     }
 
@@ -89,7 +89,7 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
@@ -108,7 +108,7 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
@@ -142,7 +142,7 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
@@ -175,7 +175,7 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
@@ -207,7 +207,7 @@ public class WorklowServiceTest extends TestCase {
         JCRNodeWrapper stageRootNode = sessionWrapper.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
         final WorkflowService service = WorkflowService.getInstance();
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);

@@ -11,6 +11,7 @@
             <map>
                 <entry key="publish">
                     <list>
+                        <value>1_Step_Publication_Process</value>
                         <value>2_Step_Publication_Process</value>
                     </list>
                 </entry>

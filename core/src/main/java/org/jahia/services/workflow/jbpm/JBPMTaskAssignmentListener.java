@@ -33,14 +33,13 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jbpm.api.model.OpenExecution;
 import org.jbpm.api.task.Assignable;
@@ -65,13 +64,14 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
      */
     public void assign(Assignable assignable, OpenExecution execution) throws Exception {
 
+        WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
         String id = (String) execution.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
         String name = null;
         if (assignable instanceof TaskImpl) {
             name = ((TaskImpl)assignable).getActivityName();
         }
-        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, name);
+        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name);
         for (JahiaPrincipal principal : principals) {
             if (principal instanceof JahiaGroup) {
                 assignable.addCandidateGroup(((JahiaGroup)principal).getGroupKey());

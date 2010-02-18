@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <process name="2 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
-    <start name="start">
+    <start name="start" g="41,310,80,40">
         <transition to="lock"/>
     </start>
-    <custom name="lock" class="org.jahia.services.workflow.jbpm.custom.Lock" >
+    <custom class="org.jahia.services.workflow.jbpm.custom.Lock" name="lock" g="125,311,80,40">
         <transition to="first review"/>
     </custom>
-    <task name="first review">
+    <task name="first review" g="243,310,80,40">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <transition name="accept" to="final review"/>
-        <transition name="reject" to="unlock"/>
+        <transition name="accept" to="final review" g="371,290:-18,-17"/>
+        <transition name="reject" to="unlock" g="343,372:133,-16"/>
     </task>
-    <task name="final review">
+    <task name="final review" g="449,265,80,40">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <transition name="publish" to="publication"/>
-        <transition name="reject" to="unlock"/>
-        <transition name="correction needed" to="first review"/>
+        <transition name="publish" to="publication" g="-23,-19"/>
+        <transition name="reject" to="unlock" g="-30,3"/>
+        <transition name="correction needed" to="first review" g="381,325:-34,3"/>
     </task>
-    <custom name="unlock" class="org.jahia.services.workflow.jbpm.custom.Unlock" >
+    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" name="unlock" g="585,310,80,40">
         <transition to="end"/>
     </custom>
-    <custom name="publication" class="org.jahia.services.workflow.jbpm.custom.Publish" >
+    <custom class="org.jahia.services.workflow.jbpm.custom.Publish" name="publication" g="582,223,80,40">
         <transition to="end"/>
     </custom>
-    <end name="end"/>
+    <end name="end" g="683,263,80,40"/>
 </process>

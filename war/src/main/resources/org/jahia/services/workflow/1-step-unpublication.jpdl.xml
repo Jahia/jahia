@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <process name="1 Step Unpublication Process" xmlns="http://jbpm.org/4.3/jpdl">
-    <start name="start">
+    <start name="start" g="123,221,80,40">
         <transition to="first review"/>
     </start>
-    <task name="first review">
+    <task name="first review" g="224,225,80,40">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <transition name="accept" to="unpublication"/>
-        <transition name="reject" to="end"/>
+        <transition name="accept" to="unpublication" g="-43,-10"/>
+        <transition name="reject" to="end" g="-35,-18"/>
     </task>
-    <custom name="unpublication" class="org.jahia.services.workflow.jbpm.custom.Unpublish" >
+    <custom class="org.jahia.services.workflow.jbpm.custom.Unpublish" name="unpublication" g="296,141,101,40">
         <transition to="end"/>
     </custom>
-    <end name="end"/>
+    <end name="end" g="439,220,80,40"/>
 </process>

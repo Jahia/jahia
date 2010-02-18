@@ -66,6 +66,7 @@ public class WorkflowService {
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
     private static WorkflowService instance;
     public static final String CANDIDATE = "candidate";
+    public static final String START_ROLE = "start";
     private RoleService roleService;
     private RoleBasedAccessControlService rbacService;
     private Map<String,List<String>> workflowTypes;
@@ -132,9 +133,10 @@ public class WorkflowService {
      * This method list all possible workflows for the specified node.
      *
      * @param node
+     * @param user
      * @return A list of available workflows per provider.
      */
-    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node) throws RepositoryException {
+    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<WorkflowDefinition>>() {
             public List<WorkflowDefinition> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 final List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
@@ -144,8 +146,20 @@ public class WorkflowService {
                     for (Value value : values) {
                         String workflowDefinitionKey = StringUtils.substringAfter(value.getString(), ":");
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
+
                         WorkflowDefinition definition = providers.get(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
-                        workflowsByProvider.add(definition);
+                        if (user == null || user.isAdminMember(0)) {
+                            workflowsByProvider.add(definition);
+                        } else {
+                            List<JahiaPrincipal> users = getAssignedRole(node, definition, START_ROLE);
+                            for (JahiaPrincipal jahiaPrincipal : users) {
+                                if ((jahiaPrincipal instanceof JahiaGroup && ((JahiaGroup)jahiaPrincipal).isMember(user)) ||
+                                        (jahiaPrincipal instanceof JahiaUser && ((JahiaUser)jahiaPrincipal).getUserKey().equals(user.getUserKey()))) {
+                                    workflowsByProvider.add(definition);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 return workflowsByProvider;
@@ -153,11 +167,11 @@ public class WorkflowService {
         });
     }
 
-    public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final String role) throws RepositoryException {
+    public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition, final String role) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
-                return rbacService.getPrincipalsInPermission(new PermissionIdentity(rule.getName() + " - " + role, "workflow", JCRContentUtils.getSiteKey(rule.getProperty("j:path").toString())));
+                return rbacService.getPrincipalsInPermission(new PermissionIdentity(getPermissionKey(rule.getName(), definition, role), "workflow", JCRContentUtils.getSiteKey(rule.getProperty("j:path").toString())));
             }
         });
     }
@@ -283,6 +297,7 @@ public class WorkflowService {
         args.put("nodeId", stageNode.getIdentifier());
         args.put("workspace", stageNode.getSession().getWorkspace().getName());
         args.put("locale", stageNode.getSession().getLocale());
+        args.put("workflow", providers.get(provider).getWorkflowDefinitionByKey(processKey));
         final String processId = providers.get(provider).startProcess(processKey, args);
         return processId;
     }
@@ -363,20 +378,25 @@ public class WorkflowService {
                 n.setProperty("j:availableWorkflows", values);
                 session.save();
 
-                List<String> roles = new ArrayList<String>();
                 // add the permissions
                 for (WorkflowDefinition workflow : workflows) {
+                    List<String> roles = new ArrayList<String>();
+                    roles.add(START_ROLE);
                     roles.addAll(providers.get(workflow.getProvider()).getConfigurableRoles(workflow.getKey()));
-                }
-                for (String role : roles) {
-                    String permissionKey = key + " - " + role;
-                    // ensure the permission is there
-                    roleService.savePermission(new PermissionImpl(permissionKey, "workflow", JCRContentUtils.getSiteKey(path)));
+                    for (String role : roles) {
+                        String permissionKey = getPermissionKey(key, workflow, role);
+                        // ensure the permission is there
+                        roleService.savePermission(new PermissionImpl(permissionKey, "workflow", JCRContentUtils.getSiteKey(path)));
+                    }
                 }
 
                 return null;
             }
         });
+    }
+
+    private String getPermissionKey(String rule, WorkflowDefinition workflow, String role) {
+        return rule + " - " + workflow.getName() + " - " + role;
     }
 
     public void removeWorkflowRule(final String key) throws RepositoryException {

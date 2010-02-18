@@ -143,6 +143,7 @@ public class ManagerConfigurationFactory {
         configuration.addColumn("size");
         configuration.addColumn("lastModified");
 
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);
@@ -170,6 +171,7 @@ public class ManagerConfigurationFactory {
         configuration.setEnableTextMenu(false);
         configuration.setToolbarGroup("file-picker");
         configuration.setHideLeftPanel(true);
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);
@@ -189,6 +191,7 @@ public class ManagerConfigurationFactory {
         configuration.setEnableTextMenu(false);
         configuration.addAccordion(JCRClientUtils.SITE_REPOSITORY);
         configuration.setToolbarGroup("file-picker");
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);
@@ -205,6 +208,7 @@ public class ManagerConfigurationFactory {
         configuration.setEnableFileDoubleClick(false);
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
 
@@ -242,6 +246,7 @@ public class ManagerConfigurationFactory {
         configuration.setEnableFileDoubleClick(false);
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
 
@@ -284,7 +289,7 @@ public class ManagerConfigurationFactory {
 
         configuration.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
-
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
 
@@ -370,7 +375,7 @@ public class ManagerConfigurationFactory {
         configuration.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
 
         configuration.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
-
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
 
@@ -429,6 +434,7 @@ public class ManagerConfigurationFactory {
 
         // do not display collections, if they do not match node type filters
         configuration.setAllowCollections(false);
+        configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);

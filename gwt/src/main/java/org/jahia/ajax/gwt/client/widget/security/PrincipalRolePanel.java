@@ -42,11 +42,6 @@ public class PrincipalRolePanel extends LayoutContainer {
 
     public PrincipalRolePanel(GWTJahiaRole role) {
         this.role = role;
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
         setLayout(new FitLayout());
         contentService.getPrincipalsInRole(role, new AsyncCallback<List<GWTJahiaPrincipal>>() {
             public void onSuccess(List<GWTJahiaPrincipal> p) {
@@ -58,7 +53,6 @@ public class PrincipalRolePanel extends LayoutContainer {
                 Log.error("Error while retrieving roles", throwable);
             }
         });
-
     }
 
     /**

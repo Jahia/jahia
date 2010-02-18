@@ -168,12 +168,20 @@ public class ContentDetails extends BottomRightComponent {
 
         // principale roles mapping
         principalRoleTabItem = new AsyncTabItem();
-        principalRoleTabItem.setText("Principal mapping");
+        principalRoleTabItem.setText(Messages.get("label_principalMapping", "Principal mapping"));
         principalRoleTabItem.setLayout(new FitLayout());
 
         // add all tabs
+        if (config.getTabs().contains(JCRClientUtils.INFO)) {
+            // tabs.add(infoTabItem);
+        }
         tabs.add(infoTabItem);
+
+        if (config.getTabs().contains(JCRClientUtils.PRINCIPAL_ROLES_MAPPING)) {
+            tabs.add(principalRoleTabItem);
+        }
         tabs.add(propertiesTabItem);
+
         if (config.getTabs().contains(JCRClientUtils.ROLES_ACL)) {
             tabs.add(portletRolesTabItem);
         }
@@ -184,9 +192,6 @@ public class ContentDetails extends BottomRightComponent {
             tabs.add(modesTabItem);
         }
 
-        if (config.getTabs().contains(JCRClientUtils.PRINCIPAL_ROLES_MAPPING)) {
-            tabs.add(principalRoleTabItem);
-        }
 
         if (config.getTabs().contains(JCRClientUtils.AUTHORIZATIONS)) {
             tabs.add(authorizationsTabItem);
@@ -226,6 +231,7 @@ public class ContentDetails extends BottomRightComponent {
         authorizationsTabItem.removeAll();
         usagesTabItem.removeAll();
         versioningTabItem.removeAll();
+        principalRoleTabItem.removeAll();
         selectedNodes = null;
         infoTabItem.setProcessed(false);
         infoTabItem.setEnabled(false);
@@ -289,7 +295,7 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(true);
                 usagesTabItem.setEnabled(true);
                 versioningTabItem.setEnabled(true);
-                principalRoleTabItem.setEnabled(true);                
+                principalRoleTabItem.setEnabled(true);
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(false);
@@ -299,7 +305,7 @@ public class ContentDetails extends BottomRightComponent {
                 authorizationsTabItem.setEnabled(false);
                 usagesTabItem.setEnabled(false);
                 versioningTabItem.setEnabled(false);
-                principalRoleTabItem.setEnabled(true);
+                principalRoleTabItem.setEnabled(false);
 
             }
 
@@ -866,14 +872,13 @@ public class ContentDetails extends BottomRightComponent {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
             if (!principalRoleTabItem.isProcessed()) {
                 String path = selectedNode.getPath();
-                String site = path.startsWith("/sites/") ? path.substring("/sites/".length(), path.indexOf("/", "/sites/".length())) : null; 
+                String site = path.startsWith("/sites/") ? path.substring("/sites/".length(), path.indexOf("/", "/sites/".length())) : null;
                 PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(new GWTJahiaRole(selectedNode.getName(), site));
-                if (principalRoleTabItem.getItemCount() > 0) {
-                    principalRoleTabItem.getItem(0).removeFromParent();
-                }
+
                 principalRoleTabItem.add(principalRolePanel);
                 principalRoleTabItem.setProcessed(true);
                 principalRoleTabItem.layout();
+
             }
         }
     }

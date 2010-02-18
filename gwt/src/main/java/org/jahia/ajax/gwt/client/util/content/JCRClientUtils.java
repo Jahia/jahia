@@ -85,6 +85,7 @@ public final class JCRClientUtils {
     
     public static final String REUSABLE_COMPONENTS_REPOSITORY = "resuableComponentsRepository";
 
+    public final static String INFO = "info";
     public final static String PRINCIPAL_ROLES_MAPPING = "principalRolesMapping";
     public final static String AUTHORIZATIONS = "authorizations";
     public final static String USAGE = "usage";

@@ -57,15 +57,15 @@ public class WorkflowHelper {
                         List<WorkflowParticipation> participations = workflowTask.getParticipations();
                         if (participations != null) {
                             for (WorkflowParticipation participation : participations) {
+                                GWTJahiaWorkflowAction action = new GWTJahiaWorkflowAction();
+                                gwtActions.add(action);
+                                List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();
+                                action.setProvider(workflow.getProvider());
+                                action.setOutcomes(gwtOutcomes);
+                                action.setName(workflowAction.getName());
+                                action.setId(workflowTask.getId());
                                 if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup)participation.getJahiaPrincipal()).isMember(session.getUser())) ||
                                         (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser)participation.getJahiaPrincipal()).getUserKey().equals(session.getUser().getUserKey()))) {
-                                    GWTJahiaWorkflowAction action = new GWTJahiaWorkflowAction();
-                                    gwtActions.add(action);
-                                    List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();
-                                    action.setProvider(workflow.getProvider());
-                                    action.setOutcomes(gwtOutcomes);
-                                    action.setName(workflowAction.getName());
-                                    action.setId(workflowTask.getId());
                                     Set<String> outcomes = workflowTask.getOutcomes();
                                     for (String outcome : outcomes) {
                                         GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();

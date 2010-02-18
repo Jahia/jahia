@@ -643,7 +643,7 @@ shortcuts
 	margin : 1em 0;
 }
 #bodywrapper blockquote {
-	background:#eaeaea url(../img/blockquote.png) no-repeat top left;
+	background:#eaeaea url(img/blockquote.png) no-repeat top left;
 	border:1px solid #ccc;
 	font-style:italic;
 	margin-bottom:10px;

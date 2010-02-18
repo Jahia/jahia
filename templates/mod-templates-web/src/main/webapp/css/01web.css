@@ -747,7 +747,7 @@ shortcuts
 	font-size:80%;
 	padding:6px 15px 4px 15px;
 }
-#bodywrapper .button:hover,  #bodywrapper button:hover {
+#bodywrapper .button:hover, #bodywrapper button:hover {
 	cursor: pointer;
 	background:#fff url(../img/bg-button-on.png) repeat-x top left;
 	color:#900;

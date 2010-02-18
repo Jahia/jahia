@@ -2,18 +2,29 @@ Skins
 
 * Introduction
 
+Skins are predefined layouts that can be applied on any content object of jahia pages by authors, whatever the content particular structure.
+A same skin can be applied on a news, an article, or any other object.
+The interest for integrators is to build a collection of skins and make them accessible for authors so those authors benefit from a wider, but still correctly controlled, set of graphical options.
+ As skins are very simple (authors just choose the skin they want to apply) and doesn't involve knowledge about css and such options, they remain simple to use and explain.
+
+
 
 * How it works
 
+ Skins are xhtml files that can be activated to surround existing content object, most of the time to change the final layout.
+ By adding a specific xhtml, authors can choose a different layout thanks to new css classes called in the page around the targeted object.
+ For instance, with skins, it's easy to add the necessary DIVs to apply round corners around a content object, while by default the basic xhtml doesn't allow that.
 
 ----------------------------------------
  ---------------------------------------
 
- Skins can display titles :
+ Known capailities and problems:
+ Skins can be designed to display some content properties from the nested object.
+ Example: use the jcr:title in the skin to display it in a special layout.
 
- You have to diplay the jcr:title in your skin
- 
- To avoid to display it both in module and skin, you can add in your skin css an entry to hide the title in the module.
+ This is useful but can cause a problem: the property (title in our example) will be displayed twice: once by the skin itslef, and one by the content object template.
+
+ To avoid to display it both in module and skin, you must add in your skin css an entry to hide the title in the module.
  For that, we suggest to use the same class to display all your module titles :
 
  <h3 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>

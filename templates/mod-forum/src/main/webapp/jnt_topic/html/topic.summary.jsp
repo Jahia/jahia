@@ -25,18 +25,19 @@
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
 </c:if>
-<ul class="forum-profile-icons">
+
+<dl>
+    <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
+            node="${currentNode}" name="topicSubject"/></a>
+        <br/>
+        <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
         <li class="delete-post-icon"><a title="Delete this topic" href="#"
                                         onclick="document.getElementById('jahia-forum-topic-delete-${currentNode.UUID}').submit();"><span>Delete this topic</span></a>
         </li>
     </c:if>
 
-</ul>
-<dl>
-    <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
-            node="${currentNode}" name="topicSubject"/></a>
-        <br/></dt>
+</ul></dt>
     <%--<dd class="topics">30</dd>--%>
     <dd class="posts">${numberOfPosts}</dd>
     <dd class="lastpost">

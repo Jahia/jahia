@@ -32,7 +32,7 @@
             <ul class="forum-list">
                 <li class="forum-list-header">
                     <dl class="icon">
-                        <dt><a href="#">Threads</a></dt>
+                        <dt>Threads</dt>
                         <dd class="topics">Posts</dd>
                         <%--<dd class="posts">View</dd>--%>
                         <dd class="lastpost"><span>Last post</span></dd>

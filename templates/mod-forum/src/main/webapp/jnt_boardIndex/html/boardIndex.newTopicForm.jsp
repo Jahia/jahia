@@ -39,13 +39,11 @@
     <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
 
     <div class="post-reply"><!--start post-reply-->
-        <h2><a href="#">${currentNode.propertiesAsString['boardSubject']}</a></h2>
-
         <div class="forum-box forum-box-style2">
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h3 class="forum-h3-first">Create new Topic</h3>
+                <h4 class="forum-h4-first">${currentNode.propertiesAsString['boardSubject']} : Create new Topic</h4>
 
                 <fieldset>
                     <p class="field">

@@ -8,7 +8,7 @@
     function jahiaForumQuote(targetId, quotedText) {
         var targetArea = document.getElementById(targetId);
         if (targetArea) {
-            targetArea.value = targetArea.value + '\n<blockquote>\n' + quotedText + '\n<blockquote>\n';
+            targetArea.value = targetArea.value + '\n<blockquote>\n' + quotedText + '\n</blockquote>\n';
         }
         return false;
     }
@@ -51,13 +51,11 @@
     <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
     <div class="post-reply"><!--start post-reply-->
-        <h2><a href="#">${currentNode.propertiesAsString['threadSubject']}</a></h2>
-
         <div class="forum-box forum-box-style2">
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h3 class="forum-h3-first"><fmt:message key="reply"/></h3>
+                 <h4 class="forum-h4-first">${currentNode.propertiesAsString['threadSubject']} : <fmt:message key="reply"/></h4>
 
                 <fieldset>
                     <p class="field">

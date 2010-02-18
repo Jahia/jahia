@@ -7,8 +7,7 @@
 <template:addResources type="css" resources="forum.css" nodetype="jnt:thread"/>
 <div id="forum-body">
     <div class="posts">
-        <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
-                                                                                   name="threadSubject"/></a></h2>
+        <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}" name="threadSubject"/></a></h2>
         <a name="wrap"></a>
         <div class="forum-actions">
 

@@ -24,7 +24,12 @@
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
 </c:if>
-<ul class="forum-profile-icons">
+
+<dl>
+    <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
+            node="${currentNode}" name="threadSubject"/></a>
+        <br/>
+        <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
         <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="#"
                                         onclick="document.getElementById('jahia-forum-thread-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.thread"/></span></a>
@@ -32,10 +37,7 @@
     </c:if>
 
 </ul>
-<dl>
-    <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
-            node="${currentNode}" name="threadSubject"/></a>
-        <br/></dt>
+        </dt>
     <%--<dd class="topics">30</dd>--%>
     <dd class="posts">${numberOfPosts}</dd>
     <dd class="lastpost">

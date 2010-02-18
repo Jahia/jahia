@@ -41,7 +41,7 @@
 
     </ul>
 
-    <h3 class="forum-h3-first"><a href="#">${title.string}</a></h3>
+    <h4 class="forum-h4-first">${title.string}</h4>
 
     <p class="forum-author"><fmt:message key="by"/><strong> <a
             href="${url.base}/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate

@@ -24,7 +24,9 @@
                     <dt title="posts">
                         <a class="forum-title" href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty
                                 node="${currentNode}" name="boardSubject"/></a><br/>
-                        <jcr:nodeProperty node="${currentNode}" name="boardDescription"/></dt>
+                        <div class="boardDescription"><jcr:nodeProperty node="${currentNode}" name="boardDescription"/></div>
+                        
+                        </dt>
                     <dd class="topics">${fn:length(currentNode.children)}<dfn>Topics</dfn></dd>
                     <dd class="posts">${numberOfPosts} <dfn>Posts</dfn></dd>
                     <dd class="lastpost"><c:if test="${numberOfPosts > 0}">

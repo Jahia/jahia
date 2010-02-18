@@ -117,7 +117,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
             final ColumnModel cm = new ColumnModel(configs);
-            cm.addHeaderGroup(0, 0, new HeaderGroupConfig(createAddPermissionButton(), 1, 1));
+            cm.addHeaderGroup(0, 0, new HeaderGroupConfig("", 1, 1));
             cm.addHeaderGroup(0, 1, new HeaderGroupConfig("", 1, 1));
             for (int i = 2; i < configs.size(); i++) {
                 cm.addHeaderGroup(0, i, new HeaderGroupConfig(createGrantAllCheckbox(i - 2), 1, 1));

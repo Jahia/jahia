@@ -1,7 +1,6 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
@@ -9,7 +8,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.OnConflictAction;
 
 import javax.jcr.*;
-import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import java.util.*;
 
@@ -164,8 +162,8 @@ public class ConflictResolver {
     private List<Diff> compare(JCRNodeWrapper frozenNode, JCRNodeWrapper node) throws RepositoryException {
         List<Diff> diffs = new ArrayList<Diff>();
 
-        ListOrderedMap uuids1 = getChildEntries(frozenNode);
-        ListOrderedMap uuids2 = getChildEntries(node);
+        ListOrderedMap uuids1 = getChildEntries(frozenNode, node.getSession());
+        ListOrderedMap uuids2 = getChildEntries(node, node.getSession());
 
         if (!uuids1.values().equals(uuids2.values())) {
             for (Iterator iterator = uuids2.keySet().iterator(); iterator.hasNext();) {
@@ -188,7 +186,7 @@ public class ConflictResolver {
             for (Map.Entry<String, String> entry : oldOrdering.entrySet()) {
                 if (!newOrdering.get(entry.getKey()).equals(entry.getValue())) {
                     diffs.add(new ChildNodeReorderedDiff(entry.getKey(), newOrdering.get(entry.getKey()),
-                            (String) uuids2.get(entry.getKey()), (String) uuids2.get(newOrdering.get(entry.getKey()))));
+                            (String) uuids2.get(entry.getKey()), (String) uuids2.get(newOrdering.get(entry.getKey())),newOrdering));
                 }
             }
 
@@ -313,20 +311,27 @@ public class ConflictResolver {
         return previousMap;
     }
 
-    private ListOrderedMap getChildEntries(JCRNodeWrapper node) throws RepositoryException {
+    private ListOrderedMap getChildEntries(JCRNodeWrapper node, JCRSessionWrapper session) throws RepositoryException {
         NodeIterator ni1 = node.getNodes();
         ListOrderedMap childEntries = new ListOrderedMap();
         while (ni1.hasNext()) {
             Node child = (Node) ni1.next();
-            if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
-                VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
-                String uuid = vh.getRootVersion().getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                childEntries.put(uuid, child.getName());
-            } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                childEntries.put(uuid, child.getName());
-            } else {
-                childEntries.put(child.getIdentifier(), child.getName());
+            try {
+                if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
+                    VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
+                    String uuid = vh.getRootVersion().getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getValue().getString();
+                    session.getNodeByUUID(uuid);
+                    childEntries.put(uuid, child.getName());
+                } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
+                    String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
+                    session.getNodeByUUID(uuid);
+                    childEntries.put(uuid, child.getName());
+                } else {
+                    session.getNodeByUUID(child.getIdentifier());
+                    childEntries.put(child.getIdentifier(), child.getName());
+                }
+            } catch (ItemNotFoundException e) {
+                // item does not exist in this workspace
             }
         }
         return childEntries;
@@ -485,15 +490,31 @@ public class ConflictResolver {
         private String orderBeforeName;
         private String uuid;
         private String orderBeforeUuid;
+        private Map<String,String> ordering;
 
-        ChildNodeReorderedDiff(String uuid, String orderBeforeUuid, String name, String orderBeforeName) {
+        ChildNodeReorderedDiff(String uuid, String orderBeforeUuid, String name, String orderBeforeName, Map<String,String> ordering) {
             this.name = name;
             this.orderBeforeName = orderBeforeName;
             this.uuid = uuid;
             this.orderBeforeUuid = orderBeforeUuid;
+            this.ordering = ordering;
         }
 
         public boolean apply() throws RepositoryException {
+            if (!targetNode.hasNode(name)) {
+                return true;
+            }
+            while (orderBeforeName != null && !targetNode.hasNode(orderBeforeName)) {
+                orderBeforeUuid = ordering.get(orderBeforeUuid);
+                try {
+                    if (orderBeforeUuid.equals("")) {
+                        orderBeforeName = null;
+                    } else {
+                        orderBeforeName = targetNode.getSession().getNodeByUUID(orderBeforeUuid).getName();
+                    }
+                } catch (ItemNotFoundException e) {
+                }
+            }
             targetNode.orderBefore(name, orderBeforeName);
             return true;
         }

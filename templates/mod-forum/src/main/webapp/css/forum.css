@@ -3,7 +3,7 @@
 * box
 ******************************************************************************/
 #bodywrapper #forum-body .forum-box{
-	background: #12A3EB url(../img/bg_header.gif) repeat-x top left;
+	background: #12A3EB url(img/bg_header.gif) repeat-x top left;
 	padding: 0 5px;
 	margin-bottom:10px
 }
@@ -41,19 +41,19 @@
 	background-position: 100% 100%;
 }
 #bodywrapper #forum-body span.forum-corners-top {
-	background-image: url("../img/corners_left.png");
+	background-image: url("img/corners_left.png");
 }
 
 #bodywrapper #forum-body span.forum-corners-top span {
-	background-image: url("../img/corners_right.png");
+	background-image: url("img/corners_right.png");
 }
 
 #bodywrapper #forum-body span.forum-corners-bottom {
-	background-image: url("../img/corners_left.png");
+	background-image: url("img/corners_left.png");
 }
 
 #bodywrapper #forum-body span.forum-corners-bottom span {
-	background-image: url("../img/corners_right.png");
+	background-image: url("img/corners_right.png");
 }
 /* box style 1 
 ----------------------------------------*/

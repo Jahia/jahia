@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/xml;UTF-8" language="java" %>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <jcr:jqom var="sitemaps">
     <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
     <query:or>
@@ -16,10 +20,6 @@
 <c:if test="${pageContext.request.serverPort == 80}">
     <c:set var="serverUrl" value="${pageContext.request.scheme}://${pageContext.request.serverName}"/>
 </c:if>
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
-         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
         <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModif"/>
         <url>

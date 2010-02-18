@@ -155,7 +155,7 @@ public class GuiBean {
     public String drawPopupLogoutUrl(final int destinationPageID)
             throws JahiaException {
         if (!processingContext.getUser().getUsername().equals("guest")) {
-            return processingContext.getContextPath()+"/cms/logout";
+            return processingContext.getContextPath()+"/cms/logout?redirect="+processingContext.getContextPath();
         } else {
             return "";
         }

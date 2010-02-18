@@ -147,7 +147,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
         permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
         permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
-        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.VERSION_MNGMT);
+        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.LOCK_MNGMT + Permission.VERSION_MNGMT);
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
         permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
         permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT);

@@ -378,7 +378,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * @param principal a JCR user or group
      * @return the list of groups to which the specified principal (user or group) belongs
      */
-    public List<String> getMembership(JahiaPrincipal principal) {
+    public List<String> getMembership(final JahiaPrincipal principal) {
         String uuid = null;
         if (principal instanceof JCRPrincipal) {
             uuid = ((JCRPrincipal)principal).getIdentifier();
@@ -419,6 +419,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                     }
                                     groups.add(group.getName() + ":" + siteID);
                                 }
+                            }
+                            if (principal instanceof JahiaUser) {
+                                if (!principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                                    groups.add(JahiaGroupManagerService.USERS_GROUPNAME);
+                                }
+                                groups.add(JahiaGroupManagerService.GUEST_GROUPNAME);
                             }
                         } catch (JahiaException e) {
                             logger.error("Error retrieving membership for user ", e);

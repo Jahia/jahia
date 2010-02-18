@@ -66,7 +66,7 @@ public class IsLoginErrorTag extends ValueJahiaTag {
 
     public int doAfterBody() {
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-        if (!renderContext.isLoggedIn()) {
+        if (renderContext == null || !renderContext.isLoggedIn()) {
             final JspWriter out = bodyContent.getEnclosingWriter();
             try {
                 bodyContent.writeOut(out);

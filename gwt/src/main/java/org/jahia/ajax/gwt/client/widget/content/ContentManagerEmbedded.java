@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -51,7 +53,8 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         super();
         setWidth("100%");
 
-        setHeight("500px");
+        setHeight("700px");
+        setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
         ManagerConfiguration config ;
         if (conf != null && conf.length() > 0) {
             config = ManagerConfigurationFactory.getConfiguration(conf, linker) ;

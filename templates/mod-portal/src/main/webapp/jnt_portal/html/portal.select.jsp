@@ -10,21 +10,20 @@ function addWidget(source, newName) {
     data["source"] = source;
     data["target"] = "${currentNode.path}/column1";
     data["newName"] = newName;
-    $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(result) {
+    $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
         alert("widget has been added to your portal page");
-    }, "json");
+    });
 }
 function addRSSWidget() {
     var data = {};
     data["nodeType"] = "jnt:rss";
     data["url"] = $("#feedUrl").val();
     data["nbEntries"] = $("#nbFeeds").val();
-    $.post("${url.base}${currentNode.path}/column1/*", data, function(result) {
+    $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
         alert("rss widget has been added to your portal page");
-    }, "json");
+    });
 }
 </script>
-
 <ul>
     <c:forEach items="${widgets.children}" var="node" varStatus="status">
         <li>

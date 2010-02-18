@@ -24,7 +24,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 import java.util.List;
@@ -101,10 +100,14 @@ public class ContentSearchForm extends ContentPanel {
         // page picker field
         pagePickerField = createPageSelectorField();
         fieldSet.add(pagePickerField);
+        if (!config.isDisplaySearchInPage()) {
+            pagePickerField.hide();
+        }
 
         // lang picker
         langPickerField = createLanguageSelectorField();
         fieldSet.add(langPickerField);
+
         searchForm.add(fieldSet);
 
         // scope name field
@@ -118,14 +121,23 @@ public class ContentSearchForm extends ContentPanel {
         // scope metadata field
         inMetadataField = createMetadataField();
         fieldSet.add(inMetadataField);
+        if (!config.isDisplaySearchInTag()) {
+            inMetadataField.hide();
+        }
 
         // scope content field
         inContentField = createContentField();
         fieldSet.add(inContentField);
+        if (!config.isDisplaySearchInContent()) {
+            inContentField.hide();
+        }
 
         // scope file field
         inFileField = createFileField();
         fieldSet.add(inFileField);
+        if (!config.isDisplaySearchInFile()) {
+            inFileField.hide();
+        }
         //getHeader().addTool(ok);
 
         setWidth("100%");
@@ -176,6 +188,7 @@ public class ContentSearchForm extends ContentPanel {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_name", "Name"));
         field.setName("name");
+        field.setValue(true);
         return field;
     }
 
@@ -282,6 +295,7 @@ public class ContentSearchForm extends ContentPanel {
 
     /**
      * Get current query
+     *
      * @return
      */
     private GWTJahiaSearchQuery getCurrentQuery() {
@@ -302,7 +316,6 @@ public class ContentSearchForm extends ContentPanel {
 
     /**
      * Save search
-     *
      */
     public void saveSearch() {
         GWTJahiaSearchQuery query = getCurrentQuery();

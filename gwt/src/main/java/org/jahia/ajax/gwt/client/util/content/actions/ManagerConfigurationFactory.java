@@ -124,6 +124,9 @@ public class ManagerConfigurationFactory {
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);
+        configuration.setDisplaySearchInContent(true);
+        configuration.setDisplaySearchInFile(true);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -162,6 +165,10 @@ public class ManagerConfigurationFactory {
         // do not hide the left panel (default)
         configuration.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -182,6 +189,10 @@ public class ManagerConfigurationFactory {
         configuration.addAccordion(JCRClientUtils.USERS_REPOSITORY);
         configuration.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -198,6 +209,10 @@ public class ManagerConfigurationFactory {
         configuration.setHideLeftPanel(true);
         configuration.setNodeTypes(JCRClientUtils.PAGE_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -228,6 +243,10 @@ public class ManagerConfigurationFactory {
 
         configuration.addTab(JCRClientUtils.ROLES_ACL);
         configuration.addTab(JCRClientUtils.MODES_ACL);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
 
         // show the mashup tab by default
@@ -266,6 +285,10 @@ public class ManagerConfigurationFactory {
 
         configuration.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -292,6 +315,9 @@ public class ManagerConfigurationFactory {
         configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -320,6 +346,10 @@ public class ManagerConfigurationFactory {
 
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(false);
 
         return configuration;
     }
@@ -342,6 +372,10 @@ public class ManagerConfigurationFactory {
 
         configuration.setNodeTypes(JCRClientUtils.ROLE_NODETYPES);
         configuration.setFolderTypes(JCRClientUtils.ROLE_NODETYPES);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(false);
 
         return configuration;
     }
@@ -350,6 +384,10 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration configuration = getRolesManagerConfiguration(linker);
         configuration.getAccordionPanels().clear();
         configuration.addAccordion(JCRClientUtils.SITE_ROLE_REPOSITORY);
+        configuration.setDisplaySearchInPage(true);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
         return configuration;
     }
 
@@ -378,6 +416,10 @@ public class ManagerConfigurationFactory {
         configuration.addTab(JCRClientUtils.INFO);
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -406,6 +448,10 @@ public class ManagerConfigurationFactory {
         configuration.addTab("portlets");
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
+        configuration.setDisplaySearchInPage(false);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
     }
@@ -438,6 +484,10 @@ public class ManagerConfigurationFactory {
         configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
         configuration.addTab(JCRClientUtils.USAGE);
         configuration.addTab(JCRClientUtils.VERSIONING);
+        configuration.setDisplaySearchInPage(true);
+        configuration.setDisplaySearchInContent(false);
+        configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
 
         return configuration;
 

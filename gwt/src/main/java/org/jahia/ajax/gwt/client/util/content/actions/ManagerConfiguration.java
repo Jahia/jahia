@@ -64,14 +64,19 @@ public class ManagerConfiguration implements Serializable {
     private boolean displayDate = true;
     private boolean displayProvider = false;
     private boolean useCheckboxForSelection = true;
-    
+
     private String toolbarGroup;
 
     private boolean expandRoot = false;
-    
-	private boolean allowCollections = true;
+
+    private boolean allowCollections = true;
 
     private boolean displaySearch = true;
+
+    private boolean displaySearchInPage = true;
+    private boolean displaySearchInTag = true;
+    private boolean displaySearchInFile = true;
+    private boolean displaySearchInContent = true;
 
 
     public ManagerConfiguration() {
@@ -220,28 +225,28 @@ public class ManagerConfiguration implements Serializable {
         this.displayProvider = displayProvider;
     }
 
-	public boolean isAllowCollections() {
-    	return allowCollections;
+    public boolean isAllowCollections() {
+        return allowCollections;
     }
 
-	public void setAllowCollections(boolean allowConnections) {
-    	this.allowCollections = allowConnections;
+    public void setAllowCollections(boolean allowConnections) {
+        this.allowCollections = allowConnections;
     }
-	
+
     public String getToolbarGroup() {
-    	return toolbarGroup;
+        return toolbarGroup;
     }
 
-	public void setToolbarGroup(String toolbarGroup) {
-    	this.toolbarGroup = toolbarGroup;
+    public void setToolbarGroup(String toolbarGroup) {
+        this.toolbarGroup = toolbarGroup;
     }
 
-	public boolean isUseCheckboxForSelection() {
-    	return useCheckboxForSelection;
+    public boolean isUseCheckboxForSelection() {
+        return useCheckboxForSelection;
     }
 
-	public void setUseCheckboxForSelection(boolean useCheckboxForSelection) {
-    	this.useCheckboxForSelection = useCheckboxForSelection;
+    public void setUseCheckboxForSelection(boolean useCheckboxForSelection) {
+        this.useCheckboxForSelection = useCheckboxForSelection;
     }
 
     public boolean isExpandRoot() {
@@ -258,5 +263,37 @@ public class ManagerConfiguration implements Serializable {
 
     public void setDisplaySearch(boolean displaySearch) {
         this.displaySearch = displaySearch;
+    }
+
+    public boolean isDisplaySearchInPage() {
+        return displaySearchInPage;
+    }
+
+    public void setDisplaySearchInPage(boolean displaySearchInPage) {
+        this.displaySearchInPage = displaySearchInPage;
+    }
+
+    public boolean isDisplaySearchInTag() {
+        return displaySearchInTag;
+    }
+
+    public void setDisplaySearchInTag(boolean displaySearchInTag) {
+        this.displaySearchInTag = displaySearchInTag;
+    }
+
+    public boolean isDisplaySearchInFile() {
+        return displaySearchInFile;
+    }
+
+    public void setDisplaySearchInFile(boolean displaySearchInFile) {
+        this.displaySearchInFile = displaySearchInFile;
+    }
+
+    public boolean isDisplaySearchInContent() {
+        return displaySearchInContent;
+    }
+
+    public void setDisplaySearchInContent(boolean displaySearchInContent) {
+        this.displaySearchInContent = displaySearchInContent;
     }
 }

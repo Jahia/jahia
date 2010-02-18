@@ -2347,7 +2347,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRoleActionItem"/>
         </property>
-        <property name="titleKey" value="label.createRole"/>
+        <property name="titleKey" value="label.new"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>

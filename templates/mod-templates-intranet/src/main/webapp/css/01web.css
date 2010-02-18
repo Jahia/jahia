@@ -482,16 +482,14 @@ shortcuts
 	margin : 18px 0;
 }
 #bodywrapper blockquote {
-	background:#E0E0E0 none repeat scroll 0 0;
+	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
 	border:1px solid #A5A5A5;
-	font-size:1.1em;
 	font-style:italic;
-	line-height:18px;
 	margin-bottom:15px;
 	margin-top:15px;
 	padding:20px;
-
 }
+
 #bodywrapper textarea {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:100%
@@ -509,7 +507,6 @@ shortcuts
 	padding:4px 5px;
 	background-color:#f6f6f6;
 }
-
 
 #bodywrapper input.gobutton{
 	background:none;

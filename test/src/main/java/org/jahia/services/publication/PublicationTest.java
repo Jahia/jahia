@@ -1008,7 +1008,7 @@ public class PublicationTest extends TestCase {
         englishEditSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishEditSession, Constants.EDIT_WORKSPACE);
         englishLiveSession = recycleSession(jcrService, defaultLanguage, englishLocale, englishLiveSession, Constants.LIVE_WORKSPACE);
         englishLivePage1 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page1");
-        assertFalse("Page 1 should now no longer have the sitemap mixin in the edit workspace!", englishLivePage1.isNodeType("jmix:sitemap"));
+        assertFalse("Page 1 should now no longer have the sitemap mixin in the live workspace!", englishLivePage1.isNodeType("jmix:sitemap"));
     }
 
     private void testNodeInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage) throws RepositoryException {

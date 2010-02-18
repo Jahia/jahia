@@ -50,7 +50,6 @@ import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.FileUtils;
 
@@ -73,7 +72,6 @@ public class NavigationHelper {
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
 
     private JCRStoreService jcrService;
-    private RenderService renderService;
     private JCRSessionFactory sessionFactory;
 
     private PublicationHelper publication;
@@ -88,39 +86,12 @@ public class NavigationHelper {
         this.sessionFactory = sessionFactory;
     }
 
-    public void setRenderService(RenderService renderService) {
-        this.renderService = renderService;
-    }
-
     public void setPublication(PublicationHelper publication) {
         this.publication = publication;
     }
 
     public void setNodetypeIcons(Map<String, String> nodetypeIcons) {
         this.nodetypeIcons = nodetypeIcons;
-    }
-
-
-    /**
-     * Check if note must be expanded
-     *
-     * @param parentNode
-     * @param openPaths
-     * @return
-     */
-    private boolean expandOnLoad(GWTJahiaNode parentNode, List<String> openPaths) {
-        // check if parentNode is expanded
-        boolean expand = false;
-        if (openPaths != null) {
-            for (String openPath : openPaths) {
-                if (openPath.indexOf(parentNode.getPath()) == 0) {
-                    expand = true;
-
-                    break;
-                }
-            }
-        }
-        return expand;
     }
 
 
@@ -296,7 +267,6 @@ public class NavigationHelper {
         }
         logger.debug("open paths for getRoot : " + openPaths);
 
-        String workspace = "default";
         String[] keys = repositoryKey.split(";");
         for (String key : keys) {
             if (key.startsWith("/")) {
@@ -466,7 +436,7 @@ public class NavigationHelper {
                         }
                     }
                 } catch (Throwable e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -480,7 +450,7 @@ public class NavigationHelper {
             root.setDisplayName("shared");
             userNodes.add(root);
         } catch (GWTJahiaServiceException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         try {
@@ -488,7 +458,7 @@ public class NavigationHelper {
             root.setDisplayName(site.getSiteKey());
             userNodes.add(root);
         } catch (GWTJahiaServiceException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         for (JCRNodeWrapper node : jcrService.getUserFolders(null, currentUserSession.getUser())) {
@@ -497,7 +467,7 @@ public class NavigationHelper {
                 root.setDisplayName(currentUserSession.getUser().getName());
                 userNodes.add(root);
             } catch (GWTJahiaServiceException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             break; // one node should be enough
         }
@@ -603,20 +573,23 @@ public class NavigationHelper {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();
-        List<String> foundPaths = new ArrayList<String>();
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+            // TODO try to do it with index aggregates in Jackrabbit's indexing configuration
+            if (Constants.JCR_CONTENT.equals(n.getName())) {
+                try {
+                    n = n.getParent();
+                } catch (ItemNotFoundException e) {
+                    // keep same node
+                }
+            }
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 // use for pickers 
                 boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n.isFile(), n.getFileContent().getContentType(), mimeTypesToMatch);
                 if (n.isCollection() || matchFilter) {
-                    String path = n.getPath();
-                    if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
-                        foundPaths.add(path);
-                        GWTJahiaNode node = getGWTJahiaNode(n);
-                        node.setMatchFilters(matchFilter);
-                        result.add(node);
-                    }
+                    GWTJahiaNode node = getGWTJahiaNode(n);
+                    node.setMatchFilters(matchFilter);
+                    result.add(node);
                 }
             }
         }
@@ -648,7 +621,7 @@ public class NavigationHelper {
         // get uuid
         String uuid = null;
         try {
-            uuid = node.getUUID();
+            uuid = node.getIdentifier();
         } catch (RepositoryException e) {
             logger.debug("Unable to get uuid for node " + node.getName(), e);
         }

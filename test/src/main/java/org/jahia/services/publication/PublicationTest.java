@@ -901,10 +901,10 @@ public class PublicationTest extends TestCase {
         englishEditSession.checkout(englishEditSiteHomeNode);
         englishEditSiteHomeNode.orderBefore("page1", null); // this should put it at the end of the list.
         englishEditSession.save();
-        testChildOrdering(englishEditSiteHomeNode, "page2", "page1");
+        testChildOrdering(englishEditSiteHomeNode, "page2", "page3", "page1");
         jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
         JCRNodeWrapper englishLiveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
-        testChildOrdering(englishLiveSiteHomeNode, "page2", "page1");
+        testChildOrdering(englishLiveSiteHomeNode, "page2", "page3", "page1");
 
         // Case 7 : now let's move the page to another page
         JCRNodeWrapper editPage1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page1");
@@ -945,6 +945,10 @@ public class PublicationTest extends TestCase {
         testChildOrdering(livePage3, "contentList0", "page1", "contentList1");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page3/page1", "Page 1 was not properly moved below page 3 in the live workspace.");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page3/page1/anotherList", "New list on Page 1 was not found in the live workspace.");
+
+        // Case 9 : Let's move to yet another list, and then modify it's location in the list twice.
+
+        // Case 10 : Delete the node, publish it and check that it has disappeared in live mode.
 
     }
 

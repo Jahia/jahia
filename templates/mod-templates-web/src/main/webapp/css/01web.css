@@ -642,7 +642,15 @@ shortcuts
 	border: none;
 	margin : 1em 0;
 }
-#bodywrapper blockquote {}
+#bodywrapper blockquote {
+	background:#eaeaea url(../img/blockquote.png) no-repeat top left;
+	border:1px solid #ccc;
+	font-style:italic;
+	margin-bottom:10px;
+	margin-top:10px;
+	padding:10px;
+}
+
 #bodywrapper div.intro{
 	color:#333;
 	line-height:1.6em;

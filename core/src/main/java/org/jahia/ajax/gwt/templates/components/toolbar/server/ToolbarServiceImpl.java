@@ -467,7 +467,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                     processes.add(workflowDefinition.getKey());
                 }
                 gwtToolbarItem.setProcesses(processes);
-                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, true, item.getActionItem());
+                // todo : use the role assigned to the action for bypassing workflow ?
+                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jData.getProcessingContext().getUser().isAdminMember(0), item.getActionItem());
                 gwtToolbarItem.setActionItem(workflowActionItem);
             } catch (RepositoryException e) {
                 logger.error("Cannot get workflows",e);

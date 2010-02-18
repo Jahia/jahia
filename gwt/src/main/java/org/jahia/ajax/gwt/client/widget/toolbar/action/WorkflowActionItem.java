@@ -80,6 +80,7 @@ public class WorkflowActionItem extends BaseActionItem {
                 }
                 if (bypassWorkflow) {
                     MenuItem item = new MenuItem("Bypass workflow");
+                    isEnabled = true;
                     item.addSelectionListener( new SelectionListener<MenuEvent>() {
                         @Override
                         public void componentSelected(MenuEvent ce) {

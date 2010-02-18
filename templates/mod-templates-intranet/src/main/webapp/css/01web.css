@@ -859,9 +859,9 @@ background-color:#FFFFFF
 	-webkit-border-radius: 3px;
 
 }
-#bodywrapper button:hover,  #bodywrapper button:hover {
+#bodywrapper .button:hover, #bodywrapper button:hover {
 	cursor: pointer;
-	background:#3297cb url(img/bg-button-on.png) repeat-x bottom left;
+	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
 	color:#fff;
 }
 

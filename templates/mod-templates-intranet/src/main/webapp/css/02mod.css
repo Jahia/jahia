@@ -7,3 +7,71 @@
 #bodywrapper .boxteaser {
 	background:#eaeaea url(img/mod/boxteaser-bg.png) no-repeat top right;
 }
+/******************************************************************************
+* forum
+******************************************************************************/
+#bodywrapper #forum-body span.forum-corners-bottom span {
+	background-image: none;
+	background-position: 100% 100%;
+}
+#bodywrapper #forum-body span.forum-corners-top {
+	background-image: url("img/mod/corners_left.png");
+}
+
+#bodywrapper #forum-body span.forum-corners-top span {
+	background-image: url("img/mod/corners_right.png");
+}
+
+#bodywrapper #forum-body span.forum-corners-bottom {
+	background-image: url("img/mod/corners_left.png");
+}
+
+#bodywrapper #forum-body span.forum-corners-bottom span {
+	background-image: url("img/mod/corners_right.png");
+}
+/* box style 1 
+----------------------------------------*/
+#bodywrapper #forum-body .forum-box-style1 {
+	background: none;
+	background-color:#dbd1c8
+}
+/* box style 2 
+----------------------------------------*/
+#bodywrapper #forum-body .forum-box-style2 {
+	background: none;
+	background-color:#d4d4d4
+}
+/******************************************************************************
+* forum-actions
+******************************************************************************/
+#bodywrapper #forum-body .forum-buttons a,
+#bodywrapper #forum-body .forum-buttons a:link,
+#bodywrapper #forum-body .forum-buttons a:visited{
+	background:#043b9d url(img//mod/bg-button.png) repeat-x top left;
+	border:1px solid #003399;
+}
+#bodywrapper #forum-body .forum-buttons a:hover,
+#bodywrapper #forum-body .forum-buttons a:active {
+	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	border:1px solid #003399;
+}
+/******************************************************************************
+*  forum Form comments
+******************************************************************************/
+#bodywrapper #forum-body ul.forum-profile-icons li a,
+#bodywrapper #forum-body ul.forum-profile-icons li a:link,
+#bodywrapper #forum-body ul.forum-profile-icons li a:visited{
+	background:#043b9d url(img//mod/bg-button.png) repeat-x top left;
+	border:1px solid #003399;
+}
+#bodywrapper #forum-body ul.forum-profile-icons li a:hover,
+#bodywrapper #forum-body ul.forum-profile-icons li a:active {
+	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	border:1px solid #003399;
+}
+/******************************************************************************
+* forum row 
+******************************************************************************/
+#bodywrapper #forum-body li.row:hover {
+	background-color:#ede2d8;
+}

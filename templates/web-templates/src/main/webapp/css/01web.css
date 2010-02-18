@@ -311,7 +311,7 @@ body {
 }
 
 #bodywrapper .button {
-    background: #fff url( ../img/bg-button.png ) repeat-x bottom left;
+    background: #fff url( img/bg-button.png ) repeat-x bottom left;
     border: 1px solid #333333;
     color: #333333;
     text-transform: uppercase;
@@ -323,7 +323,7 @@ body {
 
 #bodywrapper .button:hover {
     cursor: pointer;
-    background: #fff url( ../img/bg-button-on.png ) repeat-x top left;
+    background: #fff url( img/bg-button-on.png ) repeat-x top left;
     color: #990000;
 }
 
@@ -340,14 +340,14 @@ body {
     float: right;
     margin: 0;
     font-size: 80%;
-    background: url( ../img/bottomanchor.png ) no-repeat top right;
+    background: url( img/bottomanchor.png ) no-repeat top right;
     padding-right: 20px;
 }
 
 #bodywrapper .bottomanchor a:hover,
     #bodywrapper .bottomanchor a:active {
     cursor: pointer;
-    background: url( ../img/bottomanchor-on.png ) no-repeat top right;
+    background: url( img/bottomanchor-on.png ) no-repeat top right;
 }
 
 /******************************************************************************
@@ -417,57 +417,57 @@ body {
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-print {
-    background: transparent url( ../img/topshortcuts-print.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-print.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-typoincrease {
-    background: transparent url( ../img/topshortcuts-typoincrease.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-typoincrease.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-typoreduce {
-    background: transparent url( ../img/topshortcuts-typoreduce.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-typoreduce.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-home {
-    background: transparent url( ../img/topshortcuts-home.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-home.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-contact {
-    background: transparent url( ../img/topshortcuts-contact.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-contact.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-sitemap {
-    background: transparent url( ../img/topshortcuts-sitemap.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-sitemap.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts li.topshortcuts-mysettings {
-    background: transparent url( ../img/topshortcuts-mysettings.png ) no-repeat 0% 50%;
+    background: transparent url( img/topshortcuts-mysettings.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper #topshortcuts .topshortcuts-login a {
-    background: transparent url( ../img/topshortcuts-login.png ) no-repeat left top;
+    background: transparent url( img/topshortcuts-login.png ) no-repeat left top;
     padding-left: 20px;
     text-transform: uppercase;
 }
 
 #bodywrapper #topshortcuts .topshortcuts-login a:hover {
-    background: transparent url( ../img/topshortcuts-login.png ) no-repeat 0px -13px;
+    background: transparent url( img/topshortcuts-login.png ) no-repeat 0px -13px;
 }
 
 #bodywrapper #topshortcuts .topshortcuts-login a span {
-    background: transparent url( ../img/topshortcuts-login.png ) no-repeat right top;
+    background: transparent url( img/topshortcuts-login.png ) no-repeat right top;
     padding-right: 16px;
 }
 
 #bodywrapper #topshortcuts .topshortcuts-login a span:hover {
-    background: transparent url( ../img/topshortcuts-login.png ) no-repeat right -13px;
+    background: transparent url( img/topshortcuts-login.png ) no-repeat right -13px;
     padding-right: 16px;
 }
 
@@ -490,7 +490,7 @@ body {
 
 #bodywrapper #loginFormTop .text {
     margin-top: 2px;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
     border: 1px solid #cccccc;
     color: #666666;
     height: 15px;
@@ -498,7 +498,7 @@ body {
 }
 
 #bodywrapper #loginFormTop .text:focus {
-    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #99ccff url( img/bg-input-on.png ) repeat-x top left;
     color: #333333;
 }
 
@@ -515,7 +515,7 @@ body {
     border: 1px solid #cccccc;
     margin: 0.5em 0 0 0;
     clear: both;
-    background: #cccccc url( ../img/box4-header.png ) repeat-x left top;
+    background: #cccccc url( img/box4-header.png ) repeat-x left top;
     width: 360px;
     float: right;
 }
@@ -551,28 +551,28 @@ body {
     position: absolute;
     bottom: -1px;
     left: -1px;
-    background: url( ../img/box4-bottomleft.png ) no-repeat bottom left;
+    background: url( img/box4-bottomleft.png ) no-repeat bottom left;
 }
 
 #bodywrapper .boxloginFormTop-bottomright {
     position: absolute;
     bottom: -1px;
     right: -1px;
-    background: url( ../img/box4-bottomright.png ) no-repeat bottom right;
+    background: url( img/box4-bottomright.png ) no-repeat bottom right;
 }
 
 #bodywrapper .boxloginFormTop-topleft {
     position: absolute;
     top: -1px;
     left: -1px;
-    background: url( ../img/box4-topleft.png ) no-repeat top left;
+    background: url( img/box4-topleft.png ) no-repeat top left;
 }
 
 #bodywrapper .boxloginFormTop-topright {
     position: absolute;
     top: -1px;
     right: -1px;
-    background: url( ../img/box4-topright.png ) no-repeat top right;
+    background: url( img/box4-topright.png ) no-repeat top right;
 }
 
 /*languages*/
@@ -624,7 +624,7 @@ body {
 /*Navigation N1*/
 #bodywrapper div #navigationN1 {
     clear: both;
-    background: #dad9d8 url( ../img/navigationN1-top.png ) no-repeat top left;
+    background: #dad9d8 url( img/navigationN1-top.png ) no-repeat top left;
     margin: 0;
     padding: 0;
     width: 940px;
@@ -634,7 +634,7 @@ body {
     clear: both;
     list-style-type: none;
     overflow: hidden;
-    background: transparent url( ../img/navigationN1-bottom.png ) no-repeat bottom left;
+    background: transparent url( img/navigationN1-bottom.png ) no-repeat bottom left;
     margin: 0;
     padding: 0;
     width: 940px;
@@ -648,7 +648,7 @@ body {
 }
 
 #bodywrapper #navigationN1 li a {
-    background: transparent url( ../img/navigationN1-separator.png ) no-repeat 100% 50%;
+    background: transparent url( img/navigationN1-separator.png ) no-repeat 100% 50%;
     color: #333333;
     display: inline;
     float: left;
@@ -679,7 +679,7 @@ body {
     clear: both;
     height: 294px;
     width: 640px;
-    background: transparent url( ../img/illustration2.png ) no-repeat top left;
+    background: transparent url( img/illustration2.png ) no-repeat top left;
     overflow: hidden;
     display: block;
 }
@@ -1033,7 +1033,7 @@ body {
 
 #bodywrapper #bottomshortcuts li {
     display: inline;
-    background: url( ../img/bottomshortcuts-bullet.png ) no-repeat 100% 50%;
+    background: url( img/bottomshortcuts-bullet.png ) no-repeat 100% 50%;
     padding-right: 10px;
     margin-right: 10px;
 }
@@ -1071,7 +1071,7 @@ body {
     #bodywrapper #breadcrumb a:visited {
     padding: 0 1em 0 0;
     margin: 0;
-    background: url( ../img/breadcrumb-separator.png ) no-repeat 100% 50%;
+    background: url( img/breadcrumb-separator.png ) no-repeat 100% 50%;
     color: #999999;
     text-decoration: underline;
 }
@@ -1127,7 +1127,7 @@ body {
 #bodywrapper #navigationN2 .level_2 a:link,
 #bodywrapper #navigationN2 .level_2 a:visited {
 	padding:0 2px 0 20px;
-	background: url(../img/bg-navigationN2-L1.png) no-repeat 10px 50%;
+	background: url(img/bg-navigationN2-L1.png) no-repeat 10px 50%;
 	border-bottom:1px solid #cccccc;
 	margin:1px 0;
 }
@@ -1137,13 +1137,13 @@ body {
 #bodywrapper #navigationN2 .level_2 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_2 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(../img/bg-navigationN2-L1-on.png) no-repeat 6px 50%;
+	background: #eaeaea url(img/bg-navigationN2-L1-on.png) no-repeat 6px 50%;
 }
 
 #bodywrapper #navigationN2 .level_2 a:hover,
 #bodywrapper #navigationN2 .level_2 a:active{
 	color:#990000;
-	background: url(../img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_2 a.selected,	
@@ -1151,7 +1151,7 @@ body {
 #bodywrapper #navigationN2 .level_2 a.selected:visited ,
 #bodywrapper #navigationN2 .level_2 a.selected:hover,
 #bodywrapper #navigationN2 .level_2 a.selected:active {
-	background: url(../img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
 	color:#cc0033;
 }
 
@@ -1159,7 +1159,7 @@ body {
 #bodywrapper #navigationN2 .level_3 a:link,
 #bodywrapper #navigationN2 .level_3 a:visited {
 	padding:0 2px 0 40px;
-	background: url(../img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
+	background: url(img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
 }
 #bodywrapper #navigationN2 .level_3 a.inpath,	
 #bodywrapper #navigationN2 .level_3 a.inpath:link ,
@@ -1167,12 +1167,12 @@ body {
 #bodywrapper #navigationN2 .level_3 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_3 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(../img/bg-navigationN2-L2-on.png) no-repeat 26px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L2-on.png) no-repeat 26px 50% ;
 }
 #bodywrapper #navigationN2 .level_3 a:hover,
 #bodywrapper #navigationN2 .level_3 a:active{
 	color:#990000;
-	background: url(../img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
+	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
 
@@ -1181,14 +1181,14 @@ body {
 #bodywrapper #navigationN2 .level_3 a.selected:visited ,
 #bodywrapper #navigationN2 .level_3 a.selected:hover,
 #bodywrapper #navigationN2 .level_3 a.selected:active {
-	background: url(../img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
+	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_4 a,
 #bodywrapper #navigationN2 .level_4 a:link,
 #bodywrapper #navigationN2 .level_4 a:visited {
 	padding:0 2px 0 60px;
-	background: url(../img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
+	background: url(img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
 
 }
 #bodywrapper #navigationN2 .level_4 a.inpath,	
@@ -1197,12 +1197,12 @@ body {
 #bodywrapper #navigationN2 .level_4 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_4 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(../img/bg-navigationN2-L3-on.png) no-repeat 46px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L3-on.png) no-repeat 46px 50% ;
 }
 #bodywrapper #navigationN2 .level_4 a:hover,
 #bodywrapper #navigationN2 .level_4 a:active{
 	color:#990000;
-	background: url(../img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
+	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_4 a.selected,	
@@ -1210,14 +1210,14 @@ body {
 #bodywrapper #navigationN2 .level_4 a.selected:visited ,
 #bodywrapper #navigationN2 .level_4 a.selected:hover,
 #bodywrapper #navigationN2 .level_4 a.selected:active {
-	background: url(../img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
+	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_5 a,
 #bodywrapper #navigationN2 .level_5 a:link,
 #bodywrapper #navigationN2 .level_5 a:visited {
 	padding:0 2px 0 80px;
-	background: url(../img/bg-navigationN2-L4.png) no-repeat 70px 50%;
+	background: url(img/bg-navigationN2-L4.png) no-repeat 70px 50%;
 
 }
 #bodywrapper #navigationN2 .level_5 a.inpath,	
@@ -1226,12 +1226,12 @@ body {
 #bodywrapper #navigationN2 .level_5 a.inpath:hover,
 #bodywrapper #navigationN2 .level_5 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(../img/bg-navigationN2-L4-on.png) no-repeat 66px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L4-on.png) no-repeat 66px 50% ;
 }
 #bodywrapper #navigationN2 .level_5 a:hover,
 #bodywrapper #navigationN2 .level_5 a:active{
 	color:#990000;
-	background: url(../img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
+	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_5 a.selected,	
@@ -1239,14 +1239,14 @@ body {
 #bodywrapper #navigationN2 .level_5 a.selected:visited ,
 #bodywrapper #navigationN2 .level_5 a.selected:hover,
 #bodywrapper #navigationN2 .level_5 a.selected:active {
-	background: url(../img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
+	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_6 a,
 #bodywrapper #navigationN2 .level_6 a:link,
 #bodywrapper #navigationN2 .level_6 a:visited {
 	padding:0 2px 0 100px ;
-	background: url(../img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
+	background: url(img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
 }
 #bodywrapper #navigationN2 .level_6 a.inpath,	
 #bodywrapper #navigationN2 .level_6 a.inpath:link ,
@@ -1254,13 +1254,13 @@ body {
 #bodywrapper #navigationN2 .level_6 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_6 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(../img/bg-navigationN2-L5-on.png) no-repeat 86px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L5-on.png) no-repeat 86px 50% ;
 }
 
 #bodywrapper #navigationN2 .level_6 a:hover,
 #bodywrapper #navigationN2 .level_6 a:active{
 	color:#990000;
-	background: url(../img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
+	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_6 a.selected,	
@@ -1268,7 +1268,7 @@ body {
 #bodywrapper #navigationN2 .level_6 a.selected:visited ,
 #bodywrapper #navigationN2 .level_6 a.selected:hover,
 #bodywrapper #navigationN2 .level_6 a.selected:active {
-	background: url(../img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
+	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	color:#cc0033;
 }
 
@@ -1282,7 +1282,7 @@ body {
     height: 1%;
     background-color: #ffffff;
     padding: 10px;
-    background: url( ../img/box-bg.png ) no-repeat top right;
+    background: url( img/box-bg.png ) no-repeat top right;
     font-size: 90%;
     line-height: 110%;
 }
@@ -1332,7 +1332,7 @@ body {
 * Box style1
 ******************************************************************************/
 #bodywrapper .box-style1 {
-    background: url( ../img/box-style1-bg.png ) no-repeat top left;
+    background: url( img/box-style1-bg.png ) no-repeat top left;
 }
 
 /******************************************************************************
@@ -1352,7 +1352,7 @@ body {
 }
 
 #bodywrapper h3.box2-header {
-    background: #ccc url( ../img/box2-header.png ) repeat-x left top;
+    background: #ccc url( img/box2-header.png ) repeat-x left top;
     padding-left: 6px;
     text-align: left;
     margin: 0;
@@ -1381,33 +1381,33 @@ body {
     position: absolute;
     bottom: -1px;
     left: -1px;
-    background: url( ../img/box2-bottomleft.png );
+    background: url( img/box2-bottomleft.png );
 }
 
 #bodywrapper .box2-bottomright {
     position: absolute;
     bottom: -1px;
     right: -1px;
-    background: url( ../img/box2-bottomright.png );
+    background: url( img/box2-bottomright.png );
 }
 
 #bodywrapper .box2-topleft {
     position: absolute;
     top: -1px;
     left: -1px;
-    background: url( ../img/box2-topleft.png );
+    background: url( img/box2-topleft.png );
 }
 
 #bodywrapper .box2-topright {
     position: absolute;
     top: -1px;
     right: -1px;
-    background: url( ../img/box2-topright.png );
+    background: url( img/box2-topright.png );
 
 }
 
 #bodywrapper .box2-illustration {
-    background: transparent url( ../img/img5.png ) repeat top left;
+    background: transparent url( img/img5.png ) repeat top left;
     height: 75px;
 }
 
@@ -1419,7 +1419,7 @@ body {
     right: 0;
     bottom: 0;
     line-height: 14px;
-    background: transparent url( ../img/box2-more.png ) no-repeat top left;
+    background: transparent url( img/box2-more.png ) no-repeat top left;
     padding: 1px 10px;
     margin-bottom: 0;
 }
@@ -1429,7 +1429,7 @@ body {
 ******************************************************************************/
 
 #bodywrapper .box2-style1 h3.box2-header {
-    background: #404d6c url( ../img/box2-style1-header.png ) repeat-x left top;
+    background: #404d6c url( img/box2-style1-header.png ) repeat-x left top;
     color: #ffffff;
 }
 
@@ -1459,28 +1459,28 @@ body {
     position: absolute;
     top: -1px;
     left: -1px;
-    background: url( ../img/box3-topleft.png ) no-repeat top left;
+    background: url( img/box3-topleft.png ) no-repeat top left;
 }
 
 #bodywrapper .box3-topright {
     position: absolute;
     top: -1px;
     right: -1px;
-    background: url( ../img/box3-topright.png ) no-repeat top right;
+    background: url( img/box3-topright.png ) no-repeat top right;
 }
 
 #bodywrapper .box3-bottomleft {
     position: absolute;
     bottom: -1px;
     left: -1px;
-    background: url( ../img/box3-bottomleft.png ) no-repeat bottom left;
+    background: url( img/box3-bottomleft.png ) no-repeat bottom left;
 }
 
 #bodywrapper .box3-bottomright {
     position: absolute;
     bottom: -1px;
     right: -1px;
-    background: url( ../img/box3-bottomright.png ) no-repeat bottom right;
+    background: url( img/box3-bottomright.png ) no-repeat bottom right;
 }
 
 #bodywrapper .box3-text {
@@ -1513,7 +1513,7 @@ body {
     border: 1px solid #cccccc;
     margin-bottom: 10px;
     clear: both;
-    background: #ccc url( ../img/box4-header.png ) repeat-x left top;
+    background: #ccc url( img/box4-header.png ) repeat-x left top;
 }
 
 #bodywrapper .box4-text {
@@ -1547,28 +1547,28 @@ body {
     position: absolute;
     bottom: -1px;
     left: -1px;
-    background: url( ../img/box4-bottomleft.png ) no-repeat bottom left;
+    background: url( img/box4-bottomleft.png ) no-repeat bottom left;
 }
 
 #bodywrapper .box4-bottomright {
     position: absolute;
     bottom: -1px;
     right: -1px;
-    background: url( ../img/box4-bottomright.png ) no-repeat bottom right;
+    background: url( img/box4-bottomright.png ) no-repeat bottom right;
 }
 
 #bodywrapper .box4-topleft {
     position: absolute;
     top: -1px;
     left: -1px;
-    background: url( ../img/box4-topleft.png ) no-repeat top left;
+    background: url( img/box4-topleft.png ) no-repeat top left;
 }
 
 #bodywrapper .box4-topright {
     position: absolute;
     top: -1px;
     right: -1px;
-    background: url( ../img/box4-topright.png ) no-repeat top right;
+    background: url( img/box4-topright.png ) no-repeat top right;
 
 }
 
@@ -1576,7 +1576,7 @@ body {
 * Box 4 defaut
 ******************************************************************************/
 #bodywrapper .box4-style1 {
-    background: #404d6c url( ../img/box4-style1-header.png ) repeat-x left top;
+    background: #404d6c url( img/box4-style1-header.png ) repeat-x left top;
     color: #ffffff;
 }
 
@@ -1591,7 +1591,7 @@ body {
     float: right;
     font-size: 11px;
     font-weight: bold;
-    background: transparent url( ../img/more.png ) no-repeat 0 50%;
+    background: transparent url( img/more.png ) no-repeat 0 50%;
     padding: 0 0 0 12px;
     margin-bottom: 0;
     display: block;
@@ -1694,7 +1694,7 @@ body {
     color: #990000;
     text-decoration: none;
     background: none;
-    background: url( ../img/newsrss.png ) no-repeat top right;
+    background: url( img/newsrss.png ) no-repeat top right;
     padding-right: 20px;
 }
 
@@ -1781,14 +1781,14 @@ body {
 
 #bodywrapper .quote-top {
     width: 25%;
-    background: #eaeaea url( ../img/quote-top.png ) no-repeat top left;
+    background: #eaeaea url( img/quote-top.png ) no-repeat top left;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1.1em;
     font-weight: bold;
 }
 
 #bodywrapper .quote-bottom {
-    background: url( ../img/quote-bottom.png ) no-repeat bottom right;
+    background: url( img/quote-bottom.png ) no-repeat bottom right;
     padding: 23px 10px 23px 10px;
 }
 
@@ -1873,7 +1873,7 @@ body {
     width: 46px;
     height: 16px;
     display: block;
-    background: url( ../img/eventstxtdate.png ) no-repeat 50% 0%;
+    background: url( img/eventstxtdate.png ) no-repeat 50% 0%;
 }
 
 #bodywrapper div.eventsTxtDate span {
@@ -1883,7 +1883,7 @@ body {
 #bodywrapper div.eventsDate {
     font-family: Georgia, "Times New Roman", Times, serif;
     text-align: center;
-    background: url( ../img/eventsdate-bg.png ) no-repeat top right;
+    background: url( img/eventsdate-bg.png ) no-repeat top right;
     padding-top: 8px;
     width: 46px;
 }
@@ -1907,7 +1907,7 @@ body {
     font-size: 85%;
     display: block;
     line-height: 90%;
-    background: url( ../img/eventsdatebottom.png ) no-repeat bottom right;
+    background: url( img/eventsdatebottom.png ) no-repeat bottom right;
     padding-bottom: 5px;
     color: #666666;
 }
@@ -2009,17 +2009,17 @@ body {
 }
 
 #bodywrapper a.peopleEnlarge {
-    background: transparent url( ../img/peopleenlarge.png ) no-repeat 0 50%;
+    background: transparent url( img/peopleenlarge.png ) no-repeat 0 50%;
     padding-left: 16px;
 }
 
 #bodywrapper a.peopleDownload {
-    background: transparent url( ../img/peopledownload.png ) no-repeat 0 50%;
+    background: transparent url( img/peopledownload.png ) no-repeat 0 50%;
     padding-left: 16px;
 }
 
 #bodywrapper a.peopleBiographiy {
-    background: transparent url( ../img/peoplebiographiy.png ) no-repeat 0 50%;
+    background: transparent url( img/peoplebiographiy.png ) no-repeat 0 50%;
     padding-left: 16px;
 }
 
@@ -2037,7 +2037,7 @@ body {
     padding: 0;
     font-weight: bold;
     border-bottom: 1px solid #eaeaea;
-    background: url( ../img/newslist3.png ) no-repeat 0.5em 0.2em;
+    background: url( img/newslist3.png ) no-repeat 0.5em 0.2em;
     padding: 0.2em;
     padding-left: 30px;
 }
@@ -2140,7 +2140,7 @@ body {
 #bodywrapper div.pressRealeseForm {
     clear: both;
     margin: 1em 0;
-    background: url( ../img/pressform.png ) repeat-x bottom left;
+    background: url( img/pressform.png ) repeat-x bottom left;
     border: 1px solid #cccccc;
 }
 
@@ -2170,12 +2170,12 @@ body {
     #bodywrapper .pressRealeseForm textarea {
     width: 200px;
     border: 1px solid #cccccc;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .pressRealeseForm input[type="text"]:focus,
     #bodywrapper .pressRealeseForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #eaeaea url( img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .pressRealeseForm .divButton {
@@ -2210,7 +2210,7 @@ body {
 #bodywrapper .pressRealeseList li {
     margin: 0;
     padding: 0.2em 0 0.2em 40px;
-    background: url( ../img/pressrealeserist-bg.png ) no-repeat 10px 50%;
+    background: url( img/pressrealeserist-bg.png ) no-repeat 10px 50%;
     border-bottom: 1px solid #eaeaea;
     height: 1%;
 
@@ -2235,7 +2235,7 @@ body {
 }
 
 #bodywrapper .pressRealeseList li:hover {
-    background: #eaeaea url( ../img/pressrealeserist-bg-on.png ) no-repeat 10px 50%;
+    background: #eaeaea url( img/pressrealeserist-bg-on.png ) no-repeat 10px 50%;
 }
 
 #bodywrapper .pressRealeseList h4 {
@@ -2389,7 +2389,7 @@ body {
 }
 
 #bodywrapper #formSearchTopA {
-    background: transparent url( ../img/bg-formsearchtop.png ) no-repeat 0 0;
+    background: transparent url( img/bg-formsearchtop.png ) no-repeat 0 0;
     margin: 0;
     padding: 0;
     width: 280px;
@@ -2398,7 +2398,7 @@ body {
 }
 
 #bodywrapper #formSearchTop:hover {
-    background: transparent url( ../img/bg-formsearchtop.png ) no-repeat 0px -36px;
+    background: transparent url( img/bg-formsearchtop.png ) no-repeat 0px -36px;
 }
 
 #bodywrapper #formSearchTop p {
@@ -2453,14 +2453,14 @@ body {
 }
 
 #bodywrapper .links .link {
-    background: url( ../img/link.png ) no-repeat 0.5em 0.7em;
+    background: url( img/link.png ) no-repeat 0.5em 0.7em;
     padding: 0.5em;
     padding-left: 30px;
     display:block;
 }
 
 #bodywrapper .links .externallink {
-    background: url( ../img/externallink.png ) no-repeat 0.5em 0.7em;
+    background: url( img/externallink.png ) no-repeat 0.5em 0.7em;
     padding: 0.5em;
     padding-left: 30px;
     display:block;
@@ -2648,7 +2648,7 @@ body {
     font-size: 1em;
     color: #333333;
     padding: 0 0.5em;
-    background: #fff url( ../img/contactformlegend.png ) repeat-x bottom left;
+    background: #fff url( img/contactformlegend.png ) repeat-x bottom left;
     border: 1px solid #cccccc;
     display: inline;
 }
@@ -2665,12 +2665,12 @@ body {
     #bodywrapper .contactForm textarea {
     width: 50%;
     border: 1px solid #cccccc;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    background: #fff url( img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .contactForm input[type="text"]:focus,
     #bodywrapper .contactForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #eaeaea url( img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .divButton {
@@ -2728,7 +2728,7 @@ body {
 #bodywrapper div.publicationSearchForm {
     clear: both;
     margin: 1em auto;
-    background: url( ../img/pressform.png ) repeat-x bottom left;
+    background: url( img/pressform.png ) repeat-x bottom left;
     border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
@@ -2757,12 +2757,12 @@ body {
     #bodywrapper .publicationSearchForm textarea {
     width: 315px;
     border: 1px solid #cccccc;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .publicationSearchForm input[type="text"]:focus,
     #bodywrapper .publicationSearchForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #eaeaea url( img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .publicationSearchForm .divButton {
@@ -2803,7 +2803,7 @@ body {
     color: #990000;
     text-decoration: none;
     background: none;
-    background: url( ../img/newsrss.png ) no-repeat top right;
+    background: url( img/newsrss.png ) no-repeat top right;
     padding-right: 20px;
 }
 
@@ -2883,7 +2883,7 @@ body {
 }
 
 #bodywrapper a.publicationDownload {
-    background: transparent url( ../img/publicationdownload.png ) no-repeat 0% 50%;
+    background: transparent url( img/publicationdownload.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
@@ -2899,7 +2899,7 @@ body {
 #bodywrapper div.jobsSearchForm {
     clear: both;
     margin: 1em auto;
-    background: url( ../img/pressform.png ) repeat-x bottom left;
+    background: url( img/pressform.png ) repeat-x bottom left;
     border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
@@ -2928,12 +2928,12 @@ body {
     #bodywrapper .jobsSearchForm textarea {
     width: 315px;
     border: 1px solid #cccccc;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsSearchForm input[type="text"]:focus,
     #bodywrapper .jobsSearchForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #eaeaea url( img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsSearchForm .divButton {
@@ -2992,13 +2992,13 @@ body {
 
 #bodywrapper a.jobApply {
     float: right;
-    background: transparent url( ../img/jobapply.png ) no-repeat 0% 50%;
+    background: transparent url( img/jobapply.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
 #bodywrapper a.returnLink {
     float: left;
-    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 50%;
+    background: transparent url( img/returnjobslist.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
@@ -3008,7 +3008,7 @@ body {
 #bodywrapper div.jobsApplyForm {
     clear: both;
     margin: 1em auto;
-    background: url( ../img/pressform.png ) repeat-x bottom left;
+    background: url( img/pressform.png ) repeat-x bottom left;
     border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
@@ -3037,12 +3037,12 @@ body {
     #bodywrapper .jobsApplyForm textarea {
     width: 315px;
     border: 1px solid #cccccc;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsApplyForm input[type="text"]:focus,
     #bodywrapper .jobsApplyForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #eaeaea url( img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsApplyForm .divButton {
@@ -3166,7 +3166,7 @@ body {
     #bodywrapper #sitemap .level_1 a:link,
     #bodywrapper #sitemap .level_1 a:visited {
     padding: 0 2px 0 10px;
-    background: #eaeaea url( ../img/bg-sitemap-L1.png ) no-repeat 2px 50%;
+    background: #eaeaea url( img/bg-sitemap-L1.png ) no-repeat 2px 50%;
     margin: 1px 0;
     font-weight: bold;
     display: block;
@@ -3186,7 +3186,7 @@ body {
     #bodywrapper #sitemap .level_2 a:visited {
     background: none;
     padding: 0 2px 0 10px;
-    background: url( ../img/bg-sitemap-L2.png ) no-repeat 2px 50%;
+    background: url( img/bg-sitemap-L2.png ) no-repeat 2px 50%;
     border-bottom: none;
     font-weight: bold;
     line-height: normal;
@@ -3201,7 +3201,7 @@ body {
     #bodywrapper #sitemap .level_3 a:link,
     #bodywrapper #sitemap .level_3 a:visited {
     padding: 0 2px 0 20px;
-    background: url( ../img/bg-sitemap-L3.png ) no-repeat 10px 50%;
+    background: url( img/bg-sitemap-L3.png ) no-repeat 10px 50%;
     font-size: 90%;
     font-weight: bold;
     line-height: normal;
@@ -3216,7 +3216,7 @@ body {
     #bodywrapper #sitemap .level_4 a:link,
     #bodywrapper #sitemap .level_4 a:visited {
     padding: 0 2px 0 30px;
-    background: url( ../img/bg-sitemap-L4.png ) no-repeat 20px 50%;
+    background: url( img/bg-sitemap-L4.png ) no-repeat 20px 50%;
     font-size: 85%;
     font-weight: bold;
     line-height: normal;
@@ -3231,7 +3231,7 @@ body {
     #bodywrapper #sitemap .level_5 a:link,
     #bodywrapper #sitemap .level_5 a:visited {
     padding: 0 2px 0 40px;
-    background: url( ../img/bg-sitemap-L5.png ) no-repeat 30px 50%;
+    background: url( img/bg-sitemap-L5.png ) no-repeat 30px 50%;
     font-size: 80%;
     font-weight: normal;
     line-height: normal;
@@ -3296,7 +3296,7 @@ body {
 }
 
 #bodywrapper .loginForm h3 {
-    background: url( ../img/login.png ) no-repeat;
+    background: url( img/login.png ) no-repeat;
     padding-left: 24px;
     line-height: 1.6em;
     margin: 0;
@@ -3304,7 +3304,7 @@ body {
 
 #bodywrapper .loginForm .username,
     #bodywrapper .loginForm .password {
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left;
     margin-top: 2px;
     background-color: #ffffff;
     border: 1px solid #cccccc;
@@ -3315,7 +3315,7 @@ body {
 
 #bodywrapper .loginForm .username:focus,
     #bodywrapper .loginForm .password:focus {
-    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #99ccff url( img/bg-input-on.png ) repeat-x top left;
     color: #333333;
 }
 #bodywrapper .loginForm .loginRedirectChoice{
@@ -3357,7 +3357,7 @@ body {
 }
 
 #bodywrapper .x-btn-center {
-    background: #ffffff url( ../img/bg-button.png ) repeat-x bottom left;
+    background: #ffffff url( img/bg-button.png ) repeat-x bottom left;
     border: 1px solid #999999;
     color: #333333;
     text-transform: uppercase;
@@ -3373,7 +3373,7 @@ body {
 
 #bodywrapper .x-btn-over .x-btn-center {
     cursor: pointer;
-    background: #ffffff url( ../img/bg-button-on.png ) repeat-x top left;
+    background: #ffffff url( img/bg-button-on.png ) repeat-x top left;
     color: #990000;
 }
 
@@ -3397,11 +3397,11 @@ body {
     margin-top: 0px !important;
     background-color: #ffffff !important;
     border: 1px solid #cccccc !important;
-    background: #ffffff url( ../img/bg-input.png ) repeat-x top left !important;
+    background: #ffffff url( img/bg-input.png ) repeat-x top left !important;
 }
 
 #bodywrapper  input.x-form-focus {
-    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left !important;
+    background: #99ccff url( img/bg-input-on.png ) repeat-x top left !important;
     color: #000000 !important;
 }
 

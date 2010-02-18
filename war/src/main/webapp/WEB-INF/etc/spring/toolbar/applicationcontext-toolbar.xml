@@ -374,7 +374,7 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.menu.file"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.menu.edit"/>
             </list>
         </property>
         <property name="visibility">
@@ -389,7 +389,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.RoleManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
         </property>
@@ -835,6 +834,17 @@
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsReusableComponent"/>
                 <ref bean="org.jahia.toolbar.item.saveAsPortalComponent"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.RoleManager.menu.edit" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="label.edit"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.rename"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
             </list>
         </property>
     </bean>

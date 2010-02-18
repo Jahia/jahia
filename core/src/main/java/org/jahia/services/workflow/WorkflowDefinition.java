@@ -34,6 +34,8 @@ package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -41,7 +43,7 @@ import org.apache.log4j.Logger;
  * @since : JAHIA 6.1
  *        Created : 4 févr. 2010
  */
-public class WorkflowDefinition {
+public class WorkflowDefinition implements Serializable {
     private transient static Logger logger = Logger.getLogger(WorkflowDefinition.class);
     private final String name;
     private final String key;

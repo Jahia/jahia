@@ -52,7 +52,7 @@ import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.value.StringValue;
-import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -63,8 +63,6 @@ import org.jahia.services.content.JCRStoreProvider;
  * @author Thomas Draier
  */
 class QueryResultWrapper implements QueryResult {
-    
-    private static Logger logger = Logger.getLogger(QueryResultWrapper.class);
     
     /**
      * Invocation handler to decorate the {@link NodeIterator} instance of the
@@ -86,7 +84,15 @@ class QueryResultWrapper implements QueryResult {
             Object result = method.invoke(underlying, args);
             if (!(result instanceof JCRNodeWrapper)
                     && ("nextNode".equals(method.getName()) || "next".equals(method.getName()))) {
-                result = provider.getNodeWrapper((Node) result, session);
+                Node node = (Node) result;
+                if (session.getLocale() != null && node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                    try {
+                        node = node.getParent();
+                    } catch (ItemNotFoundException e) {
+                        // keep same node
+                    }
+                }
+                result = provider.getNodeWrapper(node, session);
             }
             return result;
         }

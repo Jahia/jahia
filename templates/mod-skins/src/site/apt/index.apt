@@ -7,5 +7,22 @@ Skins
 
 
 ----------------------------------------
- ----------------------------------------
+ ---------------------------------------
+
+ Skins can display titles :
+
+ You have to diplay the jcr:title in your skin
+ 
+ To avoid to display it both in module and skin, you can add in your skin css an entry to hide the title in the module.
+ For that, we suggest to use the same class to display all your module titles :
+
+ <h3 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+
+ and in your css' skin :
+
+ #bodywrapper .box2 .box2-text .title{
+    display:none;
+}
+
+You can find an example on jnt:mainContent node display in default module.
 

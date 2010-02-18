@@ -54,7 +54,7 @@ public class TriPanelBrowserLayout extends ContentPanel {
     protected ManagerLinker linker;
     protected BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
     protected BorderLayoutData northData = new BorderLayoutData(Style.LayoutRegion.CENTER);
-    protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 200);
+    protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 350);
 
     public TriPanelBrowserLayout() {
         super(new FillLayout());

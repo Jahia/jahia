@@ -73,6 +73,7 @@ public class ManagerConfiguration implements Serializable {
 
     private boolean displaySearch = true;
 
+
     public ManagerConfiguration() {
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();

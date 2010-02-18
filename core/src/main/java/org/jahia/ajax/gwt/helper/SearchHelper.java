@@ -58,7 +58,10 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(search, limit, offset, currentUserSession);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
+            String[] nodeTypesToApply = navigation.getFiltersToApply(search.getNodeTypes());
+            String[] mimeTypesToMatch = navigation.getFiltersToApply(search.getMimeTypes());
+            String[] filtersToApply = navigation.getFiltersToApply(search.getFilters());
+            return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -213,7 +216,7 @@ public class SearchHelper {
         }
 
         // page path
-        if (!gwtQuery.getPages().isEmpty()) {
+        if (gwtQuery.getPages() != null && !gwtQuery.getPages().isEmpty()) {
             criteria.getPagePath().setValue(gwtQuery.getPages().get(0).getPath());
             criteria.getPagePath().setIncludeChildren(true);
         }

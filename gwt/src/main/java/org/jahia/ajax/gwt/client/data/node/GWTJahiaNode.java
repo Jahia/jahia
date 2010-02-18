@@ -374,7 +374,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public String toString() {
-        return getName();
+        return getPath();
     }
 
     public boolean equals(GWTJahiaNode other) {

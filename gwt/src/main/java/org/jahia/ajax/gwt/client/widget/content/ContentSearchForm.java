@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
+package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -7,37 +7,37 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Search tab item for the side panel for performing simple queries in the content repository.
- * User: toto
- * Date: Dec 21, 2009
- * Time: 3:14:11 PM
+ * Created by IntelliJ IDEA.
+ * User: ktlili
+ * Date: Feb 18, 2010
+ * Time: 11:17:49 AM
+ * To change this template use File | Settings | File Templates.
  */
-class SearchTabItem extends SidePanelTabItem {
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected DisplayGridDragSource displayGridSource;
+public class ContentSearchForm extends ContentPanel {
     private TextField<String> searchField;
     private ContentPickerField pagePickerField;
     private ComboBox<GWTJahiaLanguage> langPickerField;
@@ -46,15 +46,14 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox inContentField;
     private CheckBox inFileField;
     private CheckBox inMetadataField;
-    private Grid<GWTJahiaNode> grid;
-    final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
+    private ManagerLinker linker;
+    private ManagerConfiguration config;
 
-    public SearchTabItem() {
-        VBoxLayout l = new VBoxLayout();
-        l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(new FitLayout());
-
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.query());
+    public ContentSearchForm(ManagerConfiguration config) {
+        this.config = config;
+        setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        setWidth("100%");
+        setHeight("100%");
 
         final FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
@@ -62,36 +61,29 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.getResource("fm_search"));
-        searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-               // grid.mask("Loading", "x-mask-loading");
-                contentStore.removeAll();
-                loader.load(0,10);
-            }
-        });
-        final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
+        /* searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
+           public void handleEvent(ComponentEvent be) {
+               doSearch();
+           }
+       }); */
+        final Button ok = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-              //  grid.mask("Loading", "x-mask-loading");
-                contentStore.removeAll();
-                loader.load(0,10);
+                doSearch();
             }
         });
+        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
 
-        final Button drag = new Button(Messages.getResource("em_drag"));
-        EditModeDragSource querySource = new EditModeDragSource(drag) {
-            @Override
-            protected void onDragStart(DNDEvent e) {
-                e.setCancelled(false);
-                e.getStatus().update(searchField.getValue());
-                e.getStatus().setStatus(true);
-                e.setData(searchField);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.QUERY_SOURCE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, searchField.getValue());
-                super.onDragStart(e);
-            }
-        };
-
-        searchForm.add(searchField);
+        // main search field
+        HorizontalPanel mainField = new HorizontalPanel();
+        mainField.setSpacing(2);
+        LayoutContainer formLayoutContainer = new LayoutContainer();
+        formLayoutContainer.setLayout(new FormLayout());
+        formLayoutContainer.add(searchField);
+        mainField.add(formLayoutContainer);
+        mainField.add(ok);
+        add(mainField,new RowData(1, -1, new Margins(0)));
+        
+        // advanced part
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
         FormLayout layout = new FormLayout();
@@ -127,71 +119,25 @@ class SearchTabItem extends SidePanelTabItem {
         // scope file field
         inFileField = createFileField();
         fieldSet.add(inFileField);
+        //getHeader().addTool(ok);
 
+        setWidth("100%");
+        setFrame(true);
+        setCollapsible(false);
+        setBodyBorder(false);
+        setHeaderVisible(false);
+        getHeader().setBorders(false);
+        add(searchForm,new RowData(1, 1, new Margins(0, 0, 20, 0)));
 
-        searchForm.addButton(ok);
-        searchForm.addButton(drag);
-
-
-        ContentPanel panel = new ContentPanel();
-        panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
-        panel.setWidth("100%");
-        panel.setHeight("100%");
-        panel.setFrame(true);
-        panel.setCollapsible(false);
-        panel.setHeaderVisible(false);
-        panel.add(searchForm, new RowData(1, -1, new Margins(0)));
-
-
-        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
-            @Override
-            public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
-                doSearch((PagingLoadConfig) loadConfig, callback);
-            }
-        };
-
-        // loader
-        loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
-        loader.setRemoteSort(true);
-        final PagingToolBar toolBar = new PagingToolBar(10);
-        toolBar.bind(loader);
-        contentStore = new ListStore<GWTJahiaNode>(loader);
-
-        List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
-
-        ColumnConfig col = new ColumnConfig("ext", "", 40);
-        col.setAlignment(Style.HorizontalAlignment.CENTER);
-        col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
-            }
-        });
-        displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
-
-
-        //contentContainer.add(grid);
-
-        //contentVBoxData.setFlex(4);
-        ContentPanel gridPanel = new ContentPanel();
-        gridPanel.setLayout(new FitLayout());
-        gridPanel.setBottomComponent(toolBar);
-        gridPanel.setHeaderVisible(false);
-        gridPanel.setFrame(false);
-        gridPanel.setBodyBorder(false);
-        gridPanel.setBorders(false);
-        gridPanel.add(grid);
-
-        panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 20, 0)));
-        add(panel);
-        displayGridSource = new DisplayGridDragSource(grid);
     }
 
-    @Override
-    public void initWithLinker(EditLinker linker) {
-        super.initWithLinker(linker);
-        displayGridSource.addDNDListener(editLinker.getDndListener());
+    /**
+     * init with linker
+     *
+     * @param linker
+     */
+    public void initWithLinker(ManagerLinker linker) {
+        this.linker = linker;
     }
 
     /**
@@ -306,7 +252,7 @@ class SearchTabItem extends SidePanelTabItem {
     /**
      * Method used by seach form
      */
-    private void doSearch(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+    public void doSearch() {
         GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
         gwtJahiaSearchQuery.setQuery(searchField.getValue());
         gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
@@ -316,15 +262,25 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setInContents(inContentField.getValue());
         gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
         gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+        gwtJahiaSearchQuery.setFilters(config.getFilters());
+        gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
+        gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
+
         int limit = 500;
         int offset = 0;
-        if (loadConfig != null) {
-            limit = loadConfig.getLimit();
-            offset = loadConfig.getOffset();
-        }
+        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
+        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+            public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodePagingLoadResult) {
+                linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData());
+                linker.loaded();
+            }
 
-        Log.debug(searchField.getValue()+","+pagePickerField.getValue()+","+langPickerField.getValue()+","+inNameField.getValue()+","+inTagField.getValue());
-        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
+            public void onFailure(Throwable throwable) {
+                Log.debug("error while searching nodes due to:", throwable);
+                linker.getTopRightObject().setProcessedContent(null);
+                linker.loaded();
+            }
+        });
 
     }
 
@@ -340,5 +296,4 @@ class SearchTabItem extends SidePanelTabItem {
     '</tpl>'
     ].join("");
   }-*/;
-
 }

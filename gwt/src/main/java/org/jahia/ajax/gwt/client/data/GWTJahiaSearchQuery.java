@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.data;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,11 @@ public class GWTJahiaSearchQuery implements Serializable {
     private boolean inContents;
     private boolean inFiles;
     private boolean inMetadatas;
-
+    private String folderTypes;
+    private String nodeTypes;
+    private String filters;
+    private String mimeTypes;
+    
     public int getLimit() {
         return limit;
     }
@@ -93,5 +98,37 @@ public class GWTJahiaSearchQuery implements Serializable {
 
     public void setInMetadatas(boolean inMetadatas) {
         this.inMetadatas = inMetadatas;
+    }
+
+    public String getFolderTypes() {
+        return folderTypes;
+    }
+
+    public void setFolderTypes(String folderTypes) {
+        this.folderTypes = folderTypes;
+    }
+
+    public String getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(String nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public String getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String filters) {
+        this.filters = filters;
+    }
+
+    public String getMimeTypes() {
+        return mimeTypes;
+    }
+
+    public void setMimeTypes(String mimeTypes) {
+        this.mimeTypes = mimeTypes;
     }
 }

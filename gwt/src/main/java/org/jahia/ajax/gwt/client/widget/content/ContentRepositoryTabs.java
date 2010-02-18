@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.widget.*;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -39,10 +41,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.DataList;
-import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -52,12 +50,9 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
-import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,15 +63,21 @@ import java.util.HashMap;
 public class ContentRepositoryTabs extends LeftComponent {
 
     // common declarations
-    private ContentPanel m_component;
+    private TabPanel m_component;
+    private TabItem browseTabITem;
+    private TabItem searchTabITem;
+
+    private ContentPanel browseComponent;
+    private ContentSearchForm contentSearchForm;
     private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
     // repositories
     private List<RepositoryTab> repositories = new ArrayList<RepositoryTab>();
 
     // my search
-    private ContentPanel searchPanel;
+    private ContentPanel savedSearchPanel;
     private DataList queryList;
+    private ManagerConfiguration config;
 
     /**
      * Constructor (UI)
@@ -84,6 +85,13 @@ public class ContentRepositoryTabs extends LeftComponent {
      * @param config the configuration to use (generated in ManagerConfigurationFactory)
      */
     public ContentRepositoryTabs(ManagerConfiguration config) {
+        this.config = config;
+        m_component = new TabPanel();
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
+
+        browseTabITem = new TabItem("Browse");
+        searchTabITem = new TabItem("Search");
 
         for (String repoId : config.getAccordionPanels()) {
             repositories.add(new RepositoryTab(this, service, repoId, Messages.getResource("fm_repository_" + repoId), config));
@@ -92,19 +100,20 @@ public class ContentRepositoryTabs extends LeftComponent {
         ////////////////////////////
         // SEARCH PANEL ACCORDION //
         ////////////////////////////
-        searchPanel = new ContentPanel(new FitLayout());
-        searchPanel.setBodyBorder(false);
-        searchPanel.setBorders(false);
-        searchPanel.setScrollMode(Style.Scroll.NONE);
-        searchPanel.setHeading(Messages.getResource("fm_repository_savedSearch"));
-        searchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
-        searchPanel.getHeader().setBorders(false);
+        savedSearchPanel = new ContentPanel(new FitLayout());
+        savedSearchPanel.setBodyBorder(false);
+        savedSearchPanel.setBorders(false);
+        savedSearchPanel.setScrollMode(Style.Scroll.NONE);
+        savedSearchPanel.setHeading(Messages.getResource("fm_repository_savedSearch"));
+        savedSearchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
+        savedSearchPanel.getHeader().setBorders(false);
+
         queryList = new DataList();
         queryList.setBorders(false);
         queryList.setFlatStyle(true);
         queryList.setScrollMode(Style.Scroll.AUTO);
         queryList.setSelectionMode(Style.SelectionMode.SINGLE);
-        searchPanel.add(queryList);
+        savedSearchPanel.add(queryList);
         queryList.addListener(Events.SelectionChange, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 if (queryList.getSelectedItems().size() == 1) {
@@ -152,7 +161,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         queryMenu.add(removeQuery);
         queryMenu.add(renameQuery);
         queryList.setContextMenu(queryMenu);
-        searchPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+        savedSearchPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 retrieveSavedSearch();
             }
@@ -160,21 +169,33 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         // init main panel and add accordions
         ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
-        m_component = new ContentPanel(new AccordionLayout());
-        m_component.setScrollMode(Style.Scroll.AUTO);
-        m_component.getHeader().setBorders(false);
-        m_component.setBodyBorder(true);
-        m_component.setBorders(true);
+        browseComponent = new ContentPanel(new AccordionLayout());
+        browseComponent.setScrollMode(Style.Scroll.AUTO);
+        browseComponent.getHeader().setBorders(false);
+        browseComponent.setBodyBorder(true);
+        browseComponent.setBorders(true);
         for (RepositoryTab tab : repositories) {
-            m_component.add(tab);
+            browseComponent.add(tab);
             if (tab.getRepositoryType().equals(config.getSelectedAccordion())) {
                 tab.setExpanded(true);
             }
             tab.addListener(Events.Expand, accordionListener);
 
         }
-        m_component.add(searchPanel);
-        searchPanel.addListener(Events.Expand, accordionListener);
+        browseComponent.add(savedSearchPanel);
+        browseTabITem.setLayout(new FitLayout());
+        browseTabITem.add(browseComponent);
+        
+        m_component.add(browseTabITem);
+
+        createSearchPanel();
+        searchTabITem.setLayout(new FitLayout());
+        searchTabITem.setIcon(ContentModelIconProvider.CONTENT_ICONS.query());
+        searchTabITem.add(contentSearchForm);
+        m_component.add(searchTabITem);
+
+        savedSearchPanel.addListener(Events.Expand, accordionListener);
+
     }
 
     /**
@@ -202,7 +223,7 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         }
     }
- 
+
 
     /**
      * ChangeAccordionListener
@@ -211,7 +232,7 @@ public class ContentRepositoryTabs extends LeftComponent {
      */
     private class ChangeAccordionListener<T extends ComponentEvent> implements Listener<T> {
         public void handleEvent(T t) {
-            if (searchPanel.isExpanded()) {
+            if (savedSearchPanel.isExpanded()) {
                 retrieveSavedSearch();
             }
             getLinker().onTreeItemSelected();
@@ -224,6 +245,7 @@ public class ContentRepositoryTabs extends LeftComponent {
             tab.init();
         }
         retrieveSavedSearch();
+        contentSearchForm.initWithLinker(linker);
     }
 
     public void openAndSelectItem(Object item) {
@@ -251,7 +273,7 @@ public class ContentRepositoryTabs extends LeftComponent {
                 for (GWTJahiaNode query : gwtJahiaNodes) {
                     addSavedSearch(query, false);
                 }
-                if (searchPanel.isExpanded()) {
+                if (savedSearchPanel.isExpanded()) {
                     getLinker().onTreeItemSelected();
                 }
             }
@@ -259,7 +281,7 @@ public class ContentRepositoryTabs extends LeftComponent {
     }
 
     public Object getSelectedItem() {
-        if (searchPanel.isExpanded()) {
+        if (savedSearchPanel.isExpanded()) {
             if (queryList.getSelectedItems().size() == 1) {
                 return queryList.getSelectedItem().getData("query");
             } else {
@@ -285,12 +307,12 @@ public class ContentRepositoryTabs extends LeftComponent {
         queryItem.setText(query.getName());
         queryList.add(queryItem);
         if (expandSearchPanel) {
-            searchPanel.setExpanded(true);
+            savedSearchPanel.setExpanded(true);
         }
     }
 
     public void deselectOnFreeSearch() {
-        if (searchPanel.isExpanded()) {
+        if (savedSearchPanel.isExpanded()) {
             queryList.getSelectionModel().deselectAll();
         } else {
             for (RepositoryTab tab : repositories) {
@@ -300,6 +322,10 @@ public class ContentRepositoryTabs extends LeftComponent {
                 }
             }
         }
+    }
+
+    public void createSearchPanel(){
+      contentSearchForm = new ContentSearchForm(config);
     }
 
 }

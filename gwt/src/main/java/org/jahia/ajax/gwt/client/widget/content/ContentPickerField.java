@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -154,6 +155,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
 
     @Override
     public List<GWTJahiaNode> getValue() {
+        Log.debug("Get value: "+value);
         return value;
     }
 
@@ -163,10 +165,5 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         this.value = value;
     }
 
-
-
-    public boolean isPagePicker() {
-        return pagePicker;
-    }
 }
 

@@ -77,6 +77,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     private GWTJahiaNode selectedContent = null;
     private static final boolean INTERNAL_VALUE = false;
     private boolean isInternal = true;
+    public static String INTERNAL_PICKER = "internalPicker";
 
 
     public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config, boolean htmlEditor) {
@@ -93,6 +94,8 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         if (internalAllowed) {
             defaultLinkType = "internal";
         }
+
+        boolean isInternalPicker = pickerType != null && pickerType.equalsIgnoreCase(INTERNAL_PICKER);
 
 
         // form panel
@@ -175,9 +178,15 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         target.setDisplayField("target");
         target.setStore(store);
         target.select(0);
+        if(isInternalPicker){
+            target.setVisible(false);
+        }
 
         if (pageTypeGroup != null) {
             pageLinkForm.add(pageTypeGroup);
+            if(isInternalPicker){
+               pageTypeGroup.setVisible(false);
+            }
         }
 
         FieldSet fieldSet = new FieldSet();
@@ -319,8 +328,13 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         // case of internal link
         else if (selectedContent == null) {
             return null;
+        }else{
+          Log.debug("selectedContent is not null its value is: "+selectedContent);
+            Log.debug("selectedContent is not null its value is: "+selectedContent.getName());
         }
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+        Log.debug("get selectedContent: "+selectedContent);
+
         l.add(selectedContent);
         return l;
     }

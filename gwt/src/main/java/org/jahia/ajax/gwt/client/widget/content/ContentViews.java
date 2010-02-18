@@ -64,7 +64,6 @@ public class ContentViews extends TopRightComponent {
 
     private ContentPanel m_component;
     private TopRightComponent current;
-    private SearchField searchField;
 
     private ContentListContextMenu contextMenu;
 
@@ -82,42 +81,7 @@ public class ContentViews extends TopRightComponent {
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
         m_component.setBodyBorder(false);
-        searchField = new SearchField(Messages.getResource("fm_search") + ": ", true) {
-            public void onFieldValidation(String value) {
-                ((ContentRepositoryTabs) getLinker().getLeftObject()).deselectOnFreeSearch();
-                setSearchContent(value);
-            }
 
-            public void onSaveButtonClicked(String value) {
-                if (value != null && value.length() > 0) {
-                    String name = Window.prompt(Messages.getNotEmptyResource("fm_saveSearchName", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
-                    if (name != null && name.length() > 0) {
-                        name = JCRClientUtils.cleanUpFilename(name);
-                        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                        service.saveSearch(value, name, new AsyncCallback<GWTJahiaNode>() {
-                            public void onFailure(Throwable throwable) {
-                                if (throwable instanceof ExistingFileException) {
-                                    Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch", "The entered name is already in use."));
-                                } else {
-                                    Log.error("error", throwable);
-                                }
-                            }
-
-                            public void onSuccess(GWTJahiaNode o) {
-                                Log.debug("saved.");
-                                saveSearch(o);
-                            }
-                        });
-                    } else {
-                        Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch", "The entered name is invalid."));
-                    }
-                }
-            }
-        };
-
-        if (config.isDisplaySearch()) {
-            m_component.setTopComponent(searchField);
-        }
 
         // set default view
         if (config.getDefaultView() == JCRClientUtils.FILE_TABLE) {
@@ -168,44 +132,6 @@ public class ContentViews extends TopRightComponent {
         }
     }
 
-    public void setSearchContent(String text) {
-        clearTable();
-        if (text != null && text.length() > 0) {
-            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-            if (getLinker() != null) {
-                getLinker().loading("searching content...");
-            }
-            service.search(text, 0, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                }
-
-                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                    if (gwtJahiaNodes != null) {
-                        searchResults = gwtJahiaNodes;
-                        current.setProcessedContent(gwtJahiaNodes);
-                    } else {
-                        searchResults = null;
-                    }
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                }
-            });
-        } else {
-            refresh();
-        }
-    }
-
-    public void saveSearch(GWTJahiaNode query) {
-        ((ContentRepositoryTabs) getLinker().getLeftObject()).addSavedSearch(query, true);
-        searchField.clear();
-        searchResults = null;
-    }
-
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         tableView.initWithLinker(linker);
@@ -221,7 +147,6 @@ public class ContentViews extends TopRightComponent {
 
     public void setContent(Object root) {
         if (current != null) {
-            searchField.clear();
             current.setContent(root);
         }
     }

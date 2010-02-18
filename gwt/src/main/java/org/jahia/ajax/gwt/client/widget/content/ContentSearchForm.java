@@ -8,25 +8,24 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
 
@@ -61,11 +60,7 @@ public class ContentSearchForm extends ContentPanel {
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.getResource("fm_search"));
-        /* searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
-           public void handleEvent(ComponentEvent be) {
-               doSearch();
-           }
-       }); */
+
         final Button ok = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 doSearch();
@@ -73,21 +68,33 @@ public class ContentSearchForm extends ContentPanel {
         });
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");
 
+        final Button save = new Button("", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent e) {
+                saveSearch();
+            }
+        });
+        save.setIconStyle("gwt-toolbar-icon-saveAsReusableComponent");
+        save.setToolTip(Messages.getResource("fm_saveSearch"));
+
         // main search field
         HorizontalPanel mainField = new HorizontalPanel();
         mainField.setSpacing(2);
         LayoutContainer formLayoutContainer = new LayoutContainer();
-        formLayoutContainer.setLayout(new FormLayout());
+        FormLayout flayout = new FormLayout();
+        flayout.setLabelWidth(50);
+        formLayoutContainer.setLayout(flayout);
         formLayoutContainer.add(searchField);
         mainField.add(formLayoutContainer);
         mainField.add(ok);
-        add(mainField,new RowData(1, -1, new Margins(0)));
-        
+        mainField.add(save);
+        add(mainField, new RowData(1, -1, new Margins(0)));
+
         // advanced part
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(50);
+
         fieldSet.setLayout(layout);
         fieldSet.setCollapsible(false);
 
@@ -127,7 +134,7 @@ public class ContentSearchForm extends ContentPanel {
         setBodyBorder(false);
         setHeaderVisible(false);
         getHeader().setBorders(false);
-        add(searchForm,new RowData(1, 1, new Margins(0, 0, 20, 0)));
+        add(searchForm, new RowData(1, 1, new Margins(0, 0, 20, 0)));
 
     }
 
@@ -253,18 +260,7 @@ public class ContentSearchForm extends ContentPanel {
      * Method used by seach form
      */
     public void doSearch() {
-        GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
-        gwtJahiaSearchQuery.setQuery(searchField.getValue());
-        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
-        gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
-        gwtJahiaSearchQuery.setInName(inNameField.getValue());
-        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
-        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
-        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
-        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
-        gwtJahiaSearchQuery.setFilters(config.getFilters());
-        gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
-        gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
+        GWTJahiaSearchQuery gwtJahiaSearchQuery = getCurrentQuery();
 
         int limit = 500;
         int offset = 0;
@@ -281,6 +277,59 @@ public class ContentSearchForm extends ContentPanel {
                 linker.loaded();
             }
         });
+
+    }
+
+    /**
+     * Get current query
+     * @return
+     */
+    private GWTJahiaSearchQuery getCurrentQuery() {
+        GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
+        gwtJahiaSearchQuery.setQuery(searchField.getValue());
+        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
+        gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+        gwtJahiaSearchQuery.setInName(inNameField.getValue());
+        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
+        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
+        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
+        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+        gwtJahiaSearchQuery.setFilters(config.getFilters());
+        gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
+        gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
+        return gwtJahiaSearchQuery;
+    }
+
+    /**
+     * Save search
+     *
+     */
+    public void saveSearch() {
+        GWTJahiaSearchQuery query = getCurrentQuery();
+        if (query != null && query.getQuery().length() > 0) {
+            String name = Window.prompt(Messages.getNotEmptyResource("fm_saveSearchName", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(query.getQuery()));
+            if (name != null && name.length() > 0) {
+                name = JCRClientUtils.cleanUpFilename(name);
+                final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                service.saveSearch(query.getQuery(), name, new AsyncCallback<GWTJahiaNode>() {
+                    public void onSuccess(GWTJahiaNode o) {
+                        Log.debug("saved.");
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        if (throwable instanceof ExistingFileException) {
+                            Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch", "The entered name is already in use."));
+                        } else {
+                            Log.error("error", throwable);
+                        }
+                    }
+
+
+                });
+            } else {
+                Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch", "The entered name is invalid."));
+            }
+        }
 
     }
 

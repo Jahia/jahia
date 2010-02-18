@@ -665,16 +665,14 @@ public class JCRPublicationService extends JahiaService {
         if (!node.isNodeType("jmix:publication")) {
             node.addMixin("jmix:publication");
         }
-        if (languages != null) {
-            NodeIterator ni = node.getNodes("j:translation");
-            while (ni.hasNext()) {
-                JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
-                if (languages.contains(i18n.getProperty("jcr:language").getString())) {
-                    if (!i18n.isCheckedOut()) {
-                        i18n.checkout();
-                    }
-                    i18n.setProperty("j:published", false);
+        NodeIterator ni = node.getNodes("j:translation");
+        while (ni.hasNext()) {
+            JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
+            if (languages == null || languages.contains(i18n.getProperty("jcr:language").getString())) {
+                if (!i18n.isCheckedOut()) {
+                    i18n.checkout();
                 }
+                i18n.setProperty("j:published", false);
             }
         }
     }

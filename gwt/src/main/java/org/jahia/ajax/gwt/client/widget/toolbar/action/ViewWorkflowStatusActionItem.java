@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -72,8 +73,9 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             if (module.getNode() != null) {
                 GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
                 if (info.getAvailableActions().size()>0) {
+                    String current = info.getAvailableActions().get(0).getName();
                     allPublished = false;
-                    addInfoLayer(module, "Workflow(s) currently started", "red", "red", left, top, right, bottom, removeListener, true);
+                    addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true);
                 }
             }
         }

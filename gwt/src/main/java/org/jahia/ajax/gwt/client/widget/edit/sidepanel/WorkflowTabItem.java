@@ -79,13 +79,13 @@ public class WorkflowTabItem extends SidePanelTabItem {
                                 jahiaContentManagementServiceAsync.assignAndCompleteTask(node.getPath(), action,
                                                                                          outcome, new AsyncCallback() {
                                             public void onSuccess(Object result) {
-                                                Info.display("Workflow started", "Workflow started");
+                                                Info.display("Workflow executed", "Workflow executed");
                                                 editLinker.getSidePanel().refresh();
                                                 editLinker.refresh();
                                             }
 
                                             public void onFailure(Throwable caught) {
-                                                Info.display("Workflow not started", "Workflow not started");
+                                                Info.display("Workflow failed", "Workflow failed");
                                             }
                                         });
                             }

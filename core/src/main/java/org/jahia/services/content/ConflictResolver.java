@@ -2,6 +2,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -22,10 +23,10 @@ import java.util.*;
 public class ConflictResolver {
 
 
-    private static List<String> ignore = Arrays.asList("jcr:uuid", "jcr:primaryType", "jcr:mixinTypes", "jcr:frozenUuid", "jcr:frozenPrimaryType", "jcr:frozenMixinTypes",
-            "jcr:created", "jcr:createdBy", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:versionHistory", "jcr:predecessors");
+    private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS);
     
-    // "jcr:lastModified", "jcr:lastModifiedBy",
+    // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
 
     private JCRNodeWrapper sourceNode;
@@ -45,11 +46,11 @@ public class ConflictResolver {
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
 
-        if (sourceNode.hasProperty("jcr:lastModified")) {
-            sourceDate = sourceNode.getProperty("jcr:lastModified").getDate();
+        if (sourceNode.hasProperty(Constants.JCR_LASTMODIFIED)) {
+            sourceDate = sourceNode.getProperty(Constants.JCR_LASTMODIFIED).getDate();
         }
-        if (targetNode.hasProperty("jcr:lastModified")) {
-            targetDate = targetNode.getProperty("jcr:lastModified").getDate();
+        if (targetNode.hasProperty(Constants.JCR_LASTMODIFIED)) {
+            targetDate = targetNode.getProperty(Constants.JCR_LASTMODIFIED).getDate();
         }
     }
 
@@ -207,17 +208,19 @@ public class ConflictResolver {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
             String propName = prop1.getName();
-            if (ignore.contains(propName)) {
+            if (propName.equals(Constants.JCR_FROZENMIXINTYPES)) {
+                propName = Constants.JCR_MIXINTYPES;
+            } else if (ignore.contains(propName)) {
                 continue;
             }
             if (!node.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
                     Value[] values = prop1.getValues();
                     for (Value value : values) {
-                        diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(),value));
+                        diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), propName,value));
                     }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(),prop1.getValue(), null));
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), propName,prop1.getValue(), null));
                 }
             } else {
                 Property prop2 = node.getProperty(propName);
@@ -237,7 +240,7 @@ public class ConflictResolver {
                             added.remove(value.getString());
                         }
                         for (Value value : added.values()) {
-                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), value));
+                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), propName, value));
                         }
 
                         Map<String, Value> removed = new HashMap<String,Value>();
@@ -248,11 +251,11 @@ public class ConflictResolver {
                             removed.remove(value.getString());
                         }
                         for (Value value : removed.values()) {
-                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), value));
+                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), propName, value));
                         }
                     } else {
                         if (!equalsValue(prop1.getValue(),prop2.getValue())) {
-                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), prop1.getName(), prop1.getValue(), prop2.getValue()));
+                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), propName, prop1.getValue(), prop2.getValue()));
                         }
                     }
                 }
@@ -264,7 +267,10 @@ public class ConflictResolver {
             JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
 
             String propName = prop2.getName();
-            if (ignore.contains(propName)) {
+
+            if (propName.equals(Constants.JCR_MIXINTYPES)) {
+                propName = Constants.JCR_FROZENMIXINTYPES;
+            } else if (ignore.contains(propName)) {
                 continue;
             }
             if (!frozenNode.hasProperty(propName)) {
@@ -279,6 +285,17 @@ public class ConflictResolver {
             }
 
         }
+
+        for (Diff diff : new ArrayList<Diff>(diffs)) {
+            if (diff instanceof PropertyAddedDiff && ((PropertyAddedDiff)diff).propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                diffs.remove(diff);
+                diffs.add(0,diff);
+            } else if (diff instanceof PropertyRemovedDiff && ((PropertyRemovedDiff)diff).propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                diffs.remove(diff);
+                diffs.add(diff);
+            }
+        }
+
         return diffs;
     }
 
@@ -301,12 +318,12 @@ public class ConflictResolver {
         ListOrderedMap childEntries = new ListOrderedMap();
         while (ni1.hasNext()) {
             Node child = (Node) ni1.next();
-            if (child.isNodeType("nt:versionedChild")) {
+            if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                 VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
-                String uuid = vh.getRootVersion().getFrozenNode().getProperty("jcr:frozenUuid").getValue().getString();
+                String uuid = vh.getRootVersion().getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getValue().getString();
                 childEntries.put(uuid, child.getName());
-            } else if (child.isNodeType("nt:frozenNode")) {
-                String uuid = child.getProperty("jcr:frozenUuid").getValue().getString();
+            } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
+                String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
                 childEntries.put(uuid, child.getName());
             } else {
                 childEntries.put(child.getIdentifier(), child.getName());
@@ -515,7 +532,12 @@ public class ConflictResolver {
 
         public boolean apply() throws RepositoryException {
             String name = propertyName;
-            if (targetNode.hasProperty(name)) {
+            if (!targetNode.isCheckedOut()) {
+                targetNode.checkout();
+            }
+            if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                targetNode.addMixin(newValue.getString());
+            } else if (targetNode.hasProperty(name)) {
                 List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(name).getValues()));
                 values.add(newValue);
                 targetNode.setProperty(name, values.toArray(new Value[values.size()]));
@@ -572,7 +594,9 @@ public class ConflictResolver {
                     newValues.add(value);
                 }
             }
-            if (newValues.isEmpty()) {
+            if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                targetNode.removeMixin(oldValue.getString());
+            } else if (newValues.isEmpty()) {
                 targetNode.getProperty(propertyName).remove();
             } else {
                 targetNode.setProperty(propertyName, newValues.toArray(new Value[newValues.size()]));

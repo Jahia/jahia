@@ -185,6 +185,9 @@ public class JCRWorkspaceWrapper implements Workspace {
                             // rename case
                             JCRNodeWrapper userFolder = session.getNode(JCRStoreService.getInstance().getUserFolders(null, session.getUser()).iterator().next().getPath());
                             if (!userFolder.hasNode("tmp")) {
+                                if (!userFolder.isCheckedOut()) {
+                                    session.checkout(userFolder);
+                                }
                                 userFolder.addNode("tmp", "jnt:contentList");
                             }
                             JCRNodeWrapper newSourceNode = userFolder.getNode("tmp").clone(sourceNode, sourceNode.getIdentifier());

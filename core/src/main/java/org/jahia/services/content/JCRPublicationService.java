@@ -413,10 +413,10 @@ public class JCRPublicationService extends JahiaService {
                     try {
                         JCRNodeWrapper snode = destinationSession.getNode(oldPath);
                         recurseCheckout(snode,null,destinationVersionManager);
-                        JCRNodeWrapper oldParent = node.getParent();
+                        JCRNodeWrapper oldParent = snode.getParent();
                         oldParent.checkout();
-                        node.remove();
-                        node.getRealNode().getSession().save();
+                        snode.remove();
+                        snode.getRealNode().getSession().save();
                     } catch (PathNotFoundException e) {
                         // already removed
                     } catch (RepositoryException e) {

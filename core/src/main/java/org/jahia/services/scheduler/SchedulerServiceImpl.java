@@ -45,10 +45,6 @@ import org.quartz.*;
 import org.quartz.simpl.SimpleJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -267,30 +263,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
     public void setLockService(LockService lockService) {
         this.lockService = lockService;
-    }
-
-    private Scheduler getScheduler(File schedulerConfigFile) throws SchedulerException {
-        org.quartz.impl.StdSchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
-        if (schedulerConfigFile.exists()) {
-            Properties properties = new Properties();
-            try {
-                properties.load(new BufferedInputStream(new FileInputStream(schedulerConfigFile)));
-                if (properties.containsKey("org.quartz.jobStore.isClustered")) {
-                    String clusterActivated = getSettingsBean().getPropertiesFile().getProperty("cluster.activated");
-                    if (clusterActivated != null) {
-                        properties.put("org.quartz.jobStore.isClustered", clusterActivated);
-                    }
-                }
-                schedFact.initialize(properties);
-            } catch (IOException e) {
-                throw new SchedulerException("Properties file: '" + schedulerConfigFile + "' could not be read.", e);
-            }
-        } else {
-            logger.error("Couldn't find Quartz configuration file, using default configuration....");
-        }
-        Scheduler scheduler = schedFact.getScheduler();
-
-        return scheduler;
     }
 
     public void startSchedulers() throws SchedulerException {

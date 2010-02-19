@@ -34,8 +34,8 @@ package org.jahia.services.scheduler;
 
 import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
+import org.quartz.JobDetail;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.scheduling.quartz.JobDetailBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +47,7 @@ import org.springframework.scheduling.quartz.JobDetailBean;
 public class ModuleJob implements InitializingBean {
     private transient static Logger logger = Logger.getLogger(ModuleJob.class);
     private CronTrigger trigger;
-    private JobDetailBean jobDetail;
+    private JobDetail jobDetail;
     private SchedulerService schedulerService;
     private boolean isRamJob;
 
@@ -55,7 +55,7 @@ public class ModuleJob implements InitializingBean {
         this.trigger = trigger;
     }
 
-    public void setJobDetail(JobDetailBean jobDetail) {
+    public void setJobDetail(JobDetail jobDetail) {
         this.jobDetail = jobDetail;
     }
 
@@ -79,8 +79,12 @@ public class ModuleJob implements InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         if (isRamJob) {
+            schedulerService.unscheduleRamJob(jobDetail);
+            logger.info("Scheduling ram job '" + jobDetail.getFullName() + "'");
             schedulerService.scheduleRamJob(jobDetail, trigger);
         } else {
+            schedulerService.unscheduleJob(jobDetail);
+            logger.info("Scheduling job '" + jobDetail.getFullName() + "'");
             schedulerService.scheduleJob(jobDetail, trigger);
         }
     }

@@ -15,7 +15,7 @@
                 <prop key="org.quartz.jobStore.useProperties">false</prop>
                 <prop key="org.quartz.jobStore.dataSource">jahiaDS</prop>
                 <prop key="org.quartz.jobStore.tablePrefix">JAHIA_QRTZ_</prop>
-                <prop key="org.quartz.jobStore.isClustered">true</prop>
+                <prop key="org.quartz.jobStore.isClustered">${cluster.activated}</prop>
                 <prop key="org.quartz.jobStore.selectWithLockSQL"/>
                 <prop key="org.quartz.jobStore.txIsolationLevelSerializable">false</prop>
                 <prop key="org.quartz.dataSource.jahiaDS.jndiURL">java:comp/env/jdbc/jahia</prop>

@@ -6,3 +6,27 @@
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
 }
+/******************************************************************************
+* Portal Panel slider
+******************************************************************************/
+#bodywrapper  #panel {
+background-color:#cddafc;
+}
+#bodywrapper .tab {
+background-image:url(img/mod/tab_b.png);
+}
+#bodywrapper #toppanel .tab ul.login li {
+background-image:url(img/mod/tab_m.png);
+}
+#bodywrapper #toppanel .tab ul.login li.left {
+background-image:url(img/mod/tab_l.png);
+}
+#bodywrapper #toppanel .tab ul.login li.right {
+background-image:url(img/mod/tab_r.png);
+}
+#panel .content .left, #panel .content .right {
+border-left:1px solid #666;
+}
+#bodywrapper #toppanel ul.panellist {
+border:1px solid #666;
+}

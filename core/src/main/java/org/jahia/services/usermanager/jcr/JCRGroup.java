@@ -64,12 +64,18 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     private transient static Logger logger = Logger.getLogger(JCRGroup.class);
     private String nodeUuid;
     private final JCRTemplate jcrTemplate;
+    private boolean external;
     static final String J_HIDDEN = "j:hidden";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private static final String PROVIDER_NAME = "jcr";
 
     public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
+        this(nodeWrapper, jcrTemplate, siteID, false);
+    }
+
+    public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID, boolean isExternal) {
+        super();
         this.jcrTemplate = jcrTemplate;
         this.mSiteID = siteID;
         try {
@@ -81,6 +87,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         } catch (RepositoryException e) {
             logger.error("Error while accessing repository", e);
         }
+        this.external = isExternal;
     }
 
     /**
@@ -168,6 +175,10 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     public boolean setProperty(final String key, final String value) {
         try {
+            if (J_EXTERNAL.equals(key)) {
+                external = Boolean.valueOf(value);
+            }
+            
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
@@ -435,5 +446,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
 
     public String getIdentifier() {
         return nodeUuid;
+    }
+
+    /**
+     * @return the external
+     */
+    public boolean isExternal() {
+        return external;
     }
 }

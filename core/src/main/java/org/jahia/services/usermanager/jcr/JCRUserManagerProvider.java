@@ -301,7 +301,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 start();
             }
             if (cache.containsKey(name)) {
-                return cache.get(name);
+                JCRUser user = cache.get(name);
+                return user != null && user.isExternal() ? null : user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -336,7 +337,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 start();
             }
             if (cache.containsKey(name)) {
-                return cache.get(name);
+                JCRUser user = cache.get(name);
+                return user != null && user.isExternal() ? null : user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -371,7 +373,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode( "/users/" + name.trim());
                     if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
+                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate, true);
                         cache.put(name, user);
                         return user;
                     }

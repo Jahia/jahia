@@ -65,10 +65,17 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
     private String name;
     private Properties properties;
     private UserProperties userProperties;
+    private boolean external;
 
     public JCRUser(String nodeUuid, JCRTemplate jcrTemplate) {
+        this(nodeUuid, jcrTemplate, false);
+    }
+
+    public JCRUser(String nodeUuid, JCRTemplate jcrTemplate, boolean isExternal) {
+        super();
         this.nodeUuid = nodeUuid;
         this.jcrTemplate = jcrTemplate;
+        this.external = isExternal;
     }
 
 
@@ -270,6 +277,9 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
      */
     public boolean setProperty(final String key, final String value) {
         try {
+            if (J_EXTERNAL.equals(key)) {
+                external = Boolean.valueOf(value);
+            }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
@@ -407,5 +417,12 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
 
     public String getIdentifier() {
         return nodeUuid;
+    }
+
+    /**
+     * @return the external
+     */
+    public boolean isExternal() {
+        return external;
     }
 }

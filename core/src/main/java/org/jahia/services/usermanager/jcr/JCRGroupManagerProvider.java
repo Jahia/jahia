@@ -553,7 +553,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             }
             final String trueGroupKey = name + ":" + siteID;
             if (getCache().containsKey(trueGroupKey)) {
-                return getCache().get(trueGroupKey);
+                JCRGroup group = getCache().get(trueGroupKey);
+                return !allowExternal && group != null && group.isExternal() ? null : group;
             }
             final int siteID1 = siteID;
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRGroup>() {
@@ -574,8 +575,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                   "/sites/" + siteName + "/groups/" + name.trim());
                         }
                         JCRGroup group = null;
-                        if (allowExternal || !groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean()) {
-                            group = getGroup(groupNode, name, siteID1);
+                        boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
+                        if (allowExternal || !external) {
+                            group = getGroup(groupNode, name, siteID1, external);
+                            if (external) {}
                             getCache().put(trueGroupKey, group);
                         }
                         return group;
@@ -596,14 +599,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         return null;
     }
 
-    private JCRGroup getGroup(Node usersFolderNode, String name, int siteID1) {
+    private JCRGroup getGroup(Node usersFolderNode, String name, int siteID1, boolean external) {
         JCRGroup group;
         if (JahiaGroupManagerDBProvider.GUEST_GROUPNAME.equals(name)) {
             group = new GuestGroup(usersFolderNode, jcrTemplate, siteID1);
         } else if (JahiaGroupManagerDBProvider.USERS_GROUPNAME.equals(name)) {
             group = new UsersGroup(usersFolderNode, jcrTemplate, siteID1);
         } else {
-            group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1);
+            group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1, external);
         }
         return group;
     }
@@ -702,7 +705,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {
                             Node usersFolderNode = ni.nextNode();
-                            users.add(getGroup(usersFolderNode, usersFolderNode.getName(), siteID));
+                            users.add(getGroup(usersFolderNode, usersFolderNode.getName(), siteID, false));
                         }
                     }
                     return users;

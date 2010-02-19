@@ -64,18 +64,19 @@ class SearchTabItem extends SidePanelTabItem {
         searchField.setFieldLabel(Messages.getResource("fm_search"));
         searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-               // grid.mask("Loading", "x-mask-loading");
+                // grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0,10);
+                loader.load(0, 10);
             }
         });
         final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-              //  grid.mask("Loading", "x-mask-loading");
+                //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0,10);
+                loader.load(0, 10);
             }
         });
+        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
 
         final Button drag = new Button(Messages.getResource("em_drag"));
         EditModeDragSource querySource = new EditModeDragSource(drag) {
@@ -95,7 +96,7 @@ class SearchTabItem extends SidePanelTabItem {
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
         FormLayout layout = new FormLayout();
-        layout.setLabelWidth(50);
+        layout.setLabelWidth(70);
         fieldSet.setLayout(layout);
         fieldSet.setCollapsible(false);
 
@@ -108,25 +109,32 @@ class SearchTabItem extends SidePanelTabItem {
         fieldSet.add(langPickerField);
         searchForm.add(fieldSet);
 
+        final CheckBoxGroup scopeCheckGroup = new CheckBoxGroup();
+        scopeCheckGroup.setOrientation(Style.Orientation.VERTICAL);
+        scopeCheckGroup.setFieldLabel(Messages.get("label_searchScope","Search scope"));
         // scope name field
         inNameField = createNameField();
-        fieldSet.add(inNameField);
+        scopeCheckGroup.add(inNameField);
 
+
+        
         // scope tag field
         inTagField = createTagField();
-        fieldSet.add(inTagField);
+        scopeCheckGroup.add(inTagField);
 
         // scope metadata field
         inMetadataField = createMetadataField();
-        fieldSet.add(inMetadataField);
+        scopeCheckGroup.add(inMetadataField);
 
         // scope content field
         inContentField = createContentField();
-        fieldSet.add(inContentField);
+        scopeCheckGroup.add(inContentField);
 
         // scope file field
         inFileField = createFileField();
-        fieldSet.add(inFileField);
+        scopeCheckGroup.add(inFileField);
+
+        fieldSet.add(scopeCheckGroup,new FormData("-20"));
 
 
         searchForm.addButton(ok);
@@ -223,6 +231,7 @@ class SearchTabItem extends SidePanelTabItem {
         CheckBox field = new CheckBox();
         field.setValue(true);
         field.setFieldLabel(Messages.get("label_name", "Name"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("name");
         return field;
     }
@@ -235,7 +244,9 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createTagField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_tag", "Tags"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("tag");
+        field.hide();
         return field;
     }
 
@@ -247,6 +258,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createMetadataField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
         return field;
     }
@@ -259,6 +271,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createContentField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel("Content");
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
         return field;
     }
@@ -271,6 +284,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_file", "File"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("file");
         return field;
     }
@@ -324,7 +338,7 @@ class SearchTabItem extends SidePanelTabItem {
             offset = loadConfig.getOffset();
         }
 
-        Log.debug(searchField.getValue()+","+pagePickerField.getValue()+","+langPickerField.getValue()+","+inNameField.getValue()+","+inTagField.getValue());
+        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
         JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
 
     }

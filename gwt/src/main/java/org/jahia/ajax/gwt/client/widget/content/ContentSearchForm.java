@@ -92,7 +92,7 @@ public class ContentSearchForm extends ContentPanel {
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
         FormLayout layout = new FormLayout();
-        layout.setLabelWidth(50);
+        layout.setLabelWidth(70);
 
         fieldSet.setLayout(layout);
         fieldSet.setCollapsible(false);
@@ -110,35 +110,33 @@ public class ContentSearchForm extends ContentPanel {
 
         searchForm.add(fieldSet);
 
+        final CheckBoxGroup scopeCheckGroup = new CheckBoxGroup();
+        scopeCheckGroup.setOrientation(Style.Orientation.VERTICAL);
+        scopeCheckGroup.setFieldLabel(Messages.get("label_searchScope","Search scope"));
         // scope name field
         inNameField = createNameField();
-        fieldSet.add(inNameField);
+        scopeCheckGroup.add(inNameField);
+
+
 
         // scope tag field
         inTagField = createTagField();
-        fieldSet.add(inTagField);
+        scopeCheckGroup.add(inTagField);
 
         // scope metadata field
         inMetadataField = createMetadataField();
-        fieldSet.add(inMetadataField);
-        if (!config.isDisplaySearchInTag()) {
-            inMetadataField.hide();
-        }
+        scopeCheckGroup.add(inMetadataField);
 
         // scope content field
         inContentField = createContentField();
-        fieldSet.add(inContentField);
-        if (!config.isDisplaySearchInContent()) {
-            inContentField.hide();
-        }
+        scopeCheckGroup.add(inContentField);
 
         // scope file field
         inFileField = createFileField();
-        fieldSet.add(inFileField);
-        if (!config.isDisplaySearchInFile()) {
-            inFileField.hide();
-        }
-        //getHeader().addTool(ok);
+        scopeCheckGroup.add(inFileField);
+
+        fieldSet.add(scopeCheckGroup,new FormData("-20"));
+
 
         setWidth("100%");
         setFrame(true);
@@ -187,6 +185,7 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox createNameField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_name", "Name"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("name");
         field.setValue(true);
         return field;
@@ -200,7 +199,11 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox createTagField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_tag", "Tags"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("tag");
+        if (!config.isDisplaySearchInTag()) {
+            field.hide();
+        }
         return field;
     }
 
@@ -212,7 +215,9 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox createMetadataField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
+
         return field;
     }
 
@@ -224,7 +229,11 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox createContentField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel("Content");
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
+        if (!config.isDisplaySearchInContent()) {
+            field.hide();
+        }
         return field;
     }
 
@@ -236,7 +245,11 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("label_file", "File"));
+        field.setBoxLabel(field.getFieldLabel());        
         field.setName("file");
+        if (!config.isDisplaySearchInFile()) {
+            field.hide();
+        }
         return field;
     }
 

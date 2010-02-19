@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -103,22 +104,27 @@ public class SearchGrid extends ContentPanel {
         add(grid);
     }
 
-    public void setSearchContent(String text) {
+    public void setSearchContent(final String text) {
         clearTable();
         if (text != null && text.length() > 0) {
             final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
             service.search(text, 0, config.getNodeTypes(), config.getMimeTypes(), config.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
+                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
+                    if (gwtJahiaNodes != null) {
+                        Log.debug("Found "+gwtJahiaNodes.size()+" results with text: "+text);
+                        setProcessedContent(gwtJahiaNodes);
+                    }else{
+                        Log.debug("No result found in search");
+                    }
+                }
+
                 public void onFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
 
                 }
 
-                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                    if (gwtJahiaNodes != null) {
-                        setProcessedContent(gwtJahiaNodes);
-                    }
-                }
+
             });
         } else {
             refresh();

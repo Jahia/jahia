@@ -45,6 +45,14 @@ public class SearchHelper {
         this.contentManager = contentManager;
     }
 
+    /**
+     * Search for searchString in the name f the node
+     * @param searchString
+     * @param limit
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNode> search(String searchString, int limit, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
@@ -55,6 +63,15 @@ public class SearchHelper {
         return new ArrayList<GWTJahiaNode>();
     }
 
+    /**
+     * Search by Serach bean (used by the advanced search)
+     * @param search
+     * @param limit
+     * @param offset
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(search, limit, offset, currentUserSession);
@@ -68,6 +85,17 @@ public class SearchHelper {
         return new ArrayList<GWTJahiaNode>();
     }
 
+    /**
+     * Search for searchString and filters in the name f the node
+     * @param searchString
+     * @param limit
+     * @param nodeTypes
+     * @param mimeTypes
+     * @param filters
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         if (nodeTypes == null) {
             nodeTypes = JCRClientUtils.FILE_NODETYPES;
@@ -84,6 +112,11 @@ public class SearchHelper {
         return new ArrayList<GWTJahiaNode>();
     }
 
+    /**
+     * Get saved search
+     * @param currentUserSession
+     * @return
+     */
     public List<GWTJahiaNode> getSavedSearch(JCRSessionWrapper currentUserSession) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
@@ -96,23 +129,16 @@ public class SearchHelper {
         return result;
     }
 
-    public List<GWTJahiaNode> getNodesOfType(String nodeType, JCRSessionWrapper currentUserSession) {
-        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-        try {
-            String s = "select * from [" + nodeType + "]";
-            Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return result;
-    }
 
-    public Query createQuery(String searchString, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        String s = "select * from [jmix:hierarchyNode] as h where contains(h.[j:nodename]," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")";
-        return currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-    }
-
+    /**
+     * Save search
+     * @param searchString
+     * @param name
+     * @param site
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public GWTJahiaNode saveSearch(String searchString, String name, JahiaSite site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             if (name == null) {
@@ -195,6 +221,19 @@ public class SearchHelper {
      */
     public void setJcrSearchProvider(JahiaJCRSearchProvider jcrSearchProvider) {
         this.jcrSearchProvider = jcrSearchProvider;
+    }
+
+    /**
+     * Creates the {@link Query} instance from the provided search criteria.
+     * @param searchString
+     * @param session
+     * @return
+     * @throws RepositoryException
+     */
+    public Query createQuery(String searchString, JCRSessionWrapper session) throws RepositoryException {
+        SearchCriteria criteria = new SearchCriteria();
+        criteria.getTerms().get(0).setTerm(searchString);
+        return jcrSearchProvider.buildQuery(criteria, session);
     }
 
     /**

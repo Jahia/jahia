@@ -52,6 +52,7 @@ import javax.jcr.query.RowIterator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -194,6 +195,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
             for (String folder : pathTokens) {
+                if (folder.length() == 0) {
+                    continue;
+                }
                 if (!includeChildren) {
                     if (lastFolder != null) {
                         jcrPath.append(lastFolder).append("/");
@@ -207,7 +211,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 jcrPath.append("/");
                 lastFolder = "*";
             }
-            query.append(jcrPath.toString()).append("element(").append(
+            query.append(ISO9075.encodePath(jcrPath.toString())).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
         } else if (!params.getSites().isEmpty() && (params.getSites().getValues().length > 1 || !"-all-".equals(params.getSites().getValue()))) {

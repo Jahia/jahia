@@ -54,6 +54,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -307,7 +308,7 @@ public class RoleBasedAccessControlManager {
         boolean hasIt = false;
         JCRNodeWrapper permissionNode = roleManager.loadPermissionNode(permission, session);
         QueryResult result = session.getWorkspace().getQueryManager().createQuery(
-                "/jcr:root" + principalPath + "/jcr:deref(@" + PROPERTY_ROLES + ", '*')/jcr:deref(@"
+                "/jcr:root" + ISO9075.encodePath(principalPath) + "/jcr:deref(@" + PROPERTY_ROLES + ", '*')/jcr:deref(@"
                         + PROPERTY_PERMISSSIONS + ", " + JCRContentUtils.stringToQueryLiteral(permission.getName())
                         + ")", Query.XPATH).execute();
         // the permission is specified by path
@@ -425,8 +426,12 @@ public class RoleBasedAccessControlManager {
     public boolean isPermitted(final JahiaPrincipal principal, final Permission permission, JCRSessionWrapper session)
             throws PathNotFoundException, RepositoryException {
         JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
-        return principalNode != null ? hasDirectPermission(principalNode.getPath(), permission, session)
+        boolean permitted = principalNode != null ? hasDirectPermission(principalNode.getPath(), permission, session)
                 || hasInheritedPermission(principal, principalNode, permission, session) : false;
+        if (logger.isDebugEnabled()) {
+            logger.debug("isPermitted('" + principal.getName() + "', '" + permission.getName() + "'): " + permitted);
+        }
+        return permitted;
     }
 
     /**

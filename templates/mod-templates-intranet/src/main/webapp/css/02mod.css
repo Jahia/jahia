@@ -75,3 +75,11 @@
 #bodywrapper #forum-body li.row:hover {
 	background-color:#ede2d8;
 }
+/******************************************************************************
+* Portal
+******************************************************************************/
+#bodywrapper .color-box {background:#3366cc;}
+#bodywrapper #columns .widget {
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+}

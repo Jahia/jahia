@@ -115,8 +115,21 @@ vertical-align:middle
     margin-right: auto;
 }
 #bodywrapper #toppanel li, #bodywrapper #toppanel ul {
-margin:0;
-padding:0;
+	margin:0;
+	padding:0;
+}
+#bodywrapper #toppanel ul.panellist {
+	padding:0;
+	height:180px;
+	border:1px solid #b9a99b;
+	display: block;
+	overflow-x: hidden;
+	overflow-y: auto;
+	overflow : -moz-scrollbars-vertical;
+}
+#bodywrapper #toppanel ul.panellist li {
+	cursor:pointer;
+	list-style:none;
 }
 
 #panel {
@@ -164,7 +177,7 @@ padding:0;
 #panel .content {
 	width: 960px;
 	margin: 0 auto;
-	padding-top: 15px;
+	padding: 15px;
 	text-align: left;
 	font-size: 0.85em;
 }

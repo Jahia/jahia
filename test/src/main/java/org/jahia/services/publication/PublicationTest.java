@@ -1027,12 +1027,14 @@ public class PublicationTest extends TestCase {
             nodeWasFoundInLive = false;
         }
 
+        String treeString = "";
         if (nodeWasFoundInLive == false) {
             // if it was not found when it should, let's dump the tree.
-            dumpTree(sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            StringBuilder stringBuilder = dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            treeString = "\nTree dump:\n" + stringBuilder.toString();
         }
 
-        assertTrue(failureMessage, nodeWasFoundInLive);
+        assertTrue(failureMessage + treeString, nodeWasFoundInLive);
     }
 
     private void testNodeNotInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage) throws RepositoryException {
@@ -1045,12 +1047,14 @@ public class PublicationTest extends TestCase {
             nodeWasFoundInLive = false;
         }
 
+        String treeString = "";
         if (nodeWasFoundInLive == true) {
             // if it was found when it shouldn't, let's dump the tree.
-            dumpTree(sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            StringBuilder stringBuilder = dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            treeString = "\nTree dump:\n" + stringBuilder.toString();
         }
 
-        assertFalse(failureMessage, nodeWasFoundInLive);
+        assertFalse(failureMessage + treeString, nodeWasFoundInLive);
     }
 
     private void testPropertyInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String propertyName, String propertyValue, String failureMessage) throws RepositoryException {
@@ -1161,24 +1165,24 @@ public class PublicationTest extends TestCase {
         return currentSession;
     }
 
-    private void dumpTree(Node startNode, int depth, boolean logAsError) throws RepositoryException {
-        StringBuilder nodeString = new StringBuilder();
+    private StringBuilder dumpTree(StringBuilder stringBuilder, Node startNode, int depth, boolean logAsError) throws RepositoryException {
         for (int i=0; i < depth; i++) {
-            nodeString.append("  ");
+            if (i == 0) {
+                stringBuilder.append("+-");
+            } else {
+                stringBuilder.append("--");
+            }
         }
-        nodeString.append(startNode.getName());
-        nodeString.append(" = ");
-        nodeString.append(startNode.getIdentifier());
-        if (logAsError) {
-            logger.error(nodeString.toString());
-        } else {
-            logger.info(nodeString.toString());
-        }
+        stringBuilder.append(startNode.getName());
+        stringBuilder.append(" = ");
+        stringBuilder.append(startNode.getIdentifier());
+        stringBuilder.append("\n");
         NodeIterator childNodeIter = startNode.getNodes();
         while (childNodeIter.hasNext()) {
             Node currentChild = childNodeIter.nextNode();
-            dumpTree(currentChild, depth + 1, logAsError);
+            stringBuilder = dumpTree(stringBuilder, currentChild, depth + 1, logAsError);
         }
+        return stringBuilder;
     }
         
     @Override

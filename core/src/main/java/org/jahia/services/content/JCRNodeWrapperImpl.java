@@ -1229,7 +1229,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         // node is orderable.
         String nextNodeName = null;
         boolean nodePositionFound = false;
-        if (parent.getDefinition().getDeclaringNodeType().hasOrderableChildNodes()) {
+        if (parent.getPrimaryNodeType().hasOrderableChildNodes()) {
             NodeIterator nodeIterator = parent.getNodes();
             while (nodeIterator.hasNext()) {
                 Node currentNode = nodeIterator.nextNode();

@@ -32,16 +32,30 @@
 
 package org.jahia.modules.roles.rules;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.NodeWrapper;
 import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.jcr.PermissionImpl;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 /**
  * Roles/permissions service class that is used in right-hand-side
@@ -51,7 +65,102 @@ import org.jahia.services.rbac.PermissionIdentity;
  */
 public class RoleService {
 
+    private static Logger logger = Logger.getLogger(RoleService.class);
+
+    private JahiaGroupManagerService groupService;
+
+    private RoleBasedAccessControlService rbacService;
+
     private org.jahia.services.rbac.jcr.RoleService roleService;
+
+    private JahiaUserManagerService userService;
+
+    private Role getRole(String role) {
+        return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role, JCRContentUtils
+                .getSiteKey(role));
+    }
+
+    /**
+     * Assign a group of permissions to a specified role.
+     * 
+     * @param role the role to be modified
+     * @param permissionGroup the name of the group of permission to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantPermissionGroupToRole(final String role, final String permissionGroup, KnowledgeHelper drools)
+            throws RepositoryException {
+        List<PermissionImpl> permissions = roleService.getPermissions(JCRContentUtils.getSiteKey(role));
+        for (Iterator<PermissionImpl> iterator = permissions.iterator(); iterator.hasNext();) {
+            PermissionImpl permission = iterator.next();
+            if (!permission.getGroup().equals(permissionGroup)) {
+                iterator.remove();
+            }
+        }
+        if (!permissions.isEmpty()) {
+            roleService.grantPermissions(getRole(role), permissions);
+        }
+    }
+
+    /**
+     * Assign permission to a specified role.
+     * 
+     * @param role the role to be modified
+     * @param permission permission to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantPermissionToRole(final String role, final String permission, KnowledgeHelper drools)
+            throws RepositoryException {
+        roleService.grantPermission(getRole(role), new PermissionIdentity(permission, null, JCRContentUtils.getSiteKey(role)));
+    }
+
+    /**
+     * Grant role to a specified group.
+     * 
+     * @param group to be modified
+     * @param role the role to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantRoleToGroup(final String group, final String role, KnowledgeHelper drools)
+            throws RepositoryException {
+        JahiaGroup principal = groupService.lookupGroup(group);
+        if (principal != null) {
+            rbacService.grantRole(principal, getRole(role));
+        } else {
+            logger.warn("Unable to look up the specified group for name '" + group + "'. Skip granting role.");
+        }
+    }
+
+    /**
+     * Grant role to a specified user.
+     * 
+     * @param user to be modified
+     * @param role the role to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantRoleToUser(final String user, final String role, KnowledgeHelper drools)
+            throws RepositoryException {
+        JahiaUser principal = userService.lookupUser(user);
+        if (principal != null) {
+            rbacService.grantRole(principal, getRole(role));
+        } else {
+            logger.warn("Unable to look up the specified user for name '" + user + "'. Skip granting role.");
+        }
+    }
+
+    /**
+     * @param groupService the groupService to set
+     */
+    public void setGroupService(JahiaGroupManagerService groupService) {
+        this.groupService = groupService;
+    }
+
+    public void setRoleBasedAccessControlService(RoleBasedAccessControlService rbacService) {
+        this.rbacService = rbacService;
+    }
 
     /**
      * Injects an instance of the role manager service.
@@ -60,6 +169,13 @@ public class RoleService {
      */
     public void setRoleService(org.jahia.services.rbac.jcr.RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    /**
+     * @param userService the userService to set
+     */
+    public void setUserService(JahiaUserManagerService userService) {
+        this.userService = userService;
     }
 
     /**

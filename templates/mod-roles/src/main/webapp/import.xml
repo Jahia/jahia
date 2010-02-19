@@ -11,9 +11,7 @@
         </j:acl>
 	 	<global jcr:primaryType="jnt:permissionGroup">
 	   		<virtual-sites jcr:primaryType="jnt:permission"/>
-	   		<categories jcr:primaryType="jnt:permission"/>
 	   		<portlets jcr:primaryType="jnt:permission"/>
-	   		<audit-logs jcr:primaryType="jnt:permission"/>
 	   		<email-settings jcr:primaryType="jnt:permission"/>
 	   		<root-user jcr:primaryType="jnt:permission"/>
 	   		<server-and-cache jcr:primaryType="jnt:permission"/>
@@ -24,11 +22,6 @@
 	   		<documentation jcr:primaryType="jnt:permission"/>
 	   		<about jcr:primaryType="jnt:permission"/>
 	   	</global>
-	 	<test jcr:primaryType="jnt:permissionGroup">
-	   		<my-permission-1 jcr:primaryType="jnt:permission"/>
-	   		<my-permission-2 jcr:primaryType="jnt:permission"/>
-	   		<my-permission-3 jcr:primaryType="jnt:permission"/>
-	   	</test>
     </permissions>
     
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
@@ -36,9 +29,10 @@
             <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
-	 	<contributor jcr:primaryType="jnt:role"/>
-	 	<content-editor jcr:primaryType="jnt:role"/>
-	 	<user-manager jcr:primaryType="jnt:role"/>
+	 	<server-content-manager jcr:primaryType="jnt:role"/>
+	 	<security-advisor jcr:primaryType="jnt:role"/>
+	 	<support-manager jcr:primaryType="jnt:role"/>
+	 	<webmaster jcr:primaryType="jnt:role"/>
     </roles>
 
 </content>

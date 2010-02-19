@@ -69,22 +69,22 @@
 // Role based access control
 //---------------------------------------------------------
 
-[jnt:role] > nt:base, mix:referenceable, mix:title
- - j:permissions (weakreference) protected multiple < jnt:permission
+[jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
+ - j:permissions (weakreference) protected hidden multiple < jnt:permission
   
 [jnt:roles] > nt:base, jmix:hierarchyNode
  + * (jnt:role)
  
-[jnt:permission] > nt:base, mix:referenceable, mix:title
+[jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:observable
  
-[jnt:permissionGroup] > nt:base
+[jnt:permissionGroup] > nt:base, jmix:observable
  + * (jnt:permission)
 
 [jnt:permissions] > nt:base, jmix:hierarchyNode
  + * (jnt:permissionGroup)
  
 [jmix:roleBasedAccessControlled] mixin
- - j:roles (weakreference) protected multiple < jnt:role
+ - j:roles (weakreference) protected hidden multiple < jnt:role
 
 //---------------------------------------------------------
 // Publication
@@ -421,6 +421,8 @@
 [jmix:pageMixin] mixin
 
 [jmix:templateMixin] mixin
+
+[jmix:observable] mixin
 
 //---------------------------------------------------------
 // Caches

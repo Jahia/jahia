@@ -20,7 +20,10 @@
             <map>
                 <entry key="roleService">
                     <bean class="org.jahia.modules.roles.rules.RoleService">
+                    	<property name="groupService" ref="JahiaGroupManagerService"/>
+                    	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlService"/>
                     	<property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService" />
+                    	<property name="userService" ref="JahiaUserManagerService"/>
                     </bean>
                 </entry>
             </map>

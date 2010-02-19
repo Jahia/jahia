@@ -37,6 +37,7 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -46,6 +47,17 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * @author Sergiy Shyrkov
  */
 public class TemplatePackageApplicationContextLoader implements ServletContextAware {
+    
+    /**
+     * This event is fired when modules application context is initialized.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class ContextInitializedEvent extends ApplicationEvent {
+        public ContextInitializedEvent(Object source) {
+            super(source);
+        }
+    }
 
     private static final Logger logger = Logger.getLogger(TemplatePackageApplicationContextLoader.class);
 
@@ -74,6 +86,8 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
 
         logger.info("Jahia modules application context reload completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
+
+        context.getParent().publishEvent(new ContextInitializedEvent(this));
     }
 
     public void setContextConfigLocation(String contextConfigLocation) {
@@ -89,9 +103,12 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         long startTime = System.currentTimeMillis();
 
         context = createWebApplicationContext();
-
+        
         logger.info("Jahia modules application context initialization completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
+
+        context.getParent().publishEvent(new ContextInitializedEvent(this));
+
     }
 
     public void stop() {

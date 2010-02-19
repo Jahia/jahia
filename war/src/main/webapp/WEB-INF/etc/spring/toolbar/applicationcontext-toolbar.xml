@@ -130,18 +130,17 @@
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
-                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.User"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.Admin"/>
-                <ref bean="org.jahia.toolbar.item.export"/>
-                <ref bean="org.jahia.toolbar.item.import"/>
             </list>
         </property>
         <property name="visibility">
@@ -1828,184 +1827,6 @@
 
     <!-- clip board-->
     <bean id="org.jahia.toolbar.item.ClipBoard" class="org.jahia.services.toolbar.bean.Item"/>
-
-    <!-- ACL diff -->
-    <bean id="org.jahia.toolbar.item.acldiff" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="label.acldiff"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-acldiff-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-acldiff-normal"/>
-        <property name="descriptionKey" value="label.acldiff"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="edit"/>
-            </bean>
-        </property>
-        <property name="selected">
-            <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
-                <property name="inputResolver" value="acldiff.activated"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="toggle"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="refresh"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="classAction"/>
-                    <property name="value"
-                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="prefName"/>
-                    <property name="value" value="acldiff.activated"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- display time base publishing -->
-    <bean id="org.jahia.toolbar.item.timebasepublishing" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="label.timebasepublishing"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-timebasepublishing-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-timebasepublishing-normal"/>
-        <property name="descriptionKey" value="label.timebasepublishing"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="edit"/>
-            </bean>
-        </property>
-        <property name="selected">
-            <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
-                <property name="inputResolver" value="timebasepublishing.activated"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="toggle"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="refresh"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="classAction"/>
-                    <property name="value"
-                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="prefName"/>
-                    <property name="value" value="timebasepublishing.activated"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- display inlineediting -->
-    <bean id="org.jahia.toolbar.item.inlineediting" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="label.inlineediting"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-inlineediting-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-inlineediting-normal"/>
-        <property name="descriptionKey" value="label.inlineediting"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="edit"/>
-            </bean>
-        </property>
-        <property name="selected">
-            <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
-                <property name="inputResolver" value="inlineediting.activated"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="toggle"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="flushPageCache"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="refresh"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="classAction"/>
-                    <property name="value"
-                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="prefName"/>
-                    <property name="value" value="inlineediting.activated"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.item.integrity" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="label.integrity"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-integrity-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-integrity-normal"/>
-        <property name="descriptionKey" value="label.integrity.description"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
-            </bean>
-        </property>
-        <property name="selected">
-            <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
-                <property name="inputResolver" value="integrity.activated"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="toggle"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="refresh"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="classAction"/>
-                    <property name="value"
-                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="prefName"/>
-                    <property name="value" value="integrity.activated"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- UserInfo -->
-    <bean id="org.jahia.toolbar.item.UserInfo" parent="org.jahia.toolbar.item.AjaxAction"/>
 
     <!-- Notification -->
     <bean id="org.jahia.toolbar.item.Notification" class="org.jahia.services.toolbar.bean.Item">

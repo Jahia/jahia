@@ -138,8 +138,6 @@ class TemplatePackageDeployer {
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
             }
-            
-            performInitialImport();
         }
 
     }

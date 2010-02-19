@@ -50,13 +50,16 @@ import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 /**
  * Template and template set deployment and management service.
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener {
 
 	private static Logger logger = Logger
             .getLogger(JahiaTemplateManagerService.class);
@@ -313,9 +316,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         // TODO validate template sets: count, package dependencies etc.
         templatePackageRegistry.validate();
 
-        // perform initial imports if any
-        templatePackageDeployer.performInitialImport();
-
         ((JahiaPageTemplateBaseService)tplService).setTemplateManagerService(this);
         
         // start template package watcher
@@ -345,6 +345,13 @@ public class JahiaTemplateManagerService extends JahiaService {
     public String getCurrentResourceBundleName(ProcessingContext ctx) {
         return getTemplatePackage(ctx.getSite().getTemplatePackageName())
                 .getResourceBundleName();
+    }
+
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextInitializedEvent) {
+            // perform initial imports if any
+            templatePackageDeployer.performInitialImport();
+        }
     }
 
 }

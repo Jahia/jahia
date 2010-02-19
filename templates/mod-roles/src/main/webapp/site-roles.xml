@@ -58,6 +58,8 @@
             <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
+        <content-manager jcr:primaryType="jnt:role"/>
+        <user-manager jcr:primaryType="jnt:role"/>
     </roles>
 
 </content>

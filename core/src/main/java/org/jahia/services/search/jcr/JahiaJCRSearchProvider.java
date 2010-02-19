@@ -483,30 +483,22 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 StringBuilder textSearchConstraints = new StringBuilder(256);
                 if (searchFields.isSiteContent()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
-                } else {
-                    if (searchFields.isFileContent()) {
-                        addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");
-                    }
-                    if (searchFields.isDescription()) {
-                        addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(@jcr:description, "
-                                        + searchExpression + ")");
-                    }
-                    if (searchFields.isTitle()) {
-                        addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(@jcr:title, " + searchExpression
-                                        + ")");
-                    }
-                    if (searchFields.isKeywords()) {
-                        addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(@j:keywords, " + searchExpression
-                                        + ")");
-                    }
-                    if (searchFields.isFilename()) {
-                        addConstraint(textSearchConstraints, "or",
-                                "jcr:contains(@j:nodename, " + searchExpression
-                                        + ")");
-                    }
+                }
+                if (searchFields.isFileContent()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");
+                }
+                if (searchFields.isDescription()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:description, " + searchExpression
+                            + ")");
+                }
+                if (searchFields.isTitle()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
+                }
+                if (searchFields.isKeywords()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(@j:keywords, " + searchExpression + ")");
+                }
+                if (searchFields.isFilename()) {
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(@j:nodename, " + searchExpression + ")");
                 }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("

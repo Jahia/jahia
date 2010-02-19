@@ -18,13 +18,13 @@
 
 /* Columns section */
 #columns .column {
-    float: left;
-    width: 33.3%;
+		float: left;
+		width: 33.3%;
 		/* Min-height: */
 		min-height: 400px;
 		height: auto !important;
 		height: 400px;
-    margin-left:0;
+    	margin-left:0;
         list-style:none;
 }
 #columns .widget {
@@ -32,6 +32,9 @@
     padding: 2px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+}
+#columns li.widget {
+	list-style:none;
 }
 #columns .widget .widget-head {
     color: #000;
@@ -47,13 +50,12 @@
 #columns .widget .widget-content {
     /*background: #333 url(img/widget-content-bg.png) repeat-x;*/
 	background-color:#fff;
-    padding: 0 5px;
+    padding:5px;
 /*    color: #333;*/
     -moz-border-radius-bottomleft: 2px;
     -moz-border-radius-bottomright: 2px;
     -webkit-border-bottom-left-radius: 2px;
     -webkit-border-bottom-right-radius: 2px;
-    line-height: 1.2em;
     overflow: hidden;
 }
 #columns .widget .widget-content p {
@@ -73,6 +75,7 @@
 #columns .widget .widget-content ul {
     padding: 5px 0 5px 20px;
     list-style: disc;
+	margin:0;
 }
 #columns .widget .widget-content ul li {padding: 3px 0;}
 #columns .widget .widget-content ul.images {

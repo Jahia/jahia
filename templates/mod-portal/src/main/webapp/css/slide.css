@@ -126,10 +126,15 @@ vertical-align:middle
 	overflow-x: hidden;
 	overflow-y: auto;
 	overflow : -moz-scrollbars-vertical;
+	background-color:#fff
 }
 #bodywrapper #toppanel ul.panellist li {
 	cursor:pointer;
 	list-style:none;
+	padding:0px 5px;
+}
+#bodywrapper #toppanel ul.panellist li:hover {
+	background-color: #eaeaea
 }
 
 #panel {

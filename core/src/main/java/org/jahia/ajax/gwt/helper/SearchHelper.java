@@ -8,6 +8,7 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.search.SearchCriteria;
+import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
 import org.jahia.services.sites.JahiaSite;
 
@@ -78,6 +79,9 @@ public class SearchHelper {
             String[] nodeTypesToApply = navigation.getFiltersToApply(search.getNodeTypes());
             String[] mimeTypesToMatch = navigation.getFiltersToApply(search.getMimeTypes());
             String[] filtersToApply = navigation.getFiltersToApply(search.getFilters());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Executing query: " + q.getStatement());
+            }
             return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -260,8 +264,6 @@ public class SearchHelper {
             criteria.getPagePath().setIncludeChildren(true);
         }
 
-        
-
         // language
         if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getCountryIsoCode() != null) {
             criteria.getLanguages().setValue(gwtQuery.getLanguage().getCountryIsoCode());
@@ -270,6 +272,13 @@ public class SearchHelper {
         // query string
         if (gwtQuery.getQuery() != null && gwtQuery.getQuery().length() > 0) {
             criteria.getTerms().get(0).setTerm(gwtQuery.getQuery());
+            SearchFields fields = criteria.getTerms().get(0).getFields();
+            fields.setSiteContent(gwtQuery.isInContents());
+            fields.setFilename(gwtQuery.isInName());
+            fields.setFileContent(gwtQuery.isInFiles());
+            fields.setTitle(gwtQuery.isInMetadatas());
+            fields.setDescription(gwtQuery.isInMetadatas());
+            fields.setKeywords(gwtQuery.isInMetadatas());
         }
 
         return jcrSearchProvider.buildQuery(criteria, session);

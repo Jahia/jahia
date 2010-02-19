@@ -221,6 +221,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private CheckBox createNameField() {
         CheckBox field = new CheckBox();
+        field.setValue(true);
         field.setFieldLabel(Messages.get("label_name", "Name"));
         field.setName("name");
         return field;

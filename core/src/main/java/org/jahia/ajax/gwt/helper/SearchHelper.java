@@ -121,7 +121,7 @@ public class SearchHelper {
             Query q = createQuery(searchString, currentUserSession);
             List<JCRNodeWrapper> users = jcrService.getUserFolders(site.getSiteKey(), currentUserSession.getUser());
             if (users.isEmpty()) {
-                logger.error("no user folder");
+                logger.error("no user folder for site "+site.getSiteKey()+" and user "+currentUserSession.getUser().getUsername());
                 throw new GWTJahiaServiceException("No user folder to store query");
             }
             JCRNodeWrapper user = users.iterator().next();
@@ -220,6 +220,8 @@ public class SearchHelper {
             criteria.getPagePath().setValue(gwtQuery.getPages().get(0).getPath());
             criteria.getPagePath().setIncludeChildren(true);
         }
+
+        
 
         // language
         if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getCountryIsoCode() != null) {

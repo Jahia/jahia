@@ -62,7 +62,7 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.getResource("fm_search"));
-        searchField.addListener(Events.SpecialKey, new Listener<ComponentEvent>() {
+        searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
@@ -243,6 +243,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private CheckBox createTagField() {
         CheckBox field = new CheckBox();
+        field.setValue(true);
         field.setFieldLabel(Messages.get("label_tag", "Tags"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("tag");
@@ -257,6 +258,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private CheckBox createMetadataField() {
         CheckBox field = new CheckBox();
+        field.setValue(true);
         field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
@@ -270,7 +272,8 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private CheckBox createContentField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel("Content");
+        field.setValue(true);
+        field.setFieldLabel(Messages.get("label_content","Content"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
         return field;
@@ -283,6 +286,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
+        field.setValue(true);
         field.setFieldLabel(Messages.get("label_file", "File"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("file");

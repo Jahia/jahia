@@ -126,6 +126,7 @@ public class ContentSearchForm extends ContentPanel {
         // scope metadata field
         inMetadataField = createMetadataField();
         scopeCheckGroup.add(inMetadataField);
+        inMetadataField.hide();
 
         // scope content field
         inContentField = createContentField();
@@ -184,7 +185,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createNameField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("label_name", "Name"));
+        field.setFieldLabel(Messages.get("label_name", "Name & Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("name");
         field.setValue(true);
@@ -201,6 +202,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel(Messages.get("label_tag", "Tags"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("tag");
+        field.setValue(true);
         if (!config.isDisplaySearchInTag()) {
             field.hide();
         }
@@ -217,7 +219,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
-
+        field.setValue(true);
         return field;
     }
 
@@ -231,6 +233,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel("Content");
         field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
+        field.setValue(true);
         if (!config.isDisplaySearchInContent()) {
             field.hide();
         }
@@ -247,6 +250,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel(Messages.get("label_file", "File"));
         field.setBoxLabel(field.getFieldLabel());        
         field.setName("file");
+        field.setValue(true);
         if (!config.isDisplaySearchInFile()) {
             field.hide();
         }
@@ -262,6 +266,7 @@ public class ContentSearchForm extends ContentPanel {
     private ComboBox<GWTJahiaLanguage> createLanguageSelectorField() {
         final ComboBox<GWTJahiaLanguage> combo = new ComboBox<GWTJahiaLanguage>();
         combo.setFieldLabel("Language");
+        combo.setAllowBlank(true);
         combo.setStore(new ListStore<GWTJahiaLanguage>());
         combo.setDisplayField("displayName");
         combo.setTemplate(getLangSwitchingTemplate());

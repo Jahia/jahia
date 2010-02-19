@@ -1026,6 +1026,12 @@ public class PublicationTest extends TestCase {
             // this is what we expect, so let's just signal it.
             nodeWasFoundInLive = false;
         }
+
+        if (nodeWasFoundInLive == false) {
+            // if it was not found when it should, let's dump the tree.
+            dumpTree(sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+        }
+
         assertTrue(failureMessage, nodeWasFoundInLive);
     }
 
@@ -1037,6 +1043,11 @@ public class PublicationTest extends TestCase {
         } catch (PathNotFoundException pnfe) {
             // this is what we expect, so let's just signal it.
             nodeWasFoundInLive = false;
+        }
+
+        if (nodeWasFoundInLive == true) {
+            // if it was found when it shouldn't, let's dump the tree.
+            dumpTree(sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
         }
 
         assertFalse(failureMessage, nodeWasFoundInLive);
@@ -1148,6 +1159,26 @@ public class PublicationTest extends TestCase {
         currentSession.logout();
         currentSession = jcrService.getSessionFactory().getCurrentUserSession(workspaceName, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         return currentSession;
+    }
+
+    private void dumpTree(Node startNode, int depth, boolean logAsError) throws RepositoryException {
+        StringBuilder nodeString = new StringBuilder();
+        for (int i=0; i < depth; i++) {
+            nodeString.append("  ");
+        }
+        nodeString.append(startNode.getName());
+        nodeString.append(" = ");
+        nodeString.append(startNode.getIdentifier());
+        if (logAsError) {
+            logger.error(nodeString.toString());
+        } else {
+            logger.info(nodeString.toString());
+        }
+        NodeIterator childNodeIter = startNode.getNodes();
+        while (childNodeIter.hasNext()) {
+            Node currentChild = childNodeIter.nextNode();
+            dumpTree(currentChild, depth + 1, logAsError);
+        }
     }
         
     @Override

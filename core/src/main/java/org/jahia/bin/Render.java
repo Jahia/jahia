@@ -161,7 +161,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
         String out = RenderService.getInstance().render(resource, renderContext);
-        resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html;charset=UTF-8");
+        resp.setContentType(renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
 
@@ -625,7 +625,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 // Note that this means NO servlet supports whatever
                 // method was requested, anywhere on this server.
                 //
-                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+                resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         } catch (Exception e) {
             List<ErrorHandler> handlers = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getErrorHandler();

@@ -71,7 +71,7 @@ Basic Jahia REST API
 
  URL : /cms/find/WORKSPACE/LANGUAGE
 
- Method : POST
+ Method : POST or GET
 
  Parameters :
  
@@ -80,11 +80,21 @@ Basic Jahia REST API
 *----------------+-------------+------------------------------------------------+
 |query           |yes          |The JCR query to execute                        |
 *----------------+-------------+------------------------------------------------+
-|language        |yes          |The JCR language used in the query, for example |
-|                |             |"JCR-SQL2"                                      |
+|language        |no           |The JCR language used in the query, for example |
+|                |             |"JCR-SQL2". Defaults to JCR-SQL2                |
+*----------------+-------------+------------------------------------------------+
+|limit           |no           |The maximum number of results to return.        |
+|                |             |Defaults to 0 that does not limit the results.  |
+*----------------+-------------+------------------------------------------------+
+|offset          |no           |The 0-index based offset to start results with. |
+|                |             |Defaults to 0.                                  |
 *----------------+-------------+------------------------------------------------+
 |depthLimit      |no           |The depth of the result tree. If not set it     |
 |                |             |defaults to "1". If you have deep content tree  |
 |                |             |hierarchies you might want to limit result      |
 |                |             |depth to avoid performance issues.              |
+*----------------+-------------+------------------------------------------------+
+|escapeColon     |no           |If set to true, the ':' in the node property    |
+|                |             |name will be replaced with '_'.                 |
+|                |             |Defaults to false.                              |
 *----------------+-------------+------------------------------------------------+

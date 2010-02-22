@@ -20,7 +20,7 @@
 	padding-left: 10px;
 	margin-right: 15px;
 	position:relative;
-	z-index:88;
+	z-index:898;
 }
 #bodywrapper #bodywrapper #navigation #navbar ul.main-nav li ul li {
 	display: block;
@@ -28,20 +28,20 @@
 }
 #bodywrapper #navigation #navbar ul.main-nav li a {
 	color: #333;
-	font-size: 14px;
+	font-size: 1.1em;
 	line-height: 36px;
 	white-space:pre
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover {
 	background-image: url(img/nav-bg.png);
-	background-color: #ea822c;
+	background-color: #2050a8;
 	background-repeat: repeat-x;
 	background-position:top left;
 	border-color: #df6b04;
 	line-height: 36px;
 	position: relative;
-	z-index:89;
+	z-index:899;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu:hover a,
 #bodywrapper #navigation #navbar ul.main-nav li.nosubmenu:hover a {
@@ -73,7 +73,7 @@
 	top: 36px;
 	border: 1px solid #CECECE;
 	position: absolute;
-	z-index:99;
+	z-index:999;
 }
 
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul {
@@ -89,20 +89,24 @@
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li {
 	padding: 5px;
 	padding-left: 10px;
-	font-size: 13px;
 	line-height: 20px;
+	width:162px;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li a {
 	color: #333;
 	line-height: 20px;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.submenu div ul li a:hover {
-	color: #df6b04;
+	color: #3366cc;
 	text-decoration: none;
+}
+#bodywrapper #navigation #navbar ul.main-nav li.home{
+	line-height:17px;
 }
 #bodywrapper #navigation #navbar ul.main-nav li.home a {
 	display: block;
 	height: 17px;
+	line-height:17px;
 	width: 25px;
 	text-indent: -9999px;
 	padding-right: 0px;
@@ -113,16 +117,4 @@
 }
 #bodywrapper #navigation #navbar ul.main-nav li.home a:hover {
 	background-image: url(img/icon-home-over.png);
-}
-#navigation #shortcuts h3 {
-	background-image:url(img/shortcuts-bg.png);
-	padding:8px 10px 10px 10px;
-	position:absolute;
-	width:82px;
-	height:20px;
-	position:absolute;
-	bottom:0;
-	right:0;
-	display:block;
-	font-size:120%
 }

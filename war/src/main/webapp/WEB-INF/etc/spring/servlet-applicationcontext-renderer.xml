@@ -20,10 +20,7 @@
             		</bean>
             	</entry>
                 <entry key="/find/**">
-                    <bean name="org.jahia.bin.Find" class="org.jahia.bin.Find">
-                        <property name="loggingService" ref="loggingService"/>
-                        <property name="templateService" ref="JahiaTemplateManagerService"/>
-                    </bean>
+                    <bean class="org.jahia.bin.Find"/>
                 </entry>
             	<entry key="/login">
             		<bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>

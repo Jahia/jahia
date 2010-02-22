@@ -87,6 +87,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
 
+    void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, AsyncCallback asyncCallback); 
+
     void saveSearchOnTopOf(String searchString, String path, String name, AsyncCallback asyncCallback);
 
     void mount(String path, String target, String root, AsyncCallback async);

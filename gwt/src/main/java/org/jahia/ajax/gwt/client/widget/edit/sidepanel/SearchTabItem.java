@@ -87,7 +87,7 @@ class SearchTabItem extends SidePanelTabItem {
                 e.getStatus().setStatus(true);
                 e.setData(searchField);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.QUERY_SOURCE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, searchField.getValue());
+                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, getGWTJahiaSearchQuery());
                 super.onDragStart(e);
             }
         };
@@ -230,7 +230,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createNameField() {
         CheckBox field = new CheckBox();
         field.setValue(true);
-        field.setFieldLabel(Messages.get("label_name", "Name"));
+        field.setFieldLabel(Messages.get("label_name", "Name & Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("name");
         return field;
@@ -262,6 +262,7 @@ class SearchTabItem extends SidePanelTabItem {
         field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
+        field.hide();
         return field;
     }
 
@@ -326,15 +327,7 @@ class SearchTabItem extends SidePanelTabItem {
      * Method used by seach form
      */
     private void doSearch(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
-        GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
-        gwtJahiaSearchQuery.setQuery(searchField.getValue());
-        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
-        gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
-        gwtJahiaSearchQuery.setInName(inNameField.getValue());
-        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
-        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
-        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
-        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+        GWTJahiaSearchQuery gwtJahiaSearchQuery = getGWTJahiaSearchQuery();
         int limit = 500;
         int offset = 0;
         if (loadConfig != null) {
@@ -345,6 +338,23 @@ class SearchTabItem extends SidePanelTabItem {
         Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
         JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
 
+    }
+
+    /**
+     * Get the GWTJahiaSearchQuery that corresponds to what is selected in fields
+     * @return
+     */
+    private GWTJahiaSearchQuery getGWTJahiaSearchQuery() {
+        GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
+        gwtJahiaSearchQuery.setQuery(searchField.getValue());
+        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
+        gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+        gwtJahiaSearchQuery.setInName(inNameField.getValue());
+        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
+        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
+        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
+        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
+        return gwtJahiaSearchQuery;
     }
 
     /**

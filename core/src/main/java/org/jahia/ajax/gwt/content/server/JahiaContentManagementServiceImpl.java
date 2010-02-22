@@ -250,6 +250,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, path, name, retrieveCurrentSession());
     }
 
+    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name) throws GWTJahiaServiceException {
+        ParamBean context = retrieveParamBean();
+        final GWTJahiaNode jahiaNode = search.saveSearch(searchQuery, path, name, retrieveCurrentSession());
+    }
+
     public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());

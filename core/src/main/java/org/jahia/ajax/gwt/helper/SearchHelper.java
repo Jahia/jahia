@@ -48,6 +48,7 @@ public class SearchHelper {
 
     /**
      * Search for searchString in the name f the node
+     *
      * @param searchString
      * @param limit
      * @param currentUserSession
@@ -66,6 +67,7 @@ public class SearchHelper {
 
     /**
      * Search by Serach bean (used by the advanced search)
+     *
      * @param search
      * @param limit
      * @param offset
@@ -91,6 +93,7 @@ public class SearchHelper {
 
     /**
      * Search for searchString and filters in the name f the node
+     *
      * @param searchString
      * @param limit
      * @param nodeTypes
@@ -118,6 +121,7 @@ public class SearchHelper {
 
     /**
      * Get saved search
+     *
      * @param currentUserSession
      * @return
      */
@@ -136,6 +140,7 @@ public class SearchHelper {
 
     /**
      * Save search
+     *
      * @param searchString
      * @param name
      * @param site
@@ -151,7 +156,7 @@ public class SearchHelper {
             Query q = createQuery(searchString, currentUserSession);
             List<JCRNodeWrapper> users = jcrService.getUserFolders(site.getSiteKey(), currentUserSession.getUser());
             if (users.isEmpty()) {
-                logger.error("no user folder for site "+site.getSiteKey()+" and user "+currentUserSession.getUser().getUsername());
+                logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
                 throw new GWTJahiaServiceException("No user folder to store query");
             }
             JCRNodeWrapper user = users.iterator().next();
@@ -179,6 +184,16 @@ public class SearchHelper {
         }
     }
 
+    /**
+     * Simple save search
+     *
+     * @param searchString
+     * @param path
+     * @param name
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public GWTJahiaNode saveSearch(String searchString, String path, String name, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             if (name == null) {
@@ -200,6 +215,39 @@ public class SearchHelper {
             throw new GWTJahiaServiceException("Could not store query");
         }
     }
+
+
+    /**
+     * Save search
+     * @param search
+     * @param path
+     * @param name
+     * @param session
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaNode saveSearch(GWTJahiaSearchQuery search, String path, String name, JCRSessionWrapper session) throws GWTJahiaServiceException {
+        try {
+            if (name == null) {
+                throw new GWTJahiaServiceException("Could not store query with null name");
+            }
+
+            JCRNodeWrapper parent = session.getNode(path);
+            name = contentManager.findAvailableName(parent, name, session);
+            Query q = createQuery(search, session);
+            q.storeAsNode(path + "/" + name);
+            parent.saveSession();
+
+            return navigation.getGWTJahiaNode(session.getNode(path + "/" + name));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Could not store query");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Could not store query");
+        }
+    }
+
 
     /**
      * Add "*" at beginning and end of query if not present in original search string.
@@ -229,6 +277,7 @@ public class SearchHelper {
 
     /**
      * Creates the {@link Query} instance from the provided search criteria.
+     *
      * @param searchString
      * @param session
      * @return
@@ -238,6 +287,18 @@ public class SearchHelper {
         SearchCriteria criteria = new SearchCriteria();
         criteria.getTerms().get(0).setTerm(searchString);
         return jcrSearchProvider.buildQuery(criteria, session);
+    }
+
+    /**
+     * Create JCR query
+     * @param gwtQuery
+     * @param session
+     * @return
+     * @throws InvalidQueryException
+     * @throws RepositoryException
+     */
+    private Query createQuery(GWTJahiaSearchQuery gwtQuery, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+        return createQuery(gwtQuery, 0, 0, session);
     }
 
     /**

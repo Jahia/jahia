@@ -220,6 +220,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
         field.setValue(true);
+        field.hide();
         return field;
     }
 
@@ -342,7 +343,7 @@ public class ContentSearchForm extends ContentPanel {
             if (name != null && name.length() > 0) {
                 name = JCRClientUtils.cleanUpFilename(name);
                 final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                service.saveSearch(query.getQuery(), name, new AsyncCallback<GWTJahiaNode>() {
+                service.saveSearch(query,null, name, new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         Log.debug("saved.");
                     }

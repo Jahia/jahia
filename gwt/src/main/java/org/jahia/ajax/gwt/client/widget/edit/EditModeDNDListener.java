@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.definition.ContentTypeModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -137,7 +138,7 @@ public class EditModeDNDListener extends DNDListener {
                 }
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
-                String q = e.getStatus().getData(SOURCE_QUERY);
+                GWTJahiaSearchQuery q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
                     JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, "jnt_query", callback);

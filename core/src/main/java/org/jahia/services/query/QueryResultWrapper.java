@@ -54,6 +54,7 @@ import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 
@@ -97,7 +98,7 @@ class QueryResultWrapper implements QueryResult {
             return result;
         }
     }
-
+    
     private JCRStoreProvider provider;
     private QueryResult result;
     private JCRSessionWrapper session;
@@ -163,7 +164,15 @@ class QueryResultWrapper implements QueryResult {
             if (columnName.equals(JcrConstants.JCR_PATH)) {
                 return new StringValue(getPath());
             }
-            return row.getValue(columnName);
+            Value result = row.getValue(columnName);
+            if (result == null && session.getLocale() != null) {
+                JCRPropertyWrapper property = !row.getNode().hasProperty(columnName) ? ((JCRNodeWrapper)getNode()).getProperty(columnName) : null;
+                if (property != null && !property.isMultiple()) {
+                    result = property.getValue();
+                }
+            }
+            
+            return result;
         }
 
         public Value[] getValues() throws RepositoryException {

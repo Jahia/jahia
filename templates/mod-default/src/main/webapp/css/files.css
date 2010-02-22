@@ -95,7 +95,7 @@
     padding-left:24px;
 }
 #bodywrapper a.video {
-    background: url(img/files/video.png ) no-repeat scroll 0.5em 0.5em;
+    background: url(img/files/video.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
 #bodywrapper a.ppt, #bodywrapper a.pptx {
@@ -103,7 +103,7 @@
     padding-left:24px;
 }
 #bodywrapper a.exe {
-    background: url(img/files/exe.png ) no-repeat scroll 0.5em 0.5em;
+    background: url(img/files/exe.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
 #bodywrapper a.msword, #bodywrapper a.doc, #bodywrapper a.docx {
@@ -111,7 +111,7 @@
     padding-left:24px;
 }
 #bodywrapper a.dir {
-    background: url(img/files/folder_close.png ) no-repeat scroll 0.5em 0.5em;
+    background: url(img/files/folder_close.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
 #bodywrapper a.html, #bodywrapper a.htm {
@@ -119,7 +119,7 @@
     padding-left:24px;
 }
 #bodywrapper a.img,  #bodywrapper a.gif, #bodywrapper a.jpeg, #bodywrapper a.jpg, #bodywrapper a.png {
-    background: url(img/files/img.png ) no-repeat scroll 0.5em 0.5em;
+    background: url(img/files/img.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
 #bodywrapper a.pdf {
@@ -127,7 +127,7 @@
     padding-left:24px;
 }
 #bodywrapper a.sound, #bodywrapper a.wav {
-    background: url(img/files/sound.png ) no-repeat scroll 0.5em 0.5em;
+    background: url(img/files/sound.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
 #bodywrapper a.txt {

@@ -1,7 +1,13 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jmix:rating] > jmix:option, jmix:contentMixin mixin
  - j:nbOfVotes (long) = 0  autocreated hidden onconflict=sum
  - j:sumOfVotes (long) = 0 autocreated hidden onconflict=sum
  - j:lastVote (long) hidden onconflict=latest
  - j:type (string,choicelist[resourceBundle]) = 'average' < 'average','plusminus'
+
+[jnt:topRated] > jnt:content, jmix:list, jmix:queryContent
+ - j:typeOfContent (string) mandatory
+ - j:minNbOfVotes (long) = 10 autocreated
+ - j:dateOfLastVote (string,choicelist[resourceBundle]) = 'one week' < 'one day','one week','one month','three month','six months'   

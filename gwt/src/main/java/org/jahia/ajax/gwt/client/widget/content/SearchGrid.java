@@ -101,6 +101,14 @@ public class SearchGrid extends ContentPanel {
         grid.getView().setForceFit(true);
         grid.setBorders(false);
         grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                if (event != null && event.getSelectedItem() != null) {
+                    onContentPicked(event.getSelectedItem());
+                }
+            }
+        });
         add(grid);
     }
 
@@ -112,9 +120,9 @@ public class SearchGrid extends ContentPanel {
             service.search(text, 0, config.getNodeTypes(), config.getMimeTypes(), config.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
-                        Log.debug("Found "+gwtJahiaNodes.size()+" results with text: "+text);
+                        Log.debug("Found " + gwtJahiaNodes.size() + " results with text: " + text);
                         setProcessedContent(gwtJahiaNodes);
-                    }else{
+                    } else {
                         Log.debug("No result found in search");
                     }
                 }
@@ -251,17 +259,14 @@ public class SearchGrid extends ContentPanel {
                     }
                 });
                 headerList.add(col);
-            } else if (s1.equals("picker")) {
+            } else if (s1.equals("picker") && multiple) {
                 ColumnConfig col = new ColumnConfig("action", "action", 100);
 
                 col.setAlignment(Style.HorizontalAlignment.RIGHT);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (gwtJahiaNode.isFile() || gwtJahiaNode.isMatchFilters()) {
-                            final Button pickContentButton = new Button("Add");
-                            if (!multiple) {
-                                pickContentButton.setText("Select");
-                            }
+                            final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
                             pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {

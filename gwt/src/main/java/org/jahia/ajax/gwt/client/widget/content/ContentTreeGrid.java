@@ -139,6 +139,7 @@ public class ContentTreeGrid extends ContentPanel {
 
     /**
      * Get repository type
+     *
      * @return String
      */
     protected String getRepoType() {
@@ -157,7 +158,7 @@ public class ContentTreeGrid extends ContentPanel {
         private TreeLoader<GWTJahiaNode> loader;
         private List<GWTJahiaNode> selectedNodes;
 
-        private TreeGridTopRightComponent(String repositoryType, ManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes){
+        private TreeGridTopRightComponent(String repositoryType, ManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes) {
             this.repositoryType = repositoryType;
             this.configuration = configuration;
             this.selectedNodes = selectedNodes;
@@ -193,6 +194,14 @@ public class ContentTreeGrid extends ContentPanel {
             });
             m_treeGrid.getTreeView().setRowHeight(25);
             m_treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
+            m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                    if (event != null && event.getSelectedItem() != null) {
+                        onContentPicked(event.getSelectedItem());
+                    }
+                }
+            });
             m_treeGrid.setBorders(false);
 
         }
@@ -325,17 +334,14 @@ public class ContentTreeGrid extends ContentPanel {
                         }
                     });
                     headerList.add(col);
-                } else if (s1.equals("picker")) {
+                } else if (s1.equals("picker") && multiple) {
                     ColumnConfig col = new ColumnConfig("action", "action", 100);
 
                     col.setAlignment(Style.HorizontalAlignment.RIGHT);
                     col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                             if (gwtJahiaNode.isMatchFilters()) {
-                                final Button pickContentButton = new Button("Add");
-                                if (!multiple) {
-                                    pickContentButton.setText("Select");
-                                }
+                                final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
                                 pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                                 pickContentButton.setEnabled(true);
                                 pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {

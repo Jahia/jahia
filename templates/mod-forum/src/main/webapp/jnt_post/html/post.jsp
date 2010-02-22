@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="forum.css" nodetype="jnt:post"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js" nodetype="jnt:post"/>
 <%-- Get all contents --%>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
@@ -21,7 +22,11 @@
 </c:if>
 <template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
 <span class="forum-corners-top"><span></span></span>
-
+<script language="javascript1.5">
+    $(document).ready(function () {
+        $('.timestamp').cuteTime({ refresh: 60000 });
+    });    
+</script>
 <div class="forum-postbody">
     <ul class="forum-profile-icons">
         <c:if test="${renderContext.user.name != 'guest'}">
@@ -43,9 +48,9 @@
 
     <h4 class="forum-h4-first">${title.string}</h4>
 
-    <p class="forum-author"><fmt:message key="by"/><strong> <a
-            href="${url.base}/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<fmt:formatDate
-            value="${created.time}" type="both" dateStyle="full"/></p>
+    <p class="forum-author"><fmt:message key="by"/><strong>&nbsp;<a
+            href="${url.base}/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp"><fmt:formatDate
+            value="${created.time}" pattern="yyyy/MM/dd HH:mm"/></span></p>
 
     <div class="content">${content.string}</div>
 </div>

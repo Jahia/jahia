@@ -34,6 +34,7 @@ package org.jahia.services.render;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -80,6 +81,8 @@ public class RenderContext {
 
     private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
     private boolean liveMode = false;
+
+    private Set<String> resourceFileNames = new LinkedHashSet<String>();
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -153,15 +156,19 @@ public class RenderContext {
 
     public void addStaticAsset(String assetType,String asset, boolean insert) {
         Set<String> assets = getStaticAssets(assetType);
-        if (insert) {
-            LinkedHashSet<String> my = new LinkedHashSet<String>();
-            my.add(asset);
-            my.addAll(assets);
-            assets = my;
-        } else {
-            assets.add(asset);
+        String resourceFilename = StringUtils.substringAfterLast(asset, "/");
+        if (!resourceFileNames.contains(resourceFilename)) {
+            if (insert) {
+                LinkedHashSet<String> my = new LinkedHashSet<String>();
+                my.add(asset);
+                my.addAll(assets);
+                assets = my;
+            } else {
+                assets.add(asset);
+            }
+            staticAssets.put(assetType, assets);
         }
-        staticAssets.put(assetType, assets);
+        resourceFileNames.add(resourceFilename);
     }
 
     public Set<String> getStaticAssets(String assetType) {

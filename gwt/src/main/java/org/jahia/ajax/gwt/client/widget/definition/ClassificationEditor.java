@@ -34,14 +34,12 @@ package org.jahia.ajax.gwt.client.widget.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -54,16 +52,19 @@ import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.form.AutoCompleteComboBox;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class ClassificationEditor extends LayoutContainer {
      */
     private TreeGrid<GWTJahiaNode> createTreeGrid() {
         GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY + ";" + JCRClientUtils.TAG_REPOSITORY);
-        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES+","+JCRClientUtils.TAG_NODETYPES);
+        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES);
         treeStore = treeGridFactory.getStore();
 
         ColumnConfig name = new ColumnConfig("name", "Name", 680);
@@ -153,7 +154,7 @@ public class ClassificationEditor extends LayoutContainer {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
                 Button button = null;
                 if (gwtJahiaNode.getNodeTypes().contains("jnt:category")) {
-                    button = new Button("Add", new SelectionListener<ButtonEvent>() {
+                    button = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent buttonEvent) {
                             final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
@@ -166,7 +167,7 @@ public class ClassificationEditor extends LayoutContainer {
                     button.setData("associatedNode", modelData);
                     button.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
                 } else if (gwtJahiaNode.getNodeTypes().contains("jnt:tag")) {
-                    button = new Button("Add", new SelectionListener<ButtonEvent>() {
+                    button = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent buttonEvent) {
                             final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
@@ -190,7 +191,7 @@ public class ClassificationEditor extends LayoutContainer {
                 doSelectTab(selectedNode);
             }
         });
-        
+
 
         treeGrid.setBorders(true);
         treeGrid.setHeight(250);
@@ -363,21 +364,34 @@ public class ClassificationEditor extends LayoutContainer {
         panel.setBorders(false);
         panel.setHeaderVisible(false);
         // Add a new tag
-        final TextField<String> name = new TextField<String>();
-        name.setMaxLength(120);
-        name.setWidth(300);
-        name.setName("tagName");
+        final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES,10);
+        autoCompleteComboBox.setMaxLength(120);
+        autoCompleteComboBox.setWidth(300);
+        autoCompleteComboBox.setName("tagName");
 
         //panel.add(name, data);
-        Button addTag = new Button("Add", new SelectionListener<ButtonEvent>() {
+        Button addTag = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                 final String s = treeStore.getRootItems().get(1).getPath();
-                async.getNode(s + "/" + name.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
-                    public void onFailure(Throwable caught) {
+                async.getNode(s + "/" + autoCompleteComboBox.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
+                    /**
+                     * On success
+                     * @param result
+                     */
+                    public void onSuccess(GWTJahiaNode result) {
+                        if (tagStore.findModel(result) == null) {
+                            tagStore.add(result, false);
+                        }
+                    }
 
-                        async.createNode(s, name.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(), null,
+                    /**
+                     * On failure
+                     * @param caught
+                     */
+                    public void onFailure(Throwable caught) {
+                        async.createNode(s, autoCompleteComboBox.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(), null,
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         com.google.gwt.user.client.Window.alert(
@@ -394,11 +408,7 @@ public class ClassificationEditor extends LayoutContainer {
                                 });
                     }
 
-                    public void onSuccess(GWTJahiaNode result) {
-                        if (tagStore.findModel(result) == null) {
-                            tagStore.add(result, false);
-                        }
-                    }
+
                 });
 
             }
@@ -406,8 +416,8 @@ public class ClassificationEditor extends LayoutContainer {
 
         ButtonBar bar = new ButtonBar();
         bar.add(new FillToolItem());
-        bar.add(new Text("Add Tag : "));
-        bar.add(name);
+        bar.add(new Text(Messages.get("label_add_tag", "Add Tag") + ":"));
+        bar.add(autoCompleteComboBox);
         bar.add(addTag);
         panel.setTopComponent(bar);
         // Sub grid

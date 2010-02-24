@@ -180,6 +180,9 @@ public class CKEditor extends Component {
 
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             skin : 'jahia',
+            filebrowserWindowWidth : '810',
+            filebrowserWindowHeight : '650',
+            filebrowserLinkWindowHeight : '800',            
             filebrowserBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
             filebrowserImageBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
             filebrowserFlashBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=flash',

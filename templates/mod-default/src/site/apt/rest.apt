@@ -78,7 +78,10 @@ Basic Jahia REST API
 *----------------+-------------+------------------------------------------------+
 |Name            |Mandatory    |Description                                     |
 *----------------+-------------+------------------------------------------------+
-|query           |yes          |The JCR query to execute                        |
+|query           |yes          |The JCR query to execute. You can reference     |
+|                |             |request parameters in your query by using the   |
+|                |             |following syntax : {$paramName} which will look |
+|                |             |for a request parameter called "paramName"      |
 *----------------+-------------+------------------------------------------------+
 |language        |no           |The JCR language used in the query, for example |
 |                |             |"JCR-SQL2". Defaults to JCR-SQL2                |

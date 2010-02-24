@@ -26,6 +26,8 @@ public class FindTest extends TestCase {
         // Create an instance of HttpClient.
         HttpClient client = new HttpClient();
 
+        // todo we should really insert content to test the find.
+
         PostMethod loginMethod = new PostMethod("http://localhost:8080/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
@@ -39,7 +41,8 @@ public class FindTest extends TestCase {
         }
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
-        method.addParameter("query", "SELECT * FROM [jnt:article]");
+        method.addParameter("query", "SELECT [jcr:title] FROM [jnt:page] WHERE . LIKE '{$q}%'");
+        method.addParameter("q", "a%'"); // to test if the reserved words work correctly.
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
         method.addParameter("depthLimit", "1");
 

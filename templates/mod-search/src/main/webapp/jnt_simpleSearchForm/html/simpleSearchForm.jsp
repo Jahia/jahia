@@ -36,7 +36,57 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
+<template:addResources type="css" resources="jquery.autocomplete.css" />
+<template:addResources type="css" resources="thickbox.css" />
+
+<template:addResources type="javascript"
+                       resources="${url.context}/templates/default/javascript/jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
+<template:addResources type="javascript" resources="jquery.autocomplete.js" />
+<template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
+<template:addResources type="javascript" resources="thickbox-compressed.js" />
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        function getText(node) {
+            if (node["jcr:title"] != null) {
+                return node["jcr:title"];
+            } else if (node["text"] != null) {
+                return node["text"];
+            } else if (node["j:nodename"] != null) {
+                return node["j:nodename"];
+            }
+        }
+
+        function format(result) {
+            return getText(result["node"]);
+        }
+
+        $("#searchTerm").autocomplete("/cms/find/default/en", {
+            dataType: "json",
+            cacheLength: 1,
+            parse: function parse(data) {
+                return $.map(data, function(row) {
+				    return {
+					    data: row,
+					    value: getText(row["node"]),
+					    result: getText(row["node"])
+				    }
+			    });
+            },
+            formatItem: function(item) {
+			    return format(item);
+		    },
+            extraParams: {
+                query : "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
+                language : "xpath",
+                escapeColon : "false"
+            }
+        });
+    });
+</script>
 <s:form method="get">
    	<p class="field simpleSearchForm">
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

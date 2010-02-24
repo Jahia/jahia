@@ -4,14 +4,11 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -24,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryParser.QueryParser;
+import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -88,6 +87,29 @@ public class Find extends HttpServlet implements Controller {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Mandatory parameter 'query' is not found in the request");
             return null;
+        }
+
+        // now let's parse the query to see if it references any other request parameters, and replace the reference with
+        // the actual value.
+
+        int refMarkerPos = query.indexOf("{$");
+        while (refMarkerPos >= 0) {
+            int endRefMarkerPos = query.indexOf("}", refMarkerPos);
+            if (endRefMarkerPos > 0) {
+                String refName = query.substring(refMarkerPos + 2, endRefMarkerPos);
+                String refValue = request.getParameter(refName);
+                if (refValue != null) {
+                     // now it's very important that we escape it properly to avoid injection security holes
+                     refValue = refValue.replaceAll("'", "\\'");
+                     refValue = refValue.replaceAll("%", "\\%");
+                     // todo we might also have to escape the Lucene reserved characters : + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+                     refValue = QueryParser.escape(refValue);
+                     query = query.replaceAll("\\{\\$" + refName + "\\}", refValue);
+                } else {
+                    // the request parameter wasn't found, so we leave the marker as it is, simply ignoring it.
+                }
+            }
+            refMarkerPos = query.indexOf("{$", refMarkerPos + 2);
         }
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
@@ -197,13 +219,41 @@ public class Find extends HttpServlet implements Controller {
         return jsonObject;
     }
 
-    private JSONObject serializeRow(Row row, String[] columns, boolean escapeColon) throws RepositoryException,
+    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set alreadyIncludedIdentifiers) throws RepositoryException,
             JSONException {
+
         JSONObject jsonObject = new JSONObject();
+
+        Node currentNode = row.getNode();
+        if (currentNode != null) {
+            if (currentNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                try {
+                    currentNode = currentNode.getParent();
+                    if (alreadyIncludedIdentifiers.contains(currentNode.getIdentifier())) {
+                        // avoid duplicates due to j:translation nodes.
+                        return null;
+                    }
+                    jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon));
+                    alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
+                } catch (ItemNotFoundException e) {
+                    currentNode = null;
+                }
+            } else {
+                if (alreadyIncludedIdentifiers.contains(currentNode.getIdentifier())) {
+                    // avoid duplicates due to j:translation nodes.
+                    return null;
+                }
+                jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon));
+                alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
+            }
+
+        }
+
         for (String column : columns) {
             Value value = row.getValue(column);
             jsonObject.put(escapeColon ? column.replace(":", "_") : column, value != null ? value.getString() : value);
         }
+
 
         return jsonObject;
     }
@@ -255,10 +305,14 @@ public class Find extends HttpServlet implements Controller {
             String[] columns = result.getColumnNames();
             boolean serializeRows = columns.length > 0 && !columns[0].contains(".");
 
+            Set alreadyIncludedIdentifiers = new HashSet();
             if (serializeRows) {
                 RowIterator rows = result.getRows();
                 while (rows.hasNext()) {
-                    results.put(serializeRow(rows.nextRow(), columns, escape));
+                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers);
+                    if (serializedRow != null) {
+                        results.put(serializedRow);
+                    }
                 }
             } else {
                 NodeIterator nodes = result.getNodes();

@@ -101,3 +101,12 @@ Basic Jahia REST API
 |                |             |name will be replaced with '_'.                 |
 |                |             |Defaults to false.                              |
 *----------------+-------------+------------------------------------------------+
+|searchTermName  |no           |The value you specify here will be used to      |
+|                |             |lookup another request parameter that contains  |
+|                |             |a search string to match the properties against |
+|                |             |the specified string. It will build a JSON      |
+|                |             |object property called matchingProperties that  |
+|                |             |contains a JSONArray of the properties that     |
+|                |             |match the search string. The matching is        |
+|                |             |identity-based, we use String.startsWith match  |
+*----------------+-------------+------------------------------------------------+

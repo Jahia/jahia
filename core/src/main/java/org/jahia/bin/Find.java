@@ -179,11 +179,12 @@ public class Find extends HttpServlet implements Controller {
         return null;
     }
 
-    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon) throws RepositoryException,
+    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String searchTerm) throws RepositoryException,
             JSONException {
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
         // Map<String,Object> map = new HashMap<String, Object>();
+        Set<String> matchingProperties = new HashSet<String>();
         while (stringMap.hasNext()) {
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
             final int type = propertyWrapper.getType();
@@ -195,6 +196,17 @@ public class Find extends HttpServlet implements Controller {
             } else {
                 if (!propertyWrapper.isMultiple()) {
                     jsonObject.put(name, propertyWrapper.getValue().getString());
+                    if ((searchTerm != null) && (propertyWrapper.getValue().getString().startsWith(searchTerm))) {
+                        // property starts with the searchTerm, let's add it to the list of matching properties.
+                        matchingProperties.add(name);
+                    }
+                } else {
+                    JSONArray jsonArray = new JSONArray();
+                    Value[] propValues = propertyWrapper.getValues();
+                    for (Value propValue : propValues) {
+                        jsonArray.put(propValue.getString());
+                    }
+                    jsonObject.put(name, jsonArray);
                 }
             }
         }
@@ -204,6 +216,9 @@ public class Find extends HttpServlet implements Controller {
         jsonObject.put("index", currentNode.getIndex());
         jsonObject.put("depth", currentNode.getDepth());
         jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
+        if (searchTerm != null) {
+            jsonObject.put("matchingProperties", new JSONArray(matchingProperties));
+        }
 
         // now let's output the children until we reach the depth limit.
         if ((depthLimit - 1) > 0) {
@@ -211,7 +226,7 @@ public class Find extends HttpServlet implements Controller {
             JSONArray childMapList = new JSONArray();
             while (childNodeIterator.hasNext()) {
                 Node currentChildNode = childNodeIterator.nextNode();
-                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon);
+                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, searchTerm);
                 childMapList.put(childSerializedMap);
             }
             jsonObject.put("childNodes", childMapList);
@@ -219,7 +234,7 @@ public class Find extends HttpServlet implements Controller {
         return jsonObject;
     }
 
-    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set alreadyIncludedIdentifiers) throws RepositoryException,
+    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set alreadyIncludedIdentifiers, String searchTerm) throws RepositoryException,
             JSONException {
 
         JSONObject jsonObject = new JSONObject();
@@ -233,7 +248,7 @@ public class Find extends HttpServlet implements Controller {
                         // avoid duplicates due to j:translation nodes.
                         return null;
                     }
-                    jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon));
+                    jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon, searchTerm));
                     alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
                 } catch (ItemNotFoundException e) {
                     currentNode = null;
@@ -243,7 +258,7 @@ public class Find extends HttpServlet implements Controller {
                     // avoid duplicates due to j:translation nodes.
                     return null;
                 }
-                jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon));
+                jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon, searchTerm));
                 alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
             }
 
@@ -299,6 +314,13 @@ public class Find extends HttpServlet implements Controller {
         int depth = getInt("depthLimit", defaultDepthLimit, request);
         boolean escape = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("escapeColon"), String
                 .valueOf(defaultEscapeColon)));
+
+        String searchTermName = request.getParameter("searchTermName");
+        String searchTerm = null;
+        if (searchTermName != null) {
+            searchTerm = request.getParameter(searchTermName);
+        }
+
         JSONArray results = new JSONArray();
         
         try {
@@ -309,7 +331,7 @@ public class Find extends HttpServlet implements Controller {
             if (serializeRows) {
                 RowIterator rows = result.getRows();
                 while (rows.hasNext()) {
-                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers);
+                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers, searchTerm);
                     if (serializedRow != null) {
                         results.put(serializedRow);
                     }
@@ -317,7 +339,7 @@ public class Find extends HttpServlet implements Controller {
             } else {
                 NodeIterator nodes = result.getNodes();
                 while (nodes.hasNext()) {
-                    results.put(serializeNode(nodes.nextNode(), depth, escape));
+                    results.put(serializeNode(nodes.nextNode(), depth, escape, searchTerm));
                 }
             }
             results.write(response.getWriter());

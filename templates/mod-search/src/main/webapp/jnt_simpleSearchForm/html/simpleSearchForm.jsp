@@ -51,6 +51,10 @@
     $(document).ready(function() {
 
         function getText(node) {
+            if (node.matchingProperties.length > 0) {
+                var firstMatchingProperty = node.matchingProperties[0];
+                return node[firstMatchingProperty];
+            }
             if (node["jcr:title"] != null) {
                 return node["jcr:title"];
             } else if (node["text"] != null) {
@@ -82,7 +86,8 @@
             extraParams: {
                 query : "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
-                escapeColon : "false"
+                escapeColon : "false",
+                searchTermName : "q"
             }
         });
     });

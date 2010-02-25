@@ -120,11 +120,11 @@ public class Find extends HttpServlet implements Controller {
                 if (refValue != null) {
                      // now it's very important that we escape it properly to avoid injection security holes
                     if (escapeValue) {
-                     refValue = refValue.replaceAll("'", "\\'");
-                     refValue = refValue.replaceAll("%", "\\%");
+                     refValue = StringUtils.replace(refValue,"'", "\\'");
+                     refValue = StringUtils.replace(refValue,"%", "\\%");
                      refValue = QueryParser.escape(refValue);
                     }
-                     result = result.replaceAll("\\{\\$" + refName + "\\}", refValue);
+                     result = StringUtils.replace(result, "{$" + refName + "}", refValue);
                 } else {
                     // the request parameter wasn't found, so we leave the marker as it is, simply ignoring it.
                 }

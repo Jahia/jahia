@@ -87,7 +87,8 @@
                 query : "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
                 escapeColon : "false",
-                searchTermName : "q"
+                propertyMatchRegexp : "{$q}.*",
+                removeDuplicatePropValues : "true"
             }
         });
     });

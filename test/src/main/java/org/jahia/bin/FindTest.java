@@ -41,9 +41,11 @@ public class FindTest extends TestCase {
         }
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
-        method.addParameter("query", "SELECT [jcr:title] FROM [jnt:page] WHERE . LIKE '{$q}%'");
+        method.addParameter("query", "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
         method.addParameter("q", "a%'"); // to test if the reserved words work correctly.
-        method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
+        method.addParameter("language", javax.jcr.query.Query.XPATH);
+        method.addParameter("propertyMatchRegexp", "{$q}.*");
+        method.addParameter("removeDuplicatePropValues", "true");
         method.addParameter("depthLimit", "1");
 
         // Provide custom retry handler is necessary

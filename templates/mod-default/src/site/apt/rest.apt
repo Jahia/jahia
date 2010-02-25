@@ -75,38 +75,40 @@ Basic Jahia REST API
 
  Parameters :
  
-*----------------+-------------+------------------------------------------------+
-|Name            |Mandatory    |Description                                     |
-*----------------+-------------+------------------------------------------------+
-|query           |yes          |The JCR query to execute. You can reference     |
-|                |             |request parameters in your query by using the   |
-|                |             |following syntax : {$paramName} which will look |
-|                |             |for a request parameter called "paramName"      |
-*----------------+-------------+------------------------------------------------+
-|language        |no           |The JCR language used in the query, for example |
-|                |             |"JCR-SQL2". Defaults to JCR-SQL2                |
-*----------------+-------------+------------------------------------------------+
-|limit           |no           |The maximum number of results to return.        |
-|                |             |Defaults to 0 that does not limit the results.  |
-*----------------+-------------+------------------------------------------------+
-|offset          |no           |The 0-index based offset to start results with. |
-|                |             |Defaults to 0.                                  |
-*----------------+-------------+------------------------------------------------+
-|depthLimit      |no           |The depth of the result tree. If not set it     |
-|                |             |defaults to "1". If you have deep content tree  |
-|                |             |hierarchies you might want to limit result      |
-|                |             |depth to avoid performance issues.              |
-*----------------+-------------+------------------------------------------------+
-|escapeColon     |no           |If set to true, the ':' in the node property    |
-|                |             |name will be replaced with '_'.                 |
-|                |             |Defaults to false.                              |
-*----------------+-------------+------------------------------------------------+
-|searchTermName  |no           |The value you specify here will be used to      |
-|                |             |lookup another request parameter that contains  |
-|                |             |a search string to match the properties against |
-|                |             |the specified string. It will build a JSON      |
-|                |             |object property called matchingProperties that  |
-|                |             |contains a JSONArray of the properties that     |
-|                |             |match the search string. The matching is        |
-|                |             |identity-based, we use String.startsWith match  |
-*----------------+-------------+------------------------------------------------+
+*---------------------------+-------------+----------------------------------------------------------------------+
+|Name                       |Mandatory    |Description                                                           |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|query                      |yes          |The JCR query to execute. You can reference request parameters in your|
+|                           |             |query by using the following syntax : {$paramName} which will look for|
+|                           |             |a request parameter called "paramName"                                |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|language                   |no           |The JCR language used in the query, for example "JCR-SQL2" or "xpath" |
+|                           |             |Defaults to "JCR-SQL2"                                                |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|limit                      |no           |The maximum number of results to return.                              |
+|                           |             |Defaults to 0 that does not limit the results.                        |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|offset                     |no           |The 0-index based offset to start results with.                       |
+|                           |             |Defaults to 0.                                                        |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|depthLimit                 |no           |The depth of the result tree. If not set it defaults to "1". If you   |
+|                           |             |have deep content tree hierarchies you might want to limit result     |
+|                           |             |depth to avoid performance issues.                                    |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|escapeColon                |no           |If set to true, the ':' in the node property name will be replaced    |
+|                           |             | '_'.                                                                 |
+|                           |             |Defaults to false.                                                    |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|propertyMatchRexexp        |no           |The value you specify here will be used to match properties in the    |
+|                           |             |result set, and will build a matchingProperties JSON list that will   |
+|                           |             |let you known which properties have matched. This is especially useful|
+|                           |             |when using fulltext search, since the JCR doesn't indicate which      |
+|                           |             |property has matched the criteria. The value you specify must comply  |
+|                           |             |with the JDK Pattern Regexp syntax.                                   |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|removeDuplicatePropValues  |no           |If activated, it will filter the matched properties (that were        |
+|                           |             |matched using the propertyMatchRegexp above parameter) to make sure   |
+|                           |             |only one node per property value is returned. This is useful when     |
+|                           |             |building unique list of property values for auto-completion.          |
+|                           |             |Defaults to false.                                                    |
+*---------------------------+-------------+----------------------------------------------------------------------+

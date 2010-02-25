@@ -4,9 +4,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
@@ -57,6 +55,8 @@ public class Find extends HttpServlet implements Controller {
 
     private String defaultWorkspace = LIVE_WORKSPACE;
 
+    private boolean defaultRemoveDuplicatePropertyValues = false;
+
     private int getInt(String paramName, int defaultValue, HttpServletRequest req) throws IllegalArgumentException {
         int param = defaultValue;
         String valueStr = req.getParameter(paramName);
@@ -92,25 +92,7 @@ public class Find extends HttpServlet implements Controller {
         // now let's parse the query to see if it references any other request parameters, and replace the reference with
         // the actual value.
 
-        int refMarkerPos = query.indexOf("{$");
-        while (refMarkerPos >= 0) {
-            int endRefMarkerPos = query.indexOf("}", refMarkerPos);
-            if (endRefMarkerPos > 0) {
-                String refName = query.substring(refMarkerPos + 2, endRefMarkerPos);
-                String refValue = request.getParameter(refName);
-                if (refValue != null) {
-                     // now it's very important that we escape it properly to avoid injection security holes
-                     refValue = refValue.replaceAll("'", "\\'");
-                     refValue = refValue.replaceAll("%", "\\%");
-                     // todo we might also have to escape the Lucene reserved characters : + - && || ! ( ) { } [ ] ^ " ~ * ? : \
-                     refValue = QueryParser.escape(refValue);
-                     query = query.replaceAll("\\{\\$" + refName + "\\}", refValue);
-                } else {
-                    // the request parameter wasn't found, so we leave the marker as it is, simply ignoring it.
-                }
-            }
-            refMarkerPos = query.indexOf("{$", refMarkerPos + 2);
-        }
+        query = expandRequestMarkers(request, query, true);
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
@@ -125,6 +107,31 @@ public class Find extends HttpServlet implements Controller {
         }
 
         return q;
+    }
+
+    protected String expandRequestMarkers(HttpServletRequest request, String sourceString, boolean escapeValue) {
+        String result = new String(sourceString);
+        int refMarkerPos = result.indexOf("{$");
+        while (refMarkerPos >= 0) {
+            int endRefMarkerPos = result.indexOf("}", refMarkerPos);
+            if (endRefMarkerPos > 0) {
+                String refName = result.substring(refMarkerPos + 2, endRefMarkerPos);
+                String refValue = request.getParameter(refName);
+                if (refValue != null) {
+                     // now it's very important that we escape it properly to avoid injection security holes
+                    if (escapeValue) {
+                     refValue = refValue.replaceAll("'", "\\'");
+                     refValue = refValue.replaceAll("%", "\\%");
+                     refValue = QueryParser.escape(refValue);
+                    }
+                     result = result.replaceAll("\\{\\$" + refName + "\\}", refValue);
+                } else {
+                    // the request parameter wasn't found, so we leave the marker as it is, simply ignoring it.
+                }
+            }
+            refMarkerPos = result.indexOf("{$", refMarkerPos + 2);
+        }
+        return result;
     }
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
@@ -179,7 +186,7 @@ public class Find extends HttpServlet implements Controller {
         return null;
     }
 
-    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String searchTerm) throws RepositoryException,
+    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
@@ -196,8 +203,19 @@ public class Find extends HttpServlet implements Controller {
             } else {
                 if (!propertyWrapper.isMultiple()) {
                     jsonObject.put(name, propertyWrapper.getValue().getString());
-                    if ((searchTerm != null) && (propertyWrapper.getValue().getString().startsWith(searchTerm))) {
-                        // property starts with the searchTerm, let's add it to the list of matching properties.
+                    if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
+                        if (alreadyIncludedPropertyValues != null) {
+                            String nodeIdentifier = alreadyIncludedPropertyValues.get(propertyWrapper.getValue().getString());
+                            if (nodeIdentifier != null) {
+                                if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
+                                    // This property value already exists and comes from another node.
+                                    return null;
+                                }
+                            } else {
+                                alreadyIncludedPropertyValues.put(propertyWrapper.getValue().getString(), currentNode.getIdentifier());
+                            }
+                        }
+                        // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
                         matchingProperties.add(name);
                     }
                 } else {
@@ -205,6 +223,21 @@ public class Find extends HttpServlet implements Controller {
                     Value[] propValues = propertyWrapper.getValues();
                     for (Value propValue : propValues) {
                         jsonArray.put(propValue.getString());
+                        if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
+                            if (alreadyIncludedPropertyValues != null) {
+                                String nodeIdentifier = alreadyIncludedPropertyValues.get(propValue.getString());
+                                if (nodeIdentifier != null) {
+                                    if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
+                                        // This property value already exists and comes from another node.
+                                        return null;
+                                    }
+                                } else {
+                                    alreadyIncludedPropertyValues.put(propValue.getString(), currentNode.getIdentifier());
+                                }
+                            }
+                            // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
+                            matchingProperties.add(name);
+                        }
                     }
                     jsonObject.put(name, jsonArray);
                 }
@@ -216,7 +249,7 @@ public class Find extends HttpServlet implements Controller {
         jsonObject.put("index", currentNode.getIndex());
         jsonObject.put("depth", currentNode.getDepth());
         jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
-        if (searchTerm != null) {
+        if (propertyMatchRegexp != null) {
             jsonObject.put("matchingProperties", new JSONArray(matchingProperties));
         }
 
@@ -226,7 +259,7 @@ public class Find extends HttpServlet implements Controller {
             JSONArray childMapList = new JSONArray();
             while (childNodeIterator.hasNext()) {
                 Node currentChildNode = childNodeIterator.nextNode();
-                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, searchTerm);
+                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
                 childMapList.put(childSerializedMap);
             }
             jsonObject.put("childNodes", childMapList);
@@ -234,7 +267,7 @@ public class Find extends HttpServlet implements Controller {
         return jsonObject;
     }
 
-    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set alreadyIncludedIdentifiers, String searchTerm) throws RepositoryException,
+    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set<String> alreadyIncludedIdentifiers, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
 
         JSONObject jsonObject = new JSONObject();
@@ -248,7 +281,11 @@ public class Find extends HttpServlet implements Controller {
                         // avoid duplicates due to j:translation nodes.
                         return null;
                     }
-                    jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon, searchTerm));
+                    JSONObject serializedNode = serializeNode(currentNode, depthLimit, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                    if (serializedNode == null) {
+                        return null;
+                    }
+                    jsonObject.put("node", serializedNode);
                     alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
                 } catch (ItemNotFoundException e) {
                     currentNode = null;
@@ -258,7 +295,11 @@ public class Find extends HttpServlet implements Controller {
                     // avoid duplicates due to j:translation nodes.
                     return null;
                 }
-                jsonObject.put("node", serializeNode(currentNode, depthLimit, escapeColon, searchTerm));
+                JSONObject serializedNode = serializeNode(currentNode, depthLimit, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                if (serializedNode == null) {
+                    return null;
+                }
+                jsonObject.put("node", serializedNode);
                 alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
             }
 
@@ -308,17 +349,27 @@ public class Find extends HttpServlet implements Controller {
         this.defaultWorkspace = defaultWorkspace;
     }
 
+
+    public boolean isDefaultRemoveDuplicatePropertyValues() {
+        return defaultRemoveDuplicatePropertyValues;
+    }
+
+    public void setDefaultRemoveDuplicatePropertyValues(boolean defaultRemoveDuplicatePropertyValues) {
+        this.defaultRemoveDuplicatePropertyValues = defaultRemoveDuplicatePropertyValues;
+    }
+
     private void writeResults(QueryResult result, HttpServletRequest request, HttpServletResponse response)
             throws RepositoryException, IllegalArgumentException, IOException, RenderException {
         response.setContentType("application/json; charset=UTF-8");
         int depth = getInt("depthLimit", defaultDepthLimit, request);
         boolean escape = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("escapeColon"), String
                 .valueOf(defaultEscapeColon)));
+        boolean removeDuplicatePropertyValues = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("removeDuplicatePropValues"), String
+                .valueOf(defaultRemoveDuplicatePropertyValues)));
 
-        String searchTermName = request.getParameter("searchTermName");
-        String searchTerm = null;
-        if (searchTermName != null) {
-            searchTerm = request.getParameter(searchTermName);
+        String propertyMatchRegexp = request.getParameter("propertyMatchRegexp");
+        if (propertyMatchRegexp != null) {
+            propertyMatchRegexp = expandRequestMarkers(request, propertyMatchRegexp, false);
         }
 
         JSONArray results = new JSONArray();
@@ -328,10 +379,15 @@ public class Find extends HttpServlet implements Controller {
             boolean serializeRows = columns.length > 0 && !columns[0].contains(".");
 
             Set alreadyIncludedIdentifiers = new HashSet();
+            Map<String, String> alreadyIncludedPropertyValues = null;
+            if (removeDuplicatePropertyValues) {
+                alreadyIncludedPropertyValues = new HashMap<String, String>();
+            }
+            new HashMap<String, String>();
             if (serializeRows) {
                 RowIterator rows = result.getRows();
                 while (rows.hasNext()) {
-                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers, searchTerm);
+                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedRow != null) {
                         results.put(serializedRow);
                     }
@@ -339,7 +395,10 @@ public class Find extends HttpServlet implements Controller {
             } else {
                 NodeIterator nodes = result.getNodes();
                 while (nodes.hasNext()) {
-                    results.put(serializeNode(nodes.nextNode(), depth, escape, searchTerm));
+                    JSONObject serializedNode = serializeNode(nodes.nextNode(), depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                    if (serializedNode != null) {
+                        results.put(serializedNode);
+                    }
                 }
             }
             results.write(response.getWriter());

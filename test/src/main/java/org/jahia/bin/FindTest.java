@@ -60,7 +60,7 @@ public class FindTest extends TestCase {
         logoutMethod.releaseConnection();
     }
 
-    public void testFindWithXPath() throws IOException, JSONException, JahiaException {
+    public void testFindEscapingWithXPath() throws IOException, JSONException, JahiaException {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
@@ -92,10 +92,42 @@ public class FindTest extends TestCase {
 
     }
 
-    public void testFindWithSQL2() throws IOException, JSONException {
+    public void testSimpleFindWithSQL2() throws IOException, JSONException {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
-        method.addParameter("query", "select * from [nt:base] where isdescendantnode([/jcr:root/sites/mySite/]) and contains(.,'{$q}*')");
+        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode([/jcr:root/sites/mySite/]) and contains(base.*,'{$q}*')");
+        method.addParameter("q", "a"); 
+        method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
+        method.addParameter("propertyMatchRegexp", "{$q}.*");
+        method.addParameter("removeDuplicatePropValues", "true");
+        method.addParameter("depthLimit", "1");
+
+        // Provide custom retry handler is necessary
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
+
+        // Execute the method.
+        int statusCode = client.executeMethod(method);
+
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + method.getStatusLine());
+        }
+
+        // Read the response body.
+        String responseBody = method.getResponseBodyAsString();
+
+        JSONArray jsonResults = new JSONArray(responseBody);
+
+        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+
+        // @todo we need to add more tests to validate results.
+
+    }
+
+    public void testFindEscapingWithSQL2() throws IOException, JSONException {
+
+        PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
+        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode([/jcr:root/sites/mySite/]) and contains(base.*,'{$q}*')");
         method.addParameter("q", "a:+-*\"&()[]{}$/\\%\'"); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
         method.addParameter("propertyMatchRegexp", "{$q}.*");

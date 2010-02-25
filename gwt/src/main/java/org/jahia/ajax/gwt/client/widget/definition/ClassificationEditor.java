@@ -364,7 +364,7 @@ public class ClassificationEditor extends LayoutContainer {
         panel.setBorders(false);
         panel.setHeaderVisible(false);
         // Add a new tag
-        final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES,10);
+        final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES,15);
         autoCompleteComboBox.setMaxLength(120);
         autoCompleteComboBox.setWidth(300);
         autoCompleteComboBox.setName("tagName");

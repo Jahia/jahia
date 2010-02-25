@@ -74,7 +74,7 @@ public class CKEditor extends Component {
             public void execute() {
                 instanceId = getElement().getId();
                 DOM.setElementAttribute(getElement(), "name", instanceId);
-                editorInstance = initEditor(JahiaGWTParameters.getContextPath(),JahiaGWTParameters.getServletPath());
+                editorInstance = initEditor(JahiaGWTParameters.getContextPath(), JahiaGWTParameters.getServletPath());
             }
         });
         addLoadListener(new CKEditorLoadListener() {
@@ -160,8 +160,10 @@ public class CKEditor extends Component {
      * @return
      */
 
-    private native JavaScriptObject initEditor(String contextPath,String servletPath)/*-{
-        $wnd.CKEDITOR.config.toolbar_Full =
+    private native JavaScriptObject initEditor(String contextPath, String servletPath)/*-{
+
+    $wnd.CKEDITOR.config.extraPlugins = 'linkfile';
+    $wnd.CKEDITOR.config.toolbar_Full =
         [
             ['Source','-','Preview','-','Templates'],
             ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print','SpellChecker'],
@@ -170,7 +172,8 @@ public class CKEditor extends Component {
             ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
             ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
             ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-            ['Link','Unlink','Anchor'],
+            ['Link','Unlink','Anchor'],    
+            ['LinkFile','UnlinkFile'],    
             ['Image','Flash','Table','HorizontalRule','SpecialChar'],
             '/',
             ['Styles','Format','Font','FontSize'],

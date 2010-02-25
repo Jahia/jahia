@@ -149,11 +149,6 @@ public class ContentTreeGrid extends ContentPanel {
          * init
          */
         private void init() {
-//            // create loader
-//            loader = createTreeLoader();
-//
-//            // tree store
-//            store = new TreeTableStore<GWTJahiaNode>(loader);
 
             GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType != null ? repositoryType : JCRClientUtils.GLOBAL_REPOSITORY);
             factory.setNodeTypes(configuration.getNodeTypes());
@@ -186,44 +181,6 @@ public class ContentTreeGrid extends ContentPanel {
 
         }
 
-//        private TreeLoader<GWTJahiaNode> createTreeLoader() {
-//            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-//
-//            // data proxy
-//            RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
-//                @Override
-//                protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-//                    if (init) {
-//                        if (repositoryType != null) {
-//                            service.getRoot(repositoryType, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
-//                        } else {
-//                            service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, listAsyncCallback);
-//                        }
-//                        init = false;
-//                    } else {
-//                        service.ls(JCRClientUtils.GLOBAL_REPOSITORY, (GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
-//                    }
-//                }
-//            };
-//
-//
-//            TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
-//                @Override
-//                public boolean hasChildren(GWTJahiaNode parent) {
-//                    return parent.hasChildren();
-//                }
-//
-//                public void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-//                    super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-//                    if (init) {
-//                        Log.debug("setting init to false");
-//                        init = false;
-//                    }
-//                }
-//            };
-//
-//            return loader;
-//        }
 
         /**
          * Get header from configuration

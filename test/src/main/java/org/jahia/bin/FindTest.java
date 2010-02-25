@@ -42,7 +42,7 @@ public class FindTest extends TestCase {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
-        method.addParameter("q", "a+(){}$/\\%'"); // to test if the reserved words work correctly.
+        method.addParameter("q", "a:+-*\"&()[]{}$/\\%\'"); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.XPATH);
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");

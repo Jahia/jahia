@@ -92,7 +92,7 @@ public class Find extends HttpServlet implements Controller {
         // now let's parse the query to see if it references any other request parameters, and replace the reference with
         // the actual value.
 
-        query = expandRequestMarkers(request, query, true);
+        query = expandRequestMarkers(request, query, true, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
@@ -109,7 +109,7 @@ public class Find extends HttpServlet implements Controller {
         return q;
     }
 
-    protected String expandRequestMarkers(HttpServletRequest request, String sourceString, boolean escapeValue) {
+    protected String expandRequestMarkers(HttpServletRequest request, String sourceString, boolean escapeValue, String queryLanguage) {
         String result = new String(sourceString);
         int refMarkerPos = result.indexOf("{$");
         while (refMarkerPos >= 0) {
@@ -120,9 +120,12 @@ public class Find extends HttpServlet implements Controller {
                 if (refValue != null) {
                      // now it's very important that we escape it properly to avoid injection security holes
                     if (escapeValue) {
-                     refValue = StringUtils.replace(refValue,"'", "\\'");
-                     refValue = StringUtils.replace(refValue,"%", "\\%");
-                     refValue = QueryParser.escape(refValue);
+                        refValue = QueryParser.escape(refValue);
+                        refValue = StringUtils.replace(refValue,"'", "\\'");
+                        if (Query.XPATH.equals(queryLanguage)) {
+                            // found this here : http://markmail.org/thread/pd7myawyv2dadmdh
+                            refValue = StringUtils.replace(refValue, "'", "''");
+                        }
                     }
                      result = StringUtils.replace(result, "{$" + refName + "}", refValue);
                 } else {
@@ -149,7 +152,7 @@ public class Find extends HttpServlet implements Controller {
                 logger.info("Executing " + query.getLanguage() + " for workspace '" + workspace + "' and locale '"
                         + locale + "'. Statement: " + query.getStatement());
             }
-            writeResults(query.execute(), request, response);
+            writeResults(query.execute(), request, response, query.getLanguage());
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (InvalidQueryException e) {
@@ -358,7 +361,7 @@ public class Find extends HttpServlet implements Controller {
         this.defaultRemoveDuplicatePropertyValues = defaultRemoveDuplicatePropertyValues;
     }
 
-    private void writeResults(QueryResult result, HttpServletRequest request, HttpServletResponse response)
+    private void writeResults(QueryResult result, HttpServletRequest request, HttpServletResponse response, String queryLanguage)
             throws RepositoryException, IllegalArgumentException, IOException, RenderException {
         response.setContentType("application/json; charset=UTF-8");
         int depth = getInt("depthLimit", defaultDepthLimit, request);
@@ -369,7 +372,7 @@ public class Find extends HttpServlet implements Controller {
 
         String propertyMatchRegexp = request.getParameter("propertyMatchRegexp");
         if (propertyMatchRegexp != null) {
-            propertyMatchRegexp = expandRequestMarkers(request, propertyMatchRegexp, false);
+            propertyMatchRegexp = expandRequestMarkers(request, propertyMatchRegexp, false, queryLanguage);
         }
 
         JSONArray results = new JSONArray();

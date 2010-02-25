@@ -95,6 +95,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
+        column.setWidth(20);
         column.setId("preview");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
@@ -110,6 +111,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
 
         //name
         column = new ColumnConfig();
+        column.setWidth(100);
         column.setAlignment(Style.HorizontalAlignment.LEFT);
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
@@ -144,6 +146,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
 
         // remvove
         column = new ColumnConfig();
+        column.setWidth(100);
         column.setAlignment(Style.HorizontalAlignment.RIGHT);
         column.setId("remove");
         column.setHeader("");

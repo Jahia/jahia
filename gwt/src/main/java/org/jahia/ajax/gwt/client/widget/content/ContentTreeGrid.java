@@ -118,26 +118,6 @@ public class ContentTreeGrid extends ContentPanel {
 
 
     /**
-     * This class extends the standard load listener to allow automated child selection once the children are retrieved.
-     */
-    private class TreeTableStore<M extends ModelData> extends TreeStore<M> {
-        public TreeTableStore(TreeLoader<M> loader) {
-            super(loader);
-        }
-
-        protected void onBeforeLoad(LoadEvent e) {
-            super.onBeforeLoad(e);
-        }
-
-        /**
-         * This allows selection after tree items have been loaded (asynchronous call is 'blocking' here)
-         */
-        protected void onLoad(TreeLoadEvent e) {
-            super.onLoad(e);
-        }
-    }
-
-    /**
      * Get repository type
      *
      * @return String

@@ -121,11 +121,12 @@ public class Find extends HttpServlet implements Controller {
                      // now it's very important that we escape it properly to avoid injection security holes
                     if (escapeValue) {
                         refValue = QueryParser.escape(refValue);
-                        refValue = StringUtils.replace(refValue,"'", "\\'");
                         if (Query.XPATH.equals(queryLanguage)) {
                             // found this here : http://markmail.org/thread/pd7myawyv2dadmdh
-                            refValue = StringUtils.replace(refValue, "'", "''");
+                            refValue = StringUtils.replace(refValue,"'", "\\'");
+                        } else {
                         }
+                        refValue = StringUtils.replace(refValue, "'", "''");
                     }
                      result = StringUtils.replace(result, "{$" + refName + "}", refValue);
                 } else {

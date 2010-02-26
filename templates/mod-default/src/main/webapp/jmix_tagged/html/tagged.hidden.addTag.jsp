@@ -7,6 +7,14 @@
 <c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
 <c:set var="org.jahia.javascript.includes.jQuery" value="true" scope="request"/>
 <template:addResources type="javascript" resources="jquery.min.js" nodetype="jmix:tagged"/>
+
+<template:addResources type="css" resources="jquery.autocomplete.css" />
+<template:addResources type="css" resources="thickbox.css" />
+<template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
+<template:addResources type="javascript" resources="jquery.autocomplete.js" />
+<template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
+<template:addResources type="javascript" resources="thickbox-compressed.js" />
+
 <script type="text/javascript">
     function addNewTag(tagForm, uuid, separator) {
         var newTag = tagForm.elements['j:newTag'];
@@ -26,11 +34,47 @@
             }
         }
     }
+
+    $(document).ready(function() {
+
+        function getText(node) {
+            return node["j:nodename"];
+        }
+
+        function format(result) {
+            return getText(result["node"]);
+        }
+
+        $(".newTagInput").autocomplete("${url.find}", {
+            dataType: "json",
+            cacheLength: 1,
+            parse: function parse(data) {
+                return $.map(data, function(row) {
+				    return {
+					    data: row,
+					    value: getText(row["node"]),
+					    result: getText(row["node"])
+				    }
+			    });
+            },
+            formatItem: function(item) {
+			    return format(item);
+		    },
+            extraParams: {
+                query : "/jcr:root${renderContext.site.JCRPath}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
+                language : "xpath",
+                escapeColon : "false",
+                propertyMatchRegexp : "{$q}.*",
+                removeDuplicatePropValues : "false"
+            }
+        });
+    });
+    
 </script>
 <c:if test="${renderContext.user.name != 'guest'}">
     <form action="${url.base}${currentNode.path}" method="post">
         <input type="hidden" name="methodToCall" value="put"/>
-        <input type="text" name="j:newTag" value=""/>
+        <input type="text" name="j:newTag" class="newTagInput" value=""/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
                onclick="addNewTag(this.form, '${currentNode.identifier}', '${separator}'); return false;"/>
     </form>

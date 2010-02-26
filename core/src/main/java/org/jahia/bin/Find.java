@@ -154,8 +154,10 @@ public class Find extends HttpServlet implements Controller {
             }
             writeResults(query.execute(), request, response, query.getLanguage());
         } catch (IllegalArgumentException e) {
+            logger.error("Invalid argument", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (InvalidQueryException e) {
+            logger.error("Invalid query", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
@@ -309,8 +311,14 @@ public class Find extends HttpServlet implements Controller {
         }
 
         for (String column : columns) {
-            Value value = row.getValue(column);
-            jsonObject.put(escapeColon ? column.replace(":", "_") : column, value != null ? value.getString() : value);
+            try {
+                Value value = row.getValue(column);
+                jsonObject.put(escapeColon ? column.replace(":", "_") : column, value != null ? value.getString() : value);
+            } catch (ItemNotFoundException infe) {
+                logger.warn("No value found for column " + column);
+            } catch (PathNotFoundException pnfe) {
+                logger.warn("No value found for column " + column);                
+            }
         }
 
 

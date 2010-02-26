@@ -209,6 +209,7 @@ public class Find extends HttpServlet implements Controller {
             } else {
                 if (!propertyWrapper.isMultiple()) {
                     jsonObject.put(name, propertyWrapper.getValue().getString());
+                    // @todo this code is duplicated for multiple values, we need to clean this up.
                     if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
                         if (alreadyIncludedPropertyValues != null) {
                             String nodeIdentifier = alreadyIncludedPropertyValues.get(propertyWrapper.getValue().getString());

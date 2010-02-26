@@ -31,6 +31,7 @@ under the License.
             <item name="Reusable component" href="./reusableComponent.html"/>
             <item name="Areas" href="./areas.html"/>
             <item name="Rules" href="./rules.html"/>
+            <item name="Auto-completion" href="./autocompletion.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

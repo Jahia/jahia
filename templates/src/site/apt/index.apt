@@ -23,3 +23,7 @@ Jahia Crazy Jane - Templates Module
 	* JQuery
 
 	  Recommendations about {{{jquery.html} JQuery usages}}.
+
+	* Auto-completion
+
+	  How to integrate {{{autocompletion.html}auto-completion}} into your templates.

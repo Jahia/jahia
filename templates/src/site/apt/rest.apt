@@ -61,13 +61,42 @@ Basic Jahia REST API
 
 * Render
 
+ The render servlet can either be used to render content by accessing it with a GET method, or can also be used to add
+ content to different workspaces by using a POST method and special parameters.
+
+** HTTP Get Request
+
+** HTTP Post Request
+
  URL : /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH
 
  Method : POST
 
- TBD
+*---------------------------+-------------+----------------------------------------------------------------------+
+|Name                       |Mandatory    |Description                                                           |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|nodeType                   |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|nodeName                   |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|newNodeOutputFormat        |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|stayOnNode                 |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|methodToCall               |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|autoCheckin                |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+TBC
+
+** Response format
+
+** Example
 
 * Find
+
+ The find servlet can be used to query content inside the Jahia JCR repository. It provides a lightweight but very
+ powerful interface to retrieve content anywhere inside the content repository.
 
  URL : /cms/find/WORKSPACE/LANGUAGE
 
@@ -113,7 +142,9 @@ Basic Jahia REST API
 |                           |             |Defaults to false.                                                    |
 *---------------------------+-------------+----------------------------------------------------------------------+
 
- Example query (formatted for legibility) :
+** Example
+
+*** HTTP GET Request (formatted for legibility) :
 
 ---------------------------------------
  http://localhost:8080/cms/find/default/en
@@ -137,7 +168,7 @@ Basic Jahia REST API
  specified in the request. This makes it easy to integrate with JQuery plugins that might use specific named request
  parameters.
 
- Response :
+*** HTTP Response :
 
 ---------------------------------------
 Content-Length:1721
@@ -203,3 +234,20 @@ Server:Apache-Coyote/1.1
 	}
 ]
 ---------------------------------------
+
+ In the above JSON response, it is important to node the following properties :
+
+ * jcr:score indicates the score of the result
+
+ * node contains all the node information, including the matchProperties array that indicates which properties have
+   matched the propertyMatchingRegexp parameter.
+
+* Debugging
+
+ In order to help with the debugging with AJAX REST requests, you can use built-in inspection tools such as :
+
+ - Safari's 4.0 Web Inspector (especially the resources and script tabs)
+
+ - Firefox's Firebug plugin
+
+ - any other equivalents

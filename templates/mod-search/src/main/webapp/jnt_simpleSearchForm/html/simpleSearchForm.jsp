@@ -50,6 +50,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        /**
+         * As any property can match the query, we try to intelligently display properties that either matched or make
+         * sense to display.
+         * @param node
+         */
         function getText(node) {
             if (node.matchingProperties.length > 0) {
                 var firstMatchingProperty = node.matchingProperties[0];
@@ -68,7 +73,7 @@
             return getText(result["node"]);
         }
 
-        $("#searchTerm").autocomplete("/cms/find/default/en", {
+        $("#searchTerm").autocomplete("${url.find}", {
             dataType: "json",
             cacheLength: 1,
             parse: function parse(data) {
@@ -84,7 +89,7 @@
 			    return format(item);
 		    },
             extraParams: {
-                query : "/jcr:root/sites/mySite//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
+                query : "/jcr:root${renderContext.site.JCRPath}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
                 escapeColon : "false",
                 propertyMatchRegexp : "{$q}.*",

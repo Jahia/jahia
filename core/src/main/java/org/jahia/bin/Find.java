@@ -409,4 +409,10 @@ public class Find extends HttpServlet implements Controller {
             throw new RenderException(e);
         }
     }
+
+    public static String getFindServletPath() {
+        // TODO move this into configuration
+        return "/cms/find";
+    }
+
 }

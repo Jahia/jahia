@@ -254,7 +254,7 @@ public class JCRSitesProvider {
         }
 
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
-                node.getName(), node.getProperty("j:description").getString(), props);
+                node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
         Value[] s = node.getProperty("j:installedModules").getValues();
         site.setTemplatePackageName(s[0].getString());
         site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());

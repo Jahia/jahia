@@ -1103,7 +1103,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     "",
                     "",
                     "",
-                    new Properties());
+                    new Properties(), null);
             site = fakeSite;
             session.setAttribute(ProcessingContext.SESSION_SITE, fakeSite);
         }

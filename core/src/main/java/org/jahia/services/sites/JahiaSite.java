@@ -108,6 +108,8 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     private Set<String> mandatoryLanguages;
     private String defaultLanguage;
 
+    private String JCRLocalPath;
+
     /**
      * Constructor, the purpose of this empty constructor is to enable
      * <jsp:useBean...> tag in JSP
@@ -120,7 +122,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      */
     public JahiaSite(int id, String title, String serverName, String siteKey,
                      String descr,
-                     Properties settings) {
+                     Properties settings, String JCRLocalPath) {
         this();
         mSiteID = id;
         mTitle = title;
@@ -135,6 +137,8 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         if (settings != null) {
             mSettings = settings;
         }
+
+        this.JCRLocalPath = JCRLocalPath;
     }
 
 
@@ -785,9 +789,13 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      */
     public String getJCRPath() throws JahiaException {
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia", getUUID()).getPath();
+            if (getUUID() != null) {
+                return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia", getUUID()).getPath();
+            } else {
+                return getJCRLocalPath();
+            }
         } catch (RepositoryException e) {
-            throw new JahiaException("","",0,0,e);
+            throw new JahiaException("Error while retrieving site's JCR Path","Error while retrieving site's JCR Path",0,0,e);
         }
     }
 
@@ -927,4 +935,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return value != null ? value : defaultValue;
     }
 
+    public String getJCRLocalPath() {
+        return JCRLocalPath;
+    }
+
+    public void setJCRLocalPath(String JCRLocalPath) {
+        this.JCRLocalPath = JCRLocalPath;
+    }
 }

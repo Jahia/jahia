@@ -303,7 +303,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (settings == null) {
             settings = new Properties();
         }
-        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,settings);
+        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,settings, null);
 
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);

@@ -262,6 +262,7 @@ public class ManageSites extends AbstractAdministrationModule {
                             // is active
                             // default page (homepage id)
                             "",        // description
+                            null,
                             null);
                 }
 
@@ -320,6 +321,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     // is active
                     // default page (homepage id)
                     "",        // description
+                    null,
                     null);
         }
 
@@ -485,6 +487,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         // is active
                         // default page (homepage id)... subject to update in terminateAdd().
                         siteDescr,
+                        null,
                         null);
 //                site.setTemplatesAutoDeployMode(true);
 //                site.setWebAppsAutoDeployMode(true);
@@ -513,6 +516,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         siteServerName,
                         siteKey,
                         siteDescr,
+                        null,
                         null);
 
 
@@ -1740,7 +1744,7 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaSite siteToUseNow = sMgr.getDefaultSite() != null ? sMgr
                     .getDefaultSite()
                     : new JahiaSite(-1, "", "", "", "",
-                    new Properties());
+                    new Properties(),null);
             jParams.setSite(siteToUseNow);
             jParams.setContentPage(siteToUseNow.getHomeContentPage());
         }

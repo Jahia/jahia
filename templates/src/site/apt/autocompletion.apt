@@ -1,13 +1,17 @@
-Integration of auto-completion in templates.
+Integration of auto-completion in templates
 
  This document explains how to integrate auto-completion in templates, in order to help users populate text fields,
- avoid typos, making input faster and help seach scenarios.
+ avoid typos, making input faster and help search scenarios.
 
- Auto-completion uses the JQuery auto-completion plugin and integrates it with Jahia's Find REST servlet, to perform
+ Auto-completion uses the JQuery auto-completion plugin and integrates it with {{{rest.html}Jahia's Find REST servlet}}, to perform
  queries and format the results so that the user can select a value. As you will see the query can be quite simple or
  quite complex.
 
- * Tag auto-completion example
+* Tag auto-completion example
+
+ Before going into details, here's overview of the full code (... indicates stripped code) that comes from our
+ auto-completion integration into tag input. You can find the full source code in the following location in Jahia's
+ source code at templates/mod-default/src/main/webapp/jmix_tagged/html/tagged.hidden.addTag.jsp.
 
 ---------------------------------------
 <template:addResources type="css" resources="jquery.autocomplete.css" />
@@ -58,4 +62,190 @@ Integration of auto-completion in templates.
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
                onclick="addNewTag(this.form, '${currentNode.identifier}', '${separator}'); return false;"/>
     </form>
+---------------------------------------
+
+ The first part is quite trivial, we include the needed resources (CSS, Javascript) that the JQuery Autocompletion plugin
+ requires. Then we have a few helper methods, that help with the formatting of the results and that could be
+ customized to perform more advanced rendering of the dropdown list. Please note that here we will only use one node
+ property (j:nodename) to display the property. We provide below (full-text search auto-completion) a more complex
+ example of how to use multiple properties to display results.
+
+ The first important (and specific) part, is the "parse" function :
+
+---------------------------------------
+            parse: function parse(data) {
+                return $.map(data, function(row) {
+				    return {
+					    data: row,
+					    value: getText(row["node"]),
+					    result: getText(row["node"])
+				    }
+			    });
+            },
+---------------------------------------
+
+ This method extracts the relevant data from the JSON reply and sets it up in a format that the Autocomplete plugin
+ can understand.
+
+ The next important part are the additional parameters passed to the AJAX request. First is the query :
+
+---------------------------------------
+query : "/jcr:root${renderContext.site.JCRPath}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
+---------------------------------------
+
+ Note that we insert the path to the site dynamically, since it might change depending where the component is used. Also
+ we have a reference to the "q" request parameter for search the name. The query is here in XPath format, and we
+ specify the used language in the "language" parameter.
+
+ The propertyMatchRegexp used to match again the properties since the JCR back-end unfortunately doesn't indicate which
+ properties have matched. For more information about this parameter and the next one (removeDuplicatePropValues), please
+ refer to the {{{rest.html}REST API documentation}}.
+
+ * Request example
+
+ The example below is an example of a GET request that is passed to Jahia's Find servlet. Please note that it is possible
+ to use either GET or POST methods to submit queries. For more information about the parameters, please consult the
+ {{{rest.html}REST API}} document.
+
+---------------------------------------
+http://localhost:8080/cms/find/default/en?q=t&limit=10&timestamp=1267191098007&query=%2Fjcr%3Aroot%2Fsites%2FmySite%2F
+tags%2F%2Felement(*%2C+jnt%3Atag)%5Bjcr%3Acontains(.%2C'%7B%24q%7D*')%5D%2F%40j%3Anodename&language=xpath
+&escapeColon=false&propertyMatchRegexp=%7B%24q%7D.*&removeDuplicatePropValues=false
+---------------------------------------
+
+ * Response example
+
+ The response example below is what Jahia answered to the above request query. We have pretty-printed the JSON response
+ to make it easier to read, but Jahia will provide the reply in a much more compact mode. The online beautifier that
+ was used to format the JSON data may be found {{{http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/gfx/demos/beautify.html}here}}.
+
+ What is important to note is that the response is an array of rows, that contain column information such as the score
+ of the result, and also the complete dump of the node, and other columns that may vary depending on the request that
+ was executed.
+
+---------------------------------------
+Content-Length:1721
+Content-Type:application/json;charset=UTF-8
+Date:Fri, 26 Feb 2010 13:31:38 GMT
+Server:Apache-Coyote/1.1
+[
+	{
+		"jcr:score": "1366",
+		"node": {
+			"index": 1,
+			"jcr:createdBy": "root",
+			"jcr:baseVersion": "/repository/default/jcr:system/jcr:versionStorage/5b/92/d7/5b92d76a-ee40-4b17-87e6-911a38db2ddb/jcr:rootVersion",
+			"jcr:versionHistory": "/repository/default/jcr:system/jcr:versionStorage/5b/92/d7/5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"depth": 4,
+			"jcr:lastModifiedBy": "root",
+			"primaryNodeType": "jnt:tag",
+			"j:nodename": "tag1",
+			"j:originWS": "default",
+			"jcr:isCheckedOut": "true",
+			"jcr:lastModified": "2010-02-26T12:14:14.502+01:00",
+			"matchingProperties": [
+				"j:nodename",
+				"jcr:isCheckedOut"
+			],
+			"jcr:created": "2010-02-26T12:14:14.397+01:00",
+			"j:fullpath": "/sites/mySite/tags/tag1",
+			"jcr:uuid": "5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"jcr:primaryType": "jnt:tag",
+			"identifier": "5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"path": "/sites/mySite/tags/tag1"
+		},
+		"j:nodename": "tag1",
+		"jcr:path": "/sites/mySite/tags/tag1"
+	},
+	{
+		"jcr:score": "1366",
+		"node": {
+			"index": 1,
+			"jcr:createdBy": "root",
+			"jcr:baseVersion": "/repository/default/jcr:system/jcr:versionStorage/ab/63/bb/ab63bb78-8708-48aa-a040-82eee22ae5d7/jcr:rootVersion",
+			"jcr:versionHistory": "/repository/default/jcr:system/jcr:versionStorage/ab/63/bb/ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"depth": 4,
+			"jcr:lastModifiedBy": "root",
+			"primaryNodeType": "jnt:tag",
+			"j:nodename": "tag2",
+			"j:originWS": "default",
+			"jcr:isCheckedOut": "true",
+			"jcr:lastModified": "2010-02-26T12:14:18.570+01:00",
+			"matchingProperties": [
+				"j:nodename",
+				"jcr:isCheckedOut"
+			],
+			"jcr:created": "2010-02-26T12:14:18.477+01:00",
+			"j:fullpath": "/sites/mySite/tags/tag2",
+			"jcr:uuid": "ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"jcr:primaryType": "jnt:tag",
+			"identifier": "ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"path": "/sites/mySite/tags/tag2"
+		},
+		"j:nodename": "tag2",
+		"jcr:path": "/sites/mySite/tags/tag2"
+	}
+]
+---------------------------------------
+
+* Full-text search auto-completion
+
+ It is also possible, but a bit harder, to perform full-text search auto-completion. What will change mostly in this
+ example is the query as well as the result building.
+
+ First let's look at the query, we will want to search all nodes and all properties to perform a full text search. We
+ will again use XPath in this example, but it would also be possible (although slower at the time of this writing) to
+ use SQL-2 syntax :
+
+---------------------------------------
+query : "/jcr:root${renderContext.site.JCRPath}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
+language : "xpath",
+escapeColon : "false",
+propertyMatchRegexp : "{$q}.*",
+removeDuplicatePropValues : "true"
+---------------------------------------
+
+ Another different is that we have activated the removal of duplicate property values, since we expect duplicates will
+ be returned, and we only want one value to be returned.
+
+ Now, unlike the tag auto-completion example, any property can match, so we must know which property has matched in
+ order to display it's value. Fortunately, thanks to the "propertyMatchRegexp", a JSON array called "matchedProperties"
+ is built by the Find servlet. We can use this array to choose a property to display as is illustrated in the code
+ below :
+
+---------------------------------------
+ /**
+  * As any property can match the query, we try to intelligently display properties that either matched or make
+  * sense to display.
+  * @param node
+  */
+ function getText(node) {
+     if (node.matchingProperties.length > 0) {
+         var firstMatchingProperty = node.matchingProperties[0];
+         return node[firstMatchingProperty];
+     }
+     if (node["jcr:title"] != null) {
+         return node["jcr:title"];
+     } else if (node["text"] != null) {
+         return node["text"];
+     } else if (node["j:nodename"] != null) {
+         return node["j:nodename"];
+     }
+ }
+---------------------------------------
+
+ In the getText(node) method we have also added a fallback to usual JCR properties in case the matchingProperties was
+ not available.
+
+ You can find the whole source code for full-search text auto-completion in the following location (in the deployed
+ Jahia) :
+
+---------------------------------------
+webapps/ROOT/templates/search/jnt_simpleSearchForm/html/simpleSearchForm.jsp
+---------------------------------------
+
+ Or in Jahia's source code at :
+
+---------------------------------------
+templates/mod-search/src/main/webapp/jnt_simpleSearchForm/html/simpleSearchForm.jsp
 ---------------------------------------

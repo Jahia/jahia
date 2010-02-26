@@ -24,6 +24,10 @@ Jahia Crazy Jane - Templates Module
 
 	  Recommendations about {{{jquery.html} JQuery usages}}.
 
+	* REST API
+
+	  Information on how to use Jahia's REST API is available in the {{{rest.html}REST API documentation page}}.
+
 	* Auto-completion
 
 	  How to integrate {{{autocompletion.html}auto-completion}} into your templates.

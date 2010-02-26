@@ -112,3 +112,94 @@ Basic Jahia REST API
 |                           |             |building unique list of property values for auto-completion.          |
 |                           |             |Defaults to false.                                                    |
 *---------------------------+-------------+----------------------------------------------------------------------+
+
+ Example query (formatted for legibility) :
+
+---------------------------------------
+ http://localhost:8080/cms/find/default/en
+ ?q=t
+ &limit=10
+ &query=%2Fjcr%3Aroot%2Fsites%2FmySite%2Ftags%2F%2Felement(*%2C+jnt%3Atag)%5Bjcr%3Acontains(.%2C'%7B%24q%7D*')%5D%2F%40j%3Anodename
+ &language=xpath
+ &escapeColon=false
+ &propertyMatchRegexp=%7B%24q%7D.*
+ &removeDuplicatePropValues=false
+---------------------------------------
+
+ In the above example, the values are encoded so that makes a bit harder to read. Here are the unencoded values :
+
+---------------------------------------
+ query = /jcr:root/sites/mySite/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename
+ propertyMatchRegexp = {$q}.*
+---------------------------------------
+
+ One important thing is to now the {$q} marker that will actually be replaced with the value of the "q" request parameter
+ specified in the request. This makes it easy to integrate with JQuery plugins that might use specific named request
+ parameters.
+
+ Response :
+
+---------------------------------------
+Content-Length:1721
+Content-Type:application/json;charset=UTF-8
+Date:Fri, 26 Feb 2010 13:31:38 GMT
+Server:Apache-Coyote/1.1
+[
+	{
+		"jcr:score": "1366",
+		"node": {
+			"index": 1,
+			"jcr:createdBy": "root",
+			"jcr:baseVersion": "/repository/default/jcr:system/jcr:versionStorage/5b/92/d7/5b92d76a-ee40-4b17-87e6-911a38db2ddb/jcr:rootVersion",
+			"jcr:versionHistory": "/repository/default/jcr:system/jcr:versionStorage/5b/92/d7/5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"depth": 4,
+			"jcr:lastModifiedBy": "root",
+			"primaryNodeType": "jnt:tag",
+			"j:nodename": "tag1",
+			"j:originWS": "default",
+			"jcr:isCheckedOut": "true",
+			"jcr:lastModified": "2010-02-26T12:14:14.502+01:00",
+			"matchingProperties": [
+				"j:nodename",
+				"jcr:isCheckedOut"
+			],
+			"jcr:created": "2010-02-26T12:14:14.397+01:00",
+			"j:fullpath": "/sites/mySite/tags/tag1",
+			"jcr:uuid": "5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"jcr:primaryType": "jnt:tag",
+			"identifier": "5b92d76a-ee40-4b17-87e6-911a38db2ddb",
+			"path": "/sites/mySite/tags/tag1"
+		},
+		"j:nodename": "tag1",
+		"jcr:path": "/sites/mySite/tags/tag1"
+	},
+	{
+		"jcr:score": "1366",
+		"node": {
+			"index": 1,
+			"jcr:createdBy": "root",
+			"jcr:baseVersion": "/repository/default/jcr:system/jcr:versionStorage/ab/63/bb/ab63bb78-8708-48aa-a040-82eee22ae5d7/jcr:rootVersion",
+			"jcr:versionHistory": "/repository/default/jcr:system/jcr:versionStorage/ab/63/bb/ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"depth": 4,
+			"jcr:lastModifiedBy": "root",
+			"primaryNodeType": "jnt:tag",
+			"j:nodename": "tag2",
+			"j:originWS": "default",
+			"jcr:isCheckedOut": "true",
+			"jcr:lastModified": "2010-02-26T12:14:18.570+01:00",
+			"matchingProperties": [
+				"j:nodename",
+				"jcr:isCheckedOut"
+			],
+			"jcr:created": "2010-02-26T12:14:18.477+01:00",
+			"j:fullpath": "/sites/mySite/tags/tag2",
+			"jcr:uuid": "ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"jcr:primaryType": "jnt:tag",
+			"identifier": "ab63bb78-8708-48aa-a040-82eee22ae5d7",
+			"path": "/sites/mySite/tags/tag2"
+		},
+		"j:nodename": "tag2",
+		"jcr:path": "/sites/mySite/tags/tag2"
+	}
+]
+---------------------------------------

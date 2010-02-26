@@ -76,10 +76,10 @@
                     <div id="shortcuts">
                         <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
                         <ul>
-                            <c:if test="${requestScope.currentRequest.logged}">
+                            <c:if test="${requestScope.renderContext.loggedIn}">
                                 <li class="more-shortcuts">
                                     <a class="loginFormTopLogoutShortcuts"
-                                       href="<template:composePageURL page="logout"/>"><span>logout</span></a>
+                                       href='${url.logout}'><span>logout</span></a>
                                 </li>
                                 <li>
                                     <span class="currentUser"><utility:userProperty/></span>

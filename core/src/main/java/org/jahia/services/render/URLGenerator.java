@@ -3,6 +3,7 @@ package org.jahia.services.render;
 import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Find;
+import org.jahia.bin.Logout;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
@@ -31,6 +32,7 @@ public class URLGenerator {
     private String edit;
     private String preview;
     private String find;
+    private String logout;
 
     private String userProfile;
 
@@ -74,6 +76,7 @@ public class URLGenerator {
         edit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        logout = getContext() + Logout.getLogoutServletPath();
         
         templatesPath = getContext() + "/templates";
     }
@@ -104,6 +107,10 @@ public class URLGenerator {
 
     public String getFind() {
         return find;
+    }
+
+    public String getLogout() {
+        return logout;
     }
 
     public String getUserProfile() {

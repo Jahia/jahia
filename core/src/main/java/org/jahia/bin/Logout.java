@@ -74,4 +74,10 @@ public class Logout extends HttpServlet implements Controller {
         }
         return null;
     }
+
+    public static String getLogoutServletPath() {
+        // TODO move this into configuration
+        return "/cms/logout";
+    }
+
 }

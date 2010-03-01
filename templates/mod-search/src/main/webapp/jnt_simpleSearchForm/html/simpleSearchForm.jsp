@@ -91,7 +91,6 @@
             extraParams: {
                 query : "/jcr:root${renderContext.site.JCRPath}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
-                escapeColon : "false",
                 propertyMatchRegexp : "{$q}.*",
                 removeDuplicatePropValues : "true"
             }

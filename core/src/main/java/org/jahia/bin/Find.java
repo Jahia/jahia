@@ -47,7 +47,7 @@ public class Find extends HttpServlet implements Controller {
 
     private int defaultDepthLimit = 1;
 
-    private boolean defaultEscapeColon = true;
+    private boolean defaultEscapeColon = false;
 
     private int defaultLimit = 0;
 
@@ -149,8 +149,8 @@ public class Find extends HttpServlet implements Controller {
             if (query == null) {
                 return;
             }
-            if (logger.isInfoEnabled()) {
-                logger.info("Executing " + query.getLanguage() + " for workspace '" + workspace + "' and locale '"
+            if (logger.isDebugEnabled()) {
+                logger.debug("Executing " + query.getLanguage() + " for workspace '" + workspace + "' and locale '"
                         + locale + "'. Statement: " + query.getStatement());
             }
             writeResults(query.execute(), request, response, query.getLanguage());
@@ -178,7 +178,7 @@ public class Find extends HttpServlet implements Controller {
         } finally {
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(request.getRequestURI()).append(request.getQueryString());
+                sb.append("Rendered [").append(request.getRequestURI());
                 JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
                 if (user != null) {
                     sb.append("] user=[").append(user.getUsername());
@@ -391,7 +391,7 @@ public class Find extends HttpServlet implements Controller {
             String[] columns = result.getColumnNames();
             boolean serializeRows = columns.length > 0 && !columns[0].contains(".");
 
-            Set alreadyIncludedIdentifiers = new HashSet();
+            Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
             Map<String, String> alreadyIncludedPropertyValues = null;
             if (removeDuplicatePropertyValues) {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();

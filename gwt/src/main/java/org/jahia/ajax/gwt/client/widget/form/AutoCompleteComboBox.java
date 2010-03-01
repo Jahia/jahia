@@ -34,7 +34,8 @@ public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
         setTypeAheadDelay(100);
         setTriggerAction(ComboBox.TriggerAction.ALL);
         setWidth(500);
-        setMinLength(2);
+        setMinChars(2);
+        setQueryDelay(100);
     }
 
 }

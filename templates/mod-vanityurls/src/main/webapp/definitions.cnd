@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:vanityUrl] > nt:base, mix:language
+ - j:url (string) mandatory
+ - j:default (boolean) mandatory nofulltext
+ - j:active (boolean) nofulltext
+
+[jmix:vanityUrlMapped] mixin
+ + j:vanityUrlMapping (jnt:vanityUrl) multiple

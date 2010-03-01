@@ -93,6 +93,7 @@
         <module>mod-skins</module>
         <module>mod-portal</module>
         <module>mod-sitemap</module>
+        <module>mod-vanityurls</module>        
     </modules>
 
 

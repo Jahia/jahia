@@ -62,7 +62,8 @@ Basic Jahia REST API
 * Render
 
  The render servlet can either be used to render content by accessing it with a GET method, or can also be used to add
- content to different workspaces by using a POST method and special parameters.
+ content to different workspaces by using a POST method and special parameters. You can also delete content using DELETE
+ method, or update content using POST or PUT.
 
 ** HTTP Get Request
 
@@ -75,23 +76,84 @@ Basic Jahia REST API
 *---------------------------+-------------+----------------------------------------------------------------------+
 |Name                       |Mandatory    |Description                                                           |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|nodeType                   |             |                                                                      |
+|nodeType                   | yes         | Define the type of node you want to create.                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|nodeName                   |             |                                                                      |
+|nodeName                   | no          | If defined we will create a node with this name (or use it as a      |
+|                           |             | prefix for the name. If not define you can call :                    |
+|                           |             | /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH/*                        |
+|                           |             | To create a subnode at the specified path using the nodetype for     |
+|                           |             | name.                                                                |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|newNodeOutputFormat        |             |                                                                      |
+|newNodeOutputFormat        | no          | Define at which format the newly create dnode will be returned, HTML |
+|                           |             | by default, JSON is another possible value, or any type of output    |
+|                           |             | you have define in  your templates.                                  |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|stayOnNode                 |             |                                                                      |
+|redirectTo                 | no          | If defined will redirect to the specified URL instead of the newly   |
+|                           |             | created node.                                                        |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|methodToCall               |             |                                                                      |
+|methodToCall               | no          | For HTML form to override the method called, this allow to delete    |
+|                           |             | content with a simple POST form instead of send a DELETE HTTP request|
 *---------------------------+-------------+----------------------------------------------------------------------+
-|autoCheckin                |             |                                                                      |
+|autoCheckin                | no          | Allow to force versioning of the newly created content.              |
 *---------------------------+-------------+----------------------------------------------------------------------+
-TBC
+
 
 ** Response format
 
+  The response is by default HTML, if post method is called in a regular request or JSON if defined so in the headers.
+  Header "accept" equals "application/json" and header "x-requested-with" equals "XMLHttpRequest". If HTML we will
+  render the newly created node or updated one with its default template (unless you have specified a
+  different template in the newNodeOuptutFormat).
+  
+
 ** Example
+
+*** Post Example
+
+-----------------------------------------
+<form action="${url.base}${currentNode.path}/*" method="post">
+    <input type="hidden" name="nodeType" value="jnt:post"/>
+    <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+    <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+    <input type="hidden" name="newNodeOutputFormat" value="html"/>
+    <fieldset>
+        <p class="field">
+            <input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="jcr:title"
+                tabindex="1"/>
+        </p>
+
+        <p class="field">
+            <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content" tabindex="2"></textarea>
+        </p>
+
+        <p class="forum_button">
+            <input type="reset" value="Reset" class="button" tabindex="3"/>
+
+            <input type="submit" value="Submit" class="button" tabindex="4"/>
+        </p>
+    </fieldset>
+</form>
+-----------------------------------------
+
+   This will create a new comments in a thread of a forum. And after submission we want to redisplay the curren thread,
+   this is why we used the redirectTo parameter.
+
+*** Delete Example
+
+-----------------------------------------
+    <form action="${url.base}${currentNode.path}" method="post"
+          id="jahia-forum-post-delete-${currentNode.UUID}">
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="methodToCall" value="delete"/>
+    </form>
+
+    <a title="<fmt:message key='delete.post'/>" href="#"
+    onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.post"/></span>
+-----------------------------------------
+
+    This example shows how to write a simple form to delete a content with a simple link.
 
 * Find
 

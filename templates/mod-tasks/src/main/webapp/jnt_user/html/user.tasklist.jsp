@@ -11,7 +11,7 @@
 
 <form name="myform" method="post">
     <input type="hidden" name="nodeType" value="jnt:task">
-    <input type="hidden" name="stayOnNode" value="${url.base}${currentNode.path}.tasklist">
+    <input type="hidden" name="redirectTo" value="${url.base}${currentNode.path}.tasklist">
     <input type="hidden" name="state">
 </form>
 

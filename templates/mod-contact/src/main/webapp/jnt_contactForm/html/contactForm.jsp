@@ -8,8 +8,8 @@
 <div class="Form contactForm">
     <form action="${url.base}${currentNode.path}/*" method="post">
         <input type="hidden" name="nodeType" value="jnt:contact"/>
-        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-        <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <c:set var="props" value="${currentNode.properties}"/>
         <jcr:nodeType name="jnt:contact" var="contactType"/>

@@ -4,38 +4,10 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="forum.css" nodetype="jnt:boardIndex"/>
-<%--<form action="${url.base}${currentNode.path}/*" method="post">
-    <input type="hidden" name="nodeType" value="jnt:topic"/>
-    <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-    --%><%-- Define the output format for the newly created node by default html or by stayOnNode--%><%--
-    <input type="hidden" name="newNodeOutputFormat" value="detail.html">
-
-    <div id="commentsForm"><!--start commentsForm-->
-        <p></p>
-        <fieldset>
-
-
-            <p class="field">
-                <input type="text" size="35" name="topicSubject"
-                       value="New Topic Subject" tabindex="1"/>
-            </p>
-
-            --%><%--<p class="field">
-                <textarea rows="7" cols="35" name="boardDescription" tabindex="2"></textarea>
-            </p>--%><%--
-
-            <p class="commentsForm_button">
-                <input type="reset" value="Reset" class="button" tabindex="3"/>
-
-                <input type="submit" value="Save" class="button" tabindex="4"/>
-            </p>
-        </fieldset>
-    </div>
-</form>--%>
 <form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:topic"/>
-    <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+    <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+    <%-- Define the output format for the newly created node by default html or by redirectTo--%>
     <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
 
     <div class="post-reply"><!--start post-reply-->

@@ -12,7 +12,7 @@
 
     <form method="post" action="${url.base}${currentNode.path}/*">
         <input type="hidden" name="nodeType" value="jnt:task">
-        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}">
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}">
         <fieldset>
             <legend>
                 <fmt:message key="jnt_task.newTask"/>

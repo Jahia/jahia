@@ -36,7 +36,7 @@
 
 					// Send request to the server using POST method
 					$.post("${url.base}${currentNode.path}", {'j:lastVote': value,
-                        stayOnNode:"${url.base}${renderContext.mainResource.node.path}",
+                        redirectTo:"${url.base}${renderContext.mainResource.node.path}",
                         newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
 					{
 							// Select stars from "Average rating" control to match the returned average rating value

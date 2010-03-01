@@ -7,8 +7,8 @@
 <c:if test="${renderContext.user.name != 'guest'}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-vote-${currentNode.UUID}">
-        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="put"/>
         <input type="hidden" name="j:lastVote" value="1"/>

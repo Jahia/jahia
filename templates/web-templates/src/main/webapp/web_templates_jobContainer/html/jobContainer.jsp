@@ -56,7 +56,7 @@
             <div class="jobsApplyForm">
                 <form action="${url.base}${currentNode.path}/jobAnswers/*" method="post">
                     <input type="hidden" name="nodeType" value="web_templates:answerJobContainer"/>
-                    <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+                    <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
                     <input type="hidden" name="newNodeOutputFormat" value="html"/>
                     <fieldset>
                         <p class="field">

@@ -17,8 +17,8 @@
     <form action="${url.base}${currentNode.path}/*" method="post">
 </c:if>
 <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
-<input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-<%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+<%-- Define the output format for the newly created node by default html or by redirectTo--%>
 <input type="hidden" name="newNodeOutputFormat" value="html"/>
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
     <template:module node="${formElement}" template="default" editable="true"/>

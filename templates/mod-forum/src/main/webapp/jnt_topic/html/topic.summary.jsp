@@ -19,8 +19,8 @@
 <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-topic-delete-${currentNode.UUID}">
-        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>

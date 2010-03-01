@@ -13,7 +13,7 @@
 <c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 <form action="${url.base}${currentNode.path}" method="post" name="userProfile">
 <input type="hidden" name="methodToCall" value="put"/>
-<input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
 <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
 <input type="hidden" name="j:picture" id="myAvatar" value="${not empty picture ? picture.string : ''}"/>
 <%--

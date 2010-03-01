@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -93,10 +92,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     private static Logger logger = Logger.getLogger(Render.class);
 
+// Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "nodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
-    public static final String STAY_ON_NODE = "stayOnNode";
+    public static final String REDIRECT_TO = "redirectTo";
     public static final String METHOD_TO_CALL = "methodToCall";
     public static final String AUTO_CHECKIN = "autoCheckin";
 
@@ -108,7 +108,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(NODE_TYPE);
         reservedParameters.add(NODE_NAME);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
-        reservedParameters.add(STAY_ON_NODE);
+        reservedParameters.add(REDIRECT_TO);
         reservedParameters.add(METHOD_TO_CALL);
         reservedParameters.add(AUTO_CHECKIN);
     }
@@ -407,7 +407,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
                     "UTF-8").replace("%2F","/").replace("+","%20"))) + url + "." + outputFormat;
         }
-        String stayOnPage = req.getParameter(STAY_ON_NODE);
+        String stayOnPage = req.getParameter(REDIRECT_TO);
         if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
             stayOnPage = null;
         }

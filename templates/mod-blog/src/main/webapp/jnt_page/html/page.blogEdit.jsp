@@ -10,7 +10,8 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-<template:addWrapper name="blogWrapper"/>
+
+<template:addWrapper name="hidden.blogWrapper"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/ckeditor/ckeditor.js,ckeditor_init.js"/>
 <script type="text/javascript">
@@ -23,6 +24,7 @@
         });
     });
 </script>
+<div class="grid_10  alpha omega">
 <form method="post" action="${currentNode.name}/" name="blogPost">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:blogContent">
@@ -71,4 +73,4 @@
         <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
     </p>
 </form>
-
+</div>

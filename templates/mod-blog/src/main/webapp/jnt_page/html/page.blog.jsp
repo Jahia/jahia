@@ -7,6 +7,7 @@
 <template:addResources type="css" resources="blog.css"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <%--add category Filter--%>
+<div class="grid_10  alpha omega">
 <c:if test="${! empty param.addTag}">
     <c:choose>
     <c:when test="${empty tagFilter}">
@@ -48,7 +49,7 @@
     <c:set var="tagFilter" value="" scope="session"/>    
 </c:if>
 
-<template:addWrapper name="blogWrapper"/>
+<template:addWrapper name="hidden.blogWrapper"/>
 <div class="post" id="${currentNode.UUID}-blogContents">
     <div class="addArticle"><!--start preferences-->
     <h3><a class="addArticle"
@@ -115,4 +116,5 @@
     </div>
     <!--stop pagination-->
 </c:if>
+</div>
 </div>

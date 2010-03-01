@@ -1,5 +1,5 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="css" resources="01web.css,02mod.css" />
+<template:addResources type="css" resources="960.css,01web.css,02mod.css" />
 
 
 <div id="bodywrapper"><!--start bodywrapper-->

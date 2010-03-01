@@ -26,9 +26,9 @@
 
         <div class="peopleAction">
             <a class="peopleDownload" href="${picture.node.url}" rel="facebox" target="blank"><fmt:message
-                    key='web_templates_peopleContainer.peopleViewFullSize'/></a>
+                    key='web_templates_peopleContainer.ViewFullSize'/></a>
             <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
-                    key='web_templates_peopleContainer.peopleBiography'/></a>
+                    key='web_templates_peopleContainer.biography'/></a>
         </div>
         <div id="collapseBox${currentNode.identifier}" class="collapsible">
             <jcr:nodeProperty node="${currentNode}" name="peopleBiography"/>

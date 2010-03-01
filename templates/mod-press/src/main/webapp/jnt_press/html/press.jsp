@@ -11,7 +11,7 @@
 <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="pressReleaseContainerCatKeys"/>
 <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <fmt:message key='category'/> : <ui:displayCategoryTitle
+                <fmt:message key='label.category'/> : <ui:displayCategoryTitle
                     categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
 </c:if>

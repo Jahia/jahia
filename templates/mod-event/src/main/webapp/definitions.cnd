@@ -4,5 +4,5 @@
  - startDate (date)
  - endDate (date)
  - location (string) i18n facetable
- - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumer.show,road.show,conference
+ - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
  - body (string, richtext) i18n

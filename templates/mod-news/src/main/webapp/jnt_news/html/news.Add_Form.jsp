@@ -16,7 +16,7 @@
         <h4><input type="text" name="newsTitle" value="${newsTitle.string}"/></h4>
 
         <p class="newsInfo">
-            <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
+            <span class="newsLabelDate"><fmt:message key="label.date"/> :</span>
             <span class="newsDate">
                 <fmt:formatDate value="${newsDate.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${newsDate.time}" pattern="HH:mm" var="dateTimeNews"/>
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>

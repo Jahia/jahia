@@ -65,20 +65,20 @@
                     </c:if>
                     <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
                                                       onclick="javascript:window.print()">
-                        <fmt:message key="web_templates.print"/></a>
+                        <fmt:message key="label.print"/></a>
                     </li>
                     <li class="topshortcuts-typoincrease">
-                        <a href="javascript:ts('body',1)"><fmt:message key="web_templates.up"/></a>
+                        <a href="javascript:ts('body',1)"><fmt:message key="label.font.up"/></a>
                     </li>
                     <li class="topshortcuts-typoreduce">
-                        <a href="javascript:ts('body',-1)"><fmt:message key="web_templates.down"/></a>
+                        <a href="javascript:ts('body',-1)"><fmt:message key="label.font.down"/></a>
                     </li>
                     <li class="topshortcuts-home">
-                        <a href="${url.base}${rootPage.path}.html"><fmt:message key="web_templates.home"/></a>
+                        <a href="${url.base}${rootPage.path}.html"><fmt:message key="label.home"/></a>
                     </li>
                     <li class="topshortcuts-sitemap">
                         <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
-                                key="web_templates.sitemap"/></a>
+                                key="label.sitemap"/></a>
                     </li>
                 </ul>
             </div>

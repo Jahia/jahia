@@ -15,12 +15,12 @@
 <div>${currentNode.properties.body.string}</div>
 <jcr:nodeProperty node="${currentNode}" name="pdfVersion" var="pdfVersion"/>
 <c:if test="${not empty pdfVersion}">
-    <div><strong><fmt:message key="web_templates_publicationContainer.download"/> :</strong>
+    <div><strong><fmt:message key="label.download"/> :</strong>
         <a href="${pdfVersion.node.url}">${pdfVersion.node.name}</a></div>
 </c:if>
 <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <fmt:message key='category'/> : <ui:displayCategoryTitle
+                <fmt:message key='label.category'/> : <ui:displayCategoryTitle
                     categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
 </c:if>

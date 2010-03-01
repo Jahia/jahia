@@ -13,7 +13,7 @@
         <h4><a href="${url.current}"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
         <p class="newsInfo">
-            <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
+            <span class="newsLabelDate"><fmt:message key="label.date"/> :</span>
             <span class="newsDate">
                 <fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/>
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
@@ -25,6 +25,6 @@
             ${currentNode.properties.desc.string}
         </p>
 
-        <div class="more"><span><a href="${url.current}"><fmt:message key="news.readmore"/></a></span></div>
+        <div class="more"><span><a href="${url.current}"><fmt:message key="label.read"/>: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></span></div>
         <div class="clear"> </div>
     </div>

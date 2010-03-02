@@ -44,7 +44,7 @@
     <artifactId>mod-vanityurls</artifactId>
     <name>Jahia Vanity URLs Mapping</name>
     <packaging>war</packaging>
-    <description>This is a custom module for running on a Jahia server.</description>
+    <description>Jahia module that provides SEO-friendly URL mapping for content.</description>
     <repositories>
         <repository>
             <id>jahiaRepository</id>
@@ -118,9 +118,10 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <root-folder>publication</root-folder>
+                            <root-folder>vanityurls</root-folder>
                         </manifestEntries>
                     </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

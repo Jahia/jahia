@@ -6,21 +6,6 @@
 
 <c:set value="true" var="editable" scope="request"/>
 <c:choose>
-    <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
-        <c:set scope="request" var="paginationActive" value="true"/>
-        <c:set scope="request" value="${currentNode.properties['pageSize'].long}" var="pageSize"/>
-        <c:if test="${not empty param.begin}">
-            <c:set var="begin" value="param.begin" scope="request"/>
-        </c:if>
-        <c:if test="${empty param.begin}">
-            <c:set var="begin" value="0" scope="request"/>
-        </c:if>
-    </c:when>
-    <c:otherwise>
-        <c:set var="begin" value="0" scope="request"/>
-    </c:otherwise>
-</c:choose>
-<c:choose>
     <c:when test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
         <jcr:jqom var="sortedChildren">
             <query:selector nodeTypeName="nt:base"/>

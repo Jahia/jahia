@@ -8,7 +8,14 @@
 <div id="${currentNode.UUID}">
 
     <c:remove var="currentList" scope="request"/>
-
+    <c:choose>
+        <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
+            <c:set scope="request" var="paginationActive" value="true"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="begin" value="0" scope="request"/>
+        </c:otherwise>
+    </c:choose>
     <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
         <template:param name="forcedSkin" value="none"/>
     </template:module>
@@ -27,7 +34,7 @@
             <c:if test="${not empty renderOptions}">
                 <template:param name="renderOptions" value="${renderOptions}"/>
             </c:if>
-         </template:module>
+        </template:module>
     </c:forEach>
 
     <c:if test="${editable and renderContext.editMode}">

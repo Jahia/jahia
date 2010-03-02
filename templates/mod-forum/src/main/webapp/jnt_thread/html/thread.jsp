@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="forum.css" nodetype="jnt:thread"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js" nodetype="jnt:thread"/>
-<script language="javascript1.5">
+<script>
     function initCuteTime() {
         $('.timestamp').cuteTime({ refresh: 60000 });
     }

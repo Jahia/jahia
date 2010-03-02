@@ -13,3 +13,5 @@
 <c:set var="forcedSkin" value="none"/>
 <c:set var="renderOptions" value="none"/>
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
+<c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
+<c:set var="totalSize" value="${end}" scope="request"/>

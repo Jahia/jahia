@@ -44,14 +44,13 @@
             </c:forEach>
         </ul>
         <div class="post-content">
-            <p>
                 <textarea name="text" rows="10" cols="80" id="editContent">
                     ${fn:escapeXml(text.string)}
-                </textarea>
+                </textarea>	<br/>
+            <p>
+
                 <fmt:message key="tag.this.article"/>:&nbsp;
                 <input type="text" name="j:newTag" value="${tags}"/>
-            </p>
-            <p class="c_button">
                 <input
                         class="button"
                         type="button"

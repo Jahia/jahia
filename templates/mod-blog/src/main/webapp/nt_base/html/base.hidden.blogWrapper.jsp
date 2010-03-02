@@ -7,19 +7,28 @@
 
 <template:addResources type="css" resources="blog.css"/>
 <%--Filters Settings--%>
-<div class="grid_10">
+<div class="grid_11">
+<div class="boxblog">
+        <div class="boxblogshadow boxblogpadding16 boxblogmarginbottom16">
+            <div class="boxblog-inner">
+                <div class="boxblog-inner-border"><!--start boxblog -->
 ${wrappedContent}
+    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
     </div>
-<div class="bottomanchor"><!--start anchor--><a href="base.hidden.blogWrapper.jsp#bodywrapper">Page Top </a></div>
-<!--stop grid_10-->
-<div class='grid_6'><!--start grid_6-->
+    <!--stop boxblog -->
+    </div>
+
+<!--stop grid_12-->
+<div class='grid_5'><!--start grid_5-->
     <img src="${url.currentModule}/images/jahia-apps-blog.png" alt="jahia-apps-blog"/>
 
-    <div class="box">
-
-        <div class="boxgrey boxpadding16 boxmarginbottom16">
-            <div class="box-inner">
-                <div class="box-inner-border"><!--start box -->
+    <div class="boxblog">
+        <div class="boxbloggrey boxblogpadding16 boxblogmarginbottom16">
+            <div class="boxblog-inner">
+                <div class="boxblog-inner-border"><!--start boxblog -->
 
                     <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
                         <c:set var="blogHome" value="${url.base}${currentResource.node.parent.path}.html"/>
@@ -140,8 +149,8 @@ ${wrappedContent}
             </div>
         </div>
     </div>
-    <!--stop box -->
+    <!--stop boxblog -->
 
     <div class='clear'></div>
 </div>
-<!--stop grid_6-->
+<!--stop grid_5-->

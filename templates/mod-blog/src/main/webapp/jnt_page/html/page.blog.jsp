@@ -7,7 +7,7 @@
 <template:addResources type="css" resources="blog.css"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <%--add category Filter--%>
-<div class="grid_10  alpha omega">
+
 <c:if test="${! empty param.addTag}">
     <c:choose>
     <c:when test="${empty tagFilter}">
@@ -116,5 +116,4 @@
     </div>
     <!--stop pagination-->
 </c:if>
-</div>
 </div>

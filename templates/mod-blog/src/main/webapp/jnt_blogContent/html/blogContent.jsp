@@ -21,7 +21,10 @@
 <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
-
+<div class="boxblog">
+        <div class="boxblogshadow boxblogpadding16 boxblogmarginbottom16">
+            <div class="boxblog-inner">
+                <div class="boxblog-inner-border"><!--start boxblog -->
 <div class="post">
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
@@ -57,7 +60,13 @@
         </c:if>
         <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
     </p>
-    <a name="comments"/>
+                    <div class="clear"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--stop boxblog -->
     <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
 </div>
 

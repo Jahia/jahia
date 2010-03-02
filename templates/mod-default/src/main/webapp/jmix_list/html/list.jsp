@@ -1,47 +1,16 @@
-<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
-<div id="${currentNode.UUID}">
-
-    <c:remove var="currentList" scope="request"/>
-    <c:choose>
-        <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
-            <c:set scope="request" var="paginationActive" value="true"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="begin" value="0" scope="request"/>
-        </c:otherwise>
-    </c:choose>
-    <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
-        <template:param name="forcedSkin" value="none"/>
+<%@include file="../include/header.jspf" %>
+<c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+    <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}">
+        <c:if test="${not empty forcedSkin}">
+            <template:param name="forcedSkin" value="${forcedSkin}"/>
+        </c:if>
+        <c:if test="${not empty renderOptions}">
+            <template:param name="renderOptions" value="${renderOptions}"/>
+        </c:if>
     </template:module>
-
-    <c:if test="${empty editable}">
-        <c:set var="editable" value="false"/>
-    </c:if>
-    <c:if test="${not empty paginationActive}">
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-    </c:if>
-    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-        <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}">
-            <c:if test="${not empty forcedSkin}">
-                <template:param name="forcedSkin" value="${forcedSkin}"/>
-            </c:if>
-            <c:if test="${not empty renderOptions}">
-                <template:param name="renderOptions" value="${renderOptions}"/>
-            </c:if>
-        </template:module>
-    </c:forEach>
-
-    <c:if test="${editable and renderContext.editMode}">
-        <template:module path="*"/>
-    </c:if>
-    <c:if test="${not empty paginationActive}">
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
-    </c:if>
-</div>
-<template:removePager/>
+</c:forEach>
+<div class="clear"></div>
+<c:if test="${editable and renderContext.editMode}">
+    <template:module path="*"/>
+</c:if>
+<%@include file="../include/footer.jspf" %>

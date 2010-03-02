@@ -10,7 +10,10 @@
 	font-family: MetaPro-Medium;
 	src: url('fonts/MetaPro-Medium.otf');
 }
-
+@font-face {
+	font-family: MetaPro-MediumItalic;
+	src: url('fonts/MetaPro-MediumItalic.otf');
+}
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
 
 img,body,html{border:0;}
@@ -23,7 +26,7 @@ body {
 	color:#333;
 	margin:0;
 	padding:0;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Georgia,Times,'Times New Roman',serif;
 	line-height:normal;
 	font-size:80%;
 	line-height:160%
@@ -294,9 +297,10 @@ shortcuts
 	padding-left:8px;
 }
 #bodywrapper div.intro{
-	font-size:16px;
+	font-size:1.4em;
 	font-style:italic;
-	line-height:22px;
+	line-height:1.2em;
+	font-family: MetaPro-MediumItalic, Arial, Helvetica, sans-serif;
 }
 #bodywrapper div.intro p{
 	padding:10px 0;

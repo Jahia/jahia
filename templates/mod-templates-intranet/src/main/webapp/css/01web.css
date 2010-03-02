@@ -129,7 +129,8 @@ shortcuts
 	bottom:0;
 	position:absolute;
 	right:0;
-	color:#fff
+	color:#fff;
+	margin:0;
 }
 #navigation #shortcuts h3:hover {
 	background-image:url(img/shortcuts-bg-on.png);
@@ -322,7 +323,7 @@ shortcuts
 	padding:0;
 	color:#666;
 	font-weight:normal;
-	font-size:2.8em;
+	font-size:2.2em;
 	line-height:normal;
 	padding:0 0 0.5em 0;
 	background:none;

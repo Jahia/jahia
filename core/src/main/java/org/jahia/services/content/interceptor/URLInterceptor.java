@@ -288,7 +288,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                                 }
                                 currentPath = currentPath.substring(0, i);
                             } else {
-                                throw new PathNotFoundException("not found");
+                                throw new PathNotFoundException("not found in "+path);
                             }
                             try {
                                 reference = session.getNode(currentPath);
@@ -299,7 +299,20 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                         }
                         value = CMS_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, cmsContext);
                     } else {
-                        reference = session.getNode(currentPath);
+                        // retrieve path
+                        while (true) {
+                            if (StringUtils.contains(currentPath,'/')) {
+                                currentPath = StringUtils.substringAfter(currentPath,"/");
+                            } else {
+                                throw new PathNotFoundException("not found in "+path);
+                            }
+                            try {
+                                reference = session.getNode("/"+currentPath);
+                                break;
+                            } catch (PathNotFoundException e) {
+                                // continue
+                            }
+                        }
                         value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
                     }
                 } catch (PathNotFoundException e) {
@@ -374,7 +387,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                         nodePath = session.getNodeByUUID(uuid).getPath();
                     } catch (ItemNotFoundException infe) {
                         logger.warn("Cannot found referenced item : "+uuid);
-                        nodePath = "#";
+                        nodePath = "/#";
                     }
                     String value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {

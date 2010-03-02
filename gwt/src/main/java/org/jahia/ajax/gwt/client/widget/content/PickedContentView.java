@@ -354,7 +354,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         }else{
             List<String> pathes = new ArrayList<String>();
             for(GWTJahiaNode s:selectedContents){
-                pathes.add(s.getPath());
+                pathes.add(s.getUrl());
             }
             return pathes;
         }

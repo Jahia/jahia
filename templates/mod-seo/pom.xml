@@ -41,8 +41,8 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.templates</groupId>
-    <artifactId>mod-vanityurls</artifactId>
-    <name>Jahia Vanity URLs Mapping</name>
+    <artifactId>mod-seo</artifactId>
+    <name>Jahia SEO</name>
     <packaging>war</packaging>
     <description>Jahia module that provides SEO-friendly URL mapping for content.</description>
     <repositories>
@@ -118,7 +118,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <root-folder>vanityurls</root-folder>
+                            <root-folder>seo</root-folder>
                         </manifestEntries>
                     </archive>
 	                <archiveClasses>true</archiveClasses>

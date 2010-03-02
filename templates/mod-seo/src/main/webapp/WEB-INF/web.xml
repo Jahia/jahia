@@ -39,6 +39,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
 
-    <display-name>Jahia Vanity URLs</display-name>
+    <display-name>Jahia SEO</display-name>
 
 </web-app>

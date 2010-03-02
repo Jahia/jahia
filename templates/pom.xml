@@ -75,25 +75,25 @@
         <module>mod-news</module>
         <module>mod-grid</module>
         <module>mod-people</module>
+        <module>mod-portal</module>
         <module>mod-press</module>
         <module>mod-publication</module>
         <module>mod-rating</module>
         <module>mod-roles</module>
         <module>mod-rss</module>
+        <module>mod-scriptlanguages</module>
         <module>mod-search</module>
+        <module>mod-seo</module>        
+        <module>mod-sitemap</module>
+        <module>mod-skins</module>
         <module>mod-tasks</module>
         <module>mod-test</module>
         <module>mod-templates-web</module>
         <module>mod-templates-intranet</module>
         <module>mod-topstories</module>
         <module>mod-wiki</module>
-        <module>mod-scriptlanguages</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
-        <module>mod-skins</module>
-        <module>mod-portal</module>
-        <module>mod-sitemap</module>
-        <module>mod-vanityurls</module>        
     </modules>
 
 

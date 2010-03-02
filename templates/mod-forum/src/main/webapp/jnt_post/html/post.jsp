@@ -22,11 +22,6 @@
 </c:if>
 <template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
 <span class="forum-corners-top"><span></span></span>
-<script language="javascript1.5">
-    $(document).ready(function () {
-        $('.timestamp').cuteTime({ refresh: 60000 });
-    });    
-</script>
 <div class="forum-postbody">
     <ul class="forum-profile-icons">
         <c:if test="${renderContext.user.name != 'guest'}">

@@ -7,13 +7,13 @@
 
 [jmix:sendAsNewsletter] mixin
 
-[jmix:filter] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
+[jmix:userFilterable] > jmix:option, jmix:listMixin mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
-[jmix:pager] > jmix:layout, jmix:listMixin, jmix:templateMixin mixin
- - pageSize (long)
+[jmix:pager] > jmix:layout, jmix:listMixin mixin
+ - pageSize (long) = 10 autocreated
 
 [jmix:orderedList] > jmix:layout, jmix:listMixin mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no

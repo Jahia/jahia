@@ -4,7 +4,7 @@
 [jnt:post] > jnt:content, jmix:rating, mix:title
  - content (string,richtext) i18n
 
-[jnt:thread] > jnt:content, jmix:interactiveContent
+[jnt:thread] > jnt:content, jmix:interactiveContent, jmix:pager
  - threadSubject (string)
  + * (jnt:post)
 

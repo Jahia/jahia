@@ -660,7 +660,7 @@
         </description>
         <name>option</name>
         <tag-class>org.jahia.taglibs.template.include.OptionTag</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <description>Node to include in the page</description>
             <name>node</name>
@@ -757,6 +757,12 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+    </tag>
+    <tag>
+        <description>Remove pager properties from request</description>
+        <name>removePager</name>
+        <tag-class>org.jahia.taglibs.template.pager.RemovePagerTag</tag-class>
+        <body-content>empty</body-content>
     </tag>
 
     <tag>

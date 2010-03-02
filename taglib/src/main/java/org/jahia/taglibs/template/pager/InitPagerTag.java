@@ -1,5 +1,7 @@
 package org.jahia.taglibs.template.pager;
 
+import javax.jcr.RangeIterator;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 
@@ -14,7 +16,9 @@ public class InitPagerTag extends TagSupport {
     private String prefix;
 
     private int pageSize;
-    private int totalSize;
+    private long totalSize;
+
+    private Object items;
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -32,21 +36,26 @@ public class InitPagerTag extends TagSupport {
         int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
         int end = endStr == null ? pageSize-1 : Integer.parseInt(endStr);
 
-        int nbPages = totalSize / pageSize;
+        long nbPages = totalSize / pageSize;
         if (nbPages * pageSize < totalSize) {
             nbPages ++;
         }
-        pageContext.setAttribute("begin", begin);
-        pageContext.setAttribute("end", end);
-        pageContext.setAttribute("pageSize", pageSize);
-        pageContext.setAttribute("nbPages", nbPages);
-        pageContext.setAttribute("currentPage", begin/pageSize + 1);
-
-        return super.doStartTag();    //To change body of overridden methods use File | Settings | File Templates.
+        pageContext.setAttribute("begin", begin, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("end", end, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("pageSize", pageSize, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("nbPages", nbPages, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("currentPage", begin/pageSize + 1, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("paginationActive", true, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("totalSize", totalSize, PageContext.REQUEST_SCOPE);
+        return super.doStartTag();
     }
 
     @Override
     public int doEndTag() throws JspException {
-        return super.doEndTag();    //To change body of overridden methods use File | Settings | File Templates.
+        return super.doEndTag();
+    }
+
+    public void setItems(Object items) {
+        this.items = items;
     }
 }

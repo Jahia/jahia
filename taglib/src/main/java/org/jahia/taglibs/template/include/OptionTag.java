@@ -33,10 +33,14 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
@@ -44,6 +48,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,11 +59,12 @@ import java.io.IOException;
  * @since : JAHIA 6.1
  *        Created : 27 oct. 2009
  */
-public class OptionTag extends BodyTagSupport {
+public class OptionTag extends BodyTagSupport implements ParamParent {
     private transient static Logger logger = Logger.getLogger(OptionTag.class);
     private String nodetype;
     private JCRNodeWrapper node;
     private String template;
+    private Map<String, String> parameters = new HashMap<String, String>();
 
     /**
      * Default processing of the end tag returning EVAL_PAGE.
@@ -68,11 +76,16 @@ public class OptionTag extends BodyTagSupport {
     @Override
     public int doEndTag() throws JspException {
         try {
+            String charset = pageContext.getResponse().getCharacterEncoding();
             // Todo test if module is active
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
                                                                                    PageContext.REQUEST_SCOPE);
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(
+                        param.getValue(), charset));
+            }
             if (node.isNodeType(nodetype)) {
                 final ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
@@ -96,6 +109,7 @@ public class OptionTag extends BodyTagSupport {
         nodetype = null;
         node = null;
         template = null;
+        parameters.clear();
         return super.doEndTag();
     }
 
@@ -109,5 +123,9 @@ public class OptionTag extends BodyTagSupport {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public void addParameter(String name, String value) {
+        parameters.put(name, value);
     }
 }

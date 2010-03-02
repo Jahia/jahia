@@ -1,4 +1,4 @@
-function replace(id, url) {
+function replace(id, url, callback) {
     var http = false;
     if(navigator.appName == "Microsoft Internet Explorer") {
         http = new ActiveXObject("Microsoft.XMLHTTP");
@@ -11,6 +11,7 @@ function replace(id, url) {
             result = http.responseText;
             result = result.replace('<div id="' + id + '">', '<div id="replaced' + id + '">');
             document.getElementById(id).innerHTML = result;
+            eval(callback);
         }
     }
     http.send(null);

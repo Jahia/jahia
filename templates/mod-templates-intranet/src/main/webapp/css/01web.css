@@ -1,3 +1,16 @@
+/******************************************************************************
+* Fonts
+******************************************************************************/
+@font-face {
+	font-family: MetaPro-Black;
+	src: url('fonts/MetaPro-Black.otf');
+}
+
+@font-face {
+	font-family: MetaPro-Medium;
+	src: url('fonts/MetaPro-Medium.otf');
+}
+
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
 
 img,body,html{border:0;}
@@ -303,12 +316,15 @@ shortcuts
 #bodywrapper h2.pagetitle {
 	margin:0;
 	padding:0;
-	color:#666666;
+	color:#666;
 	font-weight:normal;
 	font-size:2.8em;
 	line-height:normal;
 	padding:0 0 0.5em 0;
 	background:none;
+	text-shadow: 0 1px 1px #b4a79c;
+	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
+	text-transform:uppercase
 }
 #bodywrapper h2 {
 	font-weight:normal;
@@ -317,7 +333,7 @@ shortcuts
 	margin-bottom:10px;
 	margin-top:15px;
 	background:transparent url(img/hr-bg.png) repeat-x bottom left;
-
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
 }
 
 #bodywrapper h3 {
@@ -325,6 +341,7 @@ shortcuts
 	font-size:1.6em;
 	margin-bottom:10px;
 	margin-top:10px;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
 }
 
 #bodywrapper h4 {
@@ -332,10 +349,12 @@ shortcuts
 	font-size:1.2em;
 	margin-bottom:10px;
 	margin-top:10px;
+	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
 }
 #bodywrapper h5 {
 	font-weight:bold;
 	font-size:1em;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
 }
 
 #bodywrapper fieldset {

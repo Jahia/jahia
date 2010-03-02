@@ -31,12 +31,10 @@
  */
 package org.jahia.services.templates;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 import org.jahia.services.content.rules.ModuleGlobalObject;
@@ -51,8 +49,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
+
 /**
  * Template packages registry service.
  *
@@ -108,11 +106,9 @@ class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
-    @SuppressWarnings("unchecked")
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions = new HashMap<String,Action>();
-    private Map<String,ChoiceListInitializer> choiceListInitializer = new HashMap<String,ChoiceListInitializer>();
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
@@ -247,20 +243,6 @@ class TemplatePackageRegistry {
             rootFolder = new File(templatePackage.getFilePath());
         }
 
-        try {
-            File classesFolder = new File(rootFolder, "WEB-INF/classes");
-            if (classesFolder.exists()) {
-                FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
-                FileUtils.deleteDirectory(new File(rootFolder, "WEB-INF/classes"));
-            }
-            File webInfFolder = new File(rootFolder, "WEB-INF");
-            if (webInfFolder.exists() && webInfFolder.list().length == 0) {
-                webInfFolder.delete();
-            }
-        } catch (IOException e) {
-            logger.error("Cannot deploy classes for templates "+templatePackage.getName(),e);
-        }
-
         // register content definitions
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
@@ -360,4 +342,5 @@ class TemplatePackageRegistry {
         }
         // TODO implement dependency (inheritance) validation for template sets
     }
+
 }

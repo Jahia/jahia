@@ -129,6 +129,7 @@
                             <root-folder>portal</root-folder>
                         </manifestEntries>
                     </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

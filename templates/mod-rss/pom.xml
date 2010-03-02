@@ -127,6 +127,7 @@
                             <root-folder>rss</root-folder>
                         </manifestEntries>
                     </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

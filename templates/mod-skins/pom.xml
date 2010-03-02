@@ -148,6 +148,7 @@
 	                        <root-folder>skins</root-folder>
 	                    </manifestEntries>
 	                </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

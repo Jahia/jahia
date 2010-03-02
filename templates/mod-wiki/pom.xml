@@ -146,6 +146,7 @@
                             <root-folder>wiki</root-folder>
                         </manifestEntries>
                     </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

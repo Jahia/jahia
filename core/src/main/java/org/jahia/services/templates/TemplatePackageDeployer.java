@@ -45,6 +45,7 @@ import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
 import org.jahia.utils.zip.PathFilter;
+import org.springframework.web.context.ServletContextAware;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -56,12 +57,14 @@ import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
+import javax.servlet.ServletContext;
+
 /**
  * Template package deployer service.
  *
  * @author Sergiy Shyrkov
  */
-class TemplatePackageDeployer {
+class TemplatePackageDeployer implements ServletContextAware {
 
     class TemplatesWatcher extends TimerTask {
         private Map<String, Long> timestamps = new HashMap<String, Long>();
@@ -158,6 +161,8 @@ class TemplatePackageDeployer {
     
     private TemplatePackageApplicationContextLoader contextLoader;
 
+    private ServletContext servletContext;
+    
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
             logger.warn("Template package name '" + pkg.getName() + "' is not valid. Setting it to 'templates'.");
@@ -261,11 +266,6 @@ class TemplatePackageDeployer {
         }
         if (!tmplRootFolder.exists()) {
             logger.info("Start deploying new template package '" + packageName + "'");
-            if (tmplRootFolder.exists()) {
-                logger.error("Unable to deploy template package '" + packageName
-                        + "'. Folder '" + rootFolder + "' already exists");
-                return;
-            }
 
             tmplRootFolder.mkdirs();
 
@@ -276,6 +276,40 @@ class TemplatePackageDeployer {
                 return;
             }
             
+            // deploy classes
+            try {
+                File classesFolder = new File(tmplRootFolder, "WEB-INF/classes");
+                if (classesFolder.exists()) {
+                    if (classesFolder.list().length > 0) {
+                        logger.info("Deploying classes for module " + packageName);
+                        FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
+                    }
+                    FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/classes"));
+                }
+            } catch (IOException e) {
+                logger.error("Cannot deploy classes for module " + packageName, e);
+            }
+
+            // deploy JARs
+            try {
+                File libFolder = new File(tmplRootFolder, "WEB-INF/lib");
+                if (libFolder.exists()) {
+                    if (libFolder.list().length > 0) {
+                        logger.info("Deploying JARs for module " + packageName);
+                        FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
+                    }
+                    FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/lib"));
+                }
+            } catch (IOException e) {
+                logger.error("Cannot deploy libs for module " + packageName, e);
+            }
+
+            // delete WEB-INF if it is empty
+            File webInfFolder = new File(tmplRootFolder, "WEB-INF");
+            if (webInfFolder.exists() && webInfFolder.list().length == 0) {
+                webInfFolder.delete();
+            }
+
             JahiaTemplatesPackage pack = JahiaTemplatesPackageHandler.build(tmplRootFolder);
             if (!pack.getInitialImports().isEmpty()) {
                 initialImports.add(pack);
@@ -397,5 +431,9 @@ class TemplatePackageDeployer {
 
     public void setContextLoader(TemplatePackageApplicationContextLoader contextLoader) {
         this.contextLoader = contextLoader;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

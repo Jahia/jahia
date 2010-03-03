@@ -3,7 +3,6 @@
 ******************************************************************************/
 /*2columns*/
 #bodywrapper .columns2 {
-    float: left;
     width: 100%;
     overflow: hidden;
     clear: both;
@@ -22,7 +21,6 @@
 
 /*3columns*/
 #bodywrapper .columns3 {
-    float: left;
     width: 100%;
     overflow: hidden;
     clear: both;
@@ -30,7 +28,7 @@
 
 #bodywrapper .columns3 .column-item {
     float: left;
-    width: 33.33%;
+    width: 33.3%;
     overflow: hidden;
     display: block;
 }
@@ -41,7 +39,6 @@
 
 /*4columns*/
 #bodywrapper .columns4 {
-    float: left;
     width: 100%;
     overflow: hidden;
     clear: both;
@@ -49,7 +46,7 @@
 
 #bodywrapper .columns4 .column-item {
     float: left;
-    width: 25%;
+    width: 24.9%;
     overflow: hidden;
     display: block;
 }
@@ -60,7 +57,6 @@
 
 /*5columns*/
 #bodywrapper .columns5 {
-    float: left;
     width: 100%;
     overflow: hidden;
     clear: both;
@@ -68,7 +64,7 @@
 
 #bodywrapper .columns5 .column-item {
     float: left;
-    width: 19%;
+    width: 18.7%;
     overflow: hidden;
     display: block;
     padding-left:8px;
@@ -76,10 +72,4 @@
 
 #bodywrapper .columns5 .column-item .spacer {
     padding: 10px;
-}
-
-
-/*columns without bottom space*/
-#bodywrapper .nobottomspace .column-item .spacer {
-    padding: 10px 10px 0 10px;
 }

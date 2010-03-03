@@ -32,7 +32,7 @@
 
                             <tbody>
                             <c:set var="nodes" value="${currentNode.versionHistory.allLinearFrozenNodes}"/>
-                            <template:initPager pageSize="10" totalSize="${nodes.size -1 }"/>
+                            <template:initPager pageSize="10" totalSize="${nodes.size -1 }" id="${currentNode.identifier}"/>
 
                             <c:forEach items="${nodes}" var="version"
                                        begin="${begin + 1}" end="${end + 1}" varStatus="status">

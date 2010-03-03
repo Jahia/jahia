@@ -757,12 +757,24 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>id of current pagination</description>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Remove pager properties from request</description>
         <name>removePager</name>
         <tag-class>org.jahia.taglibs.template.pager.RemovePagerTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <description>id of current pagination</description>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>

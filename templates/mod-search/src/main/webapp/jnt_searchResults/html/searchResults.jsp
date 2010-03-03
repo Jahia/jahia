@@ -38,6 +38,14 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="searchresults.css"/>
 
 <c:if test="${renderContext.editMode}">
@@ -79,7 +87,7 @@
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
             <div id="${currentNode.UUID}">
-                <c:set var="totalSize" value="${count}" scope="request"/>
+                <c:set var="lisTotalSize" value="${count}" scope="request"/>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
         	<ol>
@@ -90,6 +98,7 @@
                 <div class="clear"></div>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
             </div>
+            <template:removePager id="${currentNode.identifier}"/>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>

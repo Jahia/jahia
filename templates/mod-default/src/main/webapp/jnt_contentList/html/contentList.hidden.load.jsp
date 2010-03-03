@@ -20,11 +20,11 @@
         </jcr:jqom>
         <c:set value="${sortedChildren.nodes}" var="currentList" scope="request"/>
         <c:set var="end" value="${fn:length(sortedChildren.nodes)}" scope="request"/>
-        <c:set var="totalSize" value="${end}" scope="request"/>
+        <c:set var="listTotalSize" value="${end}" scope="request"/>
     </c:when>
     <c:otherwise>
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
         <c:set var="end" value="${fn:length(currentNode.nodes)}" scope="request"/>
-        <c:set var="totalSize" value="${end}" scope="request"/>
+        <c:set var="listTotalSize" value="${end}" scope="request"/>
     </c:otherwise>
 </c:choose>

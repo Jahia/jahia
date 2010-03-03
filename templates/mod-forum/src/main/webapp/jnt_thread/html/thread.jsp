@@ -4,6 +4,14 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css" nodetype="jnt:thread"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js" nodetype="jnt:thread"/>
 <script>
@@ -32,7 +40,7 @@
 
         </div>
         <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-        <c:set var="totalSize" value="${fn:length(currentNode.nodes)}" scope="request"/>
+        <c:set var="listTotalSize" value="${fn:length(currentNode.nodes)}" scope="request"/>
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
         	<template:param name="callback" value="initCuteTime();"/>
@@ -43,7 +51,7 @@
             </div>
         </c:forEach>
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
-        <template:removePager/>
+        <template:removePager id="${currentNode.identifier}"/>
         <template:module node="${currentNode}" template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">

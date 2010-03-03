@@ -3,4 +3,4 @@
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
 </c:if>
 </div>
-<template:removePager/>
+<template:removePager id="${currentNode.identifier}"/>

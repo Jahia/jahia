@@ -75,7 +75,7 @@
 
         <jcr:sql var="tasks" sql="select * from [jnt:task] as task where task.assignee='${currentNode.identifier}'"/>
         <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-        <template:initPager pageSize="10" totalSize="${tasks.nodes.size}"/>
+        <template:initPager pageSize="10" totalSize="${tasks.nodes.size}" id="${currentNode.identifier}"/>
 
         <c:forEach items="${tasks.nodes}" var="task"
                    begin="${begin}" end="${end}" varStatus="status">

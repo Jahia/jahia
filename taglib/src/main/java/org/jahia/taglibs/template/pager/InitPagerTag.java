@@ -1,9 +1,8 @@
 package org.jahia.taglibs.template.pager;
 
-import javax.jcr.RangeIterator;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +17,7 @@ public class InitPagerTag extends TagSupport {
     private int pageSize;
     private long totalSize;
 
-    private Object items;
+    private String id;
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -30,21 +29,49 @@ public class InitPagerTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
+        Object value = pageContext.getAttribute("begin", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_begin"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("end", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_end"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("pageSize", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_pageSize"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("nbPages", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_nbPages"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("currentPage", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_currentPage"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("paginationActive", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_paginationActive"+id, value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("totalSize", PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("old_totalSize"+id, value, PageContext.REQUEST_SCOPE);
+        }
         String beginStr = pageContext.getRequest().getParameter("begin");
         String endStr = pageContext.getRequest().getParameter("end");
 
         int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
-        int end = endStr == null ? pageSize-1 : Integer.parseInt(endStr);
+        int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
 
         long nbPages = totalSize / pageSize;
         if (nbPages * pageSize < totalSize) {
-            nbPages ++;
+            nbPages++;
         }
         pageContext.setAttribute("begin", begin, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute("end", end, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute("pageSize", pageSize, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute("nbPages", nbPages, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("currentPage", begin/pageSize + 1, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute("currentPage", begin / pageSize + 1, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute("paginationActive", true, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute("totalSize", totalSize, PageContext.REQUEST_SCOPE);
         return super.doStartTag();
@@ -55,7 +82,7 @@ public class InitPagerTag extends TagSupport {
         return super.doEndTag();
     }
 
-    public void setItems(Object items) {
-        this.items = items;
+    public void setId(String id) {
+        this.id = id;
     }
 }

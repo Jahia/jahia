@@ -64,7 +64,7 @@
     
     <c:if test="${currentNode.nodes.size > 0}">
 
-    <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}"/>
+    <template:initPager pageSize="10" totalSize="${currentNode.nodes.size}" id="${currentNode.identifier}"/>
     <c:set var="tagsMap" value="${fn:split(tagFilter, '$$$')}"/>
     <c:set var="queryContraint" value="isdescendantnode(blogContent,['${currentNode.path}'])"/>
     <c:if test="${!empty(tagFilter)}">

@@ -1,6 +1,5 @@
 package org.jahia.taglibs.template.pager;
 
-import javax.jcr.RangeIterator;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -18,7 +17,7 @@ public class RemovePagerTag extends TagSupport {
     private int pageSize;
     private long totalSize;
 
-    private Object items;
+    private String id;
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -35,17 +34,38 @@ public class RemovePagerTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-        pageContext.removeAttribute("begin", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("end", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("pageSize", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("nbPages", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("currentPage", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("paginationActive", PageContext.REQUEST_SCOPE);
-        pageContext.removeAttribute("totalSize", PageContext.REQUEST_SCOPE);
+        Object value = pageContext.getAttribute("old_begin"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("begin", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_end"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("end", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_pageSize"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("pageSize", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_nbPages"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("nbPages", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_currentPage"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("currentPage", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_paginationActive"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("paginationActive", value, PageContext.REQUEST_SCOPE);
+        }
+        value = pageContext.getAttribute("old_totalSize"+id, PageContext.REQUEST_SCOPE);
+        if (value != null) {
+            pageContext.setAttribute("totalSize", value, PageContext.REQUEST_SCOPE);
+        }
         return super.doEndTag();
     }
 
-    public void setItems(Object items) {
-        this.items = items;
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -11,5 +11,8 @@
 <jcr:sql var="result"
          sql="select * from [jnt:news] as news  order by news.[date] desc"
          limit="${maxNews.long}"   />
-<c:set var="currentList" value="${result.nodes}" scope="request" />
 <c:set var="editable" value="false" scope="request" />
+<c:set var="currentList" value="${result.nodes}" scope="request"/>
+<c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
+<c:set var="listTotalSize" value="${end}" scope="request"/>
+

@@ -128,8 +128,7 @@ public class VersionViewer extends ContentPanel {
                     Log.debug("Swtich to the following url: " + versionComboBox.getValue().getNode().getUrl());
                     load(versionComboBox.getValue());
                 } else {
-                    Log.debug("Loading version is null");
-                    setUrl(null);
+                    load(null);
                 }
             }
         });

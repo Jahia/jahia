@@ -370,7 +370,13 @@
                             <property name="priority" value="30" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
+                        	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                             <property name="priority" value="35" />
+                            <property name="handlers">
+                            	<list>
+                            		<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer"/>
+                            	</list>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="40" />
@@ -386,6 +392,22 @@
             </bean>
         </property>
 
+    </bean>
+    
+    <bean id="org.jahia.services.render.filter.URLTraverser" class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
+    	<constructor-arg>
+    		<map>
+    			<entry key="a">
+    				<set><value>href</value></set>
+    			</entry>
+    			<entry key="img">
+    				<set><value>src</value></set>
+    			</entry>
+    			<entry key="param">
+    				<set><value>value</value></set>
+    			</entry>
+    		</map>
+    	</constructor-arg>
     </bean>
 
     <bean id="org.jahia.services.tasks.TaskService" parent="txProxyTemplate">

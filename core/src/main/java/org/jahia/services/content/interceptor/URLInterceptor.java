@@ -6,7 +6,11 @@ import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.services.render.filter.URLFilter;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
+import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
+import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.NodeIterator;
@@ -33,22 +37,34 @@ import net.htmlparser.jericho.*;
  *
  */
 public class URLInterceptor implements PropertyInterceptor, InitializingBean {
+
     private static Logger logger = Logger.getLogger(URLInterceptor.class);
 
     private String dmsContext;
     private String cmsContext;
 
-    public static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
-    public static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
+    private static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
 
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
     private Pattern refPattern;
 
+    private HtmlTagAttributeTraverser urlTraverser;
+    
     private String escape(String s) {
         s = s.replace("{","\\{");
         s = s.replace("}","\\}");
         return s;
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * @param urlTraverser the URL utility class to visit HTML tag attributes
+     */
+    public URLInterceptor(HtmlTagAttributeTraverser urlTraverser) {
+        super();
+        this.urlTraverser = urlTraverser;
     }
 
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
@@ -85,9 +101,11 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
-        Map<String, Long> refs = new HashMap<String, Long>();
+        final Map<String, Long> refs = new HashMap<String, Long>();
 
-        logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
+        }
 
         if (node.isNodeType("jmix:referencesInField")) {
             NodeIterator ni = node.getNodes("j:referenceInField");
@@ -99,28 +117,36 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             }
         }
 
-        Map<String, Long> newRefs = new HashMap<String, Long>();
+        final Map<String, Long> newRefs = new HashMap<String, Long>();
 
-        Source source = new Source(content);
-        OutputDocument document = new OutputDocument(source);
-
-        for (String[] tagAttrPair : URLFilter.TAG_ATTRIBUTE_PAIR) {
-            List<StartTag> tags = source.getAllStartTags(tagAttrPair[0]);
-            for (StartTag startTag : tags) {
-                final Attributes attributes = startTag.getAttributes();
-                final Attribute attribute = attributes.get(tagAttrPair[1]);
-                if (attribute != null && !StringUtils.isEmpty(attribute.getValue())) {
-                    newRefs.putAll(replaceRefsByPlaceholders(document, attribute, refs));
+        String result;
+        try {
+            result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
+                public void visit(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
+                    if (StringUtils.isNotEmpty(attr.getValue())) {
+                        try {
+                            newRefs.putAll(replaceRefsByPlaceholders(document, attr, refs));
+                        } catch (RepositoryException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
+            });
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof RepositoryException) {
+                throw (RepositoryException) e.getCause();
+            } else {
+                throw e;
             }
         }
-        String result = document.toString();
 
         if (!newRefs.equals(refs)) {
             if (!newRefs.isEmpty() && !node.isNodeType("jmix:referencesInField")) {
                 node.addMixin("jmix:referencesInField");
             }
-            logger.debug("New references : "+newRefs);
+            if (logger.isDebugEnabled()) {
+                logger.debug("New references : "+newRefs);
+            }
             NodeIterator ni = node.getNodes("j:referenceInField");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
@@ -188,9 +214,11 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();
 
-        logger.debug("Intercept getValue for "+property.getPath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Intercept getValue for "+property.getPath());
+        }
 
-        Map<Long, String> refs = new HashMap<Long, String>();
+        final Map<Long, String> refs = new HashMap<Long, String>();
 
         if (property.getParent().isNodeType("jmix:referencesInField")) {
             NodeIterator ni = property.getParent().getNodes("j:referenceInField");
@@ -202,20 +230,26 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             }
         }
 
-        Source source = new Source(content);
-        OutputDocument document = new OutputDocument(source);
-
-        for (String[] tagAttrPair : URLFilter.TAG_ATTRIBUTE_PAIR) {
-            List<StartTag> tags = source.getAllStartTags(tagAttrPair[0]);
-            for (StartTag startTag : tags) {
-                final Attributes attributes = startTag.getAttributes();
-                final Attribute attribute = attributes.get(tagAttrPair[1]);
-                if (attribute != null && !StringUtils.isEmpty(attribute.getValue())) {
-                    replacePlaceholdersByRefs(document, attribute, refs);
+        String result;
+        try {
+            result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
+                public void visit(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
+                    if (StringUtils.isNotEmpty(attr.getValue())) {
+                        try {
+                            replacePlaceholdersByRefs(document, attr, refs);
+                        } catch (RepositoryException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
+            });
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof RepositoryException) {
+                throw (RepositoryException) e.getCause();
+            } else {
+                throw e;
             }
         }
-        String result = document.toString();
 
         if (!result.equals(content)) {
             return property.getSession().getValueFactory().createValue(result);
@@ -244,7 +278,9 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         final HashMap<String, Long> refs = new HashMap<String, Long>();
         final String originalValue = attr.getValue();
 
-        logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
+        }
 
         String pathPart = originalValue;
         final boolean isCmsContext;
@@ -336,7 +372,9 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                 }
                 value = value.replace(path, link);
                 document.replace(attr.getValueSegment(), value);
-                logger.debug("After replaceRefsByPlaceholders : "+value);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("After replaceRefsByPlaceholders : "+value);
+                }
                 return null;
             }
         });
@@ -349,7 +387,9 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         final String originalValue = attr.getValue();
 
         String pathPart = originalValue;
-        logger.debug("Before replacePlaceholdersByRefs : "+originalValue);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Before replacePlaceholdersByRefs : "+originalValue);
+        }
         final boolean isCmsContext;
 
         if (pathPart.startsWith(DOC_CONTEXT_PLACEHOLDER)) {
@@ -395,7 +435,9 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                     } else {
                         value = value.replace(DOC_CONTEXT_PLACEHOLDER, dmsContext);
                     }
-                    logger.debug("After replacePlaceholdersByRefs : "+value);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("After replacePlaceholdersByRefs : "+value);
+                    }
                     document.replace(attr.getValueSegment(), value);
                 } catch (Exception e) {
                     logger.error("Exception when transforming placeholder for" + path,e);
@@ -412,8 +454,8 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         cmsContext = Jahia.getContextPath() + "/cms/";
 
         String pattern = "(((render|edit)/[a-zA-Z]+)|" + 
-                escape(URLFilter.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
-                escape(URLFilter.LANG_PLACEHOLDER) + ")/(.*)";
+                escape(ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
+                escape(ContextPlaceholdersReplacer.LANG_PLACEHOLDER) + ")/(.*)";
 
         refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
         cmsPattern = Pattern.compile(cmsContext + pattern);

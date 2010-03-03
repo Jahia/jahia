@@ -157,7 +157,9 @@
         </property>
         <property name="interceptors">
             <list>
-                <bean class="org.jahia.services.content.interceptor.URLInterceptor"/>
+                <bean class="org.jahia.services.content.interceptor.URLInterceptor">
+					<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
+                </bean>
                 <bean class="org.jahia.services.content.interceptor.I18NInterceptor">
                 	<property name="skippedProperties">
                 		<set>

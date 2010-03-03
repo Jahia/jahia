@@ -152,6 +152,7 @@
         <div class="clear"></div>
     </div>
     <!--stop pagination-->
+    <template:removePager id="${currentNode.identifier}"/>
 </div>
                     <div class="clear"></div>
                 </div>

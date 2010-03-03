@@ -97,6 +97,7 @@
                             <div class="clear"></div>
                         </div>
                         <!--stop pagination-->
+                        <template:removePager id="${currentNode.identifier}"/>
                     </form>
                 </div>
             </div>

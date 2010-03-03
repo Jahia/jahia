@@ -21,7 +21,7 @@
                 </template:module>
             </div>
         </div>
-        <c:if test="${status.index > 0 and staus.index mod 3}">
+        <c:if test="${status.index > 0 and (status.index mod 3 eq 0)}">
             <div class="clear"></div>
         </c:if>
     </c:forEach>

@@ -44,7 +44,7 @@
 	<fieldset>
 		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType))}</legend>
 </c:if>
-<s:results>
+<s:results var="resultsHits">
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	<jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
 	<c:if test="${not empty title.string}">
@@ -78,11 +78,18 @@
         </c:if>
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
+            <div id="${currentNode.UUID}">
+                <c:set var="totalSize" value="${count}" scope="request"/>
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
         	<ol>
-				<s:resultIterator>
+				<s:resultIterator begin="${begin}" end="${end}">
 					<li><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>
+                <div class="clear"></div>
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
+            </div>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>

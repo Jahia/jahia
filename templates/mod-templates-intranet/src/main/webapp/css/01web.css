@@ -176,29 +176,14 @@ shortcuts
 
 #bodywrapper #search-bar {
 	float:right;
-	margin:17px 0 7px;
+	margin:20px 0 7px;
 	position:relative;
 }
-#bodywrapper #search-bar form .text-input {
-	background-image:url(img/search-bar-bg.png);
-	border:1px solid #e7e2de;
-	color:#666666;
-	height:20px;
-	padding:4px 30px 2px 5px;
-	vertical-align:middle;
-	width:304px;
+#bodywrapper #search-bar form.simplesearchform .text-input {
+	width:304px !important;
 }
-#bodywrapper #search-bar form .submit {
-	background:transparent url(img/search-submit.png) no-repeat;
-	border:none;
-	cursor:pointer;
-	height:26px;
-	padding:0;
-	position:absolute;
-	right:2px;
-	text-indent:-9999px;
-	top:2px;
-	width:26px;
+#bodywrapper #search-bar form.simplesearchform {
+	width:340px !important;
 }
 
 /******************************************************************************

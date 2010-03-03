@@ -8,7 +8,7 @@
 <%@include file="../include/header.jspf" %>
 
 <div class="columns3"><!--start 3columns -->
-    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="status">
         <div class="column-item">
             <div class="spacer">
                 <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}">
@@ -21,6 +21,9 @@
                 </template:module>
             </div>
         </div>
+        <c:if test="${status.index > 0 and staus.index mod 3}">
+            <div class="clear"></div>
+        </c:if>
     </c:forEach>
     <c:if test="${editable and renderContext.editMode}">
         <div class="column-item">

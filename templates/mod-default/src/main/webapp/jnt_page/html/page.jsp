@@ -37,5 +37,5 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 
-            <template:area path="maincontent"/>
+<template:area path="pagecontent"/>
 

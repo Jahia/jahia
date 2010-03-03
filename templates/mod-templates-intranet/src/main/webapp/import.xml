@@ -34,14 +34,14 @@
                                 <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
                             </topMenu>
                             <footer jcr:primaryType="jnt:contentList"/>
-                            <maincontent jcr:primaryType="jnt:contentList">
+                            <pagecontent jcr:primaryType="jnt:contentList">
                                 <row1 jcr:primaryType="jnt:row" column="2col106" >
                                     <col1 jcr:primaryType="jnt:contentList"/>
                                     <col2 jcr:primaryType="jnt:contentList">
                                         <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
                                     </col2>
                                 </row1>
-                            </maincontent>
+                            </pagecontent>
                         </home>
                     </j:target>
                 </defaultSite>
@@ -60,14 +60,11 @@
                             <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
                         </topMenu>
                         <footer jcr:primaryType="jnt:contentList"/>
-                        <maincontent jcr:primaryType="jnt:contentList">
-                            <row1 jcr:primaryType="jnt:row" column="2col106" >
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <row1 jcr:primaryType="jnt:row" column="1col16" >
                                 <col1 jcr:primaryType="jnt:contentList"/>
-                                <col2 jcr:primaryType="jnt:contentList">
-                                    <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
-                                </col2>
                             </row1>
-                        </maincontent>
+                        </pagecontent>
                     </j:target>
                 </simple>
             </jnt_page>

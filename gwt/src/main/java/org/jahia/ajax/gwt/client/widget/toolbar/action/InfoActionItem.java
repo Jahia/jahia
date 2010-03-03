@@ -37,7 +37,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public class InfoActionItem extends BaseActionItem {
         item.setIconStyle(getGwtToolbarItem().getMinIconStyle());
         Map preferences = getGwtToolbarItem().getProperties();
         if (preferences != null) {
-            final GWTJahiaProperty info = (GWTJahiaProperty) preferences.get(ToolbarConstants.INFO);
+            final GWTJahiaProperty info = (GWTJahiaProperty) preferences.get(Constants.INFO);
             if (info != null) {
                 item.setText(info.getValue());
             }

@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class OpenHTMLWindowActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
-        final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(ToolbarConstants.HTML);
+        final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(Constants.HTML);
         if (htmlProperty != null && htmlProperty.getValue() != null) {
             Window window = new Window();
             if (getGwtToolbarItem().getTitle() != null) {

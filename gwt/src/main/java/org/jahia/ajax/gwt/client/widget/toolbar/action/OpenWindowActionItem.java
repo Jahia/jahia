@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import java.util.Iterator;
@@ -51,14 +51,14 @@ public class OpenWindowActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
-        final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
+        final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
         if (Log.isDebugEnabled()) {
             Iterator it = preferences.keySet().iterator();
             while (it.hasNext()) {
                 Log.debug("Found property: " + it.next());
             }
         }
-        final GWTJahiaProperty windowWidth = (GWTJahiaProperty) preferences.get(ToolbarConstants.WIDTH);
+        final GWTJahiaProperty windowWidth = (GWTJahiaProperty) preferences.get(Constants.WIDTH);
         String wWidth = "";
         if (windowWidth == null) {
             Log.debug("Warning: width not found - nb. preferences:" + preferences.size());
@@ -67,7 +67,7 @@ public class OpenWindowActionItem extends BaseActionItem {
             wWidth = ",width=" + windowWidth.getValue();
         }
 
-        final GWTJahiaProperty windowHeight = (GWTJahiaProperty) preferences.get(ToolbarConstants.HEIGHT);
+        final GWTJahiaProperty windowHeight = (GWTJahiaProperty) preferences.get(Constants.HEIGHT);
         String wHeight = "";
         if (windowHeight == null) {
             wHeight = ",height=600";

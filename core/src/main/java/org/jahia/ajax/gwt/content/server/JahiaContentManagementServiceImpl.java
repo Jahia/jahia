@@ -722,6 +722,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset) throws GWTJahiaServiceException {
+        try {
+            List<GWTJahiaNodeVersion> result = navigation.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(node.getPath()));
+
+            // add current workspace version
+            final GWTJahiaNodeVersion currentWorkspaceVersion = new GWTJahiaNodeVersion();
+            currentWorkspaceVersion.setNode(node);
+            result.add(0,currentWorkspaceVersion);
+
+            // get sublist: Todo Find a better way
+            int size = result.size();
+            result = new ArrayList<GWTJahiaNodeVersion>(result.subList(offset, Math.min(size, offset + limit)));
+            return new BasePagingLoadResult<GWTJahiaNodeVersion>(result, offset, size);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException {
         String nodeUuid = gwtJahiaNodeVersion.getNode().getUUID();
         String versiOnUuid = gwtJahiaNodeVersion.getUUID();
@@ -733,12 +751,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
-        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, retrieveParamBean(), this.retrieveCurrentSession());
+        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, retrieveParamBean(), retrieveCurrentSession());
     }
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), mode, retrieveParamBean(), this.retrieveCurrentSession());
+        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), mode, retrieveParamBean(), retrieveCurrentSession());
     }
+
+    public String getNodeURL(String path,String version,String workspace, String locale, int mode) throws GWTJahiaServiceException{
+        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale),version, mode, retrieveParamBean(), retrieveCurrentSession(workspace));
+    }
+
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
         contentManager.importContent(parentPath, fileKey);

@@ -125,6 +125,17 @@ public class TemplateHelper {
      * @return
      */
     public String getNodeURL(String path, Locale locale, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
+        return getNodeURL(path,locale,null,mode,ctx,currentUserSession);
+    }
+
+    /**
+     * Get node url depending
+     *
+     * @param currentUserSession
+     * @param locale
+     * @return
+     */
+    public String getNodeURL(String path, Locale locale,String versionNumber, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
         try {
             if (locale == null) {
                 locale = ctx.getLocale();
@@ -144,12 +155,13 @@ public class TemplateHelper {
             renderContext.setMainResource(resource);
 
             final URLGenerator urlGenerator = new URLGenerator(renderContext, resource, renderService.getStoreService());
+            final String versionPart = versionNumber == null?"":"?v="+versionNumber;
             if (mode == 0) {
-                return urlGenerator.getLive();
+                return urlGenerator.getLive()+versionPart;
             } else if (mode == 1) {
-                return urlGenerator.getPreview();
+                return urlGenerator.getPreview()+versionPart;
             } else {
-                return urlGenerator.getEdit();
+                return urlGenerator.getEdit()+versionPart;
             }
         } catch (RepositoryException e) {
             logger.error(e, e);
@@ -157,6 +169,12 @@ public class TemplateHelper {
         }
     }
 
+    /**
+     * Get template set
+     * @param node
+     * @return
+     * @throws RepositoryException
+     */
     public SortedSet<Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType nt = node.getPrimaryNodeType();
         SortedSet<Template> set;

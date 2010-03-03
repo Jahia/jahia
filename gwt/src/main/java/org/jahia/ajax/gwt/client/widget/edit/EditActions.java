@@ -22,6 +22,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
@@ -78,6 +79,18 @@ public class EditActions {
                     Log.error("", throwable);
                 }
             });
+        }
+
+    }
+
+    /**
+     * Show compare engine
+     * @param linker
+     */
+    public static void showCompare(final Linker linker) {
+        if (linker.getSelectedNode() != null) {
+            String locale = JahiaGWTParameters.getLanguage();
+            new CompareEngine(linker.getSelectedNode(),locale,linker).show();
         }
 
     }

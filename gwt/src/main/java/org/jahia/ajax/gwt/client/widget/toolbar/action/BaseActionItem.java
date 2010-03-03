@@ -35,7 +35,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -89,15 +89,15 @@ public abstract class BaseActionItem implements ActionItem {
 
         // set properties that are specific to a Button
         if (textToolitem instanceof Button) {
-            if (layout == ToolbarConstants.LAYOUT_BUTTON_LABEL || layout == ToolbarConstants.LAYOUT_ONLY_LABEL) {
+            if (layout == Constants.LAYOUT_BUTTON_LABEL || layout == Constants.LAYOUT_ONLY_LABEL) {
                 if (getGwtToolbarItem().isDisplayTitle()) {
                     ((Button) textToolitem).setText(getGwtToolbarItem().getTitle());
                 }
             }
-            if (layout == ToolbarConstants.LAYOUT_BUTTON_LABEL) {
+            if (layout == Constants.LAYOUT_BUTTON_LABEL) {
                 ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
             }
-            if (layout == ToolbarConstants.LAYOUT_BUTTON) {
+            if (layout == Constants.LAYOUT_BUTTON) {
                 ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
                 // toolbarItem.setHeight("30px");
             }
@@ -169,14 +169,14 @@ public abstract class BaseActionItem implements ActionItem {
     private MenuItem createMenuItem() {
         final MenuItem menuItem;
         int layout = getGwtToolbarItem().getParentItemsGroup().getLayout();
-        if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU) {
+        if (layout == Constants.LAYOUT_ITEMSGROUP_MENU) {
             menuItem = new MenuItem();
             menuItem.setIconStyle(getGwtToolbarItem().getMinIconStyle());
-        } else if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO) {
+        } else if (layout == Constants.LAYOUT_ITEMSGROUP_MENU_RADIO) {
             menuItem = new CheckMenuItem();
             ((CheckMenuItem) menuItem).setGroup(getGwtToolbarItem().getParentItemsGroup().getId());
             ((CheckMenuItem) menuItem).setChecked(getGwtToolbarItem().isSelected());
-        } else if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
+        } else if (layout == Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
             menuItem = new CheckMenuItem();
             ((CheckMenuItem) menuItem).setChecked(getGwtToolbarItem().isSelected());
         } else {

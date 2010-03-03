@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.EngineOpener;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 
 /**
  * Toolbar item provider for opening engine popup windows.
@@ -48,9 +48,9 @@ public class OpenEngineWindowActionItem extends OpenWindowActionItem {
     public void onComponentSelection() {
         final Map<String, GWTJahiaProperty> preferences = getGwtToolbarItem().getProperties();
 
-        EngineOpener.openEngine(preferences.get(ToolbarConstants.URL).getValue(),
-                        preferences.get(ToolbarConstants.WINDOW_NAME).getValue(),
-                        preferences.get(ToolbarConstants.PARAMETERS).getValue());
+        EngineOpener.openEngine(preferences.get(Constants.URL).getValue(),
+                        preferences.get(Constants.WINDOW_NAME).getValue(),
+                        preferences.get(Constants.PARAMETERS).getValue());
     }
 
 }

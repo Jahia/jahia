@@ -83,7 +83,7 @@ public class GWTJahiaNodeVersion extends BaseModel {
         return get("author");
     }
 
-    public void getAuthor(String author) {
+    public void setAuthor(String author) {
         set("author", author);
     }
 

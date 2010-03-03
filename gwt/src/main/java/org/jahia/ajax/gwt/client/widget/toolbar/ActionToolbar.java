@@ -12,7 +12,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -57,7 +57,7 @@ public class ActionToolbar extends ToolBar {
             for (int i = 0; i < itemsGroupList.size(); i++) {
                 GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = itemsGroupList.get(i);
                 Log.debug("---- items group type: " + gwtToolbarItemsGroup.getType());
-                if (gwtToolbarItemsGroup.getType() != null && gwtToolbarItemsGroup.getType().equalsIgnoreCase(ToolbarConstants.ITEMSGROUP_FILL)) {
+                if (gwtToolbarItemsGroup.getType() != null && gwtToolbarItemsGroup.getType().equalsIgnoreCase(Constants.ITEMSGROUP_FILL)) {
                     // special items type: fill type
                     add(new FillToolItem());
                 } else {
@@ -94,7 +94,7 @@ public class ActionToolbar extends ToolBar {
                 actionItem.init(gwtToolbarItem, linker);
 
                 Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
-                if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
+                if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
                     // handle case of menuSeparator
                     if (isSeparator(gwtToolbarItem)) {
                         // add menu separator only if we have at least one menuitem
@@ -110,14 +110,14 @@ public class ActionToolbar extends ToolBar {
                     else {
                         toolItem = actionItem.getMenuItem();
                         if (toolItem != null) {
-                            if (gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)) {
+                            if (gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(Constants.ITEMS_TOOLBARLABEL)) {
                                 toolItem.setEnabled(false);
                             }
                             menu.add(toolItem);
                         }
                         addMenu = true;
                     }
-                } else if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_BUTTON || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ONLY_LABEL || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_BUTTON_LABEL) {
+                } else if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ONLY_LABEL || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON_LABEL) {
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {
@@ -125,7 +125,7 @@ public class ActionToolbar extends ToolBar {
                         add(toolItem);
                     }
                 } else {
-                    gwtToolbarItemsGroup.setLayout(ToolbarConstants.LAYOUT_BUTTON);
+                    gwtToolbarItemsGroup.setLayout(Constants.LAYOUT_BUTTON);
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {

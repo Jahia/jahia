@@ -119,6 +119,20 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     }
 
     /**
+     * REtrive current session by workspace
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    protected JCRSessionWrapper retrieveCurrentSession(String workspace) throws GWTJahiaServiceException {
+        try {
+            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+        } catch (RepositoryException e) {
+            logger.error(e,e);
+            throw new GWTJahiaServiceException("Cannot open user session");
+        }
+    }
+
+    /**
      * build JahiaData
      *
      * @deprecated

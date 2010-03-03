@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.util.Constants;
 
 import java.util.Map;
 
@@ -70,7 +70,7 @@ public class NotificationActionItem extends BaseActionItem {
         final Map preferences = getGwtToolbarItem().getProperties();
 
         // get refresh time
-        final GWTJahiaProperty refreshTimeProp = (GWTJahiaProperty) preferences.get(ToolbarConstants.NOTIFICATION_REFRESH_TIME);
+        final GWTJahiaProperty refreshTimeProp = (GWTJahiaProperty) preferences.get(Constants.NOTIFICATION_REFRESH_TIME);
         int refreshTime = 5000;
         if (refreshTimeProp != null) {
             try {

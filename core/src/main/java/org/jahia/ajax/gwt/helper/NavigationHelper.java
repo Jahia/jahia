@@ -839,6 +839,7 @@ public class NavigationHelper {
                 n.setUrl(node.getUrl() + "?v=" + v.getName());
                 GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
                 jahiaNodeVersion.setNode(n);
+                
                 versions.add(jahiaNodeVersion);
             }
         }

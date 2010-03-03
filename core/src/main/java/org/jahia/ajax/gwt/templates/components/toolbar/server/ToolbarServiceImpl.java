@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
@@ -44,7 +45,6 @@ import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
@@ -160,8 +160,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      * @return
      */
     public GWTJahiaAjaxActionResult execute(GWTJahiaPageContext pageContext, Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
-        final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(ToolbarConstants.CLASS_ACTION);
-        final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(ToolbarConstants.ACTION);
+        final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(Constants.CLASS_ACTION);
+        final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(Constants.ACTION);
 
         GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult("");
 
@@ -177,8 +177,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 // execute action
                 try {
                     // remove useless properties
-                    gwtPropertiesMap.remove(ToolbarConstants.CLASS_ACTION);
-                    gwtPropertiesMap.remove(ToolbarConstants.ACTION);
+                    gwtPropertiesMap.remove(Constants.CLASS_ACTION);
+                    gwtPropertiesMap.remove(Constants.ACTION);
                     JahiaData jData = retrieveJahiaData(pageContext);
 
                     // execute actionProperty
@@ -336,17 +336,17 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         int layoutInt = -1;
         if (layout != null) {
             if (layout.equalsIgnoreCase("button")) {
-                layoutInt = ToolbarConstants.LAYOUT_BUTTON;
+                layoutInt = Constants.LAYOUT_BUTTON;
             } else if (layout.equalsIgnoreCase("label")) {
-                layoutInt = ToolbarConstants.LAYOUT_ONLY_LABEL;
+                layoutInt = Constants.LAYOUT_ONLY_LABEL;
             } else if (layout.equalsIgnoreCase("button-label")) {
-                layoutInt = ToolbarConstants.LAYOUT_BUTTON_LABEL;
+                layoutInt = Constants.LAYOUT_BUTTON_LABEL;
             } else if (layout.equalsIgnoreCase("menu")) {
-                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU;
+                layoutInt = Constants.LAYOUT_ITEMSGROUP_MENU;
             } else if (layout.equalsIgnoreCase("menu-radio")) {
-                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO;
+                layoutInt = Constants.LAYOUT_ITEMSGROUP_MENU_RADIO;
             } else if (layout.equalsIgnoreCase("menu-checkbox")) {
-                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX;
+                layoutInt = Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX;
             } else {
                 logger.debug("Warning: layout " + layout + " unknown.");
             }

@@ -36,7 +36,7 @@ package org.jahia.ajax.gwt.client.util;
  * Date: 4 avr. 2008
  * Time: 14:28:08
  */
-public abstract class ToolbarConstants {
+public abstract class Constants {
 
     // items group layout
     public static final int LAYOUT_BUTTON = 0;
@@ -63,6 +63,10 @@ public abstract class ToolbarConstants {
     public static final String HTML = "html";
     public static final String WINDOW_NAME = "windowName";
     public static final String PARAMETERS = "parameters";
+
+    public static final int MODE_LIVE = 0;
+    public static final int MODE_PREVIEW = 1;
+    public static final int MODE_STAGING = 2;
 
 
 }

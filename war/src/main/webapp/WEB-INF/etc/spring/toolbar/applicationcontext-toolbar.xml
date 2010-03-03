@@ -119,10 +119,8 @@
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
-                <!-- 
+                <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>                 
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
-                -->
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -662,13 +660,13 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Live"/>
-                <ref bean="org.jahia.toolbar.item.Preview"/>
+                <!--<ref bean="org.jahia.toolbar.item.Preview"/>-->
                 <!-- <ref bean="org.jahia.toolbar.item.Edit"/> -->
             </list>
         </property>
     </bean>
 
-    <!-- 
+
     <bean id="org.jahia.toolbar.itemsgroup.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="titleKey" value="label.preview"/>
@@ -677,13 +675,11 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Preview"/>
-                ToDo : <ref bean="org.jahia.toolbar.item.TimeBasedPreview"/>
-                ToDo : <ref bean="org.jahia.toolbar.item.CompareLive"/>
-                ToDo : <ref bean="org.jahia.toolbar.item.CompareVersion"/>
+                <ref bean="org.jahia.toolbar.item.ShowCompareEngine"/>
             </list>
         </property>
     </bean>
-    -->
+
     <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="titleKey" value="label.new"/>
@@ -1171,6 +1167,16 @@
                     <property name="value" value="preview"/>
                 </bean>
             </list>
+        </property>
+    </bean>
+
+    <!-- show compare mode-->
+    <bean id="org.jahia.toolbar.item.ShowCompareEngine" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="label.compare"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-compare-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-compare-min"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowCompareEngine"/>
         </property>
     </bean>
 

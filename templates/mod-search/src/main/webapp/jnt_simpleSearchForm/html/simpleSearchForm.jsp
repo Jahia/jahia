@@ -40,6 +40,7 @@
 
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />
+<template:addResources type="css" resources="simplesearchform.css" />
 
 <template:addResources type="javascript"
                        resources="${url.context}/templates/default/javascript/jquery.min.js"/>
@@ -97,8 +98,8 @@
         });
     });
 </script>
-<s:form method="get">
-   	<p class="field simpleSearchForm">
+<s:form method="get" class="simplesearchform">
+
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">
 		<label for="searchTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
@@ -106,6 +107,6 @@
 		<fmt:message key='search.startSearching' var="startSearching"/>
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
        	<s:site value="${renderContext.siteNode.name}" display="false"/>
-    	<input type="submit" class="button" value="<fmt:message key='search.submit'/>" title="<fmt:message key='search.submit'/>"/>
-	</p>
+    	<input class="searchsubmit" type="submit"  title="<fmt:message key='search.submit'/>"/>
+
 </s:form><br class="clear"/>

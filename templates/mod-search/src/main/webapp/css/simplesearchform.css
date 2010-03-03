@@ -1,0 +1,25 @@
+#bodywrapper form.simplesearchform {
+	position:relative;
+	width:180px
+}
+#bodywrapper form.simplesearchform .text-input {
+	background-image:url(img/search-bar-bg.png);
+	border:1px solid #e7e2de;
+	color:#666666;
+	height:20px;
+	padding:4px 30px 2px 5px;
+	vertical-align:middle;
+	width:144px;
+}
+#bodywrapper form.simplesearchform .searchsubmit {
+	background:transparent url(img/search-submit.png) no-repeat;
+	border:none;
+	cursor:pointer;
+	height:26px;
+	padding:0;
+	position:absolute;
+	right:2px;
+	text-indent:-9999px;
+	top:2px;
+	width:26px;
+}

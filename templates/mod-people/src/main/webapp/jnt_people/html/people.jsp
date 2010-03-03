@@ -27,7 +27,7 @@
        </div>
     </c:if>
     <div class="peopleBody">
-        <h5>${currentNode.properties.firstname.string}&nbsp;${currentNode.properties.lastname.string}</h5>
+        <h4>${currentNode.properties.firstname.string}&nbsp;${currentNode.properties.lastname.string}</h4>
 
         <p class="peopleFonction">${currentNode.properties.function.string}</p>
 

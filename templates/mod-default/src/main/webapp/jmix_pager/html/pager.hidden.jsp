@@ -5,9 +5,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
-${paginationActive}<br/>
-${totalSize}<br/>
-${nbPages}<br/>
 <c:if test="${not empty paginationActive and totalSize > 0 and nbPages > 1}">
     <div class="pagination"><!--start pagination-->
 

@@ -13,5 +13,4 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<div>init pager with ${listTotalSize} for node : ${currentNode.name}</div>
 <template:initPager totalSize="${listTotalSize}" pageSize="${currentNode.properties['pageSize'].long}" id="${currentNode.identifier}"/>

@@ -92,9 +92,9 @@
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
                     <template:param name="displaySearchParams" value="true"/>
                 </template:option>
-        	<ol>
+        	<ol start="${begin+1}">
 				<s:resultIterator begin="${begin}" end="${end}" varStatus="status">
-					<li><span>${status.index+1}.</span><%@ include file="searchHit.jspf" %></li>
+					<li><%--<span>${status.index+1}.</span>--%><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>
                 <div class="clear"></div>

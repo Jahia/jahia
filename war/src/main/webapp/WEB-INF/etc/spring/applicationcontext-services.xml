@@ -427,4 +427,9 @@
     </bean>
 
     <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
+    
+    <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>    
+    <bean id="org.jahia.services.seo.jcr.VanityUrlService" class="org.jahia.services.seo.jcr.VanityUrlService">
+        <property name="vanityUrlManager" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>    
+    </bean>    
 </beans>

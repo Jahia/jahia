@@ -166,7 +166,15 @@ class QueryResultWrapper implements QueryResult {
             }
             Value result = row.getValue(columnName);
             if (result == null && session.getLocale() != null) {
-                JCRPropertyWrapper property = !row.getNode().hasProperty(columnName) ? ((JCRNodeWrapper)getNode()).getProperty(columnName) : null;
+                JCRPropertyWrapper property = null;
+                if (!columnName.startsWith("rep:spellcheck(") && !columnName.startsWith("rep:excerpt(") && !row.getNode().hasProperty(columnName)) {
+                    JCRNodeWrapper node = (JCRNodeWrapper)getNode();
+                    try {
+                        property = node.getProperty(columnName);
+                    } catch (RepositoryException e) {
+                        // no match
+                    }
+                }
                 if (property != null && !property.isMultiple()) {
                     result = property.getValue();
                 }

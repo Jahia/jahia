@@ -34,6 +34,8 @@ package org.jahia.services.content;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
@@ -204,7 +206,7 @@ public final class JCRContentUtils {
     public static boolean isValidFilename(String name) {
         return (!name.startsWith(" ") && !name.endsWith(" ") && name.matches("([^\\*:/\\\\<>|?\"])*"));
     }
-
+    
     /**
      * Convert a string to a JCR search expression literal, suitable for use in
      * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
@@ -220,10 +222,20 @@ public final class JCRContentUtils {
         // Escape ' and \ everywhere, preceding them with \ except when \
         // appears
         // in one of the combinations \" or \-
-        return stringToQueryLiteral(str.replaceAll("\\\\(?![-\"])", "\\\\\\\\")
-                .replaceAll("'", "\\\\'").replaceAll("\"", "\\\\\""));
-    }
+        return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
+    }    
 
+    /**
+     * Convert a path string to encoded path Strings in XPATH queries
+     * 
+     * @param str
+     *            Any string.
+     * @return A valid string path suitable for use in XPATH queries
+     */
+    public static String stringToJCRPathExp(String str) {
+        return ISO9075.encode(Text.escapeIllegalJcrChars(str));
+    }
+    
     /**
      * Convert a string to a literal, suitable for inclusion
      * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
@@ -235,8 +247,8 @@ public final class JCRContentUtils {
     public static String stringToQueryLiteral(String str) {
         // Single quotes needed for jcr:contains()
         return "'" + str.replaceAll("'", "''") + "'";
-    }
-    
+    }    
+
     /**
      * If the node path contains site information (i.e.
      * <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the site key

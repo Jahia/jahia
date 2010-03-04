@@ -221,13 +221,7 @@ shortcuts
 }
 #bodywrapper #bottomfooter p {
 	font-size:0.85em;
-	text-transform:capitalize;
 	padding:0.2em 0 0.2em 0;
-}
-#bodywrapper #bottomfooter p.footerText {
-	font-style:italic;
-	padding:0.2em 0 2em 0;
-	color:#dad0c7
 }
 #bodywrapper #bottomfooter a,
 #bodywrapper #bottomfooter a:link,
@@ -240,7 +234,6 @@ shortcuts
 	color:#333;
 	text-decoration:underline;
 }
-
 /******************************************************************************
 *  general
 ******************************************************************************/

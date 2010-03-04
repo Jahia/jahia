@@ -121,18 +121,28 @@
     <!--stop content-->
 
 
+<div id="topfooter"><!--start topfooter-->
+<div class="container container_16">
+
+<div class="container container_16"> <!--start container_16-->
+	<template:area path="${rootPage.path}/top footer (Add jnt_row)"/>
+<div class="clear"></div></div> <!--stop container_16-->
+<div class="clear"></div>
+        
+</div>
+
+<div class="clear"></div></div><!--stop topfooter-->
+
     <div id="bottomfooter"><!--start bottomfooter-->
         <div class="container container_16">
 
             <div class="grid_16">
-                <p class="copyright">
-                    <span>COPYRIGHT (C) 2009 <a href="http://www.jahia.com/">Jahia Solutions Group</a></span>|
-                    <span><a
-                            href="http://www.jahia.com/jahia/Jahia/Home/products/jahia_editions/licenses">Licence</a></span>|
-                    <span><a href="http://www.jahia.org/forum">COMMUNITY FORUMS</a></span>
-                    <span><a href="http://www.jahia.com/jahia/Jahia/Home/services/annual_developer_subscription">COMMERCIAL
-                        SUPPORT</a></span>
-                </p>
+                <div class="copyright">
+					<template:area path="${rootPage.path}/copyright"/>
+                </div>
+                <div class="footerlinks">
+					<template:area path="${rootPage.path}/footer links"/>
+                </div>
                 <template:area path="${rootPage.path}/footer"/>
             </div>
 

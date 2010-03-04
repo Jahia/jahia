@@ -87,16 +87,20 @@
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
             <div id="${currentNode.UUID}">
-                <c:set var="lisTotalSize" value="${count}" scope="request"/>
+                <c:set var="listTotalSize" value="${count}" scope="request"/>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
+                    <template:param name="displaySearchParams" value="true"/>
+                </template:option>
         	<ol>
-				<s:resultIterator begin="${begin}" end="${end}">
-					<li><%@ include file="searchHit.jspf" %></li>
+				<s:resultIterator begin="${begin}" end="${end}" varStatus="status">
+					<li><span>${status.index+1}.</span><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>
                 <div class="clear"></div>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
+                    <template:param name="displaySearchParams" value="true"/>
+                </template:option>
             </div>
             <template:removePager id="${currentNode.identifier}"/>
 		</c:if>

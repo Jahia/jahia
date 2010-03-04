@@ -92,9 +92,6 @@ public class ResultIteratorTag extends LoopTagSupport {
         List<Hit<?>> results = parent.getHits();
         if (results == null || results.size() <= begin) {
             results = Collections.emptyList();
-        } else if (end != -1 && begin > 0) {
-            results = results.subList(begin, Math.min(results.size(), end));
-
         }
 
         resultIterator = results.iterator();

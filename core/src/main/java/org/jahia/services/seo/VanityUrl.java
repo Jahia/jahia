@@ -31,6 +31,9 @@
  */
 package org.jahia.services.seo;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Vanity Url mapped to content
  * 
@@ -38,29 +41,29 @@ package org.jahia.services.seo;
  * 
  */
 public class VanityUrl {
-    
+
     private String url;
-    
+
     private String language;
 
-    private String identifier;    
-    
-    private String path;    
-    
-    private String site;    
-    
+    private String identifier;
+
+    private String path;
+
+    private String site;
+
     private boolean defaultMapping;
-    
+
     private boolean active;
 
     public VanityUrl() {
         super();
-    }    
-    
+    }
+
     public VanityUrl(String url, String site, String language) {
         super();
         this.url = url;
-        this.site = site;        
+        this.site = site;
         this.language = language;
     }
 
@@ -122,47 +125,20 @@ public class VanityUrl {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((identifier == null) ? 0 : identifier.hashCode());
-        result = prime * result
-                + ((language == null) ? 0 : language.hashCode());
-        result = prime * result + ((site == null) ? 0 : site.hashCode());
-        result = prime * result + ((url == null) ? 0 : url.hashCode());
-        return result;
+        return new HashCodeBuilder().append(getUrl()).append(getIdentifier())
+                .append(getLanguage()).append(getSite()).toHashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        VanityUrl other = (VanityUrl) obj;
-        if (identifier == null) {
-            if (other.identifier != null)
-                return false;
-        } else if (!identifier.equals(other.identifier))
-            return false;
-        if (language == null) {
-            if (other.language != null)
-                return false;
-        } else if (!language.equals(other.language))
-            return false;
-        if (site == null) {
-            if (other.site != null)
-                return false;
-        } else if (!site.equals(other.site))
-            return false;
-        if (url == null) {
-            if (other.url != null)
-                return false;
-        } else if (!url.equals(other.url))
-            return false;
-        return true;
+        return obj != null
+                && (obj instanceof VanityUrl)
+                && super.equals(obj)
+                && new EqualsBuilder().append(getUrl(),
+                        ((VanityUrl) obj).getUrl()).append(getIdentifier(),
+                        ((VanityUrl) obj).getIdentifier()).append(
+                        getLanguage(), ((VanityUrl) obj).getLanguage()).append(
+                        getSite(), ((VanityUrl) obj).getSite()).isEquals();
     }
-    
+
 }

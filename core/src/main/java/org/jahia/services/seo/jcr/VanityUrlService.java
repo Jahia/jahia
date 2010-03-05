@@ -33,6 +33,7 @@ package org.jahia.services.seo.jcr;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -78,20 +79,26 @@ public class VanityUrlService {
                 });
     }
 
-    public VanityUrl saveVanityUrlMapping(final JCRNodeWrapper contentNode,
+    public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {
         return vanityUrlManager.saveVanityUrlMapping(contentNode, vanityUrl,
                 contentNode.getSession());
     }
+    
+    public boolean saveVanityUrlMappings(final JCRNodeWrapper contentNode,
+            final List<VanityUrl> vanityUrls, final Set<String> updatedLocales) throws RepositoryException {
+        return vanityUrlManager.saveVanityUrlMappings(contentNode, vanityUrls, updatedLocales, 
+                contentNode.getSession());
+    }    
 
-    public VanityUrl findExistingVanityUrl(final VanityUrl vanityUrl)
+    public VanityUrl findExistingVanityUrl(final String url, final String site)
             throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(
                 new JCRCallback<VanityUrl>() {
                     public VanityUrl doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         return vanityUrlManager.findExistingVanityUrl(
-                                vanityUrl, session);
+                                url, site, session);
                     }
                 });
     }

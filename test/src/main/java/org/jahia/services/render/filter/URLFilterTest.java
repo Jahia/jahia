@@ -119,10 +119,10 @@ public class URLFilterTest {
         vanityUrl.setDefaultMapping(true);
         vanityUrl.setActive(true);
         assertNull("URL mapping should not exist yet", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl));
+                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
         getVanityUrlService().saveVanityUrlMapping(pageNode, vanityUrl);
         assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl));
+                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
         try {
             getVanityUrlService().saveVanityUrlMapping(contentNode, vanityUrl);
             assertTrue("Exception should have been thrown", false);
@@ -136,7 +136,7 @@ public class URLFilterTest {
         newVanityUrl.setActive(true);        
         getVanityUrlService().saveVanityUrlMapping(contentNode, newVanityUrl);
         assertNotNull("New URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(newVanityUrl));
+                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
 
         assertTrue("Wrong page vanity URL returned", vanityUrl
                 .equals(getVanityUrlService()

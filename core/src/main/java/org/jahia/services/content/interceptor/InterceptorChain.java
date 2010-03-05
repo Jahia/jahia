@@ -78,8 +78,6 @@ public class InterceptorChain {
      * @throws RepositoryException
      */
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        logger.error("khaled: beforeSetValue 1");
-
         if (node.getSession().isInterceptorsEnabled()) {
             for (PropertyInterceptor interceptor : interceptors) {
                 if (interceptor.canApplyOnProperty(node, definition)) {
@@ -111,8 +109,6 @@ public class InterceptorChain {
      * @throws RepositoryException
      */
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        logger.error("khaled: beforeSetValue ");
-
         if (node.getSession().isInterceptorsEnabled()) {
             for (PropertyInterceptor interceptor : interceptors) {
                 if (interceptor.canApplyOnProperty(node, definition)) {

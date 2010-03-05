@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -143,7 +144,14 @@ public class VersionViewer extends ContentPanel {
             }
         });
 
-
+        final Button refresh = new Button();
+        refresh.setIconStyle("gwt-toolbar-icon-refresh");
+        refresh.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent componentEvent) {
+                refresh();
+            }
+        });
         // case of preview or edit: no version
         if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
             final ToggleButton hButton = new ToggleButton("Highligthing");
@@ -163,6 +171,7 @@ public class VersionViewer extends ContentPanel {
             final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
                 public void afterToolbarLoading() {
                     insertItem(hButton, 0);
+                    insertItem(refresh, 0);
                     insertItem(versionComboBox, 0);
                 }
             };
@@ -174,6 +183,7 @@ public class VersionViewer extends ContentPanel {
             // case of th live mode
             ToolBar headerToolBar = new ToolBar();
             headerToolBar.add(versionComboBox);
+            headerToolBar.add(refresh);
             setTopComponent(headerToolBar);
         }
 
@@ -222,6 +232,8 @@ public class VersionViewer extends ContentPanel {
                 contentService.getNodeURL(currentNode.getPath(), locale, currentMode, new AsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
+                        setHeading(url);
+
                         unmask();
                     }
 
@@ -234,6 +246,8 @@ public class VersionViewer extends ContentPanel {
                 contentService.getNodeURL(version.getNode().getPath(), version.getVersionNumber(), workspace, locale, currentMode, new AsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
+                        setHeading(url);
+
                         unmask();
                     }
 

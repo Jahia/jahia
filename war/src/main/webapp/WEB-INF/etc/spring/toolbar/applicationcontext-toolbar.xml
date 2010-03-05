@@ -119,7 +119,7 @@
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>                 
+                <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
@@ -127,9 +127,6 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.NewAction"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
-                <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.export"/>
-                <ref bean="org.jahia.toolbar.item.import"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
@@ -480,7 +477,7 @@
                 <property name="needAuthentication" value="true"/>
             </bean>
         </property>
-        <property name="titleKey" value="label.tools"/>
+        <property name="titleKey" value="label.managers"/>
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.FileManager"/>
@@ -709,6 +706,9 @@
                 <ref bean="org.jahia.toolbar.item.pasteReference"/>
                 <ref bean="org.jahia.toolbar.item.ClipBoard"/>                
                 <ref bean="org.jahia.toolbar.item.translate"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.lock"/>
                 <ref bean="org.jahia.toolbar.item.unlock"/>

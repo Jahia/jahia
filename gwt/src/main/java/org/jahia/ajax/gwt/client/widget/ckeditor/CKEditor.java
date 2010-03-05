@@ -1,7 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.ckeditor;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -9,9 +7,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -74,7 +69,7 @@ public class CKEditor extends Component {
             public void execute() {
                 instanceId = getElement().getId();
                 DOM.setElementAttribute(getElement(), "name", instanceId);
-                editorInstance = initEditor(JahiaGWTParameters.getContextPath(), JahiaGWTParameters.getServletPath());
+                editorInstance = initEditor();
             }
         });
         addLoadListener(new CKEditorLoadListener() {
@@ -160,39 +155,13 @@ public class CKEditor extends Component {
      * @return
      */
 
-    private native JavaScriptObject initEditor(String contextPath, String servletPath)/*-{
+    private native JavaScriptObject initEditor()/*-{
 
-    $wnd.CKEDITOR.config.extraPlugins = 'linkfile';
-    $wnd.CKEDITOR.config.toolbar_Full =
-        [
-            ['Source','-','Preview','-','Templates'],
-            ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print','SpellChecker'],
-            ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-            '/',
-            ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-            ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
-            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-            ['Link','Unlink','Anchor'],        
-            ['Image','LinkFile','Flash','Table','HorizontalRule','SpecialChar'],
-            '/',
-            ['Styles','Format','Font','FontSize'],
-            ['TextColor','BGColor'],
-            ['Maximize','ShowBlocks','-','About']
-        ];
-
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
-            skin : 'jahia',
-            filebrowserWindowWidth : '810',
-            filebrowserWindowHeight : '650',
-            filebrowserLinkWindowHeight : '800',            
-            filebrowserBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker',
-            filebrowserImageBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=image/*',
-            filebrowserFlashBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=filepicker&mime=flash',
-            filebrowserLinkBrowseUrl : contextPath+'/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker&contextPath='+contextPath+"&servletPath="+servletPath
-        });
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
-        oCKeditor.Width = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()();
-        oCKeditor.Height = config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()();
+        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
+            width : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()(),
+            height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()()
+        });
 
         return oCKeditor;
       }-*/;

@@ -3,9 +3,1236 @@ Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
-CKEDITOR.dialog.add('link',function(a){var b=function(){var s=this.getDialog(),t=s.getContentElement('target','popupFeatures'),u=s.getContentElement('target','linkTargetName'),v=this.getValue();if(!t||!u)return;t=t.getElement();if(v=='popup'){t.show();u.setLabel(a.lang.link.targetPopupName);}else{t.hide();u.setLabel(a.lang.link.targetFrameName);this.getDialog().setValueOf('target','linkTargetName',v.charAt(0)=='_'?v:'');}},c=function(){var s=this.getDialog(),t=['urlOptions','anchorOptions','emailOptions'],u=this.getValue(),v=s.definition.getContents('upload').hidden;if(u=='url'){if(a.config.linkShowTargetTab)s.showPage('target');if(!v)s.showPage('upload');}else{s.hidePage('target');if(!v)s.hidePage('upload');}for(var w=0;w<t.length;w++){var x=s.getContentElement('info',t[w]);if(!x)continue;x=x.getElement().getParent().getParent();if(t[w]==u+'Options')x.show();else x.hide();}},d=/^mailto:([^?]+)(?:\?(.+))?$/,e=/subject=([^;?:@&=$,\/]*)/,f=/body=([^;?:@&=$,\/]*)/,g=/^#(.*)$/,h=/^((?:http|https|ftp|news):\/\/)?(.*)$/,i=/^(_(?:self|top|parent|blank))$/,j=/\s*window.open\(\s*this\.href\s*,\s*(?:'([^']*)'|null)\s*,\s*'([^']*)'\s*\)\s*;\s*return\s*false;*\s*/,k=/(?:^|,)([^=]+)=(\d+|yes|no)/gi,l=function(s,t){var u=t?t.getAttribute('_cke_saved_href')||t.getAttribute('href'):'',v='',w='',x=false,y={};if(u){v=u.match(d);w=u.match(g);x=u.match(h);}if(v){var z=u.match(e),A=u.match(f);y.type='email';y.email={};y.email.address=v[1];z&&(y.email.subject=decodeURIComponent(z[1]));A&&(y.email.body=decodeURIComponent(A[1]));}else if(w){y.type='anchor';y.anchor={};y.anchor.name=y.anchor.id=w[1];}else if(u&&x){y.type='url';y.url={};y.url.protocol=x[1];y.url.url=x[2];}else y.type='url';if(t){var B=t.getAttribute('target');y.target={};y.adv={};if(!B){var C=t.getAttribute('_cke_pa_onclick')||t.getAttribute('onclick'),D=C&&C.match(j);if(D){y.target.type='popup';y.target.name=D[1];var E;while(E=k.exec(D[2]))if(E[2]=='yes'||E[2]=='1')y.target[E[1]]=true;else if(isFinite(E[2]))y.target[E[1]]=E[2];}}else{var F=B.match(i);if(F)y.target.type=y.target.name=B;else{y.target.type='frame';y.target.name=B;}}var G=this,H=function(N,O){var P=t.getAttribute(O);if(P!==null)y.adv[N]=P||'';};H('advId','id');H('advLangDir','dir');H('advAccessKey','accessKey');H('advName','name');H('advLangCode','lang');H('advTabIndex','tabindex');H('advTitle','title');H('advContentType','type');H('advCSSClasses','class');H('advCharset','charset');H('advStyles','style');}var I=s.document.getElementsByTag('img'),J=new CKEDITOR.dom.nodeList(s.document.$.anchors),K=y.anchors=[];
-for(var L=0;L<I.count();L++){var M=I.getItem(L);if(M.getAttribute('_cke_realelement')&&M.getAttribute('_cke_real_element_type')=='anchor')K.push(s.restoreRealElement(M));}for(L=0;L<J.count();L++)K.push(J.getItem(L));for(L=0;L<K.length;L++){M=K[L];K[L]={name:M.getAttribute('name'),id:M.getAttribute('id')};}this._.selectedElement=t;return y;},m=function(s,t){if(t[s])this.setValue(t[s][this.id]||'');},n=function(s){return m.call(this,'target',s);},o=function(s){return m.call(this,'adv',s);},p=function(s,t){if(!t[s])t[s]={};t[s][this.id]=this.getValue()||'';},q=function(s){return p.call(this,'target',s);},r=function(s){return p.call(this,'adv',s);};return{title:a.lang.link.title,minWidth:350,minHeight:230,contents:[{id:'info',label:a.lang.link.info,title:a.lang.link.info,elements:[{id:'linkType',type:'select',label:a.lang.link.type,'default':'url',items:[[a.lang.common.url,'url'],[a.lang.link.toAnchor,'anchor'],[a.lang.link.toEmail,'email']],onChange:c,setup:function(s){if(s.type)this.setValue(s.type);},commit:function(s){s.type=this.getValue();}},{type:'vbox',id:'urlOptions',children:[{type:'hbox',widths:['25%','75%'],children:[{id:'protocol',type:'select',label:a.lang.common.protocol,'default':'http://',style:'width : 100%;',items:[['http://'],['https://'],['ftp://'],['news://'],['<other>','']],setup:function(s){if(s.url)this.setValue(s.url.protocol);},commit:function(s){if(!s.url)s.url={};s.url.protocol=this.getValue();}},{type:'text',id:'url',label:a.lang.common.url,onLoad:function(){this.allowOnChange=true;},onKeyUp:function(){var x=this;x.allowOnChange=false;var s=x.getDialog().getContentElement('info','protocol'),t=x.getValue(),u=/^(http|https|ftp|news):\/\/(?=.)/gi,v=/^((javascript:)|[#\/\.])/gi,w=u.exec(t);if(w){x.setValue(t.substr(w[0].length));s.setValue(w[0].toLowerCase());}else if(v.test(t))s.setValue('');x.allowOnChange=true;},onChange:function(){if(this.allowOnChange)this.onKeyUp();},validate:function(){var s=this.getDialog();if(s.getContentElement('info','linkType')&&s.getValueOf('info','linkType')!='url')return true;if(this.getDialog().fakeObj)return true;var t=CKEDITOR.dialog.validate.notEmpty(a.lang.link.noUrl);return t.apply(this);},setup:function(s){var u=this;u.allowOnChange=false;if(s.url)u.setValue(s.url.url);u.allowOnChange=true;var t=u.getDialog().getContentElement('info','linkType');if(t&&t.getValue()=='url')u.select();},commit:function(s){if(!s.url)s.url={};s.url.url=this.getValue();this.allowOnChange=false;}}],setup:function(s){if(!this.getDialog().getContentElement('info','linkType'))this.getElement().show();
-}},{type:'button',id:'browse',hidden:'true',filebrowser:'info:url',label:a.lang.common.browseServer}]},{type:'vbox',id:'anchorOptions',width:260,align:'center',padding:0,children:[{type:'html',id:'selectAnchorText',html:CKEDITOR.tools.htmlEncode(a.lang.link.selectAnchor),setup:function(s){if(s.anchors.length>0)this.getElement().show();else this.getElement().hide();}},{type:'html',id:'noAnchors',style:'text-align: center;',html:'<div>'+CKEDITOR.tools.htmlEncode(a.lang.link.noAnchors)+'</div>',setup:function(s){if(s.anchors.length<1)this.getElement().show();else this.getElement().hide();}},{type:'hbox',id:'selectAnchor',children:[{type:'select',id:'anchorName','default':'',label:a.lang.link.anchorName,style:'width: 100%;',items:[['']],setup:function(s){var v=this;v.clear();v.add('');for(var t=0;t<s.anchors.length;t++)if(s.anchors[t].name)v.add(s.anchors[t].name);if(s.anchor)v.setValue(s.anchor.name);var u=v.getDialog().getContentElement('info','linkType');if(u&&u.getValue()=='email')v.focus();},commit:function(s){if(!s.anchor)s.anchor={};s.anchor.name=this.getValue();}},{type:'select',id:'anchorId','default':'',label:a.lang.link.anchorId,style:'width: 100%;',items:[['']],setup:function(s){var u=this;u.clear();u.add('');for(var t=0;t<s.anchors.length;t++)if(s.anchors[t].id)u.add(s.anchors[t].id);if(s.anchor)u.setValue(s.anchor.id);},commit:function(s){if(!s.anchor)s.anchor={};s.anchor.id=this.getValue();}}],setup:function(s){if(s.anchors.length>0)this.getElement().show();else this.getElement().hide();}}],setup:function(s){if(!this.getDialog().getContentElement('info','linkType'))this.getElement().hide();}},{type:'vbox',id:'emailOptions',padding:1,children:[{type:'text',id:'emailAddress',label:a.lang.link.emailAddress,validate:function(){var s=this.getDialog();if(!s.getContentElement('info','linkType')||s.getValueOf('info','linkType')!='email')return true;var t=CKEDITOR.dialog.validate.notEmpty(a.lang.link.noEmail);return t.apply(this);},setup:function(s){if(s.email)this.setValue(s.email.address);var t=this.getDialog().getContentElement('info','linkType');if(t&&t.getValue()=='email')this.select();},commit:function(s){if(!s.email)s.email={};s.email.address=this.getValue();}},{type:'text',id:'emailSubject',label:a.lang.link.emailSubject,setup:function(s){if(s.email)this.setValue(s.email.subject);},commit:function(s){if(!s.email)s.email={};s.email.subject=this.getValue();}},{type:'textarea',id:'emailBody',label:a.lang.link.emailBody,rows:3,'default':'',setup:function(s){if(s.email)this.setValue(s.email.body);
-},commit:function(s){if(!s.email)s.email={};s.email.body=this.getValue();}}],setup:function(s){if(!this.getDialog().getContentElement('info','linkType'))this.getElement().hide();}}]},{id:'target',label:a.lang.link.target,title:a.lang.link.target,elements:[{type:'hbox',widths:['50%','50%'],children:[{type:'select',id:'linkTargetType',label:a.lang.link.target,'default':'notSet',style:'width : 100%;',items:[[a.lang.link.targetNotSet,'notSet'],[a.lang.link.targetFrame,'frame'],[a.lang.link.targetPopup,'popup'],[a.lang.link.targetNew,'_blank'],[a.lang.link.targetTop,'_top'],[a.lang.link.targetSelf,'_self'],[a.lang.link.targetParent,'_parent']],onChange:b,setup:function(s){if(s.target)this.setValue(s.target.type);},commit:function(s){if(!s.target)s.target={};s.target.type=this.getValue();}},{type:'text',id:'linkTargetName',label:a.lang.link.targetFrameName,'default':'',setup:function(s){if(s.target)this.setValue(s.target.name);},commit:function(s){if(!s.target)s.target={};s.target.name=this.getValue();}}]},{type:'vbox',width:260,align:'center',padding:2,id:'popupFeatures',children:[{type:'html',html:CKEDITOR.tools.htmlEncode(a.lang.link.popupFeatures)},{type:'hbox',children:[{type:'checkbox',id:'resizable',label:a.lang.link.popupResizable,setup:n,commit:q},{type:'checkbox',id:'status',label:a.lang.link.popupStatusBar,setup:n,commit:q}]},{type:'hbox',children:[{type:'checkbox',id:'location',label:a.lang.link.popupLocationBar,setup:n,commit:q},{type:'checkbox',id:'toolbar',label:a.lang.link.popupToolbar,setup:n,commit:q}]},{type:'hbox',children:[{type:'checkbox',id:'menubar',label:a.lang.link.popupMenuBar,setup:n,commit:q},{type:'checkbox',id:'fullscreen',label:a.lang.link.popupFullScreen,setup:n,commit:q}]},{type:'hbox',children:[{type:'checkbox',id:'scrollbars',label:a.lang.link.popupScrollBars,setup:n,commit:q},{type:'checkbox',id:'dependent',label:a.lang.link.popupDependent,setup:n,commit:q}]},{type:'hbox',children:[{type:'text',widths:['30%','70%'],labelLayout:'horizontal',label:a.lang.link.popupWidth,id:'width',setup:n,commit:q},{type:'text',labelLayout:'horizontal',widths:['55%','45%'],label:a.lang.link.popupLeft,id:'left',setup:n,commit:q}]},{type:'hbox',children:[{type:'text',labelLayout:'horizontal',widths:['30%','70%'],label:a.lang.link.popupHeight,id:'height',setup:n,commit:q},{type:'text',labelLayout:'horizontal',label:a.lang.link.popupTop,widths:['55%','45%'],id:'top',setup:n,commit:q}]}]}]},{id:'upload',label:a.lang.link.upload,title:a.lang.link.upload,hidden:true,filebrowser:'uploadButton',elements:[{type:'file',id:'upload',label:a.lang.common.upload,style:'height:40px',size:29},{type:'fileButton',id:'uploadButton',label:a.lang.common.uploadSubmit,filebrowser:'info:url','for':['upload','upload']}]},{id:'advanced',label:a.lang.link.advanced,title:a.lang.link.advanced,elements:[{type:'vbox',padding:1,children:[{type:'hbox',widths:['45%','35%','20%'],children:[{type:'text',id:'advId',label:a.lang.link.id,setup:o,commit:r},{type:'select',id:'advLangDir',label:a.lang.link.langDir,'default':'',style:'width:110px',items:[[a.lang.link.langDirNotSet,''],[a.lang.link.langDirLTR,'ltr'],[a.lang.link.langDirRTL,'rtl']],setup:o,commit:r},{type:'text',id:'advAccessKey',width:'80px',label:a.lang.link.acccessKey,maxLength:1,setup:o,commit:r}]},{type:'hbox',widths:['45%','35%','20%'],children:[{type:'text',label:a.lang.link.name,id:'advName',setup:o,commit:r},{type:'text',label:a.lang.link.langCode,id:'advLangCode',width:'110px','default':'',setup:o,commit:r},{type:'text',label:a.lang.link.tabIndex,id:'advTabIndex',width:'80px',maxLength:5,setup:o,commit:r}]}]},{type:'vbox',padding:1,children:[{type:'hbox',widths:['45%','55%'],children:[{type:'text',label:a.lang.link.advisoryTitle,'default':'',id:'advTitle',setup:o,commit:r},{type:'text',label:a.lang.link.advisoryContentType,'default':'',id:'advContentType',setup:o,commit:r}]},{type:'hbox',widths:['45%','55%'],children:[{type:'text',label:a.lang.link.cssClasses,'default':'',id:'advCSSClasses',setup:o,commit:r},{type:'text',label:a.lang.link.charset,'default':'',id:'advCharset',setup:o,commit:r}]},{type:'hbox',children:[{type:'text',label:a.lang.link.styles,'default':'',id:'advStyles',setup:o,commit:r}]}]}]}],onShow:function(){var y=this;
-y.fakeObj=false;var s=y.getParentEditor(),t=s.getSelection(),u=t.getRanges(),v=null,w=y;if(u.length==1){var x=u[0].getCommonAncestor(true);v=x.getAscendant('a',true);if(v&&v.getAttribute('href'))t.selectElement(v);else if((v=x.getAscendant('img',true))&&(v.getAttribute('_cke_real_element_type')&&v.getAttribute('_cke_real_element_type')=='anchor')){y.fakeObj=v;v=s.restoreRealElement(y.fakeObj);t.selectElement(y.fakeObj);}else v=null;}y.setupContent(l.apply(y,[s,v]));},onOk:function(){var s={href:'javascript:void(0)/*'+CKEDITOR.tools.getNextNumber()+'*/'},t=[],u={href:s.href},v=this,w=this.getParentEditor();this.commitContent(u);switch(u.type||'url'){case 'url':var x=u.url&&u.url.protocol!=undefined?u.url.protocol:'http://',y=u.url&&u.url.url||'';s._cke_saved_href=y.indexOf('/')===0?y:x+y;break;case 'anchor':var z=u.anchor&&u.anchor.name,A=u.anchor&&u.anchor.id;s._cke_saved_href='#'+(z||A||'');break;case 'email':var B=u.email&&u.email.address,C=u.email&&encodeURIComponent(u.email.subject||''),D=u.email&&encodeURIComponent(u.email.body||''),E=['mailto:',B];if(C||D){var F=[];E.push('?');C&&F.push('subject='+C);D&&F.push('body='+D);E.push(F.join('&'));}s._cke_saved_href=E.join('');break;default:}if(u.target)if(u.target.type=='popup'){var G=["window.open(this.href, '",u.target.name||'',"', '"],H=['resizable','status','location','toolbar','menubar','fullscreen','scrollbars','dependent'],I=H.length,J=function(T){if(u.target[T])H.push(T+'='+u.target[T]);};for(var K=0;K<I;K++)H[K]=H[K]+(u.target[H[K]]?'=yes':'=no');J('width');J('left');J('height');J('top');G.push(H.join(','),"'); return false;");s[CKEDITOR.env.ie||CKEDITOR.env.webkit?'_cke_pa_onclick':'onclick']=G.join('');}else{if(u.target.type!='notSet'&&u.target.name)s.target=u.target.name;t.push('_cke_pa_onclick','onclick');}if(u.adv){var L=function(T,U){var V=u.adv[T];if(V)s[U]=V;else t.push(U);};if(this._.selectedElement)L('advId','id');L('advLangDir','dir');L('advAccessKey','accessKey');L('advName','name');L('advLangCode','lang');L('advTabIndex','tabindex');L('advTitle','title');L('advContentType','type');L('advCSSClasses','class');L('advCharset','charset');L('advStyles','style');}if(!this._.selectedElement){var M=w.getSelection(),N=M.getRanges();if(N.length==1&&N[0].collapsed){var O=new CKEDITOR.dom.text(s._cke_saved_href,w.document);N[0].insertNode(O);N[0].selectNodeContents(O);M.selectRanges(N);}var P=new CKEDITOR.style({element:'a',attributes:s});P.type=CKEDITOR.STYLE_INLINE;P.apply(w.document);if(u.adv&&u.adv.advId){var Q=this.getParentEditor().document.$.getElementsByTagName('a');
-for(K=0;K<Q.length;K++)if(Q[K].href==s.href){Q[K].id=u.adv.advId;break;}}}else{var R=this._.selectedElement;if(CKEDITOR.env.ie&&s.name!=R.getAttribute('name')){var S=new CKEDITOR.dom.element('<a name="'+CKEDITOR.tools.htmlEncode(s.name)+'">',w.document);M=w.getSelection();R.moveChildren(S);R.copyAttributes(S,{name:1});S.replace(R);R=S;M.selectElement(R);}R.setAttributes(s);R.removeAttributes(t);if(R.getAttribute('name'))R.addClass('cke_anchor');else R.removeClass('cke_anchor');if(this.fakeObj)w.createFakeElement(R,'cke_anchor','anchor').replace(this.fakeObj);delete this._.selectedElement;}},onLoad:function(){if(!a.config.linkShowAdvancedTab)this.hidePage('advanced');if(!a.config.linkShowTargetTab)this.hidePage('target');}};});
+CKEDITOR.dialog.add( 'link', function( editor )
+{
+	// Handles the event when the "Target" selection box is changed.
+	var targetChanged = function()
+	{
+		var dialog = this.getDialog(),
+			popupFeatures = dialog.getContentElement( 'target', 'popupFeatures' ),
+			targetName = dialog.getContentElement( 'target', 'linkTargetName' ),
+			value = this.getValue();
+
+		if ( !popupFeatures || !targetName )
+			return;
+
+		popupFeatures = popupFeatures.getElement();
+
+		if ( value == 'popup' )
+		{
+			popupFeatures.show();
+			targetName.setLabel( editor.lang.link.targetPopupName );
+		}
+		else
+		{
+			popupFeatures.hide();
+			targetName.setLabel( editor.lang.link.targetFrameName );
+			this.getDialog().setValueOf( 'target', 'linkTargetName', value.charAt( 0 ) == '_' ? value : '' );
+		}
+	};
+
+	// Handles the event when the "Type" selection box is changed.
+	var linkTypeChanged = function()
+	{
+		var dialog = this.getDialog(),
+			partIds = [ 'urlOptions', 'anchorOptions', 'emailOptions' ],
+			typeValue = this.getValue(),
+			uploadInitiallyHidden = dialog.definition.getContents( 'upload' ).hidden;
+
+		if ( typeValue == 'url' )
+		{
+			if ( editor.config.linkShowTargetTab )
+				dialog.showPage( 'target' );
+			if ( !uploadInitiallyHidden )
+				dialog.showPage( 'upload' );
+		}
+		else
+		{
+			dialog.hidePage( 'target' );
+			if ( !uploadInitiallyHidden )
+				dialog.hidePage( 'upload' );
+		}
+
+		for ( var i = 0 ; i < partIds.length ; i++ )
+		{
+			var element = dialog.getContentElement( 'info', partIds[i] );
+			if ( !element )
+				continue;
+
+			element = element.getElement().getParent().getParent();
+			if ( partIds[i] == typeValue + 'Options' )
+				element.show();
+			else
+				element.hide();
+		}
+	};
+
+	// Loads the parameters in a selected link to the link dialog fields.
+	var emailRegex = /^mailto:([^?]+)(?:\?(.+))?$/,
+		emailSubjectRegex = /subject=([^;?:@&=$,\/]*)/,
+		emailBodyRegex = /body=([^;?:@&=$,\/]*)/,
+		anchorRegex = /^#(.*)$/,
+		urlRegex = /^((?:http|https|ftp|news):\/\/)?(.*)$/,
+		selectableTargets = /^(_(?:self|top|parent|blank))$/;
+
+	var popupRegex =
+		/\s*window.open\(\s*this\.href\s*,\s*(?:'([^']*)'|null)\s*,\s*'([^']*)'\s*\)\s*;\s*return\s*false;*\s*/;
+	var popupFeaturesRegex = /(?:^|,)([^=]+)=(\d+|yes|no)/gi;
+
+	var parseLink = function( editor, element )
+	{
+		var href = element ? ( element.getAttribute( '_cke_saved_href' ) || element.getAttribute( 'href' ) ) : '',
+			emailMatch = '',
+			anchorMatch = '',
+			urlMatch = false,
+			retval = {};
+
+		if ( href )
+		{
+			emailMatch = href.match( emailRegex );
+			anchorMatch = href.match( anchorRegex );
+			urlMatch = href.match( urlRegex );
+		}
+
+		// Load the link type and URL.
+		if ( emailMatch )
+		{
+			var subjectMatch = href.match( emailSubjectRegex ),
+				bodyMatch = href.match( emailBodyRegex );
+			retval.type = 'email';
+			retval.email = {};
+			retval.email.address = emailMatch[1];
+			subjectMatch && ( retval.email.subject = decodeURIComponent( subjectMatch[1] ) );
+			bodyMatch && ( retval.email.body = decodeURIComponent( bodyMatch[1] ) );
+		}
+		else if ( anchorMatch )
+		{
+			retval.type = 'anchor';
+			retval.anchor = {};
+			retval.anchor.name = retval.anchor.id = anchorMatch[1];
+		}
+		else if ( href && urlMatch )		// urlRegex matches empty strings, so need to check for href as well.
+		{
+			retval.type = 'url';
+			retval.url = {};
+			retval.url.protocol = urlMatch[1];
+			retval.url.url = urlMatch[2];
+		}
+		else
+			retval.type = 'url';
+
+		// Load target and popup settings.
+		if ( element )
+		{
+			var target = element.getAttribute( 'target' );
+			retval.target = {};
+			retval.adv = {};
+
+			// IE BUG: target attribute is an empty string instead of null in IE if it's not set.
+			if ( !target )
+			{
+				var onclick = element.getAttribute( '_cke_pa_onclick' ) || element.getAttribute( 'onclick' ),
+					onclickMatch = onclick && onclick.match( popupRegex );
+				if ( onclickMatch )
+				{
+					retval.target.type = 'popup';
+					retval.target.name = onclickMatch[1];
+
+					var featureMatch;
+					while ( ( featureMatch = popupFeaturesRegex.exec( onclickMatch[2] ) ) )
+					{
+						if ( featureMatch[2] == 'yes' || featureMatch[2] == '1' )
+							retval.target[ featureMatch[1] ] = true;
+						else if ( isFinite( featureMatch[2] ) )
+							retval.target[ featureMatch[1] ] = featureMatch[2];
+					}
+				}
+			}
+			else
+			{
+				var targetMatch = target.match( selectableTargets );
+				if ( targetMatch )
+					retval.target.type = retval.target.name = target;
+				else
+				{
+					retval.target.type = 'frame';
+					retval.target.name = target;
+				}
+			}
+
+			var me = this;
+			var advAttr = function( inputName, attrName )
+			{
+				var value = element.getAttribute( attrName );
+				if ( value !== null )
+					retval.adv[ inputName ] = value || '';
+			};
+			advAttr( 'advId', 'id' );
+			advAttr( 'advLangDir', 'dir' );
+			advAttr( 'advAccessKey', 'accessKey' );
+			advAttr( 'advName', 'name' );
+			advAttr( 'advLangCode', 'lang' );
+			advAttr( 'advTabIndex', 'tabindex' );
+			advAttr( 'advTitle', 'title' );
+			advAttr( 'advContentType', 'type' );
+			advAttr( 'advCSSClasses', 'class' );
+			advAttr( 'advCharset', 'charset' );
+			advAttr( 'advStyles', 'style' );
+		}
+
+		// Find out whether we have any anchors in the editor.
+		// Get all IMG elements in CK document.
+		var elements = editor.document.getElementsByTag( 'img' ),
+			realAnchors = new CKEDITOR.dom.nodeList( editor.document.$.anchors ),
+			anchors = retval.anchors = [];
+
+		for( var i = 0; i < elements.count() ; i++ )
+		{
+			var item = elements.getItem( i );
+			if ( item.getAttribute( '_cke_realelement' ) && item.getAttribute( '_cke_real_element_type' ) == 'anchor' )
+			{
+				anchors.push( editor.restoreRealElement( item ) );
+			}
+		}
+
+		for ( i = 0 ; i < realAnchors.count() ; i++ )
+			anchors.push( realAnchors.getItem( i ) );
+
+		for ( i = 0 ; i < anchors.length ; i++ )
+		{
+			item = anchors[ i ];
+			anchors[ i ] = { name : item.getAttribute( 'name' ), id : item.getAttribute( 'id' ) };
+		}
+
+		// Record down the selected element in the dialog.
+		this._.selectedElement = element;
+
+		return retval;
+	};
+
+	var setupParams = function( page, data )
+	{
+		if ( data[page] )
+			this.setValue( data[page][this.id] || '' );
+	};
+
+	var setupPopupParams = function( data )
+	{
+		return setupParams.call( this, 'target', data );
+	};
+
+	var setupAdvParams = function( data )
+	{
+		return setupParams.call( this, 'adv', data );
+	};
+
+	var commitParams = function( page, data )
+	{
+		if ( !data[page] )
+			data[page] = {};
+
+		data[page][this.id] = this.getValue() || '';
+	};
+
+	var commitPopupParams = function( data )
+	{
+		return commitParams.call( this, 'target', data );
+	};
+
+	var commitAdvParams = function( data )
+	{
+		return commitParams.call( this, 'adv', data );
+	};
+
+	return {
+		title : editor.lang.link.title,
+		minWidth : 350,
+		minHeight : 230,
+		contents : [
+			{
+				id : 'info',
+				label : editor.lang.link.info,
+				title : editor.lang.link.info,
+				elements :
+				[
+					{
+						id : 'linkType',
+						type : 'select',
+						label : editor.lang.link.type,
+						'default' : 'url',
+						items :
+						[
+							[ editor.lang.common.url, 'url' ],
+							[ editor.lang.link.toAnchor, 'anchor' ],
+							[ editor.lang.link.toEmail, 'email' ]
+						],
+						onChange : linkTypeChanged,
+						setup : function( data )
+						{
+							if ( data.type )
+								this.setValue( data.type );
+						},
+						commit : function( data )
+						{
+							data.type = this.getValue();
+						}
+					},
+					{
+						type : 'vbox',
+						id : 'urlOptions',
+						children :
+						[
+							{
+								type : 'hbox',
+								widths : [ '25%', '75%' ],
+								children :
+								[
+									{
+										id : 'protocol',
+										type : 'select',
+										label : editor.lang.common.protocol,
+										'default' : 'http://',
+										style : 'width : 100%;',
+										items :
+										[
+											[ 'http://' ],
+											[ 'https://' ],
+											[ 'ftp://' ],
+											[ 'news://' ],
+											[ '<other>', '' ]
+										],
+										setup : function( data )
+										{
+											if ( data.url )
+												this.setValue( data.url.protocol );
+										},
+										commit : function( data )
+										{
+											if ( !data.url )
+												data.url = {};
+
+											data.url.protocol = this.getValue();
+										}
+									},
+									{
+										type : 'text',
+										id : 'url',
+										label : editor.lang.common.url,
+										onLoad : function ()
+										{
+											this.allowOnChange = true;
+										},
+										onKeyUp : function()
+										{
+											this.allowOnChange = false;
+											var	protocolCmb = this.getDialog().getContentElement( 'info', 'protocol' ),
+												url = this.getValue(),
+												urlOnChangeProtocol = /^(http|https|ftp|news):\/\/(?=.)/gi,
+												urlOnChangeTestOther = /^((javascript:)|[#\/\.])/gi;
+
+											var protocol = urlOnChangeProtocol.exec( url );
+											if ( protocol )
+											{
+												this.setValue( url.substr( protocol[ 0 ].length ) );
+												protocolCmb.setValue( protocol[ 0 ].toLowerCase() );
+											}
+											else if ( urlOnChangeTestOther.test( url ) )
+												protocolCmb.setValue( '' );
+
+											this.allowOnChange = true;
+										},
+										onChange : function()
+										{
+											if ( this.allowOnChange )		// Dont't call on dialog load.
+												this.onKeyUp();
+										},
+										validate : function()
+										{
+											var dialog = this.getDialog();
+
+											if ( dialog.getContentElement( 'info', 'linkType' ) &&
+													dialog.getValueOf( 'info', 'linkType' ) != 'url' )
+												return true;
+
+											if ( this.getDialog().fakeObj )	// Edit Anchor.
+												return true;
+
+											var func = CKEDITOR.dialog.validate.notEmpty( editor.lang.link.noUrl );
+											return func.apply( this );
+										},
+										setup : function( data )
+										{
+											this.allowOnChange = false;
+											if ( data.url )
+												this.setValue( data.url.url );
+											this.allowOnChange = true;
+
+											var linkType = this.getDialog().getContentElement( 'info', 'linkType' );
+											if ( linkType && linkType.getValue() == 'url' )
+												this.select();
+
+										},
+										commit : function( data )
+										{
+											if ( !data.url )
+												data.url = {};
+
+											data.url.url = this.getValue();
+											this.allowOnChange = false;
+										}
+									}
+								],
+								setup : function( data )
+								{
+									if ( !this.getDialog().getContentElement( 'info', 'linkType' ) )
+										this.getElement().show();
+								}
+							},
+							{
+								type : 'hbox',
+								align : 'center',
+								children:
+								[
+									{
+										type : 'button',
+										id : 'browse',
+										style : 'float:right',
+										hidden : 'true',
+										filebrowser : 'info:url',
+										label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Pages') + ')'
+									},
+									{
+										type : 'button',
+										id : 'browseFiles',
+										style : 'float:left',
+										hidden : 'true',
+										filebrowser : 
+										{
+											action : 'Browse',
+											url : editor.config.filebrowserBrowseUrl,
+											target : 'info:url'
+										},
+										label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerFiles || 'Files') + ')'
+									}
+								]
+							}
+						]
+					},
+					{
+						type : 'vbox',
+						id : 'anchorOptions',
+						width : 260,
+						align : 'center',
+						padding : 0,
+						children :
+						[
+							{
+								type : 'html',
+								id : 'selectAnchorText',
+								html : CKEDITOR.tools.htmlEncode( editor.lang.link.selectAnchor ),
+								setup : function( data )
+								{
+									if ( data.anchors.length > 0 )
+										this.getElement().show();
+									else
+										this.getElement().hide();
+								}
+							},
+							{
+								type : 'html',
+								id : 'noAnchors',
+								style : 'text-align: center;',
+								html : '<div>' + CKEDITOR.tools.htmlEncode( editor.lang.link.noAnchors ) + '</div>',
+								setup : function( data )
+								{
+									if ( data.anchors.length < 1 )
+										this.getElement().show();
+									else
+										this.getElement().hide();
+								}
+							},
+							{
+								type : 'hbox',
+								id : 'selectAnchor',
+								children :
+								[
+									{
+										type : 'select',
+										id : 'anchorName',
+										'default' : '',
+										label : editor.lang.link.anchorName,
+										style : 'width: 100%;',
+										items :
+										[
+											[ '' ]
+										],
+										setup : function( data )
+										{
+											this.clear();
+											this.add( '' );
+											for ( var i = 0 ; i < data.anchors.length ; i++ )
+											{
+												if ( data.anchors[i].name )
+													this.add( data.anchors[i].name );
+											}
+
+											if ( data.anchor )
+												this.setValue( data.anchor.name );
+
+											var linkType = this.getDialog().getContentElement( 'info', 'linkType' );
+											if ( linkType && linkType.getValue() == 'email' )
+												this.focus();
+										},
+										commit : function( data )
+										{
+											if ( !data.anchor )
+												data.anchor = {};
+
+											data.anchor.name = this.getValue();
+										}
+									},
+									{
+										type : 'select',
+										id : 'anchorId',
+										'default' : '',
+										label : editor.lang.link.anchorId,
+										style : 'width: 100%;',
+										items :
+										[
+											[ '' ]
+										],
+										setup : function( data )
+										{
+											this.clear();
+											this.add( '' );
+											for ( var i = 0 ; i < data.anchors.length ; i++ )
+											{
+												if ( data.anchors[i].id )
+													this.add( data.anchors[i].id );
+											}
+
+											if ( data.anchor )
+												this.setValue( data.anchor.id );
+										},
+										commit : function( data )
+										{
+											if ( !data.anchor )
+												data.anchor = {};
+
+											data.anchor.id = this.getValue();
+										}
+									}
+								],
+								setup : function( data )
+								{
+									if ( data.anchors.length > 0 )
+										this.getElement().show();
+									else
+										this.getElement().hide();
+								}
+							}
+						],
+						setup : function( data )
+						{
+							if ( !this.getDialog().getContentElement( 'info', 'linkType' ) )
+								this.getElement().hide();
+						}
+					},
+					{
+						type :  'vbox',
+						id : 'emailOptions',
+						padding : 1,
+						children :
+						[
+							{
+								type : 'text',
+								id : 'emailAddress',
+								label : editor.lang.link.emailAddress,
+								validate : function()
+								{
+									var dialog = this.getDialog();
+
+									if ( !dialog.getContentElement( 'info', 'linkType' ) ||
+											dialog.getValueOf( 'info', 'linkType' ) != 'email' )
+										return true;
+
+									var func = CKEDITOR.dialog.validate.notEmpty( editor.lang.link.noEmail );
+									return func.apply( this );
+								},
+								setup : function( data )
+								{
+									if ( data.email )
+										this.setValue( data.email.address );
+
+									var linkType = this.getDialog().getContentElement( 'info', 'linkType' );
+									if ( linkType && linkType.getValue() == 'email' )
+										this.select();
+								},
+								commit : function( data )
+								{
+									if ( !data.email )
+										data.email = {};
+
+									data.email.address = this.getValue();
+								}
+							},
+							{
+								type : 'text',
+								id : 'emailSubject',
+								label : editor.lang.link.emailSubject,
+								setup : function( data )
+								{
+									if ( data.email )
+										this.setValue( data.email.subject );
+								},
+								commit : function( data )
+								{
+									if ( !data.email )
+										data.email = {};
+
+									data.email.subject = this.getValue();
+								}
+							},
+							{
+								type : 'textarea',
+								id : 'emailBody',
+								label : editor.lang.link.emailBody,
+								rows : 3,
+								'default' : '',
+								setup : function( data )
+								{
+									if ( data.email )
+										this.setValue( data.email.body );
+								},
+								commit : function( data )
+								{
+									if ( !data.email )
+										data.email = {};
+
+									data.email.body = this.getValue();
+								}
+							}
+						],
+						setup : function( data )
+						{
+							if ( !this.getDialog().getContentElement( 'info', 'linkType' ) )
+								this.getElement().hide();
+						}
+					}
+				]
+			},
+			{
+				id : 'target',
+				label : editor.lang.link.target,
+				title : editor.lang.link.target,
+				elements :
+				[
+					{
+						type : 'hbox',
+						widths : [ '50%', '50%' ],
+						children :
+						[
+							{
+								type : 'select',
+								id : 'linkTargetType',
+								label : editor.lang.link.target,
+								'default' : 'notSet',
+								style : 'width : 100%;',
+								'items' :
+								[
+									[ editor.lang.link.targetNotSet, 'notSet' ],
+									[ editor.lang.link.targetFrame, 'frame' ],
+									[ editor.lang.link.targetPopup, 'popup' ],
+									[ editor.lang.link.targetNew, '_blank' ],
+									[ editor.lang.link.targetTop, '_top' ],
+									[ editor.lang.link.targetSelf, '_self' ],
+									[ editor.lang.link.targetParent, '_parent' ]
+								],
+								onChange : targetChanged,
+								setup : function( data )
+								{
+									if ( data.target )
+										this.setValue( data.target.type );
+								},
+								commit : function( data )
+								{
+									if ( !data.target )
+										data.target = {};
+
+									data.target.type = this.getValue();
+								}
+							},
+							{
+								type : 'text',
+								id : 'linkTargetName',
+								label : editor.lang.link.targetFrameName,
+								'default' : '',
+								setup : function( data )
+								{
+									if ( data.target )
+										this.setValue( data.target.name );
+								},
+								commit : function( data )
+								{
+									if ( !data.target )
+										data.target = {};
+
+									data.target.name = this.getValue();
+								}
+							}
+						]
+					},
+					{
+						type : 'vbox',
+						width : 260,
+						align : 'center',
+						padding : 2,
+						id : 'popupFeatures',
+						children :
+						[
+							{
+								type : 'html',
+								html : CKEDITOR.tools.htmlEncode( editor.lang.link.popupFeatures )
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type : 'checkbox',
+										id : 'resizable',
+										label : editor.lang.link.popupResizable,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+									},
+									{
+										type : 'checkbox',
+										id : 'status',
+										label : editor.lang.link.popupStatusBar,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type : 'checkbox',
+										id : 'location',
+										label : editor.lang.link.popupLocationBar,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									},
+									{
+										type : 'checkbox',
+										id : 'toolbar',
+										label : editor.lang.link.popupToolbar,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type : 'checkbox',
+										id : 'menubar',
+										label : editor.lang.link.popupMenuBar,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									},
+									{
+										type : 'checkbox',
+										id : 'fullscreen',
+										label : editor.lang.link.popupFullScreen,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type : 'checkbox',
+										id : 'scrollbars',
+										label : editor.lang.link.popupScrollBars,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									},
+									{
+										type : 'checkbox',
+										id : 'dependent',
+										label : editor.lang.link.popupDependent,
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type :  'text',
+										widths : [ '30%', '70%' ],
+										labelLayout : 'horizontal',
+										label : editor.lang.link.popupWidth,
+										id : 'width',
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									},
+									{
+										type :  'text',
+										labelLayout : 'horizontal',
+										widths : [ '55%', '45%' ],
+										label : editor.lang.link.popupLeft,
+										id : 'left',
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type :  'text',
+										labelLayout : 'horizontal',
+										widths : [ '30%', '70%' ],
+										label : editor.lang.link.popupHeight,
+										id : 'height',
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									},
+									{
+										type :  'text',
+										labelLayout : 'horizontal',
+										label : editor.lang.link.popupTop,
+										widths : [ '55%', '45%' ],
+										id : 'top',
+										setup : setupPopupParams,
+										commit : commitPopupParams
+
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				id : 'upload',
+				label : editor.lang.link.upload,
+				title : editor.lang.link.upload,
+				hidden : true,
+				filebrowser : 'uploadButton',
+				elements :
+				[
+					{
+						type : 'file',
+						id : 'upload',
+						label : editor.lang.common.upload,
+						style: 'height:40px',
+						size : 29
+					},
+					{
+						type : 'fileButton',
+						id : 'uploadButton',
+						label : editor.lang.common.uploadSubmit,
+						filebrowser : 'info:url',
+						'for' : [ 'upload', 'upload' ]
+					}
+				]
+			},
+			{
+				id : 'advanced',
+				label : editor.lang.link.advanced,
+				title : editor.lang.link.advanced,
+				elements :
+				[
+					{
+						type : 'vbox',
+						padding : 1,
+						children :
+						[
+							{
+								type : 'hbox',
+								widths : [ '45%', '35%', '20%' ],
+								children :
+								[
+									{
+										type : 'text',
+										id : 'advId',
+										label : editor.lang.link.id,
+										setup : setupAdvParams,
+										commit : commitAdvParams
+									},
+									{
+										type : 'select',
+										id : 'advLangDir',
+										label : editor.lang.link.langDir,
+										'default' : '',
+										style : 'width:110px',
+										items :
+										[
+											[ editor.lang.link.langDirNotSet, '' ],
+											[ editor.lang.link.langDirLTR, 'ltr' ],
+											[ editor.lang.link.langDirRTL, 'rtl' ]
+										],
+										setup : setupAdvParams,
+										commit : commitAdvParams
+									},
+									{
+										type : 'text',
+										id : 'advAccessKey',
+										width : '80px',
+										label : editor.lang.link.acccessKey,
+										maxLength : 1,
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								widths : [ '45%', '35%', '20%' ],
+								children :
+								[
+									{
+										type : 'text',
+										label : editor.lang.link.name,
+										id : 'advName',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									},
+									{
+										type : 'text',
+										label : editor.lang.link.langCode,
+										id : 'advLangCode',
+										width : '110px',
+										'default' : '',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									},
+									{
+										type : 'text',
+										label : editor.lang.link.tabIndex,
+										id : 'advTabIndex',
+										width : '80px',
+										maxLength : 5,
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									}
+								]
+							}
+						]
+					},
+					{
+						type : 'vbox',
+						padding : 1,
+						children :
+						[
+							{
+								type : 'hbox',
+								widths : [ '45%', '55%' ],
+								children :
+								[
+									{
+										type : 'text',
+										label : editor.lang.link.advisoryTitle,
+										'default' : '',
+										id : 'advTitle',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									},
+									{
+										type : 'text',
+										label : editor.lang.link.advisoryContentType,
+										'default' : '',
+										id : 'advContentType',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								widths : [ '45%', '55%' ],
+								children :
+								[
+									{
+										type : 'text',
+										label : editor.lang.link.cssClasses,
+										'default' : '',
+										id : 'advCSSClasses',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									},
+									{
+										type : 'text',
+										label : editor.lang.link.charset,
+										'default' : '',
+										id : 'advCharset',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									}
+								]
+							},
+							{
+								type : 'hbox',
+								children :
+								[
+									{
+										type : 'text',
+										label : editor.lang.link.styles,
+										'default' : '',
+										id : 'advStyles',
+										setup : setupAdvParams,
+										commit : commitAdvParams
+
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		],
+		onShow : function()
+		{
+			this.fakeObj = false;
+
+			var editor = this.getParentEditor(),
+				selection = editor.getSelection(),
+				ranges = selection.getRanges(),
+				element = null,
+				me = this;
+			// Fill in all the relevant fields if there's already one link selected.
+			if ( ranges.length == 1 )
+			{
+
+				var rangeRoot = ranges[0].getCommonAncestor( true );
+				element = rangeRoot.getAscendant( 'a', true );
+				if ( element && element.getAttribute( 'href' ) )
+				{
+					selection.selectElement( element );
+				}
+				else if ( ( element = rangeRoot.getAscendant( 'img', true ) ) &&
+						 element.getAttribute( '_cke_real_element_type' ) &&
+						 element.getAttribute( '_cke_real_element_type' ) == 'anchor' )
+				{
+					this.fakeObj = element;
+					element = editor.restoreRealElement( this.fakeObj );
+					selection.selectElement( this.fakeObj );
+				}
+				else
+					element = null;
+			}
+
+			this.setupContent( parseLink.apply( this, [ editor, element ] ) );
+		},
+		onOk : function()
+		{
+			var attributes = { href : 'javascript:void(0)/*' + CKEDITOR.tools.getNextNumber() + '*/' },
+				removeAttributes = [],
+				data = { href : attributes.href },
+				me = this, editor = this.getParentEditor();
+
+			this.commitContent( data );
+
+			// Compose the URL.
+			switch ( data.type || 'url' )
+			{
+				case 'url':
+					var protocol = ( data.url && data.url.protocol != undefined ) ? data.url.protocol : 'http://',
+						url = ( data.url && data.url.url ) || '';
+					attributes._cke_saved_href = ( url.indexOf( '/' ) === 0 ) ? url : protocol + url;
+					break;
+				case 'anchor':
+					var name = ( data.anchor && data.anchor.name ),
+						id = ( data.anchor && data.anchor.id );
+					attributes._cke_saved_href = '#' + ( name || id || '' );
+					break;
+				case 'email':
+					var address = ( data.email && data.email.address ),
+						subject = ( data.email && encodeURIComponent( data.email.subject || '' ) ),
+						body = ( data.email && encodeURIComponent( data.email.body || '' ) ),
+						linkList = [ 'mailto:', address ];
+					if ( subject || body )
+					{
+						var argList = [];
+						linkList.push( '?' );
+						subject && argList.push( 'subject=' + subject );
+						body && argList.push( 'body=' + body );
+						linkList.push( argList.join( '&' ) );
+					}
+					attributes._cke_saved_href = linkList.join( '' );
+					break;
+				default:
+			}
+
+			// Popups and target.
+			if ( data.target )
+			{
+				if ( data.target.type == 'popup' )
+				{
+					var onclickList = [ 'window.open(this.href, \'',
+							data.target.name || '', '\', \'' ];
+					var featureList = [ 'resizable', 'status', 'location', 'toolbar', 'menubar', 'fullscreen',
+							'scrollbars', 'dependent' ];
+					var featureLength = featureList.length;
+					var addFeature = function( featureName )
+					{
+						if ( data.target[ featureName ] )
+							featureList.push( featureName + '=' + data.target[ featureName ] );
+					};
+
+					for ( var i = 0 ; i < featureLength ; i++ )
+						featureList[i] = featureList[i] + ( data.target[ featureList[i] ] ? '=yes' : '=no' ) ;
+					addFeature( 'width' );
+					addFeature( 'left' );
+					addFeature( 'height' );
+					addFeature( 'top' );
+
+					onclickList.push( featureList.join( ',' ), '\'); return false;' );
+					attributes[ CKEDITOR.env.ie || CKEDITOR.env.webkit ? '_cke_pa_onclick' : 'onclick' ] = onclickList.join( '' );
+				}
+				else
+				{
+					if ( data.target.type != 'notSet' && data.target.name )
+						attributes.target = data.target.name;
+					removeAttributes.push( '_cke_pa_onclick', 'onclick' );
+				}
+			}
+
+			// Advanced attributes.
+			if ( data.adv )
+			{
+				var advAttr = function( inputName, attrName )
+				{
+					var value = data.adv[ inputName ];
+					if ( value )
+						attributes[attrName] = value;
+					else
+						removeAttributes.push( attrName );
+				};
+
+				if ( this._.selectedElement )
+					advAttr( 'advId', 'id' );
+				advAttr( 'advLangDir', 'dir' );
+				advAttr( 'advAccessKey', 'accessKey' );
+				advAttr( 'advName', 'name' );
+				advAttr( 'advLangCode', 'lang' );
+				advAttr( 'advTabIndex', 'tabindex' );
+				advAttr( 'advTitle', 'title' );
+				advAttr( 'advContentType', 'type' );
+				advAttr( 'advCSSClasses', 'class' );
+				advAttr( 'advCharset', 'charset' );
+				advAttr( 'advStyles', 'style' );
+			}
+
+			if ( !this._.selectedElement )
+			{
+				// Create element if current selection is collapsed.
+				var selection = editor.getSelection(),
+					ranges = selection.getRanges();
+				if ( ranges.length == 1 && ranges[0].collapsed )
+				{
+					var text = new CKEDITOR.dom.text( attributes._cke_saved_href, editor.document );
+					ranges[0].insertNode( text );
+					ranges[0].selectNodeContents( text );
+					selection.selectRanges( ranges );
+				}
+
+				// Apply style.
+				var style = new CKEDITOR.style( { element : 'a', attributes : attributes } );
+				style.type = CKEDITOR.STYLE_INLINE;		// need to override... dunno why.
+				style.apply( editor.document );
+
+				// Id. Apply only to the first link.
+				if ( data.adv && data.adv.advId )
+				{
+					var links = this.getParentEditor().document.$.getElementsByTagName( 'a' );
+					for ( i = 0 ; i < links.length ; i++ )
+					{
+						if ( links[i].href == attributes.href )
+						{
+							links[i].id = data.adv.advId;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// We're only editing an existing link, so just overwrite the attributes.
+				var element = this._.selectedElement;
+
+				// IE BUG: Setting the name attribute to an existing link doesn't work.
+				// Must re-create the link from weired syntax to workaround.
+				if ( CKEDITOR.env.ie && attributes.name != element.getAttribute( 'name' ) )
+				{
+					var newElement = new CKEDITOR.dom.element( '<a name="' + CKEDITOR.tools.htmlEncode( attributes.name ) + '">',
+							editor.document );
+
+					selection = editor.getSelection();
+
+					element.moveChildren( newElement );
+					element.copyAttributes( newElement, { name : 1 } );
+					newElement.replace( element );
+					element = newElement;
+
+					selection.selectElement( element );
+				}
+
+				element.setAttributes( attributes );
+				element.removeAttributes( removeAttributes );
+
+				// Make the element display as an anchor if a name has been set.
+				if ( element.getAttribute( 'name' ) )
+					element.addClass( 'cke_anchor' );
+				else
+					element.removeClass( 'cke_anchor' );
+
+				if ( this.fakeObj )
+					editor.createFakeElement( element, 'cke_anchor', 'anchor' ).replace( this.fakeObj );
+
+				delete this._.selectedElement;
+			}
+		},
+		onLoad : function()
+		{
+			if ( !editor.config.linkShowAdvancedTab )
+				this.hidePage( 'advanced' );		//Hide Advanded tab.
+
+			if ( !editor.config.linkShowTargetTab )
+				this.hidePage( 'target' );		//Hide Target tab.
+
+		}
+	};
+} );

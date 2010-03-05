@@ -87,7 +87,6 @@ public class GWTInitializer {
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
@@ -147,10 +146,6 @@ public class GWTInitializer {
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
 
-        // add custom ck config
-        // buf.append("<script type='text/javascript' src='/gwt/resources/ckeditor/ckeditor_custom_config.js'></script>\n");
-
-
         return buf.toString();
     }
 
@@ -181,7 +176,7 @@ public class GWTInitializer {
      * @param params
      * @return
      */
-    private static String getJahiaGWTConfig(Map params) {
+    public static String getJahiaGWTConfig(Map params) {
         StringBuilder s = new StringBuilder();
         s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {\n");
         if (params != null) {

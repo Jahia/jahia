@@ -13,13 +13,13 @@
 
 <template:addWrapper name="hidden.blogWrapper"/>
 <template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js,ckeditor_init.js"/>
+                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $.each(['editContent'], function(index, element) {
             if ($('#' + element).length > 0) {
                 $('label[for="' + element + '"]').hide();
-                CKEDITOR.replace(element, ck.config);
+                CKEDITOR.replace(element, { toolbar : 'User'});
             }
         });
     });

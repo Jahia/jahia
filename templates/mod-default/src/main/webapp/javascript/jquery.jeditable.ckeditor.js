@@ -30,7 +30,7 @@
         return(textarea);
       },
       plugin : function(settings, original) {
-        editor = CKEDITOR.replace(get_id(original), ck.config);
+        editor = CKEDITOR.replace(get_id(original), { toolbar : 'User'});
       },
       submit : function(settings, original) {
         $('#' + get_id(original)).val(editor.getData());

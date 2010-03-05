@@ -32,16 +32,22 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
+import org.jahia.params.ParamBean;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * <p>Title: Defines the head part of a jahia template</p>
@@ -154,12 +160,19 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         // write output to StringBuffer
         StringBuilder buf = new StringBuilder("<head>\n");
         buf.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\" />\n");  // should be fixed in GWT 1.6
-        // check the gwtForGuest attribute from parent tag
-        Tag parent = getParent();
         includeGwt = renderContext.isEditMode();
 
         if (includeGwt) {
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
+        } else {
+            buf.append("<script type='text/javascript'>\n/* <![CDATA[ */\n");
+            Map<String, String> params = new HashMap<String, String>(2);
+            params.put(JahiaGWTParameters.CONTEXT_PATH, ((HttpServletRequest)request).getContextPath());
+            Locale locale =(Locale) pageContext.getAttribute(ParamBean.SESSION_UI_LOCALE, PageContext.SESSION_SCOPE);
+            params.put(JahiaGWTParameters.LANGUAGE, locale != null ? locale.toString() : Locale.ENGLISH.toString());
+            buf.append(GWTInitializer.getJahiaGWTConfig(params));
+            buf.append("\n/* ]]> */\n</script>\n");
+            
         }
 
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");

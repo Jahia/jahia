@@ -18,9 +18,9 @@
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.4.2.0</driver.derby.version>
-    <driver.hsqldb.version>1.8.0.7</driver.hsqldb.version>
+    <driver.hsqldb.version>1.8.0.10</driver.hsqldb.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
-    <driver.mysql.version>5.1.9</driver.mysql.version>
+    <driver.mysql.version>5.1.12</driver.mysql.version>
     <driver.oracle.version>11.2.0.1.0</driver.oracle.version>
     <driver.postgresql.version>8.4-701.jdbc3</driver.postgresql.version>
 

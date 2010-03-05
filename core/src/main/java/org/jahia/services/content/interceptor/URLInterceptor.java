@@ -71,7 +71,17 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         return definition.getRequiredType() == PropertyType.STRING && definition.getSelector() == SelectorType.RICHTEXT;
     }
 
-    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {}
+    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (node.isNodeType("jmix:referencesInField")) {
+            NodeIterator ni = node.getNodes("j:referenceInField");
+            while (ni.hasNext()) {
+                JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
+                if (name.equals(ref.getProperty("j:fieldName").getString())) {
+                    ref.remove();
+                }
+            }
+        }
+    }
 
     /**
      * Transform user URL with servlet context and links placeholders for storage.
@@ -213,6 +223,9 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
      */
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();
+        if (content == null || !content.contains(DOC_CONTEXT_PLACEHOLDER) && !content.contains(CMS_CONTEXT_PLACEHOLDER)) {
+            return storedValue;
+        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("Intercept getValue for "+property.getPath());
@@ -426,7 +439,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                     try {
                         nodePath = session.getNodeByUUID(uuid).getPath();
                     } catch (ItemNotFoundException infe) {
-                        logger.warn("Cannot found referenced item : "+uuid);
+                        logger.warn("Cannot find referenced item : "+uuid);
                         nodePath = "/#";
                     }
                     String value = originalValue.replace(path, nodePath + ext);
@@ -453,7 +466,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         dmsContext = Jahia.getContextPath() + "/files/";
         cmsContext = Jahia.getContextPath() + "/cms/";
 
-        String pattern = "(((render|edit)/[a-zA-Z]+)|" + 
+        String pattern = "(((render|edit|live)/[a-zA-Z]+)|" + 
                 escape(ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
                 escape(ContextPlaceholdersReplacer.LANG_PLACEHOLDER) + ")/(.*)";
 

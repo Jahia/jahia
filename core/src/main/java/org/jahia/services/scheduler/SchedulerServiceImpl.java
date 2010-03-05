@@ -889,8 +889,8 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         try {
             SchedulerMetaData data = scheduler.getMetaData();
             infos[0] = "" + data.getThreadPoolSize();
-            infos[1] = "" + data.numJobsExecuted();
-            infos[2] = "" + data.runningSince();
+            infos[1] = "" + data.getNumberOfJobsExecuted();
+            infos[2] = "" + data.getRunningSince();
             infos[3] = "";
         } catch (SchedulerException e) {
 

@@ -30,8 +30,7 @@
     between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+--%><%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
@@ -41,7 +40,7 @@
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
 	</head>
 	<body>
-        <internal:contentPicker conf='${param["type"]}' mimeTypes='${param["mime"]}' jahiaServletPath='${param["servletPath"]}' jahiaContextPath='${param["contextPath"]}'  callback='${param["CKEditorFuncNum"]}'/>    
+        <internal:contentPicker conf='${not empty param.type ? param.type : "filepicker"}' mimeTypes='${param["mime"]}' jahiaServletPath='/cms' jahiaContextPath='${pageContext.request.contextPath}'  callback='${param["CKEditorFuncNum"]}'/>    
         <internal:gwtGenerateDictionary/>
 	</body>
 </html>

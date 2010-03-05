@@ -1331,6 +1331,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.txt</include>
+                    <include>**/*.xsl</include>
                 </includes>
             </resource>
         </resources>

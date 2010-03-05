@@ -32,7 +32,6 @@ import java.util.Locale;
  */
 public class DiffHelper {
     private static final transient Logger logger = Logger.getLogger(DiffHelper.class);
-    private static final String DIFF_CONFIG_FILE = "/WEB-INF/etc/config/diffhtmlheader.xsl";
 
     public String getHighlighted(String original, String amendment) {
         final StringWriter sw = new StringWriter();
@@ -50,9 +49,7 @@ public class DiffHelper {
             final InputStream oldStream = new StringBufferInputStream(original);
             final InputStream newStream = new StringBufferInputStream(amendment);
 
-            //String xlsFilePath = Jahia.getStaticServletConfig().getServletContext().getRealPath(DIFF_CONFIG_FILE);
-            //logger.debug("******** "+Jahia.getStaticServletConfig().getServletContext().getRealPath(DIFF_CONFIG_FILE));
-            final ContentHandler postProcess = filter.xsl(result, "org/outerj/daisy/diff/htmlheader.xsl");
+            final ContentHandler postProcess = filter.xsl(result, "jahiahtmlheader.xsl");
 
             final Locale locale = Locale.getDefault();
             final String prefix = "diff";

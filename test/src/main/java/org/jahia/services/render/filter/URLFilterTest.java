@@ -31,7 +31,13 @@
  */
 package org.jahia.services.render.filter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import javax.validation.ConstraintViolationException;
 
 import org.jahia.params.ParamBean;
 import org.jahia.services.seo.VanityUrl;
@@ -43,7 +49,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.test.TestHelper;
 import org.junit.After;
@@ -126,27 +131,162 @@ public class URLFilterTest {
         try {
             getVanityUrlService().saveVanityUrlMapping(contentNode, vanityUrl);
             assertTrue("Exception should have been thrown", false);
-        } catch (JahiaRuntimeException ex) {
+        } catch (ConstraintViolationException ex) {
             // expected
         }
 
         VanityUrl newVanityUrl = new VanityUrl("/testcontent", TESTSITE_NAME,
                 "en");
         newVanityUrl.setDefaultMapping(true);
-        newVanityUrl.setActive(true);        
+        newVanityUrl.setActive(true);
         getVanityUrlService().saveVanityUrlMapping(contentNode, newVanityUrl);
         assertNotNull("New URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
 
-        assertTrue("Wrong page vanity URL returned", vanityUrl
-                .equals(getVanityUrlService()
+        VanityUrl savedVanityUrl = getVanityUrlService()
+                .getVanityUrlForWorkspaceAndLocale(pageNode,
+                        session.getWorkspace().getName(), session.getLocale());
+        assertTrue("Wrong page vanity URL returned", vanityUrl.getUrl().equals(
+                savedVanityUrl.getUrl()));
+
+        VanityUrl savedNewVanityUrl = getVanityUrlService()
+                .getVanityUrlsForCurrentLocale(contentNode, session).get(0);
+        assertTrue("Wrong container vanity URL returned", newVanityUrl.getUrl()
+                .equals(savedNewVanityUrl.getUrl()));
+
+        getVanityUrlService().removeVanityUrlMapping(pageNode, vanityUrl);
+        getVanityUrlService().removeVanityUrlMapping(contentNode, newVanityUrl);
+        assertNull("URL mapping should no longer exist", getVanityUrlService()
+                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
+        assertNull("No page vanity URL should exist", getVanityUrlService()
                         .getVanityUrlForWorkspaceAndLocale(pageNode,
                                 session.getWorkspace().getName(),
-                                session.getLocale())));
+                                session.getLocale()));
+        assertTrue("No container vanity URL should exist",
+                getVanityUrlService().getVanityUrlsForCurrentLocale(
+                        contentNode, session).isEmpty());
+    }
 
-        assertTrue("Wrong container vanity URL returned", newVanityUrl
-                .equals(getVanityUrlService().getVanityUrlsForCurrentLocale(
-                        contentNode, session).get(0)));
+    @Test
+    public void testBulkDiffAssigningUrlMappings() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(null, Locale.ENGLISH);
+        JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
+                + "/testPage");
+        JCRNodeWrapper contentNode = session.getNode(SITECONTENT_ROOT_NODE
+                + "/testPage/testContent");
+
+        VanityUrl englishVanityUrl = new VanityUrl("/testpage", TESTSITE_NAME,
+                "en");
+        englishVanityUrl.setActive(true);
+        VanityUrl englishVanityUrl2 = new VanityUrl("/testpage2",
+                TESTSITE_NAME, "en");
+        englishVanityUrl2.setActive(false);
+        VanityUrl englishVanityUrl3 = new VanityUrl("/testpage/page3",
+                TESTSITE_NAME, "en");
+        englishVanityUrl3.setActive(true);
+
+        VanityUrl frenchVanityUrl = new VanityUrl("/testpage/french",
+                TESTSITE_NAME, "fr");
+        frenchVanityUrl.setActive(true);
+        VanityUrl frenchVanityUrl2 = new VanityUrl("/testpage/french2",
+                TESTSITE_NAME, "fr");
+        frenchVanityUrl2.setDefaultMapping(true);
+        frenchVanityUrl2.setActive(true);
+
+        List<VanityUrl> vanityUrls = new ArrayList<VanityUrl>();
+        vanityUrls.add(englishVanityUrl);
+        vanityUrls.add(englishVanityUrl2);
+        vanityUrls.add(englishVanityUrl3);
+        vanityUrls.add(frenchVanityUrl);
+        vanityUrls.add(frenchVanityUrl2);
+        Set<String> languages = new HashSet<String>();
+        languages.add("en");
+        languages.add("fr");
+
+        getVanityUrlService().saveVanityUrlMappings(pageNode, vanityUrls,
+                languages);
+
+        assertNotNull("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrl(englishVanityUrl.getUrl(),
+                        englishVanityUrl.getSite()));
+        assertNotNull("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrl(englishVanityUrl2.getUrl(),
+                        englishVanityUrl2.getSite()));
+        assertNotNull("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrl(englishVanityUrl3.getUrl(),
+                        englishVanityUrl3.getSite()));
+        assertNotNull("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrl(frenchVanityUrl.getUrl(),
+                        frenchVanityUrl.getSite()));
+        assertNotNull("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrl(frenchVanityUrl2.getUrl(),
+                        frenchVanityUrl2.getSite()));
+
+        englishVanityUrl.setDefaultMapping(true);
+        englishVanityUrl2.setDefaultMapping(true);
+
+        try {
+            getVanityUrlService().saveVanityUrlMappings(pageNode, vanityUrls,
+                    languages);
+            assertTrue("Exception should have been thrown", false);
+        } catch (ConstraintViolationException ex) {
+            // expected as two default mappings on same language - nothing should be saved
+        }
+
+        VanityUrl frenchVanityUrl3 = new VanityUrl("/testpage", TESTSITE_NAME,
+                "fr");
+        frenchVanityUrl3.setDefaultMapping(true);
+        frenchVanityUrl3.setActive(true);
+
+        try {
+            getVanityUrlService().saveVanityUrlMappings(pageNode, vanityUrls,
+                    languages);
+            assertTrue("Exception should have been thrown", false);
+        } catch (ConstraintViolationException ex) {
+            // expected as same mapping is used in English - nothing should be saved
+        }
+
+        List<VanityUrl> vanityUrls_en = getVanityUrlService()
+                .getVanityUrlsForCurrentLocale(pageNode, session);
+
+        String[] expectedUrls_en = new String[] { "/testpage", "/testpage2",
+                "/testpage/page3" };
+        assertTrue("Number of Urls is not expected " + expectedUrls_en.length
+                + " vs. " + vanityUrls_en.size(),
+                expectedUrls_en.length == vanityUrls_en.size());
+        for (VanityUrl vanityUrl_en : vanityUrls_en) {
+            boolean found = false;
+            for (String expectedUrl_en : expectedUrls_en) {
+                if (vanityUrl_en.getUrl().equals(expectedUrl_en)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("Expected vanity url not found: " + vanityUrl_en, found);
+        }
+
+        JCRSessionWrapper frenchSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(null, Locale.FRENCH);
+
+        List<VanityUrl> vanityUrls_fr = getVanityUrlService()
+                .getVanityUrlsForCurrentLocale(pageNode, frenchSession);
+
+        String[] expectedUrls_fr = new String[] { "/testpage/french",
+                "/testpage/french2" };
+        assertTrue("Number of Urls is not expected " + expectedUrls_fr.length
+                + " vs. " + vanityUrls_fr.size(),
+                expectedUrls_fr.length == vanityUrls_fr.size());
+        for (VanityUrl vanityUrl_fr : vanityUrls_fr) {
+            boolean found = false;
+            for (String expectedUrl_fr : expectedUrls_fr) {
+                if (vanityUrl_fr.getUrl().equals(expectedUrl_fr)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("Expected vanity url not found: " + vanityUrl_fr, found);
+        }
     }
 
     @Test

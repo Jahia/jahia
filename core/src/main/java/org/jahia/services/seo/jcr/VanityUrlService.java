@@ -78,6 +78,12 @@ public class VanityUrlService {
                     }
                 });
     }
+    
+    public boolean removeVanityUrlMapping(final JCRNodeWrapper contentNode,
+            final VanityUrl vanityUrl) throws RepositoryException {
+        return vanityUrlManager.removeVanityUrlMapping(contentNode, vanityUrl,
+                contentNode.getSession());
+    }    
 
     public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {

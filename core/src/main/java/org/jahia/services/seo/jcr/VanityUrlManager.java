@@ -109,13 +109,60 @@ public class VanityUrlManager {
         return vanityUrls;
     }
 
+    public boolean removeVanityUrlMapping(JCRNodeWrapper contentNode,
+            VanityUrl vanityUrl, JCRSessionWrapper session)
+            throws RepositoryException {
+
+        JCRNodeWrapper vanityUrlNode = null;
+        JCRNodeWrapper newDefaultVanityUrlNode = null;
+        boolean found = false;
+        for (NodeIterator it = contentNode.getNodes(VANITYURLMAPPINGS_NODE); it
+                .hasNext();) {
+            JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
+            if (vanityUrl.isDefaultMapping()
+                    && currentNode.getPropertyAsString(JCR_LANGUAGE).equals(
+                            vanityUrl.getLanguage())
+                    && currentNode.getProperty(PROPERTY_ACTIVE).getBoolean()
+                    && !currentNode.getPropertyAsString(PROPERTY_URL).equals(
+                            vanityUrl.getUrl())) {
+                newDefaultVanityUrlNode = currentNode;
+                if (found) {
+                    break;
+                }
+            }
+            if (currentNode.getPropertyAsString(PROPERTY_URL).equals(
+                    vanityUrl.getUrl())) {
+                vanityUrlNode = currentNode;
+                if (!vanityUrl.isDefaultMapping()
+                        || newDefaultVanityUrlNode != null) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (vanityUrlNode != null) {
+            // does not exist yet
+            session.checkout(contentNode);
+            vanityUrlNode.remove();
+            if (newDefaultVanityUrlNode != null) {
+                newDefaultVanityUrlNode.setProperty(PROPERTY_DEFAULT, true);
+            }
+
+            session.save();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean saveVanityUrlMapping(JCRNodeWrapper contentNode,
             VanityUrl vanityUrl, JCRSessionWrapper session)
             throws RepositoryException {
 
         VanityUrl existingUrl = findExistingVanityUrl(vanityUrl.getUrl(),
                 vanityUrl.getSite(), session);
-        if (!vanityUrl.equals(existingUrl)) {
+        if (existingUrl != null && !vanityUrl.equals(existingUrl)) {
             throw new ConstraintViolationException(
                     "URL Mapping already exists exception: vanityUrl="
                             + vanityUrl.getUrl()
@@ -236,18 +283,20 @@ public class VanityUrlManager {
             boolean found = false;
             Map<Integer, VanityUrl> mappings = existingMappings.get(vanityUrl
                     .getLanguage());
-            for (Map.Entry<Integer, VanityUrl> entry : mappings.entrySet()) {
-                if (entry.getValue().equals(vanityUrl)) {
-                    mappings.remove(entry.getKey());
-                    found = true;
-                    if (entry.getValue().isActive() != vanityUrl.isActive()
-                            || entry.getValue().isDefaultMapping() != vanityUrl
-                                    .isDefaultMapping()) {
-                        vanityUrl.setIdentifier(entry.getValue()
-                                .getIdentifier());
-                        toUpdate.put(entry.getKey(), vanityUrl);
+            if (mappings != null) {
+                for (Map.Entry<Integer, VanityUrl> entry : mappings.entrySet()) {
+                    if (entry.getValue().equals(vanityUrl)) {
+                        mappings.remove(entry.getKey());
+                        found = true;
+                        if (entry.getValue().isActive() != vanityUrl.isActive()
+                                || entry.getValue().isDefaultMapping() != vanityUrl
+                                        .isDefaultMapping()) {
+                            vanityUrl.setIdentifier(entry.getValue()
+                                    .getIdentifier());
+                            toUpdate.put(entry.getKey(), vanityUrl);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             if (!found) {
@@ -258,15 +307,19 @@ public class VanityUrlManager {
             for (String locale : updatedLocales) {
                 if (!newDefaultMappings.containsKey(locale)) {
                     boolean defaultWasSet = false;
-                    VanityUrl oldDefaultVanityUrl = (VanityUrl) oldDefaultMappings
-                            .get(locale).getValue();
-                    for (Map.Entry<Integer, VanityUrl> entry : toUpdate
-                            .entrySet()) {
-                        VanityUrl vanityUrl = entry.getValue();
-                        if (vanityUrl.equals(oldDefaultVanityUrl)) {
-                            vanityUrl.setDefaultMapping(true);
-                            newDefaultMappings.put(locale, vanityUrl);
-                            defaultWasSet = true;
+                    VanityUrl oldDefaultVanityUrl = null;
+                    if (oldDefaultMappings.get(locale) != null) {
+                        oldDefaultVanityUrl = (VanityUrl) oldDefaultMappings
+                                .get(locale).getValue();
+
+                        for (Map.Entry<Integer, VanityUrl> entry : toUpdate
+                                .entrySet()) {
+                            VanityUrl vanityUrl = entry.getValue();
+                            if (vanityUrl.equals(oldDefaultVanityUrl)) {
+                                vanityUrl.setDefaultMapping(true);
+                                newDefaultMappings.put(locale, vanityUrl);
+                                defaultWasSet = true;
+                            }
                         }
                     }
                     if (!defaultWasSet) {
@@ -274,6 +327,7 @@ public class VanityUrlManager {
                             if (locale.equals(vanityUrl.getLanguage())) {
                                 vanityUrl.setDefaultMapping(true);
                                 newDefaultMappings.put(locale, vanityUrl);
+                                break;
                             }
                         }
                     }
@@ -311,7 +365,7 @@ public class VanityUrlManager {
         for (VanityUrl vanityUrl : toAdd) {
             VanityUrl existingUrl = findExistingVanityUrl(vanityUrl.getUrl(),
                     vanityUrl.getSite(), session);
-            if (!vanityUrl.equals(existingUrl)) {
+            if (existingUrl != null && !vanityUrl.equals(existingUrl)) {
                 boolean oldMatchWillBeDeleted = false;
                 for (Map.Entry<Integer, VanityUrl> entry : toDelete) {
                     if (existingUrl.equals(entry.getValue())) {

@@ -1,5 +1,6 @@
 package org.jahia.services.content.interceptor;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -35,6 +36,8 @@ import java.util.List;
  * return v3
  */
 public class InterceptorChain {
+    private static Logger logger = Logger.getLogger(InterceptorChain.class);
+
     private List<PropertyInterceptor> interceptors = new ArrayList<PropertyInterceptor>();
     private List<PropertyInterceptor> revInterceptors;
 
@@ -75,6 +78,8 @@ public class InterceptorChain {
      * @throws RepositoryException
      */
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        logger.error("khaled: beforeSetValue 1");
+
         if (node.getSession().isInterceptorsEnabled()) {
             for (PropertyInterceptor interceptor : interceptors) {
                 if (interceptor.canApplyOnProperty(node, definition)) {
@@ -106,6 +111,8 @@ public class InterceptorChain {
      * @throws RepositoryException
      */
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        logger.error("khaled: beforeSetValue ");
+
         if (node.getSession().isInterceptorsEnabled()) {
             for (PropertyInterceptor interceptor : interceptors) {
                 if (interceptor.canApplyOnProperty(node, definition)) {

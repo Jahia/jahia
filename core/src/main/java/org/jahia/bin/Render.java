@@ -158,6 +158,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return new RenderContext(req, resp, user);
     }
 
+    protected String getVersionNumber(HttpServletRequest req){
+       return req.getParameter("v");
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
         String out = RenderService.getInstance().render(resource, renderContext);
@@ -255,7 +259,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return;
         }
         if (path.endsWith(".do")) {
-            Resource resource = resolveResource(workspace, locale, path);
+            Resource resource = resolveResource(workspace, locale, path,getVersionNumber(req));
             renderContext.setMainResource(resource);
             renderContext.setSite(Jahia.getThreadParamBean().getSite());
             renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale).getNode("/sites/" + Jahia.getThreadParamBean().getSite().getSiteKey()));
@@ -432,7 +436,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-	protected Resource resolveResource(final String workspace, final Locale locale, final String path) throws RepositoryException {
+	protected Resource resolveResource(final String workspace, final Locale locale, final String path, final String versionNumber) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
@@ -459,9 +463,20 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     }
                     try {
                         node = session.getNode(nodePath);
+
                         break;
                     } catch (PathNotFoundException ex) {
                         // ignore it
+                    }
+                }
+
+                // handle version number
+                if(versionNumber != null){
+                    JCRNodeWrapper versionNode = node.getFrozenVersion(versionNumber);
+                    if(versionNode != null){
+                        node = versionNode;
+                    }else{
+                        logger.error("Error while retrieving node with path "+nodePath+" and version "+versionNumber);
                     }
                 }
 
@@ -576,7 +591,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = resolveResource(workspace, locale, path);
+                Resource resource = resolveResource(workspace, locale, path,getVersionNumber(req));
                 final JahiaSite site = paramBean.getSite();
                 renderContext.setMainResource(resource);
                 renderContext.setSite(site);

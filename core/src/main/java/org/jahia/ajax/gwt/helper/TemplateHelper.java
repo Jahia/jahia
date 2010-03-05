@@ -42,7 +42,7 @@ public class TemplateHelper {
      * @param templateWrapper
      * @param contextParams
      * @param editMode
-     * @param ctx             @return   @throws GWTJahiaServiceException
+     * @param ctx                @return   @throws GWTJahiaServiceException
      * @param currentUserSession
      */
     public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, ParamBean ctx, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
@@ -125,7 +125,7 @@ public class TemplateHelper {
      * @return
      */
     public String getNodeURL(String path, Locale locale, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
-        return getNodeURL(path,locale,null,mode,ctx,currentUserSession);
+        return getNodeURL(path, locale, null, mode, ctx, currentUserSession);
     }
 
     /**
@@ -135,7 +135,7 @@ public class TemplateHelper {
      * @param locale
      * @return
      */
-    public String getNodeURL(String path, Locale locale,String versionNumber, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
+    public String getNodeURL(String path, Locale locale, String versionNumber, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
         try {
             if (locale == null) {
                 locale = ctx.getLocale();
@@ -155,13 +155,12 @@ public class TemplateHelper {
             renderContext.setMainResource(resource);
 
             final URLGenerator urlGenerator = new URLGenerator(renderContext, resource, renderService.getStoreService());
-            final String versionPart = versionNumber == null?"":"?v="+versionNumber;
             if (mode == 0) {
-                return urlGenerator.getLive()+versionPart;
+                return urlGenerator.getLive(versionNumber);
             } else if (mode == 1) {
-                return urlGenerator.getPreview()+versionPart;
+                return urlGenerator.getPreview(versionNumber);
             } else {
-                return urlGenerator.getEdit()+versionPart;
+                return urlGenerator.getEdit(versionNumber);
             }
         } catch (RepositoryException e) {
             logger.error(e, e);
@@ -171,6 +170,7 @@ public class TemplateHelper {
 
     /**
      * Get template set
+     *
      * @param node
      * @return
      * @throws RepositoryException

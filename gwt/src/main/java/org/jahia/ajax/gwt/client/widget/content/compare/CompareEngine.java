@@ -64,15 +64,21 @@ public class CompareEngine extends Window {
         panel.setCollapsible(false);
         panel.setHeaderVisible(false);
 
+        //live version
         liveVersion = new VersionViewer(node, Constants.MODE_LIVE, locale, linker);
         liveVersion.setSize(650, 750);
-        stagingVersion = new VersionViewer(node, Constants.MODE_PREVIEW, locale, linker);
-        stagingVersion.setSize(650, 750);
-
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
         liveLayoutData.setCollapsible(true);
         add(liveVersion, liveLayoutData);
 
+        // staging version
+        stagingVersion = new VersionViewer(node, Constants.MODE_PREVIEW, locale, linker){
+            @Override
+            public String getCompareWith() {
+                return liveVersion.getInnerHTML();
+            }
+        };
+        stagingVersion.setSize(650, 750);
         BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, 650);
         add(stagingVersion, stagingLayoutData);
 

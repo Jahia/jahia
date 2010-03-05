@@ -35,7 +35,6 @@ import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -61,16 +60,12 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
-
 import javax.jcr.RepositoryException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -99,6 +94,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private TemplateHelper template;
     private ZipHelper zip;
     private ACLHelper acl;
+    private DiffHelper diff;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -148,6 +144,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setRolesPermissions(RolesPermissionsHelper rolesPermissions) {
         this.rolesPermissions = rolesPermissions;
+    }
+
+    public void setDiff(DiffHelper diff) {
+        this.diff = diff;
     }
 
     public void setTemplate(TemplateHelper template) {
@@ -729,7 +729,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // add current workspace version
             final GWTJahiaNodeVersion currentWorkspaceVersion = new GWTJahiaNodeVersion();
             currentWorkspaceVersion.setNode(node);
-            result.add(0,currentWorkspaceVersion);
+            result.add(0, currentWorkspaceVersion);
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -758,8 +758,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), mode, retrieveParamBean(), retrieveCurrentSession());
     }
 
-    public String getNodeURL(String path,String version,String workspace, String locale, int mode) throws GWTJahiaServiceException{
-        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale),version, mode, retrieveParamBean(), retrieveCurrentSession(workspace));
+    public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException {
+        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), version, mode, retrieveParamBean(), retrieveCurrentSession(workspace));
     }
 
 
@@ -976,6 +976,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
         rolesPermissions.removeRoleToPrincipals(role, principals);
     }
+
+    /**
+     * Gwt Highlighted
+     *
+     * @param original
+     * @param amendment
+     * @return
+     */
+    public String getHighlighted(String original, String amendment) {
+        return diff.getHighlighted(original,amendment);
+    }
+
 
 
 // -------------------------- OTHER METHODS --------------------------

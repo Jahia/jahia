@@ -94,4 +94,6 @@
 
     <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance" />
 
+    <bean name="DiffHelper" class="org.jahia.ajax.gwt.helper.DiffHelper"/>
+
 </beans>

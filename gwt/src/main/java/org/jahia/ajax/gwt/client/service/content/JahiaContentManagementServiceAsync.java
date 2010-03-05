@@ -237,6 +237,16 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      */
     void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String, GWTJahiaPublicationInfo>> async);
 
+
+    /**
+     * Get higthligthed
+     * @param original
+     * @param amendment
+     * @param async
+     */
+    void getHighlighted(String original, String amendment, AsyncCallback<String> async);
+
+
     /**
      * Get site languages
      *

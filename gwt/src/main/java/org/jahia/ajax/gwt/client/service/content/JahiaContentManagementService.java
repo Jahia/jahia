@@ -244,6 +244,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
 
+    public String getHighlighted(String original, String amendment)  throws GWTJahiaServiceException;
+
 
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;
 // -------------------------- INNER CLASSES --------------------------

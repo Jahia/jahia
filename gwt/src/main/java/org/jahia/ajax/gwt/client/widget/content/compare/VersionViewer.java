@@ -2,16 +2,20 @@ package org.jahia.ajax.gwt.client.widget.content.compare;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Frame;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -19,8 +23,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +38,8 @@ public class VersionViewer extends ContentPanel {
     private int currentMode = Constants.MODE_LIVE;
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
     private String workspace = "default";
+    private Frame currentFrame;
+    private ComboBox<GWTJahiaNodeVersion> versionComboBox;
 
     /**
      * Constructor
@@ -63,15 +67,16 @@ public class VersionViewer extends ContentPanel {
     private void init() {
         final ToolBar headerToolBar = new ToolBar();
         setTopComponent(headerToolBar);
+
         // combo box that allows to select the version
-        final ComboBox<GWTJahiaNodeVersion> versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
+        versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
         versionComboBox.setForceSelection(true);
         versionComboBox.setWidth(400);
         versionComboBox.setEditable(false);
         if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-            versionComboBox.setEmptyText(Messages.get("label_staging_version", "Staging version"));
+            versionComboBox.setEmptyText(Messages.get("label_staging_version ", "Staging version "));
         } else {
-            versionComboBox.setEmptyText(Messages.get("label_live_version", "Live version"));
+            versionComboBox.setEmptyText(Messages.get("label_live_version ", "Live version "));
         }
 
         // prepare data before rendering
@@ -97,6 +102,8 @@ public class VersionViewer extends ContentPanel {
         //versionComboBox.setTemplate(getTemplate());
 
         // load version with pagination
+        final ListStore<GWTJahiaNodeVersion> store;
+
         final RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>>() {
             @Override
             public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
@@ -113,23 +120,20 @@ public class VersionViewer extends ContentPanel {
         });
 
         // list store that contains previous version and current workspace version
-        final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>(loader);
+        store = new ListStore<GWTJahiaNodeVersion>(loader);
         versionComboBox.setStore(store);
+
+        // general parameter
         versionComboBox.setLazyRender(false);
         versionComboBox.setTypeAhead(true);
         versionComboBox.setHideTrigger(false);
         versionComboBox.setPageSize(10);
-        //versionComboBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+
 
         versionComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeVersion>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeVersion> event) {
-                if (versionComboBox.getValue() != null) {
-                    Log.debug("Swtich to the following url: " + versionComboBox.getValue().getNode().getUrl());
-                    load(versionComboBox.getValue());
-                } else {
-                    load(null);
-                }
+                refresh();
             }
         });
 
@@ -137,7 +141,35 @@ public class VersionViewer extends ContentPanel {
         // add in the toolbar
         headerToolBar.add(versionComboBox);
 
+
+        // case of preview or edit: no version
+        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
+            final ToggleButton b = new ToggleButton("Highligthing");
+            b.setIconStyle("gwt-diff");
+            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent componentEvent) {
+                    if (b.isPressed()) {
+                        displayHighLigth();
+                    } else {
+                        refresh();
+                    }
+                }
+            });
+            headerToolBar.add(b);
+        }
         load(null);
+    }
+
+    /**
+     * refresh
+     */
+    private void refresh() {
+        if (versionComboBox != null && versionComboBox.getValue() != null) {
+            load(versionComboBox.getValue());
+        } else {
+            load(null);
+        }
     }
 
     /**
@@ -168,7 +200,7 @@ public class VersionViewer extends ContentPanel {
                 // version is not specified. Current.
                 contentService.getNodeURL(currentNode.getPath(), locale, currentMode, new AsyncCallback<String>() {
                     public void onSuccess(String url) {
-                        setUrl(url);
+                        currentFrame = setUrl(url);
                         unmask();
                     }
 
@@ -180,7 +212,7 @@ public class VersionViewer extends ContentPanel {
             } else {
                 contentService.getNodeURL(version.getNode().getPath(), version.getVersionNumber(), workspace, locale, currentMode, new AsyncCallback<String>() {
                     public void onSuccess(String url) {
-                        setUrl(url);
+                        currentFrame = setUrl(url);
                         unmask();
                     }
 
@@ -193,12 +225,71 @@ public class VersionViewer extends ContentPanel {
         }
     }
 
-    private native String getTemplate() /*-{
-     return [
-     '<tpl for="."><div class="search-item">',
-     '<h3><span>{date:date("MM/dd/y")}<br />by {author}</span>{title}</h3>',
-     '{excerpt}',
-     '</div></tpl>'
-     ].join("");
-   }-*/;
+    /**
+     * Get html
+     *
+     * @return
+     */
+    public String getInnerHTML() {
+        IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
+        Document document = frameElement.getContentDocument();
+        BodyElement ele = document.getBody();
+        if (ele != null) {
+            return ele.getInnerHTML();
+        }
+
+        // it may happens if the iframe is not yet loaded
+        return null;
+
+    }
+
+    /**
+     * Compare version
+     */
+    public void displayHighLigth() {
+        Log.error("Compare: " + getCompareWith());
+        Log.error("with: " + getInnerHTML());
+        contentService.getHighlighted(getCompareWith(), getInnerHTML(), new AsyncCallback<String>() {
+            public void onSuccess(String s) {
+                IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
+                Document document = frameElement.getContentDocument();
+                BodyElement ele = document.getBody();
+                if (ele != null) {
+                    Log.debug(s);
+                    ele.setInnerHTML(s);
+                }
+            }
+
+            public void onFailure(Throwable throwable) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+    }
+
+    /**
+     * Get diff striing
+     *
+     * @param original
+     * @param amendment
+     * @return
+     */
+    private native String getDiffString(String original, String amendment)/*-{
+        var dmp = new diff_match_patch();
+        var d = dmp.diff_main(original, amendment);
+        dmp.diff_cleanupSemantic(d);
+        return dmp.diff_prettyHtml(d);
+    }-*/;
+
+
+    /**
+     * Override this method to compare with another html
+     *
+     * @return
+     */
+    public String getCompareWith() {
+        return getInnerHTML();
+    }
+
+
 }

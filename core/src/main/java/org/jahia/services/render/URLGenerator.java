@@ -22,6 +22,7 @@ import java.util.HashMap;
  * User: toto
  * Date: Sep 14, 2009
  * Time: 11:13:37 AM
+ *
  * @todo Ideally instances of this class should be created by a factory that is configured through Spring.
  */
 public class URLGenerator {
@@ -39,11 +40,11 @@ public class URLGenerator {
     private Resource resource;
     private RenderContext context;
     private JCRStoreService jcrStoreService;
-    
+
     private Map<String, String> languages;
 
     private Map<String, String> templates;
-    
+
     private String templatesPath;
 
     // settings
@@ -55,7 +56,7 @@ public class URLGenerator {
         this.resource = resource;
         this.jcrStoreService = jcrStoreService;
         initURL();
-        if(context.getURLGenerator()==null) {
+        if (context.getURLGenerator() == null) {
             context.setURLGenerator(this);
         }
     }
@@ -70,14 +71,14 @@ public class URLGenerator {
             base = getContext() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         }
 
-        final String resourcePath = context.getMainResource().getNode().getPath()  + ".html";
+        final String resourcePath = context.getMainResource().getNode().getPath() + ".html";
 
         live = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         edit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
-        
+
         templatesPath = getContext() + "/templates";
     }
 
@@ -104,6 +105,28 @@ public class URLGenerator {
     public String getPreview() {
         return preview;
     }
+
+    public String getLive(String versionNumber) {
+        if (versionNumber == null || versionNumber.length() == 0) {
+            return getLive();
+        }
+        return getLive() + "?v=" + versionNumber;
+    }
+
+    public String getEdit(String versionNumber) {
+        if (versionNumber == null || versionNumber.length() == 0) {
+            return getEdit();
+        }
+        return getEdit() + "?v=" + versionNumber;
+    }
+
+    public String getPreview(String versionNumber) {
+        if (versionNumber == null || versionNumber.length() == 0) {
+            return getPreview();
+        }
+        return getPreview() + "?v=" + versionNumber;
+    }
+
 
     public String getFind() {
         return find;
@@ -145,7 +168,7 @@ public class URLGenerator {
                 }
             });
         }
-        
+
         return languages;
     }
 
@@ -163,6 +186,7 @@ public class URLGenerator {
 
     /**
      * Returns the path to the templates folder.
+     *
      * @return the path to the templates folder
      */
     public String getTemplatesPath() {
@@ -172,7 +196,7 @@ public class URLGenerator {
     /**
      * Returns the URL of the main resource (normally, page), depending on the
      * current mode.
-     * 
+     *
      * @return the URL of the main resource (normally, page), depending on the
      *         current mode
      */
@@ -183,19 +207,19 @@ public class URLGenerator {
             return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
         }
     }
-    
+
     public String buildURL(JCRNodeWrapper node, String template) {
-        return base + node.getPath() + (template!=null?"."+template:"") + ".html";
+        return base + node.getPath() + (template != null ? "." + template : "") + ".html";
     }
 
     /**
      * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
      * simply uses the current serverName and generates a URL with a /site/ parameter
      *
-     * @param theSite              the site agaisnt we build the url
-     * @param withSessionID        a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                             since we are sending SESSION IDs to people that should not have them.
+     * @param theSite       the site agaisnt we build the url
+     * @param withSessionID a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
+     *                      just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
+     *                      since we are sending SESSION IDs to people that should not have them.
      * @return String a full URL to the site using the currently set values in the ProcessingContext.
      */
     public String getSiteURL(final JahiaSite theSite, final boolean withSessionID) {

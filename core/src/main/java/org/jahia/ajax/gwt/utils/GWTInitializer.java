@@ -92,6 +92,7 @@ public class GWTInitializer {
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/diff.css\" rel=\"stylesheet\"/>\n");
 
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();

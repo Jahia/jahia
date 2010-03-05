@@ -465,6 +465,10 @@
     font-weight: bold;
 }
 
+.gwt-diff {
+    background: url( ../images/viewStatus.png ) no-repeat scroll 0 center !important;
+}
+
 /* subscription */
 .subscribe-button {
     cursor: pointer;

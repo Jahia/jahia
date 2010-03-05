@@ -129,7 +129,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.item.publish"/>
                 <ref bean="org.jahia.toolbar.item.publishall"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
             </list>
         </property>
         <property name="visibility">

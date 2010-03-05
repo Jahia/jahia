@@ -4,7 +4,39 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<script type="text/javascript">
+    jQuery.validator.setDefaults({
+        success: "valid"
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $("#${currentNode.identifier}").validate({
+            rules: {
+                <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
+                <c:set var="validations" value="${jcr:getNodes(formElement,'jnt:formElementValidation')}"/>
+                <c:if test="${fn:length(validations) > 0}">
+                ${formElement.name} : {
+                    <c:forEach items="${jcr:getNodes(formElement,'jnt:formElementValidation')}" var="formElementValidation">
+                    <template:module node="${formElementValidation}" template="default" editable="true"/>
+                    </c:forEach>
+                }
+                </c:if>
+                </c:forEach>
+            },
+            errorLabelContainer: $("#${currentNode.identifier} div.error")
+        });
+    });
+</script>
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
 
 
@@ -13,20 +45,21 @@
 </div>
 
 <div class="form">
-<c:if test="${not renderContext.editMode}">
-    <form action="${url.base}${currentNode.path}/*" method="post">
-</c:if>
-<input type="hidden" name="nodeType" value="jnt:responseToForm"/>
-<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-<%-- Define the output format for the newly created node by default html or by redirectTo--%>
-<input type="hidden" name="newNodeOutputFormat" value="html"/>
-<c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
-    <template:module node="${formElement}" template="default" editable="true"/>
-</c:forEach>
-<c:if test="${not renderContext.editMode}">
+    <c:if test="${not renderContext.editMode}">
+    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}">
+        </c:if>
+        <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
+            <template:module node="${formElement}" template="default" editable="true"/>
+        </c:forEach>
+        <c:if test="${not renderContext.editMode}">
+        <div class="error"></div>
     </form>
-</c:if>
-    </div>
+    </c:if>
+</div>
 <c:if test="${renderContext.editMode}">
     <div style="border:darkorange solid medium; margin:5px; background:#888888;">
         <span>Add your new form elements here</span>
@@ -35,8 +68,8 @@
 </c:if>
 
 
+<br/><br/>
 
-     <br/><br/>
 <div>
     <h2>Responses</h2>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">

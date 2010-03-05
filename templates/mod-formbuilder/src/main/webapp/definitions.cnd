@@ -2,7 +2,10 @@
 
 [jmix:formContent] > jmix:content mixin
 
+[jnt:formElementValidation] > jnt:content
+
 [jnt:formElement] > jnt:content
++ * (jnt:formElementValidation)
 
 [jnt:responseToForm] > jnt:content,nt:unstructured
 
@@ -10,6 +13,7 @@
  - label (string) mandatory
  - size (long) = 30 autocreated
  - defaultValue (string)
+ - mask (string)
 
  [jnt:inputMultiline] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
@@ -51,3 +55,5 @@
  - j:intro (string)
  + * (jnt:formElement)
  + * (jnt:responseToForm)
+
+[jnt:required] > jnt:formElementValidation,  jmix:formContent 

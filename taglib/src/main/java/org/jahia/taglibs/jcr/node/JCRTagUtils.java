@@ -32,21 +32,21 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.util.ToStringUtils;
 import org.drools.util.StringUtils;
+import org.hibernate.PropertyNotFoundException;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
@@ -217,8 +217,22 @@ public class JCRTagUtils {
         while (nodeNames.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeNames.next();
             final String name = nodeWrapper.getName();
-            final String value = nodeContainingProperties.getPropertyAsString(name);
-            props.put(name,value);
+            try {
+                JCRPropertyWrapper property = nodeContainingProperties.getProperty(name);
+                String value;
+                if(property.isMultiple()) {
+                    value = property.getValues()[0].getString();
+                } else {
+                value = property.getValue().getString();
+                }
+                props.put(name,value);
+            } catch (PathNotFoundException e) {
+                logger.debug(e.getMessage(), e);
+            } catch (ValueFormatException e) {
+                logger.error(e.getMessage(), e);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return props;
     }

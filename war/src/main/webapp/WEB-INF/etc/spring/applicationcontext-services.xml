@@ -400,6 +400,9 @@
     			<entry key="a">
     				<set><value>href</value></set>
     			</entry>
+    			<entry key="embed">
+    				<set><value>src</value></set>
+    			</entry>
     			<entry key="img">
     				<set><value>src</value></set>
     			</entry>

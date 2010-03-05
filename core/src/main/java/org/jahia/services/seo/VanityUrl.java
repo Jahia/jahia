@@ -33,6 +33,7 @@ package org.jahia.services.seo;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Vanity Url mapped to content
@@ -60,11 +61,31 @@ public class VanityUrl {
         super();
     }
 
+    /**
+     * Initializes an instance of this class.
+     * @param url mapping URL
+     * @param site current virtual site
+     * @param language the mapping language
+     */
     public VanityUrl(String url, String site, String language) {
         super();
         this.url = url;
         this.site = site;
         this.language = language;
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * @param url mapping URL
+     * @param site current virtual site
+     * @param language the mapping language
+     * @param defaultMapping is it the default mapping for the node?
+     * @param active whether the mapping is active
+     */
+    public VanityUrl(String url, String site, String language, boolean defaultMapping, boolean active) {
+        this(url, site, language);
+        this.defaultMapping = defaultMapping;
+        this.active = active;
     }
 
     public String getUrl() {
@@ -141,4 +162,8 @@ public class VanityUrl {
                         getSite(), ((VanityUrl) obj).getSite()).isEquals();
     }
 
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
 }

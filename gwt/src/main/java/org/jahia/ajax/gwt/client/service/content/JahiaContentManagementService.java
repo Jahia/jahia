@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -44,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Remote GWT service for content management tasks.
@@ -248,6 +249,25 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
 
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;
+    
+    /**
+     * Retrieves a list of URL mapping objects for current node and locale.
+     * @param node node to retrieve mapping for
+     * @param locale current locale
+     * @return a list of URL mapping objects for current node and locale
+     * @throws GWTJahiaServiceException in case of an error
+     */
+    List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException;
+    
+    /**
+     * Updates the URL mapping for the specified node. 
+     * @param node the node to be updated
+     * @param updatedLocales locales that were edited
+     * @param mappings URL mapping list to store
+     * @throws GWTJahiaServiceException in case of an error
+     */
+    void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

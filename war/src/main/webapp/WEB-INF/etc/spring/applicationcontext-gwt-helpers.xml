@@ -95,5 +95,9 @@
     <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance" />
 
     <bean name="DiffHelper" class="org.jahia.ajax.gwt.helper.DiffHelper"/>
+    
+    <bean name="SeoHelper" class="org.jahia.ajax.gwt.helper.SeoHelper">
+    	<property name="urlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
+    </bean>
 
 </beans>

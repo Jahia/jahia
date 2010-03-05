@@ -98,6 +98,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.add(new RightsTabItem(this));
         tabs.add(new UsagesTabItem(this));
         tabs.add(new PublicationTabItem(this));
+        tabs.add(new SeoTabItem(this));
     }
 
     /**
@@ -263,6 +264,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 // case of classification
                 else if (item instanceof ClassificationTabItem) {
                     ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), properties, node.getNodeTypes());
+                } else if (item instanceof SeoTabItem) {
+                    ((SeoTabItem) item).doSave();
                 }
             }
 

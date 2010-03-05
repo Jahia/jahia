@@ -85,6 +85,7 @@ public class RolesPermissionsHelper {
             throws GWTJahiaServiceException {
         final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
+            long timer = System.currentTimeMillis();
             // site permission
             for (PermissionImpl permission : roleService.getPermissions(site)) {
                 if (user.isPermitted(permission)) {
@@ -98,6 +99,7 @@ public class RolesPermissionsHelper {
                     permissions.add(toPermission(permission));
                 }
             }
+            logger.info("Checking user granted permissions took " + (System.currentTimeMillis() - timer) + " ms");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

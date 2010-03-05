@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
@@ -95,6 +96,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ZipHelper zip;
     private ACLHelper acl;
     private DiffHelper diff;
+    private SeoHelper seo;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -762,7 +764,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), version, mode, retrieveParamBean(), retrieveCurrentSession(workspace));
     }
 
-
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
         contentManager.importContent(parentPath, fileKey);
     }
@@ -989,9 +990,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-
-// -------------------------- OTHER METHODS --------------------------
-
     private List<String> getOpenPathsForRepository(String repositoryType) {
         return (List<String>) getThreadLocalRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
     }
@@ -1003,4 +1001,37 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaPermission createPermission(String name, String group, String siteKey) throws GWTJahiaServiceException {
         return rolesPermissions.createPermission(name, group, siteKey);
     }
+
+    /* (non-Javadoc)
+     * @see org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService#getUrlMappings(org.jahia.ajax.gwt.client.data.node.GWTJahiaNode, java.lang.String)
+     */
+    public List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException {
+        try {
+            return seo.getUrlMappings(node, locale, retrieveCurrentSession());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService#saveUrlMappings(org.jahia.ajax.gwt.client.data.node.GWTJahiaNode, java.util.Set, java.util.List)
+     */
+    public void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings)
+            throws GWTJahiaServiceException {
+        try {
+            seo.saveUrlMappings(node, updatedLocales, mappings, retrieveCurrentSession());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    /**
+     * @param seoHelper the seoHelper to set
+     */
+    public void setSeo(SeoHelper seoHelper) {
+        this.seo = seoHelper;
+    }
+    
 }

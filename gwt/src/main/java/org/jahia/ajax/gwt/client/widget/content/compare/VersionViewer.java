@@ -16,13 +16,20 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,8 +72,7 @@ public class VersionViewer extends ContentPanel {
      * init component
      */
     private void init() {
-        final ToolBar headerToolBar = new ToolBar();
-        setTopComponent(headerToolBar);
+
 
         // combo box that allows to select the version
         versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
@@ -138,28 +144,43 @@ public class VersionViewer extends ContentPanel {
         });
 
 
-        // add in the toolbar
-        headerToolBar.add(versionComboBox);
-
-
         // case of preview or edit: no version
         if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-            final ToggleButton b = new ToggleButton("Highligthing");
-            b.setIconStyle("gwt-diff");
-            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            final ToggleButton hButton = new ToggleButton("Highligthing");
+            hButton.setIconStyle("gwt-diff");
+            hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent componentEvent) {
-                    if (b.isPressed()) {
+                    if (hButton.isPressed()) {
                         displayHighLigth();
                     } else {
                         refresh();
                     }
                 }
             });
-            headerToolBar.add(b);
+
+            // add in the toolbar
+            final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
+                public void afterToolbarLoading() {
+                    insertItem(hButton, 0);
+                    insertItem(versionComboBox, 0);
+                }
+            };
+            headerToolBar.initWithLinker(linker);
+            headerToolBar.init();
+            // add to widget
+            setTopComponent(headerToolBar);
+        } else {
+            // case of th live mode
+            ToolBar headerToolBar = new ToolBar();
+            headerToolBar.add(versionComboBox);
+            setTopComponent(headerToolBar);
         }
+
+
         load(null);
     }
+
 
     /**
      * refresh
@@ -247,39 +268,22 @@ public class VersionViewer extends ContentPanel {
      * Compare version
      */
     public void displayHighLigth() {
-        Log.error("Compare: " + getCompareWith());
-        Log.error("with: " + getInnerHTML());
         contentService.getHighlighted(getCompareWith(), getInnerHTML(), new AsyncCallback<String>() {
             public void onSuccess(String s) {
                 IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
                 Document document = frameElement.getContentDocument();
                 BodyElement ele = document.getBody();
                 if (ele != null) {
-                    Log.debug(s);
                     ele.setInnerHTML(s);
                 }
             }
 
             public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                Log.error("Error when triing to display higthligthing", throwable);
             }
         });
 
     }
-
-    /**
-     * Get diff striing
-     *
-     * @param original
-     * @param amendment
-     * @return
-     */
-    private native String getDiffString(String original, String amendment)/*-{
-        var dmp = new diff_match_patch();
-        var d = dmp.diff_main(original, amendment);
-        dmp.diff_cleanupSemantic(d);
-        return dmp.diff_prettyHtml(d);
-    }-*/;
 
 
     /**

@@ -115,6 +115,30 @@
         </property>
     </bean>
 
+    <bean id="compare-engine" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.compareEngine"/>
+            </list>
+        </property>
+    </bean>
+
+     <!-- compare-mode -->
+    <bean id="org.jahia.toolbar.compareEngine" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.publish"/>
+                <ref bean="org.jahia.toolbar.item.publishall"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+         </property>
+    </bean>
+
     <!-- switching mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">

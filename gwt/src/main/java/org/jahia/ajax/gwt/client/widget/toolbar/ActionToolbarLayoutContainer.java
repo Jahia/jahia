@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,9 +29,9 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     private Linker linker;
     private String toolbarGroup;
 
-    public  ActionToolbarLayoutContainer(String toolbarGroup) {
-    	super();
-    	this.toolbarGroup = toolbarGroup;
+    public ActionToolbarLayoutContainer(String toolbarGroup) {
+        super();
+        this.toolbarGroup = toolbarGroup;
         setLayout(new RowLayout());
     }
 
@@ -46,7 +47,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
                 if (gwtJahiaToolbarSet != null) {
                     createToolbarUI(gwtJahiaToolbarSet);
                 }
-                afterToolbarLoading();                
+                afterToolbarLoading();
                 long end = System.currentTimeMillis();
                 layout();
                 Log.info("Toolbar loaded in " + (end - begin) + "ms");
@@ -101,6 +102,12 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
 
     }
 
+    public void insertItem(Component item, int index) {
+        if (actionToolbars != null && !actionToolbars.isEmpty()) {
+            actionToolbars.get(0).insert(item, index);
+        }
+    }
+
     /**
      * Get the jahia page context
      *
@@ -116,7 +123,6 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
 
     /**
      * Handle module selection
-     *
      */
     public void handleNewLinkerSelection() {
         for (ActionToolbar actionToolbar : actionToolbars) {
@@ -127,7 +133,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     /**
      * Executed after the load of the toolbar
      */
-    public void afterToolbarLoading()  {
+    public void afterToolbarLoading() {
 
     }
 

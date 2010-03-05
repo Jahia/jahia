@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
@@ -11,10 +13,16 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  * To change this template use File | Settings | File Templates.
  */
 public class ShowCompareEngine extends BaseActionItem {
+
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);
+        setEnabled(false);
+    }
+
     @Override
     public void onComponentSelection() {
         EditActions.showCompare(linker);
-        setEnabled(false);
     }
 
     @Override

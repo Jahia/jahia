@@ -13,14 +13,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
-<script type="text/javascript">
-    jQuery.validator.setDefaults({
-        success: "valid"
-    });
-</script>
 <script>
     $(document).ready(function() {
-        $("#${currentNode.identifier}").validate({
+        $("#${currentNode.name}").validate({
             rules: {
                 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
                 <c:set var="validations" value="${jcr:getNodes(formElement,'jnt:formElementValidation')}"/>
@@ -33,7 +28,7 @@
                 </c:if>
                 </c:forEach>
             },
-            errorLabelContainer: $("#${currentNode.identifier} div.error")
+            errorLabelContainer: $("#${currentNode.name} div.validation")
         });
     });
 </script>
@@ -46,7 +41,7 @@
 
 <div class="form">
     <c:if test="${not renderContext.editMode}">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}">
+    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}">
         </c:if>
         <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -56,7 +51,7 @@
             <template:module node="${formElement}" template="default" editable="true"/>
         </c:forEach>
         <c:if test="${not renderContext.editMode}">
-        <div class="error"></div>
+        <div class="validation"></div>
     </form>
     </c:if>
 </div>

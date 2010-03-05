@@ -237,10 +237,20 @@ public class PropertiesHelper {
                         objectNode.addMixin(type);
                     }
                 }
+                int mixinCount = objectNode.getMixinNodeTypes().length;
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
                 if (!aNode.getName().equals(objectNode.getName())) {
                     contentManager.rename(objectNode.getPath(), aNode.getName(), currentUserSession);
+                }
+                ExtendedNodeType[] mixins = objectNode.getMixinNodeTypes();
+                if (mixinCount != mixins.length) {
+                    // we got added mixins
+                    for (ExtendedNodeType newMixin : mixins) {
+                        if (!types.contains(newMixin.getName())) {
+                            types.add(newMixin.getName());
+                        }
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error("error", e);
@@ -251,7 +261,7 @@ public class PropertiesHelper {
 
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
         if(objectNode == null || newProps == null || newProps.isEmpty()){
-            logger.debug("node or propesties are null or empty");
+            logger.debug("node or properties are null or empty");
             return;
         }
         if (!objectNode.isCheckedOut()) {

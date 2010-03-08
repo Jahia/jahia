@@ -1,7 +1,6 @@
 package org.jahia.services.render.filter;
 
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.OutputDocument;
+import java.util.regex.Pattern;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -19,17 +18,18 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     public static String CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
     public static String LANG_PLACEHOLDER = "{lang}";
     
-    public void visit(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
-        String ctx = context.isEditMode() ?  "edit/"+resource.getWorkspace(): "render/"+resource.getWorkspace();
-
-        if (attr != null) {
-            String value = attr.getValue();
-
-            value = value.replace(CURRENT_CONTEXT_PLACEHOLDER, ctx);
-            value = value.replace(LANG_PLACEHOLDER, resource.getLocale().toString());
-
-            document.replace(attr.getValueSegment(), value);
+    private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
+    private static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
+    
+    public String visit(String value, RenderContext context, Resource resource) {
+        if (value != null) {
+            value = LANG_PATTERN.matcher(
+                    CTX_PATTERN.matcher(value).replaceAll(
+                            context.isEditMode() ? "edit/" + resource.getWorkspace() : "render/"
+                                    + resource.getWorkspace())).replaceAll(resource.getLocale().toString());
         }
+        
+        return value;
     }
     
 }

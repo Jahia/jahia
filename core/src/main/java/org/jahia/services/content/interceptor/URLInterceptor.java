@@ -22,8 +22,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.htmlparser.jericho.*;
-
 /**
  * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
  * instead of pathes. It also replaces the servlet context and servlet name by a placeholder so that the stored link
@@ -132,14 +130,15 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         String result;
         try {
             result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
-                public void visit(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
-                    if (StringUtils.isNotEmpty(attr.getValue())) {
+                public String visit(String value, RenderContext context, Resource resource) {
+                    if (StringUtils.isNotEmpty(value)) {
                         try {
-                            newRefs.putAll(replaceRefsByPlaceholders(document, attr, refs));
+                            value = replaceRefsByPlaceholders(value, newRefs, refs);
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
                     }
+                    return value;
                 }
             });
         } catch (RuntimeException e) {
@@ -246,14 +245,15 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         String result;
         try {
             result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
-                public void visit(OutputDocument document, Attribute attr, RenderContext context, Resource resource) {
-                    if (StringUtils.isNotEmpty(attr.getValue())) {
+                public String visit(String value, RenderContext context, Resource resource) {
+                    if (StringUtils.isNotEmpty(value)) {
                         try {
-                            replacePlaceholdersByRefs(document, attr, refs);
+                            value = replacePlaceholdersByRefs(value, refs);
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
                     }
+                    return value;
                 }
             });
         } catch (RuntimeException e) {
@@ -287,9 +287,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         return res;
     }
 
-    Map<String, Long> replaceRefsByPlaceholders(final OutputDocument document, final Attribute attr, final Map<String, Long> oldRefs) throws RepositoryException {
-        final HashMap<String, Long> refs = new HashMap<String, Long>();
-        final String originalValue = attr.getValue();
+    String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs) throws RepositoryException {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
@@ -311,13 +309,13 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             pathPart = m.group(5);
             isCmsContext = true;
         } else {
-            return refs;
+            return originalValue;
         }
 
         final String path = "/" + pathPart;
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 String ext = null;
                 String tpl = null;
@@ -368,14 +366,15 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                     throw new ConstraintViolationException("Invalid link", e);
                 }
                 String id = reference.getIdentifier();
-                if (!refs.containsKey(id) && oldRefs.containsKey(id)) {
-                    refs.put(id, oldRefs.get(id));
+                if (!newRefs.containsKey(id)) {
+                    if (oldRefs.containsKey(id)) {
+                        newRefs.put(id, oldRefs.get(id));
+                    } else {
+                        Long max = Math.max(oldRefs.isEmpty() ? 0 : Collections.max(oldRefs.values()), newRefs.isEmpty() ? 0 : Collections.max(newRefs.values()));
+                        newRefs.put(id, max + 1);
+                    }
                 }
-                if (!refs.containsKey(id)) {
-                    Long max = oldRefs.isEmpty() ? 0 : Collections.max(oldRefs.values());
-                    refs.put(id, max + 1);
-                }
-                Long index = refs.get(id);
+                Long index = newRefs.get(id);
                 String link = "/##ref:link" + index + "##";
                 if (tpl != null) {
                     link += "." + tpl;
@@ -384,20 +383,16 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                     link += "." + ext;
                 }
                 value = value.replace(path, link);
-                document.replace(attr.getValueSegment(), value);
                 if (logger.isDebugEnabled()) {
                     logger.debug("After replaceRefsByPlaceholders : "+value);
                 }
-                return null;
+                return value;
             }
         });
-
-        return refs;
     }
 
 
-    void replacePlaceholdersByRefs(final OutputDocument document, final Attribute attr, final Map<Long, String> refs) throws RepositoryException {
-        final String originalValue = attr.getValue();
+    String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -414,23 +409,24 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             Matcher m = cmsPatternWithContextPlaceholder.matcher(pathPart);
             if (!m.matches()) {
                 logger.error("Cannot match URL : "+pathPart);
-                return;
+                return originalValue;
             }
             pathPart = m.group(5);
             isCmsContext = true;
         } else {
-            return;
+            return originalValue;
         }
 
         final String path = "/" + pathPart;
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                String value = originalValue;
                 try {
                     Matcher matcher = refPattern.matcher(path);
                     if (!matcher.matches()) {
                         logger.error("Cannot match value, should contain ##ref : " + path);
-                        return null;
+                        return originalValue;
                     }
                     String id = matcher.group(1);
                     String ext = matcher.group(2);
@@ -442,7 +438,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                         logger.warn("Cannot find referenced item : "+uuid);
                         nodePath = "/#";
                     }
-                    String value = originalValue.replace(path, nodePath + ext);
+                    value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {
                         value = value.replace(CMS_CONTEXT_PLACEHOLDER, cmsContext);
                     } else {
@@ -451,15 +447,12 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
                     if (logger.isDebugEnabled()) {
                         logger.debug("After replacePlaceholdersByRefs : "+value);
                     }
-                    document.replace(attr.getValueSegment(), value);
                 } catch (Exception e) {
                     logger.error("Exception when transforming placeholder for" + path,e);
                 }
-                return null;
+                return value;
             }
         });
-
-
     }
 
     public void afterPropertiesSet() throws Exception {

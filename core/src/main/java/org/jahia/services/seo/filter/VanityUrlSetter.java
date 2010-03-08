@@ -33,9 +33,7 @@ package org.jahia.services.seo.filter;
 
 import javax.jcr.RepositoryException;
 
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.OutputDocument;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -50,10 +48,9 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
             .getLogger(VanityUrlSetter.class);
     private VanityUrlService vanityUrlService;
 
-    public void visit(OutputDocument document, Attribute attr,
-            RenderContext context, Resource resource) {
-        if (attr != null) {
-            String attrValue = attr.getValue();
+    public String visit(final String attrValue, RenderContext context, Resource resource) {
+        String value = attrValue;
+        if (StringUtils.isNotEmpty(attrValue)) {
             URLResolver urlResolver = new URLResolver(attrValue, context
                     .getRequest().getContextPath());
             if (urlResolver.isMapable()) {
@@ -65,12 +62,10 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
                                         urlResolver.getWorkspace(),
                                         urlResolver.getLocale());
                         if (vanityUrl != null) {
-                            String value = attrValue.replace("/" + urlResolver
+                            value = attrValue.replace("/" + urlResolver
                                     .getLocale()
                                     + urlResolver.getPath(), vanityUrl
                                     .getUrl());
-
-                            document.replace(attr.getValueSegment(), value);
                         }
                     }
                 } catch (RepositoryException e) {
@@ -78,7 +73,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
                 }
             }
         }
-
+        return value;
     }
 
     public VanityUrlService getVanityUrlService() {

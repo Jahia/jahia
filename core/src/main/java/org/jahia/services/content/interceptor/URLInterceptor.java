@@ -298,7 +298,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
 
         if (pathPart.startsWith(dmsContext)) {
             // Remove DOC context part
-            pathPart = StringUtils.substringAfter(pathPart, dmsContext);
+            pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, dmsContext), "/");
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {
             // Remove CMS context part
@@ -402,7 +402,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
 
         if (pathPart.startsWith(DOC_CONTEXT_PLACEHOLDER)) {
             // Remove DOC context part
-            pathPart = StringUtils.substringAfter(pathPart, DOC_CONTEXT_PLACEHOLDER);
+            pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, DOC_CONTEXT_PLACEHOLDER), "/");
             isCmsContext = false;
         } else if (pathPart.startsWith(CMS_CONTEXT_PLACEHOLDER)) {
             // Remove CMS context part

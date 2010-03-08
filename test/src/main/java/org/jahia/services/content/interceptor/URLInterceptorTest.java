@@ -1,5 +1,7 @@
 package org.jahia.services.content.interceptor;
 
+import static junit.framework.Assert.*;
+
 import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -7,31 +9,32 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.test.TestHelper;
 import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 /**
- * Created by IntelliJ IDEA.
+ * Test case for the {@link URLInterceptor}.
  * User: toto
  * Date: Nov 30, 2009
  * Time: 5:30:59 PM
- * To change this template use File | Settings | File Templates.
  */
-public class URLInterceptorTest extends TestCase {
-    private ParamBean paramBean;
-    private JahiaSite site;
-    private JCRSessionWrapper session;
-    private JCRSessionWrapper localizedSession;
-    private JCRNodeWrapper node;
+public class URLInterceptorTest {
+    private static ParamBean paramBean;
+    private static JahiaSite site;
+    private static JCRSessionWrapper session;
+    private static JCRSessionWrapper localizedSession;
+    private static JCRNodeWrapper node;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         site = TestHelper.createSite("test");
 
         paramBean = (ParamBean) Jahia.getThreadParamBean();
@@ -45,6 +48,10 @@ public class URLInterceptorTest extends TestCase {
         
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
         localizedSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
+    }
+
+    @Before
+    public void setUp() throws RepositoryException {
 
         JCRNodeWrapper shared = session.getNode("/shared");
         if (shared.hasNode("testContent")) {
@@ -62,14 +69,20 @@ public class URLInterceptorTest extends TestCase {
 
         session.save();
     }
-
-    @Override
-    protected void tearDown() throws Exception {
-        TestHelper.deleteSite("test");
+    
+    @After
+    public void tearDown() throws Exception {
         node.remove();
         session.save();
     }
+    
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        TestHelper.deleteSite("test");
+        session.save();
+    }
 
+    @Test
     public void testReferenceEncoding() throws Exception {
         valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/render/default/en/shared/refContent.html\">test</a>",
                 "<a href=\"##cms-context##/render/default/en/##ref:link1##.html\">test</a>", 1);
@@ -92,8 +105,8 @@ public class URLInterceptorTest extends TestCase {
                 "<a href=\"##cms-context##/{mode}/{lang}/##ref:link1##.html\">test</a>" +
                         "<a href=\"##cms-context##/{mode}/{lang}/##ref:link2##.html\">test</a>", 2);
 
-        valideEncoding("<img src=\"" + Jahia.getContextPath() + "/files/shared/refContent\">",
-                "<img src=\"##doc-context##/##ref:link1##\">", 1);
+        valideEncoding("<img src=\"" + Jahia.getContextPath() + "/files/default/shared/refContent\">",
+                "<img src=\"##doc-context##/default/##ref:link1##\">", 1);
 
 
     }
@@ -109,6 +122,7 @@ public class URLInterceptorTest extends TestCase {
         assertEquals("Invalid number of references", expectedRefSize,ni.getSize());
     }
 
+    @Test
     public void testBadReferenceEncoding() throws Exception {
         JCRNodeWrapper n = localizedSession.getNode("/shared/testContent");
         try {
@@ -126,6 +140,7 @@ public class URLInterceptorTest extends TestCase {
         }
     }
 
+    @Test
     public void testEncodeAndDecode() throws Exception {
         validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/default/en/shared/refContent.html\">test</a>");
         validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/edit/default/en/shared/refContent.html\">test</a>");
@@ -137,7 +152,7 @@ public class URLInterceptorTest extends TestCase {
                 "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>");
         validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>" +
                 "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/testContent.html\">test</a>");
-        validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/shared/refContent\">");
+        validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default/shared/refContent\">");
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {

@@ -375,6 +375,9 @@
                             <property name="handlers">
                             	<list>
                             		<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer"/>
+                            		<bean class="org.jahia.services.seo.filter.VanityUrlSetter">                            		
+               		                    <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
+                            		</bean>
                             	</list>
                             </property>
                         </bean>

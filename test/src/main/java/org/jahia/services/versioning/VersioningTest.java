@@ -16,11 +16,9 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ktlili
- * Date: Mar 5, 2010
- * Time: 4:57:34 PM
- * To change this template use File | Settings | File Templates.
+ * Unit test to test version listing created during publication
+ * @todo currently we create twice more versions in the live workspace, do to a check-in we perform to force the merge
+ * conflict.
  */
 public class VersioningTest extends TestCase {
     private static Logger logger = Logger.getLogger(VersioningTest.class);
@@ -65,7 +63,7 @@ public class VersioningTest extends TestCase {
             session.save();
 
             // publish it
-            jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
+            jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
 
             for (int i = 0; i < 10; i++) {
@@ -80,7 +78,16 @@ public class VersioningTest extends TestCase {
             // check number of versions
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-            VersionIterator versions = subPagePublishedNode.getVersionHistory().getAllLinearVersions();//getAllVersions();
+            VersionIterator versions = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath()).getAllLinearVersions();
+            // VersionIterator versions = subPagePublishedNode.getVersionHistory().getAllLinearVersions();//getAllVersions();
+            if (versions.hasNext()) {
+                Version v = versions.nextVersion();
+                // the first is the root version, which has no properties, so we will ignore it.
+            }
+            if (versions.hasNext()) {
+                Version v = versions.nextVersion();
+                // we also ignore the version we created before creating the 10 versions.
+            }
             int index = 0;
             while (versions.hasNext()) {
                 Version v = versions.nextVersion();
@@ -92,7 +99,9 @@ public class VersioningTest extends TestCase {
             logger.debug("number of version: " + index);
             assertEquals(10, index);
 
-            versions = subPagePublishedNode.getVersionHistory().getAllVersions();
+            versions = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath()).getAllLinearVersions();
+            versions.nextVersion();
+            versions.nextVersion();
             for (int i = 0; i < 10; i++) {
                 String title = "title" + i;
                 JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(versions.nextVersion().getName());

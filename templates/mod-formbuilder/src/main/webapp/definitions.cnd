@@ -3,8 +3,15 @@
 [jmix:formContent] > jmix:content mixin
 
 [jnt:formElementValidation] > jnt:content
+orderable
+
+[jnt:formListElement] > jnt:content, jmix:formContent
+orderable
+ - label (string) i18n
+ - value (string)
 
 [jnt:formElement] > jnt:content
+orderable
 + * (jnt:formElementValidation)
 
 [jnt:responseToForm] > jnt:content,nt:unstructured
@@ -15,29 +22,29 @@
  - defaultValue (string)
  - mask (string)
 
- [jnt:inputMultiline] > jnt:formElement,  jmix:formContent
+[jnt:inputMultiline] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
  - cols (long) = 20 autocreated
  - rows (long) = 6 autocreated
  - defaultValue (string)
 
- [jnt:passwordField] > jnt:formElement,  jmix:formContent
+[jnt:passwordField] > jnt:formElement,  jmix:formContent
  - label (string)
 
- [jnt:fieldset] > jnt:content mixin
+[jnt:fieldset] > jnt:content mixin
  - legend (string)
 
- [jnt:checkboxField] > jnt:formElement,  jmix:formContent
-  - label (string) mandatory
-  - value (string) mandatory
+[jnt:checkboxField] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ + * (jnt:formListElement)
 
- [jnt:selectField] > jnt:formElement,  jmix:formContent
+[jnt:selectField] > jnt:formElement,  jmix:formContent
  - label (string)
- - option (string) mandatory
+ + * (jnt:formListElement)
 
- [jnt:radiobuttonField] > jnt:formElement,  jmix:formContent
-    - label (string) mandatory
-  - value (string) mandatory
+[jnt:radiobuttonField] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ + * (jnt:formListElement)
 
 [jnt:submitButton] > jnt:formElement,  jmix:formContent
  - label (string) mandatory

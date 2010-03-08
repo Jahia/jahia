@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -21,6 +22,12 @@
 <input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${props.size}"
        value="<c:if test="${empty props.mask}">${props.defaultValue}</c:if>"/>
 <c:if test="${renderContext.editMode}">
+    <p>List of validation element</p>
+    <ol>
+    <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElementValidation')}" var="formElement" varStatus="status">
+        <li><template:module node="${formElement}" forcedTemplate="edit"/></li>
+    </c:forEach>
+    </ol>
     <div style="border:darksalmon solid medium; margin:5px; background:#888888;">
         <span>Add your validation elements here</span>
         <template:module path="*"/>

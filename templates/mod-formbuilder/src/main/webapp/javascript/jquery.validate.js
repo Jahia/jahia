@@ -207,6 +207,7 @@ $.extend($.validator, {
 		errorClass: "error",
 		validClass: "valid",
 		errorElement: "label",
+        formId:"",
 		focusInvalid: true,
 		errorContainer: $( [] ),
 		errorLabelContainer: $( [] ),
@@ -449,7 +450,7 @@ $.extend($.validator, {
 		},
 		
 		errors: function() {
-			return $( this.settings.errorElement + "." + this.settings.errorClass, this.errorContext );
+			return $( "#"+ this.settings.formId+" "+ this.settings.errorElement + "." + this.settings.errorClass);
 		},
 		
 		reset: function() {

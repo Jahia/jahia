@@ -13,25 +13,26 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
-<script>
-    $(document).ready(function() {
-        $("#${currentNode.name}").validate({
-            rules: {
-                <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
-                <c:set var="validations" value="${jcr:getNodes(formElement,'jnt:formElementValidation')}"/>
-                <c:if test="${fn:length(validations) > 0}">
-                ${formElement.name} : {
-                    <c:forEach items="${jcr:getNodes(formElement,'jnt:formElementValidation')}" var="formElementValidation">
-                    <template:module node="${formElementValidation}" template="default" editable="true"/>
+<c:if test="${not renderContext.editMode}">
+    <script>
+        $(document).ready(function() {
+            $("#${currentNode.name}").validate({
+                rules: {
+                    <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement" varStatus="status">
+                    <c:set var="validations" value="${jcr:getNodes(formElement,'jnt:formElementValidation')}"/>
+                    <c:if test="${fn:length(validations) > 0}">
+                    ${formElement.name} : {
+                        <c:forEach items="${jcr:getNodes(formElement,'jnt:formElementValidation')}" var="formElementValidation">
+                        <template:module node="${formElementValidation}" template="default" editable="true"/>
+                        </c:forEach>
+                    }<c:if test="${not status.last}">,</c:if>
+                    </c:if>
                     </c:forEach>
-                }
-                </c:if>
-                </c:forEach>
-            },
-            errorLabelContainer: $("#${currentNode.name} div.validation")
+                },formId : "${currentNode.name}"
+            });
         });
-    });
-</script>
+    </script>
+</c:if>
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
 
 

@@ -84,4 +84,8 @@ public class GWTJahiaUrlMapping extends BaseModel {
         return ((Boolean) get("default")).booleanValue();
     }
 
+    public void setDefault(boolean isDefault) {
+        set("default", Boolean.valueOf(isDefault));
+    }
+
 }

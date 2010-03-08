@@ -65,18 +65,15 @@ public class VanityUrlService {
                 });
     }
 
-    public List<VanityUrl> getVanityUrlsForCurrentLocale(
-            final JCRNodeWrapper contentNode, JCRSessionWrapper session)
+    public List<VanityUrl> getVanityUrlsForCurrentLocale(JCRNodeWrapper contentNode, JCRSessionWrapper session)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(
-                null, session.getWorkspace().getName(),
-                session.getLocale(), false, new JCRCallback<List<VanityUrl>>() {
-                    public List<VanityUrl> doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        return vanityUrlManager.getVanityUrlsForCurrentLocale(
-                                contentNode, session);
-                    }
-                });
+        return getVanityUrls(contentNode, session.getLocale().toString(), session);
+    }
+    
+    public List<VanityUrl> getVanityUrls(
+            JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
+            throws RepositoryException {
+        return vanityUrlManager.getVanityUrls(contentNode, locale, session);
     }
     
     public boolean removeVanityUrlMapping(final JCRNodeWrapper contentNode,

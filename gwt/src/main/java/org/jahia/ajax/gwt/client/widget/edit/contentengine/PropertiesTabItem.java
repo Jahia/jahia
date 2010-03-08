@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -85,7 +86,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 }
                 addSharedLangLabel = false;
                 propertiesEditor.setVisible(false);
-                // keep tarck of the old values
+                // keep track of the old values
                 previousNon18nProperties = propertiesEditor.getProperties(false, true, false);
             }
             if (!isMultiLang()) {
@@ -97,7 +98,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                 if (engine.isExistingNode() && engine.getNode().getNodeTypes().contains("jmix:shareable")) {
                     // this label is shared among languages.
                     if (addSharedLangLabel) {
-                        Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
+                        Label label = new Label(Messages.get("warning.sharedNode", "Important : This is a shared node, editing it will modify its value for all its usages"));
                         label.setStyleAttribute("color", "rgb(200,80,80)");
                         label.setStyleAttribute("font-size", "14px");
                         add(label);

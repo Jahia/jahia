@@ -102,12 +102,15 @@ public class SeoTabItem extends EditEngineTabItem {
     }
     
     public void doSave() {
+        Set<String> langs = new HashSet<String>(editorsByLanguage.keySet());
+        if (langs.isEmpty()) {
+            return;
+        }
         List<GWTJahiaUrlMapping> mappings = new ArrayList<GWTJahiaUrlMapping>();
         for (UrlMappingEditor editor : editorsByLanguage.values()) {
             mappings.addAll(editor.getMappings());
         }
         
-        Set<String> langs = new HashSet<String>(editorsByLanguage.keySet());
         JahiaContentManagementService.App.getInstance().saveUrlMappings(engine.getNode(), langs, mappings, new AsyncCallback<Object>() {
             public void onFailure(Throwable throwable) {
                 com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "URL mapping save failed\n\n") + throwable.getLocalizedMessage());

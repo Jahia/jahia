@@ -44,9 +44,15 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.EditorEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -64,18 +70,52 @@ import com.extjs.gxt.ui.client.widget.grid.RowEditor;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * TODO comment me
+ * URL mapping for the node.
  * 
  * @author Sergiy Shyrkov
- * 
  */
 public class UrlMappingEditor extends LayoutContainer {
 
-    private GWTJahiaNode node;
-    
+    private static class SingleSelectionCheckColumnConfig extends CheckColumnConfig {
+
+        /**
+         * Initializes an instance of this class.
+         * 
+         * @param id
+         * @param name
+         * @param width
+         */
+        SingleSelectionCheckColumnConfig(String id, String name, int width) {
+            super(id, name, width);
+        }
+
+        @Override
+        protected void onMouseDown(GridEvent<ModelData> ge) {
+            String cls = ge.getTarget().getClassName();
+            if (cls != null && cls.indexOf("x-grid3-cc-" + getId()) != -1 && cls.indexOf("disabled") == -1) {
+                ge.stopEvent();
+                int index = grid.getView().findRowIndex(ge.getTarget());
+                ModelData m = grid.getStore().getAt(index);
+                Record r = grid.getStore().getRecord(m);
+                boolean b = (Boolean) m.get(getDataIndex());
+                if (!b) {
+                    for (ModelData data : grid.getStore().getModels()) {
+                        GWTJahiaUrlMapping mapping = (GWTJahiaUrlMapping) data;
+                        if (mapping.isDefault()) {
+                            grid.getStore().getRecord(mapping).set(getDataIndex(), Boolean.FALSE);
+                        }
+                    }
+                }
+                r.set(getDataIndex(), !b);
+            }
+        }
+
+    }
+
     private GWTJahiaLanguage locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
@@ -87,41 +127,51 @@ public class UrlMappingEditor extends LayoutContainer {
      */
     public UrlMappingEditor(GWTJahiaNode node, GWTJahiaLanguage locale) {
         super(new FitLayout());
-        this.node = node;
         this.locale = locale;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
-        
-        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getCountryIsoCode(), new AsyncCallback<List<GWTJahiaUrlMapping>>() {
-            public void onFailure(Throwable throwable) {
-                com.google.gwt.user.client.Window.alert(Messages.get("load_url_mappings_failed", "Loading URL mapping failed\n\n") + throwable.getLocalizedMessage());
-                Log.error("failed", throwable);
-            }
 
-            public void onSuccess(List<GWTJahiaUrlMapping> mappings) {
-                store.setFiresEvents(false);
-                store.add(mappings);
-                store.setFiresEvents(true);
-            }
-        });
+        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getCountryIsoCode(),
+                new AsyncCallback<List<GWTJahiaUrlMapping>>() {
+                    public void onFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert(Messages.get("load_url_mappings_failed",
+                                "Loading URL mapping failed\n\n")
+                                + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                    }
+
+                    public void onSuccess(List<GWTJahiaUrlMapping> mappings) {
+                        store.add(mappings);
+                    }
+                });
+    }
+
+    public List<GWTJahiaUrlMapping> getMappings() {
+        return store.getModels();
     }
 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
+        setHeight(610);
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
-        column.setId("nodeName");
-        column.setHidden(true);
-        configs.add(column);
-
-        column = new ColumnConfig("url", Messages.get("label.url", "URL"), 450);
+        column.setId("url");
+        column.setHeader(Messages.get("label.url", "URL"));
         TextField<String> text = new TextField<String>();
-        column.setEditor(new CellEditor(text));
+        text.setAllowBlank(false);
+        CellEditor ce = new CellEditor(text);
+        ce.addListener(Events.BeforeComplete, new Listener<EditorEvent>() {
+            public void handleEvent(EditorEvent be) {
+                Window.alert((String) be.getValue());
+                be.stopEvent();
+            }
+        });
+        column.setEditor(ce);
         configs.add(column);
 
-        CheckColumnConfig defaultColumn = new CheckColumnConfig("default", Messages.get("label.default", "Default"), 55);
+        CheckColumnConfig defaultColumn = new SingleSelectionCheckColumnConfig("default", Messages.get("label.default", "Default"), 55);
         defaultColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(defaultColumn);
 
@@ -132,14 +182,15 @@ public class UrlMappingEditor extends LayoutContainer {
         column = new ColumnConfig("actions", "", 100);
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setRenderer(new GridCellRenderer<GWTJahiaUrlMapping>() {
-            public Object render(GWTJahiaUrlMapping modelData, String s, ColumnData columnData, final int rowIndex, final int colIndex,
-                                 ListStore<GWTJahiaUrlMapping> listStore, Grid<GWTJahiaUrlMapping> grid) {
-                Button button = new Button(Messages.get("label.remove", "Remove"), new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        store.remove(store.getAt(rowIndex));
-                    }
-                });
+            public Object render(GWTJahiaUrlMapping modelData, String s, ColumnData columnData, final int rowIndex,
+                    final int colIndex, ListStore<GWTJahiaUrlMapping> listStore, Grid<GWTJahiaUrlMapping> grid) {
+                Button button = new Button(Messages.get("label.remove", "Remove"),
+                        new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent buttonEvent) {
+                                store.remove(store.getAt(rowIndex));
+                            }
+                        });
                 button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
                 return button;
             }
@@ -149,7 +200,6 @@ public class UrlMappingEditor extends LayoutContainer {
 
         final RowEditor<GWTJahiaUrlMapping> re = new RowEditor<GWTJahiaUrlMapping>();
         final Grid<GWTJahiaUrlMapping> grid = new Grid<GWTJahiaUrlMapping>(store, new ColumnModel(configs));
-//        final EditorGrid<GWTJahiaUrlMapping> grid = new EditorGrid<GWTJahiaUrlMapping>(store, new ColumnModel(configs));
         grid.setAutoExpandColumn("url");
         grid.setBorders(true);
         grid.addPlugin(defaultColumn);
@@ -160,32 +210,27 @@ public class UrlMappingEditor extends LayoutContainer {
         Button add = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-//                grid.stopEditing();
                 re.stopEditing(false);
-                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getCountryIsoCode(), false, true);
+                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getCountryIsoCode(),
+                        store.getCount() == 0, true);
                 store.insert(mapping, 0);
-//                grid.startEditing(store.indexOf(mapping), 0);
-                re.startEditing(store.indexOf(mapping), true);  
+                re.startEditing(store.indexOf(mapping), true);
             }
         });
         add.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
         toolBar.add(add);
-        
+
         ContentPanel cp = new ContentPanel(new FitLayout());
         cp.setHeaderVisible(false);
         cp.setTopComponent(toolBar);
         cp.add(grid);
-        
+
         FieldSet fs = new FieldSet();
         fs.setLayout(new FitLayout());
         fs.setHeading(Messages.get("label.urlMapping", "URL mapping"));
         fs.setCollapsible(true);
         fs.add(cp);
-        
-        add(fs);
-    }
 
-    public List<GWTJahiaUrlMapping> getMappings() {
-        return store.getModels();
+        add(fs);
     }
 }

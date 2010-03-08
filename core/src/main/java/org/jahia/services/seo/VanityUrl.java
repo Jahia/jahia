@@ -146,18 +146,16 @@ public class VanityUrl {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getUrl()).append(getIdentifier())
-                .append(getLanguage()).append(getSite()).toHashCode();
+        return new HashCodeBuilder().append(getUrl()).append(getLanguage()).append(getSite()).toHashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null
+        return super.equals(obj)
+                || obj != null
                 && (obj instanceof VanityUrl)
-                && super.equals(obj)
                 && new EqualsBuilder().append(getUrl(),
-                        ((VanityUrl) obj).getUrl()).append(getIdentifier(),
-                        ((VanityUrl) obj).getIdentifier()).append(
+                        ((VanityUrl) obj).getUrl()).append(
                         getLanguage(), ((VanityUrl) obj).getLanguage()).append(
                         getSite(), ((VanityUrl) obj).getSite()).isEquals();
     }

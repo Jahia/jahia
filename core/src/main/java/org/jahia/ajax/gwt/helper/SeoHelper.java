@@ -39,8 +39,9 @@ import java.util.Set;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.services.content.JCRContentUtils;
@@ -54,8 +55,6 @@ import org.jahia.services.seo.jcr.VanityUrlService;
  * @author Sergiy Shyrkov
  */
 public class SeoHelper {
-
-    private static Logger logger = Logger.getLogger(SeoHelper.class);
 
     private VanityUrlService urlService;
 
@@ -74,8 +73,8 @@ public class SeoHelper {
 
         List<GWTJahiaUrlMapping> mappings = new ArrayList<GWTJahiaUrlMapping>();
 
-        List<VanityUrl> urls = urlService.getVanityUrlsForCurrentLocale(session.getNodeByIdentifier(gwtNode.getUUID()),
-                session);
+        List<VanityUrl> urls = urlService
+                .getVanityUrls(session.getNodeByIdentifier(gwtNode.getUUID()), locale, session);
         for (VanityUrl vanityUrl : urls) {
             mappings.add(new GWTJahiaUrlMapping(vanityUrl.getIdentifier(), vanityUrl.getUrl(), vanityUrl.getLanguage(),
                     vanityUrl.isDefaultMapping(), vanityUrl.isActive()));
@@ -85,14 +84,14 @@ public class SeoHelper {
     }
 
     public void saveUrlMappings(GWTJahiaNode gwtNode, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings,
-            JCRSessionWrapper session) throws ItemNotFoundException, RepositoryException {
-        // TODO Auto-generated method stub
-        logger.info("Node: " + gwtNode.getPath() + " updatedLocales: " + updatedLocales + " mappings: " + mappings);
+            JCRSessionWrapper session) throws ItemNotFoundException, RepositoryException, ConstraintViolationException {
         String site = JCRContentUtils.getSiteKey(gwtNode.getPath());
         List<VanityUrl> vanityUrls = new LinkedList<VanityUrl>();
         for (GWTJahiaUrlMapping mapping : mappings) {
-            vanityUrls.add(new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(), mapping
-                    .isActive()));
+            if (StringUtils.isNotBlank(mapping.getUrl())) {
+                vanityUrls.add(new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(), mapping
+                        .isActive()));
+            }
         }
         urlService.saveVanityUrlMappings(session.getNodeByIdentifier(gwtNode.getUUID()), vanityUrls, updatedLocales);
     }

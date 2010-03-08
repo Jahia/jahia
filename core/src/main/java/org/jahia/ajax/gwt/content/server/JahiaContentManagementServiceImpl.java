@@ -66,6 +66,8 @@ import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
+
 import java.io.*;
 import java.util.*;
 
@@ -1021,6 +1023,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         try {
             seo.saveUrlMappings(node, updatedLocales, mappings, retrieveCurrentSession());
+        } catch (ConstraintViolationException e) {
+            // TODO handle it and display correct messages for the user
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

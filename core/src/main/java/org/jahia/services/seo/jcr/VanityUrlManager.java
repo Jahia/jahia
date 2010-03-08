@@ -92,17 +92,15 @@ public class VanityUrlManager {
         return vanityUrl;
     }
 
-    public List<VanityUrl> getVanityUrlsForCurrentLocale(
-            JCRNodeWrapper contentNode, JCRSessionWrapper session)
+    public List<VanityUrl> getVanityUrls(
+            JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
             throws RepositoryException {
         List<VanityUrl> vanityUrls = new ArrayList<VanityUrl>();
         contentNode = session.getNodeByUUID(contentNode.getIdentifier());
-        String currentLanguage = session.getLocale().toString();
         for (NodeIterator it = contentNode.getNodes(VANITYURLMAPPINGS_NODE); it
                 .hasNext();) {
             JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
-            if (currentNode.getPropertyAsString(JCR_LANGUAGE).equals(
-                    currentLanguage)) {
+            if (currentNode.getPropertyAsString(JCR_LANGUAGE).equals(locale)) {
                 vanityUrls.add(populateJCRData(currentNode, new VanityUrl()));
             }
         }
@@ -240,7 +238,7 @@ public class VanityUrlManager {
         if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
             contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
         } else {
-            int index = 0;
+            int index = 1; // index for Node.getNode() is starting with 1 (XPath compatibility)
             for (NodeIterator it = contentNode.getNodes(VANITYURLMAPPINGS_NODE); it
                     .hasNext(); index++) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
@@ -288,9 +286,7 @@ public class VanityUrlManager {
                     if (entry.getValue().equals(vanityUrl)) {
                         mappings.remove(entry.getKey());
                         found = true;
-                        if (entry.getValue().isActive() != vanityUrl.isActive()
-                                || entry.getValue().isDefaultMapping() != vanityUrl
-                                        .isDefaultMapping()) {
+                        if (entry.getValue().isActive() != vanityUrl.isActive() || entry.getValue().isDefaultMapping() != vanityUrl.isDefaultMapping()) {
                             vanityUrl.setIdentifier(entry.getValue()
                                     .getIdentifier());
                             toUpdate.put(entry.getKey(), vanityUrl);

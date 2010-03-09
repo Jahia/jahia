@@ -65,7 +65,7 @@ public class VanityUrl {
     /**
      * Initializes an instance of this class.
      * @param url mapping URL
-     * @param site current virtual site
+     * @param site virtual site of the mapped content object
      * @param language the mapping language
      */
     public VanityUrl(String url, String site, String language) {
@@ -78,7 +78,7 @@ public class VanityUrl {
     /**
      * Initializes an instance of this class.
      * @param url mapping URL
-     * @param site current virtual site
+     * @param site virtual site of the mapped content object
      * @param language the mapping language
      * @param defaultMapping is it the default mapping for the node?
      * @param active whether the mapping is active
@@ -89,58 +89,117 @@ public class VanityUrl {
         this.active = active;
     }
 
+    /**
+     * Returns the vanity URL 
+     * @return the vanity URL
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Set the vanity URL
+     * @param url the vanity URL
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Returns the language of the content object to which the vanity URL maps to 
+     * @return language of the mapping
+     */
     public String getLanguage() {
         return language;
     }
 
+    /**
+     * Sets the language of the content object to which the vanity URL maps to
+     * @param language the mapping language
+     */
     public void setLanguage(String language) {
         this.language = language;
     }
 
+    /**
+     * Returns true whether this URL mapping is the default one for the language
+     * @return true whether this URL mapping is the default one for the language, otherwise false
+     */
     public boolean isDefaultMapping() {
         return defaultMapping;
     }
 
+    /**
+     * Sets the default flag for the URL mapping - true if mapping should be the 
+     * default for the language, otherwise false
+     * @param defaultMapping true if mapping should be the default for the language, otherwise false
+     */
     public void setDefaultMapping(boolean defaultMapping) {
         this.defaultMapping = defaultMapping;
     }
 
+    /**
+     * Returns true if the URL mapping is activated or false if it is not activated.
+     * @return true if the URL mapping is activated or false if it is not activated.
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Sets the activation flag for the URL mapping - true if mapping is active,
+     * or false if is not active (will not be assigned and resource can no longer be found via the mapping)
+     * @param active true if mapping should be active, otherwise false
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
+    /**
+     * Gets the UUID of the mapping node in the JCR repository or null if URL is 
+     * not saved yet
+     * @return the UUID of the mapping node in the JCR repository or null if not saved yet 
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Set the unique identifier of the node in the JCR repository
+     * @param identifier the unique identifier (JCR repository node UUID)
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     * Gets the path of the node in the JCR repository or null if not yet set 
+     * @return the path of the node in the JCR repository or null if not yet set
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Set the path of the node in the JCR repository
+     * @param path the path of the node in the JCR repository
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Gets the virtual site of the mapped content object
+     * @return the virtual site of the mapped content object
+     */
     public String getSite() {
         return site;
     }
 
+    /**
+     * Sets the virtual site of the mapped content object
+     * @param site virtual site of the mapped content object
+     */
     public void setSite(String site) {
         this.site = site;
     }

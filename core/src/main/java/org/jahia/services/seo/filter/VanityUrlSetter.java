@@ -35,7 +35,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -43,30 +42,40 @@ import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttribu
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 
+/**
+ * A Jahia HTML Tag attribute visitor for checking whether the URLs to Jahia content nodes
+ * can be exchanged with vanity URLs.
+ *
+ * @author Benjamin Papez
+ *
+ */
 public class VanityUrlSetter implements HtmlTagAttributeVisitor {
     private transient static Logger logger = Logger
             .getLogger(VanityUrlSetter.class);
     private VanityUrlService vanityUrlService;
 
+    /**
+     * Checks whether the URL in the HTML attribute represents a Jahia content node and if
+     * the node is maped (has the vanityUrlMapped mixin type set) get the mapping for the 
+     * current workspace and locale and exchange the URL in the HTML with the mapped vanity URL.
+     *  
+     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String, org.jahia.services.render.RenderContext, org.jahia.services.render.Resource)
+     */
     public String visit(final String attrValue, RenderContext context, Resource resource) {
         String value = attrValue;
         if (StringUtils.isNotEmpty(attrValue)) {
             URLResolver urlResolver = new URLResolver(attrValue, context
                     .getRequest());
-            if (urlResolver.isMapable()) {
+            if (urlResolver.isMapped()) {
                 try {
-                    JCRNodeWrapper node = urlResolver.getNode();
-                    if (node != null) {
-                        VanityUrl vanityUrl = getVanityUrlService()
-                                .getVanityUrlForWorkspaceAndLocale(node,
-                                        urlResolver.getWorkspace(),
-                                        urlResolver.getLocale());
-                        if (vanityUrl != null) {
-                            value = attrValue.replace("/" + urlResolver
-                                    .getLocale()
-                                    + urlResolver.getPath(), vanityUrl
-                                    .getUrl());
-                        }
+                    VanityUrl vanityUrl = getVanityUrlService()
+                            .getVanityUrlForWorkspaceAndLocale(
+                                    urlResolver.getNode(),
+                                    urlResolver.getWorkspace(),
+                                    urlResolver.getLocale());
+                    if (vanityUrl != null) {
+                        value = attrValue.replace("/" + urlResolver.getLocale()
+                                + urlResolver.getPath(), vanityUrl.getUrl());
                     }
                 } catch (RepositoryException e) {
                     logger.warn("Error when trying to obtain vanity url", e);
@@ -76,10 +85,21 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
         return value;
     }
 
+
+    /**
+     * Gets the injected VanityUrlService
+     * @return the VanityUrlService
+     */
     public VanityUrlService getVanityUrlService() {
         return vanityUrlService;
     }
-
+    
+    /**
+     * Injects the dependency to {@link VanityUrlService}.
+     * 
+     * @param vanityUrlService
+     *            the dependency to {@link VanityUrlService}
+     */
     public void setVanityUrlService(VanityUrlService vanityUrlService) {
         this.vanityUrlService = vanityUrlService;
     }

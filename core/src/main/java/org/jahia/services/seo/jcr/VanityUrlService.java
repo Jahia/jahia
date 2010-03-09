@@ -36,6 +36,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
 
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,6 +53,16 @@ public class VanityUrlService {
 
     private VanityUrlManager vanityUrlManager;
 
+    /**
+     * Gets a node's default vanity URL for the given locale and workspace. If none is 
+     * default then take the first mapping for the locale.
+     * 
+     * @param contentNode the content node for which to return a mapping
+     * @param workspace the workspace to look for mappings 
+     * @param locale the locale to which the mapping should apply 
+     * @return the VanityUrl bean
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */
     public VanityUrl getVanityUrlForWorkspaceAndLocale(
             final JCRNodeWrapper contentNode, String workspace, Locale locale)
             throws RepositoryException {
@@ -65,35 +76,117 @@ public class VanityUrlService {
                 });
     }
 
+    /**
+     * Gets all node's vanity URLs for the current locale in the session
+     * 
+     * @param contentNode the content node for which to return the mappings
+     * @param session the JCR session holding the information about the workspace, locale and user
+     * @return the list of VanityUrl beans
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */      
     public List<VanityUrl> getVanityUrlsForCurrentLocale(JCRNodeWrapper contentNode, JCRSessionWrapper session)
             throws RepositoryException {
         return getVanityUrls(contentNode, session.getLocale().toString(), session);
     }
     
+    /**
+     * Gets all node's vanity URLs for the given locale
+     * 
+     * @param contentNode the content node for which to return the mappings
+     * @param languageCode the language code for which to return the mappings
+     * @param session the JCR session holding the information about the workspace and user
+     * @return the list of VanityUrl beans
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */      
     public List<VanityUrl> getVanityUrls(
-            JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
+            JCRNodeWrapper contentNode, String languageCode, JCRSessionWrapper session)
             throws RepositoryException {
-        return vanityUrlManager.getVanityUrls(contentNode, locale, session);
+        return vanityUrlManager.getVanityUrls(contentNode, languageCode, session);
     }
     
+    /**
+     * Completely delete a mapped vanity URL. If the deleted vanity URL is the 
+     * default one for the current locale, then check whether there are other
+     * active mappings for the same locale and set the first found one as the
+     * new default.
+     * 
+     * @param contentNode the content node for which to remove the given mapping
+     * @param vanityUrl the VanityUrl bean representing the URL to be removed
+     * @return true if the vanity URL was removed or false if it was not removed
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */    
     public boolean removeVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {
         return vanityUrlManager.removeVanityUrlMapping(contentNode, vanityUrl,
                 contentNode.getSession());
     }    
 
+    /**
+     * Add or update a vanity URL mapping for a specific content node and the language code set in the
+     * VanityUrl bean. 
+     *  
+     * If the URL mapping has already been saved before we check whether the default and active flag in
+     * the bean is different to the saved one, so we do an update, otherwise no operation is done.
+     * 
+     * If the new or updated mapping is now the default one for the language, then we also check
+     * if there already is another default URL for this language and set its default flag to false.
+     * 
+     * We also check whether the same URL is already existing for a different node or language
+     * in the current site and throw a ConstraintViolationException if this is the case. 
+     * 
+     * @param contentNode the content node for which to add the given mapping
+     * @param vanityUrl the VanityUrl bean representing the URL to be added
+     * @return true if the vanity URL was added or false if it was not added
+     * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language in the site
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */    
     public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {
         return vanityUrlManager.saveVanityUrlMapping(contentNode, vanityUrl,
                 contentNode.getSession());
     }
-    
+
+    /**
+     * Add, update or delete all vanity URL mappings for a specific content node and the language codes 
+     * set in the list of VanityUrl beans. First we load all existing mappings for all the languages 
+     * set in the updatedLocales collection. Then we compare the existing with the list of URL mappings
+     * given in the vanityUrls collection to know which nodes need to be added, updated or deleted.     
+     *  
+     * If the default mapping for a language is set for a new or updated mapping, then we check if
+     * there already is another default URL for this language and set its default flag to false.
+     * 
+     * We also check whether the same added URL is already existing for a different node or language
+     * in the current site (and which is not being deleted in the same operation) and throw a 
+     * ConstraintViolationException if this is the case. We also throw a ConstraintViolationException
+     * if two URL mappings for the same language in the given vanityUrls collection have the default flag 
+     * set to true. 
+     * 
+     * @param contentNode the content node for which to add the given mapping
+     * @param vanityUrls the list of VanityUrls bean representing the URLs to be added or updated
+     * @param updatedLocales a set with all locales, which have been edited (e.g. if all mappings for a language
+     *        need to be deleted, add the language to this set, while in the vanityUrls list there will be no
+     *        mappings for that language)
+     * @return true if any vanity URL was added,updated or deleted or false if no change was done
+     * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language in the site
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */    
     public boolean saveVanityUrlMappings(final JCRNodeWrapper contentNode,
             final List<VanityUrl> vanityUrls, final Set<String> updatedLocales) throws RepositoryException {
         return vanityUrlManager.saveVanityUrlMappings(contentNode, vanityUrls, updatedLocales, 
                 contentNode.getSession());
     }    
 
+    /**
+     * Find any mappings for the given vanity URL. If a site is specified the 
+     * query will be done only for the specified site, otherwise all sites in the
+     * workspace will be searched through and a list of VanityURL beans will be 
+     * returned. The method searches mappings in any language.
+     * 
+     * @param url  URL path to check whether there is a content mapping for it (URL must start with /)  
+     * @param site key of the site to search for the mapping or all sites if the string is null or empty 
+     * @return the list of VanityUrl beans
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */    
     public List<VanityUrl> findExistingVanityUrls(final String url, final String site)
             throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(

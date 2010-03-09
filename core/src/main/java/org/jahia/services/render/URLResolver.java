@@ -53,10 +53,23 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
 
+/**
+ * Class to resolve URLs and URL paths, so that the workspace / locale / node-path information is
+ * returned. 
+ * 
+ * There are also convenience methods to directly return the Node or Resource where the URL points to.
+ * 
+ * The method also considers vanity URL mappings and resolves them to the mapped nodes, so that
+ * the URL resolver will return the info as if no mapping have been used.
+ *
+ * @author Benjamin Papez
+ *
+ */
 public class URLResolver {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
@@ -70,8 +83,15 @@ public class URLResolver {
     private Locale locale;
     private String path;
     private String siteKey;
-    private boolean mapable = false;
+    private boolean mappable = false;
 
+    /**
+     * Initializes an instance of this class. This constructor is mainly used when
+     * resolving URLs of incoming requests.
+     * 
+     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo()) 
+     * @param siteKey  the site-key resolved via the URL (e.g. via domain to sitekey mapping)
+     */
     public URLResolver(String urlPathInfo, String siteKey) {
         super();
         this.urlPathInfo = urlPathInfo;
@@ -82,6 +102,13 @@ public class URLResolver {
         }
     }
 
+    /**
+     * Initializes an instance of this class. This constructor is mainly used when
+     * trying to find mapping for URLs in outgoing requests.
+     * 
+     * @param url   URL in HTML links of outgoing requests       
+     * @param request  The current request in order to obtain the context path
+     */
     public URLResolver(String url, HttpServletRequest request) {
         String contextPath = request.getContextPath();
         if (url.startsWith(contextPath + Edit.getRenderServletPath())) {
@@ -110,7 +137,7 @@ public class URLResolver {
         // TODO: this is perhaps a temporary limitation as URL points to special templates
         String lastPart = StringUtils.substringAfterLast(path, "/");
         if (!StringUtils.substringBefore(lastPart, ".html").contains(".")) {
-            mapable = true;
+            mappable = true;
         }
     }
 
@@ -155,30 +182,80 @@ public class URLResolver {
         return mappingResolved;
     }
 
+    /**
+     * Gets the pathInfo of the given URL (@link javax.servlet.http.HttpServletRequest.getPathInfo())
+     * @return the pathInfo of the given URL 
+     */
     public String getUrlPathInfo() {
         return urlPathInfo;
     }
 
+    /**
+     * Gets the workspace of the request resolved by the URL
+     * @return the workspace of the given URL
+     */
     public String getWorkspace() {
         return workspace;
     }
 
+    /**
+     * Gets the locale of the request resolved by the URL
+     * @return the locale of the given URL
+     */
     public Locale getLocale() {
         return locale;
     }
 
+    /**
+     * Gets the content node path of the request resolved by the URL
+     * @return the content node path of the given URL
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Creates a node from the path in the URL.
+     * 
+     * @return The node, if found
+     * @throws PathNotFoundException
+     *             if the resource cannot be resolved
+     * @throws RepositoryException
+     */
     public JCRNodeWrapper getNode() throws RepositoryException {
         return resolveNode(getWorkspace(), getLocale(), getPath());
     }
 
+    /**
+     * Creates a resource from the path in the URL.
+     * <p/>
+     * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
+     * 
+     * Workspace, locale and path are taken from the given resolved URL.
+     * 
+     * @return The resource, if found
+     * @throws PathNotFoundException
+     *             if the resource cannot be resolved
+     * @throws RepositoryException
+     */
     public Resource getResource() throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath(), null);
     }
 
+    /**
+     * Creates a versioned resource from the path in the URL.
+     * <p/>
+     * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
+     * 
+     * Workspace, locale and path are taken from the given resolved URL. 
+     * 
+     * @param versionNumber
+     *            The version number to get the resource of a versioned node  
+     * @return The resource, if found
+     * @throws PathNotFoundException
+     *             if the resource cannot be resolved
+     * @throws RepositoryException
+     */
     public Resource getResource(String versionNumber)
             throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath(),
@@ -245,6 +322,8 @@ public class URLResolver {
      *            current locale
      * @param path
      *            The path of the node, in the specified workspace
+     * @param versionNumber
+     *            The version number to get the resource of a versioned node            
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
@@ -355,8 +434,32 @@ public class URLResolver {
                 });
     }
 
-    public boolean isMapable() {
-        return mapable;
+    /**
+     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity URLs. 
+     * @return true if current node can be mapped to vanity URLs, otherwise false
+     */
+    public boolean isMappable() {
+        return mappable;
+    }  
+    
+    /**
+     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity 
+     * URLs. If this is the case then also check if there already is a mapping for the current node.  
+     * @return true if mappings exist(ed) for the current node, otherwise false
+     */    
+    public boolean isMapped() {
+        boolean mapped = mappable;
+        if (mapped) {
+            try {
+                JCRNodeWrapper node = getNode();
+                if (node != null && node.isNodeType(VanityUrlManager.JAHIAMIX_VANITYURLMAPPED)) {
+                    mapped = false;
+                }
+            } catch (RepositoryException e) {
+                logger.warn("Cannot check if node has the jmix:vanityUrlMapped mixin", e);
+            }
+        }
+        return mapped;
     }
 
     private VanityUrlService getVanityUrlService() {
@@ -364,10 +467,18 @@ public class URLResolver {
                 .getBean(VanityUrlService.class.getName());
     }
 
+    /**
+     * Gets the site-key of the request resolved by the URL
+     * @return the site-key of the given URL
+     */
     public String getSiteKey() {
         return siteKey;
     }
 
+    /**
+     * Sets the site-key resolved for the current URL
+     * @param siteKey the site-key resolved for the current URL
+     */
     public void setSiteKey(String siteKey) {
         this.siteKey = siteKey;
     }

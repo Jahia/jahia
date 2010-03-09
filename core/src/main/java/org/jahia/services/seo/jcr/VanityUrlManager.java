@@ -35,10 +35,12 @@ import static org.jahia.api.Constants.JCR_LANGUAGE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -155,12 +157,36 @@ public class VanityUrlManager {
         }
     }
 
+    public void removeVanityUrlMappings(JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
+            throws RepositoryException {
+
+        NodeIterator it = contentNode.getNodes(VANITYURLMAPPINGS_NODE);
+        if (it.hasNext()) {
+            session.checkout(contentNode);
+            List<Node> toRemove = new LinkedList<Node>();
+            for (; it.hasNext();) {
+                Node node = it.nextNode();
+                if (locale.equals(node.getProperty(JCR_LANGUAGE).getString())) {
+                    toRemove.add(node);
+                }
+            }
+
+            if (!toRemove.isEmpty()) {
+                session.checkout(contentNode);
+                for (Node node : toRemove) {
+                    node.remove();
+                }
+                session.save();
+            }
+        }
+    }
+
     public boolean saveVanityUrlMapping(JCRNodeWrapper contentNode,
             VanityUrl vanityUrl, JCRSessionWrapper session)
             throws RepositoryException {
 
         checkUniquConstraint(contentNode, vanityUrl, null, session);
-        
+
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
         if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
@@ -218,7 +244,7 @@ public class VanityUrlManager {
 
         return true;
     }
-    
+
     private void checkUniquConstraint(JCRNodeWrapper contentNode,
             VanityUrl vanityUrl, List<Map.Entry<Integer, VanityUrl>> toDelete, JCRSessionWrapper session) throws RepositoryException {
         List<VanityUrl> existingUrls = findExistingVanityUrls(vanityUrl
@@ -383,7 +409,7 @@ public class VanityUrlManager {
 
         for (VanityUrl vanityUrl : toAdd) {
             checkUniquConstraint(contentNode, vanityUrl, toDelete, session);
-        }
+            }
 
         if (!toUpdate.isEmpty() || !toAdd.isEmpty() || !toDelete.isEmpty()) {
             session.checkout(contentNode);

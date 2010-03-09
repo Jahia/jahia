@@ -87,7 +87,7 @@ public class MailAction implements Action {
                           final Resource resource) throws Exception {
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
         final String path = node.getPath();
-        JCRNodeWrapper actionNode = node.getNode("action");
+        JCRNodeWrapper actionNode = (JCRNodeWrapper) node.getNode("action").getNodes().nextNode();
         JahiaUser to = userManagerService.lookupUser(node.getSession().getNodeByUUID(actionNode.getProperty("j:to").getValue().getString()).getName());
         Set<String> reservedParameters = Render.getReservedParameters();
         final Map<String, String[]> formDatas = new HashMap<String, String[]>();

@@ -36,12 +36,13 @@
 </c:if>
 
 <jcr:node var="actionNode" path="${currentNode.path}/action"/>
-<template:module node="${actionNode}"/>
 <c:set var="action" value="${url.base}${currentNode.path}/*"/>
-<c:if test="${not empty actionNode}">
-    <c:if test="${actionNode.properties['j:action'].string != 'default'}">
+<c:if test="${not empty actionNode.nodes}">
+    <c:forEach items="${actionNode.nodes}" var="node">
+    <c:if test="${node.properties['j:action'].string != 'default'}">
         <c:set var="action" value="${url.base}${currentNode.path}.${actionNode.properties['j:action'].string}.do"/>
     </c:if>
+    </c:forEach>
 </c:if>
 
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
@@ -70,7 +71,7 @@
 <c:if test="${renderContext.editMode}">
     <div class="addaction">
         <span>Add your action here</span>
-        <template:module path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="true" />
+        <template:area path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="true" />
     </div>
     <div class="addelements">
         <span>Add your new form elements here</span>

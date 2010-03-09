@@ -73,7 +73,7 @@ orderable
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable
  - j:intro (string)
- + action (jnt:formAction)
+ + action (jnt:contentList)
  + * (jnt:formElement)
  + * (jnt:responseToForm)
 

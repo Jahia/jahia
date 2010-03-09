@@ -351,32 +351,8 @@
         <!--Hibernate dependencies-->
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-            <version>3.2.7.ga</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm-attrs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>2.1_3</version>
+            <artifactId>hibernate-core</artifactId>
+            <version>3.3.2.GA</version>
         </dependency>
 
         <!-- Jackrabbit dependencies -->
@@ -986,7 +962,7 @@
             <artifactId>gifencoder</artifactId>
             <version>0.9</version>
         </dependency>
-
+        
         <!-- Dependencies for JAMon monitoring library -->
         <dependency>
             <groupId>com.jamonapi</groupId>
@@ -1147,6 +1123,12 @@
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-api</artifactId>
             <version>4.3</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>jboss</groupId>
+					<artifactId>jboss-j2ee</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
@@ -1177,6 +1159,10 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
+                <exclusion>
+                	<artifactId>hibernate-core</artifactId>
+                	<groupId>org.hibernate</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1199,6 +1185,12 @@
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
         </dependency>        
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-j2ee</artifactId>
+            <version>4.2.2.GA</version>
+            <scope>${jboss.libs.scope}</scope>
+        </dependency>
     </dependencies>
     <build>
 

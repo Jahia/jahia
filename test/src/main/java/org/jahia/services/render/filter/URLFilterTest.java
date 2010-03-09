@@ -123,11 +123,11 @@ public class URLFilterTest {
         VanityUrl vanityUrl = new VanityUrl("/testpage", TESTSITE_NAME, "en");
         vanityUrl.setDefaultMapping(true);
         vanityUrl.setActive(true);
-        assertNull("URL mapping should not exist yet", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
+        assertTrue("URL mapping should not exist yet", getVanityUrlService()
+                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
         getVanityUrlService().saveVanityUrlMapping(pageNode, vanityUrl);
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
         try {
             getVanityUrlService().saveVanityUrlMapping(contentNode, vanityUrl);
             assertTrue("Exception should have been thrown", false);
@@ -140,8 +140,8 @@ public class URLFilterTest {
         newVanityUrl.setDefaultMapping(true);
         newVanityUrl.setActive(true);
         getVanityUrlService().saveVanityUrlMapping(contentNode, newVanityUrl);
-        assertNotNull("New URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
+        assertFalse("New URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
 
         VanityUrl savedVanityUrl = getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
@@ -156,8 +156,8 @@ public class URLFilterTest {
 
         getVanityUrlService().removeVanityUrlMapping(pageNode, vanityUrl);
         getVanityUrlService().removeVanityUrlMapping(contentNode, newVanityUrl);
-        assertNull("URL mapping should no longer exist", getVanityUrlService()
-                .findExistingVanityUrl(vanityUrl.getUrl(), vanityUrl.getSite()));
+        assertTrue("URL mapping should no longer exist", getVanityUrlService()
+                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
         assertNull("No page vanity URL should exist", getVanityUrlService()
                         .getVanityUrlForWorkspaceAndLocale(pageNode,
                                 session.getWorkspace().getName(),
@@ -207,21 +207,21 @@ public class URLFilterTest {
         getVanityUrlService().saveVanityUrlMappings(pageNode, vanityUrls,
                 languages);
 
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(englishVanityUrl.getUrl(),
-                        englishVanityUrl.getSite()));
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(englishVanityUrl2.getUrl(),
-                        englishVanityUrl2.getSite()));
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(englishVanityUrl3.getUrl(),
-                        englishVanityUrl3.getSite()));
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(frenchVanityUrl.getUrl(),
-                        frenchVanityUrl.getSite()));
-        assertNotNull("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrl(frenchVanityUrl2.getUrl(),
-                        frenchVanityUrl2.getSite()));
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(englishVanityUrl.getUrl(),
+                        englishVanityUrl.getSite()).isEmpty());
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(englishVanityUrl2.getUrl(),
+                        englishVanityUrl2.getSite()).isEmpty());
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(englishVanityUrl3.getUrl(),
+                        englishVanityUrl3.getSite()).isEmpty());
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(frenchVanityUrl.getUrl(),
+                        frenchVanityUrl.getSite()).isEmpty());
+        assertFalse("URL mapping should exist", getVanityUrlService()
+                .findExistingVanityUrls(frenchVanityUrl2.getUrl(),
+                        frenchVanityUrl2.getSite()).isEmpty());
 
         englishVanityUrl.setDefaultMapping(true);
         englishVanityUrl2.setDefaultMapping(true);

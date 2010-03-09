@@ -31,6 +31,7 @@
  */
 package org.jahia.services.seo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -69,7 +70,7 @@ public class VanityUrl {
      */
     public VanityUrl(String url, String site, String language) {
         super();
-        this.url = url;
+        this.url = StringUtils.startsWith(url, "/") ? url : '/' + url;
         this.site = site;
         this.language = language;
     }
@@ -146,7 +147,8 @@ public class VanityUrl {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getUrl()).append(getLanguage()).append(getSite()).toHashCode();
+        return new HashCodeBuilder().append(getUrl()).append(getPath()).append(
+                getLanguage()).append(getSite()).toHashCode();
     }
 
     @Override
@@ -155,9 +157,10 @@ public class VanityUrl {
                 || obj != null
                 && (obj instanceof VanityUrl)
                 && new EqualsBuilder().append(getUrl(),
-                        ((VanityUrl) obj).getUrl()).append(
-                        getLanguage(), ((VanityUrl) obj).getLanguage()).append(
-                        getSite(), ((VanityUrl) obj).getSite()).isEquals();
+                        ((VanityUrl) obj).getUrl()).append(getPath(),
+                        ((VanityUrl) obj).getPath()).append(getLanguage(),
+                        ((VanityUrl) obj).getLanguage()).append(getSite(),
+                        ((VanityUrl) obj).getSite()).isEquals();
     }
 
     @Override

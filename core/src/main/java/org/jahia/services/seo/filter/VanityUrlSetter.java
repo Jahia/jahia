@@ -52,7 +52,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
         String value = attrValue;
         if (StringUtils.isNotEmpty(attrValue)) {
             URLResolver urlResolver = new URLResolver(attrValue, context
-                    .getRequest().getContextPath());
+                    .getRequest());
             if (urlResolver.isMapable()) {
                 try {
                     JCRNodeWrapper node = urlResolver.getNode();

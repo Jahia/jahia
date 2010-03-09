@@ -1,20 +1,18 @@
 package org.jahia.modules.wiki.errors;
 
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.URLResolver;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.jcr.PathNotFoundException;
 import java.io.IOException;
-import java.util.Locale;
 import java.net.URLEncoder;
 
 /**
@@ -32,25 +30,16 @@ public class NewWikiPageHandler implements ErrorHandler {
             if (!(e instanceof PathNotFoundException)) {
                 return false;
             }
-            String path = request.getPathInfo();
-            path = path.substring(path.indexOf('/', 1));
-            int index = path.indexOf('/', 1);
-            String workspace = path.substring(1, index);
-            path = path.substring(index);
+            URLResolver urlResolver = new URLResolver(request.getPathInfo(), StringUtils.EMPTY);
 
-            index = path.indexOf('/', 1);
-            String lang = path.substring(1, index);
-            path = path.substring(index);
+            String parentPath = StringUtils.substringBeforeLast(urlResolver.getPath(),"/");
 
-            String parentPath = StringUtils.substringBeforeLast(path,"/");
-
-            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
             try {
                 JCRNodeWrapper parent = session.getNode(parentPath);
                 if (parent.isNodeType("jnt:page") && parent.hasProperty("j:template") &&
                         parent.getProperty("j:template").getString().equals("wikiHome")) {
-                    String newName = StringUtils.substringAfterLast(path,"/");
+                    String newName = StringUtils.substringAfterLast(urlResolver.getPath(),"/");
                     newName = StringUtils.substringBefore(newName,".html");
                     String link = request.getContextPath() + request.getServletPath() + request.getPathInfo();
 

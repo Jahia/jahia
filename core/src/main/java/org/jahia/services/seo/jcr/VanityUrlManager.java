@@ -45,6 +45,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.jahia.services.content.JCRContentUtils;
@@ -92,8 +93,8 @@ public class VanityUrlManager {
         return vanityUrl;
     }
 
-    public List<VanityUrl> getVanityUrls(
-            JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
+    public List<VanityUrl> getVanityUrls(JCRNodeWrapper contentNode,
+            String locale, JCRSessionWrapper session)
             throws RepositoryException {
         List<VanityUrl> vanityUrls = new ArrayList<VanityUrl>();
         contentNode = session.getNodeByUUID(contentNode.getIdentifier());
@@ -158,20 +159,8 @@ public class VanityUrlManager {
             VanityUrl vanityUrl, JCRSessionWrapper session)
             throws RepositoryException {
 
-        VanityUrl existingUrl = findExistingVanityUrl(vanityUrl.getUrl(),
-                vanityUrl.getSite(), session);
-        if (existingUrl != null && !vanityUrl.equals(existingUrl)) {
-            throw new ConstraintViolationException(
-                    "URL Mapping already exists exception: vanityUrl="
-                            + vanityUrl.getUrl()
-                            + " to be set on node: "
-                            + contentNode.getPath()
-                            + " already found on "
-                            + session
-                                    .getNodeByUUID(existingUrl.getIdentifier())
-                                    .getParent().getPath(), null);
-        }
-
+        checkUniquConstraint(contentNode, vanityUrl, null, session);
+        
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
         if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
@@ -228,6 +217,38 @@ public class VanityUrlManager {
         session.save();
 
         return true;
+    }
+    
+    private void checkUniquConstraint(JCRNodeWrapper contentNode,
+            VanityUrl vanityUrl, List<Map.Entry<Integer, VanityUrl>> toDelete, JCRSessionWrapper session) throws RepositoryException {
+        List<VanityUrl> existingUrls = findExistingVanityUrls(vanityUrl
+                .getUrl(), vanityUrl.getSite(), session);
+        if (existingUrls != null && !existingUrls.isEmpty()) {
+            for (VanityUrl existingUrl : existingUrls) {
+                if (!vanityUrl.equals(existingUrl)) {
+                    boolean oldMatchWillBeDeleted = false;
+                    if (toDelete != null) {
+                    for (Map.Entry<Integer, VanityUrl> entry : toDelete) {
+                        if (existingUrl.equals(entry.getValue())) {
+                            oldMatchWillBeDeleted = true;
+                            break;
+                        }
+                    }
+                    }
+                    if (!oldMatchWillBeDeleted) {
+                    throw new ConstraintViolationException(
+                            "URL Mapping already exists exception: vanityUrl="
+                                    + vanityUrl.getUrl()
+                                    + " to be set on node: "
+                                    + contentNode.getPath()
+                                    + " already found on "
+                                    + session.getNodeByUUID(
+                                            existingUrl.getIdentifier())
+                                            .getParent().getPath(), null);
+                    }
+                }
+            }
+        }        
     }
 
     public boolean saveVanityUrlMappings(JCRNodeWrapper contentNode,
@@ -286,7 +307,9 @@ public class VanityUrlManager {
                     if (entry.getValue().equals(vanityUrl)) {
                         mappings.remove(entry.getKey());
                         found = true;
-                        if (entry.getValue().isActive() != vanityUrl.isActive() || entry.getValue().isDefaultMapping() != vanityUrl.isDefaultMapping()) {
+                        if (entry.getValue().isActive() != vanityUrl.isActive()
+                                || entry.getValue().isDefaultMapping() != vanityUrl
+                                        .isDefaultMapping()) {
                             vanityUrl.setIdentifier(entry.getValue()
                                     .getIdentifier());
                             toUpdate.put(entry.getKey(), vanityUrl);
@@ -359,28 +382,7 @@ public class VanityUrlManager {
         }
 
         for (VanityUrl vanityUrl : toAdd) {
-            VanityUrl existingUrl = findExistingVanityUrl(vanityUrl.getUrl(),
-                    vanityUrl.getSite(), session);
-            if (existingUrl != null && !vanityUrl.equals(existingUrl)) {
-                boolean oldMatchWillBeDeleted = false;
-                for (Map.Entry<Integer, VanityUrl> entry : toDelete) {
-                    if (existingUrl.equals(entry.getValue())) {
-                        oldMatchWillBeDeleted = true;
-                        break;
-                    }
-                }
-                if (!oldMatchWillBeDeleted) {
-                    throw new ConstraintViolationException(
-                            "URL Mapping already exists exception: vanityUrl="
-                                    + vanityUrl.getUrl()
-                                    + " to be set on node: "
-                                    + contentNode.getPath()
-                                    + " already found on "
-                                    + session.getNodeByUUID(
-                                            existingUrl.getIdentifier())
-                                            .getParent().getPath(), null);
-                }
-            }
+            checkUniquConstraint(contentNode, vanityUrl, toDelete, session);
         }
 
         if (!toUpdate.isEmpty() || !toAdd.isEmpty() || !toDelete.isEmpty()) {
@@ -427,24 +429,25 @@ public class VanityUrlManager {
         return true;
     }
 
-    public VanityUrl findExistingVanityUrl(String url, String site,
+    public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
-        VanityUrl existingUrl = null;
-
         QueryResult result = session.getWorkspace().getQueryManager()
                 .createQuery(
-                        "/jcr:root/sites/"
-                                + JCRContentUtils.stringToJCRPathExp(site)
+                        "/jcr:root"
+                                + (StringUtils.isEmpty(site) ? "" : "/sites/"
+                                        + JCRContentUtils
+                                                .stringToJCRPathExp(site))
                                 + "//element(*, " + JAHIANT_VANITYURL + ")[@"
                                 + PROPERTY_URL + " = "
                                 + JCRContentUtils.stringToQueryLiteral(url)
                                 + "]", Query.XPATH).execute();
-        if (result.getNodes().hasNext()) {
-            existingUrl = populateJCRData((JCRNodeWrapper) result.getNodes()
-                    .nextNode(), new VanityUrl());
+        List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
+        for (NodeIterator it = result.getNodes(); it.hasNext();) {
+            JCRNodeWrapper node = (JCRNodeWrapper) it.next();
+            existingUrls.add(populateJCRData(node, new VanityUrl()));
         }
 
-        return existingUrl;
+        return existingUrls;
     }
 
     private VanityUrl populateJCRData(JCRNodeWrapper node,

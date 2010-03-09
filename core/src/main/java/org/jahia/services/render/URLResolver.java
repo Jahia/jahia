@@ -33,23 +33,27 @@ package org.jahia.services.render;
 
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.Render;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -65,16 +69,21 @@ public class URLResolver {
     private String workspace;
     private Locale locale;
     private String path;
-    private boolean mapable = false;    
+    private String siteKey;
+    private boolean mapable = false;
 
-    public URLResolver(String urlPathInfo) {
+    public URLResolver(String urlPathInfo, String siteKey) {
         super();
         this.urlPathInfo = urlPathInfo;
+        this.siteKey = siteKey;
         path = StringUtils.substringAfter(getUrlPathInfo().substring(1), "/");
-        init();
+        if (!resolveUrlMapping()) {
+            init();
+        }
     }
 
-    public URLResolver(String url, String contextPath) {
+    public URLResolver(String url, HttpServletRequest request) {
+        String contextPath = request.getContextPath();
         if (url.startsWith(contextPath + Edit.getRenderServletPath())) {
             this.urlPathInfo = StringUtils.substringAfter(url, Edit
                     .getRenderServletPath());
@@ -93,10 +102,57 @@ public class URLResolver {
                 path, "/"), DEFAULT_WORKSPACE);
         path = StringUtils.substringAfter(path, "/");
         String langCode = StringUtils.substringBefore(path, "/");
+
         locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
                 : LanguageCodeConverters.languageCodeToLocale(langCode);
         path = "/" + StringUtils.substringAfter(path, "/");
-        mapable = true;
+        
+        // TODO: this is perhaps a temporary limitation as URL points to special templates
+        String lastPart = StringUtils.substringAfterLast(path, "/");
+        if (!StringUtils.substringBefore(lastPart, ".html").contains(".")) {
+            mapable = true;
+        }
+    }
+
+    private boolean resolveUrlMapping() {
+        boolean mappingResolved = false;
+        String tempPath = null; 
+        try {
+            String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(
+                    getPath(), "/"), DEFAULT_WORKSPACE);            
+            tempPath = StringUtils.substringAfter(getPath(), "/");            
+            if (getSiteKey() == null) {
+                setSiteKey(StringUtils.substringBetween(getPath(), "/sites/",
+                        "/"));
+            }
+            List<VanityUrl> vanityUrls = getVanityUrlService()
+                    .findExistingVanityUrls("/" + tempPath, StringUtils.EMPTY);
+            VanityUrl resolvedVanityUrl = null;
+            if (!vanityUrls.isEmpty() && !StringUtils.isEmpty(getSiteKey())) {
+                for (VanityUrl vanityUrl : vanityUrls) {
+                    if (getSiteKey().equals(vanityUrl.getSite())) {
+                        resolvedVanityUrl = vanityUrl;
+                    }
+                }
+            }
+            if (resolvedVanityUrl == null && StringUtils.isEmpty(getSiteKey())
+                    && !vanityUrls.isEmpty()) {
+                resolvedVanityUrl = vanityUrls.get(0);
+            }
+            if (resolvedVanityUrl != null) {
+                workspace = tempWorkspace;
+                locale = StringUtils.isEmpty(resolvedVanityUrl.getLanguage()) ? DEFAULT_LOCALE
+                        : LanguageCodeConverters
+                                .languageCodeToLocale(resolvedVanityUrl
+                                        .getLanguage());
+                path = StringUtils.substringBeforeLast(resolvedVanityUrl.getPath(), "/") + ".html";
+                mappingResolved = true;
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Error when trying to resolve URL mapping: "
+                    + tempPath, e);
+        }
+        return mappingResolved;
     }
 
     public String getUrlPathInfo() {
@@ -122,10 +178,12 @@ public class URLResolver {
     public Resource getResource() throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath(), null);
     }
-    
-    public Resource getResource(String versionNumber) throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), getPath(), versionNumber);
-    }    
+
+    public Resource getResource(String versionNumber)
+            throws RepositoryException {
+        return resolveResource(getWorkspace(), getLocale(), getPath(),
+                versionNumber);
+    }
 
     /**
      * Creates a node from the specified path.
@@ -193,7 +251,8 @@ public class URLResolver {
      * @throws RepositoryException
      */
     protected Resource resolveResource(final String workspace,
-            final Locale locale, final String path, final String versionNumber) throws RepositoryException {
+            final Locale locale, final String path, final String versionNumber)
+            throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving resource for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
@@ -228,16 +287,21 @@ public class URLResolver {
                                 // ignore it
                             }
                         }
-                        
+
                         // handle version number
-                        if(versionNumber != null){
-                            JCRNodeWrapper versionNode = node.getFrozenVersion(versionNumber);
-                            if(versionNode != null){
+                        if (versionNumber != null) {
+                            JCRNodeWrapper versionNode = node
+                                    .getFrozenVersion(versionNumber);
+                            if (versionNode != null) {
                                 node = versionNode;
-                            }else{
-                                logger.error("Error while retrieving node with path "+nodePath+" and version "+versionNumber);
+                            } else {
+                                logger
+                                        .error("Error while retrieving node with path "
+                                                + nodePath
+                                                + " and version "
+                                                + versionNumber);
                             }
-                        }                        
+                        }
 
                         JahiaSite site = node.resolveSite();
                         JCRSessionWrapper userSession;
@@ -293,5 +357,18 @@ public class URLResolver {
 
     public boolean isMapable() {
         return mapable;
+    }
+
+    private VanityUrlService getVanityUrlService() {
+        return (VanityUrlService) SpringContextSingleton
+                .getBean(VanityUrlService.class.getName());
+    }
+
+    public String getSiteKey() {
+        return siteKey;
+    }
+
+    public void setSiteKey(String siteKey) {
+        this.siteKey = siteKey;
     }
 }

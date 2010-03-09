@@ -94,13 +94,13 @@ public class VanityUrlService {
                 contentNode.getSession());
     }    
 
-    public VanityUrl findExistingVanityUrl(final String url, final String site)
+    public List<VanityUrl> findExistingVanityUrls(final String url, final String site)
             throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(
-                new JCRCallback<VanityUrl>() {
-                    public VanityUrl doInJCR(JCRSessionWrapper session)
+                new JCRCallback<List<VanityUrl>>() {
+                    public List<VanityUrl> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        return vanityUrlManager.findExistingVanityUrl(
+                        return vanityUrlManager.findExistingVanityUrls(
                                 url, site, session);
                     }
                 });

@@ -1,7 +1,6 @@
 package org.jahia.bin;
 
 import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,8 +26,8 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
+import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,10 +49,6 @@ public class Find extends HttpServlet implements Controller {
     private boolean defaultEscapeColon = false;
 
     private int defaultLimit = 0;
-
-    private String defaultLocale = "en";
-
-    private String defaultWorkspace = LIVE_WORKSPACE;
 
     private boolean defaultRemoveDuplicatePropertyValues = false;
 
@@ -140,18 +135,15 @@ public class Find extends HttpServlet implements Controller {
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
-        String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
-        String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(StringUtils.defaultIfEmpty(StringUtils
-                .substringBefore(StringUtils.substringAfter(path, "/"), "/"), defaultLocale));
+        URLResolver urlResolver = new URLResolver(request.getPathInfo(), StringUtils.EMPTY);
         try {
-            Query query = getQuery(request, response, workspace, locale);
+            Query query = getQuery(request, response, urlResolver.getWorkspace(), urlResolver.getLocale());
             if (query == null) {
                 return;
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Executing " + query.getLanguage() + " for workspace '" + workspace + "' and locale '"
-                        + locale + "'. Statement: " + query.getStatement());
+                logger.debug("Executing " + query.getLanguage() + " for workspace '" + urlResolver.getWorkspace() + "' and locale '"
+                        + urlResolver.getLocale() + "'. Statement: " + query.getStatement());
             }
             writeResults(query.execute(), request, response, query.getLanguage());
         } catch (IllegalArgumentException e) {
@@ -347,21 +339,6 @@ public class Find extends HttpServlet implements Controller {
     public void setDefaultLimit(int defaultLimit) {
         this.defaultLimit = defaultLimit;
     }
-
-    /**
-     * @param defaultLocale the defaultLocale to set
-     */
-    public void setDefaultLocale(String defaultLocale) {
-        this.defaultLocale = defaultLocale;
-    }
-
-    /**
-     * @param defaultWorkspace the defaultWorkspace to set
-     */
-    public void setDefaultWorkspace(String defaultWorkspace) {
-        this.defaultWorkspace = defaultWorkspace;
-    }
-
 
     public boolean isDefaultRemoveDuplicatePropertyValues() {
         return defaultRemoveDuplicatePropertyValues;

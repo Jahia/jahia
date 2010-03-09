@@ -372,6 +372,7 @@
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                         	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                             <property name="priority" value="35" />
+                            <property name="applyOnMainResource" value="true"/>                            
                             <property name="handlers">
                             	<list>
                             		<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer"/>

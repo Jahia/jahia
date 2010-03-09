@@ -25,6 +25,9 @@
             	<entry key="/login">
             		<bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
             	</entry>
+                <entry key="/initializers/**">
+            		<bean name="org.jahia.bin.Initializers" class="org.jahia.bin.Initializers"/>
+            	</entry>
             	<entry key="/logout">
             		<bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>

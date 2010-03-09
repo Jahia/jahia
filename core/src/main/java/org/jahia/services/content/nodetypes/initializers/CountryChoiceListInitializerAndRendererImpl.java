@@ -72,6 +72,14 @@ public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListIn
     }
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException {
-        return new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(context.getMainResource().getLocale());
+        String rendering;
+        if(propertyWrapper.isMultiple()) {
+            rendering = new Locale("en", propertyWrapper.getValues()[0].getString()).getDisplayCountry(
+                context.getMainResource().getLocale());
+        } else {
+            rendering = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+                context.getMainResource().getLocale());
+        }
+        return rendering;
     }
 }

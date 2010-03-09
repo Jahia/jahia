@@ -46,6 +46,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     private String nodeType;
     private String name;
     private String var;
+    private String initializers;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
@@ -103,7 +105,16 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                 final List<ExtendedItemDefinition> extendedItemDefinitionList = type.getItems();
                 for (ExtendedItemDefinition definition : extendedItemDefinitionList) {
                     if (definition.getName().equals(name)) {
-                        final Map<String, String> map = definition.getSelectorOptions();
+                        Map<String, String> map;
+                        if(initializers==null) {
+                            map = definition.getSelectorOptions();
+                        } else {
+                            map = new LinkedHashMap<String, String>();
+                            String[] strings = initializers.split(",");
+                            for (String string : strings) {
+                                map.put(string, "");
+                            }
+                        }
                         if (map.size() > 0) {
                             final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
                             List<ChoiceListValue> listValues = null;
@@ -148,7 +159,11 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     public void setVar(String var) {
         this.var = var;
     }
-    
+
+    public void setInitializers(String initializers) {
+        this.initializers = initializers;
+    }
+
     @Override
     protected void resetState() {
         name = null;

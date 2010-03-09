@@ -418,7 +418,14 @@
         <attribute>
             <description>The name of the property you want to find in the node</description>
             <name>name</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The list of initalizers you wnat to use comma separated</description>
+            <name>initializers</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>

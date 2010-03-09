@@ -73,10 +73,24 @@
             <c:forEach
                     items="${jcr:getPropertiesAsStringFromNodeNameOfThatType(response,currentNode,'jnt:formElement')}"
                     var="entry">
-                <p>
-                    <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
-                </p>
+                <jcr:node var="def" path="${currentNode.path}/${entry.key}"/>
+                <c:if test="${jcr:isNodeType(def, 'jnt:automaticList')}">
+                    <jcr:nodeProperty node="${def}" name="type" var="type"/>
+                    <c:set var="renderers" value="${fn:split(type.string,'=')}"/>
+                    <c:if test="${fn:length(renderers) > 1}"><c:set var="renderer" value="${renderers[1]}"/></c:if>
+                    <c:if test="${not (fn:length(renderers) > 1)}"><c:set var="renderer" value=""/></c:if>
+                    <p><label>${entry.key}</label>&nbsp;<span>Value:<jcr:nodePropertyRenderer node="${response}"
+                                                                                              name="${entry.key}"
+                                                                                              renderer="${renderer}"/></span>
+                    </p>
+                </c:if>
+                <c:if test="${not jcr:isNodeType(def, 'jnt:automaticList')}">
+                    <p>
+                        <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
+                    </p>
+                </c:if>
             </c:forEach>
         </div>
     </c:forEach>
 </div>
+

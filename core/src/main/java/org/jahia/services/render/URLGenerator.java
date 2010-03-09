@@ -1,10 +1,7 @@
 package org.jahia.services.render;
 
 import org.jahia.api.Constants;
-import org.jahia.bin.Edit;
-import org.jahia.bin.Find;
-import org.jahia.bin.Logout;
-import org.jahia.bin.Render;
+import org.jahia.bin.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.sites.JahiaSite;
@@ -34,6 +31,7 @@ public class URLGenerator {
     private String preview;
     private String find;
     private String logout;
+    private String initializers;
 
     private String userProfile;
 
@@ -78,6 +76,7 @@ public class URLGenerator {
         preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
+        initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
         templatesPath = getContext() + "/templates";
     }
@@ -282,5 +281,9 @@ public class URLGenerator {
 
     public void setSiteURLPortOverride(int siteURLPortOverride) {
         this.siteURLPortOverride = siteURLPortOverride;
+    }
+
+    public String getInitializers() {
+        return initializers;
     }
 }

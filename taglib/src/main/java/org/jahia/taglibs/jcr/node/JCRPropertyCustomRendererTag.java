@@ -82,7 +82,7 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
         }
         try {
             Property property = node.getProperty(name);
-            if (property != null) {
+            if (property != null && !"".equals(renderer)) {
                 final ChoiceListRenderer renderer1 = ChoiceListRendererService.getInstance().getRenderers().get(
                         renderer);
                 RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",

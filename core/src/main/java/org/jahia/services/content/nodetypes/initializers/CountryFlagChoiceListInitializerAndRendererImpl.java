@@ -96,15 +96,21 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
-        final String displayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+        String value;
+        if(propertyWrapper.isMultiple()) {
+            value = propertyWrapper.getValues()[0].getString();
+        } else {
+            value = propertyWrapper.getValue().getString();
+        }
+        final String displayName = new Locale("en", value).getDisplayCountry(
                 context.getMainResource().getLocale());
-        final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
+        final String enDisplayName = new Locale("en", value).getDisplayCountry(
                 Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
         File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }
-        return "<img src=\""+context.getRequest().getContextPath()+flagPath+"\"><span>"+displayName+"</span>";
+        return "<img src=\""+context.getRequest().getContextPath()+flagPath+"\">&nbsp;<span>"+displayName+"</span>";
     }
 }

@@ -55,6 +55,10 @@ orderable
 [jnt:birthdate] > jnt:formElement,  jmix:formContent
 
 [jnt:addressBlock] > jnt:formElement,  jmix:formContent
+
+[jnt:automaticList] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+ - type (string, choicelist[choicelisttypes])
  
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable

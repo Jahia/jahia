@@ -47,6 +47,7 @@ public class Constants {
     public static final String NT_PREF = "nt";
     public static final String MIX_PREF = "mix";
 
+    public static final String JCR_ACTIVITY = "jcr:activity";
     public static final String JCR_AUTOCREATED = "jcr:autoCreated";
     public static final String JCR_BASEVERSION = "jcr:baseVersion";
     public static final String JCR_CHILD = "jcr:child";

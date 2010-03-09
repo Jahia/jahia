@@ -12,7 +12,9 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
+import javax.jcr.Node;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 
 /**
@@ -54,6 +56,14 @@ public class VersioningTest extends TestCase {
 
             JCRNodeWrapper stageRootNode = session.getNode(SITECONTENT_ROOT_NODE);
 
+            Node versioningTestActivity = session.getWorkspace().getVersionManager().createActivity("versioningTest");
+            Node previousActivity = session.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
+            if (previousActivity != null) {
+                logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" + versioningTestActivity.getName());
+            } else {
+                logger.debug("New activity=" + versioningTestActivity.getName());
+            }
+
             // get home page
             JCRNodeWrapper stageNode = stageRootNode.getNode("home");
 
@@ -78,7 +88,8 @@ public class VersioningTest extends TestCase {
             // check number of versions
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-            VersionIterator versions = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath()).getAllLinearVersions();
+            VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath());
+            VersionIterator versions = versionHistory.getAllLinearVersions();
             // VersionIterator versions = subPagePublishedNode.getVersionHistory().getAllLinearVersions();//getAllVersions();
             if (versions.hasNext()) {
                 Version v = versions.nextVersion();
@@ -93,7 +104,7 @@ public class VersioningTest extends TestCase {
                 Version v = versions.nextVersion();
                 JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(v.getName());
                 String versionTitle = versionNode.getPropertyAsString("jcr:title");
-                logger.debug("version number:"+v.getName() +", jcr:title: " + versionTitle);
+                logger.debug("version number:"+v.getName() +", jcr:title: " + versionTitle + " created=" + v.getCreated() + " label=" + v.getContainingHistory().getVersionLabels(v));
                 index++;
             }
             logger.debug("number of version: " + index);

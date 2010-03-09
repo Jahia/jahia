@@ -38,7 +38,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -71,7 +70,7 @@ public class WorkflowMessageBuilder extends
     public WorkflowMessageBuilder(JahiaUser subscriber,
                                   List<NotificationEvent> events) {
         super(subscriber, events);
-        retrieveActivtionJobData();
+        retrieveActivationJobData();
     }
 
     protected Link getJobReportLink() {
@@ -119,7 +118,7 @@ public class WorkflowMessageBuilder extends
         binding.setVariable("jobComment", jobComment);
     }
 
-    private void retrieveActivtionJobData() {
+    private void retrieveActivationJobData() {
         jobName = (String) ctx.getAttribute(BackgroundJob.class.getName()
                 + "_name");
         jobGroup = (String) ctx.getAttribute(BackgroundJob.class.getName()

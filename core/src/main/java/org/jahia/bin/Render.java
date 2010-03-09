@@ -450,7 +450,7 @@ public class Render extends HttpServlet implements Controller,
         performRedirect(url, urlResolver.getPath(), req, resp);
     }
 
-    protected void performRedirect(String url, String path,
+    public static void performRedirect(String url, String path,
             HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         String renderedURL = null;
@@ -628,5 +628,9 @@ public class Render extends HttpServlet implements Controller,
 
     public void setTemplateService(JahiaTemplateManagerService templateService) {
         this.templateService = templateService;
+    }
+
+    public static Set<String> getReservedParameters() {
+        return reservedParameters;
     }
 }

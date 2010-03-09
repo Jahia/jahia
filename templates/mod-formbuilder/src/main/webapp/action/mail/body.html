@@ -1,0 +1,18 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>A form ${formNode.getProperty("jcr:title").string} has been submitted</title>
+</head>
+<body>
+<h2>A form ${formNode.getProperty("jcr:title").string} has been submitted with those values :</h2>
+<ol>
+<% formDatas.each() {
+%>
+    <li><label>${it.key}</label>&nbsp;<span>${it.value}</span></li>
+<%}%>
+    </ol>
+<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Form Team")}</p>
+
+<hr>
+</body>
+</html>

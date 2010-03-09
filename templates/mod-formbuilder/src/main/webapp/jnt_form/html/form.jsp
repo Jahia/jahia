@@ -33,6 +33,16 @@
         });
     </script>
 </c:if>
+
+<jcr:node var="actionNode" path="${currentNode.path}/action"/>
+<template:module node="${actionNode}"/>
+<c:set var="action" value="${url.base}${currentNode.path}/*"/>
+<c:if test="${not empty actionNode}">
+    <c:if test="${actionNode.properties['j:action'].string != 'default'}">
+        <c:set var="action" value="${url.base}${currentNode.path}.${actionNode.properties['j:action'].string}.do"/>
+    </c:if>
+</c:if>
+
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
 
 
@@ -42,7 +52,7 @@
 
 <div class="form">
     <c:if test="${not renderContext.editMode}">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}">
+    <form action="${action}" method="post" id="${currentNode.name}">
         </c:if>
         <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -57,6 +67,10 @@
     </c:if>
 </div>
 <c:if test="${renderContext.editMode}">
+    <div style="border:chocolate solid medium; margin:5px; background:#EEEEEE;">
+        <span>Add your action here</span>
+        <template:module path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="true" />
+    </div>
     <div style="border:darkorange solid medium; margin:5px; background:#888888;">
         <span>Add your new form elements here</span>
         <template:module path="*"/>

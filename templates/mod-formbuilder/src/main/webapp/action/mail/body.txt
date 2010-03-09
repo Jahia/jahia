@@ -1,0 +1,9 @@
+A form ${formNode.getProperty("jcr:title").string} has been submitted.
+
+<% formDatas.each() {
+%>
+    ${it.key} ${it.value}
+<%}%>
+
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Form Team")}

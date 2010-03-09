@@ -59,11 +59,20 @@ orderable
 [jnt:automaticList] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
  - type (string, choicelist[choicelisttypes])
- 
+
+[jnt:formAction] > jnt:content
+
+[jnt:mailFormAction] > jnt:formAction, jmix:formContent
+ - j:action (string) = 'mail' autocreated hidden
+ - j:to (string,choicelist[users]) mandatory
+
+[jnt:defaultFormAction] > jnt:formAction, jmix:formContent
+ - j:action (string) = 'default' autocreated hidden
+
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable
- - j:action (string)
  - j:intro (string)
+ + action (jnt:formAction)
  + * (jnt:formElement)
  + * (jnt:responseToForm)
 

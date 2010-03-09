@@ -60,6 +60,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
@@ -146,6 +147,20 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     public MessageBuilder(JahiaUser subscriber, int siteId) {
         this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber),
                 siteId, Jahia.getThreadParamBean());
+    }
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param subscriber
+     *            the subscriber information
+     * @param siteId
+     *            the site ID
+     */
+    public MessageBuilder(JahiaUser subscriber, int siteId,String templatePackageName) {
+        this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber),
+                siteId, Jahia.getThreadParamBean());
+        this.templatePackageName = templatePackageName;
     }
 
     /**
@@ -325,6 +340,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     }
 
     protected void populateBinding(Binding binding) {
+        Jahia.setThreadParamBean(ctx);
+        JCRSessionFactory.getInstance().setCurrentUser(ctx.getTheUser());
         binding.setVariable("subscriber", new Subscriber(UserPreferencesHelper
                 .getFirstName(subscriber), UserPreferencesHelper
                 .getLastName(subscriber), UserPreferencesHelper

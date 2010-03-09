@@ -158,6 +158,10 @@ public class NodeWrapper implements Updateable {
         return results;
     }
 
+    public PropertyWrapper getProperty(String propertyName) throws RepositoryException {
+        return new PropertyWrapper(this,node.getProperty(propertyName));
+    }
+
     public List<String> getTypes() throws RepositoryException {
         List<String> r = new ArrayList<String>();
         recurseOnTypes(r,node.getPrimaryNodeType());

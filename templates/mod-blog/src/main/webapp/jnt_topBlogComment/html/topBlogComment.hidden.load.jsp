@@ -5,7 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<c:if test="${currentNode.properties['j:limit'].long gt 0}">
     <jcr:sql var="result"
              sql="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${currentNode.parent.path}']) order by comments.[jcr:lastModified] desc"/>
 
@@ -15,5 +14,3 @@
     <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
     <c:set var="listTotalSize" value="${end}" scope="request"/>
     <c:set var="forcedTemplate" value="hidden.comment.short" scope="request"/>
-</c:if>
-${fn:length(result.nodes)} -  ${currentNode.parent.parent.path}

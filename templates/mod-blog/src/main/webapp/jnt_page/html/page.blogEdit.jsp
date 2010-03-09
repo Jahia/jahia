@@ -62,7 +62,6 @@
                             alert('you must fill the title ');
                             return false;
                         }
-                        alert(noAccent(document.blogPost.elements['jcr:title'].value.replace(' ','')));
                         document.blogPost.action = '${currentNode.name}/'+noAccent(document.blogPost.elements['jcr:title'].value.replace(' ',''));
                         document.blogPost.submit();
                     "

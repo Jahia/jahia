@@ -68,10 +68,11 @@
     </c:if>
 </div>
 <c:if test="${renderContext.editMode}">
-    <div style="border:chocolate solid medium; margin:5px; background:#EEEEEE;">
+    <div class="addaction">
         <span>Add your action here</span>
         <template:module path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="true" />
     </div>
+    <div class="addelements">
         <span>Add your new form elements here</span>
         <template:module path="*"/>
     </div>

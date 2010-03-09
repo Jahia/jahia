@@ -44,6 +44,6 @@
     });
 </script>
 <p class="field">
-    <label for="${currentNode.name}">${props.label}</label>
+    <label for="${currentNode.name}">${currentNode.properties.label.string}</label>
     <input type="text" id="${currentNode.name}" name="${currentNode.name}" value=""/>
 </p>

@@ -3,7 +3,7 @@
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
 
 <p class="field">
-    <label for="${currentNode.name}">${props.label}</label>
+    <label class="left" for="${currentNode.name}">${props.label}</label>
     <textarea type="text" name="${currentNode.name}" cols="${props.cols}" rows="${props.rows}"/> ${props.defaultValue}
     </textarea>
 </p>

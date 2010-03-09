@@ -18,19 +18,21 @@
     </script>
 </c:if>
 <p class="field">
-<label>${props.label}:</label>
-<input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${props.size}"
+<label class="left">${props.label}</label>
+<input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${props.maxLength}" size="${props.size}"
        value="<c:if test="${empty props.mask}">${props.defaultValue}</c:if>"/>
 <c:if test="${renderContext.editMode}">
+<div class="formMarginLeft">
     <p>List of validation element</p>
     <ol>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElementValidation')}" var="formElement" varStatus="status">
         <li><template:module node="${formElement}" forcedTemplate="edit"/></li>
     </c:forEach>
     </ol>
-    <div style="border:darksalmon solid medium; margin:5px; background:#888888;">
+        <div class="addvalidation">
         <span>Add your validation elements here</span>
         <template:module path="*"/>
     </div>
+</div>
 </c:if>
 </p>

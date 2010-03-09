@@ -13,6 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<template:addResources type="css" resources="formbuilder.css"/>
 <c:if test="${not renderContext.editMode}">
     <script>
         $(document).ready(function() {
@@ -50,7 +51,7 @@
     ${currentNode.propertiesAsString['j:intro']}
 </div>
 
-<div class="form">
+<div class="Form FormBuilder">
     <c:if test="${not renderContext.editMode}">
     <form action="${action}" method="post" id="${currentNode.name}">
         </c:if>
@@ -71,7 +72,6 @@
         <span>Add your action here</span>
         <template:module path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="true" />
     </div>
-    <div style="border:darkorange solid medium; margin:5px; background:#888888;">
         <span>Add your new form elements here</span>
         <template:module path="*"/>
     </div>

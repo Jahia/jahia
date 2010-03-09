@@ -15,7 +15,7 @@
 
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
 
-<p class="field">
+<div class="formMarginLeft">
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
     <input type="checkbox" name="${currentNode.name}" id="${currentNode.name}" value="${option.properties.value.string}"/>
     <label for="${currentNode.name}">${option.properties.label.string}</label>
@@ -33,9 +33,9 @@
         <li><template:module node="${formElement}" forcedTemplate="edit"/></li>
     </c:forEach>
     </ol>
-    <div style="border:darksalmon solid medium; margin:5px; background:#aaaaaa;">
+    <div class="addvalidation">
         <span>Add your options/validations elements here</span>
         <template:module path="*"/>
     </div>
 </c:if>
-</p>
+</div>

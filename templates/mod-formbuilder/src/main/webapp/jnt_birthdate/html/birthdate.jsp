@@ -3,7 +3,7 @@
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
 
 
-<p class="field">
+<div class="formMarginLeft">
           <select name="year}">
               <option>Year</option>
               <option>1950</option>
@@ -78,4 +78,4 @@
               <option>30</option>
               <option>31</option>
           </select>
-</p>
+</div>

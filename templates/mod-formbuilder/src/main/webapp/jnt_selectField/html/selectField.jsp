@@ -17,13 +17,14 @@
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
 
 <p class="field">
-<label for="${currentNode.name}">${props.label}</label>
+<label class="left" for="${currentNode.name}">${props.label}</label>
 <select name="${currentNode.name}">
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
         <option value="${option.properties.value.string}">${option.properties.label.string}</option>
     </c:forEach>
 </select>
 <c:if test="${renderContext.editMode}">
+<div class="formMarginLeft">
     <p>List of options</p>
     <ol>
         <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
@@ -36,9 +37,10 @@
         <li><template:module node="${formElement}" forcedTemplate="edit"/></li>
     </c:forEach>
     </ol>
-    <div style="border:darksalmon solid medium; margin:5px; background:#aaaaaa;">
+        <div class="addvalidation">
         <span>Add your options/validations elements here</span>
         <template:module path="*"/>
     </div>
+</div>
 </c:if>
 </p>

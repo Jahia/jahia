@@ -6,6 +6,7 @@
 <template:addResources type="css" resources="faq.css"/>
 
 <div class="summary faqSummary">
+    <h3>Summary</h3>
     <ol>
         <c:forEach items="${currentNode.children}" var="subchild">
             <li><template:module node="${subchild}" template="summary" /></li>
@@ -17,6 +18,7 @@
 </div>
 
 <div class="faqList">
+    <h3>Answers</h3>
     <ol>
         <c:forEach items="${currentNode.children}" var="subchild">
             <li><template:module node="${subchild}"/></li>

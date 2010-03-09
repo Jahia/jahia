@@ -43,6 +43,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -82,21 +83,37 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
         }
         try {
             Property property = node.getProperty(name);
-            if (property != null && !"".equals(renderer)) {
-                final ChoiceListRenderer renderer1 = ChoiceListRendererService.getInstance().getRenderers().get(
-                        renderer);
-                RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
-                                                                                       PageContext.REQUEST_SCOPE);
-                if (var != null) {
-                    final Map<String, Object> map = renderer1.getObjectRendering(renderContext,
-                                                                                 (JCRPropertyWrapper) property);
-                    pageContext.setAttribute(var, map);
+            if (property != null) {
+                if (!"".equals(renderer)) {
+                    final ChoiceListRenderer renderer1 = ChoiceListRendererService.getInstance().getRenderers().get(
+                            renderer);
+                    RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
+                                                                                           PageContext.REQUEST_SCOPE);
+                    if (var != null) {
+                        final Map<String, Object> map = renderer1.getObjectRendering(renderContext,
+                                                                                     (JCRPropertyWrapper) property);
+                        pageContext.setAttribute(var, map);
 
+                        returnValue = EVAL_BODY_INCLUDE;
+                    } else {
+                        pageContext.getOut().print(renderer1.getStringRendering(renderContext,
+                                                                                (JCRPropertyWrapper) property));
+
+                    }
+                } else if (var != null) {
                     returnValue = EVAL_BODY_INCLUDE;
+                    if (property.getDefinition().isMultiple()) {
+                        pageContext.setAttribute(var, property.getValues());
+                    } else {
+                        pageContext.setAttribute(var, property.getValue());
+                    }
+                } else if (!property.getDefinition().isMultiple()) {
+                    pageContext.getOut().print(property.getValue().getString());
                 } else {
-                    pageContext.getOut().print(renderer1.getStringRendering(renderContext,
-                                                                            (JCRPropertyWrapper) property));
-
+                    Value[] values1 = property.getValues();
+                    for (Value value : values1) {
+                        pageContext.getOut().print(value.getString() + "<br/>");
+                    }
                 }
             }
         } catch (PathNotFoundException e) {
@@ -146,7 +163,7 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
     public void setRenderer(String renderer) {
         this.renderer = renderer;
     }
-    
+
     @Override
     protected void resetState() {
         name = null;

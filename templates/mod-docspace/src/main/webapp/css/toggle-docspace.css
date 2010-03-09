@@ -1,0 +1,3 @@
+a.BtMore { width:26px; height:26px; background:url(img/toggle/open.png); display:block; float:left }
+a.BtMore.active { background:url(img/toggle/close.png); }
+.block { clear:both; width:100%; }

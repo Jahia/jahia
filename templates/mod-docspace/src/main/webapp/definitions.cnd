@@ -1,0 +1,4 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:docspace] > jnt:content, mix:title, jmix:tagged
+- description (string, richtext)

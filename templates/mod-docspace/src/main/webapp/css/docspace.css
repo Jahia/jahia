@@ -1,0 +1,335 @@
+/******************************************************************************
+*  Template docspace
+******************************************************************************/
+
+/*Form search*/
+#bodywrapper #search-docspace{
+	background-color:#f4f4f4;
+	padding:16px ;
+}
+
+#bodywrapper #search-docspace p {
+	padding:0;
+	margin:0 0 0.2em 0;
+}
+#bodywrapper #search-docspace fieldset {
+	border:none
+}
+#bodywrapper #search-docspace input.docspacesearch{
+	width:70%;
+}
+#bodywrapper #search-docspace input{
+	display:inline
+}
+#bodywrapper #search-docspace input.searchbutton{
+	margin-left:-5px;
+	width:auto
+}
+/*Form create*/
+#bodywrapper .formCreateDocspace {
+	margin:0
+}
+#bodywrapper .formCreateDocspace fieldset {
+	border:none	
+}
+#bodywrapper .formCreateDocspace legend {
+	display:none	
+}
+#bodywrapper .formCreateDocspace p {
+	padding:0;
+	margin:0 0 0.2em 0;
+}
+#bodywrapper .formCreateDocspace input.field, #bodywrapper .formCreateDocspace textarea {
+	width:50%;
+}
+/******************************************************************************
+*  boxdocspace
+******************************************************************************/
+#bodywrapper div.boxdocspace {
+	position:relative;
+	clear:both;
+}
+
+#bodywrapper div.boxdocspace h3.boxdocspacetitleh3 {
+	margin-top:0;
+	padding-top:0;
+	display:inline
+}
+#bodywrapper div.boxdocspace-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	height:1%;
+
+}
+
+#bodywrapper .boxdocspace-inner .boxdocspace-inner-border {
+	border:1px solid #fff;
+	height:1%;
+	background-color:#fff;
+}
+/*boxdocspaceshadow*/
+#bodywrapper div.boxdocspaceshadow {
+	border:1px solid #cecece;
+}
+
+#bodywrapper div.boxdocspaceshadow div.boxdocspace-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	margin:-2px 0 0 -2px;
+}
+/*boxdocspace color*/
+#bodywrapper .boxdocspacegrey .boxdocspace-inner .boxdocspace-inner-border {
+	background-color:#e1e1e1
+}
+#bodywrapper .boxdocspaceyellow .boxdocspace-inner .boxdocspace-inner-border {
+	background-color:#FCF0BA
+}
+#bodywrapper .boxdocspacewhite .boxdocspace-inner {
+	background-color:#fff
+}
+#bodywrapper .boxdocspacewhite .boxdocspace-inner .boxdocspace-inner-border {
+	background-color:#fff
+}
+
+/*boxdocspace padding*/
+#bodywrapper .boxdocspacepadding16 .boxdocspace-inner .boxdocspace-inner-border {
+	padding:16px;
+}
+#bodywrapper .boxdocspacepadding10 .boxdocspace-inner .boxdocspace-inner-border {
+	padding:10px;
+}
+
+/*boxdocspace margin*/
+#bodywrapper .boxdocspacemarginbottom16{
+	margin-bottom:16px;
+}
+/*boxdocspace title*/
+#bodywrapper h4.boxdocspace-title {
+	background:#666666 url(img/boxdocspace-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*boxdocspace title*/
+#bodywrapper h4.boxdocspace-title2 {
+	background:#000000 url(img/boxdocspace-h4title2.png) repeat-x top right;
+	border:1px solid #000000;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*Table actions*/
+#bodywrapper div.TableActions{
+	background:#666666 url(img/boxdocspace-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	padding:5px;
+	margin:0;
+}
+#bodywrapper div.TableActions p{
+	padding:0;
+	margin:0;
+}
+
+/******************************************************************************
+*  docspacelist
+******************************************************************************/
+
+#bodywrapper ul.docspacelist  {
+	position:relative;
+	margin:0;
+	margin-bottom:20px;
+	list-style:none;
+	border:1px solid #ccc;
+	padding:0
+}
+#bodywrapper .docspacelist li {
+	background-color:#e1e1e1;
+	border-color:#fff #fff #ccc ;
+	border-style:solid;
+	border-width:1px;
+	padding:10px 20px;
+	margin:0;
+	list-style:none
+}
+#bodywrapper .docspacelist li p {
+	padding:0;
+}
+#bodywrapper .docspacelist li.last {
+	border-bottom-color:#fff;
+}
+#bodywrapper span.docspacelistinfo{
+	font-size:80%;
+	margin-left:0.2em;
+	font-weight:normal
+}
+#bodywrapper ul.docspacelist li:hover{
+	background-color:#eaeaea
+}
+#bodywrapper ul.docspacelist .docspacelistinfo2 {
+	margin:0;
+	padding:0;
+	list-style: none;
+	line-height:1.2em;
+	font-size:0.9em;
+	font-weight:normal
+}
+#bodywrapper ul.docspacelist a,
+#bodywrapper ul.docspacelist a:link,
+#bodywrapper ul.docspacelist a:visited {
+	text-decoration: none;
+}
+#bodywrapper ul.docspacelist a:hover,
+#bodywrapper ul.docspacelist a:active {
+	text-decoration:underline;
+}
+#bodywrapper a.adocspace {
+    background: url(img/docspace.png ) no-repeat scroll 0.2em 0em;
+	padding-left:24px;
+}
+/*docspacelistusers*/
+#bodywrapper ul.docspacelist  {
+	margin:0 0 10px 0;
+	padding:0;
+}
+#bodywrapper ul.docspacelistusers{
+	margin:0 0 10px 0;
+	padding:0;
+	height:240px;
+	border:1px solid #b9a99b;
+	display: block;
+	overflow-x: hidden;
+	overflow-y: auto;
+	overflow : -moz-scrollbars-vertical;
+	background-color:#fff
+}
+#bodywrapper .docspacelist li {
+	padding:2px 5px;
+}
+#bodywrapper .docspacedate,
+#bodywrapper .docspaceauthor{
+	line-height:1.2em;
+	font-size:0.8em;
+	font-weight:normal;
+}
+/*edit*/
+#bodywrapper .edit {
+	height: 26px;
+	width: 26px;
+	position:absolute;
+	top:-6px;
+	right:-6px;
+	background: url(img/edit.png) no-repeat top left;
+}
+#bodywrapper .edit a {
+	height: 26px;
+	width: 26px;
+	display:block
+}
+#bodywrapper .edit span {
+	text-indent:-9999px
+}
+
+#bodywrapper .tablemore {
+	padding:5px;
+	margin:5px;
+	background-color:#e3fbd0;
+	border: 1px solid #99cc66;
+}
+/******************************************************************************
+*  docspacelist
+******************************************************************************/
+
+#bodywrapper ul.docspacelistcomment  {
+	position:relative;
+	margin:0;
+	margin-bottom:20px;
+	list-style:none;
+	padding:0
+}
+#bodywrapper .docspacelistcomment li {
+	padding:10px;
+	margin:0;
+	list-style:none;
+	background: url(img/hr.png) repeat-x bottom left;
+}
+#bodywrapper .docspacelistcomment .itemImageLeft {
+	margin-right:20px
+}
+#bodywrapper .docspacelistcomment .itemImageRight {
+	margin-left:20px
+}
+
+#bodywrapper .docspacelistcomment li p {
+	padding:0;
+}
+#bodywrapper .docspacelistcomment li.last {
+	background:none;
+}
+
+#bodywrapper .docspacelistcomment .author {
+font-weight:bold
+}
+
+#bodywrapper .docspacelistcomment h5.title {
+display:inline;
+}
+#bodywrapper .docspacelistcomment li.docspaceitemversion {
+	background-color:#FCF0BA
+}
+#bodywrapper .docspacelistcomment li.docspaceitemsystem {
+	background-color:#e3fbd0
+}
+#bodywrapper .docspacelist li.last {
+	border-bottom-color:#fff;
+}
+/*FormDocspaceComment*/
+#bodywrapper .formdocspacecomment,#bodywrapper .formdocspaceupload{
+	margin:0;
+}
+#bodywrapper .formdocspacecomment fieldset{
+	border:none;
+	margin:0;
+	padding:0;
+}
+/*boxdocspace-thumb*/
+#bodywrapper .boxdocspace-thumb{
+	border:none;
+	width:146px;
+	height:128px;
+	display: block;
+	text-align:center;
+	float:left;
+	background-color:#fff;
+	border:1px solid #ccc;
+	overflow:hidden;
+	padding:10px;
+	margin:10px;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-moz-box-shadow: 0 1px 3px #ccc;
+	-webkit-box-shadow: 0 1px 3px #ccc;
+}
+#bodywrapper .itemImageCenter{
+	margin:0 auto;
+	width:82px
+}
+#bodywrapper div.addUserForm {
+	margin:2px 0 0 0;
+	font-size:0.8em
+}
+/*itemImageLeft*/
+#bodywrapper .itemImageLeft{
+	margin-bottom:10px;
+}

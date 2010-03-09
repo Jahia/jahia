@@ -27,7 +27,7 @@
                 return $.map(data, function(row) {
                     return {
                         data: row,
-                        value: "" + row["name"],
+                        value: "" + row["value"],
                         result: "" + row["name"]
                     }
                 });

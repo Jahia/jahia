@@ -3,4 +3,12 @@
 [jnt:blogContent] > jnt:content, mix:title, jmix:tagged, jmix:comments
  - text (string, richtext) i18n
 
+[jnt:topBlog] > jnt:content, jmix:list, jmix:queryContent
+ - j:limit (long)
+
+[jnt:topBlogContent] > jnt:content, jmix:list, jmix:queryContent
+ - j:limit (long)
+
+[jnt:topBlogComment] > jnt:content, jmix:list, jmix:queryContent
+ - j:limit (long)
 

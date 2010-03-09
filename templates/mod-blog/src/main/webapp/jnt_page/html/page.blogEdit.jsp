@@ -12,17 +12,19 @@
 <template:addResources type="css" resources="blog.css"/>
 
 <template:addWrapper name="hidden.blogWrapper"/>
-<template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $.each(['editContent'], function(index, element) {
-            if ($('#' + element).length > 0) {
-                $('label[for="' + element + '"]').hide();
-                CKEDITOR.replace(element, { toolbar : 'User'});
-            }
-        });
-    });
+    function noAccent(chaine) {
+       temp = chaine.replace(/[àâäá]/gi,"a");
+       temp = temp.replace(/[éèêë]/gi,"e");
+       temp = temp.replace(/[îï]/gi,"i");
+       temp = temp.replace(/[ôö]/gi,"o");
+       temp = temp.replace(/[ùûü]/gi,"u");
+       var t = "";
+       for (var i = 0;i<temp.length;i++) {
+           if (temp.charCodeAt(i) >47 && temp.charCodeAt(i) < 123) t +=temp.charAt(i);
+       }
+       return t;
+    }
 </script>
 <div class="grid_10  alpha omega">
 <form method="post" action="${currentNode.name}/" name="blogPost">
@@ -60,7 +62,8 @@
                             alert('you must fill the title ');
                             return false;
                         }
-                        document.blogPost.action = '${currentNode.name}/'+document.blogPost.elements['jcr:title'].value.replace(' ','');
+                        alert(noAccent(document.blogPost.elements['jcr:title'].value.replace(' ','')));
+                        document.blogPost.action = '${currentNode.name}/'+noAccent(document.blogPost.elements['jcr:title'].value.replace(' ',''));
                         document.blogPost.submit();
                     "
                     />

@@ -1,6 +1,6 @@
 <%@include file="../include/header.jspf" %>
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-    <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}">
+    <template:module node="${subchild}" template="${subNodesTemplate}" forcedTemplate="${forcedTemplate}" editable="${editable}">
         <c:if test="${not empty forcedSkin}">
             <template:param name="forcedSkin" value="${forcedSkin}"/>
         </c:if>

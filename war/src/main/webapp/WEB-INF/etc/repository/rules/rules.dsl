@@ -1,15 +1,12 @@
 [condition][]A file content has been modified=property : PropertyWrapper ( name == "jcr:data", contentnode : node ) and NodeWrapper ( name == "jcr:content" ) from contentnode and node : NodeWrapper () from contentnode.parent
 [condition][]A new node "{name}" is created=node : NodeWrapper ( name == "{name}")
 [condition][]A new node is created=node : NodeWrapper ( )
-[condition][]A node has been published=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "active", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
-[condition][]A node has been rollbacked to author=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "staging", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]A node is deleted=node : DeletedNodeWrapper ( )
 [condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]A property has been removed from a node=property : DeletedPropertyWrapper ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
-[condition][]A workflow state has changed for a node=property : PropertyWrapper ( language : name, state : stringValue, workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]The current user belongs to a group=g : Group (groupName : name) from user.groups
 [condition][]The current user has a property named {userproperty}=userProperty : UserProperty( name == "{userproperty}", propertyValue : value ) from user.properties
 [condition][]The node has a parent=parent : NodeWrapper () from node.parent
@@ -24,17 +21,10 @@
 [condition][]- it has the type {type}=node.types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it is in {path}=path matches "{path}/*"
-[condition][]- it is not a quick correction action=property.stringValue not matches ".*-quickEdit"
 [condition][]- its name is not {name}=name != "{name}"
-[condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"
-[condition][]- the language is {lang}=property.name == {lang}
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
-[condition][]- the new state is not {newState}=property.stringValue != {newState}
-[condition][]- the new state is {newState}=property.stringValue == {newState}
-[condition][]- the new state matches {newState}=property.stringValue matches {newState}
-[condition][]- the new state not matches {newState}=property.stringValue not matches {newState}
 [condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"

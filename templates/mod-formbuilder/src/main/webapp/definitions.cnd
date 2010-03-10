@@ -84,4 +84,12 @@ orderable
 
 [jnt:required] > jnt:formElementValidation,  jmix:formContent
 
-[jnt:captcha] > jnt:formElement,  jmix:formContent 
+[jnt:emailValidation] > jnt:formElementValidation,  jmix:formContent
+
+[jnt:dateValidation] > jnt:formElementValidation,  jmix:formContent
+
+[jnt:rangeValidation] > jnt:formElementValidation,  jmix:formContent
+ - min (long) mandatory
+ - max (long) mandatory
+
+[jnt:captcha] > jnt:formElement,  jmix:formContent

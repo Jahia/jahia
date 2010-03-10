@@ -41,6 +41,9 @@ public class JCRVersionService extends JahiaService {
             if (versionNode.hasProperty("j:revisionNumber")) {
                 versionRevisionNumber = versionNode.getProperty("j:revisionNumber").getLong();
                 VersionInfo versionInfo = new VersionInfo(v, versionRevisionNumber, "", false, v.getCreated().getTime());
+                if (versionList.contains(versionInfo)) {
+                    versionList.remove(versionInfo); // we remove to keep only the latest one.
+                }
                 versionList.add(versionInfo);
             }
         }

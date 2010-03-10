@@ -1,6 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-[jnt:latestPages] > jnt:content, jmix:list, jmix:queryContent
-- j:nbOfResult (long) = 0  autocreated
-- j:mode (string,choicelist[resourceBundle]) = 'site' < 'site','platform'
-- j:criteria (string,choicelist[resourceBundle]) = 'created' < 'created','lastModified'

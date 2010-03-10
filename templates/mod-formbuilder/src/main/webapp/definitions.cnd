@@ -14,6 +14,9 @@ orderable
 orderable
 + * (jnt:formElementValidation)
 
+[jnt:formButton] > jnt:content
+ orderable
+
 [jnt:responseToForm] > jnt:content,nt:unstructured
 
 [jnt:inputText] > jnt:formElement,  jmix:formContent
@@ -32,8 +35,9 @@ orderable
 [jnt:passwordField] > jnt:formElement,  jmix:formContent
  - label (string)
 
-[jnt:fieldset] > jnt:content mixin
+[jnt:fieldset] > jnt:content,  jmix:formContent
  - legend (string)
+ + * (jnt:formElement)
 
 [jnt:checkboxField] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
@@ -47,10 +51,10 @@ orderable
  - label (string) mandatory
  + * (jnt:formListElement)
 
-[jnt:submitButton] > jnt:formElement,  jmix:formContent
+[jnt:submitButton] > jnt:formButton,  jmix:formContent
  - label (string) mandatory
  
-[jnt:resetButton] > jnt:formElement,  jmix:formContent
+[jnt:resetButton] > jnt:formButton,  jmix:formContent
  - label (string) mandatory
 
 [jnt:birthdate] > jnt:formElement,  jmix:formContent
@@ -74,7 +78,8 @@ orderable
  orderable
  - j:intro (string)
  + action (jnt:contentList)
- + * (jnt:formElement)
+ + fieldsets (jnt:contentList)
+ + formButtons (jnt:contentList)
  + * (jnt:responseToForm)
 
 [jnt:required] > jnt:formElementValidation,  jmix:formContent 

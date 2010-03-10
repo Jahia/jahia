@@ -180,6 +180,9 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
+    <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">
+    </bean>
+    
     <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop" depends-on="DefaulJCRStoreProvider">
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="homeDir" value="WEB-INF/var/repository"/>

@@ -34,13 +34,16 @@
  - j:tags (weakreference, category[autoSelectParent=false]) multiple
  - j:newTag (string) hidden indexed=no
 
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable mixin
+[jmix:versionInfo] > jmix:metadata mixin
+- j:revisionNumber (long) protected onconflict=ignore
+
+[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo mixin
 
 //---------------------------------------------------------
 // Multi language
 //---------------------------------------------------------
 
-[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable
+[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo
   - * (undefined) multiple
   - * (undefined)
 

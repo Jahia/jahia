@@ -345,6 +345,8 @@ public class JCRPublicationService extends JahiaService {
                 }
                 node.setProperty("j:lastPublished", c);
                 node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+
+            incrementRevisionNumber(node);
 //            }
         }
         if (modified.isEmpty()) {
@@ -433,6 +435,18 @@ public class JCRPublicationService extends JahiaService {
                 doClone(node, prunedSourcePath, sourceSession, destinationSession);
             }
         }
+    }
+
+    private long incrementRevisionNumber(Node node) throws RepositoryException {
+        if (!node.isNodeType("jmix:versionInfo")) {
+            return 0;
+        }
+        long currentRevision = 0;
+        if (node.hasProperty("j:revisionNumber")) {
+            currentRevision = node.getProperty("j:revisionNumber").getLong();
+        }
+        node.setProperty("j:revisionNumber", currentRevision+1);
+        return currentRevision+1; 
     }
 
     void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
@@ -597,6 +611,7 @@ public class JCRPublicationService extends JahiaService {
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
+        incrementRevisionNumber(node);
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();

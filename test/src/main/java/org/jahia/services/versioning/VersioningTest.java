@@ -9,6 +9,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
@@ -16,6 +17,7 @@ import javax.jcr.Node;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
+import java.util.List;
 
 /**
  * Unit test to test version listing created during publication
@@ -69,14 +71,13 @@ public class VersioningTest extends TestCase {
 
             session.checkout(stageNode);
             JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-            stagedSubPage.setProperty("jcr:title", "title");
+            stagedSubPage.setProperty("jcr:title", "title0");
             session.save();
 
             // publish it
             jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
-
-            for (int i = 0; i < 10; i++) {
+            for (int i = 1; i < 11; i++) {
                 session.checkout(stagedSubPage);
                 stagedSubPage.setProperty("jcr:title", "title" + i);
                 session.save();
@@ -88,42 +89,23 @@ public class VersioningTest extends TestCase {
             // check number of versions
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-            VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath());
-            VersionIterator versions = versionHistory.getAllLinearVersions();
-            // VersionIterator versions = subPagePublishedNode.getVersionHistory().getAllLinearVersions();//getAllVersions();
-            if (versions.hasNext()) {
-                Version v = versions.nextVersion();
-                // the first is the root version, which has no properties, so we will ignore it.
-            }
-            if (versions.hasNext()) {
-                Version v = versions.nextVersion();
-                // we also ignore the version we created before creating the 10 versions.
-            }
+            List<VersionInfo> versionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
             int index = 0;
-            while (versions.hasNext()) {
-                Version v = versions.nextVersion();
-                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(v.getName());
+            for (VersionInfo curVersionInfo : versionInfos) {
+                String versionName = curVersionInfo.getVersion().getName();
+                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
                 String versionTitle = versionNode.getPropertyAsString("jcr:title");
-                logger.debug("version number:"+v.getName() +", jcr:title: " + versionTitle + " created=" + v.getCreated() + " label=" + v.getContainingHistory().getVersionLabels(v));
+                String title = "title" + index;
+                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getDate() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+                assertEquals(title, versionTitle);
                 index++;
             }
             logger.debug("number of version: " + index);
-            assertEquals(10, index);
-
-            versions = session.getWorkspace().getVersionManager().getVersionHistory(subPagePublishedNode.getPath()).getAllLinearVersions();
-            versions.nextVersion();
-            versions.nextVersion();
-            for (int i = 0; i < 10; i++) {
-                String title = "title" + i;
-                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(versions.nextVersion().getName());
-                String versionTitle = versionNode.getPropertyAsString("jcr:title");
-                logger.debug("versionTitle: " + versionTitle);
-                assertEquals(title, versionTitle);
-            }
-
+            assertEquals(11, index);
 
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
+            throw ex;
         }
     }
 

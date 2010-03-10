@@ -77,14 +77,13 @@
             <c:if test="${renderContext.editMode}">
         </div>
         </c:if>
-        <c:if test="${renderContext.editMode}">
-        <div class="addbuttons">
+        <div class="<c:if test="${not renderContext.editMode}">divButton</c:if><c:if test="${renderContext.editMode}">addbuttons</c:if>">
+            <c:if test="${renderContext.editMode}">
             <span>Add your new form buttons here</span>
             </c:if>
             <template:area path="${currentNode.path}/formButtons" nodeTypes="jnt:formButton" editable="true"/>
-            <c:if test="${renderContext.editMode}">
         </div>
-        </c:if>
+            
         <c:if test="${not renderContext.editMode}">
         <div class="validation"></div>
     </form>

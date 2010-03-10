@@ -3,36 +3,51 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
-       
+
+    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg type="java.util.Properties">
+                    <value>kaptcha.border=yes</value>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
-            	<entry key="/render/**">
-            		<bean name="org.jahia.bin.Render" class="org.jahia.bin.Render">
+                <entry key="/render/**">
+                    <bean name="org.jahia.bin.Render" class="org.jahia.bin.Render">
                         <property name="loggingService" ref="loggingService"/>
                         <property name="templateService" ref="JahiaTemplateManagerService"/>
-            		</bean>
-            	</entry>
-            	<entry key="/edit/**">
-            		<bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit">
+                    </bean>
+                </entry>
+                <entry key="/edit/**">
+                    <bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit">
                         <property name="loggingService" ref="loggingService"/>
                         <property name="templateService" ref="JahiaTemplateManagerService"/>
-            		</bean>
-            	</entry>
+                    </bean>
+                </entry>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find"/>
                 </entry>
-            	<entry key="/login">
-            		<bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
-            	</entry>
+                <entry key="/login">
+                    <bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
+                </entry>
                 <entry key="/initializers/**">
-            		<bean name="org.jahia.bin.Initializers" class="org.jahia.bin.Initializers"/>
-            	</entry>
-            	<entry key="/logout">
-            		<bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
+                    <bean name="org.jahia.bin.Initializers" class="org.jahia.bin.Initializers"/>
+                </entry>
+                <entry key="/logout">
+                    <bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                     </bean>
-            	</entry>
+                </entry>
+                <entry key="/captcha">
+                    <bean name="org.jahia.bin.Captcha" class="org.jahia.bin.Captcha">
+                        <property name="captchaProducer" ref="captchaProducer"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>

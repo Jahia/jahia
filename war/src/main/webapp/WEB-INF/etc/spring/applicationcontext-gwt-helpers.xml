@@ -20,7 +20,6 @@
 
     <bean name="ContentManagerHelper" class="org.jahia.ajax.gwt.helper.ContentManagerHelper" >
         <property name="navigation"  ref="NavigationHelper"/>
-        <property name="captchaService"  ref="captchaService"/>
         <property name="importExport"  ref="ImportExportService"/>
         <property name="jcrService"  ref="JCRStoreService"/>
         <property name="versioning"  ref="VersioningHelper"/>

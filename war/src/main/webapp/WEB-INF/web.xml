@@ -632,14 +632,6 @@
     </servlet>
 
     <!-- ====================================================================== -->
-    <!-- J C A P T C H A   S E R V L E T                                        -->
-    <!-- ====================================================================== -->
-    <servlet>
-        <servlet-name>jcaptcha</servlet-name>
-        <servlet-class>org.jahia.bin.ImageCaptchaServlet</servlet-class>
-        <load-on-startup>11</load-on-startup>
-    </servlet>
-    <!-- ====================================================================== -->
     <!-- T O K E N   G E N E R A T O R                                       -->
     <!-- ====================================================================== -->
     <servlet>
@@ -940,11 +932,6 @@
     <servlet-mapping>
         <servlet-name>ViewCacheServlet</servlet-name>
         <url-pattern>/viewCache</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>jcaptcha</servlet-name>
-        <url-pattern>/jcaptcha</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

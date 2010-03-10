@@ -32,6 +32,7 @@ public class URLGenerator {
     private String find;
     private String logout;
     private String initializers;
+    private String captcha;
 
     private String userProfile;
 
@@ -77,7 +78,7 @@ public class URLGenerator {
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-
+        captcha = getContext() + Captcha.getCaptchaServletPath();
         templatesPath = getContext() + "/templates";
     }
 
@@ -285,5 +286,9 @@ public class URLGenerator {
 
     public String getInitializers() {
         return initializers;
+    }
+
+    public String getCaptcha() {
+        return captcha;
     }
 }

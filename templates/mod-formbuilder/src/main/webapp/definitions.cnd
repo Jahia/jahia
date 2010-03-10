@@ -82,4 +82,6 @@ orderable
  + formButtons (jnt:contentList)
  + * (jnt:responseToForm)
 
-[jnt:required] > jnt:formElementValidation,  jmix:formContent 
+[jnt:required] > jnt:formElementValidation,  jmix:formContent
+
+[jnt:captcha] > jnt:formElement,  jmix:formContent 

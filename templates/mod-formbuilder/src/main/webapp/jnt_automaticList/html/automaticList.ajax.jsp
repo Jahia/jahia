@@ -45,5 +45,5 @@
 </script>
 <p class="field">
     <label for="${currentNode.name}">${currentNode.properties.label.string}</label>
-    <input type="text" id="${currentNode.name}" name="${currentNode.name}" value=""/>
+    <input type="text" id="${currentNode.name}" name="${currentNode.name}" value="<c:if test="${not empty sessionScope.formError}">${sessionScope.formDatas[currentNode.name][0]}</c:if>"/>
 </p>

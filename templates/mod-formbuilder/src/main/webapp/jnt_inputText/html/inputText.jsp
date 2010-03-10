@@ -20,7 +20,7 @@
 <p class="field">
 <label class="left">${props.label}</label>
 <input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${props.maxLength}" size="${props.size}"
-       value="<c:if test="${empty props.mask}">${props.defaultValue}</c:if>"/>
+       value="<c:if test="${not empty sessionScope.formError}">${sessionScope.formDatas[currentNode.name][0]}</c:if><c:if test="${empty props.mask and empty sessionScope.formError}">${props.defaultValue}</c:if>"/>
 <c:if test="${renderContext.editMode}">
 <div class="formMarginLeft">
     <p>List of validation element</p>

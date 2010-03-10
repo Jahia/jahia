@@ -17,7 +17,15 @@
 
 <div class="formMarginLeft">
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
-    <input type="checkbox" name="${currentNode.name}" id="${currentNode.name}" value="${option.properties.value.string}"/>
+    <c:set var="isChecked" value="false"/>
+    <c:if test="${not empty sessionScope.formError}">
+    <c:forEach items="${sessionScope.formDatas[currentNode.name]}" var="checked">
+        <c:if test="${option.properties.value.string eq checked}">
+            <c:set var="isChecked" value="true"/>
+        </c:if>
+        </c:forEach>
+    </c:if>
+    <input type="checkbox" name="${currentNode.name}" id="${currentNode.name}" value="${option.properties.value.string}" <c:if test="${isChecked eq 'true'}">checked="true"</c:if>/>
     <label for="${currentNode.name}">${option.properties.label.string}</label>
 </c:forEach>
 <c:if test="${renderContext.editMode}">

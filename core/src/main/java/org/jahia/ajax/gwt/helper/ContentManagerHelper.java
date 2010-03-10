@@ -53,8 +53,6 @@ import javax.jcr.*;
 
 import java.util.*;
 
-import com.octo.captcha.service.image.ImageCaptchaService;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -69,17 +67,12 @@ public class ContentManagerHelper {
     private JCRStoreService jcrService;
     private JahiaSitesService sitesService;
     private ImportExportBaseService importExport;
-    private ImageCaptchaService captchaService;
 
     private NavigationHelper navigation;
     private PropertiesHelper properties;
     private VersioningHelper versioning;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
-
-    public void setCaptchaService(ImageCaptchaService captchaService) {
-        this.captchaService = captchaService;
-    }
 
     public void setImportExport(ImportExportBaseService importExport) {
         this.importExport = importExport;
@@ -247,7 +240,7 @@ public class ContentManagerHelper {
         if (logger.isDebugEnabled()) logger.debug("j_captcha_response: " + captcha);
         boolean isResponseCorrect = false;
         try {
-            isResponseCorrect = this.captchaService.validateResponseForID(captchaId, captcha);
+            isResponseCorrect = true;
             if (logger.isDebugEnabled()) logger.debug("CAPTCHA - isResponseCorrect: " + isResponseCorrect);
         } catch (final Exception e) {
             //should not happen, may be thrown if the id is not valid

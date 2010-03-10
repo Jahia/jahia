@@ -100,6 +100,7 @@ public class Render extends HttpServlet implements Controller,
     public static final String REDIRECT_TO = "redirectTo";
     public static final String METHOD_TO_CALL = "methodToCall";
     public static final String AUTO_CHECKIN = "autoCheckin";
+    public static final String CAPTCHA = "captcha";
 
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
@@ -112,6 +113,7 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters.add(REDIRECT_TO);
         reservedParameters.add(METHOD_TO_CALL);
         reservedParameters.add(AUTO_CHECKIN);
+        reservedParameters.add(CAPTCHA);
     }
 
     private transient ServletConfig servletConfig;
@@ -275,6 +277,21 @@ public class Render extends HttpServlet implements Controller,
     protected void doPost(HttpServletRequest req, HttpServletResponse resp,
             RenderContext renderContext, URLResolver urlResolver)
             throws Exception {
+        String kaptchaExpected = (String) req.getSession().getAttribute(
+                com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
+        String kaptchaReceived = req.getParameter(CAPTCHA);
+        req.getSession().removeAttribute("formDatas");
+        if (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected)) {
+            Map<String, String[]> formDatas = new HashMap<String, String[]>();
+            Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
+            for (Map.Entry<String, String[]> entry : set) {
+                formDatas.put(entry.getKey(),entry.getValue());
+            }
+            req.getSession().setAttribute("formDatas",formDatas);
+            req.getSession().setAttribute("formError","Your captcha is invalid");
+            performRedirect("",urlResolver.getPath(),req, resp);
+            return;
+        }
         if (checkForUploadedFiles(resp, urlResolver.getWorkspace(), urlResolver
                 .getLocale())) {
             return;

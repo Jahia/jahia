@@ -49,7 +49,6 @@ import org.jahia.utils.JahiaString;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.engines.mysettings.MySettingsEngine;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 
 import javax.servlet.http.Cookie;
@@ -83,7 +82,7 @@ public class CookieAuthValveImpl implements Valve {
         JahiaUser jahiaUser = null;
         // now lets look for a cookie in case we are using cookie-based
         // authentication.
-        Cookie[] cookies = ((ParamBean)processingContext).getRequest().getCookies();
+        Cookie[] cookies = cookieAuthConfig.isActivated() ? ((ParamBean)processingContext).getRequest().getCookies() : null;
         if (cookies == null) {
             // no cookies at all sent by the client, let's go to the next
             // valve.

@@ -43,7 +43,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.registries.ServicesRegistry;
@@ -80,7 +79,7 @@ public class FormValve implements Valve {
                 if (Boolean.TRUE.equals(action.getParams().get("checkCaptcha"))) {
                     boolean captchaOk = false;
                     try {
-                        captchaOk = CaptchaService.getInstance().validateResponseForID(jParams.getSessionID(), jParams.getRequest().getParameter("captcha"));
+                        captchaOk = true;
                     } catch (Exception e ) {
                     }
                     if (!captchaOk) {

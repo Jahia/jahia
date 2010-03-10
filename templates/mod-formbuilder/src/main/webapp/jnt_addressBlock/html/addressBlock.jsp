@@ -26,9 +26,6 @@
         <td align="right"><label for="country">Country:</label></td>
         <td align="right"><input type="text" maxlength="40" size="6" name="country"></td>
 	</tr>
-	<tr>
-	  <td colspan="4" align="right"><input class="button" type="submit" value="Submit"/></td>
-	  </tr>
 </table>
 </form>
 </div>

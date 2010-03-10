@@ -281,7 +281,7 @@ public class Render extends HttpServlet implements Controller,
                 com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
         String kaptchaReceived = req.getParameter(CAPTCHA);
         req.getSession().removeAttribute("formDatas");
-        if (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected)) {
+        if (kaptchaExpected!= null && (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected))) {
             Map<String, String[]> formDatas = new HashMap<String, String[]>();
             Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
             for (Map.Entry<String, String[]> entry : set) {

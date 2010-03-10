@@ -1,0 +1,40 @@
+<webapp-structure>
+  <registeredFiles>
+    <entry>
+      <string>currentBuild</string>
+      <path-set>
+        <pathsSet class="linked-hash-set">
+          <string>definitions.cnd</string>
+          <string>jnt_latestPages/html/latestPages.hidden.load.jsp</string>
+          <string>resources/latestPages.properties</string>
+          <string>resources/latestPages_fr.properties</string>
+          <string>WEB-INF/web.xml</string>
+        </pathsSet>
+      </path-set>
+    </entry>
+  </registeredFiles>
+  <dependenciesInfo>
+    <org.apache.maven.plugin.war.util.DependencyInfo>
+      <dependency>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-impl</artifactId>
+        <version>6.5-SNAPSHOT</version>
+        <type>jar</type>
+        <scope>provided</scope>
+        <exclusions/>
+        <optional>false</optional>
+      </dependency>
+    </org.apache.maven.plugin.war.util.DependencyInfo>
+    <org.apache.maven.plugin.war.util.DependencyInfo>
+      <dependency>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-taglib</artifactId>
+        <version>6.5-SNAPSHOT</version>
+        <type>jar</type>
+        <scope>provided</scope>
+        <exclusions/>
+        <optional>false</optional>
+      </dependency>
+    </org.apache.maven.plugin.war.util.DependencyInfo>
+  </dependenciesInfo>
+</webapp-structure>

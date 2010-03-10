@@ -20,7 +20,7 @@
 	<jcr:nodeProperty node="${currentNode}" name='j:criteria' var="criteria"/>
 
 	<%-- Display title --%>
-	<h2>The ${nbOfResult.long}&nbsp;<fmt:message key='${criteria.string}' /> on the ${mode.string}</h2>
+	<h3>The ${nbOfResult.long}&nbsp;<fmt:message key='${criteria.string}' /> on the ${mode.string}</h3>
 
 	<%-- Execute the query, depending on the selected mode --%>
 	<c:if test="${mode.string eq 'site'}">

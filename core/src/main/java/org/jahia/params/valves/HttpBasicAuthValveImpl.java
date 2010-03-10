@@ -49,7 +49,6 @@ import javax.servlet.http.HttpServletRequest;
  * User: toto
  * Date: 15 d�c. 2004
  * Time: 13:03:08
- * To change this template use File | Settings | File Templates.
  */
 public class HttpBasicAuthValveImpl implements Valve {
     private static final transient Logger logger = Logger
@@ -64,7 +63,9 @@ public class HttpBasicAuthValveImpl implements Valve {
         String auth = request.getHeader("Authorization");
         if (auth != null) {
             try {
-                logger.debug("Header found : "+auth);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Header found : "+auth);
+                }
                 auth = auth.substring(6).trim();
                 Base64 decoder = new Base64();
                 String cred = new String(decoder.decode(auth.getBytes("UTF-8")));
@@ -77,7 +78,9 @@ public class HttpBasicAuthValveImpl implements Valve {
                 jahiaUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(site.getID(), user);
                 if (jahiaUser != null) {
                     if (jahiaUser.verifyPassword(pass)) {
-                        logger.debug("User " + user + " authenticated.");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("User " + user + " authenticated.");
+                        }
                         processingContext.setTheUser(jahiaUser);
                         return;
                     } else {

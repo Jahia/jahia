@@ -17,9 +17,9 @@
                 <bean class="org.jahia.params.valves.CookieAuthValveImpl">
                 	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                 </bean>
+                <!-- 
                 <bean class="org.jahia.params.valves.ContainerAuthValveImpl" />
                 <bean class="org.jahia.params.valves.JCIFSAuthValveImpl" />
-                <!-- 
                 <bean class="org.jahia.params.valves.CasAuthValveImpl" />
                 <bean class="org.jahia.params.valves.SpnegoAuthValveImpl" />
                  -->

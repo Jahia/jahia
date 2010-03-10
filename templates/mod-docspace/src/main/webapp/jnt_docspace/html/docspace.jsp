@@ -13,6 +13,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 
 <div class='grid_12'><!--start grid_12-->
 
@@ -110,6 +113,27 @@
 
                         </form>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".fileEdit").editable('${url.base}${currentNode.path}', {
+            targetDirectory : '${currentNode.path}',
+            type : 'ajaxupload',
+            onblur : 'ignore',
+            submit : 'OK',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+    });
+</script>
+                        <span class="fileEdit">Add file</span>
+                        <form action="" method="POST" name="uploadFile" enctype="multipart/form-data">
+                            <input type="hidden" name="nodeType" value="jnt:file"/>
+                            <input type="hidden" name="redirectTo" value="${url.base}${currentNode.name}.html"/>
+                            <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
+                            <input type="file" name="file">
+                            <input type="submit" name="upload"/>
+                        </form>
                       </div><!--stop formSearchTop-->
 
 </div>

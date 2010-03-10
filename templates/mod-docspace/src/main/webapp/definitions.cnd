@@ -2,3 +2,4 @@
 
 [jnt:docspace] > jnt:content, mix:title, jmix:tagged
 - description (string, richtext)
++ * (jnt:file)

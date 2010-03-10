@@ -31,6 +31,7 @@
  */
 package org.jahia.taglibs.functions;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -47,6 +48,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.JahiaTools;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -329,4 +331,28 @@ public class Functions {
         return hasIt;
     }
 
+    /**
+     * Checks if the provided target object can be found in the source. The
+     * search is done, depending on the source parameter type. It can be either
+     * {@link String}, {@link Collection} or an array of objects.
+     * 
+     * @param source the source to search in
+     * @param target the object to search for
+     * @return <code>true</code> if the target object is present in the source
+     */
+    public static boolean contains(Object source, Object target) {
+        if (source == null) {
+            throw new IllegalArgumentException("The source cannot be null");
+        }
+        boolean found = false;
+        if (source instanceof Collection<?>) {
+            found = ((Collection<?>) source).contains(target);
+        } else if (source instanceof Object[]) {
+            found = ArrayUtils.contains((Object[]) source, target);
+        } else {
+            found = target != null ? source.toString().contains(target.toString()) : false;
+        }
+
+        return found;
+    }
 }

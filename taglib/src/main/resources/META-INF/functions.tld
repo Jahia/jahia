@@ -23,6 +23,7 @@
 			${functions:abbreviate(field.value, 100)}
 		</example>
 	</function>
+	
     <function>
         <description>Prints out the attribute values for a tag, based on the provided Map</description>
         <name>attributes</name>
@@ -30,6 +31,17 @@
         <function-signature>java.lang.String attributes(java.util.Map)</function-signature>
         <example>
             &lt;input ${functions:attributes(tagAttributes)}/&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>Checks if the target object can be found in the source. The source can be either a Collection, and array of objects or a String.</description>
+        <name>contains</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>boolean contains(java.lang.Object,java.lang.Object)</function-signature>
+        <example>
+            &lt;input ${functions:contains('my original string', 'original')}/&gt;
+            &lt;input ${functions:contains(myArray, testString)}/&gt;
         </example>
     </function>
 

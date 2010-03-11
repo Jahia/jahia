@@ -46,17 +46,5 @@ public interface JahiaInterface {
     /** Jahia admin mode */
     public static final int ADMIN_MODE = 1;
 
-    /**
-     * Call to Struts ActionServlet's process method
-     *
-     * @param request
-     * @param response
-     * @throws java.io.IOException
-     * @author NK
-     */
-    public abstract void process(javax.servlet.http.HttpServletRequest request,
-                           javax.servlet.http.HttpServletResponse response)
-                    throws java.io.IOException,javax.servlet.ServletException;
-
 }
 

@@ -189,10 +189,6 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.operations.PageGeneratorQueue" class="org.jahia.operations.PageGeneratorQueue">
-        <constructor-arg index="0" ref="settingsBean" />
-    </bean>
-    
     <bean id="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaPasswordPolicyManager">

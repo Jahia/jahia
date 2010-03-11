@@ -37,7 +37,6 @@ import org.jahia.bin.filters.spnego.SpnegoHttpFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.pipelines.valves.SsoValve;
 import org.jahia.services.security.spnego.SpnegoAuthenticator;
 
 /**

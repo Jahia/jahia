@@ -296,7 +296,6 @@ public class ProcessingContext {
     private String characterEncoding;
 
     private String generatedOutput;
-    private String redirectLocation;
     private String contentType;
 
     private URLGenerator urlGenerator = new BasicURLGeneratorImpl();
@@ -2300,15 +2299,6 @@ public class ProcessingContext {
     }
 
     /**
-     * Returns the location set in a response redirect call.
-     *
-     * @return a String object that contains the location to which to redirect, or null if no redirect call has been made.
-     */
-    public String getRedirectLocation() {
-        return redirectLocation;
-    }
-
-    /**
      * Returns a String containing the actual content type used by Jahia so far. Please note that this may change over time if multiple
      * calls to the wrapper response setContentType call are made (not good :( ).
      *
@@ -3427,10 +3417,6 @@ public class ProcessingContext {
 
     public void setGeneratedOutput(final String aGeneratedOutput) {
         this.generatedOutput = aGeneratedOutput;
-    }
-
-    public void setRedirectLocation(final String aRedirectLocation) {
-        this.redirectLocation = aRedirectLocation;
     }
 
     public void setContentType(final String aContentType) {

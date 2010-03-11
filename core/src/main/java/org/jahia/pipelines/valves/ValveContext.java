@@ -47,14 +47,12 @@
 package org.jahia.pipelines.valves;
 
 import org.jahia.pipelines.PipelineException;
-import org.jahia.operations.PageState;
 
 /**
  * @author <a href="mailto:david@bluesunrise.com">David Sean Taylor</a>
  * @version $Id$
  */
 public interface ValveContext {
-    final ThreadLocal<PageState> valveResources = new ThreadLocal<PageState>();
     /**
      * <p>Cause the <code>invoke()</code> method of the next Valve
      * that is part of the Pipeline currently being processed (if any)

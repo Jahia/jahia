@@ -9,7 +9,6 @@
         <property name="valves">
             <list>
                 <bean class="org.jahia.params.valves.HttpBasicAuthValveImpl" />
-                <bean class="org.jahia.params.valves.TokenAuthValveImpl" />
                 <bean class="org.jahia.params.valves.LoginEngineAuthValveImpl">
                 	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                 </bean>

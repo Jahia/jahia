@@ -74,7 +74,6 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.AdminParamBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -88,12 +87,12 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.springframework.beans.factory.BeanFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -129,7 +128,7 @@ import java.util.Properties;
  * @author Serge Huber
  * @version 1.0
  */
-public class JahiaAdministration extends org.apache.struts.action.ActionServlet implements JahiaInterface {
+public class JahiaAdministration extends HttpServlet {
 
     private static final long serialVersionUID = 332486402871252316L;
 
@@ -174,13 +173,23 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         JahiaAdministration.contentServletPath = Jahia.getDefaultServletPath(aConfig.getServletContext());
     } // end init
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        process(req, resp);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        process(req, resp);
+    }
+    
     /**
      * Default service inherited from HttpServlet.
      *
      * @param request  Servlet request (inherited).
      * @param response Servlet response (inherited).
      */
-    public void service(HttpServletRequest request,
+    private void process(HttpServletRequest request,
                         HttpServletResponse response) throws IOException,
             ServletException {
         logger.debug("-- service --");
@@ -245,8 +254,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                     displayLogin(request, response, session);
                 } else {
                     try {
-                        if (!handleEngines(request, response))
-                            userRequestDispatcher(request, response, session); // ok continue admin...
+                        userRequestDispatcher(request, response, session); // ok continue admin...
                         ServicesRegistry.getInstance().getCacheService().syncClusterNow();
                         JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
                     } catch (JahiaException je) {
@@ -384,11 +392,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                         // operation : change site id to manage
                         session.setAttribute(CLASS_NAME + "configJahia", Boolean.FALSE);
                         changeSite(request, response, session);
-                    } else if ("clipbuilder".equals(operation) &&
-                            hasServerPermission("admin.clipBuilder.MenuBuilderAction", jParams)) {
-                        // clipbuilder is a struts servlet
-                        session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
-                        process(request, response);
                     } else {
                         if (currentModule == null) {
                             displayMenu(request, response, session);
@@ -987,70 +990,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
 
     //-------------------------------------------------------------------------
     /**
-     * Handles engine calls within JahiaAdministration Servlet
-     *
-     * @param request
-     * @param response
-     * @return boolean true if the request is effectively a engine call.
-     */
-    protected boolean handleEngines(HttpServletRequest request, HttpServletResponse response)
-            throws JahiaException, IOException, ServletException {
-
-        String pathInfo = request.getPathInfo();
-        logger.debug("Path Info: " + pathInfo);
-        if (pathInfo == null)
-            return false;
-        if (pathInfo.indexOf(ProcessingContext.ENGINE_NAME_PARAMETER) == -1)
-            return false;
-
-        // get the main http method...
-        String requestMethod = request.getMethod();
-
-        logger.debug("------------------------------------------------------- NEW " + requestMethod + " REQUEST ---");
-
-        // create the parambean (jParams)...
-        ParamBean jParams;
-
-        try {
-
-            BeanFactory bf = SpringContextSingleton.getInstance().getContext();
-            ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
-            jParams = pcf.getContext(request, response, context);
-
-            // jParams = new ParamBean( request, response, context, jSettings, startTime, intRequestMethod);
-
-            if (jParams == null) {
-                throw new JahiaException(CLASS_NAME + ".handleEngine",
-                        "ParamBean is null",
-                        JahiaException.ERROR_SEVERITY,
-                        JahiaException.CRITICAL_SEVERITY);
-            }
-            request.setAttribute("org.jahia.params.ParamBean", jParams);
-            process(request, response);
-            /*
-            OperationManager operations = new OperationManager();
-            operations.handleOperations (jParams, jSettings);
-            */
-
-            // display time
-            if (jParams.getUser() != null && logger.isDebugEnabled()) {
-                logger.debug("Served " + jParams.getEngine() +
-                        " engine for user " +
-                        jParams.getUser().getUsername() + " from [" +
-                        jParams.getRequest().getRemoteAddr() + "] in [" +
-                        (System.currentTimeMillis() - jParams.getStartTime()) +
-                        "ms]");
-            }
-        }
-        catch (JahiaException je) {
-            DefaultErrorHandler.getInstance().handle(je, request, response);
-        }
-
-        return true;
-    }
-
-    //-------------------------------------------------------------------------
-    /**
      * Returns a relative qualified request URL , i.e /JahiaAdministration.
      *
      * @param request
@@ -1168,28 +1107,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         // Seem's that the Thread Param Bean is null when were in Admin ???? So we set it here
         Jahia.setThreadParamBean(jParams);
         return jParams;
-    }
-
-    /**
-     * @param request
-     * @param response
-     * @throws java.io.IOException
-     * @throws javax.servlet.ServletException
-     * @todo should call Struts' ActionServlet.process() method
-     */
-    public void process(HttpServletRequest request,
-                        HttpServletResponse response)
-            throws java.io.IOException, javax.servlet.ServletException {
-        try {
-            ParamBean jParams =
-                    (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
-            // Create a JahiaData without loaded containers and fields
-            JahiaData jData = new JahiaData(jParams, false);
-            jParams.getRequest().setAttribute(JahiaData.JAHIA_DATA, jData);
-            super.process(jParams.getRequest(), jParams.getResponse());
-        } catch (JahiaException je) {
-            logger.debug(je.getMessage(), je);
-        }
     }
 
     /**

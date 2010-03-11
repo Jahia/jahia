@@ -70,6 +70,7 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
+import org.jahia.engines.core.Core_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
@@ -79,9 +80,9 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
+import org.jahia.params.valves.SsoValve;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.SsoValve;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
@@ -118,8 +119,7 @@ import org.xml.sax.SAXException;
  * @author  Khue N'Guyen
  * @version 1.0
  */
-public final class Jahia extends org.apache.struts.action.ActionServlet implements
-    JahiaInterface {
+public final class Jahia extends HttpServlet implements JahiaInterface {
 
     private static final long serialVersionUID = -4811687571425897497L;
     
@@ -134,9 +134,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     /** ... */
     static private final String JAHIA_LAUNCH = "jahiaLaunch";
-
-    /** ... */
-    static private final String INIT_PARAM_WEBINF_PATH = "webinf_path";
 
     // web app descriptor initialization parameter
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
@@ -214,7 +211,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
     static private Pipeline authPipeline;
-    static private Pipeline processPipeline;
 
     private static int BUILD_NUMBER = -1;
 
@@ -276,8 +272,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         super.init(aConfig);
         logger.info("Initializing Jahia...");
 
-        String webinf_path;
-
         mInitError = false;
         runInstaller = false;
         if (initTryCount < 5) {
@@ -298,7 +292,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             initContextData(getServletContext());
         }
         // get some value from the web.xml file...
-        webinf_path = this.config.getInitParameter(INIT_PARAM_WEBINF_PATH);
         final String supportedJDKVersions = this.config.getInitParameter(
             INIT_PARAM_SUPPORTED_JDK_VERSIONS);
         jahiaInitAdminServletPath = this.config.getInitParameter(
@@ -354,16 +347,15 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             jahiaInitAdminServletPath = "/administration/";
         }
 
-        jahiaEtcFilesPath = context.getRealPath(webinf_path + "/etc");
-        jahiaVarFilesPath = context.getRealPath(webinf_path + "/var");
+        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
+        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
 
         // set default paths...
-        jahiaPropertiesPath = context.getRealPath(webinf_path +
-            "/etc/config/");
+        jahiaPropertiesPath = context.getRealPath("/WEB-INF/etc/config/");
         mLicenseFilename = jahiaPropertiesPath + File.separator +
                            LICENSE_FILENAME;
 
-        jahiaBaseFilesPath = context.getRealPath(webinf_path + "/var");
+        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
         jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
                                     "templates";
 
@@ -491,7 +483,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             URI.setDefaultEncoding(jSettings.getDefaultURIEncoding());
 
             createAuthorizationPipeline(config);
-            createProcessingPipeline(config);
 
             // initialize content portlets
             // ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
@@ -520,28 +511,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         try {
             authPipeline = (Pipeline) SpringContextSingleton.getInstance().getContext().getBean("authPipeline");
             authPipeline.initialize();
-        } catch (PipelineException e) {
-            Throwable t = e;
-            if (e.getNested() != null) {
-                t = e.getNested();
-                logger.error("Error while initializing authorization pipeline", t);
-            }
-            throw new JahiaException(
-                "Error while initializing authorization pipeline",
-                t.getMessage(), JahiaException.INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY, t);
-        } catch (Exception e) {
-            throw new JahiaException(
-                "Error while initializing authorization pipeline",
-                e.getMessage(), JahiaException.INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY, e);
-        }
-    }
-
-    private void createProcessingPipeline (final ServletConfig aConfig) throws JahiaException {
-        try {
-            processPipeline = (Pipeline) SpringContextSingleton.getInstance().getContext().getBean("processPipeline");
-            processPipeline.initialize();
         } catch (PipelineException e) {
             Throwable t = e;
             if (e.getNested() != null) {
@@ -773,11 +742,12 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                 return;
             }
             servletThreadLocal.set(this);
-            ServicesRegistry.getInstance().getSchedulerService().startRequest();
 
             request.setAttribute("org.jahia.params.ParamBean",
                     jParams);
-            process(request, response);
+            final JahiaData jData = new JahiaData(jParams, false);
+            jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
+            EnginesRegistry.getInstance().getEngine(Core_Engine.ENGINE_NAME).handleActions(jParams, jData);
 
             // display time to fetch object plus other info
             if (jParams.getUser() != null && logger.isInfoEnabled()) {
@@ -800,11 +770,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             servletThreadLocal.set(null);
             ServicesRegistry.getInstance().getCacheService().syncClusterNow();
             JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
-            try {
-                ServicesRegistry.getInstance().getSchedulerService().endRequest();
-            } catch (JahiaException e) {
-                logger.error("Cannot start delayed jobs ",e);
-            }
         } catch (Exception e) {
             DefaultErrorHandler.getInstance().handle(e, request, response);
         } finally {
@@ -1421,29 +1386,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         return true;
     }
 
-    /**
-     *
-     * @param request
-     * @param response
-     * @throws java.io.IOException
-     * @throws javax.servlet.ServletException
-     */
-    public void process (final HttpServletRequest request,
-                         final HttpServletResponse response)
-        throws IOException, ServletException {
-        try {
-            final ParamBean jParams =
-                (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
-            // Create a JahiaData without loaded containers and fields
-            final JahiaData jData = new JahiaData(jParams, false);
-            jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
-            super.process(jParams.getRequest(), jParams.getResponse());
-        } catch (JahiaException je) {
-            logger.error(je.getMessage(), je);
-        }
-
-    }
-
     static public Pipeline getAuthPipeline() {
         return authPipeline;
     }
@@ -1464,10 +1406,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         return (SsoValve) authPipeline.getFirstValveOfClass(SsoValve.class);
     }
     // END [added by Pascal Aubry for CAS authentication]
-
-    static public Pipeline getProcessPipeline() {
-        return processPipeline;
-    }
 
     static public ServletConfig getStaticServletConfig() {
         return staticServletConfig;

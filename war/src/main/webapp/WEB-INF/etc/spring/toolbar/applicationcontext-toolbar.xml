@@ -585,6 +585,7 @@
     </bean>
 
     <!-- history-->
+    <!-- 
     <bean id="org.jahia.toolbar.itemsgroup.history" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
         <property name="items">
@@ -597,6 +598,7 @@
             </list>
         </property>
     </bean>
+     -->
 
     <!-- bookmarks-->
     <bean id="org.jahia.toolbar.itemsgroup.bookmarks" class="org.jahia.services.toolbar.bean.ItemsGroup">

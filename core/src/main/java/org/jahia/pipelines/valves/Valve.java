@@ -49,8 +49,6 @@ package org.jahia.pipelines.valves;
 import org.jahia.pipelines.PipelineException;
 
 /**
- * NOTE: This class will be deprecated once we merge with Summit
- *
  * General valve interface.  The actual valve interface(s) should be
  * extended by the implementing class.
  *

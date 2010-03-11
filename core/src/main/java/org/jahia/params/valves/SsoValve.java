@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.pipelines.valves;
+ package org.jahia.params.valves;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -37,6 +37,8 @@ import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.pipelines.valves.Valve;
+import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.security.license.LicenseActionChecker;

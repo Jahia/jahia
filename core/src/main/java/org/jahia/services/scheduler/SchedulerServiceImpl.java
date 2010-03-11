@@ -61,7 +61,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
     private Scheduler scheduler = null;
     private Scheduler ramscheduler = null;
-    private ThreadLocal<List<JobDetail>> waitingJobs = new ThreadLocal<List<JobDetail>>();
 
     private boolean schedulerRunning = false;
     //private List executingProcesses;
@@ -156,7 +155,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                         // Hack to prevent job execution if deleted
                        Trigger triggerJobStore =  scheduler.getTrigger(trigger.getName(), trigger.getGroup());
                         if(triggerJobStore == null){
-                            logger.debug("Trigger["+trigger.getName()+","+ trigger.getGroup()+"] not found in JobStore --> Veto");
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Trigger["+trigger.getName()+","+ trigger.getGroup()+"] not found in JobStore --> Veto");
+                            }
                             return true;
                         }
                     } catch (SchedulerException e) {
@@ -294,10 +295,12 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
             logger.error("Error while starting schedulers", e);
         }
 
-        logger.debug("Starting scheduler...\n instanceId:"
+        if (logger.isDebugEnabled()) {
+            logger.debug("Starting scheduler...\n instanceId:"
                 + scheduler.getMetaData().getSchedulerInstanceId() +
                 " instanceName:" + scheduler.getMetaData().getSchedulerName()
                 + "\n" + scheduler.getMetaData().getSummary());
+        }
         ramscheduler.start();
         if (settingsBean.isProcessingServer()) {
             scheduler.start();
@@ -352,51 +355,14 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
             data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_WAITING);
 
-            logger.debug("schedule job " + jobDetail.getName() + " volatile(" + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
+            if (logger.isDebugEnabled()) {
+                logger.debug("schedule job " + jobDetail.getName() + " volatile(" + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
+            }
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException se) {
             throw getJahiaException(se);
         }
     }
-
-    public void startRequest() {
-        synchronized(waitingJobs){
-            waitingJobs.set(new ArrayList<JobDetail>());
-        }
-    }
-
-    public void endRequest() throws JahiaException {
-        synchronized(waitingJobs){
-            List<JobDetail> l = waitingJobs.get();
-            if (l != null) {
-                for (JobDetail jobDetail: l) {
-                    unscheduleJob(jobDetail);
-                    scheduleJobNow(jobDetail);
-                }
-            }
-        }
-    }
-
-    public void scheduleJobAtEndOfRequest(JobDetail jobDetail) {
-        synchronized(waitingJobs){
-            List<JobDetail> l = waitingJobs.get();
-            if (l != null) {
-                Iterator<JobDetail> it = l.iterator();
-                JobDetail jd ;
-                int index = 0;
-                while ( it.hasNext() ){
-                    index+=1;
-                    jd = it.next();
-                    if ( jd.getFullName().equals(jobDetail.getFullName()) ){
-                        l.set(index-1,jobDetail);
-                        return;
-                    }
-                }
-                l.add(jobDetail);
-            }
-        }
-    }
-
 
     public void scheduleJob(JobDetail jobDetail, Trigger trigger)
             throws JahiaException {
@@ -584,7 +550,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
     public void deleteJob(String jobName, String groupName)
             throws JahiaException {
         if(!groupName.equals("RetentionRuleJob")){
-            logger.debug("try to delete job:"+jobName+" gn:"+groupName);
+            if (logger.isDebugEnabled()) {
+                logger.debug("try to delete job:"+jobName+" gn:"+groupName);
+            }
         }
         if (!schedulerRunning) {
             return;
@@ -804,7 +772,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
         for (int tcount = 0; tcount < JOBTYPES.length; tcount++) {
             String type = JOBTYPES[tcount];
-            logger.debug("computing " + type + " process....");
+            if (logger.isDebugEnabled()) {
+                logger.debug("computing " + type + " process....");
+            }
             List<JobDetail> l = getProcessByType(p, type);
             types.put(type, l);
 
@@ -817,7 +787,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 if (data.get(BackgroundJob.JOB_DURATION) != null) {
                     duration = Integer.parseInt((String) data.get(BackgroundJob.JOB_DURATION));
                 }
-                logger.debug("duration found:" + duration);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("duration found:" + duration);
+                }
                 if (typeAverages[tcount][0] == 0) typeAverages[tcount][0] = duration;
                 if (duration < typeAverages[tcount][0]) typeAverages[tcount][0] = duration; //best time
                 else if (duration > typeAverages[tcount][2]) typeAverages[tcount][2] = duration; //worse time
@@ -825,7 +797,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 typeAverages[tcount][1] = (typeAverages[tcount][1] / count) + (duration / count);//ignoring decimal
                 count++;
             }
-            logger.debug(type + " averages:" + typeAverages[tcount][0] + "/" + typeAverages[tcount][1] + "/" + typeAverages[tcount][2]);
+            if (logger.isDebugEnabled()) {
+                logger.debug(type + " averages:" + typeAverages[tcount][0] + "/" + typeAverages[tcount][1] + "/" + typeAverages[tcount][2]);
+            }
         }
     }
 

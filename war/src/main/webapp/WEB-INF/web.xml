@@ -348,10 +348,6 @@
             <param-name>admin_servlet_path</param-name>
             <param-value>/administration/</param-value>
         </init-param>
-        <init-param>
-            <param-name>webinf_path</param-name>
-            <param-value>/WEB-INF/</param-value>
-        </init-param>
         <!-- if you have trouble with the JDK detection code, you might want
              to remove the following parameter. Please note that this is here
              for a reason, and the versions below are the ones we recommend.
@@ -359,10 +355,6 @@
         <init-param>
             <param-name>supported_jdk_versions</param-name>
             <param-value>1.5 &lt;= x &lt; 1.7</param-value>
-        </init-param>
-        <init-param>
-            <param-name>config</param-name>
-            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
         <load-on-startup>8</load-on-startup>
     </servlet>
@@ -544,22 +536,9 @@
         <load-on-startup>99</load-on-startup>
     </servlet>
 
-
     <servlet>
-        <servlet-name>
-            JahiaAdministration
-        </servlet-name>
-        <servlet-class>
-            org.jahia.bin.JahiaAdministration
-        </servlet-class>
-        <init-param>
-            <param-name>config_path</param-name>
-            <param-value>/WEB-INF/etc/config/</param-value>
-        </init-param>
-        <init-param>
-            <param-name>config</param-name>
-            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
-        </init-param>
+        <servlet-name>JahiaAdministration</servlet-name>
+        <servlet-class>org.jahia.bin.JahiaAdministration</servlet-class>
         <load-on-startup>7</load-on-startup>
     </servlet>
 
@@ -570,18 +549,6 @@
         <servlet-class>
             org.apache.axis.transport.http.AxisServlet
         </servlet-class>
-    </servlet>
-
-    <!-- Ajax Struts Servlet -->
-    <servlet>
-        <servlet-name>action</servlet-name>
-        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
-        <init-param>
-            <param-name>config</param-name>
-            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
-        </init-param>
-        <!--- start before Jahia to be sure to use JahiaAction for custom struts actions -->
-        <load-on-startup>6</load-on-startup>
     </servlet>
 
     <servlet>
@@ -631,15 +598,6 @@
         <load-on-startup>10</load-on-startup>
     </servlet>
 
-    <!-- ====================================================================== -->
-    <!-- T O K E N   G E N E R A T O R                                       -->
-    <!-- ====================================================================== -->
-    <servlet>
-        <servlet-name>tokenGenerator</servlet-name>
-        <servlet-class>org.jahia.bin.TokenGeneratorServlet</servlet-class>
-        <load-on-startup>12</load-on-startup>
-    </servlet>
-    
     <servlet>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -833,15 +791,6 @@
          the initialization parameters above since Jahia's servlet cross
          reference each other
     -->
-    <!-- Standard Action Servlet Mapping -->
-    <servlet-mapping>
-        <servlet-name>Jahia</servlet-name>
-        <url-pattern>/do/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Jahia</servlet-name>
-        <url-pattern>*.do</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Jahia</servlet-name>
         <url-pattern>/Jahia/*</url-pattern>
@@ -907,12 +856,6 @@
         <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Ajax Struts Servlet Mapping -->
-    <servlet-mapping>
-        <servlet-name>action</servlet-name>
-        <url-pattern>/ajaxaction/*</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>JspPrecompileServlet</servlet-name>
         <url-pattern>/precompileServlet</url-pattern>
@@ -934,11 +877,6 @@
         <url-pattern>/viewCache</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>tokenGenerator</servlet-name>
-        <url-pattern>/tokenGenerator</url-pattern>
-    </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>

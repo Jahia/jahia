@@ -102,12 +102,12 @@ public class EnginesRegistry {
      * getEngine EV    19.11.2000 AK      14.12.2000 : temporary solution to catch getEngine()
      * fault. if the engine doesn't exist, core is selected...
      */
-    public Object getEngine(final String engineName) {
+    public JahiaEngine getEngine(final String engineName) {
         Object engineToGet = theRegistry.get(engineName);
         if (engineToGet == null) {
             engineToGet = theRegistry.get(Core_Engine.ENGINE_NAME);
         }
-        return engineToGet;
+        return (JahiaEngine) engineToGet;
     }
 
     public JahiaEngine getEngineByBeanName(final String engineBeanName) {

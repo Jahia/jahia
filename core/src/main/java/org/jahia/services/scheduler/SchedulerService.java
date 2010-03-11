@@ -57,14 +57,6 @@ public abstract class SchedulerService extends JahiaService {
     public abstract void scheduleJobNow(JobDetail jobDetail)
             throws JahiaException;
 
-    public abstract void startRequest();
-
-    public abstract void endRequest()
-            throws JahiaException;
-
-    public abstract void scheduleJobAtEndOfRequest(JobDetail jobDetail)
-            throws JahiaException;
-
     public abstract void scheduleJob(JobDetail jobDetail, Trigger trigger)
             throws JahiaException;
 

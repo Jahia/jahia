@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-
-
 <!DOCTYPE struts-config PUBLIC
         "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
         "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
@@ -8,16 +6,9 @@
 
 <struts-config>
 
-
-    <!-- ========== Data Source Configuration =============================== -->
-
-
     <!-- ========== Form Bean Definitions =================================== -->
 
     <form-beans>
-
-        <form-bean name="helloForm"
-                   type="org.jahia.views.engines.helloworld.forms.HelloForm"/>
 
         <form-bean name="mainForm"
                    type="org.jahia.views.engines.forms.MainForm"/>
@@ -32,24 +23,6 @@
 
         <!-- Default Core Engine : display a Jahia Page with a template -->
         <forward name="coreEngine" path="${jahia.deploy.war.servletPath}"/>
-
-        <!-- Default errors -->
-        <forward name="EnginesErrors" path="engines.errors"/>
-
-        <!-- Default Engine Close MyEngineWin Popup -->
-        <forward name="EnginesClose" path="engines.close"/>
-
-        <!-- Default Engine Close Any Popup -->
-        <forward name="EnginesCloseAnyPopup" path="engines.close-any-popup"/>
-
-        <!-- Default Engine Apply -->
-        <forward name="EnginesApply" path="engines.apply"/>
-
-        <!-- Default Engine Apply Any Popup -->
-        <forward name="EnginesApplyAnyPopup" path="engines.apply-any-popup"/>
-
-
-
 
     </global-forwards>
 
@@ -73,15 +46,6 @@
                 scope="request"
                 input="engines.helloworld.input">
         </action>
-
-        <!-- Date Picker engine -->
-        <action path="/DatePicker"
-                type="org.jahia.views.engines.datepicker.actions.DatePickerAction"
-                input="engines.datepicker"
-                parameter="method"
-                validate="false">
-        </action>
-
 
         <!--=======================================================================-->
         <!-- ADMININSTRATION SECTION 											   -->
@@ -128,7 +92,7 @@
     <!-- Validator PlugIn -->
     <plug-in className="org.jahia.bin.JahiaValidatorPlugIn">
         <set-property property="pathnames"
-                        value="/WEB-INF/etc/struts/validation.xml,/WEB-INF/etc/struts/validator-rules.xml,/WEB-INF/etc/struts/validator-jahia-rules.xml"/>
+                        value="/WEB-INF/etc/struts/validation.xml,/WEB-INF/etc/struts/validator-rules.xml"/>
     </plug-in>
 
 </struts-config>

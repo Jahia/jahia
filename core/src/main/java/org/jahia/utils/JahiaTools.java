@@ -61,7 +61,6 @@ import org.jahia.data.fields.ExpressionMarker;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.valves.TokenAuthValveImpl;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -1287,8 +1286,6 @@ public class JahiaTools {
             method.setFollowRedirects(false);
             if (username != null && password != null) {
                 method.addRequestHeader("Authorization", "BASIC " + org.apache.axis.encoding.Base64.encode((username + ":" + password).getBytes("ISO-8859-1")));
-            } else {
-                method.addRequestHeader(TokenAuthValveImpl.addToken(user));
             }
             // Execute the method.
             int result = httpClient.executeMethod(method);

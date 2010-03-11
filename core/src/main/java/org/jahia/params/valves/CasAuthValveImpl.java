@@ -36,7 +36,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.pipelines.valves.SsoValve;
 import org.jahia.services.sso.CasService;
 
 /**

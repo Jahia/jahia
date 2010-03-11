@@ -37,7 +37,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <template:template>
-    <template:templateHead title="${fn:escapeXml(currentNode.properties['jcr:title'].string)}">
+	<c:set var="pageTitle" value="${currentNode.properties['jcr:title'].string}"/>
+    <template:templateHead title="${fn:escapeXml(not empty pageTitle ? pageTitle : currentNode.name)}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<jcr:nodeProperty var="theme" node="${currentNode}" name="j:theme" inherited="true"/>
 		<c:if test="${!empty theme}">

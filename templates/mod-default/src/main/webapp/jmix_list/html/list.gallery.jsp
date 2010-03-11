@@ -3,10 +3,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.fancybox.pack.js,jquery.fancybox.load.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
-<%@include file="../include/header.jspf" %>
+<template:module node="${currentNode}" template="hidden.header"  editable="false"/>
 <p>
     <c:forEach items="${currentList}" var="child" varStatus="status" begin="${begin}" end="${end}">
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
@@ -27,4 +36,4 @@
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<%@include file="../include/footer.jspf" %>
+<template:module node="${currentNode}" template="hidden.footer"  editable="false"/>

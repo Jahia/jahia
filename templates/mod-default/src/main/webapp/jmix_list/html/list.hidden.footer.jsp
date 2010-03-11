@@ -13,14 +13,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<c:if test="${currentNode.nodes.size > 0}">
-    <c:set value="${fn:randomInt(currentNode.nodes.size)}" var="itemToDisplay"/>
-    <c:forEach items="${currentNode.children}" var="subchild" begin="${itemToDisplay}" end="${itemToDisplay}">
-        <template:module node="${subchild}" editable="true"/>
-    </c:forEach>
+<div class="clear"></div>
+<c:if test="${not empty paginationActive}">
+    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
 </c:if>
-<c:if test="${renderContext.editMode}">
-    <c:if test="${currentNode.nodes.size <= 0}">
-        <template:module path="*" />
-    </c:if>
-</c:if>
+</div>
+<template:removePager id="${currentNode.identifier}"/>

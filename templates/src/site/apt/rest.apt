@@ -96,6 +96,11 @@ Basic Jahia REST API
 *---------------------------+-------------+----------------------------------------------------------------------+
 |autoCheckin                | no          | Allow to force versioning of the newly created content.              |
 *---------------------------+-------------+----------------------------------------------------------------------+
+|targetDirectory            |no           | If you have multipart form, this will be the                         |
+|                           |             | location where the content is uploaded                               |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
+*---------------------------+-------------+----------------------------------------------------------------------+
 
 
 ** Response format

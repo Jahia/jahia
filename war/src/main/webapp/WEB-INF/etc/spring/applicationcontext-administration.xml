@@ -84,6 +84,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+<!-- 
     <bean id="patchesAdministrationModule" class="org.jahia.admin.patches.ManagePatches" parent="abstractAdministrationModule">
         <property name="urlKey" value="patches" />
         <property name="permissionName" value="global/patches" />
@@ -93,6 +94,7 @@
         <property name="urlAction" value="patches" />
         <property name="urlParams" value="" />
     </bean>
+-->    
 
     <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="community-jira" />
@@ -191,6 +193,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+<!--
     <bean id="htmlEditorsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="htmlsettings" />
@@ -214,7 +217,8 @@
         <property name="urlAction" value="IntegrityChecks" />
         <property name="urlParams" value="&amp;group=integrity&amp;method=display" />
     </bean>
-
+  -->
+  
     <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="analytics" />

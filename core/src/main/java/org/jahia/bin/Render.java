@@ -31,6 +31,7 @@
  */
 package org.jahia.bin;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
@@ -56,6 +57,7 @@ import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -96,6 +98,7 @@ public class Render extends HttpServlet implements Controller,
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "nodeName";
+    public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String REDIRECT_TO = "redirectTo";
     public static final String METHOD_TO_CALL = "methodToCall";
@@ -110,6 +113,7 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters = new HashSet<String>();
         reservedParameters.add(NODE_TYPE);
         reservedParameters.add(NODE_NAME);
+        reservedParameters.add(NORMALIZE_NODE_NAME);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(REDIRECT_TO);
         reservedParameters.add(METHOD_TO_CALL);
@@ -299,8 +303,8 @@ public class Render extends HttpServlet implements Controller,
         if (checkForUploadedFiles(resp, urlResolver.getWorkspace(), urlResolver
                 .getLocale(), parameters)) {
             if (parameters.isEmpty()) {
-                return;
-            }
+            return;
+        }
         }
         if (parameters.isEmpty()) {
             for (Object key : req.getParameterMap().keySet()) {
@@ -337,7 +341,7 @@ public class Render extends HttpServlet implements Controller,
         StringBuffer realPath = new StringBuffer();
         Node node = null;
         for (String subPath : subPaths) {
-            if (!"".equals(subPath.trim()) && !"*".equals(subPath)
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath)
                     && !subPath.equals(lastPath)) {
                 realPath.append("/").append(subPath);
                 try {
@@ -354,7 +358,7 @@ public class Render extends HttpServlet implements Controller,
         if (node != null) {
             String nodeType = null;
             if (parameters.containsKey(NODE_TYPE)) {nodeType = (String) ((List) parameters.get(NODE_TYPE)).get(0);}
-            if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
+            if (StringUtils.isBlank(nodeType)) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Missing nodeType Property");
                 return;
@@ -364,13 +368,15 @@ public class Render extends HttpServlet implements Controller,
             if (!"*".equals(lastPath)) {
                 nodeName = lastPath;
             }
-            if (nodeName == null || "".equals(nodeName.trim())) {
-                String[] strings = nodeType.split(":");
-                if (strings.length > 0) {
-                    nodeName = strings[1] + Math.round(Math.random() * 100000);
+            if (StringUtils.isBlank(nodeName)) {
+                if (nodeType.contains(":")) {
+                    nodeName = StringUtils.substringAfter(nodeType, ":") + Math.round(Math.random() * 100000);
                 } else {
-                    nodeName = strings[1] + Math.round(Math.random() * 100000);
+                    nodeName = nodeType + Math.round(Math.random() * 100000);
                 }
+            }
+            if (ServletRequestUtils.getBooleanParameter(req, NORMALIZE_NODE_NAME, false)) {
+                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
             }
             try {
                 newNode = session.getNode(realPath + "/" + nodeName);
@@ -395,10 +401,10 @@ public class Render extends HttpServlet implements Controller,
                 if (!reservedParameters.contains(key)) {
                     List values = (List) entry.getValue();
                     if (!values.get(0).equals("Submit")) {
-                        if (((JCRNodeWrapper) newNode)
-                                .getApplicablePropertyDefinition(key).isMultiple()) {
+                    if (((JCRNodeWrapper) newNode)
+                            .getApplicablePropertyDefinition(key).isMultiple()) {
                             newNode.setProperty(key,(String[]) values.toArray());
-                        } else {
+                    } else {
                             newNode.setProperty(key,(String) values.get(0));
                         }
                     }
@@ -461,20 +467,20 @@ private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace
                 parameters.put(NODE_NAME,files);
                 return true;                
             } else {
-                try {
-                    resp.setStatus(HttpServletResponse.SC_CREATED);
-                    Map<String, Object> map = new LinkedHashMap<String, Object>();
-                    map.put("uuids", uuids);
-                    JSONObject nodeJSON = new JSONObject(map);
-                    nodeJSON.write(resp.getWriter());
-                    return true;
-                } catch (JSONException e) {
-                    logger.error(e.getMessage(), e);
-                }
+            try {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                Map<String, Object> map = new LinkedHashMap<String, Object>();
+                map.put("uuids", uuids);
+                JSONObject nodeJSON = new JSONObject(map);
+                nodeJSON.write(resp.getWriter());
+                return true;
+            } catch (JSONException e) {
+                logger.error(e.getMessage(), e);
             }
         }
-    return false;
-}
+        }
+        return false;
+    }
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp,
             RenderContext renderContext, URLResolver urlResolver)

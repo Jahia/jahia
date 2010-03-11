@@ -10,7 +10,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
-<jcr:nodeProperty node="${cur<rentNode}" name="jcr:created" var="created"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">

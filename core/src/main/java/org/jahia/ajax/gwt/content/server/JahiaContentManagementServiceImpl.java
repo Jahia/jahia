@@ -728,7 +728,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset) throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaNodeVersion> result = navigation.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(node.getPath()));
+            List<GWTJahiaNodeVersion> result = navigation.getPublishedVersions(JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(node.getPath()));
 
             // add current workspace version
             final GWTJahiaNodeVersion currentWorkspaceVersion = new GWTJahiaNodeVersion();

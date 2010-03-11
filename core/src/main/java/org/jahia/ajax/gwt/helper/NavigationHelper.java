@@ -73,6 +73,7 @@ public class NavigationHelper {
 
     private JCRStoreService jcrService;
     private JCRSessionFactory sessionFactory;
+    private JCRVersionService jcrVersionService;
 
     private PublicationHelper publication;
 
@@ -94,6 +95,9 @@ public class NavigationHelper {
         this.nodetypeIcons = nodetypeIcons;
     }
 
+    public void setJcrVersionService(JCRVersionService jcrVersionService) {
+        this.jcrVersionService = jcrVersionService;
+    }
 
     /**
      * like ls unix command on the folder
@@ -837,11 +841,32 @@ public class NavigationHelper {
 //                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
                 GWTJahiaNode n = getGWTJahiaNode(node, false);
                 n.setUrl(node.getUrl() + "?v=" + v.getName());
-                GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
+                GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime(), null);
                 jahiaNodeVersion.setNode(n);
                 
                 versions.add(jahiaNodeVersion);
             }
+        }
+        return versions;
+    }
+
+    /**
+     * Get list of version that have been published as gwt bean list
+     *
+     * @param node
+     * @return
+     */
+    public List<GWTJahiaNodeVersion> getPublishedVersions(JCRNodeWrapper node) throws RepositoryException {
+        List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
+        List<VersionInfo> versionInfos = jcrVersionService.getVersionInfos(node.getSession(), node);
+        for (VersionInfo versionInfo : versionInfos) {
+            Version v = versionInfo.getVersion();
+            GWTJahiaNode n = getGWTJahiaNode(node, false);
+            n.setUrl(node.getUrl() + "?v=" + v.getName());
+            GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime(), versionInfo.getRevisionNumber());
+            jahiaNodeVersion.setNode(n);
+
+            versions.add(jahiaNodeVersion);
         }
         return versions;
     }

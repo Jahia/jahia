@@ -92,7 +92,7 @@ public class VersionViewer extends ContentPanel {
             protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion model) {
                 super.prepareData(model);
                 if (model.getVersionNumber() != null) {
-                    model.set("displayField", Messages.get("label_version", "Version ") + model.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(model.getDate()) + ")");
+                    model.set("displayField", Messages.get("label_version", "Version ") + DateTimeFormat.getFormat("d/MM/y hh:mm").format(model.getDate()) + " rev." + model.getRevisionNumber() + " (" + model.getVersionNumber() + ")");
                 } else {
                     if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
                         model.set("displayField", Messages.get("label_staging_version", "Staging version"));

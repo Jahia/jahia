@@ -52,14 +52,14 @@ public class VersioningTest extends TestCase {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
 
-            JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
+            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession();
             JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
 
 
-            JCRNodeWrapper stageRootNode = session.getNode(SITECONTENT_ROOT_NODE);
+            JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
 
-            Node versioningTestActivity = session.getWorkspace().getVersionManager().createActivity("versioningTest");
-            Node previousActivity = session.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
+            Node versioningTestActivity = editSession.getWorkspace().getVersionManager().createActivity("versioningTest");
+            Node previousActivity = editSession.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
             if (previousActivity != null) {
                 logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" + versioningTestActivity.getName());
             } else {
@@ -69,29 +69,45 @@ public class VersioningTest extends TestCase {
             // get home page
             JCRNodeWrapper stageNode = stageRootNode.getNode("home");
 
-            session.checkout(stageNode);
+            editSession.checkout(stageNode);
             JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
             stagedSubPage.setProperty("jcr:title", "title0");
-            session.save();
+            editSession.save();
 
             // publish it
             jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
             for (int i = 1; i < 11; i++) {
-                session.checkout(stagedSubPage);
+                editSession.checkout(stagedSubPage);
                 stagedSubPage.setProperty("jcr:title", "title" + i);
-                session.save();
+                editSession.save();
 
                 // each time the node i published, a new version should be created
                 jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
             }
 
+            // let's do some validation checks, first for the live workspace...
+
             // check number of versions
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-            List<VersionInfo> versionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
+            List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
             int index = 0;
-            for (VersionInfo curVersionInfo : versionInfos) {
+            for (VersionInfo curVersionInfo : liveVersionInfos) {
+                String versionName = curVersionInfo.getVersion().getName();
+                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
+                String versionTitle = versionNode.getPropertyAsString("jcr:title");
+                String title = "title" + index;
+                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getDate() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+                assertEquals(title, versionTitle);
+                index++;
+            }
+            logger.debug("number of version: " + index);
+            assertEquals(11, index);
+
+            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stageNode);
+            index = 0;
+            for (VersionInfo curVersionInfo : editVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
                 JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
                 String versionTitle = versionNode.getPropertyAsString("jcr:title");

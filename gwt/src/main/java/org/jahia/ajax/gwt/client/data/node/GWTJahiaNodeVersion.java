@@ -48,12 +48,14 @@ public class GWTJahiaNodeVersion extends BaseModel {
     public GWTJahiaNodeVersion() {
     }
 
-    public GWTJahiaNodeVersion(String uuid, String version, Date date) {
+    public GWTJahiaNodeVersion(String uuid, String version, Date date, Long revisionNumber) {
         setUUID(uuid);
         setVersionNumber(version);
         setDate(date);
+        if (revisionNumber != null) {
+            setRevisionNumber(revisionNumber);
+        }
     }
-
 
     public String getVersionNumber() {
         return get("versionNumber");
@@ -94,4 +96,14 @@ public class GWTJahiaNodeVersion extends BaseModel {
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
+
+    public Long getRevisionNumber() {
+        return get("revisionNumber");
+    }
+
+    public void setRevisionNumber(Long revisionNumber) {
+        set("revisionNumber", revisionNumber);
+    }
+
+
 }

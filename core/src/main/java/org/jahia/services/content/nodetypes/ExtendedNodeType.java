@@ -36,17 +36,17 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
 import javax.jcr.Value;
 import javax.jcr.nodetype.*;
 import java.util.*;
 
 /**
- * Container extended JCR node type information.
+ * Jahia extended JCR node type information.
  * @author Thomas Draier
  * Date: 4 janv. 2008
  * Time: 14:02:22
@@ -82,6 +82,8 @@ public class ExtendedNodeType implements NodeType {
     private String validator;
     private boolean queryable = true;
 
+    private Map<Locale, String> labels = new HashMap<Locale, String>(1);
+    
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
         this.systemId = systemId;
@@ -557,7 +559,7 @@ public class ExtendedNodeType implements NodeType {
         this.validator = validator;
     }
 
-    public String getResourceBundleId() {
+    protected String getResourceBundleId() {
         JahiaTemplatesPackage pkg = null;
         if (!getSystemId().startsWith("system-")) {
             try {
@@ -571,22 +573,20 @@ public class ExtendedNodeType implements NodeType {
             }
         }
 
-        return pkg != null ? pkg.getResourceBundleName()
-                : "JahiaTypesResources";
-    }
-
-    public String getResourceBundleMarker() {
-        String key = getName().replace(':', '_');
-        return ResourceBundleMarker.drawMarker(getResourceBundleId(), key, getName().replace(':', '_'));
+        return pkg != null ? "templates." + pkg.getRootFolder() + "." + pkg.getResourceBundleName() : "JahiaTypesResources";
     }
 
     public String getLabel(Locale locale) {
-        try {
-            return ResourceBundleMarker.parseMarkerValue(getResourceBundleMarker()).getValue(locale);
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
+        String label = labels.get(locale);
+        if (label == null) {
+            JahiaSite site = Jahia.getThreadParamBean().getSite();
+            final String packageName = site != null ? site.getTemplatePackageName() : null;
+            String key = getName().replace(':', '_');
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, packageName, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), packageName)).getString(key, key);
+            labels.put(locale, label);
         }
-        return getName().replace(':','_');
+        return label;
     }
 
     public NodeTypeDefinition getNodeTypeDefinition() {

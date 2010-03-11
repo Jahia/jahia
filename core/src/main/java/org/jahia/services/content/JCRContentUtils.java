@@ -148,12 +148,6 @@ public final class JCRContentUtils {
         return path.toString();
     }
     
-    public static String getDisplayLabel(String nodeName, ProcessingContext ctx) {
-        return JahiaResourceBundle.getJahiaInternalResource(
-                "org.jahia.services.jcr.types." + cleanUpNodeName(nodeName),
-                ctx.getLocale(), nodeName);
-    }
-    
     public static JCRContentUtils getInstance() {
         if (instance == null) {
             throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");

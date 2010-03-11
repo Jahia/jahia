@@ -200,7 +200,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
     }
 
     public String getTitle() {
-        return getItemDefinition().getResourceBundleMarker();
+        return getItemDefinition().getResourceBundleKey();
     }
 
     public String getTitle(Locale locale) {

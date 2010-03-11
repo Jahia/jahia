@@ -34,25 +34,21 @@ package org.jahia.services.content.nodetypes;
 import java.util.*;
 
 import javax.jcr.nodetype.ItemDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
 
-import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.jahia.bin.Jahia;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
 /**
- * Created by IntelliJ IDEA.
+ * Jahia specific {@link ItemDefinition} implementation.
  * User: toto
  * Date: 15 janv. 2008
  * Time: 17:43:58
- * To change this template use File | Settings | File Templates.
  */
 public class ExtendedItemDefinition implements ItemDefinition {
 
-    private static final transient Logger logger = Logger
-            .getLogger(ExtendedItemDefinition.class);
-    
     private ExtendedNodeType declaringNodeType;
     private Name name;
     private boolean isProtected = false;
@@ -63,6 +59,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     private int onConflict = OnConflictAction.USE_LATEST;
     protected int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
+    private Map<Locale, String> labels = new HashMap<Locale, String>(1);
 
     public ExtendedNodeType getDeclaringNodeType() {
         return declaringNodeType;
@@ -157,12 +154,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
 
-    public String getResourceBundleId() {
+    protected String getResourceBundleId() {
         return ((ExtendedNodeType)getDeclaringNodeType()).getResourceBundleId();
-    }
-
-    public String getResourceBundleMarker() {
-        return ResourceBundleMarker.drawMarker(getResourceBundleId(), getResourceBundleKey(), getName().replace(':','_'));
     }
 
     public String getResourceBundleKey() {
@@ -170,12 +163,16 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public String getLabel(Locale locale) {
-        try {
-            return ResourceBundleMarker.parseMarkerValue(getResourceBundleMarker()).getValue(locale);
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
+        String label = labels.get(locale);
+        if (label == null) {
+            JahiaSite site = Jahia.getThreadParamBean().getSite();
+            final String packageName = site != null ? site.getTemplatePackageName() : null;
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, packageName, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), packageName)).getString(
+                    getResourceBundleKey(), getName().replace(':', '_'));
+            labels.put(locale, label);
         }
-        return getName().replace(':','_');
+        return label;
     }
 
     public boolean isSystemItem() {

@@ -27,4 +27,7 @@
         <property name="mailService" ref="MailService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
+    <bean class="org.jahia.modules.formbuilder.actions.ChainAction">
+        <property name="templateService" ref="JahiaTemplateManagerService"/>
+    </bean>
 </beans>

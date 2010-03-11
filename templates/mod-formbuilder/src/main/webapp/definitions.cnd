@@ -93,3 +93,6 @@ orderable
  - max (long) mandatory
 
 [jnt:captcha] > jnt:formElement,  jmix:formContent
+
+[jnt:fileElement] > jnt:formElement, jmix:formContent
+ - label (string) 

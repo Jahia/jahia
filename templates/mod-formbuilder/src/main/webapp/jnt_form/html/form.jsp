@@ -41,11 +41,21 @@
 
 <c:set var="action" value="${url.base}${currentNode.path}/*"/>
 <c:if test="${not empty actionNode.nodes}">
-    <c:forEach items="${actionNode.nodes}" var="node">
-        <c:if test="${node.properties['j:action'].string != 'default'}">
-            <c:set var="action" value="${url.base}${currentNode.path}.${node.properties['j:action'].string}.do"/>
-        </c:if>
-    </c:forEach>
+    <c:if test="${fn:length(actionNode.nodes) > 1}">
+        <c:set var="action" value="${url.base}${currentNode.path}.chain.do"/>
+        <c:set var="chainActive" value=""/>
+        <c:forEach items="${actionNode.nodes}" var="node" varStatus="stat">
+            <c:set var="chainActive" value="${chainActive}${node.properties['j:action'].string}"/>
+            <c:if test="${not stat.last}"><c:set var="chainActive" value="${chainActive},"/></c:if>
+        </c:forEach>
+    </c:if>
+    <c:if test="${fn:length(actionNode.nodes) eq 1}">
+        <c:forEach items="${actionNode.nodes}" var="node">
+            <c:if test="${node.properties['j:action'].string != 'default'}">
+                <c:set var="action" value="${url.base}${currentNode.path}.${node.properties['j:action'].string}.do"/>
+            </c:if>
+        </c:forEach>
+    </c:if>
 </c:if>
 
 <h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
@@ -60,7 +70,7 @@
         <c:set var="editable" value="${not empty actionNode.nodes}"/>
         <template:area path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="${editable}"/>
     </div>
-    </c:if>
+</c:if>
 <div class="Form FormBuilder">
     <c:if test="${not renderContext.editMode}">
     <form action="${action}" method="post" id="${currentNode.name}">
@@ -69,6 +79,9 @@
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <c:if test="${not empty chainActive}">
+            <input type="hidden" name="chainOfAction" value="${chainActive}"/>
+        </c:if>
         <c:if test="${renderContext.editMode}">
         <div class="addfieldsets">
             <span>Add your new fieldsets here</span>
@@ -79,11 +92,11 @@
         </c:if>
         <div class="<c:if test="${not renderContext.editMode}">divButton</c:if><c:if test="${renderContext.editMode}">addbuttons</c:if>">
             <c:if test="${renderContext.editMode}">
-            <span>Add your new form buttons here</span>
+                <span>Add your new form buttons here</span>
             </c:if>
             <template:area path="${currentNode.path}/formButtons" nodeTypes="jnt:formButton" editable="true"/>
         </div>
-            
+
         <c:if test="${not renderContext.editMode}">
         <div class="validation"></div>
     </form>
@@ -115,6 +128,9 @@
                             <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
                         </p>
                     </c:if>
+                </c:forEach>
+                <c:forEach items="${response.nodes}" var="subResponseNode">
+                    <template:module node="${subResponseNode}" template="default"/>
                 </c:forEach>
             </c:forEach>
         </div>

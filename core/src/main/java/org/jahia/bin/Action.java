@@ -1,14 +1,14 @@
 package org.jahia.bin;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.jcr.RepositoryException;
-import java.util.Locale;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 
@@ -23,7 +23,9 @@ public interface Action {
 
     public abstract String getName();
 
-    public abstract void doExecute(HttpServletRequest req, HttpServletResponse resp,
-                                   RenderContext renderContext, Resource resource) throws Exception;
+    public abstract JCRNodeWrapper getNewNode();
+
+    public abstract void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
+                                   Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
 
 }

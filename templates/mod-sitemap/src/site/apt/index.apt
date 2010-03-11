@@ -3,7 +3,7 @@ Jahia Crazy Jane - Sitemap Module
  * In Which format is my sitemap available ?
 
  The sitemap rendering is done by templates as default we provide three types of sitemap, html, text, or xml (following
- standard from {{{http://www.sitemaps.org}sitemaps.org}.
+ standard from {{{http://www.sitemaps.org}sitemaps.org}}.
 
  * How to customize the sitemap ?
 

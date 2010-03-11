@@ -26,8 +26,6 @@ under the License.
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
-            <item name="Usage" href="./usage.html"/>
-            <item name="JSON JQuery Template" href="./json_jquery.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

@@ -62,7 +62,7 @@ public class FileUpload {
         org.apache.log4j.Logger.getLogger (FileUpload.class);
     private static final String UTF_8 = "UTF-8";
 
-    private Map<String, Object> params;
+    private Map<String, List<String>> params;
     private Map<String, DiskFileItem> files;
     private Map<String, DiskFileItem> filesByFieldName;
 
@@ -121,7 +121,7 @@ public class FileUpload {
     protected void init ()
         throws IOException {
 
-        params = new HashMap<String, Object>();
+        params = new HashMap<String, List<String>>();
         files = new HashMap<String, DiskFileItem>();
         filesByFieldName = new HashMap<String, DiskFileItem>();
 
@@ -145,7 +145,7 @@ public class FileUpload {
                         final String name = item.getFieldName();
                         final List<String> v ;
                         if (params.containsKey(name)) {
-                            v = (List<String>) params.get(name);
+                            v = params.get(name);
                         } else {
                             v = new ArrayList<String>();
                             params.put(name,v);
@@ -180,11 +180,11 @@ public class FileUpload {
         return params.keySet();
     }
 
-    public Map<String, Object> getParameterMap () {
+    public Map<String, List<String>> getParameterMap () {
         return params;
     }
 
-    public void setParameterMap(Map<String, Object> params) {
+    public void setParameterMap(Map<String, List<String>> params) {
         this.params = params;
     }
 

@@ -31,7 +31,6 @@
  */
 package org.jahia.bin;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
@@ -57,7 +56,6 @@ import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -98,13 +96,13 @@ public class Render extends HttpServlet implements Controller,
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "nodeName";
-    public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String REDIRECT_TO = "redirectTo";
     public static final String METHOD_TO_CALL = "methodToCall";
     public static final String AUTO_CHECKIN = "autoCheckin";
     public static final String CAPTCHA = "captcha";
     public static final String TARGETDIRECTORY = "targetDirectory";
+    public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
 
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
@@ -113,7 +111,6 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters = new HashSet<String>();
         reservedParameters.add(NODE_TYPE);
         reservedParameters.add(NODE_NAME);
-        reservedParameters.add(NORMALIZE_NODE_NAME);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(REDIRECT_TO);
         reservedParameters.add(METHOD_TO_CALL);
@@ -121,6 +118,7 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters.add(CAPTCHA);
         reservedParameters.add(TARGETDIRECTORY);
         reservedParameters.add(Constants.JCR_MIXINTYPES);
+        reservedParameters.add(NORMALIZE_NODE_NAME);
     }
 
     private transient ServletConfig servletConfig;
@@ -242,7 +240,7 @@ public class Render extends HttpServlet implements Controller,
                 logger.error(e.getMessage(), e);
             }
         } else {
-            performRedirect(null, null, req, resp);
+            performRedirect(null, null, req, resp,toParameterMapOfListOfString(req));
         }
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
@@ -255,7 +253,7 @@ public class Render extends HttpServlet implements Controller,
                 new JSONObject(req.getParameterMap()).toString());
     }
 
-    private void serializeNodeToJSON(HttpServletResponse resp,
+    public static void serializeNodeToJSON(HttpServletResponse resp,
             JCRNodeWrapper node) throws RepositoryException, IOException,
             JSONException {
         final PropertyIterator stringMap = node.getProperties();
@@ -296,22 +294,18 @@ public class Render extends HttpServlet implements Controller,
             }
             req.getSession().setAttribute("formDatas",formDatas);
             req.getSession().setAttribute("formError","Your captcha is invalid");
-            performRedirect("",urlResolver.getPath(),req, resp);
+            performRedirect("",urlResolver.getPath(),req, resp,null);
             return;
         }
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         if (checkForUploadedFiles(resp, urlResolver.getWorkspace(), urlResolver
                 .getLocale(), parameters)) {
             if (parameters.isEmpty()) {
-            return;
-        }
+                return;
+            }
         }
         if (parameters.isEmpty()) {
-            for (Object key : req.getParameterMap().keySet()) {
-                if (key != null) {
-                    parameters.put((String) key, new ArrayList(Arrays.asList((String[]) req.getParameterMap().get(key))));
-                }
-            }
+            parameters = toParameterMapOfListOfString(req);
         }
         if (urlResolver.getPath().endsWith(".do")) {
             Resource resource = urlResolver.getResource(getVersionNumber(req));
@@ -329,105 +323,27 @@ public class Render extends HttpServlet implements Controller,
             if (action == null) {
                 resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
             } else {
-                action.doExecute(req, resp, renderContext, resource);
+                action.doExecute(req, resp, renderContext, resource,parameters,urlResolver);
             }
             return;
         }
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(urlResolver.getWorkspace(),
-                        urlResolver.getLocale());
-        String[] subPaths = urlResolver.getPath().split("/");
-        String lastPath = subPaths[subPaths.length - 1];
-        StringBuffer realPath = new StringBuffer();
-        Node node = null;
-        for (String subPath : subPaths) {
-            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath)
-                    && !subPath.equals(lastPath)) {
-                realPath.append("/").append(subPath);
-                try {
-                    node = session.getNode(realPath.toString());
-                } catch (PathNotFoundException e) {
-                    if (node != null) {
-                        node = node.addNode(subPath, "jnt:folder");
-                    }
-                }
-            }
-        }
-        String url = null;
-        Node newNode;
-        if (node != null) {
-            String nodeType = null;
-            if (parameters.containsKey(NODE_TYPE)) {nodeType = (String) ((List) parameters.get(NODE_TYPE)).get(0);}
-            if (StringUtils.isBlank(nodeType)) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                        "Missing nodeType Property");
-                return;
-            }
-            String nodeName = null;
-            if (parameters.containsKey(NODE_NAME)) { nodeName = (String) ((List) parameters.get(NODE_NAME)).get(0);}
-            if (!"*".equals(lastPath)) {
-                nodeName = lastPath;
-            }
-            if (StringUtils.isBlank(nodeName)) {
-                if (nodeType.contains(":")) {
-                    nodeName = StringUtils.substringAfter(nodeType, ":") + Math.round(Math.random() * 100000);
-                } else {
-                    nodeName = nodeType + Math.round(Math.random() * 100000);
-                }
-            }
-            if (ServletRequestUtils.getBooleanParameter(req, NORMALIZE_NODE_NAME, false)) {
-                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
-            }
-            try {
-                newNode = session.getNode(realPath + "/" + nodeName);
-                if (!newNode.isCheckedOut()) {
-                    newNode.checkout();
-                }
-            } catch (PathNotFoundException e) {
-                if (!node.isCheckedOut()) {
-                    node.checkout();
-                }
-                newNode = node.addNode(nodeName, nodeType);
-            }
-            if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
-                for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
-                    String mixin = (String) o;
-                    newNode.addMixin(mixin);
-                }
-            }
-            Set<Map.Entry<String,Object>> set = parameters.entrySet();
-            for (Map.Entry<String, Object> entry : set) {
-                String key = entry.getKey();
-                if (!reservedParameters.contains(key)) {
-                    List values = (List) entry.getValue();
-                    if (!values.get(0).equals("Submit")) {
-                    if (((JCRNodeWrapper) newNode)
-                            .getApplicablePropertyDefinition(key).isMultiple()) {
-                            newNode.setProperty(key,(String[]) values.toArray());
-                    } else {
-                            newNode.setProperty(key,(String) values.get(0));
-                        }
-                    }
-                }
-            }
-            url = ((JCRNodeWrapper) newNode).getPath();
-            session.save();
-            if (parameters.containsKey(AUTO_CHECKIN)
-                    && ((String) ((List) parameters.get(AUTO_CHECKIN)).get(0)).length() > 0) {
-                newNode.checkin();
-            }
+        JCRNodeWrapper newNode;
+        Action defaultPostActionResult = new DefaultPostActionResult();
+        defaultPostActionResult.doExecute(req, resp, renderContext, null, parameters, urlResolver);
+        newNode = defaultPostActionResult.getNewNode();
+        if (newNode != null) {
+            String url = newNode.getPath();
             resp.setStatus(HttpServletResponse.SC_CREATED);
             final String requestWith = req.getHeader("x-requested-with");
-            if (req.getHeader("accept").contains("application/json")
-                    && requestWith != null
-                    && requestWith.equals("XMLHttpRequest")) {
+            if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
+                    "XMLHttpRequest")) {
                 try {
-                    serializeNodeToJSON(resp, (JCRNodeWrapper) newNode);
+                    serializeNodeToJSON(resp, newNode);
                 } catch (JSONException e) {
                     logger.error(e.getMessage(), e);
                 }
             } else {
-                performRedirect(url, urlResolver.getPath(), req, resp);
+                performRedirect(url, urlResolver.getPath(), req, resp, parameters);
             }
         }
         String sessionID = "";
@@ -439,45 +355,66 @@ public class Render extends HttpServlet implements Controller,
                 .getRemoteAddr(), sessionID, urlResolver.getPath(), (String) ((List) parameters.get(NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
     }
 
-private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace, Locale locale, Map<String, Object> parameters)
-            throws RepositoryException, IOException {
+    private Map<String, List<String>> toParameterMapOfListOfString(HttpServletRequest req) {
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+        for (Object key : req.getParameterMap().keySet()) {
+            if (key != null) {
+                parameters.put((String) key, new ArrayList(Arrays.asList((String[]) req.getParameterMap().get(key))));
+            }
+        }
+        return parameters;
+    }
+
+    private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace, Locale locale,
+                                          Map<String, List<String>> parameters) throws RepositoryException, IOException {
         final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
         final FileUpload fileUpload = paramBean.getFileUpload();
         if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
-            String target = "files";
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
             JCRNodeWrapper userDirectory = ((JCRUser) paramBean.getUser()).getNode(session);
-             if (fileUpload.getParameterNames().contains("targetDirectory")) {
-                target = (fileUpload.getParameterValues("targetDirectory"))[0];
+            String target = userDirectory.getPath() + "/files";
+            boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+            final String requestWith = paramBean.getRealRequest().getHeader("x-requested-with");
+            boolean isAjaxRequest = paramBean.getRealRequest().getHeader("accept").contains(
+                    "application/json") && requestWith != null && requestWith.equals("XMLHttpRequest");
+            if (isTargetDirectoryDefined) {
+                target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
             }
-            final JCRNodeWrapper targetDirectory = target.equals("files")?userDirectory.getNode(target):session.getNode(target);
-            final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+            final JCRNodeWrapper targetDirectory = session.getNode(target);            
             List<String> uuids = new ArrayList<String>();
             List<String> files = new ArrayList<String>();
-            for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
-                final JCRNodeWrapper wrapper = targetDirectory.uploadFile(itemEntry.getValue().getName(),
-                                                                       itemEntry.getValue().getInputStream(),
-                                                                       itemEntry.getValue().getContentType());
-                uuids.add(wrapper.getIdentifier());
-                files.add(itemEntry.getValue().getName());
+
+            // If target directory is defined or if it is an ajax request then save the file now
+            // otherwise we delay the save of the file to the node creation
+            if (isTargetDirectoryDefined || isAjaxRequest) {
+                final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+                for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                    final JCRNodeWrapper wrapper = targetDirectory.uploadFile(itemEntry.getValue().getName(),
+                                                                              itemEntry.getValue().getInputStream(),
+                                                                              itemEntry.getValue().getContentType());
+                    uuids.add(wrapper.getIdentifier());
+                    files.add(itemEntry.getValue().getName());
+                }
+                session.save();
             }
-            session.save();
-            if (fileUpload.getParameterNames().contains("targetDirectory")) {
+
+            if (!isAjaxRequest) {
                 parameters.putAll(fileUpload.getParameterMap());
-                parameters.put(NODE_NAME,files);
-                return true;                
-            } else {
-            try {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                Map<String, Object> map = new LinkedHashMap<String, Object>();
-                map.put("uuids", uuids);
-                JSONObject nodeJSON = new JSONObject(map);
-                nodeJSON.write(resp.getWriter());
+                if(isTargetDirectoryDefined)
+                    parameters.put(NODE_NAME, files);
                 return true;
-            } catch (JSONException e) {
-                logger.error(e.getMessage(), e);
+            } else {
+                try {
+                    resp.setStatus(HttpServletResponse.SC_CREATED);
+                    Map<String, Object> map = new LinkedHashMap<String, Object>();
+                    map.put("uuids", uuids);
+                    JSONObject nodeJSON = new JSONObject(map);
+                    nodeJSON.write(resp.getWriter());
+                    return true;
+                } catch (JSONException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
-        }
         }
         return false;
     }
@@ -495,14 +432,14 @@ private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace
         String url = parent.getPath();
         session.save();
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        performRedirect(url, urlResolver.getPath(), req, resp);
+        performRedirect(url, urlResolver.getPath(), req, resp,toParameterMapOfListOfString(req));
     }
 
     public static void performRedirect(String url, String path,
-            HttpServletRequest req, HttpServletResponse resp)
+            HttpServletRequest req, HttpServletResponse resp,Map<String, List<String>> parameters)
             throws IOException {
         String renderedURL = null;
-        String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
+        String outputFormat = parameters.get(NEW_NODE_OUTPUT_FORMAT).get(0);
         if (outputFormat == null || "".equals(outputFormat.trim())) {
             outputFormat = "html";
         }
@@ -513,7 +450,7 @@ private boolean checkForUploadedFiles(HttpServletResponse resp, String workspace
                             "/").replace("+", "%20")))
                     + url + "." + outputFormat;
         }
-        String stayOnPage = req.getParameter(REDIRECT_TO);
+        String stayOnPage = parameters.get(REDIRECT_TO).get(0);
         if (stayOnPage != null && "".equals(stayOnPage.trim())) {
             stayOnPage = null;
         }

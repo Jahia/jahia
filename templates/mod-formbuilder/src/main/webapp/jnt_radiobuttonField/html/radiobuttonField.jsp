@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
-
+<label class="left" for="${currentNode.name}">${props.label}</label>
 <div class="formMarginLeft">
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
     <input type="radio" name="${currentNode.name}" id="${currentNode.name}" value="${option.properties.value.string}" <c:if test="${not empty sessionScope.formError and sessionScope.formDatas[currentNode.name][0] eq option.properties.value.string}">checked="true"</c:if>/>

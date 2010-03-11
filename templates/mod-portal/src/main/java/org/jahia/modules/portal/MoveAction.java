@@ -1,17 +1,17 @@
 package org.jahia.modules.portal;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,11 +33,16 @@ public class MoveAction implements org.jahia.bin.Action {
         return name;
     }
 
+    public JCRNodeWrapper getNewNode() {
+        return null;
+    }
+            
     public void setName(String name) {
         this.name = name;
     }
 
-    public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws Exception {
+    public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource,
+                          Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String sourcePath = req.getParameter("source");
         String targetPath = req.getParameter("target");
         String action = req.getParameter("action");

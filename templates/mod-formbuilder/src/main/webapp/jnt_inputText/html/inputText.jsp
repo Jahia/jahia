@@ -9,18 +9,17 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set value="${currentNode.propertiesAsString}" var="props"/>
 <c:if test="${not empty props.mask}">
     <script>
         $(document).ready(function() {
-            $("#${currentNode.name}").mask("${props.mask}");
+            $("#${currentNode.name}").mask("${currentNode.properties.mask.string}");
         });
     </script>
 </c:if>
 <p class="field">
-<label class="left">${props.label}</label>
-<input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${props.maxLength}" size="${props.size}"
-       value="<c:if test="${not empty sessionScope.formError}">${sessionScope.formDatas[currentNode.name][0]}</c:if><c:if test="${empty props.mask and empty sessionScope.formError}">${props.defaultValue}</c:if>"/>
+<label class="left">${currentNode.properties.label.string}</label>
+<input type="text" id="${currentNode.name}" name="${currentNode.name}" maxlength="${currentNode.properties.maxLength.long}" size="${currentNode.properties.size.long}"
+       value="<c:if test="${not empty sessionScope.formError}">${sessionScope.formDatas[currentNode.name][0]}</c:if><c:if test="${empty currentNode.properties.mask and empty sessionScope.formError}">${currentNode.properties.defaultValue.string}</c:if>"/>
 <c:if test="${renderContext.editMode}">
 <div class="formMarginLeft">
     <p>List of validation element</p>

@@ -33,10 +33,13 @@
 package org.jahia.modules.formbuilder.actions;
 
 import groovy.lang.Binding;
+import groovy.util.ResourceException;
+import groovy.util.ScriptException;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.mail.MailService;
@@ -44,13 +47,18 @@ import org.jahia.services.notification.templates.Link;
 import org.jahia.services.notification.templates.MessageBuilder;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,6 +83,10 @@ public class MailAction implements Action {
         return name;
     }
 
+    public JCRNodeWrapper getNewNode() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
     }
@@ -84,53 +96,62 @@ public class MailAction implements Action {
     }
 
     public void doExecute(HttpServletRequest req, HttpServletResponse resp, final RenderContext renderContext,
-                          final Resource resource) throws Exception {
+                          final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
         final String path = node.getPath();
-        JCRNodeWrapper actionNode = (JCRNodeWrapper) node.getNode("action").getNodes().nextNode();
-        JahiaUser to = userManagerService.lookupUser(node.getSession().getNodeByUUID(actionNode.getProperty("j:to").getValue().getString()).getName());
-        Set<String> reservedParameters = Render.getReservedParameters();
-        final Map<String, String[]> formDatas = new HashMap<String, String[]>();
-        Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
-        for (Map.Entry<String, String[]> entry : set) {
-            String key = entry.getKey();
-            if (!reservedParameters.contains(key)) {
-                String[] values = entry.getValue();
-                formDatas.put(key, values);
+        JCRNodeWrapper actionNode = null;
+        NodeIterator nodes = node.getNode("action").getNodes();
+        while (nodes.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.nextNode();
+            if(nodeWrapper.isNodeType("jnt:mailFormAction")) {
+                actionNode = (JCRNodeWrapper) nodeWrapper;
             }
         }
-        mailService.sendTemplateMessage(new MessageBuilder(to, renderContext.getSite().getID(), "Jahia Form Builder") {
-            @Override
-            protected String getTemplateHtmlPart() {
-                return lookupTemplate("/action/mail/body.html");
-            }
-
-            @Override
-            protected String getTemplateMailScript() {
-                return lookupTemplate("/action/mail/email.groovy");
-            }
-
-            @Override
-            protected String getTemplateTextPart() {
-                return lookupTemplate("/action/mail/body.txt");
-            }
-
-            @Override
-            protected Link getUnsubscribeLink() {
-                return null;
-            }
-
-            @Override
-            protected void populateBinding(Binding binding) {
-                super.populateBinding(binding);
-                binding.setVariable("formDatas", formDatas);
-                try {
-                    binding.setVariable("formNode", JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(),resource.getLocale()).getNode(path));
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+        if (actionNode!=null) {
+            JahiaUser to = userManagerService.lookupUser(node.getSession().getNodeByUUID(actionNode.getProperty("j:to").getValue().getString()).getName());
+            Set<String> reservedParameters = Render.getReservedParameters();
+            final Map<String, List<String>> formDatas = new HashMap<String, List<String>>();
+            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+            for (Map.Entry<String, List<String>> entry : set) {
+                String key = entry.getKey();
+                if (!reservedParameters.contains(key)) {
+                    List<String> values = entry.getValue();
+                    formDatas.put(key, values);
                 }
             }
-        });
-        logger.error("Sending form by mail");
+            mailService.sendTemplateMessage(new MessageBuilder(to, renderContext.getSite().getID(), "Jahia Form Builder") {
+                @Override
+                protected String getTemplateHtmlPart() {
+                    return lookupTemplate("/action/mail/body.html");
+                }
+
+                @Override
+                protected String getTemplateMailScript() {
+                    return lookupTemplate("/action/mail/email.groovy");
+                }
+
+                @Override
+                protected String getTemplateTextPart() {
+                    return lookupTemplate("/action/mail/body.txt");
+                }
+
+                @Override
+                protected Link getUnsubscribeLink() {
+                    return null;
+                }
+
+                @Override
+                protected void populateBinding(Binding binding) {
+                    super.populateBinding(binding);
+                    binding.setVariable("formDatas", formDatas);
+                    try {
+                        binding.setVariable("formNode", JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(),resource.getLocale()).getNode(path));
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            });
+            logger.error("Sending form by mail");
+        }
     }
 }

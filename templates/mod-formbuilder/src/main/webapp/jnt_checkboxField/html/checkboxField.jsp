@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <c:set value="${currentNode.propertiesAsString}" var="props"/>
-
+<label class="left" for="${currentNode.name}">${props.label}</label>
 <div class="formMarginLeft">
 <c:forEach items="${jcr:getNodes(currentNode,'jnt:formListElement')}" var="option">
     <c:set var="isChecked" value="false"/>

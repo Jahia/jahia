@@ -127,7 +127,7 @@
     });
 </script>
                         <span class="fileEdit">Add file</span>
-                        <form action="" method="POST" name="uploadFile" enctype="multipart/form-data">
+                        <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
                             <input type="hidden" name="nodeType" value="jnt:file"/>
                             <input type="hidden" name="redirectTo" value="${url.base}${currentNode.name}.html"/>
                             <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>

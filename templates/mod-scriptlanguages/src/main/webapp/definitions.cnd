@@ -3,14 +3,14 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:phpNode] > jnt:content, mix:title, jmix:structuredContent
+[jnt:phpNode] > jnt:content, mix:title, jmix:sandboxContent
 - phpText (string) i18n
 
-[jnt:javascriptNode] > jnt:content, mix:title, jmix:structuredContent
+[jnt:javascriptNode] > jnt:content, mix:title, jmix:sandboxContent
 - javascriptText (string) i18n
 
-[jnt:velocityNode] > jnt:content, mix:title, jmix:structuredContent
+[jnt:velocityNode] > jnt:content, mix:title, jmix:sandboxContent
 - velocityText (string) i18n
 
-[jnt:freeMarkerNode] > jnt:content, mix:title, jmix:structuredContent
+[jnt:freeMarkerNode] > jnt:content, mix:title, jmix:sandboxContent
 - freeMarkerText (string) i18n

@@ -121,7 +121,7 @@
  date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa']) = eval(now+1000*60*60*24)
  date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
  
-[test_templates:fieldsWithIndexOptions] > jnt:container, jmix:structuredContent
+[test_templates:fieldsWithIndexOptions] > jnt:container, jmix:sandboxContent
  date untokenizedDate indexed='untokenized' scoreboost=1 analyzer='keyword'
  date scoreboostedDate indexed='untokenized' scoreboost=6 analyzer='keyword'
  integer untokenizedLong indexed='untokenized' analyzer='keyword'
@@ -216,9 +216,9 @@
 
 [jnt:referenceTest] > jmix:queryContent
 
-[test_templates:choiceListItem] > jnt:content, mix:title, jmix:structuredContent
+[test_templates:choiceListItem] > jnt:content, mix:title, jmix:sandboxContent
 
-[test_templates:choiceList] > jnt:content, mix:title, jmix:structuredContent
+[test_templates:choiceList] > jnt:content, mix:title, jmix:sandboxContent
  - contract (string, choicelist) < contract1, contract2, contract3, contract4
  - contractI18n (string, choicelist[resourceBundle]) < contract1, contract2, contract3, contract4
  - country (string, choicelist[country])

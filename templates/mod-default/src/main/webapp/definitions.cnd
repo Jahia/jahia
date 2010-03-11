@@ -5,6 +5,8 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:sandboxContent] > jmix:content mixin
+
 [jmix:sendAsNewsletter] mixin
 
 [jmix:userFilterable] > jmix:option, jmix:listMixin mixin

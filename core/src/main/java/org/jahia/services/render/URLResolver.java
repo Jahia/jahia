@@ -305,6 +305,27 @@ public class URLResolver {
                                 // ignore it
                             }
                         }
+                        JahiaSite site = node.resolveSite();
+
+                        JCRSessionWrapper userSession = site != null
+                                && site.getDefaultLanguage() != null
+                                && site.isMixLanguagesActive() ? JCRSessionFactory
+                                .getInstance().getCurrentUserSession(workspace,
+                                        locale)
+                                : JCRSessionFactory
+                                        .getInstance()
+                                        .getCurrentUserSession(
+                                                workspace,
+                                                locale,
+                                                LanguageCodeConverters
+                                                        .languageCodeToLocale(site
+                                                                .getDefaultLanguage()));
+
+                        try {
+                            node = userSession.getNode(nodePath);
+                        } catch (PathNotFoundException e) {
+                            throw new AccessDeniedException(path);
+                        }
 
                         return node;
                     }
@@ -452,7 +473,7 @@ public class URLResolver {
         if (mapped) {
             try {
                 JCRNodeWrapper node = getNode();
-                if (node != null && node.isNodeType(VanityUrlManager.JAHIAMIX_VANITYURLMAPPED)) {
+                if (node != null && !node.isNodeType(VanityUrlManager.JAHIAMIX_VANITYURLMAPPED)) {
                     mapped = false;
                 }
             } catch (RepositoryException e) {

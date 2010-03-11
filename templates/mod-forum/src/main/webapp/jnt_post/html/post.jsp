@@ -10,7 +10,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
-<jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
+<jcr:nodeProperty node="${cur<rentNode}" name="jcr:created" var="created"/>
 <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">
@@ -27,8 +27,8 @@
         <c:if test="${renderContext.user.name != 'guest'}">
             <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
             <li class="forum-quote-icon">
-                <a title="Reply with quote" href="#threadPost"
-                   onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
+                <a title="<fmt:message key='reply.quote'/>" href="#threadPost"
+                   onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span><fmt:message key='reply.quote'/></span></a>
             </li>
             <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>
         </c:if>
@@ -58,7 +58,7 @@
         <template:module node="${userNode}" template="mini"/>
     </dt>
     <br/>
-    <dd><strong><fmt:message key="number.of.posts"/></strong> ${numberOfPosts}</dd>
+    <dd><strong><fmt:message key="number.of.posts"/></strong>&nbsp;${numberOfPosts}</dd>
     <dd><strong><fmt:message key="registration.date"/></strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
                                                    var="userCreated"/><fmt:formatDate value="${userCreated.time}"
                                                                                       type="date" dateStyle="medium"/>

@@ -24,7 +24,6 @@
     <c:otherwise>
         <c:set var="addTagR" value="$$$${param.addTag}"/>
         <c:set var="addTagL" value="${param.addTag}$$$"/>
-        <c:set var="addTagL" value="${param.addTag}$$$"/>
         <c:if test="${!(fn:contains(tagFilter,addTagR) || fn:contains(tagFilter,addTagL))}">
             <c:set scope="session" var="tagFilter" value="${tagFilter}$$$${param.addTag}"/>
         </c:if>

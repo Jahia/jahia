@@ -12,24 +12,11 @@
 <template:addResources type="css" resources="blog.css"/>
 
 <template:addWrapper name="hidden.blogWrapper"/>
-<script type="text/javascript">
-    function noAccent(chaine) {
-       temp = chaine.replace(/[àâäá]/gi,"a");
-       temp = temp.replace(/[éèêë]/gi,"e");
-       temp = temp.replace(/[îï]/gi,"i");
-       temp = temp.replace(/[ôö]/gi,"o");
-       temp = temp.replace(/[ùûü]/gi,"u");
-       var t = "";
-       for (var i = 0;i<temp.length;i++) {
-           if (temp.charCodeAt(i) >47 && temp.charCodeAt(i) < 123) t +=temp.charAt(i);
-       }
-       return t;
-    }
-</script>
 <div class="grid_10  alpha omega">
 <form method="post" action="${currentNode.name}/" name="blogPost">
-    <input type="hidden" name="autoCheckin" value="true">
-    <input type="hidden" name="nodeType" value="jnt:blogContent">
+    <input type="hidden" name="autoCheckin" value="true"/>
+    <input type="hidden" name="nodeType" value="jnt:blogContent"/>
+    <input type="hidden" name="normalizeNodeName" value="true"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
@@ -52,6 +39,7 @@
             <fmt:message key="jnt_blog.tagThisBlogPost"/>:&nbsp;
             <input type="text" name="j:newTag" value=""/>
 
+            <fmt:message key='jnt_blog.noTitle' var="noTitle"/>
             <input
                     class="button"
                     type="button"
@@ -59,10 +47,10 @@
                     value="<fmt:message key='save'/>"
                     onclick="
                         if (document.blogPost.elements['jcr:title'].value == '') {
-                            alert('you must fill the title ');
+                            alert('${noTitle}');
                             return false;
                         }
-                        document.blogPost.action = '${currentNode.name}/'+noAccent(document.blogPost.elements['jcr:title'].value.replace(' ',''));
+                        document.blogPost.action = '${currentNode.name}/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
                         document.blogPost.submit();
                     "
                     />

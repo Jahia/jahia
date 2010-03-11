@@ -29,13 +29,9 @@
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
 
-    <p class="post-info"><fmt:message key="by"/>
-        <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
-        <c:set var="fields" value="${contentUser.propertiesAsString}"/>
-        <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
-        - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
-        <!-- <a href="#"></a>  -->
-    </p>
+    <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
+    <c:set var="fields" value="${contentUser.propertiesAsString}"/>
+    <p class="post-info"><fmt:message key="by"/>&nbsp;<a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>&nbsp;-&nbsp;<fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/></p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
@@ -43,9 +39,7 @@
         </c:forEach>
     </ul>
     <div class="post-content">
-        <p>
-            ${text.string}
-        </p>
+        <p>${text.string}</p>
     </div>
     <jcr:sql var="numberOfPostsQuery"
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
@@ -53,10 +47,10 @@
     <p class="post-info-links">
         <a href="${url.base}${currentResource.node.path}.edit.html"><fmt:message key="edit"/></a>
         <c:if test="${numberOfPosts == 0}">
-            <a class="comment_count" href="${url.current}#comments">0 <fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
-            <a class="comment_count" href="${url.current}#comments">${numberOfPosts} <fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="comments"/></a>
         </c:if>
         <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
     </p>

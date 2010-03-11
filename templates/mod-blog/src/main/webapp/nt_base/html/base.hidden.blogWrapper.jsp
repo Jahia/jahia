@@ -52,7 +52,7 @@ ${wrappedContent}
                     <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
                     <template:module path="/users/${createdBy.string}" forcedTemplate="blog" editable="false"/>
                     <!--stop aboutMeListItem -->
-                    <h3>Archives</h3>
+                    <h3><fmt:message key="archives"/></h3>
                     <div class="archives">
                         <c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
                             <jcr:sql var="blogList"
@@ -92,10 +92,9 @@ ${wrappedContent}
 
                     <%--todo: call jnt:tagCloud from mod default instead of duplicate the code--%>
                     <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
-                    <jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
                     <div class="tags">
-                        <h3>Tags</h3>
-                        <jcr:sql var="tags" sql="select * from [jnt:tag] as sel where ischildnode(sel,['${tagsRoot.path}']) order by sel.[j:nodename]"/>
+                        <h3><fmt:message key="tags"/></h3>
+                        <jcr:sql var="tags" sql="select * from [jnt:tag] where ischildnode(['${renderContext.siteNode.path}/tags']) order by [j:nodename]"/>
                         <c:set var="totalUsages" value="0"/>
                         <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
                         <c:forEach items="${tags.nodes}" var="tag">

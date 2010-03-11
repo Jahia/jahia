@@ -280,7 +280,7 @@ public class Render extends HttpServlet implements Controller,
             RenderContext renderContext, URLResolver urlResolver)
             throws Exception {
         String kaptchaExpected = (String) req.getSession().getAttribute(
-                "toto");
+                com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
         String kaptchaReceived = req.getParameter(CAPTCHA);
         req.getSession().removeAttribute("formDatas");
         if (kaptchaExpected!= null && (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected))) {

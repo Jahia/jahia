@@ -116,6 +116,7 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters.add(AUTO_CHECKIN);
         reservedParameters.add(CAPTCHA);
         reservedParameters.add(TARGETDIRECTORY);
+        reservedParameters.add(Constants.JCR_MIXINTYPES);
     }
 
     private transient ServletConfig servletConfig;
@@ -381,6 +382,12 @@ public class Render extends HttpServlet implements Controller,
                     node.checkout();
                 }
                 newNode = node.addNode(nodeName, nodeType);
+            }
+            if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
+                for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
+                    String mixin = (String) o;
+                    newNode.addMixin(mixin);
+                }
             }
             Set<Map.Entry<String,Object>> set = parameters.entrySet();
             for (Map.Entry<String, Object> entry : set) {

@@ -132,44 +132,13 @@
                             <input type="hidden" name="redirectTo" value="${url.base}${currentNode.name}.html"/>
                             <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
                             <input type="file" name="file">
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
                             <input type="submit" name="upload"/>
                         </form>
                       </div><!--stop formSearchTop-->
 
 </div>
-<div class="boxdocspace">
-        <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
-            <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-
-<table width="100%" class="table tableTasks " summary="Edition Mes taches en cours (table)">
-<caption class=" hidden">
-Edition Mes taches en cours (table)
-</caption>
-<colgroup>
-    <col span="1" width="10%" class="col1"/>
-    <col span="1" width="40%" class="col2"/>
-    <col span="1" width="10%" class="col3"/>
-    <col span="1" width="15%" class="col4"/>
-    <col span="1" width="15%" class="col5"/>
-    <col span="1" width="15%" class="col6"/>
-</colgroup>
-<thead>
-    <tr>
-        <th class="center" id="Type" scope="col">Type <a title="sort down" href="#"> <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Title" scope="col"> Titre  <a title="sort down" href="#"> <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th class="center" id="Creation" scope="col">Creation<a title="sort down" href="#"> <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Author" scope="col">Autheur <a title="sort down" href="#"> <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Rating" scope="col">Votes<a title="sort down" href="#"> <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th class="center" id="Viewed" scope="col">Vus</th>
-    </tr>
-</thead>
-
-<tbody>
-    <tr class="odd">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/pdf.png" /></td>
-        <td headers="Title"><a href="#">Titre de mon document (fonctionnel deroulant ) </a>
-
 <script type="text/javascript">
 
             jQuery(document).ready(function(){
@@ -192,110 +161,14 @@ Edition Mes taches en cours (table)
             });
 
 </script>
-<a class="BtMore rightside" href="#"></a>
+<div class="boxdocspace">
+        <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
+            <div class="boxdocspace-inner">
+                <div class="boxdocspace-inner-border"><!--start boxdocspace -->
+
+                    <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList" forceCreation="true"/>
 
 
-<div class="AddNote1 block"><!--start openclose -->
-         <div class="tablemore">
-         <p class="clearMaringPadding">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean scelerisque lorem sed metus vehicula non venenatis eros blandit. Donec molestie vestibulum nunc, ac molestie augue semper a. Quisque ut pharetra sem. Ut vitae urna ipsum. Mauris condimentum lobortis turpis, eu porttitor neque ultricies nec.Donec molestie vestibulum nunc, ac molestie augue semper a. Quisque ut pharetra sem. Ut vitae urna ipsum. Mauris condimentum lobortis turpis, eu porttitor neque ultricies nec. Ut vitae urna ipsum. Mauris condimentum lobortis turpis.</p>
-                <p class="clearMaringPadding"><span class="label"><strong>Tags</strong> :</span> Lorem ipsum, dolor sit amet, consectetur, adipiscing.</p></div>
-</div><!--stop openclose -->
-
-<div class="clear"></div>
-
-
-        </td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="even">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/rar.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="odd">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/exe.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="even">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/pdf.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="odd">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/doc.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="even">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/ppt.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="odd">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/txt.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="even">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/pdf.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="odd">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/pdf.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-            <tr class="even">
-        <td class="center" headers="Type"><img alt="" src="${url.currentModule}/css/img/files/pdf.png" /></td>
-        <td headers="Title"><a href="#"><img class="rightside" src="${url.currentModule}/css/img/open.png" alt="open"/></a><a href="#">Titre de mon document </a></td>
-        <td class="center" headers="Creation">20 Nov 2009</td>
-        <td headers="Author">Regis Mora</td>
-        <td headers="Rating"><img src="${url.currentModule}/css/img/rating.png" alt=" " /></td>
-        <td class="center" headers="Viewed">655</td>
-    </tr>
-
-</tbody>
-</table>
-<div class="pagination"><!--start pagination-->
-              <div class="paginationPosition"> <span>Page 2 of 2 - 450 results</span> - Show
-                <select name="paginationShow" id="paginationShow">
-                  <option>20</option>
-                  <option>50</option>
-                  <option>100</option>
-                </select>
-              </div>
-              <div class="paginationNavigation"> <a href="#" class="previousLink">Previous</a> <span><a href="#" class="paginationPageUrl">1</a></span> <span><a href="#" class="paginationPageUrl">2</a></span> <span><a href="#" class="paginationPageUrl">3</a></span> <span><a href="#" class="paginationPageUrl">4</a></span> <span><a href="#" class="paginationPageUrl">5</a></span> <span class="currentPage">6</span> <a href="#" class="nextLink">Next</a> </div>
-           <div class="clear"></div>
-</div><!--stop pagination-->
 <div class="clear"></div>
 
               </div>

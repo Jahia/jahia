@@ -18,4 +18,5 @@
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </c:if>
 </div>
+<c:remove var="forcedTemplate"/>
 <template:removePager id="${currentNode.identifier}"/>

@@ -94,6 +94,8 @@
         <module>mod-wiki</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
+        <module>mod-latestPages</module>
+        <module>mod-docspace</module>
     </modules>
 
 

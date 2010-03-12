@@ -101,9 +101,9 @@ public class MailAction implements Action {
             logger.info("Mail service is disabled. Skip sending e-mail notification for form action");
         }
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
-        final String path = node.getPath();
+        final String path = node.getParent().getPath();
         JCRNodeWrapper actionNode = null;
-        NodeIterator nodes = node.getNode("action").getNodes();
+        NodeIterator nodes = node.getParent().getNode("action").getNodes();
         while (nodes.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.nextNode();
             if(nodeWrapper.isNodeType("jnt:mailFormAction")) {

@@ -282,21 +282,6 @@ public class Render extends HttpServlet implements Controller,
     protected void doPost(HttpServletRequest req, HttpServletResponse resp,
             RenderContext renderContext, URLResolver urlResolver)
             throws Exception {
-        String kaptchaExpected = (String) req.getSession().getAttribute(
-                com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
-        String kaptchaReceived = req.getParameter(CAPTCHA);
-        req.getSession().removeAttribute("formDatas");
-        if (kaptchaExpected!= null && (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected))) {
-            Map<String, String[]> formDatas = new HashMap<String, String[]>();
-            Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
-            for (Map.Entry<String, String[]> entry : set) {
-                formDatas.put(entry.getKey(),entry.getValue());
-            }
-            req.getSession().setAttribute("formDatas",formDatas);
-            req.getSession().setAttribute("formError","Your captcha is invalid");
-            performRedirect("",urlResolver.getPath(),req, resp,null);
-            return;
-        }
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         if (checkForUploadedFiles(resp, urlResolver.getWorkspace(), urlResolver
                 .getLocale(), parameters)) {
@@ -306,6 +291,22 @@ public class Render extends HttpServlet implements Controller,
         }
         if (parameters.isEmpty()) {
             parameters = toParameterMapOfListOfString(req);
+        }
+        String kaptchaExpected = (String) req.getSession().getAttribute(
+                com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
+        String kaptchaReceived = parameters.get(CAPTCHA)!=null?parameters.get(CAPTCHA).get(0):null;
+        req.getSession().removeAttribute("formDatas");
+        req.getSession().removeAttribute("formError");
+        if (kaptchaExpected!= null && (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected))) {
+            Map<String, String[]> formDatas = new HashMap<String, String[]>();
+            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+            for (Map.Entry<String,List<String>> entry : set) {
+                formDatas.put(entry.getKey(),entry.getValue().toArray(new String[entry.getValue().size()]));
+            }
+            req.getSession().setAttribute("formDatas",formDatas);
+            req.getSession().setAttribute("formError","Your captcha is invalid");
+            performRedirect("",urlResolver.getPath(),req, resp, parameters);
+            return;
         }
         if (urlResolver.getPath().endsWith(".do")) {
             Resource resource = urlResolver.getResource(getVersionNumber(req));
@@ -395,6 +396,7 @@ public class Render extends HttpServlet implements Controller,
                     uuids.add(wrapper.getIdentifier());
                     files.add(itemEntry.getValue().getName());
                 }
+                fileUpload.markFilesAsConsumed();
                 session.save();
             }
 
@@ -415,6 +417,9 @@ public class Render extends HttpServlet implements Controller,
                     logger.error(e.getMessage(), e);
                 }
             }
+        }
+        if(fileUpload != null && fileUpload.getParameterMap()!=null && !fileUpload.getParameterMap().isEmpty()) {
+            parameters.putAll(fileUpload.getParameterMap());
         }
         return false;
     }
@@ -439,7 +444,8 @@ public class Render extends HttpServlet implements Controller,
             HttpServletRequest req, HttpServletResponse resp,Map<String, List<String>> parameters)
             throws IOException {
         String renderedURL = null;
-        String outputFormat = parameters.containsKey(NEW_NODE_OUTPUT_FORMAT)?parameters.get(NEW_NODE_OUTPUT_FORMAT).get(0): "";
+        List<String> stringList = parameters.get(NEW_NODE_OUTPUT_FORMAT);
+        String outputFormat = (stringList!=null&& stringList.size()>0)?stringList.get(0):null;
         if (outputFormat == null || "".equals(outputFormat.trim())) {
             outputFormat = "html";
         }
@@ -450,15 +456,16 @@ public class Render extends HttpServlet implements Controller,
                             "/").replace("+", "%20")))
                     + url + "." + outputFormat;
         }
-        String redirectTo = parameters.containsKey(NEW_NODE_OUTPUT_FORMAT)?parameters.get(REDIRECT_TO).get(0):"";
-        if (redirectTo != null && "".equals(redirectTo.trim())) {
-            redirectTo = null;
+        stringList = parameters.get(REDIRECT_TO);
+        String stayOnPage = (stringList!=null&& stringList.size()>0)?stringList.get(0):null;
+        if (stayOnPage != null && "".equals(stayOnPage.trim())) {
+            stayOnPage = null;
         }
-        if (renderedURL != null && redirectTo == null) {
+        if (renderedURL != null && stayOnPage == null) {
             resp.setHeader("Location", renderedURL);
             resp.sendRedirect(renderedURL);
-        } else if (redirectTo != null) {
-            resp.sendRedirect(redirectTo + "." + outputFormat);
+        } else if (stayOnPage != null) {
+            resp.sendRedirect(stayOnPage + "." + outputFormat);
         }
     }
 

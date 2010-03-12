@@ -39,10 +39,10 @@
     </script>
 </c:if>
 
-<c:set var="action" value="${url.base}${currentNode.path}/*"/>
+<c:set var="action" value="${url.base}${currentNode.path}/responses/*"/>
 <c:if test="${not empty actionNode.nodes}">
     <c:if test="${fn:length(actionNode.nodes) > 1}">
-        <c:set var="action" value="${url.base}${currentNode.path}.chain.do"/>
+        <c:set var="action" value="${url.base}${currentNode.path}/responses.chain.do"/>
         <c:set var="chainActive" value=""/>
         <c:forEach items="${actionNode.nodes}" var="node" varStatus="stat">
             <c:set var="chainActive" value="${chainActive}${node.properties['j:action'].string}"/>
@@ -52,7 +52,7 @@
     <c:if test="${fn:length(actionNode.nodes) eq 1}">
         <c:forEach items="${actionNode.nodes}" var="node">
             <c:if test="${node.properties['j:action'].string != 'default'}">
-                <c:set var="action" value="${url.base}${currentNode.path}.${node.properties['j:action'].string}.do"/>
+                <c:set var="action" value="${url.base}${currentNode.path}/responses.${node.properties['j:action'].string}.do"/>
             </c:if>
         </c:forEach>
     </c:if>
@@ -106,34 +106,6 @@
 
 <div>
     <h2>Responses</h2>
-    <c:forEach items="${jcr:getNodes(currentNode,'jnt:responseToForm')}" var="response">
-        <div>
-            <c:forEach items="${fieldsetsNode.nodes}" var="fieldset">
-                <c:forEach
-                        items="${jcr:getPropertiesAsStringFromNodeNameOfThatType(response,fieldset,'jnt:formElement')}"
-                        var="entry">
-                    <jcr:node var="def" path="${fieldset.path}/${entry.key}"/>
-                    <c:if test="${jcr:isNodeType(def, 'jnt:automaticList')}">
-                        <jcr:nodeProperty node="${def}" name="type" var="type"/>
-                        <c:set var="renderers" value="${fn:split(type.string,'=')}"/>
-                        <c:if test="${fn:length(renderers) > 1}"><c:set var="renderer" value="${renderers[1]}"/></c:if>
-                        <c:if test="${not (fn:length(renderers) > 1)}"><c:set var="renderer" value=""/></c:if>
-                        <p><label>${entry.key}</label>&nbsp;<span>Value:<jcr:nodePropertyRenderer node="${response}"
-                                                                                                  name="${entry.key}"
-                                                                                                  renderer="${renderer}"/></span>
-                        </p>
-                    </c:if>
-                    <c:if test="${not jcr:isNodeType(def, 'jnt:automaticList')}">
-                        <p>
-                            <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
-                        </p>
-                    </c:if>
-                </c:forEach>
-                <c:forEach items="${response.nodes}" var="subResponseNode">
-                    <template:module node="${subResponseNode}" template="default"/>
-                </c:forEach>
-            </c:forEach>
-        </div>
-    </c:forEach>
+    <template:area path="${currentNode.path}/responses" nodeTypes="jnt:responseToForm" editable="true" forceCreation="true"/>
 </div>
 

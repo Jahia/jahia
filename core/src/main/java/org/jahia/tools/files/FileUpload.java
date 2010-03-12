@@ -238,6 +238,11 @@ public class FileUpload {
         return files.get(n).getContentType();
     }
 
+    public void markFilesAsConsumed() {
+        files = null;
+        filesByFieldName = null;
+    }
+
     /**
      * Method checkSavePath
      * Check if the path where to save files is valid

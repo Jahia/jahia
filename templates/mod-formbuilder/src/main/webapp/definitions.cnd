@@ -80,7 +80,7 @@ orderable
  + action (jnt:contentList)
  + fieldsets (jnt:contentList)
  + formButtons (jnt:contentList)
- + * (jnt:responseToForm)
+ + responses (jnt:contentList)
 
 [jnt:required] > jnt:formElementValidation,  jmix:formContent
 

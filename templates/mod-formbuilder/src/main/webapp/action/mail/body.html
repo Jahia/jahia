@@ -4,14 +4,14 @@
 <title>A form ${formNode.getProperty("jcr:title").string} has been submitted</title>
 </head>
 <body>
-<h2>A form ${formNode.getProperty("jcr:title").string} has been submitted with those values :</h2>
+<h2>A form of type ${formNode.getProperty("jcr:title").string} has been submitted with those values :</h2>
 <ol>
 <% formDatas.each() {
 %>
-    <li><label>${it.key}</label>&nbsp;<span>${it.value}</span></li>
+    <li><label style="font:bold">${it.key}&nbsp;:</label>&nbsp;<span>${it.value}</span></li>
 <%}%>
     </ol>
-<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Form Team")}</p>
+<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>"Form Team"</p>
 
 <hr>
 </body>

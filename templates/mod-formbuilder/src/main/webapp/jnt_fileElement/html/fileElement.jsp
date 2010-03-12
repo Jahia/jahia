@@ -16,7 +16,7 @@
     })
 </script>
 <p class="field">
-<label class="left">${props.label}</label>
+<label class="left">${currentNode.properties.label.string}</label>
 <input type="file" id="${currentNode.name}" name="${currentNode.name}"/>
 <c:if test="${renderContext.editMode}">
 <div class="formMarginLeft">

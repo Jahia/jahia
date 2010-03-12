@@ -3,31 +3,48 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="option" type="org.jahia.services.content.nodetypes.initializers.ChoiceListValue"--%>
 <%@ page contentType="text/xml;UTF-8" language="java" %>
-<jcr:jqom var="sitemaps">
-    <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
-    <query:or>
-        <query:sameNode path="${currentNode.path}" selectorName="stmp"/>
-    </query:or>
-</jcr:jqom>
-<c:if test="${empty level}">
+<template:addResources type="css" resources="slickmap.css"/>
+
+
+<c:if test="${empty renderContext.moduleParams.level}">
     <c:set var="level" value="1"/>
 </c:if>
-<c:set var="currentLevel" value="${level}"/>
-<c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
-    <c:if test="${status.first}">
-        <ul class="level_${currentLevel}">
+
+<c:if test="${not empty renderContext.moduleParams.level}">
+    <c:set var="level" value="${renderContext.moduleParams.level}"/>
+</c:if>
+
+
+<c:if test="${level eq 1}"><div class="sitemap"><ul><li></c:if>
+<c:if test="${level > 1}">
+    <li>
+</c:if>
+<a href='<c:url value="${currentNode.path}.html" context="${url.base}"/>'>${currentNode.properties["jcr:title"].string}
+    level ${level}</a>
+<c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:sitemap')}" var="child" varStatus="childStatus">
+    <c:if test="${childStatus.first}">
+        <ul <c:if test="${level eq 1}"><c:set var="nbSubItems" value="${jcr:getChildrenOfType(currentNode,'jmix:sitemap')}"/> id="primaryNav" class="col${fn:length(nbSubItems)}"</c:if>>
     </c:if>
-    <li class="">
-        <a href='<c:url value="${sitemapEL.path}.html" context="${url.base}"/>'>${sitemapEL.properties["jcr:title"].string}</a>
-        <c:set var="level" scope="request" value="${currentLevel + 1}"/>
-        <c:forEach items="${sitemapEL.nodes}" var="child">
-            <c:if test="${jcr:isNodeType(child, 'jmix:sitemap')}">
-                <template:module node="${child}" forcedTemplate="sitemap" editable="false"/>
-            </c:if>
-        </c:forEach>
-    </li>
-    <c:if test="${status.last}">
+    <template:module node="${child}" forcedTemplate="sitemap" editable="false">
+        <template:param name="level" value="${level +1}"/>
+    </template:module>
+    <c:if test="${childStatus.last}">
         </ul>
     </c:if>
 </c:forEach>
+<c:if test="${level > 1}">
+    </li>
+</c:if>
+<c:if test="${level eq 1}"></li></ul></div></c:if>
+<c:set var="level" value="${level - 1}" scope="request"/>

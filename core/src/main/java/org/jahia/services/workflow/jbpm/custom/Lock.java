@@ -26,7 +26,7 @@ public class Lock implements ExternalActivityBehaviour {
             node.addMixin("jmix:publication");
         }
         node.getSession().save();
-        JCRPublicationService.getInstance().lockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), false, false);
+        JCRPublicationService.getInstance().lockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), true, false);
         execution.takeDefaultTransition();
     }
 

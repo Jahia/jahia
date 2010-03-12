@@ -24,7 +24,7 @@ public class Unlock implements ExternalActivityBehaviour {
         String workspace = (String) execution.getVariable("workspace");
         Locale locale = (Locale) execution.getVariable("locale");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), false, false);
+        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), true, false);
         execution.takeDefaultTransition();
     }
 

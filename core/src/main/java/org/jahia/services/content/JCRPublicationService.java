@@ -145,43 +145,61 @@ public class JCRPublicationService extends JahiaService {
                                                     // currently it has to be set in definitions files
     }
 
-    public void lockForPublication(final String path, final String workspace, Set<String> languages, boolean system, boolean allSubTree) throws RepositoryException {
-        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
-        JCRNodeWrapper n = session.getNode(path);
-        ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
-        ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
-        ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
-        getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
-        for (JCRNodeWrapper node : toLock) {
-            if (node.isLockable() && !node.isLocked()) {
-                node.lockAndStoreToken();
-            } else if (node.isLocked()) {
-                logger.warn("Node was already locked : "+node.getPath());
+    public void lockForPublication(final String path, final String workspace, final Set<String> languages, final boolean system, final boolean allSubTree) throws RepositoryException {
+        JCRTemplate.getInstance().doExecute(system, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(), workspace, null,new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper n = session.getNode(path);
+                ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
+                ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
+                ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
+                getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
+                for (JCRNodeWrapper node : toLock) {
+                    if (node.isLockable() && !node.isLocked()) {
+                        node.lockAndStoreToken();
+                    } else if (node.isLocked()) {
+                        logger.warn("Node was already locked : "+node.getPath());
+                    }
+                }
+                for (JCRNodeWrapper reference : references) {
+                    JCRNodeWrapper ref = session.getNode(reference.getPath());
+                    if (ref.isLocked()) {
+                        ref.lockAndStoreToken();
+                    } else {
+                        logger.warn("Node was already locked : "+ref.getPath());
+                    }
+                }
+                return null;
             }
-        }
-        for (JCRNodeWrapper reference : references) {
-            lockForPublication(reference.getPath(), workspace, languages, system, false);
-        }
+        });
     }
     
-    public void unlockForPublication(final String path, final String workspace, Set<String> languages, boolean system, boolean allSubTree) throws RepositoryException {
-        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(workspace);
-        JCRNodeWrapper n = session.getNode(path);
-        ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
-        ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
-        ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
-        getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
-        Collections.reverse(toLock);
-        for (JCRNodeWrapper node : toLock) {
-            if (node.isLocked()) {
-                node.forceUnlock();
-            } else {
-                logger.warn("Node was not locked : "+node.getPath());
+    public void unlockForPublication(final String path, final String workspace, final Set<String> languages, final boolean system, final boolean allSubTree) throws RepositoryException {
+        JCRTemplate.getInstance().doExecute(system, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(), workspace, null,new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper n = session.getNode(path);
+                ArrayList<JCRNodeWrapper> toUnlock = new ArrayList<JCRNodeWrapper>();
+                ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
+                ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
+                getBlockedAndReferencesList(n, toUnlock, prune, references, languages, allSubTree);
+                Collections.reverse(toUnlock);
+                for (JCRNodeWrapper node : toUnlock) {
+                    if (node.isLocked()) {
+                        node.forceUnlock();
+                    } else {
+                        logger.warn("Node was not locked : "+node.getPath());
+                    }
+                }
+                for (JCRNodeWrapper reference : references) {
+                    JCRNodeWrapper ref = session.getNode(reference.getPath());
+                    if (ref.isLocked()) {
+                        ref.forceUnlock();
+                    } else {
+                        logger.warn("Node was not locked : "+ref.getPath());
+                    }
+                }
+                return null;
             }
-        }
-        for (JCRNodeWrapper reference : references) {
-            unlockForPublication(reference.getPath(), workspace, languages, system, false);
-        }
+        });
     }
 
     /**
@@ -199,6 +217,7 @@ public class JCRPublicationService extends JahiaService {
      */
     public void publish(final String path, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
                         final boolean system, final boolean allSubTree) throws RepositoryException {
+//        unlockForPublication(path, sourceWorkspace, languages, system, allSubTree);
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -237,15 +256,28 @@ public class JCRPublicationService extends JahiaService {
                          boolean allSubTree, boolean publishParent, Set<String> pathes) throws RepositoryException {
         pathes.add(sourceNode.getPath());
 
-        String destinationWorkspace = destinationSession.getWorkspace().getName();
+        final String destinationWorkspace = destinationSession.getWorkspace().getName();
 
         try {
             sourceNode.getParent().getCorrespondingNodePath(destinationWorkspace);
         } catch (ItemNotFoundException e) {
             if (publishParent) {
-                String parentPath = sourceNode.getParent().getPath();
-                if (!pathes.contains(parentPath)) {
-                    publish(sourceNode.getParent(), destinationSession, languages, false, true, pathes);
+                if (!destinationSession.isSystem()) {
+                    final String parentPath = sourceNode.getParent().getPath();
+                    JCRTemplate.getInstance().doExecute(true, sourceNode.getUser().getUsername(), sourceNode.getSession().getWorkspace().getName(), null,  new JCRCallback() {
+                        public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                            return JCRTemplate.getInstance().doExecute(true, sourceNode.getUser().getUsername(), destinationWorkspace, new JCRCallback() {
+                                public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                                    cloneParents(sourceSession.getNode(parentPath), sourceSession, destinationSession);
+                                    sourceSession.save();
+                                    destinationSession.save();
+                                    return null;
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    cloneParents(sourceNode.getParent(), sourceNode.getSession(), destinationSession);
                 }
             } else {
                 return;
@@ -266,8 +298,8 @@ public class JCRPublicationService extends JahiaService {
                 if (!pathes.contains(node.getPath())) {
                     publish(node, destinationSession, languages, false, true, pathes);
                 }
-            } catch (AccessDeniedException e) {
-                logger.warn("Cannot publish node at : " + node);
+            } catch (Exception e) {
+                logger.warn("Cannot publish node at : " + node.getPath(),e);
             }
         }
         if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
@@ -308,6 +340,15 @@ public class JCRPublicationService extends JahiaService {
             mergeToDestinationWorkspace(toPublish, prunedSourcePath, prunedDestPath, sourceNode.getSession(), destinationSession);
         } catch (PathNotFoundException e) {
             cloneToDestinationWorkspace(toPublish.iterator().next(), prunedSourcePath, sourceNode.getSession(), destinationSession);
+        }
+    }
+
+    private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+        try {
+            node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            doClone(node, null, sourceSession, destinationSession);
+        } catch (ItemNotFoundException e) {
+            cloneParents(node.getParent(), sourceSession, destinationSession);
         }
     }
 
@@ -552,25 +593,25 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JahiaAccessManager.setDeniedPathes(null);
         }
-
-        NodeIterator it = sourceNode.getNodes();
         JCRNodeWrapper destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
-        while (it.hasNext()) {
-            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-            if (!pruneNodes.contains(nodeWrapper.getPath()) && nodeWrapper.isVersioned()) {
-                try {
-                    // Check if the child has a corresponding path - if not, clone it
-                    nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);
-                    // Check if parent node has a child with that name - if not, clone it (shareable)
-                    if (!destinationNode.hasNode(nodeWrapper.getName())) {
+        if (pruneNodes != null) {
+            NodeIterator it = sourceNode.getNodes();
+            while (it.hasNext()) {
+                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
+                if (!pruneNodes.contains(nodeWrapper.getPath()) && nodeWrapper.isVersioned()) {
+                    try {
+                        // Check if the child has a corresponding path - if not, clone it
+                        nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);
+                        // Check if parent node has a child with that name - if not, clone it (shareable)
+                        if (!destinationNode.hasNode(nodeWrapper.getName())) {
+                            doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                        }
+                    } catch (ItemNotFoundException e) {
                         doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
-                    } 
-                } catch (ItemNotFoundException e) {
-                    doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                    }
                 }
             }
         }
-
         logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , dest node v=" + destinationNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getBaseVersion().getName() +

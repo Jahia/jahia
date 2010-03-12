@@ -24,6 +24,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
@@ -76,15 +77,18 @@ public class WorkflowTabItem extends SidePanelTabItem {
                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
                             @Override
                             public void componentSelected(MenuEvent ce) {
+                                editLinker.getMainModule().mask("Executing","x-mask-loading");
                                 jahiaContentManagementServiceAsync.assignAndCompleteTask(node.getPath(), action,
                                                                                          outcome, new AsyncCallback() {
                                             public void onSuccess(Object result) {
+                                                editLinker.getMainModule().unmask();
                                                 Info.display("Workflow executed", "Workflow executed");
                                                 editLinker.getSidePanel().refresh();
                                                 editLinker.refresh();
                                             }
 
                                             public void onFailure(Throwable caught) {
+                                                editLinker.getMainModule().unmask();
                                                 Info.display("Workflow failed", "Workflow failed");
                                             }
                                         });

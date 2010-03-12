@@ -439,7 +439,7 @@ public class Render extends HttpServlet implements Controller,
             HttpServletRequest req, HttpServletResponse resp,Map<String, List<String>> parameters)
             throws IOException {
         String renderedURL = null;
-        String outputFormat = parameters.get(NEW_NODE_OUTPUT_FORMAT).get(0);
+        String outputFormat = parameters.containsKey(NEW_NODE_OUTPUT_FORMAT)?parameters.get(NEW_NODE_OUTPUT_FORMAT).get(0): "";
         if (outputFormat == null || "".equals(outputFormat.trim())) {
             outputFormat = "html";
         }
@@ -450,15 +450,15 @@ public class Render extends HttpServlet implements Controller,
                             "/").replace("+", "%20")))
                     + url + "." + outputFormat;
         }
-        String stayOnPage = parameters.get(REDIRECT_TO).get(0);
-        if (stayOnPage != null && "".equals(stayOnPage.trim())) {
-            stayOnPage = null;
+        String redirectTo = parameters.containsKey(NEW_NODE_OUTPUT_FORMAT)?parameters.get(REDIRECT_TO).get(0):"";
+        if (redirectTo != null && "".equals(redirectTo.trim())) {
+            redirectTo = null;
         }
-        if (renderedURL != null && stayOnPage == null) {
+        if (renderedURL != null && redirectTo == null) {
             resp.setHeader("Location", renderedURL);
             resp.sendRedirect(renderedURL);
-        } else if (stayOnPage != null) {
-            resp.sendRedirect(stayOnPage + "." + outputFormat);
+        } else if (redirectTo != null) {
+            resp.sendRedirect(redirectTo + "." + outputFormat);
         }
     }
 

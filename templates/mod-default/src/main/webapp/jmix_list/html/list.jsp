@@ -28,4 +28,6 @@
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<template:include template="hidden.footer"/>
+<template:include template="hidden.footer">
+    <template:param name="searchUrl" value="${url.current}"/>
+</template:include>

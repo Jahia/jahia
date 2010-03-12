@@ -15,7 +15,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:module node="${currentNode}" forcedTemplate="hidden.header"  editable="false"/>
+<template:include template="hidden.header"/>
 
 <table width="100%" class="table tableTasks " summary="Edition Mes taches en cours (table)">
 <caption class=" hidden">
@@ -41,7 +41,7 @@ Edition Mes taches en cours (table)
 
     <tr class="odd">
         <td class="center" headers="Type"><a style="display:block;width:16px;height:16px" class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("subchild")).getName()) %>"></a> </td>
-        <td headers="Title"><a href="${url.base}${subchild.path}.details.html">${subchild.name}</a>
+        <td headers="Title"><a href="${url.base}${subchild.path}.docspace.html">${subchild.name}</a>
 
 
 <a class="BtMore rightside" href="#"></a>
@@ -62,4 +62,6 @@ Edition Mes taches en cours (table)
 
 </tbody>
 </table>
-<template:module node="${currentNode}" forcedTemplate="hidden.footer"  editable="false"/>
+<template:include template="hidden.footer">
+    <template:param name="searchUrl" value="${url.current}"/>
+</template:include>

@@ -249,7 +249,7 @@
         </description>
         <name>include</name>
         <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
             <name>template</name>

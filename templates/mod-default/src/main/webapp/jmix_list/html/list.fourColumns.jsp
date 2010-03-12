@@ -43,4 +43,6 @@
     </c:if>
     <div class="clear"></div>
 </div><!--stop 4columns -->
-<template:module node="${currentNode}" template="hidden.footer"  editable="false"/>
+<template:include template="hidden.footer">
+    <template:param name="searchUrl" value="${url.current}"/>
+</template:include>

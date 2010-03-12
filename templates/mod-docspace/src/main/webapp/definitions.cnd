@@ -3,7 +3,6 @@
 [jnt:docFilesList] > jnt:content, jmix:list, jmix:pager
 
 [jnt:docspace] > jnt:content, mix:title, jmix:tagged
-- description (string, richtext)
 + filesList (jnt:docFilesList)
 + * (jnt:file)
 

@@ -14,7 +14,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not empty paginationActive and totalSize > 0 and nbPages > 1}">
-    <c:set var="searchUrl" value="${url.current}"/>
     <c:if test="${not empty renderContext.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
     </c:if>
@@ -48,5 +47,6 @@
 
         <div class="clear"></div>
     </div>
+    <c:remove var="listTemplate"/>
     <!--stop pagination-->
 </c:if>

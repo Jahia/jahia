@@ -45,7 +45,7 @@
                       </p>
   <p class="clearMaringPadding docspaceauthor"><a href="#">Par ${currentNode.propertiesAsString['jcr:createdBy']}</a></p>
 
-                <p class="clearMaringPadding"><jcr:nodeProperty node="${currentNode}" name="description"/></p>
+                <p class="clearMaringPadding"><jcr:nodeProperty node="${currentNode}" name="jcr:description"/></p>
                 <!--stop boxdocspace -->
                   <div class="clear"></div>
               </div>
@@ -165,7 +165,6 @@
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-
                     <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList" forceCreation="true"/>
 
 

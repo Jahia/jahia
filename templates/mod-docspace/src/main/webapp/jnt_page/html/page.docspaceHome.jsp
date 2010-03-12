@@ -61,7 +61,7 @@
 
 
                                 <p><label for="docspacedesc" class="left">Description :</label>
-                                    <textarea name="description" id="docspacedesc" cols="45" rows="3" tabindex="21"></textarea></p>
+                                    <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3" tabindex="21"></textarea></p>
  <%--                               <p>
                                     <label for="docspacecat" class="left">Categories :</label>
                                     <input type="text" name="docspacecat" id="docspacecat" class="field" value="" tabindex="22" /></p>

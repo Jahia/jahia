@@ -97,6 +97,9 @@ public class MailAction implements Action {
 
     public void doExecute(HttpServletRequest req, HttpServletResponse resp, final RenderContext renderContext,
                           final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        if (!mailService.isEnabled()) {
+            logger.info("Mail service is disabled. Skip sending e-mail notification for form action");
+        }
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
         final String path = node.getPath();
         JCRNodeWrapper actionNode = null;

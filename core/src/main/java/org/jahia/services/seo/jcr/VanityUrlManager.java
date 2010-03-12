@@ -607,7 +607,7 @@ public class VanityUrlManager {
         itemToBePopulated.setSite(JCRContentUtils.getSiteKey(node.getPath()));
 
         itemToBePopulated.setUrl(node.getPropertyAsString(PROPERTY_URL));
-        itemToBePopulated.setLanguage(node.getLanguage());
+        itemToBePopulated.setLanguage(node.getPropertyAsString(JCR_LANGUAGE));
         itemToBePopulated.setActive(node.getProperty(PROPERTY_ACTIVE)
                 .getBoolean());
         itemToBePopulated.setDefaultMapping(node.getProperty(PROPERTY_DEFAULT)

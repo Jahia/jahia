@@ -32,13 +32,17 @@
 package org.jahia.taglibs.jcr.query;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.taglibs.AbstractJCRTag;
@@ -55,18 +59,14 @@ public class JCRSQLTag extends AbstractJCRTag {
     private long limit;
     private long offset;
 
-    public int doEndTag() {
-        resetState();
-        return EVAL_PAGE;
-    }
-
-    public int doStartTag() throws JspException {
+    public int doEndTag() throws JspException {
         try {
             pageContext.setAttribute(var, executeQuery(), scope);
         } catch (RepositoryException e) {
             throw new JspTagException(e);
         }
-        return EVAL_BODY_INCLUDE;
+        resetState();
+        return EVAL_PAGE;
     }
 
     /**

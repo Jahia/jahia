@@ -195,12 +195,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Use for displaying old jahia content. Name of the content bean attribute to be found in page context</description>
-            <name>contentBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>The template type to use. By default, inherited from parent module, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
@@ -250,32 +244,28 @@
         </attribute>
     </tag>
     <tag>
+        <description>
+            Tag to use include another template.
+        </description>
+        <name>include</name>
+        <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
+            <name>template</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+
+
+    <tag>
         <description>Import XML into parent module if no node exists
         </description>
         <name>import</name>
         <tag-class>org.jahia.taglibs.template.include.ImportTag</tag-class>
         <body-content>JSP</body-content>
-    </tag>
-    <tag>
-        <description>
-            Tag to use inside skins jsps to include original content
-        </description>
-        <name>includeContent</name>
-        <tag-class>org.jahia.taglibs.template.include.IncludeContentTag</tag-class>
-        <body-content>empty</body-content>
-    </tag>
-    <tag>
-        <description>
-            Tag to use inside skins jsps to include a specific extension
-        </description>
-        <name>includeExtension</name>
-        <tag-class>org.jahia.taglibs.template.include.IncludeExtensionTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>type</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
 
     <tag>

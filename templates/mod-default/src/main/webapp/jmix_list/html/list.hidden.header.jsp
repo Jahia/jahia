@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -13,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <div id="${currentNode.UUID}">
-
+    <c:remove var="listQuery" scope="request"/>
     <c:remove var="currentList" scope="request"/>
     <c:choose>
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
@@ -23,9 +24,30 @@
             <c:set var="begin" value="0" scope="request"/>
         </c:otherwise>
     </c:choose>
-    <template:module node="${currentNode}" forcedTemplate="hidden.load" editable="false">
-        <template:param name="forcedSkin" value="none"/>
-    </template:module>
+    <template:include template="hidden.load" />
+
+    <c:if test="${empty currentList and not empty listQuery}">
+        <%-- move that to jmix:orderedList hidden.init tpl --%>
+        <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
+            <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
+                <c:forTokens var="prefix" items="first,second,third" delims=",">
+                    <jcr:nodeProperty node="${currentNode}" name="${prefix}Field" var="sortPropertyName"/>
+                    <c:if test="${!empty sortPropertyName}">
+                        <jcr:nodeProperty node="${currentNode}" name="${prefix}Direction" var="order"/>
+                        <query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}"/>
+                    </c:if>
+                </c:forTokens>
+            </query:definition>
+        </c:if>
+        <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
+
+        <%-- pager specific --%>
+        <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
+        <c:set var="listTotalSize" value="${end}" scope="request"/>
+
+        <%-- set result --%>
+        <c:set value="${result.nodes}" var="currentList" scope="request"/>
+    </c:if>
 
     <c:if test="${empty editable}">
         <c:set var="editable" value="false"/>

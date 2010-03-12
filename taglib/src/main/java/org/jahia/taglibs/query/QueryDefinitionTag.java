@@ -32,11 +32,18 @@
 package org.jahia.taglibs.query;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.Query;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Ordering;
 import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.taglibs.AbstractJCRTag;
@@ -53,11 +60,18 @@ public class QueryDefinitionTag extends AbstractJCRTag {
 
     private QOMBuilder qomBuilder;
 
+    private String qomBeanName;
+
     private QueryObjectModel queryObjectModel;
 
     private int scope = PageContext.PAGE_SCOPE;
 
     private String var;
+
+    private String statement;
+
+    private long limit;
+    private long offset;
 
     /**
      * @return
@@ -86,6 +100,18 @@ public class QueryDefinitionTag extends AbstractJCRTag {
         if (qomBuilder == null) {
             try {
                 qomBuilder = new QOMBuilder(getJCRSession().getWorkspace().getQueryManager().getQOMFactory(), getJCRSession().getValueFactory());
+
+                QueryObjectModel qom = getInitialQueryObjectModel();
+                if (qom != null) {
+                    qomBuilder.setSource(qom.getSource());
+                    for (Column column : qom.getColumns()) {
+                        qomBuilder.getColumns().add(column);
+                    }
+                    qomBuilder.andConstraint(qom.getConstraint());
+                    for (Ordering ordering : qom.getOrderings()) {
+                        qomBuilder.getOrderings().add(ordering);
+                    }
+                }
             } catch (RepositoryException e) {
                 throw new JspTagException(e);
             }
@@ -93,9 +119,36 @@ public class QueryDefinitionTag extends AbstractJCRTag {
         return qomBuilder;
     }
 
+    protected QueryObjectModel getInitialQueryObjectModel() throws RepositoryException {
+        if (qomBeanName != null) {
+            return (QueryObjectModel) pageContext.getAttribute(qomBeanName, scope);
+        } else if (statement != null) {
+            QueryObjectModelFactory qf = getJCRSession().getWorkspace().getQueryManager().getQOMFactory();
+            ValueFactory vf = getJCRSession().getValueFactory();
+            QueryObjectModelBuilder builder = QueryObjectModelBuilderRegistry.getQueryObjectModelBuilder(Query.JCR_SQL2);
+            return builder.createQueryObjectModel(statement, qf, vf);
+        }
+        return null;
+    }
+
     protected QueryObjectModel getQueryObjectModel() throws RepositoryException {
         if (queryObjectModel == null) {
-            queryObjectModel = qomBuilder.createQOM();
+            if (qomBuilder != null) {
+                queryObjectModel = qomBuilder.createQOM();
+            } else {
+                final QueryObjectModel initialQOM = getInitialQueryObjectModel();
+                if (initialQOM != null) {
+                    queryObjectModel = initialQOM;
+                }
+            }
+            if (queryObjectModel != null) {
+                if (limit > 0) {
+                    queryObjectModel.setLimit(limit);
+                }
+                if (offset > 0) {
+                    queryObjectModel.setOffset(offset);
+                }
+            }
         }
         return queryObjectModel;
     }
@@ -113,10 +166,14 @@ public class QueryDefinitionTag extends AbstractJCRTag {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         qomBuilder = null;
+        qomBeanName = null;
         queryObjectModel = null;
         id = null;
         var = null;
+        statement = null;
         scope = PageContext.PAGE_SCOPE;
+        limit = 0;
+        offset = 0;
         super.resetState();
     }
 
@@ -128,4 +185,19 @@ public class QueryDefinitionTag extends AbstractJCRTag {
         this.var = var;
     }
 
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
+
+    public void setOffset(long offset) {
+        this.offset = offset;
+    }
+
+    public void setQomBeanName(String qomBeanName) {
+        this.qomBeanName = qomBeanName;
+    }
+
+    public void setStatement(String statement) {
+        this.statement = statement;
+    }
 }

@@ -79,8 +79,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private String nodeName;
 
-    private String contentBeanName;
-
     private String template;
 
     private String templateType = "html";
@@ -99,7 +97,41 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private Map<String, String> parameters = new HashMap<String, String>();
 
-    private String importString;
+    public String getPath() {
+        return path;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public JCRNodeWrapper getNode() {
+        return node;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public String getTemplateType() {
+        return templateType;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public String getForcedTemplate() {
+        return forcedTemplate;
+    }
+
+    public String getTemplateWrapper() {
+        return templateWrapper;
+    }
+
+    public String getVar() {
+        return var;
+    }
 
     public void setPath(String path) {
         this.path = path;
@@ -111,10 +143,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
-    }
-
-    public void setContentBeanName(String contentBeanName) {
-        this.contentBeanName = contentBeanName;
     }
 
     public void setTemplate(String template) {
@@ -143,10 +171,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setVar(String var) {
         this.var = var;
-    }
-
-    public void setImportString(String importString) {
-        this.importString = importString;
     }
 
     @Override
@@ -186,24 +210,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	            }
 	            if (nodeName != null) {
 	                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
-	            } else if (contentBeanName != null) {
-	                try {
-	                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
-	                    node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
-	                } catch (JahiaException e) {
-	                    logger.error(e.getMessage(), e);
-	                }
 	            } else if (path != null && currentResource != null) {
 	                try {
 	                    if (!path.startsWith("/")) {
 	                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
 	                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
 	                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
-	                        } else if (!path.equals("*") && renderContext.isEditMode() && importString != null) {
-                                Session session = nodeWrapper.getSession();
-                                session.importXML(nodeWrapper.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                                session.save();
-                                node = (JCRNodeWrapper) nodeWrapper.getNode(path);
 	                        } else {
 	                            currentResource.getMissingResources().add(path);
 
@@ -217,22 +229,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             try {
 	                            node = (JCRNodeWrapper) session.getItem(path);
                             } catch (PathNotFoundException e) {
-                                //todo remove auto-import
-                                if (renderContext.isEditMode() && importString != null) {
-                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path,"/"));
-                                    session.importXML(parent.getPath(), new ReaderInputStream(new StringReader(importString), "UTF-8"), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                                    session.save();
-                                    node = (JCRNodeWrapper) session.getItem(path);
-                                } else {
-                                    String currentPath = currentResource.getNode().getPath();
-                                    if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
-                                        currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
-                                    }
+                                String currentPath = currentResource.getNode().getPath();
+                                if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
+                                    currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
+                                }
 
-                                    if (renderContext.isEditMode()) {
-                                        printModuleStart("placeholder", path, null, null);
-                                        printModuleEnd();
-                                    }
+                                if (renderContext.isEditMode()) {
+                                    printModuleStart("placeholder", path, null, null);
+                                    printModuleEnd();
                                 }
                             }
                         }
@@ -332,7 +336,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 pageContext.setAttribute(var,buffer);
             }
             path = null;
-            contentBeanName = null;
             node = null;
             template = null;
             forcedTemplate = null;
@@ -342,7 +345,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             nodeTypes = null;
             var = null;
             buffer = null;
-            importString = null;
             parameters.clear();
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);

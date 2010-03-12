@@ -210,11 +210,43 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>
+                Name of an existing QueryObjectModel bean in the request scope to be used for the query.
+            </description>
+            <name>qomBeanName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                SQL-2 statement that will be used to initialize the QOM - ignored if qomBeanName is used
+            </description>
+            <name>statement</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <description>the scope of the exposed bean with the QueryObjectModel (see PageContext). Defaults to page scope.</description>
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>the maximum size of the result set, expressed in terms of the number of Rows</description>
+            <name>limit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Long</type>
+        </attribute>
+        <attribute>
+            <description>the start offset of the result set</description>
+            <name>offset</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Long</type>
         </attribute>
     </tag>
     

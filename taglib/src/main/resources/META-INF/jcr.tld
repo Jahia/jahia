@@ -243,6 +243,15 @@
             <type>java.lang.String</type>
         </attribute>        
         <attribute>
+            <description>
+                SQL-2 statement that will be used to initialize the QOM - ignored if qomBeanName is used
+            </description>
+            <name>statement</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <description>the name of the scoped bean with the exposed javax.jcr.query.QueryResult</description>
             <name>var</name>
             <required>true</required>

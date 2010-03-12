@@ -7,12 +7,6 @@
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
-        
-<jcr:sql var="result"
-         sql="select * from [jnt:news] as news  order by news.[date] desc"
-         limit="${maxNews.long}"   />
+<query:definition var="listQuery" statement="select * from [jnt:news] as news  order by news.[date] desc"
+         limit="${maxNews.long}"  scope="request" />
 <c:set var="editable" value="false" scope="request" />
-<c:set var="currentList" value="${result.nodes}" scope="request"/>
-<c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
-<c:set var="listTotalSize" value="${end}" scope="request"/>
-

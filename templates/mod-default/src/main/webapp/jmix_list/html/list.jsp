@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:module node="${currentNode}" template="hidden.header"  editable="false"/>
+<template:include template="hidden.header"/>
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
     <template:module node="${subchild}" template="${subNodesTemplate}" forcedTemplate="${forcedTemplate}" editable="${editable}">
         <c:if test="${not empty forcedSkin}">
@@ -28,4 +28,4 @@
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<template:module node="${currentNode}" template="hidden.footer"  editable="false"/>
+<template:include template="hidden.footer"/>

@@ -50,13 +50,9 @@ import org.jahia.taglibs.query.QueryDefinitionTag;
 public class JQOMTag extends QueryDefinitionTag {
     private static final Logger logger = Logger.getLogger(JQOMTag.class);
 
-    private String qomBeanName;
-    private long limit;
-    private long offset;
-
     public int doEndTag() throws JspException {
         try {
-            QueryObjectModel queryModel = qomBeanName == null ? getQueryObjectModel() : (QueryObjectModel) pageContext.getAttribute(qomBeanName, PageContext.REQUEST_SCOPE);
+            QueryObjectModel queryModel = getQueryObjectModel();
             pageContext.setAttribute(getVar(), findQueryResultByQOM(queryModel), getScope());
         } catch (RepositoryException e) {
             throw new JspTagException(e);
@@ -82,14 +78,11 @@ public class JQOMTag extends QueryDefinitionTag {
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by qom [ " + queryModel.getStatement() + " ]");
         }
-        if (limit > 0) {
-            queryModel.setLimit(limit);
-        }
-        if (offset > 0) {
-            queryModel.setOffset(offset);
-        }
         // execute query
+        System.out.println("Execute "+queryModel.getStatement());
+        long x = System.currentTimeMillis();
         queryResult = queryModel.execute();
+        System.out.println(System.currentTimeMillis()-x + " ms");
         if (logger.isDebugEnabled()) {
             logger.debug("Query[" + queryModel.getStatement() + "] --> found [" + queryResult + "] values.");
         }
@@ -97,23 +90,4 @@ public class JQOMTag extends QueryDefinitionTag {
         return queryResult;
     }
 
-    @Override
-    protected void resetState() {
-        qomBeanName = null;
-        limit = 0;
-        offset = 0;
-        super.resetState();
-    }
-
-    public void setQomBeanName(String qomBeanName) {
-        this.qomBeanName = qomBeanName;
-    }
-
-    public void setLimit(long limit) {
-        this.limit = limit;
-    }
-    
-    public void setOffset(long offset) {
-        this.offset = offset;
-    }
 }

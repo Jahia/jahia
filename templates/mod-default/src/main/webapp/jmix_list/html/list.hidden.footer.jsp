@@ -15,7 +15,7 @@
 
 <div class="clear"></div>
 <c:if test="${not empty paginationActive}">
-    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden"/>
+    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </c:if>
 </div>
 <template:removePager id="${currentNode.identifier}"/>

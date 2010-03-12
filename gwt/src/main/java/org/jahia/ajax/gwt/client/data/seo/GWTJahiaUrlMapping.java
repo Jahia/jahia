@@ -59,13 +59,13 @@ public class GWTJahiaUrlMapping extends BaseModel {
         set("active", Boolean.valueOf(isActive));
     }
 
-    public GWTJahiaUrlMapping(String uuid, String url, String language, boolean isDefault, boolean isActive) {
+    public GWTJahiaUrlMapping(String path, String url, String language, boolean isDefault, boolean isActive) {
         this(url, language, isDefault, isActive);
-        set("id", uuid);
+        set("path", path);
     }
 
-    public String getId() {
-        return get("id");
+    public String getPath() {
+        return get("path");
     }
 
     public String getLanguage() {

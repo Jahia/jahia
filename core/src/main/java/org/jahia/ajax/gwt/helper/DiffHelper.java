@@ -3,7 +3,6 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.settings.SettingsBean;
 import org.outerj.daisy.diff.HtmlCleaner;
 import org.outerj.daisy.diff.XslFilter;
 import org.outerj.daisy.diff.html.HTMLDiffer;
@@ -18,17 +17,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * HTML compare utility.
  * User: ktlili
  * Date: Mar 4, 2010
  * Time: 3:29:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public class DiffHelper {
     private static final transient Logger logger = Logger.getLogger(DiffHelper.class);
@@ -46,8 +43,6 @@ public class DiffHelper {
 
             // replace /live/ by /default/ in href and src attributes as it represents same image
             original = original.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
-            final InputStream oldStream = new StringBufferInputStream(original);
-            final InputStream newStream = new StringBufferInputStream(amendment);
 
             final ContentHandler postProcess = filter.xsl(result, "jahiahtmlheader.xsl");
 
@@ -56,8 +51,8 @@ public class DiffHelper {
 
             final HtmlCleaner cleaner = new HtmlCleaner();
 
-            final InputSource oldSource = new InputSource(oldStream);
-            final InputSource newSource = new InputSource(newStream);
+            final InputSource oldSource = new InputSource(new StringReader(original));
+            final InputSource newSource = new InputSource(new StringReader(amendment));
 
             final DomTreeBuilder oldHandler = new DomTreeBuilder();
             cleaner.cleanAndParse(oldSource, oldHandler);

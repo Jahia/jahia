@@ -12,7 +12,7 @@ $(document).ready(function () {
 });
 </template:addResources>
                 
-    <form name="blogForm" method="post" action="${currentNode.name}/"/>
+    <form name="blogForm" method="post" action="${currentNode.name}/">
     <h4><fmt:message key="jnt_blog.createNewBlog"/></h4>
     <p>
         <fmt:message key="jnt_blog.createNewBlogNamed"/>:&nbsp;<input type="text" name="jcr:title" value=""/>

@@ -160,7 +160,7 @@ public class NavigationHelper {
                     }
                     if (displayTags) {
                         try {
-                            theNode.set("count", f.getWeakReferences().getSize());
+                            theNode.set("count", JCRContentUtils.size(f.getWeakReferences()));
                         } catch (RepositoryException e) {
                             logger.warn("Unable to count node references for node: " + f.getPath(), e);
                         }

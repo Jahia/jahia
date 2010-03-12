@@ -38,18 +38,17 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import com.ibm.icu.text.Normalizer;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -256,6 +255,25 @@ public final class JCRContentUtils {
     public static String getSiteKey(String jcrNodePath) {
         return jcrNodePath != null ? (jcrNodePath.startsWith("/sites/") ? StringUtils.substringBetween(jcrNodePath,
                 "/sites/", "/") : null) : null;
+    }
+    
+    /**
+     * Returns the number of elements in the provided iterator.
+     * 
+     * @param iterator the item iterator to check the size
+     * @return the number of elements in the provided iterator
+     */
+    public static long size(RangeIterator iterator) {
+        long size = iterator.getSize();
+        if (size <= 0) {
+            size = 0;
+            while (iterator.hasNext()) {
+                size++;
+                iterator.next();
+            }
+        }
+
+        return size;
     }
 
     private Map<String, List<String>> mimeTypes;

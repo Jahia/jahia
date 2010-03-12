@@ -301,4 +301,16 @@
             &lt;/c:if&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+			Extends the standard JSTL's fn:length() function with JCR's RangeIterator support
+        </description>
+        <name>length</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>long length(java.lang.Object)</function-signature>
+        <example>
+            Tag usage count: ${functions:length(tag.weakReferences)}
+        </example>
+    </function>
 </taglib>

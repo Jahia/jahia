@@ -39,6 +39,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.PageProperty;
@@ -51,6 +52,9 @@ import org.jahia.utils.JahiaTools;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.RangeIterator;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * Custom functions, which are exposed into the template scope.
@@ -355,4 +359,10 @@ public class Functions {
 
         return found;
     }
+    
+    public static long length(Object obj) throws JspTagException {
+        return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
+                : org.apache.taglibs.standard.functions.Functions.length(obj);
+    }
+
 }

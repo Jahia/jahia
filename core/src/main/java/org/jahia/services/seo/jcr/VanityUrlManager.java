@@ -379,6 +379,7 @@ public class VanityUrlManager {
         Map<String, Map<Integer, VanityUrl>> existingMappings = new HashMap<String, Map<Integer, VanityUrl>>();
         Map<String, KeyValue> oldDefaultMappings = new HashMap<String, KeyValue>();
         if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+            session.checkout(contentNode);
             contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
         } else {
             int index = 1; // index for Node.getNode() is starting with 1 (XPath compatibility)

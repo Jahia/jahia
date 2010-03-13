@@ -86,6 +86,10 @@ public class VersioningTest extends TestCase {
                 jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
             }
 
+            // now let's do a little system versioning ourselves...
+
+            editSession.getWorkspace().getVersionManager().checkpoint(stagedSubPage.getPath());
+
             // let's do some validation checks, first for the live workspace...
 
             // check number of versions
@@ -98,7 +102,7 @@ public class VersioningTest extends TestCase {
                 JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
                 String versionTitle = versionNode.getPropertyAsString("jcr:title");
                 String title = "title" + index;
-                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getDate() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
                 assertEquals(title, versionTitle);
                 index++;
             }
@@ -112,7 +116,7 @@ public class VersioningTest extends TestCase {
                 JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
                 String versionTitle = versionNode.getPropertyAsString("jcr:title");
                 String title = "title" + index;
-                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getDate() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
                 assertEquals(title, versionTitle);
                 index++;
             }

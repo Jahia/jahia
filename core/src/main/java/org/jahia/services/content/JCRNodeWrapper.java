@@ -622,11 +622,20 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     List<String> getVersions();
 
     /**
-     * Gets the frozen version node of a given version name
+     * Gets the frozen version node of a given version name.
+     * Warning the node returned here is not a regular node, and has another nodetype, frozen properties & mixins &
+     * nodetypes.
      * @param name a version name
      * @return the wrapped frozen version node
      */
     JCRNodeWrapper getFrozenVersion(String name);
+
+    /**
+     * Gets the frozen version node of a given version name but as a "regular" JCR node
+     * @param name a version name
+     * @return the wrapped frozen version node
+     */
+    JCRNodeWrapper getFrozenVersionAsRegular(String name);
 
     /**
      * The <code>JCRStoreProvider</code> which returned the current node. 

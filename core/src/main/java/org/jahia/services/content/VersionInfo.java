@@ -1,5 +1,8 @@
 package org.jahia.services.content;
 
+import org.apache.log4j.Logger;
+
+import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import java.util.Date;
 
@@ -11,18 +14,21 @@ import java.util.Date;
  *         Time: 10:08:08 AM
  */
 public class VersionInfo implements Comparable {
-    private Version version;
-    private long revisionNumber;
-    private String comment;
-    private boolean subNode;
-    private Date date;
 
-    public VersionInfo(Version version, long revisionNumber, String comment, boolean subNode, Date date) {
+    private static transient Logger logger = Logger.getLogger(VersionInfo.class);
+
+    public static final long VERSION_EQUALITY_TIME_RANGE = 5*60*1000; // 5 mins equality test range
+
+    private Version version;
+    private long revisionNumber = -1;
+    private String comment;
+    private int depth;
+
+    public VersionInfo(Version version, long revisionNumber, String comment, int depth) {
         this.version = version;
         this.revisionNumber = revisionNumber;
         this.comment = comment;
-        this.subNode = subNode;
-        this.date = date;
+        this.depth = depth;
     }
 
     public Version getVersion() {
@@ -37,12 +43,8 @@ public class VersionInfo implements Comparable {
         return comment;
     }
 
-    public boolean isSubNode() {
-        return subNode;
-    }
-
-    public Date getDate() {
-        return date;
+    public int getDepth() {
+        return depth;
     }
 
     @Override
@@ -52,14 +54,33 @@ public class VersionInfo implements Comparable {
 
         VersionInfo that = (VersionInfo) o;
 
-        if (revisionNumber != that.revisionNumber) return false;
+        try {
+            if ((revisionNumber != -1) && (that.revisionNumber != -1)) {
+                if (Math.abs(version.getCreated().getTimeInMillis() - that.version.getCreated().getTimeInMillis()) <= VERSION_EQUALITY_TIME_RANGE) {
+                    if (revisionNumber == that.revisionNumber) return true;
+                }
+            }
+            // no revision number available, let's test version names simply.
+            return version.getName().equals(that.version.getName());
+        } catch (RepositoryException re) {
+            logger.error("Repository error while calculating equality, returning false !", re);
+            return false;
+        }
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return (int) (revisionNumber ^ (revisionNumber >>> 32));
+        if (revisionNumber !=-1) {
+            return (int) (revisionNumber ^ (revisionNumber >>> 32));
+        } else {
+            try {
+                return version.getName().hashCode();
+            } catch (RepositoryException re) {
+                logger.error("Repository error while calculating hashcode for version, returning -1 hashcode", re);
+                return -1;
+            }
+        }
     }
 
     /**
@@ -101,6 +122,15 @@ public class VersionInfo implements Comparable {
      */
     public int compareTo(Object o) {
         VersionInfo that = (VersionInfo) o;
-        return new Long(revisionNumber).compareTo(new Long(that.getRevisionNumber()));
+        if ((revisionNumber != -1) && (that.revisionNumber != -1)) {
+            return new Long(revisionNumber).compareTo(new Long(that.getRevisionNumber()));
+        } else {
+            try {
+                return this.version.getCreated().compareTo(that.version.getCreated());
+            } catch (RepositoryException re) {
+                logger.error("Repository exception while comparing version creation times, returning equality !!!", re);
+                return 0;
+            }
+        }
     }
 }

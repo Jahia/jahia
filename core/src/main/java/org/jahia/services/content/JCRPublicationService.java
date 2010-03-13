@@ -26,6 +26,7 @@ import java.util.*;
 public class JCRPublicationService extends JahiaService {
     private static transient Logger logger = Logger.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
+    private JCRVersionService jcrVersionService;
     private static JCRPublicationService instance;
 
     private JCRPublicationService() {
@@ -47,6 +48,10 @@ public class JCRPublicationService extends JahiaService {
      */
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public void setJcrVersionService(JCRVersionService jcrVersionService) {
+        this.jcrVersionService = jcrVersionService;
     }
 
     /**
@@ -387,7 +392,7 @@ public class JCRPublicationService extends JahiaService {
                 node.setProperty("j:lastPublished", c);
                 node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
 
-            incrementRevisionNumber(node);
+            jcrVersionService.incrementRevisionNumber(node);
 //            }
         }
         if (modified.isEmpty()) {
@@ -476,18 +481,6 @@ public class JCRPublicationService extends JahiaService {
                 doClone(node, prunedSourcePath, sourceSession, destinationSession);
             }
         }
-    }
-
-    private long incrementRevisionNumber(Node node) throws RepositoryException {
-        if (!node.isNodeType("jmix:versionInfo")) {
-            return 0;
-        }
-        long currentRevision = 0;
-        if (node.hasProperty("j:revisionNumber")) {
-            currentRevision = node.getProperty("j:revisionNumber").getLong();
-        }
-        node.setProperty("j:revisionNumber", currentRevision+1);
-        return currentRevision+1; 
     }
 
     void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
@@ -652,7 +645,7 @@ public class JCRPublicationService extends JahiaService {
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
-        incrementRevisionNumber(node);
+        jcrVersionService.incrementRevisionNumber(node);
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();

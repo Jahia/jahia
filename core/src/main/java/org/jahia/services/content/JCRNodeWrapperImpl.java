@@ -1599,6 +1599,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public JCRNodeWrapper getFrozenVersionAsRegular(String name) {
+        try {
+            Version v = objectNode.getVersionHistory().getVersion(name);
+            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
+            return provider.getNodeWrapper(frozen, session);
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving frozen version", e);
+        }
+        return null;
+    }
+
+    /**
      * Change the permissions of a user on the given node.
      * @param objectNode The node on which to change permission
      * @param user The user to update

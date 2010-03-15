@@ -1,4 +1,4 @@
-A form ${formNode.getProperty("jcr:title").string} has been submitted.
+A form ${formNode.hasProperty("jcr:title") ? formNode.getProperty("jcr:title").string : formNode.getName()} has been submitted.
 
 <% formDatas.each() {
 %>

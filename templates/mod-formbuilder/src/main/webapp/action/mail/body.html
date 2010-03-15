@@ -1,10 +1,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<title>A form ${formNode.getProperty("jcr:title").string} has been submitted</title>
+<title>A form ${formNode.hasProperty("jcr:title") ? formNode.getProperty("jcr:title").string : formNode.getName()} has been submitted</title>
 </head>
 <body>
-<h2>A form of type ${formNode.getProperty("jcr:title").string} has been submitted with those values :</h2>
+<h2>A form of type ${formNode.hasProperty("jcr:title") ? formNode.getProperty("jcr:title").string : formNode.getName()} has been submitted with those values :</h2>
 <ol>
 <% formDatas.each() {
 %>

@@ -187,6 +187,7 @@ function testSettingsFailure(text, code, statusText) {
                                                 </select>
                                             </td>
                                         </tr>
+                                        <%--
                                         <tr>
                                             <td colspan="2" align="right">
                                               <span class="dex-PushButton">
@@ -197,6 +198,7 @@ function testSettingsFailure(text, code, statusText) {
 
                                             </td>
                                         </tr>
+                                         --%>
                                     </table>
                                 </form>
                             </div>

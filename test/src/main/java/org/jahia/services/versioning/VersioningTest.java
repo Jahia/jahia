@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * Unit test to test version listing created during publication
- * @todo currently we create twice more versions in the live workspace, do to a check-in we perform to force the merge
- * conflict.
  */
 public class VersioningTest extends TestCase {
     private static Logger logger = Logger.getLogger(VersioningTest.class);
@@ -50,7 +48,6 @@ public class VersioningTest extends TestCase {
     public void testVersions() throws Exception {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-
 
             JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession();
             JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);

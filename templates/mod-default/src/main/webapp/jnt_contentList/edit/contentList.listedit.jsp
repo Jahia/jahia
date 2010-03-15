@@ -6,6 +6,6 @@
 
 <%-- include add nodes forms --%>
 <template:module node="${currentNode}" templateType="edit" template="add">
-    <template:param name="resourceNodeType" value="nt:base"/>
+    <template:param name="resourceNodeType" value="jnt:news"/>
 </template:module>
 </div>

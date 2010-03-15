@@ -45,7 +45,10 @@
 <c:set target="${searchTermIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermMatchIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermFieldIndexes}" property="${formId}" value="0"/>
-<c:set target="${attributes}" property="action" value="${functions:default(attributes.action, url.mainResource)}"/>
+<c:if test="${empty attributes.action}">
+	<c:url var="actionUrl" value="${renderContext.mainResource.node.path}.search.html" context="${url.base}"/>
+</c:if>
+<c:set target="${attributes}" property="action" value="${functions:default(attributes.action, actionUrl)}"/>
 <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'searchForm')}"/>
 <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
 <form ${functions:attributes(attributes)}>

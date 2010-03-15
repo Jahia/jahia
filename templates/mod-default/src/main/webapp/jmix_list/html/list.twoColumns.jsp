@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="Columns.css"/>
 
-<template:module node="${currentNode}" template="hidden.header"  editable="false"/>
+<template:include template="hidden.header"/>
 
 <div class="columns2"><!--start 2columns -->
     <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="status">

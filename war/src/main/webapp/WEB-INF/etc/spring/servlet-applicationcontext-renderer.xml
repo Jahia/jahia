@@ -23,6 +23,12 @@
                         <property name="templateService" ref="JahiaTemplateManagerService"/>
                     </bean>
                 </entry>
+                <entry key="/contribute/**">
+                    <bean name="org.jahia.bin.Edit" class="org.jahia.bin.Contribute">
+                        <property name="loggingService" ref="loggingService"/>
+                        <property name="templateService" ref="JahiaTemplateManagerService"/>
+                    </bean>
+                </entry>
                 <entry key="/edit/**">
                     <bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit">
                         <property name="loggingService" ref="loggingService"/>

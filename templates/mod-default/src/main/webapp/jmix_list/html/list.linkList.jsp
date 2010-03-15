@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:module node="${currentNode}" template="hidden.header"  editable="false"/>
+<template:include template="hidden.header"/>
 <c:if test="${not empty currentList}">
     <ul>
         <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">

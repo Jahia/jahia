@@ -52,6 +52,7 @@ import java.util.*;
 public class Resource {
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
+    private ExtendedNodeType resourceNodeType;
     private String templateType;
     private String template;
     private String forcedTemplate;
@@ -199,6 +200,14 @@ public class Resource {
 
     public void removeOption(ExtendedNodeType mixinNodeType) {
         options.remove(new Option("",mixinNodeType));
+    }
+
+    public ExtendedNodeType getResourceNodeType() {
+        return resourceNodeType;
+    }
+
+    public void setResourceNodeType(ExtendedNodeType resourceNodeType) {
+        this.resourceNodeType = resourceNodeType;
     }
 
     @Override

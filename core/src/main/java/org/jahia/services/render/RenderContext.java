@@ -65,6 +65,7 @@ public class RenderContext {
 
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
+    private boolean isContributionMode = false;
 
     private Set<String> displayedModules = new HashSet<String>();
     @SuppressWarnings("unchecked")
@@ -136,6 +137,14 @@ public class RenderContext {
 
     public void setEditMode(boolean editMode) {
         isEditMode = editMode;
+    }
+
+    public boolean isContributionMode() {
+        return isContributionMode;
+    }
+
+    public void setContributionMode(boolean contributionMode) {
+        isContributionMode = contributionMode;
     }
 
     public boolean isLoggedIn() {

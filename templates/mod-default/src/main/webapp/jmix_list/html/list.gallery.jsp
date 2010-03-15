@@ -15,7 +15,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery.fancybox.pack.js,jquery.fancybox.load.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
-<template:module node="${currentNode}" template="hidden.header"  editable="false"/>
+<template:include template="hidden.header"/>
 <p>
     <c:forEach items="${currentList}" var="child" varStatus="status" begin="${begin}" end="${end}">
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">

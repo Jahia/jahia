@@ -9,6 +9,7 @@ import org.jahia.services.render.*;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -44,8 +45,41 @@ public class FileSystemScriptResolver implements ScriptResolver {
     }
 
     protected Template resolveTemplate(Resource resource, final RenderContext context) throws RepositoryException {
-        ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
+        if (resource.getResourceNodeType() != null) {
+            ExtendedNodeType nt = resource.getResourceNodeType();
+            List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
+            return resolveTemplate(resource, context, nodeTypeList);
+        }
 
+        ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
+        List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
+        if (resource.getWrappedMixinType() == null) {
+            Template res = resolveTemplate(resource, context, nodeTypeList);
+            if (res != null) {
+                return res;
+            }
+        } else {
+            for (String template : resource.getTemplates()) {
+                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                        resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
+                Template res = resolveTemplate(resource, context, template, resource.getWrappedMixinType(), sortedPackages);
+                if (res != null) {
+                    return res;
+                }
+
+            }
+        }
+        List<ExtendedNodeType> mixinNodeTypes = Arrays.asList(resource.getNode().getMixinNodeTypes());
+        if (mixinNodeTypes.size() > 0) {
+            Template res = resolveTemplate(resource, context, mixinNodeTypes);
+            if (res != null) {
+                return res;
+            }
+        }
+        return null;
+    }
+
+    private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
         List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
                 nt.getSupertypes()));
         nodeTypeList.add(nt);
@@ -53,69 +87,33 @@ public class FileSystemScriptResolver implements ScriptResolver {
         ExtendedNodeType base = NodeTypeRegistry.getInstance().getNodeType("nt:base");
         nodeTypeList.remove(base);
         nodeTypeList.add(base);
-        if (resource.getWrappedMixinType() == null) {
-            for (String template : resource.getTemplates()) {
-                for (ExtendedNodeType st : nodeTypeList) {
-                    SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                            st.getAlias().replace(":", "_"), context);
-                    for (JahiaTemplatesPackage aPackage : sortedPackages) {
-                        if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
-                            continue;
-                        }
-                        String currentTemplatePath = aPackage.getRootFolderPath();
-                        String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
-                        if (templatePath != null) {
-                            JahiaTemplatesPackage module = aPackage;
-                            String templateName = template;
-                            Template resolvedTemplate = new FileSystemTemplate(templatePath, templateName, module, templateName);
-                            return resolvedTemplate;
-                        }
-                    }
-                }
-            }
-        } else {
-            for (String template : resource.getTemplates()) {
-                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                        resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
-                for (JahiaTemplatesPackage aPackage : sortedPackages) {
-                    if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
-                        continue;
-                    }
-                    String currentTemplatePath = aPackage.getRootFolderPath();
-                    String templatePath = getTemplatePath(resource.getTemplateType(), template, resource.getWrappedMixinType(),
-                                                   currentTemplatePath);
-                    if (templatePath != null) {
-                        JahiaTemplatesPackage module = aPackage;
-                        Template resolvedTemplate = new FileSystemTemplate(templatePath, template, module, template);
-                        return resolvedTemplate;
-                    }
-                }
+        return nodeTypeList;
+    }
 
+    private Template resolveTemplate(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList) {
+        for (String template : resource.getTemplates()) {
+            for (ExtendedNodeType st : nodeTypeList) {
+                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
+                        st.getAlias().replace(":", "_"), context);
+                Template res = resolveTemplate(resource, context, template, st, sortedPackages);
+                if (res != null) {
+                    return res;
+                }
             }
         }
-        ExtendedNodeType[] mixinNodeTypes = resource.getNode().getMixinNodeTypes();
-        if (mixinNodeTypes.length > 0) {
-            for (String template : resource.getTemplates()) {
-                for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
-                    SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                            mixinNodeType.getAlias().replace(":", "_"), context);
-                    for (JahiaTemplatesPackage aPackage : sortedPackages) {
-                        if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(
-                                context.getSite().getTemplatePackageName())) {
-                            continue;
-                        }
-                        String currentTemplatePath = aPackage.getRootFolderPath();
-                        String templatePath = getTemplatePath(resource.getTemplateType(), template, mixinNodeType,
-                                                              currentTemplatePath);
-                        if (templatePath != null) {
-                            JahiaTemplatesPackage module = aPackage;
-                            String templateName = template;
-                            Template resolvedTemplate = new FileSystemTemplate(templatePath, templateName, module,
-                                                                               templateName);
-                            return resolvedTemplate;
-                        }
-                    }
-                }
+        return null;
+    }
+
+    private Template resolveTemplate(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages) {
+        for (JahiaTemplatesPackage aPackage : sortedPackages) {
+            if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
+                continue;
+            }
+            String currentTemplatePath = aPackage.getRootFolderPath();
+            String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
+            if (templatePath != null) {
+                Template resolvedTemplate = new FileSystemTemplate(templatePath, template, aPackage, template);
+                return resolvedTemplate;
             }
         }
         return null;

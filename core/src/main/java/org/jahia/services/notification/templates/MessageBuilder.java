@@ -39,9 +39,12 @@ import groovy.util.ScriptException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -118,6 +121,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return email;
     }
 
+    private List<Attachment> attachments = new LinkedList<Attachment>();
+    
     private Locale preferredLocale;
 
     private String relativeSiteUrl;
@@ -194,6 +199,15 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      */
     public MessageBuilder(JahiaUser subscriber, Subscription subscription) {
         this(subscriber, subscription.getSiteId());
+    }
+
+    /**
+     * Returns a list of file attachments to be sent.
+     * 
+     * @return a list of file attachments to be sent
+     */
+    public List<Attachment> getAttachments() {
+        return attachments;
     }
 
     protected String getHtmlPart(Map vars) {
@@ -385,6 +399,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
         String html = getHtmlPart(vars);
 
+        List<Attachment> files = getAttachments();
+        
         MimeMultipart content = new MimeMultipart("alternative");
 
         if (StringUtils.isNotEmpty(text)) {
@@ -399,9 +415,25 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
             content.addBodyPart(htmlPart);
         }
 
-        if (content.getCount() == 0) {
+        if (content.getCount() == 0 && (files == null || files.isEmpty())) {
             throw new JahiaInitializationException(
-                    "Unable to find neither text nor html body part of the notification e-mail. Skip sending notification");
+                    "Unable to find neither text nor HTML body part of the notification e-mail. Skip sending notification");
+        }
+        
+        if (files != null && !files.isEmpty()) {
+            MimeMultipart root = new MimeMultipart("mixed");
+            MimeBodyPart alternative = new MimeBodyPart();
+            alternative.setContent(content);
+            root.addBodyPart(alternative);
+            for (Attachment attachment : files) {
+                MimeBodyPart messageBodyPart = new MimeBodyPart();
+                messageBodyPart.setDataHandler(new DataHandler(attachment.getDataSource()));
+                messageBodyPart.setFileName(StringUtils.defaultIfEmpty(attachment.getName(), attachment.getDataSource()
+                        .getName()));
+                messageBodyPart.setDisposition(attachment.getDisposition());
+                root.addBodyPart(messageBodyPart);
+            }
+            content = root;
         }
 
         mimeMessage.setContent(content);
@@ -476,4 +508,5 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
                 .substringAfter(mailTemplate, templatesPath) : mailTemplate,
                 binding);
     }
+
 }

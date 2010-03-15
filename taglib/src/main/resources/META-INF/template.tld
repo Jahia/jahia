@@ -261,14 +261,6 @@
 
 
     <tag>
-        <description>Import XML into parent module if no node exists
-        </description>
-        <name>import</name>
-        <tag-class>org.jahia.taglibs.template.include.ImportTag</tag-class>
-        <body-content>JSP</body-content>
-    </tag>
-
-    <tag>
         <description>This tag will display a metadata value or you can get the value as a date object for formatting
             purpose.
         </description>

@@ -70,7 +70,6 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
-import org.jahia.engines.core.Core_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
@@ -747,7 +746,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     jParams);
             final JahiaData jData = new JahiaData(jParams, false);
             jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
-            EnginesRegistry.getInstance().getEngine(Core_Engine.ENGINE_NAME).handleActions(jParams, jData);
+            EnginesRegistry.getInstance().getEngine(jParams.getEngineName()).handleActions(jParams, jData);
 
             // display time to fetch object plus other info
             if (jParams.getUser() != null && logger.isInfoEnabled()) {

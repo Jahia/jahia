@@ -126,4 +126,11 @@ public class SelectorType {
         return nameToValue.get(s);        
     }
 
+    public static Map<String, Integer> getNameToValue() {
+        return nameToValue;
+    }
+
+    public static Map<Integer, String> getValueToName() {
+        return valueToName;
+    }
 }

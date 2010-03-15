@@ -132,7 +132,7 @@ public class JCRPublicationService extends JahiaService {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (!allSubTree && hasIndependantPublication(n)) {
                 pruneNodes.add(n);
-            } else if (languages != null && n.isNodeType("jnt:translation")) {
+            } else if (languages != null && n.isNodeType("mix:language")) {
                 String translationLanguage = n.getProperty("jcr:language").getString();
                 if (languages.contains(translationLanguage)) {
                     getBlockedAndReferencesList(n, toPublish, pruneNodes, referencedNode, languages, allSubTree);

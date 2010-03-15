@@ -120,6 +120,20 @@ public class VanityUrlService {
         return vanityUrlManager.removeVanityUrlMapping(contentNode, vanityUrl,
                 contentNode.getSession());
     }    
+    
+    /**
+     * Completely delete all mapped vanity URL for a locale.
+     * 
+     * @param contentNode the content node for which to remove the mappings
+     * @param languageCode the language code for which the mappings should be removed
+     * @return true if the vanity URL was removed or false if it was not removed
+     * @throws RepositoryException if there was an unexpected exception accessing the repository
+     */    
+    public boolean removeVanityUrlMappings(final JCRNodeWrapper contentNode,
+            final String languageCode) throws RepositoryException {
+        return vanityUrlManager.removeVanityUrlMappings(contentNode, languageCode,
+                contentNode.getSession());
+    }     
 
     /**
      * Add or update a vanity URL mapping for a specific content node and the language code set in the
@@ -183,13 +197,14 @@ public class VanityUrlService {
      * returned. The method searches mappings in any language.
      * 
      * @param url  URL path to check whether there is a content mapping for it (URL must start with /)  
-     * @param site key of the site to search for the mapping or all sites if the string is null or empty 
+     * @param site key of the site to search for the mapping or all sites if the string is null or empty
+     * @param workspace the workspace to look for mappings  
      * @return the list of VanityUrl beans
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */    
-    public List<VanityUrl> findExistingVanityUrls(final String url, final String site)
+    public List<VanityUrl> findExistingVanityUrls(final String url, final String site, final String workspace)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace,  
                 new JCRCallback<List<VanityUrl>>() {
                     public List<VanityUrl> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {

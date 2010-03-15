@@ -37,9 +37,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.jcr.PathNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.URLResolver;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
@@ -124,10 +127,14 @@ public class URLFilterTest {
         vanityUrl.setDefaultMapping(true);
         vanityUrl.setActive(true);
         assertTrue("URL mapping should not exist yet", getVanityUrlService()
-                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
+                .findExistingVanityUrls(vanityUrl.getUrl(),
+                        vanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         getVanityUrlService().saveVanityUrlMapping(pageNode, vanityUrl);
         assertFalse("URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
+                .findExistingVanityUrls(vanityUrl.getUrl(),
+                        vanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         try {
             getVanityUrlService().saveVanityUrlMapping(contentNode, vanityUrl);
             assertTrue("Exception should have been thrown", false);
@@ -141,7 +148,9 @@ public class URLFilterTest {
         newVanityUrl.setActive(true);
         getVanityUrlService().saveVanityUrlMapping(contentNode, newVanityUrl);
         assertFalse("New URL mapping should exist", getVanityUrlService()
-                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
+                .findExistingVanityUrls(vanityUrl.getUrl(),
+                        vanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
 
         VanityUrl savedVanityUrl = getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
@@ -157,11 +166,12 @@ public class URLFilterTest {
         getVanityUrlService().removeVanityUrlMapping(pageNode, vanityUrl);
         getVanityUrlService().removeVanityUrlMapping(contentNode, newVanityUrl);
         assertTrue("URL mapping should no longer exist", getVanityUrlService()
-                .findExistingVanityUrls(vanityUrl.getUrl(), vanityUrl.getSite()).isEmpty());
+                .findExistingVanityUrls(vanityUrl.getUrl(),
+                        vanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         assertNull("No page vanity URL should exist", getVanityUrlService()
-                        .getVanityUrlForWorkspaceAndLocale(pageNode,
-                                session.getWorkspace().getName(),
-                                session.getLocale()));
+                .getVanityUrlForWorkspaceAndLocale(pageNode,
+                        session.getWorkspace().getName(), session.getLocale()));
         assertTrue("No container vanity URL should exist",
                 getVanityUrlService().getVanityUrlsForCurrentLocale(
                         contentNode, session).isEmpty());
@@ -173,8 +183,6 @@ public class URLFilterTest {
                 .getCurrentUserSession(null, Locale.ENGLISH);
         JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/testPage");
-        JCRNodeWrapper contentNode = session.getNode(SITECONTENT_ROOT_NODE
-                + "/testPage/testContent");
 
         VanityUrl englishVanityUrl = new VanityUrl("/testpage", TESTSITE_NAME,
                 "en");
@@ -209,19 +217,24 @@ public class URLFilterTest {
 
         assertFalse("URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrls(englishVanityUrl.getUrl(),
-                        englishVanityUrl.getSite()).isEmpty());
+                        englishVanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         assertFalse("URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrls(englishVanityUrl2.getUrl(),
-                        englishVanityUrl2.getSite()).isEmpty());
+                        englishVanityUrl2.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         assertFalse("URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrls(englishVanityUrl3.getUrl(),
-                        englishVanityUrl3.getSite()).isEmpty());
+                        englishVanityUrl3.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         assertFalse("URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrls(frenchVanityUrl.getUrl(),
-                        frenchVanityUrl.getSite()).isEmpty());
+                        frenchVanityUrl.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
         assertFalse("URL mapping should exist", getVanityUrlService()
                 .findExistingVanityUrls(frenchVanityUrl2.getUrl(),
-                        frenchVanityUrl2.getSite()).isEmpty());
+                        frenchVanityUrl2.getSite(), Constants.EDIT_WORKSPACE)
+                .isEmpty());
 
         englishVanityUrl.setDefaultMapping(true);
         englishVanityUrl2.setDefaultMapping(true);
@@ -287,11 +300,163 @@ public class URLFilterTest {
             }
             assertTrue("Expected vanity url not found: " + vanityUrl_fr, found);
         }
+
+        getVanityUrlService().removeVanityUrlMappings(pageNode, "en");
+        getVanityUrlService().removeVanityUrlMappings(pageNode, "fr");
+        assertNull("No page vanity URL should exist", getVanityUrlService()
+                .getVanityUrlForWorkspaceAndLocale(pageNode,
+                        session.getWorkspace().getName(), session.getLocale()));
     }
 
     @Test
-    public void testUrlFilter() throws Exception {
+    public void testURLFilterResolving() throws Exception {
+        Object[][] testPathes = new Object[][] {
+                { "/", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/render", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/render/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/render/live", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/render/live/fr", Constants.LIVE_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
+                { "/render/default/en/sites/test/testPage.html", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/sites/test/testPage.html", JCRNodeWrapper.class, "/sites/test/testPage" },
+                { "/render/default/en/sites/test/testPage/testContent.detail.html", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/sites/test/testPage/testContent.detail.html", JCRNodeWrapper.class, "/sites/test/testPage/testContent" },
+                { "/edit/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/edit/default/en", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
+                { "/edit/default/fr", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
+                { "/edit/default/fr/sites/test/home.html", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/sites/test/home.html", JCRNodeWrapper.class, "/sites/test/home" }, };
+        for (Object[] testPath : testPathes) {
+            URLResolver urlResolver = new URLResolver((String) testPath[0],
+                    TESTSITE_NAME);
+            assertTrue("Path " + testPath[0] + " not resolved correctly",
+                    testPath[1].equals(urlResolver.getWorkspace())
+                            && testPath[2].equals(urlResolver.getLocale())
+                            && testPath[3].equals(urlResolver.getPath()));
+            Object nodeObject = null;
+            String path = null;
+            try {
+                nodeObject = urlResolver.getNode();
+                path = ((JCRNodeWrapper) nodeObject).getPath();
+            } catch (Exception e) {
+                nodeObject = e;
+                path = "";
+            }
+            assertTrue("Path " + testPath[0] + " not resolved correctly",
+                    ((Class<?>)testPath[4]).isAssignableFrom(nodeObject.getClass())
+                            && testPath[5].equals(path));
+        }
+    }
 
+    @Test
+    public void testVanityURLResolving() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(null, Locale.ENGLISH);
+        JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
+                + "/testPage");
+
+        VanityUrl englishVanityUrl = new VanityUrl("/testpage", TESTSITE_NAME,
+                "en");
+        englishVanityUrl.setActive(true);
+        VanityUrl englishVanityUrl2 = new VanityUrl("/testpage2",
+                TESTSITE_NAME, "en");
+        englishVanityUrl2.setActive(false);
+        VanityUrl englishVanityUrl3 = new VanityUrl("/testpage/page3",
+                TESTSITE_NAME, "en");
+        englishVanityUrl3.setActive(true);
+
+        VanityUrl frenchVanityUrl = new VanityUrl("/testpage/french",
+                TESTSITE_NAME, "fr");
+        frenchVanityUrl.setActive(true);
+        VanityUrl frenchVanityUrl2 = new VanityUrl("/testpage/french2",
+                TESTSITE_NAME, "fr");
+        frenchVanityUrl2.setDefaultMapping(true);
+        frenchVanityUrl2.setActive(true);
+
+        List<VanityUrl> vanityUrls = new ArrayList<VanityUrl>();
+        vanityUrls.add(englishVanityUrl);
+        vanityUrls.add(englishVanityUrl2);
+        vanityUrls.add(englishVanityUrl3);
+        vanityUrls.add(frenchVanityUrl);
+        vanityUrls.add(frenchVanityUrl2);
+        Set<String> languages = new HashSet<String>();
+        languages.add("en");
+        languages.add("fr");
+
+        getVanityUrlService().saveVanityUrlMappings(pageNode, vanityUrls,
+                languages);
+
+        assertTrue("Wrong URL returned", getVanityUrlService()
+                .getVanityUrlForWorkspaceAndLocale(pageNode,
+                        Constants.EDIT_WORKSPACE, Locale.ENGLISH).getUrl()
+                .equals("/testpage"));
+        assertTrue("Wrong URL returned", getVanityUrlService()
+                .getVanityUrlForWorkspaceAndLocale(pageNode,
+                        Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
+                .equals("/testpage/french2"));
+
+        URLResolver urlResolver = new URLResolver("/edit/default/testpage",
+                TESTSITE_NAME);
+        JCRNodeWrapper resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "en".equals(resolvedNode.getLanguage()));
+
+        urlResolver = new URLResolver("/edit/default/testpage/french2",
+                TESTSITE_NAME);
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "fr".equals(resolvedNode.getLanguage()));
+
+        urlResolver = new URLResolver("/edit/default/testpage/french",
+                TESTSITE_NAME);
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "fr".equals(resolvedNode.getLanguage()));
+
+        urlResolver = new URLResolver("/edit/default/testpage2", TESTSITE_NAME);
+        try {
+            resolvedNode = urlResolver.getNode();
+            assertNull("Node should not be returned as mapping is not active",
+                    resolvedNode);
+        } catch (PathNotFoundException e) {
+        }
+
+        urlResolver = new URLResolver("/edit/default/testpage/page3",
+                TESTSITE_NAME);
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "en".equals(resolvedNode.getLanguage()));
+
+        urlResolver = new URLResolver("/render/live/testpage", TESTSITE_NAME);
+        try {
+            resolvedNode = urlResolver.getNode();
+            assertNull(
+                    "Node should not be returned as it is not published yet",
+                    resolvedNode);
+        } catch (PathNotFoundException e) {
+        }
+
+        languages.clear();
+        languages.add("en");
+        ServicesRegistry.getInstance().getJCRPublicationService().publish(
+                SITECONTENT_ROOT_NODE, Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE, languages, true, true);
+        
+        urlResolver = new URLResolver("/render/live/testpage", TESTSITE_NAME);
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "en".equals(resolvedNode.getLanguage()));
+
+        urlResolver = new URLResolver("/render/live/testpage/french2",
+                TESTSITE_NAME);
+        try {
+            resolvedNode = urlResolver.getNode();
+            assertNull(
+                    "Node should not be returned as it is not published yet",
+                    resolvedNode);
+        } catch (PathNotFoundException e) {
+        }
     }
 
     private VanityUrlService getVanityUrlService() {

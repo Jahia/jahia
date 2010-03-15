@@ -136,7 +136,9 @@ public class URLResolver {
         
         // TODO: this is perhaps a temporary limitation as URL points to special templates
         String lastPart = StringUtils.substringAfterLast(path, "/");
-        if (!StringUtils.substringBefore(lastPart, ".html").contains(".")) {
+        if (lastPart.length() > 0
+                && !StringUtils.substringBefore(lastPart, ".html")
+                        .contains(".")) {
             mappable = true;
         }
     }
@@ -153,12 +155,14 @@ public class URLResolver {
                         "/"));
             }
             List<VanityUrl> vanityUrls = getVanityUrlService()
-                    .findExistingVanityUrls("/" + tempPath, StringUtils.EMPTY);
+                    .findExistingVanityUrls("/" + tempPath, StringUtils.EMPTY,
+                            tempWorkspace);
             VanityUrl resolvedVanityUrl = null;
             if (!vanityUrls.isEmpty() && !StringUtils.isEmpty(getSiteKey())) {
                 for (VanityUrl vanityUrl : vanityUrls) {
-                    if (getSiteKey().equals(vanityUrl.getSite())) {
+                    if (vanityUrl.isActive() && getSiteKey().equals(vanityUrl.getSite())) {
                         resolvedVanityUrl = vanityUrl;
+                        break;
                     }
                 }
             }

@@ -233,12 +233,12 @@ public class VanityUrlManager {
      * Completely delete all mapped vanity URL for a locale.
      * 
      * @param contentNode the content node for which to remove the mappings
-     * @param locale the language code for which the mappings should be removed
+     * @param languageCode the language code for which the mappings should be removed
      * @param session the JCR session used to find and remove the vanity URL nodes
      * @return true if the vanity URLs were removed or false if not
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */    
-    public boolean removeVanityUrlMappings(JCRNodeWrapper contentNode, String locale, JCRSessionWrapper session)
+    public boolean removeVanityUrlMappings(JCRNodeWrapper contentNode, String languageCode, JCRSessionWrapper session)
             throws RepositoryException {
 
         NodeIterator it = contentNode.getNodes(VANITYURLMAPPINGS_NODE);
@@ -247,7 +247,7 @@ public class VanityUrlManager {
             List<Node> toRemove = new LinkedList<Node>();
             for (; it.hasNext();) {
                 Node node = it.nextNode();
-                if (locale.equals(node.getProperty(JCR_LANGUAGE).getString())) {
+                if (languageCode.equals(node.getProperty(JCR_LANGUAGE).getString())) {
                     toRemove.add(node);
                 }
             }

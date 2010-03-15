@@ -138,7 +138,7 @@ public class RenderTest extends TestCase {
         List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
-            GetMethod versionGet = new GetMethod("http://localhost:8080/cms/render/live" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getName());
+            GetMethod versionGet = new GetMethod("http://localhost:8080/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getName());
             try {
                 int responseCode = client.executeMethod(versionGet);
                 assertEquals("Response code " + responseCode, 200, responseCode);

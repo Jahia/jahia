@@ -21,7 +21,7 @@
                 items="${jcr:getPropertiesAsStringFromNodeNameOfThatType(currentNode,fieldset,'jnt:formElement')}"
                 var="entry">
             <jcr:node var="def" path="${fieldset.path}/${entry.key}"/>
-            <c:if test="${jcr:isNodeType(def, 'jnt:automaticList')}">
+            <c:if test="${jcr:isNodeType(def, 'jnt:automaticList')}" var="isAutomaticList">
                 <jcr:nodeProperty node="${def}" name="type" var="type"/>
                 <c:set var="renderers" value="${fn:split(type.string,'=')}"/>
                 <c:if test="${fn:length(renderers) > 1}"><c:set var="renderer" value="${renderers[1]}"/></c:if>
@@ -31,7 +31,7 @@
                                                                                           renderer="${renderer}"/></span>
                 </p>
             </c:if>
-            <c:if test="${not jcr:isNodeType(def, 'jnt:automaticList')}">
+            <c:if test="${not isAutomaticList}">
                 <p>
                     <label>${entry.key}</label>&nbsp;<span>Value : ${entry.value}</span>
                 </p>

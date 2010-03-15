@@ -33,16 +33,17 @@
 package org.jahia.modules.formbuilder.actions;
 
 import groovy.lang.Binding;
-import groovy.util.ResourceException;
-import groovy.util.ScriptException;
+
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.content.JCRContentUtils;
+import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.mail.MailService;
+import org.jahia.services.notification.templates.Attachment;
 import org.jahia.services.notification.templates.Link;
 import org.jahia.services.notification.templates.MessageBuilder;
 import org.jahia.services.render.RenderContext;
@@ -50,11 +51,11 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.tools.files.FileUpload;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public class MailAction implements Action {
                     formDatas.put(key, values);
                 }
             }
-            mailService.sendTemplateMessage(new MessageBuilder(to, renderContext.getSite().getID(), "Jahia Form Builder") {
+            MessageBuilder message = new MessageBuilder(to, renderContext.getSite().getID(), "Jahia Form Builder") {
                 @Override
                 protected String getTemplateHtmlPart() {
                     return lookupTemplate("/action/mail/body.html");
@@ -153,8 +154,20 @@ public class MailAction implements Action {
                         logger.error(e.getMessage(), e);
                     }
                 }
-            });
-            logger.error("Sending form by mail");
+            };
+            
+            final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
+            final FileUpload fileUpload = paramBean.getFileUpload();
+            if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
+                for (DiskFileItem file : fileUpload.getFileItems().values()) {
+                    message.getAttachments().add(new Attachment(file.getName(), new ByteArrayDataSource(file.getInputStream(), file.getContentType())));
+                }
+                fileUpload.markFilesAsConsumed();
+            }
+            
+            mailService.sendTemplateMessage(message);
+            
+            logger.info("Form data is sent by e-mail");
         }
     }
 }

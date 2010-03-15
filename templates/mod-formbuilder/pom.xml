@@ -145,6 +145,7 @@
 	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
 	                        <package-name>${project.name}</package-name>
 	                        <root-folder>formBuilder</root-folder>
+	                        <depends>Default Jahia Templates</depends>
 	                    </manifestEntries>
 	                </archive>
                     <archiveClasses>true</archiveClasses>

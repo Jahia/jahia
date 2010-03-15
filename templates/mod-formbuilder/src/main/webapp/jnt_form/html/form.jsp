@@ -105,7 +105,7 @@
 <br/><br/>
 
 <div>
-    <h2>Responses</h2>
+    <h2>Responses (<a href="<c:url value='${currentNode.path}.csv' context='${url.base}'/>" target="_blank">CSV</a>)</h2>
     <template:area path="${currentNode.path}/responses" nodeTypes="jnt:responseToForm" editable="true" forceCreation="true"/>
 </div>
 

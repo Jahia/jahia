@@ -161,7 +161,6 @@ public class DefaultPostActionResult implements Action {
                     newNode.uploadFile(itemEntry.getValue().getName(), itemEntry.getValue().getInputStream(),
                                        itemEntry.getValue().getContentType());
                 }
-                fileUpload.markFilesAsConsumed();
             }
             session.save();
             if (parameters.containsKey(Render.AUTO_CHECKIN) && ((String) ((List) parameters.get(Render.AUTO_CHECKIN)).get(

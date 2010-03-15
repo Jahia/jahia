@@ -26,6 +26,9 @@ orderable
  - defaultValue (string)
  - mask (string)
 
+[jnt:dateField] > jnt:formElement,  jmix:formContent
+ - label (string) mandatory
+
 [jnt:inputMultiline] > jnt:formElement,  jmix:formContent
  - label (string) mandatory
  - cols (long) = 20 autocreated
@@ -58,6 +61,7 @@ orderable
  - label (string) mandatory
 
 [jnt:birthdate] > jnt:formElement,  jmix:formContent
+ - label (string)
 
 [jnt:addressBlock] > jnt:formElement,  jmix:formContent
 

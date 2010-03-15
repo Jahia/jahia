@@ -1,10 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set value="${currentNode.propertiesAsString}" var="props"/>
-
-
-<div class="formMarginLeft">
-          <select name="year}">
+<label class="left">${currentNode.properties.label.string}</label>
+<span>
+          <select name="year">
               <option>Year</option>
               <option>1950</option>
               <option>1951</option>
@@ -78,4 +76,4 @@
               <option>30</option>
               <option>31</option>
           </select>
-</div>
+</span>

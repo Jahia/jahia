@@ -1,11 +1,14 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
@@ -47,13 +50,10 @@ public class EditManager extends ContentPanel {
         editLinker = new EditLinker(mainModule, sidePanel, toolbar);
         editLinker.setLocale(locale);
 
-        /**setVisible(false);
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                borderLayout.collapse(Style.LayoutRegion.WEST);
-                setVisible(true);
-            }
-        });*/
+
+
+
+
 
     }
 
@@ -73,6 +73,8 @@ public class EditManager extends ContentPanel {
     public EditLinker getEditLinker() {
         return editLinker;
     }
+
+    
 
 
 }

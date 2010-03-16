@@ -58,5 +58,6 @@ public interface Linker {
     public void refreshLeftPanel();
     public void refreshLeftPanel(int flag);
     public LinkerSelectionContext getSelectionContext();
+    public void syncSelectionContext();
 
 }

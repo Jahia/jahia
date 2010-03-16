@@ -19,6 +19,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 
 import java.util.Map;
 import java.util.List;
@@ -39,6 +40,8 @@ public class MainModule extends ContentPanel implements Module {
     private boolean selectable = true;
     private String originalHtml;
     private EditLinker editLinker;
+    private ActionMenu contexMenu;
+
 
     Map<Element, Module> m;
 
@@ -72,8 +75,16 @@ public class MainModule extends ContentPanel implements Module {
                 }
             }
         };
+
+        // on click listerner
         addListener(Events.OnClick, listener);
+
+        // on double click listener
         addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));
+
+        // contextMenu
+        contexMenu= new ActionMenu("contextmenu-editmode",editLinker);
+        setContextMenu(contexMenu);
 
 //        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
 //        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {

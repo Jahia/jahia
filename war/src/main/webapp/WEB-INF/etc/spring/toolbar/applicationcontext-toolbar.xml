@@ -12,6 +12,14 @@
         </property>
     </bean>
 
+    <bean id="contextmenu-editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.menu.editmode"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="category-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
@@ -138,7 +146,7 @@
          </property>
     </bean>
 
-    <!-- switching mode -->
+    <!-- edit mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
             <list>
@@ -166,6 +174,25 @@
                 <property name="siteActionPermission" value="actions/edit-mode"/>
             </bean>
         </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+
+    <!-- edit mode -->
+    <bean id="org.jahia.menu.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
     </bean>
 
     <!-- Category Manager -->
@@ -2154,6 +2181,7 @@
         <property name="minIconStyle" value="gwt-toolbar-icon-editcontent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-editcontent"/>
         <property name="descriptionKey" value="edit"/>
+
     </bean>
 
     <!-- new edit mode buttons: delete -->

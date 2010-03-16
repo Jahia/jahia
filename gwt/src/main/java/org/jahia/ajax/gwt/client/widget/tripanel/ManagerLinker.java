@@ -145,7 +145,7 @@ public class ManagerLinker implements Linker {
 
 
     public void handleNewSelection() {
-        refreshSelectionContext();
+        syncSelectionContext();
         if (m_topBar != null) {
             m_topBar.handleNewSelection();
         }
@@ -386,7 +386,7 @@ public class ManagerLinker implements Linker {
         refreshLeftPanel();
     }
 
-    private void refreshSelectionContext() {
+    public void syncSelectionContext() {
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
         }

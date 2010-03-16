@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -65,7 +66,7 @@ public class ContentViews extends TopRightComponent {
     private ContentPanel m_component;
     private TopRightComponent current;
 
-    private ContentListContextMenu contextMenu;
+    private ActionMenu contextMenu;
 
     private ManagerConfiguration configuration;
 
@@ -141,7 +142,7 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void initContextMenu() {
-        contextMenu = new ContentListContextMenu(getLinker(), configuration);
+        contextMenu = new ActionMenu(configuration.getToolbarGroup(),getLinker());
         current.setContextMenu(contextMenu);
     }
 

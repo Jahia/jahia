@@ -151,7 +151,7 @@ public class EditLinker implements Linker {
 
     public void refresh(int flag) {
         mainModule.refresh();
-        refreshSelectionContext();
+        syncSelectionContext();
         toolbar.handleNewLinkerSelection();
         refreshSidePanel(flag);
     }
@@ -173,14 +173,14 @@ public class EditLinker implements Linker {
 
     public void handleNewModuleSelection() {
         previouslySelectedModule = selectedModule;
-        refreshSelectionContext();
+        syncSelectionContext();
         toolbar.handleNewLinkerSelection();
         mainModule.handleNewModuleSelection(selectedModule);
         sidePanel.handleNewModuleSelection(selectedModule);
     }
 
     public void handleNewSidePanelSelection() {
-        refreshSelectionContext();
+        syncSelectionContext();
         toolbar.handleNewLinkerSelection();
         mainModule.handleNewSidePanelSelection(sidePanelSelectedNode);
         sidePanel.handleNewSidePanelSelection(sidePanelSelectedNode);
@@ -248,7 +248,7 @@ public class EditLinker implements Linker {
         refreshSidePanel(flag);
     }
 
-    private void refreshSelectionContext() {
+    public void syncSelectionContext() {
         selectionContext.setMainNode(getMainNode());
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();

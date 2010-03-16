@@ -82,10 +82,6 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                                                                                    PageContext.REQUEST_SCOPE);
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
-            for (Map.Entry<String, String> param : parameters.entrySet()) {
-                renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(
-                        param.getValue(), charset));
-            }
             if (node.isNodeType(nodetype)) {
                 final ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetype);
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
@@ -93,6 +89,11 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 }
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
                 wrappedResource.setResourceNodeType(mixinNodeType);
+                for (Map.Entry<String, String> param : parameters.entrySet()) {
+                    wrappedResource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(
+                            param.getValue(), charset));
+                }
+
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                 pageContext.getOut().write(script.execute(wrappedResource, renderContext));
             }

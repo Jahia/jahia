@@ -36,7 +36,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
         // Resolve params
         Map<String,Object> params = new HashMap<String,Object>();
-        Map<String, Object> moduleParams = context.getModuleParams();
+        Map<String, Object> moduleParams = resource.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
             String key = entry.getKey();
             if (key.startsWith("forced")) {

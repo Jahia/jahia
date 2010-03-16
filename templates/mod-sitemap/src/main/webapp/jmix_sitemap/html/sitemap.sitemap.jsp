@@ -17,12 +17,12 @@
 <template:addResources type="css" resources="slickmap.css"/>
 
 
-<c:if test="${empty renderContext.moduleParams.level}">
+<c:if test="${empty currentResource.moduleParams.level}">
     <c:set var="level" value="1"/>
 </c:if>
 
-<c:if test="${not empty renderContext.moduleParams.level}">
-    <c:set var="level" value="${renderContext.moduleParams.level}"/>
+<c:if test="${not empty currentResource.moduleParams.level}">
+    <c:set var="level" value="${currentResource.moduleParams.level}"/>
 </c:if>
 
 

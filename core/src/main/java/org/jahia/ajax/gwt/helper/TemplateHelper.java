@@ -56,7 +56,7 @@ public class TemplateHelper {
             renderContext.setMainResource(r);
             if (contextParams != null) {
                 for (Map.Entry<String, String> entry : contextParams.entrySet()) {
-                    renderContext.getModuleParams().put(entry.getKey(), entry.getValue());
+                    r.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
             }
             r.pushWrapper(templateWrapper);

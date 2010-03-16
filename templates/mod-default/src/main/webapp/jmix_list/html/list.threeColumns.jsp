@@ -42,6 +42,4 @@
     </c:if>
     <div class="clear"></div>
 </div><!--stop 3columns -->
-<template:include template="hidden.footer">
-    <template:param name="searchUrl" value="${url.current}"/>
-</template:include>
+<template:include template="hidden.footer"/>

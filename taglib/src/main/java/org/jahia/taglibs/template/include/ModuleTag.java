@@ -194,17 +194,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 //                renderContext.setTemplateWrapper(templateWrapper);
 //            }
             // add custom parameters
-            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());
-            renderContext.getModuleParams().clear();
+//            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());
+//            renderContext.getModuleParams().clear();
 
             buffer = new StringBuffer();
 
             try {
-	            String charset = pageContext.getResponse().getCharacterEncoding();
-	            for (Map.Entry<String, String> param : parameters.entrySet()) {
-	            	renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
-	            }
-
 	            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
 
 	            if (nodeName != null) {
@@ -295,6 +290,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                     Resource resource = new Resource(node, templateType, template, forcedTemplate);
 
+                    String charset = pageContext.getResponse().getCharacterEncoding();
+                    for (Map.Entry<String, String> param : parameters.entrySet()) {
+                        resource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
+                    }
+
                     if (parameters.containsKey("resourceNodeType")) {
                         try {
                             resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(URLDecoder.decode(parameters.get("resourceNodeType"),"UTF-8")));
@@ -346,8 +346,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     }
 	            }
             } finally {
-            	renderContext.getModuleParams().clear();
-            	renderContext.getModuleParams().putAll(oldParams);
+//            	renderContext.getModuleParams().clear();
+//            	renderContext.getModuleParams().putAll(oldParams);
             }
         } catch (IOException ex) {
             throw new JspException(ex);

@@ -26,10 +26,13 @@ public class BaseAttributesFilter extends AbstractFilter {
 
         chain.pushAttribute(request, "script", script);
         chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
-        chain.pushAttribute(request, "currentNode", node);
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
-        chain.pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()));
+
+        if (resource.getModuleParams().get("isInclude") == null) {
+            chain.pushAttribute(request, "currentNode", node);
+            chain.pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()));
+        }
 
         String out;
         out = chain.doFilter(context, resource);

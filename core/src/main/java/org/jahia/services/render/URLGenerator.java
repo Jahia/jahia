@@ -150,7 +150,7 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        return buildURL(resource.getNode(), resource.getForcedTemplate());
+        return buildURL(resource.getNode(), resource.getResolvedTemplate());
     }
 
     @SuppressWarnings("unchecked")

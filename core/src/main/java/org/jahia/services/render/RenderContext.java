@@ -75,7 +75,6 @@ public class RenderContext {
         }
     });
 
-    private Map<String, Object> parameters = new HashMap<String, Object>();
     private JCRNodeWrapper siteNode;
     
     private String contentType;
@@ -197,10 +196,6 @@ public class RenderContext {
 
     public Resource getMainResource() {
         return mainResource;
-    }
-
-	public Map<String, Object> getModuleParams() {
-    	return parameters;
     }
 
     public void setSiteNode(JCRNodeWrapper siteNode) {

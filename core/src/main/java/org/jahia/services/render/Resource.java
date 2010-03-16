@@ -56,12 +56,14 @@ public class Resource {
     private String template;
     private String forcedTemplate;
     private Stack<String> wrappers;
-    private Set<JCRNodeWrapper> dependencies;
 
+    private Set<JCRNodeWrapper> dependencies;
     private List<Resource> includedResources;
     private List<String> missingResources;
+
     private List<Option> options;
     private ExtendedNodeType resourceNodeType;
+    private Map<String, Object> moduleParams = new HashMap<String, Object>();
 
     /**
      * Creates a resource from the specified parameter
@@ -153,6 +155,10 @@ public class Resource {
 
     public List<Resource> getIncludedResources() {
         return includedResources;
+    }
+
+    public Map<String, Object> getModuleParams() {
+        return moduleParams;
     }
 
     public boolean hasWrapper() {

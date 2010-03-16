@@ -30,9 +30,13 @@
 	General Styles
 ------------------------------------------------------------ */
 #bodywrapper .sitemap {
-	margin: 0 0 40px 0;
 	float: left;
 	width: 100%;
+	background-color:#fff
+}
+#bodywrapper .sitemap ul {
+	margin:0;
+	padding:0;
 }
 #bodywrapper #primaryNav a {
 	text-decoration: none;
@@ -50,20 +54,39 @@
 
 /* --------	Top Level --------- */
 
+
+
+#bodywrapper .sitemap li {
+	background: url('img/L1-center-top.png') center bottom no-repeat;
+	list-style: none;
+	float:left;
+	margin-top: 20px;
+}
+#bodywrapper .sitemap li a {
+	margin:0;
+	padding: 10px 10px;
+	font-size: 1em;
+	font-weight: bold;
+	text-align: center;
+	color: white;	
+	background: #003399 url('img/white-highlight.png') top left repeat-x;
+	border: 2px solid #3366cc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow: rgba(0,0,0,0.5) 2px 2px 2px; 
+	-moz-box-shadow: rgba(0,0,0,0.5) 2px 2px 2px; /* FF 3.5+ */
+}
+#bodywrapper .sitemap li a:hover {
+	background-color: #3366cc;
+	border-color: #003366;
+}
+/* --------	primaryNav --------- */
 #bodywrapper #primaryNav {
 	margin: 0;
 	float: left;
 	width: 100%;
 	background-color:#FFFFFF;
-	padding:20px
-}
-#bodywrapper #primaryNav #home {
-	display: block;
-	float: none;
-	background: #ffffff url('img/L1-left.png') center bottom no-repeat;
-	position: relative;
-	z-index: 2;
-	padding: 0 0 30px 0;
+	padding:20px 0;
 }
 #bodywrapper #primaryNav li {
 	float: left;
@@ -76,7 +99,7 @@
 	margin: 0 20px 0 0;
 	padding: 10px 0;
 	display: block;
-	font-size: 14px;
+	font-size: 1em;
 	font-weight: bold;
 	text-align: center;
 	color: black;	
@@ -130,17 +153,17 @@
 	margin: 10px 0 0 0;
 	width: 100%;
 	float: right;
-	padding: 9px 0 10px 0;
+	padding: 9px 0 0 0;
 	background: #ffffff url('img/L3-ul-top.png') center top no-repeat;
 }
 #bodywrapper #primaryNav li li li {
 	background: url('img/L3-center.png') left center no-repeat;
-	padding: 5px 0;
+	padding: 2px 0;
 }
 #bodywrapper #primaryNav li li li a {
 	background-color: #fff7aa;
 	border-color: #e3ca4b;
-	font-size: 12px;
+	font-size: 0.9em;
 	padding: 5px 0;
 	width: 80%;
 	float: right;
@@ -150,7 +173,7 @@
 	border-color: #d1b62c;
 }
 #bodywrapper #primaryNav li li li:first-child {
-	padding: 15px 0 5px 0;
+	padding: 15px 0 2px 0;
 	background: url('img/L3-li-top.png') left center no-repeat;
 }
 #bodywrapper #primaryNav li li li:last-child {
@@ -159,7 +182,7 @@
 #bodywrapper #primaryNav li li li a:link:before,
 #bodywrapper #primaryNav li li li a:visited:before {
 	color: #ccae14;
-	font-size: 9px;
+	font-size: 0.9em;
 }
 
 

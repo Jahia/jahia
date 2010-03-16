@@ -1,9 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.ckeditor;
 
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.*;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -124,7 +121,12 @@ public class CKEditor extends Component {
      * @return
      */
     public boolean isDirty() {
-        return checkDirty();
+        try {
+            return checkDirty();
+        } catch (Exception e) {
+            Log.error("Null pointer",e);
+            return false;
+        }
     }
 
 

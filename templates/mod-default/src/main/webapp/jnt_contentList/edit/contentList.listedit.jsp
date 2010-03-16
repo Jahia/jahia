@@ -21,16 +21,30 @@
 <c:if test="${empty param.ajaxcall}">
     <%-- include add nodes forms --%>
     <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
+
+<script type="text/javascript">
+    function hideAdd(id, index) {
+    <c:forEach items="${types}" var="type" varStatus="status">
+        if (index == ${status.index}) {
+            document.getElementById('add'+id+'-${status.index}').style.display = 'block';
+        } else {
+            document.getElementById('add'+id+'-${status.index}').style.display = 'none';
+        }
+    </c:forEach>
+    }
+</script>
     <c:if test="${types != null}">
-        <li>Forms :
-            <ul>
-                <c:forEach items="${types}" var="type">
-                    <template:module node="${currentNode}" templateType="edit" template="add">
-                        <template:param name="resourceNodeType" value="${type.string}"/>
-                    </template:module>
-                    <li>${category.string}</li>
-                </c:forEach>
-            </ul>
-        </li>
+        Add :
+        <c:forEach items="${types}" var="type" varStatus="status">
+            <a href="#" onclick="hideAdd('${currentNode.identifier}',${status.index})">${type.string}</a>
+        </c:forEach>
+
+        <c:forEach items="${types}" var="type" varStatus="status">
+            <div style="display:none;" id="add${currentNode.identifier}-${status.index}"/>
+            <template:module node="${currentNode}" templateType="edit" template="add">
+                <template:param name="resourceNodeType" value="${type.string}"/>
+            </template:module>
+            </div>
+        </c:forEach>
     </c:if>
 </c:if>

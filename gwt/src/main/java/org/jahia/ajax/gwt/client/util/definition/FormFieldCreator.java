@@ -34,6 +34,8 @@ package org.jahia.ajax.gwt.client.util.definition;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -160,7 +162,7 @@ public class FormFieldCreator {
                     store.add(propDefinition.getValueConstraints());
                     if (propDefinition.isMultiple()) {
 
-                        DualListField<GWTJahiaValueDisplayBean> lists = new DualListField<GWTJahiaValueDisplayBean>();
+                        final DualListField<GWTJahiaValueDisplayBean> lists = new DualListField<GWTJahiaValueDisplayBean>();
 
                         ListField<GWTJahiaValueDisplayBean> from = lists.getFromList();
                         from.setStore(store);
@@ -265,7 +267,20 @@ public class FormFieldCreator {
                             }
                         }
                     }
-                    ((DualListField<GWTJahiaValueDisplayBean>) field).getToList().getStore().add(selection);
+                    final ListStore<GWTJahiaValueDisplayBean> store = ((DualListField<GWTJahiaValueDisplayBean>) field).getToList().getStore();
+                    store.add(selection);
+                    store.addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>(){
+                        @Override
+                        public void storeAdd(StoreEvent<GWTJahiaValueDisplayBean> se) {
+                            field.setData("addedField", "true");
+                        }
+
+                        @Override
+                        public void storeRemove(StoreEvent<GWTJahiaValueDisplayBean> se) {
+                            field.setData("addedField", "true");
+                        }
+                    });
+
                 } else {
                     String val = values.get(0).getString();
                     for (GWTJahiaValueDisplayBean displayBean : displayBeans) {

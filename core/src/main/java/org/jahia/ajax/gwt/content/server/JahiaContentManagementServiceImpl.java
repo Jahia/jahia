@@ -506,6 +506,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
+
+        if (name == null) {
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
+            if (l == null) {
+                l = langCodeProperties.values().iterator().next();
+            }
+            if (l != null) {
+                name = contentManager.generateNameFromTitle(l);
+            }
+        }
+
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, retrieveCurrentSession());
 

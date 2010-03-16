@@ -190,7 +190,7 @@ public class EditModeDNDListener extends DNDListener {
                                     }
                                 });
                     } else {
-                        new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/") + 1), true).show();
+                        new CreateContentEngine(editLinker, parent, type, "*", true).show();
                     }
                 } else {
                     e.getStatus().setData(OPERATION_CALLED, "true");

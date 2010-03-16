@@ -113,11 +113,12 @@ public class DefaultPostActionResult implements Action {
                 nodeName = lastPath;
             }
             if (StringUtils.isBlank(nodeName)) {
-                if (nodeType.contains(":")) {
-                    nodeName = StringUtils.substringAfter(nodeType, ":") + Math.round(Math.random() * 100000);
+                if (parameters.get("jcr:title") != null) {
+                    nodeName = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
                 } else {
-                    nodeName = nodeType + Math.round(Math.random() * 100000);
+                    nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
                 }
+                nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName, session);
             }
             if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
                 nodeName = JCRContentUtils.generateNodeName(nodeName, 255);

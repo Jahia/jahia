@@ -157,9 +157,6 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
         String nodeName = name;
-        if (name == null) {
-            nodeName = generateNameFromTitle(props);
-        }
 
         if (nodeName == null) {
             nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1), currentUserSession);

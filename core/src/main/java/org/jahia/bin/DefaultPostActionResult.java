@@ -40,19 +40,21 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.tools.files.FileUpload;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -146,10 +148,16 @@ public class DefaultPostActionResult implements Action {
                 if (!Render.reservedParameters.contains(key)) {
                     List<String> values = entry.getValue();
                     if (!values.get(0).equals("Submit")) {
-                        if (newNode.getApplicablePropertyDefinition(key).isMultiple()) {
+                        ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                        if (propertyDefinition.isMultiple()) {
                             newNode.setProperty(key, values.toArray(new String[values.size()]));
                         } else {
-                            newNode.setProperty(key, values.get(0));
+                            if(propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
+                                DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
+                                newNode.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));
+                            } else {
+                                newNode.setProperty(key, values.get(0));
+                            }
                         }
                     }
                 }

@@ -16,7 +16,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
 <template:addResources type="css" resources="960.css"/>
 <template:addResources type="css" resources="formbuilder.css"/>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
@@ -60,6 +59,9 @@
                                             style="background:url(${option.properties.image}) no-repeat top left;padding-left:25px">${option.displayName}</option>
                                 </c:forEach>
                             </select>
+                        </c:when>
+                        <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
+                            <%@include file="formelements/richtext.jsp"%>
                         </c:when>
                         <c:otherwise>
                             <label class="left"

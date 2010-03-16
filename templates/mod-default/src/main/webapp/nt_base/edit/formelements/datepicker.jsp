@@ -25,16 +25,18 @@
 <label class="left">Date : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${propertyDefinition.name}"/>
 <input type="text" id="datePicker${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"/>
-<ui:dateSelector fieldId="datePicker${fn:replace(propertyDefinition.name,':','_')}" time="true"
-                 hourFieldId="hourPicker${fn:replace(propertyDefinition.name,':','_')}"
-                 minFieldId="minPicker${fn:replace(propertyDefinition.name,':','_')}">
-    {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
-</ui:dateSelector>
+</p>
+<p class="field">
 <label class="left">Time : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="text" class="selHrs" style="width:20px" value="14"
        id="hourPicker${fn:replace(propertyDefinition.name,':','_')}"/>
 <input type="text" class="selMins" style="width:20px" value="03"
        id="minPicker${fn:replace(propertyDefinition.name,':','_')}"/>
+<ui:dateSelector fieldId="datePicker${fn:replace(propertyDefinition.name,':','_')}" time="true"
+                 hourFieldId="hourPicker${fn:replace(propertyDefinition.name,':','_')}"
+                 minFieldId="minPicker${fn:replace(propertyDefinition.name,':','_')}">
+    {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
+</ui:dateSelector>
 <script>
     $("#${currentNode.name}").submit(function() {
         var datePicked = $("#datePicker${fn:replace(propertyDefinition.name,':','_')}").val();
@@ -44,5 +46,5 @@
         var hourPicked = $('#hourPicker${fn:replace(propertyDefinition.name,':','_')}').val();
         var minPicked = $('#minPicker${fn:replace(propertyDefinition.name,':','_')}').val();
         $("#${propertyDefinition.name}").val(datePicked + "T" + hourPicked + ":" + minPicked + ":00.0");
-    });    
+    });
 </script>

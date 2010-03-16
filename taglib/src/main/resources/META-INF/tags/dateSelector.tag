@@ -65,7 +65,7 @@
     <c:set var="options" value="{dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn: 'both'}"/>
 </c:if>
 <c:if test="${not empty time and time eq true}">
-    <div id="slider1${hourFieldId}" style="height:120px; margin:10px;display:none;"></div>
+    <div style="position:relative;"><div id="slider1${hourFieldId}" style="height:120px; margin:10px;display:none;"></div></div>
     <div id="slider2${minFieldId}" style="height:120px; margin:10px;display:none;"></div>
 </c:if>
 <script type="text/javascript">
@@ -147,8 +147,8 @@
             var pos = $("#${hourFieldId}").offset();
             var eWidth = $("#${hourFieldId}").outerWidth();
             var mWidth = $("#slider1${hourFieldId}").outerWidth();
-            var left = (pos.left + eWidth - mWidth) + 'px';
-            var top = (3 + pos.top) + 'px';
+            var left =  0;
+            var top = 0;
             //show the menu directly over the placeholder
             $("#slider1${hourFieldId}").css({position:'absolute', left:left, top:top});
             $("#slider1${hourFieldId}").show();

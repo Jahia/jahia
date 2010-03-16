@@ -1,0 +1,39 @@
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
+<label for="ckeditor${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<input type="hidden" name="${propertyDefinition.name}" id="${propertyDefinition.name}"/>
+<textarea rows="50" cols="40" id="ckeditor${fn:replace(propertyDefinition.name,':','_')}"></textarea>
+<script>
+    var editor${fn:replace(propertyDefinition.name,':','_')} = undefined;
+
+    $(document).ready(function() {
+        editor${fn:replace(propertyDefinition.name,':','_')} = CKEDITOR.replace("ckeditor${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
+    });
+
+    $("#${currentNode.name}").submit(function() {
+        if (editor${fn:replace(propertyDefinition.name,':','_')} !== undefined) {
+            $("#${propertyDefinition.name}").val(editor${fn:replace(propertyDefinition.name,':','_')}.getData());
+            CKEDITOR.remove(editor${fn:replace(propertyDefinition.name,':','_')});
+            editor${fn:replace(propertyDefinition.name,':','_')} = undefined;
+        }
+    });
+</script>

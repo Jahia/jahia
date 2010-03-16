@@ -50,7 +50,7 @@
                         <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                             <label class="left">${selectorType.valueToName[propertyDefinition.selector]}
                                 : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-                            <jcr:propertyInitializers var="options" nodeType="jnt:news"
+                            <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                       name="${propertyDefinition.name}"/>
                             <select name="${propertyDefinition.name}"
                                     id="${fn:replace(propertyDefinition.name,':','_')}">

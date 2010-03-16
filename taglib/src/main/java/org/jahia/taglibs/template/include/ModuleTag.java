@@ -383,7 +383,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append(type)
                 .append("\" ")
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
-                .append("\" path=\"").append(path)
+                .append("path=\"").append(path)
                 .append("\" ")
                 .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")

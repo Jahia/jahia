@@ -73,8 +73,8 @@ public class EditModeDNDListener extends DNDListener {
             String targetPath = e.getStatus().getData(TARGET_PATH);
             int i = targetPath.lastIndexOf('/');
             String name = targetPath.substring(i + 1);
-            String parentPath = targetPath.substring(0, i);
             final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
+            String parentPath = parent.getPath();
 
             // Drop into empty placeholder
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {

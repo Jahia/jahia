@@ -476,6 +476,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+        ParamBean context = retrieveParamBean();
+
+        if (name == null) {
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
+            if (l == null) {
+                l = langCodeProperties.values().iterator().next();
+            }
+            if (l != null) {
+                name = contentManager.generateNameFromTitle(l);
+            }
+        }
+
         GWTJahiaNode node = createNode(parentPath, name, nodeType, mixin, acl, props, captcha);
         // save shared properties
         if (langCodeProperties != null && !langCodeProperties.isEmpty()) {

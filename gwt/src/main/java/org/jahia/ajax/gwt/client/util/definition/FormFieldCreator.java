@@ -95,6 +95,7 @@ public class FormFieldCreator {
                         case GWTJahiaNodePropertyType.LONG:
                             field = new NumberField();
                             ((NumberField) field).setAllowDecimals(false);
+                            ((NumberField) field).setPropertyEditorType(Long.class);
                             break;
                         case GWTJahiaNodePropertyType.DOUBLE:
                             field = new NumberField();

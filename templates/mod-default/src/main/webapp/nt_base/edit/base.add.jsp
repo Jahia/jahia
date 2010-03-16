@@ -36,13 +36,12 @@
                 <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">
                     <p class="field">
                     <c:choose>
-                        <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BINARY}">
-                            <label class="left">BINARY
-                                : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-                        </c:when>
                         <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                             <label class="left">Reference
                                 : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+                            <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
+                                <%@include file="formelements/file.jsp"%>
+                            </c:if>
                         </c:when>
                         <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                             <%@include file="formelements/datepicker.jsp"%>
@@ -73,7 +72,9 @@
                     </p>
                 </c:if>
             </c:forEach>
+            <p class="field">
             <input class="button" type="submit" value="Submit"/>
+            </p>
         </fieldset>
     </form>
 </div>

@@ -20,7 +20,7 @@
             </span>
         </p>
 
-        <c:if test="${!empty image}"><div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div></c:if>
+        <c:if test="${not empty newsImage}"><div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div></c:if>
         <p class="newsResume">
             ${currentNode.properties.desc.string}
         </p>

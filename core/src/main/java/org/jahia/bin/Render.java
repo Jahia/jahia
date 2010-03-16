@@ -377,7 +377,7 @@ public class Render extends HttpServlet implements Controller,
             boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
             final String requestWith = paramBean.getRealRequest().getHeader("x-requested-with");
             boolean isAjaxRequest = paramBean.getRealRequest().getHeader("accept").contains(
-                    "application/json") && requestWith != null && requestWith.equals("XMLHttpRequest");
+                    "application/json") && requestWith != null && requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
             if (isTargetDirectoryDefined) {
                 target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
             }

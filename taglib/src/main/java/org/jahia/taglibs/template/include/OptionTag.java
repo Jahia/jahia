@@ -92,7 +92,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                     currentResource.removeOption(mixinNodeType);
                 }
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
-                wrappedResource.setWrappedMixinType(mixinNodeType);
+                wrappedResource.setResourceNodeType(mixinNodeType);
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                 pageContext.getOut().write(script.execute(wrappedResource, renderContext));
             }

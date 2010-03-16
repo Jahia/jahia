@@ -53,25 +53,15 @@ public class FileSystemScriptResolver implements ScriptResolver {
 
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
-        if (resource.getWrappedMixinType() == null) {
-            Template res = resolveTemplate(resource, context, nodeTypeList);
-            if (res != null) {
-                return res;
-            }
-        } else {
-            for (String template : resource.getTemplates()) {
-                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                        resource.getWrappedMixinType().getAlias().replace(":", "_"), context);
-                Template res = resolveTemplate(resource, context, template, resource.getWrappedMixinType(), sortedPackages);
-                if (res != null) {
-                    return res;
-                }
 
-            }
+        Template res = resolveTemplate(resource, context, nodeTypeList);
+        if (res != null) {
+            return res;
         }
+
         List<ExtendedNodeType> mixinNodeTypes = Arrays.asList(resource.getNode().getMixinNodeTypes());
         if (mixinNodeTypes.size() > 0) {
-            Template res = resolveTemplate(resource, context, mixinNodeTypes);
+            res = resolveTemplate(resource, context, mixinNodeTypes);
             if (res != null) {
                 return res;
             }

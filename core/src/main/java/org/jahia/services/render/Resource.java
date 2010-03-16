@@ -52,7 +52,6 @@ import java.util.*;
 public class Resource {
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
-    private ExtendedNodeType resourceNodeType;
     private String templateType;
     private String template;
     private String forcedTemplate;
@@ -62,7 +61,7 @@ public class Resource {
     private List<Resource> includedResources;
     private List<String> missingResources;
     private List<Option> options;
-    private ExtendedNodeType wrappedMixinType;
+    private ExtendedNodeType resourceNodeType;
 
     /**
      * Creates a resource from the specified parameter
@@ -190,14 +189,6 @@ public class Resource {
         return !options.isEmpty();
     }
 
-    public ExtendedNodeType getWrappedMixinType() {
-        return wrappedMixinType;
-    }
-
-    public void setWrappedMixinType(ExtendedNodeType wrappedMixinType) {
-        this.wrappedMixinType = wrappedMixinType;
-    }
-
     public void removeOption(ExtendedNodeType mixinNodeType) {
         options.remove(new Option("",mixinNodeType));
     }
@@ -217,11 +208,15 @@ public class Resource {
 
         Resource resource = (Resource) o;
 
+        if (node != null ? !node.equals(resource.node) : resource.node != null) return false;
+        if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null)
+            return false;
+        if (template != null ? !template.equals(resource.template) : resource.template != null) return false;
         if (forcedTemplate != null ? !forcedTemplate.equals(resource.forcedTemplate) : resource.forcedTemplate != null)
             return false;
-        if (node != null ? !node.getPath().equals(resource.node.getPath()) : resource.node.getPath() != null) return false;
-        if (template != null ? !template.equals(resource.template) : resource.template != null) return false;
-        if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null)
+        if (wrappers != null ? !wrappers.equals(resource.wrappers) : resource.wrappers != null) return false;
+        if (options != null ? !options.equals(resource.options) : resource.options != null) return false;
+        if (resourceNodeType != null ? !resourceNodeType.equals(resource.resourceNodeType) : resource.resourceNodeType != null)
             return false;
 
         return true;
@@ -234,11 +229,8 @@ public class Resource {
         result = 31 * result + (template != null ? template.hashCode() : 0);
         result = 31 * result + (forcedTemplate != null ? forcedTemplate.hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
-        result = 31 * result + (dependencies != null ? dependencies.hashCode() : 0);
-        result = 31 * result + (includedResources != null ? includedResources.hashCode() : 0);
-        result = 31 * result + (missingResources != null ? missingResources.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
-        result = 31 * result + (wrappedMixinType != null ? wrappedMixinType.hashCode() : 0);
+        result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);
         return result;
     }
 

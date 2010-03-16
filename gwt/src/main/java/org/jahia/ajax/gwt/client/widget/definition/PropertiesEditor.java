@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.definition;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -216,12 +217,20 @@ public class PropertiesEditor extends FormPanel {
                             public void handleEvent(ComponentEvent componentEvent) {
                                 removedTypes.add(definition.getDeclaringNodeType());
                                 addedTypes.remove(definition.getDeclaringNodeType());
+                                final FormPanel thisForm = (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent()).getItem(0);
+                                for (Component component : thisForm.getItems()) {
+                                    component.setData("addedField", null);
+                                }
                             }
                         });
                         fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
                             public void handleEvent(ComponentEvent componentEvent) {
                                 addedTypes.add(definition.getDeclaringNodeType());
                                 removedTypes.remove(definition.getDeclaringNodeType());
+                                final FormPanel thisForm = (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent()).getItem(0);
+                                for (Component component : thisForm.getItems()) {
+                                    component.setData("addedField", "true");
+                                }
                             }
                         });
                     }
@@ -334,7 +343,7 @@ public class PropertiesEditor extends FormPanel {
                         if (!definition.isProtected()) {
                             Field f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                            if (f != null && (f.isDirty() || !modifiedOnly)) {
+                            if (f != null && (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
                                 newProps.add(prop);

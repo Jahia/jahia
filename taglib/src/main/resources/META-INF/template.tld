@@ -251,6 +251,12 @@
         <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <name>templateType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
             <name>template</name>
             <required>false</required>

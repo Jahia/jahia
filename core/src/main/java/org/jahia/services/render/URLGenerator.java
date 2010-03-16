@@ -139,7 +139,7 @@ public class URLGenerator {
     public String getUserProfile() {
         if (userProfile == null) {
             if (!JahiaUserManagerService.isGuest(context.getUser())) {
-                userProfile = buildURL(jcrStoreService.getUserFolders(null, context.getUser()).iterator().next(), null);
+                userProfile = buildURL(jcrStoreService.getUserFolders(null, context.getUser()).iterator().next(), null, resource.getTemplateType());
             }
         }
         return userProfile;
@@ -150,7 +150,7 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        return buildURL(resource.getNode(), resource.getResolvedTemplate());
+        return buildURL(resource.getNode(), resource.getResolvedTemplate(), resource.getTemplateType());
     }
 
     @SuppressWarnings("unchecked")
@@ -177,7 +177,7 @@ public class URLGenerator {
         if (templates == null) {
             templates = LazyMap.decorate(new HashMap(), new Transformer() {
                 public Object transform(Object template) {
-                    return buildURL(resource.getNode(), (String) template);
+                    return buildURL(resource.getNode(), (String) template, resource.getTemplateType());
                 }
             });
         }
@@ -208,8 +208,8 @@ public class URLGenerator {
         }
     }
 
-    public String buildURL(JCRNodeWrapper node, String template) {
-        return base + node.getPath() + (template != null ? "." + template : "") + ".html";
+    public String buildURL(JCRNodeWrapper node, String template, String templateType) {
+        return base + node.getPath() + (template != null ? "." + template : "") + "."+ templateType;
     }
 
     /**

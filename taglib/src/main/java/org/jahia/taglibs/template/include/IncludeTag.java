@@ -21,7 +21,6 @@ public class IncludeTag extends ModuleTag {
         addParameter("forcedRenderOptions","none");
         addParameter("isInclude","true");
         Resource resource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-        setTemplateType(resource.getTemplateType());
         setNode((JCRNodeWrapper) pageContext.getAttribute("currentNode", PageContext.REQUEST_SCOPE));
         setEditable(false);
         setForcedTemplate(getTemplate());

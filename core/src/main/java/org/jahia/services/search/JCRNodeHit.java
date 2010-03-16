@@ -88,7 +88,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getLink() {
-        return context.getURLGenerator().buildURL(resource, null);
+        return context.getURLGenerator().buildURL(resource, null, "html");
     }
 
     public String getPath() {

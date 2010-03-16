@@ -18,6 +18,7 @@ public class IncludeTag extends ModuleTag {
     @Override
     public int doStartTag() throws JspException {
         addParameter("forcedSkin","none");
+        addParameter("forcedRenderOptions","none");
         Resource resource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
         setTemplateType(resource.getTemplateType());
         setNode((JCRNodeWrapper) pageContext.getAttribute("currentNode", PageContext.REQUEST_SCOPE));

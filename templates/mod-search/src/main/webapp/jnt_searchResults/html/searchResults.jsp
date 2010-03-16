@@ -89,7 +89,7 @@
             <div id="${currentNode.UUID}">
                 <c:set var="listTotalSize" value="${count}" scope="request"/>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
                     <template:param name="displaySearchParams" value="true"/>
                 </template:option>
         	<ol start="${begin+1}">
@@ -98,7 +98,7 @@
 				</s:resultIterator>
 	        </ol>
                 <div class="clear"></div>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden">
+                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
                     <template:param name="displaySearchParams" value="true"/>
                 </template:option>
             </div>

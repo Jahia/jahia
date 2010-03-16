@@ -201,6 +201,7 @@
     <bean id="templatesInitializer" class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="usersInitializer" class="org.jahia.services.content.nodetypes.initializers.UsersChoiceListInitializerImpl"/>
     <bean id="moduleImageInitializer" class="org.jahia.services.content.nodetypes.initializers.ModuleImageChoiceListInitializerImpl"/>
+    <bean id="nodetypesInitializer" class="org.jahia.services.content.nodetypes.initializers.NodeTypesChoiceListInitializerImpl"/>
     <bean id="nodesInitializer" class="org.jahia.services.content.nodetypes.initializers.NodesChoiceListInitializerImpl">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
@@ -227,6 +228,7 @@
                 <entry key="templates" value-ref="templatesInitializer"/>
                 
                 <entry key="users" value-ref="usersInitializer"/>
+                <entry key="nodetypes" value-ref="nodetypesInitializer"/>
                 <entry key="nodes" value-ref="nodesInitializer"/>
                 <entry key="script" value-ref="scriptInitializer"/>
                 <entry key="flag" value-ref="countryFlagInitializer"/>                

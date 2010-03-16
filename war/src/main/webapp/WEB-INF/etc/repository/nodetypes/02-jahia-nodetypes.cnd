@@ -439,7 +439,7 @@
 //---------------------------------------------------------
 
 [jmix:editable] > jmix:option, jmix:contentMixin mixin
-- editable (boolean)
+ - j:allowedTypes (string, choicelist[nodetypes]) multiple
 
 //---------------------------------------------------------
 // Pages, content lists, reusable components

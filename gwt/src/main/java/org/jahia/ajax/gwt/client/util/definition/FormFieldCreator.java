@@ -159,10 +159,17 @@ public class FormFieldCreator {
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                     store.add(propDefinition.getValueConstraints());
                     if (propDefinition.isMultiple()) {
-                        ListField<GWTJahiaValueDisplayBean> list = new ListField<GWTJahiaValueDisplayBean>();
-                        list.setStore(store);
-                        list.setDisplayField("display");
-                        field = list;
+
+                        DualListField<GWTJahiaValueDisplayBean> lists = new DualListField<GWTJahiaValueDisplayBean>();
+
+                        ListField<GWTJahiaValueDisplayBean> from = lists.getFromList();
+                        from.setStore(store);
+                        from.setDisplayField("display");
+                        ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
+                        to.setDisplayField("display");
+                        store = new ListStore<GWTJahiaValueDisplayBean>();
+                        to.setStore(store);
+                        field = lists;
                     } else {
                         ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>();
                         combo.setStore(store);
@@ -253,11 +260,12 @@ public class FormFieldCreator {
                             for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
                                 if(displayBean.getValue().equals(val)) {
                                     selection.add(displayBean);
+                                    ((DualListField<GWTJahiaValueDisplayBean>) field).getFromList().getStore().remove(displayBean);
                                 }
                             }
                         }
                     }
-                    ((ListField<GWTJahiaValueDisplayBean>) field).setSelection(selection);
+                    ((DualListField<GWTJahiaValueDisplayBean>) field).getToList().getStore().add(selection);
                 } else {
                     String val = values.get(0).getString();
                     for (GWTJahiaValueDisplayBean displayBean : displayBeans) {

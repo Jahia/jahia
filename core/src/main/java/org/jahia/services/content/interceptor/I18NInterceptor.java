@@ -38,7 +38,9 @@ public class I18NInterceptor implements PropertyInterceptor {
                     translation.checkout();
                 }
             }
-            translation.getProperty(name).remove();
+            if (translation.hasProperty(name)) {
+                translation.getProperty(name).remove();
+            }
         }        
     }
 

@@ -264,7 +264,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, parentNode.getPath(), name, retrieveCurrentSession());
         try {
-            contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path, retrieveCurrentSession());
+            contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -533,7 +533,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, mixin, properties, retrieveCurrentSession());
 
         try {
-            contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path, retrieveCurrentSession());
+            contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -606,7 +606,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.moveOnTopOf(getUser(), sourcePath, targetPath, retrieveCurrentSession());
+            contentManager.moveOnTopOf(sourcePath, targetPath, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

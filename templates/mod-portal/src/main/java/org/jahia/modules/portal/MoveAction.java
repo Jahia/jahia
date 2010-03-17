@@ -48,7 +48,7 @@ public class MoveAction implements org.jahia.bin.Action {
         String action = req.getParameter("action");
         JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
         if ("moveBefore".equals(action)) {
-            contentManager.moveOnTopOf(null,sourcePath,targetPath, jcrSessionWrapper);
+            contentManager.moveOnTopOf(sourcePath,targetPath, jcrSessionWrapper);
         }
         else if ("moveAfter".equals(action)) {
             contentManager.moveAtEnd(sourcePath,targetPath, jcrSessionWrapper);

@@ -438,9 +438,6 @@
 // Contribution
 //---------------------------------------------------------
 
-[jmix:editable] > jmix:option, jmix:contentMixin mixin
- - j:allowedTypes (string, choicelist[nodetypes]) multiple
-
 //---------------------------------------------------------
 // Pages, content lists, reusable components
 //---------------------------------------------------------
@@ -453,6 +450,10 @@
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:list
  orderable
+ - j:editableInContribution (boolean)
+ - j:canOrderInContribution (boolean)
+ - j:canDeleteInContribution (boolean)
+ - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
 [jnt:reusableComponentsRoot] > nt:base, jmix:hierarchyNode, jmix:collection

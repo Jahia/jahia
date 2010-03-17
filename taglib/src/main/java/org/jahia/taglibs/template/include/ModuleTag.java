@@ -261,20 +261,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     }
                 }
 
-                boolean contributionMode = false;
-                try {
-                    contributionMode = renderContext.isContributionMode() && node.isNodeType("jmix:editable") && parameters.get("isInclude") == null;
-                } catch (RepositoryException e) {
-                    e.printStackTrace();
-                }
-
                 if (templateType == null) {
                     templateType = currentResource.getTemplateType();
-
-                    if (contributionMode) {
-                        templateType = "edit";
-                        forcedTemplate = "listedit";
-                    }
                 }
 
                 Resource resource = new Resource(node, templateType, template, forcedTemplate);

@@ -317,7 +317,7 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath, JCRSessionWrapper currentUserSession) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
+    public void moveOnTopOf(String sourcePath, String targetPath, JCRSessionWrapper currentUserSession) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
         JCRSessionWrapper session = currentUserSession;
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);

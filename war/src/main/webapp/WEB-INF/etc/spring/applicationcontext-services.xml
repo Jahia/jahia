@@ -288,6 +288,9 @@
                             <property name="priority" value="0" />
                             <property name="applyOnMainResource" value="true"/>
                         </bean>
+                        <bean class="org.jahia.services.render.filter.ContributionFilter" >
+                            <property name="priority" value="3" />
+                        </bean>
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
                             <property name="priority" value="5" />
                         </bean>

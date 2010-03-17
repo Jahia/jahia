@@ -1,8 +1,8 @@
 /******************************************************************************
 * FormContribute
 ******************************************************************************/
-#bodywrapper input,
-#bodywrapper textarea {
+#bodywrapper .FormContribute input,
+#bodywrapper .FormContribute textarea {
 	width:97%
 }
 #bodywrapper .FormContribute p{

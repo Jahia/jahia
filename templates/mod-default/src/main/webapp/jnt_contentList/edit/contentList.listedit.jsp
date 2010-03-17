@@ -36,7 +36,8 @@
     <c:if test="${types != null}">
         Add :
         <c:forEach items="${types}" var="type" varStatus="status">
-            <a href="#" onclick="hideAdd('${currentNode.identifier}',${status.index})">${type.string}</a>
+            <jcr:nodeType name="${type.string}" var="nodeType"/>
+            <a href="#" onclick="hideAdd('${currentNode.identifier}',${status.index})">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</a>
         </c:forEach>
 
         <c:forEach items="${types}" var="type" varStatus="status">

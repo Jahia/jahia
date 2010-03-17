@@ -4,37 +4,38 @@
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:if test="${empty param.ajaxcall}">
 
-<script type="text/javascript" >
-    function invert(source,target) {
-        var data = {};
-        data["action"] = "moveBefore";
-        data["target"]=target;
-        data["source"]=source;
-        url = '${url.base}'+source;
-        $.post(url+".move.do", data, function(result) {
-            replace('${currentNode.UUID}', '${url.current}','');
-        }, "json");
-    }
+    <script type="text/javascript">
+        function invert(source, target) {
+            var data = {};
+            data["action"] = "moveBefore";
+            data["target"] = target;
+            data["source"] = source;
+            url = '${url.base}' + source;
+            $.post(url + ".move.do", data, function(result) {
+                replace('${currentNode.UUID}', '${url.current}', '');
+            }, "json");
+        }
 
-    function deleteNode(source) {
-        var data = {};
-        data["methodToCall"] = "delete";
-        url = '${url.base}'+source;
-        $.post(url, data, function(result) {
-            replace('${currentNode.UUID}', '${url.current}','');
-        }, "json");
-    }
-</script>
+        function deleteNode(source) {
+            var data = {};
+            data["methodToCall"] = "delete";
+            url = '${url.base}' + source;
+            $.post(url, data, function(result) {
+                replace('${currentNode.UUID}', '${url.current}', '');
+            }, "json");
+        }
+    </script>
 
-<input type="button" value="Edit" onclick="replace('${currentNode.UUID}', '${url.current}?ajaxcall=true', '')"/>
-<input type="button" value="Preview" onclick="replace('${currentNode.UUID}', '${url.base}${currentNode.path}.html?ajaxcall=true', '')"/>
+    <input type="button" value="Edit" onclick="replace('${currentNode.UUID}', '${url.current}?ajaxcall=true', '')"/>
+    <input type="button" value="Preview"
+           onclick="replace('${currentNode.UUID}', '${url.base}${currentNode.path}.html?ajaxcall=true', '')"/>
 </c:if>
 
 <template:include templateType="html" template="hidden.header"/>
 
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
     <%-- inline edit --%>
-    <template:module node="${child}" templateType="edit" forcedTemplate="edit" >
+    <template:module node="${child}" templateType="edit" forcedTemplate="edit">
         <c:if test="${not empty forcedSkin}">
             <template:param name="forcedSkin" value="${forcedSkin}"/>
         </c:if>
@@ -44,13 +45,19 @@
     </template:module>
     <%-- buttons --%>
     <div>
-        <c:if test="${status.index gt 0}">
-            <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="move up" onclick="invert('${child.path}','${previousChild.path}')" />
+        <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
+            <c:if test="${status.index gt 0}">
+                <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="move up"
+                       onclick="invert('${child.path}','${previousChild.path}')"/>
+            </c:if>
+            <c:if test="${status.index lt listTotalSize-1}">
+                <input type="button" value="move down"
+                       onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()"/>
+            </c:if>
         </c:if>
-        <c:if test="${status.index lt listTotalSize-1}">
-            <input type="button" value="move down" onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()" />
+        <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
+            <input type="button" value="delete" onclick="deleteNode('${child.path}')"/>
         </c:if>
-        <input type="button" value="delete" onclick="deleteNode('${child.path}')" />
         <c:set var="previousChild" value="${child}"/>
     </div>
 </c:forEach>
@@ -64,22 +71,23 @@
     <%-- include add nodes forms --%>
     <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
 
-<script type="text/javascript">
-    function hideAdd(id, index) {
-    <c:forEach items="${types}" var="type" varStatus="status">
-        if (index == ${status.index}) {
-            document.getElementById('add'+id+'-${status.index}').style.display = 'block';
-        } else {
-            document.getElementById('add'+id+'-${status.index}').style.display = 'none';
+    <script type="text/javascript">
+        function hideAdd(id, index) {
+        <c:forEach items="${types}" var="type" varStatus="status">
+            if (index == ${status.index}) {
+                document.getElementById('add' + id + '-${status.index}').style.display = 'block';
+            } else {
+                document.getElementById('add' + id + '-${status.index}').style.display = 'none';
+            }
+        </c:forEach>
         }
-    </c:forEach>
-    }
-</script>
+    </script>
     <c:if test="${types != null}">
         Add :
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <a href="#" onclick="hideAdd('${currentNode.identifier}',${status.index})">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</a>
+            <a href="#"
+               onclick="hideAdd('${currentNode.identifier}',${status.index})">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</a>
         </c:forEach>
 
         <c:forEach items="${types}" var="type" varStatus="status">

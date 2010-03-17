@@ -32,7 +32,7 @@
 </c:if>
 
 <template:include templateType="html" template="hidden.header"/>
-
+<hr/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
     <%-- inline edit --%>
     <template:module node="${child}" templateType="edit" forcedTemplate="edit">
@@ -60,6 +60,7 @@
         </c:if>
         <c:set var="previousChild" value="${child}"/>
     </div>
+    <hr/>
 </c:forEach>
 <div class="clear"></div>
 <c:if test="${editable and renderContext.editMode}">
@@ -83,15 +84,15 @@
         }
     </script>
     <c:if test="${types != null}">
-        Add :
+        <a name="add" id="add"></a>Add :
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <a href="#"
+            <a href="#add"
                onclick="hideAdd('${currentNode.identifier}',${status.index})">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</a>
         </c:forEach>
 
         <c:forEach items="${types}" var="type" varStatus="status">
-            <div style="display:none;" id="add${currentNode.identifier}-${status.index}"/>
+            <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
             <template:module node="${currentNode}" templateType="edit" template="add">
                 <template:param name="resourceNodeType" value="${type.string}"/>
             </template:module>

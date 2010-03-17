@@ -118,4 +118,3 @@
         </c:if>
     </c:forEach>
 </div>
-<hr/>

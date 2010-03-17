@@ -29,7 +29,8 @@ public class ContributionFilter extends AbstractFilter {
                     && !resource.getTemplateType().equals("edit")
                     && resource.getModuleParams().get("isInclude") == null
                     && context.getRequest().getParameter("ajaxcall") == null) {
-                resource = new Resource(node, "edit", "listedit", "listedit");
+                resource.setTemplateType("edit");
+                resource.setTemplate("listedit");
             }
         } catch (RepositoryException e) {
             e.printStackTrace();

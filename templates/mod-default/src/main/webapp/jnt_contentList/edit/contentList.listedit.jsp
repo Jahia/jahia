@@ -1,54 +1,27 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<c:if test="${empty param.ajaxcall}">
-
-    <script type="text/javascript">
-        function invert(source, target) {
-            var data = {};
-            data["action"] = "moveBefore";
-            data["target"] = target;
-            data["source"] = source;
-            url = '${url.base}' + source;
-            $.post(url + ".move.do", data, function(result) {
-                replace('${currentNode.UUID}', '${url.current}', '');
-            }, "json");
-        }
-
-        function deleteNode(source) {
-            var data = {};
-            data["methodToCall"] = "delete";
-            url = '${url.base}' + source;
-            $.post(url, data, function(result) {
-                replace('${currentNode.UUID}', '${url.current}', '');
-            }, "json");
-        }
-    </script>
-
-    <input type="button" value="Edit" onclick="replace('${currentNode.UUID}', '${url.current}?ajaxcall=true', '')"/>
-    <input type="button" value="Preview"
-           onclick="replace('${currentNode.UUID}', '${url.base}${currentNode.path}.html?ajaxcall=true', '')"/>
-</c:if>
+<template:addResources type="javascript" resources="contributedefault.js"/>
 
 <template:include templateType="html" template="hidden.header"/>
 <hr/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
-    <%-- inline edit --%>
-    <template:module node="${child}" templateType="edit" forcedTemplate="edit">
-        <c:if test="${not empty forcedSkin}">
-            <template:param name="forcedSkin" value="${forcedSkin}"/>
-        </c:if>
-        <c:if test="${not empty renderOptions}">
-            <template:param name="renderOptions" value="${renderOptions}"/>
-        </c:if>
-    </template:module>
+
     <%-- buttons --%>
-    <div>
+    <div style="border:1px solid;">
+        <input type="button" value="Edit"
+               onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields()')"/>
+
+        <input type="button" value="Preview"
+               onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')"/>
+
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
             <c:if test="${status.index gt 0}">
                 <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="move up"
-                       onclick="invert('${child.path}','${previousChild.path}')"/>
+                       onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
             </c:if>
             <c:if test="${status.index lt listTotalSize-1}">
                 <input type="button" value="move down"
@@ -56,11 +29,15 @@
             </c:if>
         </c:if>
         <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-            <input type="button" value="delete" onclick="deleteNode('${child.path}')"/>
+            <workflow:input type="button" value="delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
         </c:if>
+
         <c:set var="previousChild" value="${child}"/>
     </div>
-    <hr/>
+
+    <div id="edit-${child.identifier}">
+        <template:module templateType="html" node="${child}"/>
+    </div>
 </c:forEach>
 <div class="clear"></div>
 <c:if test="${editable and renderContext.editMode}">

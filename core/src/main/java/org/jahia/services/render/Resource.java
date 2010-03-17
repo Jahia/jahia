@@ -94,6 +94,10 @@ public class Resource {
         return templateType;
     }
 
+    public void setTemplateType(String templateType) {
+        this.templateType = templateType;
+    }
+
     public String getWorkspace() {
         try {
             return node.getSession().getWorkspace().getName();
@@ -116,8 +120,16 @@ public class Resource {
         return template;
     }
 
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
     public String getForcedTemplate() {
         return forcedTemplate;
+    }
+
+    public void setForcedTemplate(String forcedTemplate) {
+        this.forcedTemplate = forcedTemplate;
     }
 
     public List<String> getTemplates() {

@@ -47,6 +47,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.*;
@@ -1601,11 +1602,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public JCRNodeWrapper getFrozenVersionAsRegular(String name) {
+    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) {
         try {
-            Version v = objectNode.getVersionHistory().getVersion(name);
+            VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
+            Version v = JCRVersionService.findClosestVersion(vh, versionDate);
+            if (v==null) {
+                return null;
+            }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            return provider.getNodeWrapper(frozen, session);
+            return new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen, session), versionDate);
         } catch (RepositoryException e) {
             logger.error("Error while retrieving frozen version", e);
         }

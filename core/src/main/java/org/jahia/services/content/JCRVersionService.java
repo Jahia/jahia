@@ -89,4 +89,30 @@ public class JCRVersionService extends JahiaService {
         incrementRevisionNumber(node);
         session.getWorkspace().getVersionManager().checkin(node.getPath());
     }
+
+    /**
+     * Finds the closest version in a version history to a specific date.
+     * @param vh the version history in which to lookup versions
+     * @param versionDate the date to compare with. Note that it will find the closest version at OR BEFORE the date
+     * @return the closest version at or before the date specified.
+     * @throws RepositoryException
+     */
+    public static Version findClosestVersion(VersionHistory vh, Date versionDate) throws RepositoryException {
+        VersionIterator vi = vh.getAllLinearVersions();
+        Version lastVersion = null;
+        Version closestVersion = null;
+        while (vi.hasNext()) {
+            Version v = vi.nextVersion();
+            if (v.getCreated().getTime().compareTo(versionDate) > 0) {
+                closestVersion = lastVersion;
+                break;
+            } else if (v.getCreated().getTime().compareTo(versionDate) == 0) {
+                closestVersion = v;
+                break;
+            }
+            lastVersion = v;
+        }
+        return closestVersion;
+    }
+
 }

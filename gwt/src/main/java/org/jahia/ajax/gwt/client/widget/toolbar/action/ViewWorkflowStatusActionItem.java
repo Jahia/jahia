@@ -9,14 +9,11 @@ import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
 
 import java.util.ArrayList;
 import java.util.List;

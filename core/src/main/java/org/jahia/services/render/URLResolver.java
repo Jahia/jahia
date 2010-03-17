@@ -33,6 +33,7 @@ package org.jahia.services.render;
 
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -253,17 +254,17 @@ public class URLResolver {
      * 
      * Workspace, locale and path are taken from the given resolved URL. 
      * 
-     * @param versionNumber
-     *            The version number to get the resource of a versioned node  
+     * @param versionDate
+     *            The version date to get the resource of a versioned node, or the closest before this date  
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
-    public Resource getResource(String versionNumber)
+    public Resource getResource(Date versionDate)
             throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath(),
-                versionNumber);
+                versionDate);
     }
 
     /**
@@ -347,15 +348,15 @@ public class URLResolver {
      *            current locale
      * @param path
      *            The path of the node, in the specified workspace
-     * @param versionNumber
-     *            The version number to get the resource of a versioned node            
+     * @param versionDate
+     *            The version date to get the resource of a versioned node, or the closest before this date            
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
     protected Resource resolveResource(final String workspace,
-            final Locale locale, final String path, final String versionNumber)
+            final Locale locale, final String path, final Date versionDate)
             throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving resource for workspace '" + workspace
@@ -389,21 +390,6 @@ public class URLResolver {
                                 break;
                             } catch (PathNotFoundException ex) {
                                 // ignore it
-                            }
-                        }
-
-                        // handle version number
-                        if (versionNumber != null) {
-                            JCRNodeWrapper versionNode = node
-                                    .getFrozenVersion(versionNumber);
-                            if (versionNode != null) {
-                                node = versionNode;
-                            } else {
-                                logger
-                                        .error("Error while retrieving node with path "
-                                                + nodePath
-                                                + " and version "
-                                                + versionNumber);
                             }
                         }
 
@@ -446,6 +432,21 @@ public class URLResolver {
                         }
                         try {
                             node = userSession.getNode(nodePath);
+                            // handle version number
+                            if (versionDate != null) {
+                                JCRNodeWrapper versionNode = node
+                                        .getFrozenVersionAsRegular(versionDate);
+                                if (versionNode != null) {
+                                    node = versionNode;
+                                } else {
+                                    logger
+                                            .error("Error while retrieving node with path "
+                                                    + nodePath
+                                                    + " and version "
+                                                    + versionDate);
+                                }
+                            }
+
                         } catch (PathNotFoundException e) {
                             throw new AccessDeniedException(path);
                         }

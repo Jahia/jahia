@@ -161,8 +161,16 @@ public class Render extends HttpServlet implements Controller,
         return new RenderContext(req, resp, user);
     }
 
-    protected String getVersionNumber(HttpServletRequest req){
-       return req.getParameter("v");
+    protected Date getVersionDate(HttpServletRequest req){
+        // we assume here that the date has been passed as milliseconds.
+        String msString = req.getParameter("v");
+        try {
+            long msLong = Long.parseLong(msString);
+            return new Date(msLong);
+        } catch (NumberFormatException nfe) {
+            logger.warn("Invalid version date found in URL " + msString);
+            return null;
+        }
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp,
@@ -309,7 +317,7 @@ public class Render extends HttpServlet implements Controller,
             return;
         }
         if (urlResolver.getPath().endsWith(".do")) {
-            Resource resource = urlResolver.getResource(getVersionNumber(req));
+            Resource resource = urlResolver.getResource(getVersionDate(req));
             renderContext.setMainResource(resource);
             renderContext.setSite(Jahia.getThreadParamBean().getSite());
             renderContext.setSiteNode(JCRSessionFactory.getInstance()
@@ -513,7 +521,7 @@ public class Render extends HttpServlet implements Controller,
                     urlResolver.getLocale());
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = urlResolver.getResource(getVersionNumber(req));
+                Resource resource = urlResolver.getResource(getVersionDate(req));
                 final JahiaSite site = paramBean.getSite();
                 renderContext.setMainResource(resource);
                 renderContext.setSite(site);

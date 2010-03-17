@@ -44,7 +44,7 @@ public class RenderTest extends TestCase {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
 
         try {
-            site = TestHelper.createSite(TESTSITE_NAME);
+            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES, null);
             ctx = Jahia.getThreadParamBean();
             assertNotNull(site);
         } catch (Exception ex) {
@@ -138,12 +138,13 @@ public class RenderTest extends TestCase {
         List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
-            GetMethod versionGet = new GetMethod("http://localhost:8080/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getName());
+            GetMethod versionGet = new GetMethod("http://localhost:8080/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getCreated().getTime().getTime());
             try {
                 int responseCode = client.executeMethod(versionGet);
                 assertEquals("Response code " + responseCode, 200, responseCode);
                 String responseBody = versionGet.getResponseBodyAsString();
-                assertFalse("Couldn't find expected value in response body", responseBody.indexOf("title" + Integer.toString(index)) < 0);
+                // logger.debug("Response body=[" + responseBody + "]");
+                assertFalse("Couldn't find expected value (title" + Integer.toString(index)+") in response body", responseBody.indexOf("title" + Integer.toString(index)) < 0);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }

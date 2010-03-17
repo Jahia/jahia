@@ -4,8 +4,10 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
@@ -47,17 +49,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             try {
                 if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
-                    VersionIterator vi = vh.getAllLinearVersions();
-                    Version lastVersion = null;
-                    Version closestVersion = null;
-                    while (vi.hasNext()) {
-                        Version v = vi.nextVersion();
-                        if (v.getCreated().getTime().compareTo(versionDate) > 0) {
-                            closestVersion = lastVersion;
-                            break;
-                        }
-                        lastVersion = v;
-                    }
+                    Version closestVersion = JCRVersionService.findClosestVersion(vh, versionDate);
                     if (closestVersion != null) {
                         childEntries.add(new JCRFrozenNodeAsRegular((JCRNodeWrapper)closestVersion.getFrozenNode(), versionDate));
                     }
@@ -116,7 +108,8 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public String getPrimaryNodeTypeName() throws RepositoryException {
-        return super.getPrimaryNodeTypeName();
+        String frozenPrimaryNodeType = node.getPropertyAsString(Constants.JCR_FROZENPRIMARYTYPE);
+        return frozenPrimaryNodeType;
     }
 
     @Override
@@ -126,12 +119,12 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public JCRNodeWrapper getFrozenVersion(String name) {
-        return super.getFrozenVersion(name);
+        return this;
     }
 
     @Override
-    public JCRNodeWrapper getFrozenVersionAsRegular(String name) {
-        return super.getFrozenVersionAsRegular(name);
+    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) {
+        return this;
     }
 
     @Override
@@ -141,7 +134,8 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
-        return super.getPrimaryNodeType();
+        String frozenPrimaryNodeType = node.getPropertyAsString(Constants.JCR_FROZENPRIMARYTYPE);
+        return NodeTypeRegistry.getInstance().getNodeType(frozenPrimaryNodeType);
     }
 
     @Override
@@ -171,6 +165,24 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public boolean isNodeType(String s) throws RepositoryException {
-        return super.isNodeType(s);
+        ExtendedNodeType primaryNodeType = getPrimaryNodeType();
+        boolean result = primaryNodeType.isNodeType(s);
+        if (result) {
+            return result;
+        }
+        // let's let's check the mixin types;
+        JCRPropertyWrapper property = node.getProperty(Constants.JCR_FROZENMIXINTYPES);
+        if (property != null) {
+            Value[] values = property.getValues();
+            for (Value value : values) {
+                String curMixinTypeName = value.getString();
+                ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(curMixinTypeName);
+                result = mixinNodeType.isNodeType(s);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+        return result;
     }
 }

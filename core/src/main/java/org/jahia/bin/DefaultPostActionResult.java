@@ -151,7 +151,7 @@ public class DefaultPostActionResult implements Action {
                         ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
                         if (propertyDefinition.isMultiple()) {
                             newNode.setProperty(key, values.toArray(new String[values.size()]));
-                        } else if(!values.get(0).isEmpty()){
+                        } else if(values.get(0).length() > 0){
                             if(propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
                                 DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
                                 newNode.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));

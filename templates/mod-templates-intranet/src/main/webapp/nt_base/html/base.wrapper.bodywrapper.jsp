@@ -90,6 +90,9 @@
                                 <li class="more-shortcuts">
                                     <a href="${url.edit}"><fmt:message key="edit"/></a>
                                 </li>
+                                <li class="more-shortcuts">
+                                    <a href="${url.contribute}"><fmt:message key="contribute"/></a>
+                                </li>
                             </c:if>
                             <li class="more-shortcuts"><a href="base.wrapper.bodywrapper.jsp#"
                                                           onclick="javascript:window.print()">

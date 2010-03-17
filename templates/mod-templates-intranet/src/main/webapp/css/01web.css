@@ -389,6 +389,9 @@ shortcuts
 	padding:4px 5px;
 	background-color:#f6f6f6;
 }
+#bodywrapper label{
+	font-weight:bold;
+}
 
 #bodywrapper input.gobutton{
 	background:none;
@@ -1381,4 +1384,19 @@ color:#666;
 	margin:10px;
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
+}
+/******************************************************************************
+* more info
+******************************************************************************/
+#bodywrapper div.more {
+    float: right;
+    font-size: 11px;
+    font-weight: bold;
+    background: transparent url( img/arrow.png ) no-repeat 0 50%;
+    padding: 0 0 0 15px;
+    margin-bottom: 0;
+    display: block;
+}
+
+#bodywrapper .more span {
 }

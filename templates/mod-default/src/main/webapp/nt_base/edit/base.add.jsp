@@ -17,12 +17,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="960.css"/>
-<template:addResources type="css" resources="formbuilder.css"/>
+<template:addResources type="css" resources="formcontribute.css"/>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<div class="Form FormBuilder">
+<div class="FormContribute">
     <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}">
         <%--<jcr:nodeType name="jnt:news" var="type"/>--%>
         <c:set var="type" value="${currentResource.resourceNodeType}"/>
@@ -72,9 +72,9 @@
                     </p>
                 </c:if>
             </c:forEach>
-            <p class="field">
+            <div class="divButton">
             <input class="button" type="submit" value="Submit"/>
-            </p>
+            </div>
         </fieldset>
     </form>
 </div>

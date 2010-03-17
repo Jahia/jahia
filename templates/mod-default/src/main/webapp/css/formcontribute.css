@@ -1,0 +1,29 @@
+/******************************************************************************
+* FormContribute
+******************************************************************************/
+#bodywrapper input,
+#bodywrapper textarea {
+	width:97%
+}
+#bodywrapper .FormContribute p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+#bodywrapper .FormContribute { 
+	margin:1em 0 0 0;
+	overflow:hidden;
+}
+#bodywrapper .formMarginLeft{ 
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+#bodywrapper .FormContribute label.left,
+#bodywrapper .FormContribute label {
+	display:block;
+	font-weight:bold
+}
+#bodywrapper input.button, #bodywrapper button{
+	width:auto
+}
+

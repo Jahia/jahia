@@ -1,7 +1,8 @@
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
@@ -29,7 +30,7 @@
             </c:if>
         </c:if>
         <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-            <workflow:input type="button" value="delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+            <input type="button" value="delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
         </c:if>
 
         <c:set var="previousChild" value="${child}"/>

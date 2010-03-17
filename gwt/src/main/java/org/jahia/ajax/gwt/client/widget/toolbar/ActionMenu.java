@@ -27,17 +27,17 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ActionMenu extends Menu {
+    private Linker linker;
     private List<ActionItem> actionItems = new ArrayList<ActionItem>();
 
-    public ActionMenu(final String toolbar,final  Linker linker) {
-        super();
 
-        Log.debug("load action menu for toolbar: "+toolbar);
+    public ActionMenu(final String toolbar, final Linker linker) {
+        super();
+        this.linker = linker;
         ToolbarService.App.getInstance().getGWTToolbars(toolbar, JahiaGWTParameters.getGWTJahiaPageContext(),
                 new AsyncCallback<GWTJahiaToolbarSet>() {
                     public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                         if (gwtJahiaToolbarSet != null && !gwtJahiaToolbarSet.getToolbarList().isEmpty()) {
-                            Log.debug("found : "+gwtJahiaToolbarSet.getToolbarList().size()+" toolbars for "+toolbar);
                             createMenu(gwtJahiaToolbarSet, linker);
                         }
                         layout();
@@ -51,14 +51,22 @@ public class ActionMenu extends Menu {
         // add listener on BedoreShow Event
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {
-                linker.syncSelectionContext();
-                checkLinkerSelection();
+                beforeShow();
             }
         });
     }
 
     /**
+     * Override this methode to provide a custom "beforeShow" behaviour
+     */
+    public void beforeShow() {
+        linker.syncSelectionContext();
+        checkLinkerSelection();
+    }
+
+    /**
      * Create menu
+     *
      * @param gwtJahiaToolbarSet
      * @param linker
      */
@@ -77,7 +85,7 @@ public class ActionMenu extends Menu {
                         if (actionItem != null) {
                             actionItem.init(gwtJahiaToolbarItem, linker);
                             actionItems.add(actionItem);
-                            Log.debug("add action-menu : "+gwtJahiaToolbarItem.getTitle());
+                            Log.debug("add action-menu : " + gwtJahiaToolbarItem.getTitle());
                             add(actionItem.getContextMenuItem());
                         }
                     }

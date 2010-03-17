@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -47,14 +48,14 @@ public class MainModule extends ContentPanel implements Module {
 
     public MainModule(final String html, final String path, final String template) {
         super(new FlowLayout());
-        setHeading("Page : "+path);
+        setHeading("Page : " + path);
         setScrollMode(Style.Scroll.AUTO);
 
         this.originalHtml = html;
         this.path = path;
         this.template = template;
-        getHeader().setStyleAttribute("z-index","999");
-        getHeader().setStyleAttribute("position","relative");
+        getHeader().setStyleAttribute("z-index", "999");
+        getHeader().setStyleAttribute("position", "relative");
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 
@@ -70,31 +71,36 @@ public class MainModule extends ContentPanel implements Module {
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    editLinker.onModuleSelection(MainModule.this);
-                }
+                makeSelected();
             }
         };
 
-        // on click listerner
+        // on click listener
         addListener(Events.OnClick, listener);
 
         // on double click listener
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));
+        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
 
         // contextMenu
-        contexMenu= new ActionMenu("contextmenu-editmode",editLinker);
+        contexMenu = new ActionMenu("contextmenu-editmode", editLinker) {
+            @Override
+            public void beforeShow() {
+                makeSelected();
+                super.beforeShow();
+            }
+        };
         setContextMenu(contexMenu);
 
-//        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
-//        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-//            public void handleEvent(ComponentEvent ce) {
-//                Log.info("click" + path);
-//                editLinker.onModuleSelection(MainModule.this);
-//            }
-//        };
-//        getHeader().addListener(Events.OnClick, listener);
-//        getHeader().addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));
+
+    }
+
+    /**
+     * select current module
+     */
+    public void makeSelected() {
+        if (selectable) {
+            editLinker.onModuleSelection(MainModule.this);
+        }
     }
 
     public EditLinker getEditLinker() {
@@ -105,7 +111,7 @@ public class MainModule extends ContentPanel implements Module {
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<GWTRenderResult>() {
             public void onSuccess(GWTRenderResult result) {
                 int i = getVScrollPosition();
-                setHeading("Page : "+path);                
+                setHeading("Page : " + path);
                 removeAll();
                 Selection.getInstance().hide();
                 Hover.getInstance().removeAll();
@@ -114,7 +120,7 @@ public class MainModule extends ContentPanel implements Module {
                 setVScrollPosition(i);
                 List<String> list = new ArrayList<String>(1);
                 list.add(path);
-                editLinker.getMainModule().unmask();                
+                editLinker.getMainModule().unmask();
                 editLinker.onModuleSelection(MainModule.this);
                 editLinker.getSidePanel().refreshWorkflowTabItem();
                 switchStaticAssets(result.getStaticAssets());
@@ -190,7 +196,7 @@ public class MainModule extends ContentPanel implements Module {
         m = ModuleHelper.parse(this);
     }
 
-    public void onParsed() {        
+    public void onParsed() {
     }
 
     public String getModuleId() {
@@ -210,7 +216,7 @@ public class MainModule extends ContentPanel implements Module {
     }
 
     public void setDepth(int depth) {
-    }   
+    }
 
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
@@ -225,21 +231,21 @@ public class MainModule extends ContentPanel implements Module {
     }
 
     public void goTo(String path, String template) {
-        mask("Loading","x-mask-loading");
+        mask("Loading", "x-mask-loading");
         this.path = path;
         this.template = template;
         refresh();
     }
 
     public static void staticGoTo(String path, String template) {
-        module.mask("Loading","x-mask-loading");
+        module.mask("Loading", "x-mask-loading");
         module.path = path;
         module.template = template;
         module.refresh();
     }
 
     public GWTJahiaNode getNode() {
-        return node; 
+        return node;
     }
 
     public void setNode(GWTJahiaNode node) {
@@ -247,9 +253,9 @@ public class MainModule extends ContentPanel implements Module {
         if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
 //            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
         }
-        if(node.getNodeTypes().contains("jmix:shareable")) {
+        if (node.getNodeTypes().contains("jmix:shareable")) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig(Messages.get("info_important","Important"),Messages.get("info_sharednode","This is a shared node")));
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
     }
 

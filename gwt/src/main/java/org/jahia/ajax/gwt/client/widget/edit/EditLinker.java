@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;

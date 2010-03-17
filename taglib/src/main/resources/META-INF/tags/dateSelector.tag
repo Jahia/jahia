@@ -64,10 +64,6 @@
 <c:if test="${empty options}">
     <c:set var="options" value="{dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn: 'both'}"/>
 </c:if>
-<c:if test="${not empty time and time eq true}">
-    <div style="position:relative;"><div id="slider1${hourFieldId}" style="height:120px; margin:10px;display:none;"></div></div>
-    <div id="slider2${minFieldId}" style="height:120px; margin:10px;display:none;"></div>
-</c:if>
 <script type="text/javascript">
     /* <![CDATA[ */
     $(document).ready(function() {
@@ -75,6 +71,16 @@
     });
     <c:if test="${not empty time and time eq true}">
     $(document).ready(function() {
+
+        //if the html is not yet created in the document, then do it now
+        if (!$('#slider1${hourFieldId}').length) {
+            $("body").append('<div id="hourctnr${hourFieldId}" style="display:none;"><div id="slider1${hourFieldId}" style="height:120px; margin:10px;"></div></div>');
+        }
+
+        if (!$('#slider2${hourFieldId}').length) {
+            $("body").append('<div id="minctnr${minFieldId}" style="display:none;"><div id="slider2${minFieldId}" style="height:120px; margin:10px;"></div></div>');
+        }
+
         var options;
 
         var variables = {
@@ -140,37 +146,40 @@
 
 
         $("#${hourFieldId}").focus(function() {
-            //get the position of the placeholder element
-        <%--var pos = $("#${hourFieldId}").offset();--%>
-        <%--var top = pos.top + $("#${hourFieldId}").offsetHeight;--%>
-            //get the position of the placeholder element
-            var pos = $("#${hourFieldId}").offset();
-            var eWidth = $("#${hourFieldId}").outerWidth();
-            var mWidth = $("#slider1${hourFieldId}").outerWidth();
-            var left =  0;
-            var top = 0;
-            //show the menu directly over the placeholder
-            $("#slider1${hourFieldId}").css({position:'absolute', left:left, top:top});
-            $("#slider1${hourFieldId}").show();
+            var ele = $("#${hourFieldId}");
+            $(".isPtTimeSelectActive").removeClass("isPtTimeSelectActive");
+            var cntr = $("#hourctnr${hourFieldId}");
+            var i = $(ele).eq(0).addClass("isPtTimeSelectActive");
+            var style = i.offset();
+            style['z-index'] = 9999;
+            style['position'] = 'absolute';
+            style.top = (style.top + 15);
+            cntr.css(style);
+            cntr.slideDown("fast");
         });
+
+
         $("#${minFieldId}").focus(function() {
-            //get the position of the placeholder element
-            var pos = $("#${minFieldId}").offset();
-            var eWidth = $("#${minFieldId}").outerWidth();
-            var mWidth = $("#slider2${minFieldId}").outerWidth();
-            var left = (pos.left + eWidth - mWidth) + 'px';
-            var top = (3 + pos.top) + 'px';
-            //show the menu directly over the placeholder
-            $("#slider2${minFieldId}").css({ position:'absolute',left:left, top:top});
-            $("#slider2${minFieldId}").show();
+            var ele = $("#${minFieldId}");
+            $(".isPtTimeSelectActive").removeClass("isPtTimeSelectActive");
+            var cntr = $("#minctnr${minFieldId}");
+            var i = $(ele).eq(0).addClass("isPtTimeSelectActive");
+            var style = i.offset();
+            style['z-index'] = 9999;
+            style['position'] = 'absolute';
+            style.top = (style.top + 15);
+            cntr.css(style);
+            cntr.slideDown("fast");
         });
 
         $("#${minFieldId}").blur(function() {
-            $("#slider2${minFieldId}").hide();
+            var cntr = $("#minctnr${minFieldId}");
+            cntr.slideUp("fast");
         });
 
         $("#${hourFieldId}").blur(function() {
-            $("#slider1${hourFieldId}").hide();
+            var cntr = $("#hourctnr${hourFieldId}");
+            cntr.slideUp("fast");
         });
     });
 

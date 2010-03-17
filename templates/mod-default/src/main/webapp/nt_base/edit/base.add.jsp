@@ -22,10 +22,11 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
+<c:set var="type" value="${currentResource.resourceNodeType}"/>
+<c:set var="scriptTypeName" value="${fn:replace(type.name,':','_')}"/>
 <div class="FormContribute">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}">
-        <%--<jcr:nodeType name="jnt:news" var="type"/>--%>
-        <c:set var="type" value="${currentResource.resourceNodeType}"/>
+    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}${scriptTypeName}">
+        <%--<jcr:nodeType name="jnt:news" var="type"/>--%>        
         <input type="hidden" name="nodeType" value="${type.name}"/>
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -65,7 +66,7 @@
                         <c:otherwise>
                             <label class="left"
                                    for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-                            <input type="text" id="${fn:replace(propertyDefinition.name,':','_')}"
+                            <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                    name="${propertyDefinition.name}"/>
                         </c:otherwise>
                     </c:choose>

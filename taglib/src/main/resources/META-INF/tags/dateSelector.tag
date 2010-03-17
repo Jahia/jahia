@@ -39,10 +39,6 @@
               description="The name of the CSS file with corresponding jQuery theme. [jquery-ui.smoothness.css]" %>
 <%@ attribute name="time" required="false" type="java.lang.Boolean"
               description="True if you want the time selector" %>
-<%@ attribute name="hourFieldId" required="true" type="java.lang.String"
-              description="The input field ID to bind the hour slider to." %>
-<%@ attribute name="minFieldId" required="true" type="java.lang.String"
-              description="The input field ID to bind the minute slider to." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -58,6 +54,10 @@
                                    resources="i18n/jquery.ui.datepicker-${locale.language}-${locale.country}.js"/>
         </c:if>
     </c:if>
+    <c:if test="${not empty time and time eq true}">
+        <template:addResources type="javascript" resources="timepicker.js"/>
+        <template:addResources type="css" resources="timepicker.css"/>
+    </c:if>
     <c:set var="org.jahia.tags.dateSelector.resources" value="true" scope="request"/>
 </c:if>
 <jsp:doBody var="options"/>
@@ -66,123 +66,15 @@
 </c:if>
 <script type="text/javascript">
     /* <![CDATA[ */
+    <c:if test="${empty time or time eq false}">
     $(document).ready(function() {
         $('#${fieldId}').datepicker(${options});
     });
+    </c:if>
     <c:if test="${not empty time and time eq true}">
     $(document).ready(function() {
-
-        //if the html is not yet created in the document, then do it now
-        if (!$('#slider1${hourFieldId}').length) {
-            $("body").append('<div id="hourctnr${hourFieldId}" style="display:none;"><div id="slider1${hourFieldId}" style="height:120px; margin:10px;"></div></div>');
-        }
-
-        if (!$('#slider2${hourFieldId}').length) {
-            $("body").append('<div id="minctnr${minFieldId}" style="display:none;"><div id="slider2${minFieldId}" style="height:120px; margin:10px;"></div></div>');
-        }
-
-        var options;
-
-        var variables = {
-            clock:{
-                type:24
-            },
-            get:{
-                range: {
-                    hours: function() {
-                        return new Array[2](1, variables.clock.type === 12 ? 12 : 24);
-                    },
-                    minutes: function() {
-                        return new Array[2](0, 59);
-                    }
-                }
-            },
-            options: null //hold extended options here
-        };
-
-        // Slider
-        $('#slider1${hourFieldId}').slider({
-            orientation: "vertical",
-            value: $('#${hourFieldId}').val() == "" ? 4 : parseInt($('#${hourFieldId}').val()),
-            min: 0,
-            max: 23,
-            step: 1,
-            slide: function(event, ui) {
-                $('#${hourFieldId}').val(parseInt(ui.value));
-            }
-        });
-        // Slider
-        $('#slider2${minFieldId}').slider({
-            orientation: "vertical",
-            value: $('#${minFieldId}').val() == "" ? 00 : parseInt($('#${minFieldId}').val()),
-            min: 00,
-            max: 59,
-            step: 1,
-            slide: function(event, ui) {
-                $('#${minFieldId}').val((ui.value == 0) ? '00' : parseInt(ui.value));
-            }
-        });
-
-        //Inline editor bind
-        $('#${hourFieldId}').keyup(function(e) {
-            if ((e.which <= 57 && e.which >= 48) && ($(this).val() >= 1 && $(this).val() <= 12 )) {
-                //console.log("Which: "+e.which);
-                $('#slider1${hourFieldId}').slider('value', parseInt($(this).val()));
-                //console.log("Val: "+parseInt($(this).val()))
-            } else {
-                $(this).val($(this).val().slice(0, -1));
-            }
-        });
-        //Inline editor bind
-        $('#${minFieldId}').keyup(function(e) {
-            if ((e.which <= 57 && e.which >= 48) && ($(this).val() >= 0 && $(this).val() <= 59 )) {
-                //console.log("Which: "+e.which);
-                $('#slider2${minFieldId}').slider('value', parseInt($(this).val()));
-                //console.log("Val: "+parseInt($(this).val()))
-            } else {
-                $(this).val($(this).val().slice(0, -1));
-            }
-        });
-
-
-        $("#${hourFieldId}").focus(function() {
-            var ele = $("#${hourFieldId}");
-            $(".isPtTimeSelectActive").removeClass("isPtTimeSelectActive");
-            var cntr = $("#hourctnr${hourFieldId}");
-            var i = $(ele).eq(0).addClass("isPtTimeSelectActive");
-            var style = i.offset();
-            style['z-index'] = 9999;
-            style['position'] = 'absolute';
-            style.top = (style.top + 15);
-            cntr.css(style);
-            cntr.slideDown("fast");
-        });
-
-
-        $("#${minFieldId}").focus(function() {
-            var ele = $("#${minFieldId}");
-            $(".isPtTimeSelectActive").removeClass("isPtTimeSelectActive");
-            var cntr = $("#minctnr${minFieldId}");
-            var i = $(ele).eq(0).addClass("isPtTimeSelectActive");
-            var style = i.offset();
-            style['z-index'] = 9999;
-            style['position'] = 'absolute';
-            style.top = (style.top + 15);
-            cntr.css(style);
-            cntr.slideDown("fast");
-        });
-
-        $("#${minFieldId}").blur(function() {
-            var cntr = $("#minctnr${minFieldId}");
-            cntr.slideUp("fast");
-        });
-
-        $("#${hourFieldId}").blur(function() {
-            var cntr = $("#hourctnr${hourFieldId}");
-            cntr.slideUp("fast");
-        });
+        $('#${fieldId}').datetime(${options});
     });
-
     </c:if>
     /* ]]> */
 </script>

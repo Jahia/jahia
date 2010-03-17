@@ -71,19 +71,12 @@
                 <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                     <c:set var="dateTimePicker"
                            value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-                        <span id="${scriptPropName}" class="dateEdit"
+                        <span jcr:id="${propertyDefinition.name}" class="dateEdit"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
-                                <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy"/>
+                                <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
                             </c:if>
                         </span>
-                    <c:if test="${dateTimePicker}">
-                        <span>
-                            <c:if test="${not empty prop}">
-                                <fmt:formatDate value="${prop.date.time}" pattern="HH:mm"/>
-                            </c:if>
-                        </span>
-                    </c:if>
                 </c:when>
                 <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                     <jcr:propertyInitializers var="options" nodeType="${type.name}"
@@ -93,7 +86,7 @@
                         $(document).ready(function() {
                             $(".choicelistEdit${currentNode.name}${scriptPropName}").editable(function (value, settings) {
                                 var url = $(this).attr('jcr:url');
-                                var submitId = $(this).attr('id').replace("_", ":");
+                                var submitId = $(this).attr('jcr:id').replace("_", ":");
                                 var data = {};
                                 data[submitId] = value;
                                 data['methodToCall'] = 'put';
@@ -109,15 +102,15 @@
                             });
                         });
                     </script>
-                        <span id="${scriptPropName}" class="choicelistEdit${currentNode.name}${scriptPropName}"
+                        <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.name}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                 </c:when>
                 <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                        <span id="${scriptPropName}" class="ckeditorEdit"
+                        <span jcr:id="${propertyDefinition.name}" class="ckeditorEdit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                 </c:when>
                 <c:otherwise>
-                        <span id="${scriptPropName}" class="edit"
+                        <span jcr:id="${propertyDefinition.name}" class="edit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                 </c:otherwise>
             </c:choose>

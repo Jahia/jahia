@@ -23,36 +23,19 @@
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.slider.min.js"/>
 <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-<label class="left">Date : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<jsp:useBean id="now" class="java.util.Date"/>
+<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">Date : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${propertyDefinition.name}"/>
-<input type="text" id="datePicker${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"/>
-<c:if test="${dateTimePicker}">
-    </p>
-    <p class="field">
-    <label class="left">Time : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-    <input type="text" class="selHrs" style="width:20px" value="14"
-           id="hourPicker${fn:replace(propertyDefinition.name,':','_')}"/>
-    <input type="text" class="selMins" style="width:20px" value="03"
-           id="minPicker${fn:replace(propertyDefinition.name,':','_')}"/>
-</c:if>
-<ui:dateSelector fieldId="datePicker${fn:replace(propertyDefinition.name,':','_')}" time="${dateTimePicker}"
-                 hourFieldId="hourPicker${fn:replace(propertyDefinition.name,':','_')}"
-                 minFieldId="minPicker${fn:replace(propertyDefinition.name,':','_')}">
+<input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+<ui:dateSelector fieldId="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" time="${dateTimePicker}">
     {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
 </ui:dateSelector>
 <script>
-    $("#${currentNode.name}").submit(function() {
-        var datePicked = $("#datePicker${fn:replace(propertyDefinition.name,':','_')}").val();
+    $("#${currentNode.name}${scriptTypeName}").submit(function() {
+        var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().trim().replace(" ","T");
         if (datePicked == "") {
             return false;
         }
-    <c:if test="${dateTimePicker}">
-        var hourPicked = $('#hourPicker${fn:replace(propertyDefinition.name,':','_')}').val();
-        var minPicked = $('#minPicker${fn:replace(propertyDefinition.name,':','_')}').val();
-        $("#${propertyDefinition.name}").val(datePicked + "T" + hourPicked + ":" + minPicked + ":00.0");
-    </c:if>
-    <c:if test="${not dateTimePicker}">
         $("#${propertyDefinition.name}").val(datePicked);
-    </c:if>
     });
 </script>

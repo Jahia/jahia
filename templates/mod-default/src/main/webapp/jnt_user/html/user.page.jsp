@@ -7,14 +7,14 @@
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addWrapper name="wrapper.dashboard"/>
 <template:addResources type="css" resources="userProfile.css"/>
-<template:addResources type="css" resources="datepicker.css"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
@@ -44,7 +44,7 @@
 <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 <jcr:propertyInitializers node="${currentNode}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${currentNode}" name="j:title" var="titleInit"/>
-<script type="text/javascript">
+<script>
 
     var genderMap = "{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}";
     var titleMap = "{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}";
@@ -136,35 +136,17 @@
         $(".dateEdit").editable(function (value, settings) {
             var submitId = $(this).attr('id').replace("_", ":");
             var data = {};
-            if (value.match("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]")) {
-                var split = value.split("/");
-                var birth = new Date();
-                birth.setFullYear(split[2], split[1], split[0]);
-                var month = "";
-                if (birth.getMonth() < 10) {
-                    month = "0" + birth.getMonth();
-                } else month = birth.getMonth();
-                data[submitId] = birth.getFullYear() + '-' + month + '-' + birth.getDate() + 'T00:00:00';
+                data[submitId] = value;
                 data['methodToCall'] = 'put';
                 $.post("${url.base}${currentNode.path}", data, function(result) {
                 }, "json");
-            }
             return(value);
         }, {
             type : 'datepicker',
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit',
-            datepicker : {
-                flat: true,
-                date: '${not empty editBirthDate ? editBirthDate : editNowDate}',
-                format: 'd/m/Y',
-                view: 'years',
-                current: '${not empty editBirthDate ? editBirthDate : editNowDate}',
-                calendars: 1,
-                starts: 1
-            }
+            tooltip : 'Click to edit'
         });
 
         $(".genderEdit").editable(function (value, settings) {
@@ -350,7 +332,7 @@
                         <fmt:message key="jnt_user.profile.nonpublic"/>
                     </c:if>
                     </span>
-                    
+
                     <h3 class="boxuserprofiletitleh3"><fmt:message key="jnt_user.j_about"/></h3>
                     <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
                     <div class="clear"></div>

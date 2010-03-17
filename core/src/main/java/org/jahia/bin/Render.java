@@ -54,6 +54,8 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.tools.files.FileUpload;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.context.ServletConfigAware;
@@ -219,16 +221,8 @@ public class Render extends HttpServlet implements Controller,
                     node.setProperty(key, values);
                 } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {
                     // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
-                    try {
-                        final Date date = new SimpleDateFormat(
-                                DateFormatUtils.ISO_DATETIME_FORMAT
-                                        .getPattern()).parse(values[0]);
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        node.setProperty(key, calendar);
-                    } catch (ParseException e) {
-                        logger.error(e.getMessage(), e);
-                    }
+                    DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values[0]);
+                    node.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));
                 } else {
                     node.setProperty(key, values[0]);
                 }

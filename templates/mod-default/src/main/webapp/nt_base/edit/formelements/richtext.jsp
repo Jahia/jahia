@@ -19,21 +19,21 @@
 <%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
-<label for="ckeditor${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-<input type="hidden" name="${propertyDefinition.name}" id="${propertyDefinition.name}"/>
-<textarea rows="50" cols="40" id="ckeditor${fn:replace(propertyDefinition.name,':','_')}"></textarea>
+<label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
+<textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"></textarea>
 <script>
-    var editor${fn:replace(propertyDefinition.name,':','_')} = undefined;
+    var editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = undefined;
 
     $(document).ready(function() {
-        editor${fn:replace(propertyDefinition.name,':','_')} = CKEDITOR.replace("ckeditor${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
+        editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = CKEDITOR.replace("ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
     });
 
-    $("#${currentNode.name}").submit(function() {
-        if (editor${fn:replace(propertyDefinition.name,':','_')} !== undefined) {
-            $("#${propertyDefinition.name}").val(editor${fn:replace(propertyDefinition.name,':','_')}.getData());
-            CKEDITOR.remove(editor${fn:replace(propertyDefinition.name,':','_')});
-            editor${fn:replace(propertyDefinition.name,':','_')} = undefined;
+    $("#${currentNode.name}${scriptTypeName}").submit(function() {
+        if (editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} !== undefined) {
+            $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}.getData());
+            CKEDITOR.remove(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')});
+            editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = undefined;
         }
     });
 </script>

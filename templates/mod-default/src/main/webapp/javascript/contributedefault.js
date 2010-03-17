@@ -83,5 +83,3 @@ function deleteNode(source, urlbase, callbackId, callbackUrl) {
         dataType: 'json'
     });
 }
-
-function xx() {}

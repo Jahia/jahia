@@ -3,6 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
@@ -13,9 +14,13 @@
 
     <%-- buttons --%>
     <div style="border:1px solid;">
-        <input type="button" value="Edit"
-               onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields()')"/>
-
+        <c:if test="${child.locked ne 'true'}">
+            <input type="button" value="Edit"
+                   onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields()')"/>
+        </c:if>
+        <c:if test="${child.locked eq 'true'}">
+            <input type="button" value="Locked" disabled="true"/>
+        </c:if>
         <input type="button" value="Preview"
                onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')"/>
 
@@ -32,6 +37,19 @@
         <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
             <input type="button" value="delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
         </c:if>
+
+        <workflow:workflowsForNode var="workflows" node="${child}"/>
+
+        <c:forEach items="${workflows}" var="wf" >
+            <%--${wf.name}--%>
+        </c:forEach>
+
+        <workflow:tasksForNode var="tasks" node="${child}"/>
+        <c:forEach items="${tasks}" var="task" >
+            [ <c:forEach items="${task.outcomes}" var="outcome" >
+                <input type="button" value="${outcome}" />
+            </c:forEach> ]
+        </c:forEach>
 
         <c:set var="previousChild" value="${child}"/>
     </div>

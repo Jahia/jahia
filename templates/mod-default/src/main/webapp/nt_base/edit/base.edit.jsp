@@ -26,89 +26,12 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="contributedefault.js"/>
 
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(".edit").editable(function (value, settings) {
-            var url = $(this).attr('jcr:url');
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post(url, data, null, "json");
-            return(value);
-        }, {
-            type    : 'text',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : 'Click to edit'
-        });
-
-        $(".ckeditorEdit").editable(function (value, settings) {
-            var url = $(this).attr('jcr:url');
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post(url, data, null, "json");
-            return(value);
-        }, {
-            type : 'ckeditor',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : 'Click to edit'
-        });
-
-        $(".dateEdit").editable(function (value, settings) {
-            var url = $(this).attr('jcr:url');
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            if (value.match("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]")) {
-                var split = value.split("/");
-                var birth = new Date();
-                birth.setFullYear(split[2], split[1], split[0]);
-                var month = "";
-                if (birth.getMonth() < 10) {
-                    month = "0" + birth.getMonth();
-                } else month = birth.getMonth();
-                var hour = '00';
-                if ($("#hour" + submitId).length) {
-                    hour = $("#hour" + submitId).text().trim();
-                }
-                var min = '00';
-                if ($("#min" + submitId).length) {
-                    min = $("#min" + submitId).text().trim();
-                }
-                data[submitId] = birth.getFullYear() + '-' + month + '-' + birth.getDate() + 'T' + hour + ':' + min + ':00';
-                data['methodToCall'] = 'put';
-                $.post(url, data, function(result) {
-                }, "json");
-            }
-            return(value);
-        }, {
-            type : 'datepicker',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : 'Click to edit',
-            datepicker : {
-                flat: true,
-                date: '${not empty editBirthDate ? editBirthDate : editNowDate}',
-                format: 'd/m/Y',
-                view: 'years',
-                current: '${not empty editBirthDate ? editBirthDate : editNowDate}',
-                calendars: 1,
-                starts: 1
-            }
-        });
-    });
-</script>
 <div>
     <c:set var="type" value="${currentNode.primaryNodeType}"/>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
@@ -116,65 +39,88 @@
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
-                <span class="label">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</span>
-                <c:choose>
-                    <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                        <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
-                        </c:if>
-                    </c:when>
-                    <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                        <c:set var="dateTimePicker"
-                               value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
+            <span class="label">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</span>
+            <c:choose>
+                <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                    <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
+                        <script>
+                            $(document).ready(function() {
+                                $("#file${currentNode.name}${scriptPropName}").editable('${url.base}${currentNode.path}', {
+                                    type : 'ajaxupload',
+                                    onblur : 'ignore',
+                                    submit : 'OK',
+                                    cancel : 'Cancel',
+                                    tooltip : 'Click to edit',
+                                    callback : function (data, status) {
+                                        var datas = {};
+                                        datas['${propertyDefinition.name}'] = data.uuids[0];
+                                        datas['methodToCall'] = 'put';
+                                        $.post('${url.base}${currentNode.path}', datas, function(result) {
+                                            $("#file${currentNode.name}${scriptPropName}").html($('<span>file uploaded</span>'));
+                                        }, "json");
+                                    }
+                                });
+                            })
+                        </script>
+                        <div id="file${currentNode.name}${scriptPropName}">
+                            <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+                        </div>
+                        <template:module node="${prop.node}" template="default" templateType="html"/>
+                    </c:if>
+                </c:when>
+                <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
+                    <c:set var="dateTimePicker"
+                           value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
                         <span id="${scriptPropName}" class="dateEdit"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy"/>
                             </c:if>
                         </span>
-                        <c:if test="${dateTimePicker}">
+                    <c:if test="${dateTimePicker}">
                         <span>
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="HH:mm"/>
                             </c:if>
                         </span>
-                        </c:if>
-                    </c:when>
-                    <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                        <jcr:propertyInitializers var="options" nodeType="${type.name}"
-                                                  name="${propertyDefinition.name}"/>
-                        <script>
-                            var ${scriptPropName}Map = "{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}";
-                            $(document).ready(function() {
-                                $(".choicelistEdit${scriptPropName}").editable(function (value, settings) {
-                                    var url = $(this).attr('jcr:url');
-                                    var submitId = $(this).attr('id').replace("_", ":");
-                                    var data = {};
-                                    data[submitId] = value;
-                                    data['methodToCall'] = 'put';
-                                    $.post(url, data, null, "json");
-                                    return eval("values=" + ${scriptPropName}Map)[value];
-                                }, {
-                                    type    : 'select',
-                                    data   : ${scriptPropName}Map,
-                                    onblur : 'ignore',
-                                    submit : 'OK',
-                                    cancel : 'Cancel',
-                                    tooltip : 'Click to edit'
-                                });
+                    </c:if>
+                </c:when>
+                <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                    <jcr:propertyInitializers var="options" nodeType="${type.name}"
+                                              name="${propertyDefinition.name}"/>
+                    <script>
+                        var ${scriptPropName}Map = "{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}";
+                        $(document).ready(function() {
+                            $(".choicelistEdit${currentNode.name}${scriptPropName}").editable(function (value, settings) {
+                                var url = $(this).attr('jcr:url');
+                                var submitId = $(this).attr('id').replace("_", ":");
+                                var data = {};
+                                data[submitId] = value;
+                                data['methodToCall'] = 'put';
+                                $.post(url, data, null, "json");
+                                return eval("values=" + ${scriptPropName}Map)[value];
+                            }, {
+                                type    : 'select',
+                                data   : ${scriptPropName}Map,
+                                onblur : 'ignore',
+                                submit : 'OK',
+                                cancel : 'Cancel',
+                                tooltip : 'Click to edit'
                             });
-                        </script>
-                        <span id="${scriptPropName}" class="choicelistEdit${scriptPropName}"
+                        });
+                    </script>
+                        <span id="${scriptPropName}" class="choicelistEdit${currentNode.name}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-                    </c:when>
-                    <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
+                </c:when>
+                <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <span id="${scriptPropName}" class="ckeditorEdit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-                    </c:when>
-                    <c:otherwise>
+                </c:when>
+                <c:otherwise>
                         <span id="${scriptPropName}" class="edit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-                    </c:otherwise>
-                </c:choose>
+                </c:otherwise>
+            </c:choose>
             </p>
         </c:if>
     </c:forEach>

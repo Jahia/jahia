@@ -30,3 +30,41 @@ border-left:1px solid #666;
 #bodywrapper #toppanel ul.panellist {
 border:1px solid #666;
 }
+/******************************************************************************
+* Topshortcuts
+******************************************************************************/
+
+#bodywrapper #topshortcuts li.topshortcuts-print  {
+	background:transparent url(img/mod/topshortcuts-print.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-typoincrease  {
+	background:transparent url(img/mod/topshortcuts-typoincrease.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-typoreduce  {
+	background:transparent url(img/mod/topshortcuts-typoreduce.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-home  {
+	background:transparent url(img/mod/topshortcuts-home.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-contact  {
+	background:transparent url(img/mod/topshortcuts-contact.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-sitemap  {
+	background:transparent url(img/mod/topshortcuts-sitemap.png) no-repeat 0% 50%;
+}
+#bodywrapper #topshortcuts li.topshortcuts-mysettings  {
+	background:transparent url(img/mod/topshortcuts-mysettings.png) no-repeat 0% 50%;
+}
+
+#bodywrapper #topshortcuts .topshortcuts-login a  {
+	background:transparent url(img/mod/topshortcuts-login.png) no-repeat left top;
+}
+#bodywrapper #topshortcuts .topshortcuts-login a:hover  {
+	background:transparent url(img/mod/topshortcuts-login.png) no-repeat 0px -13px;
+}
+#bodywrapper #topshortcuts .topshortcuts-login a span  {
+	background:transparent url(img/mod/topshortcuts-login.png) no-repeat right top;
+}
+#bodywrapper #topshortcuts .topshortcuts-login a span:hover  {
+	background:transparent url(img/mod/topshortcuts-login.png) no-repeat right -13px;
+}

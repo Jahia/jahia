@@ -91,68 +91,7 @@ body {
 	background:none;
 }
 
-/*topshortcuts*/
 
-#bodywrapper div#topshortcuts{
-	display:inline;
-	float:right;
-}
-
-#bodywrapper #topshortcuts ul  {
-	margin:0;
-	padding:0;
-	list-style:none;
-}
-#bodywrapper #topshortcuts li {
-	display:inline;
-	padding:0 5px;
-	background: none;
-}
-#bodywrapper #topshortcuts li.topshortcuts-print  {
-	background:transparent url(img/topshortcuts-print.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-typoincrease  {
-	background:transparent url(img/topshortcuts-typoincrease.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-typoreduce  {
-	background:transparent url(img/topshortcuts-typoreduce.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-home  {
-	background:transparent url(img/topshortcuts-home.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-contact  {
-	background:transparent url(img/topshortcuts-contact.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-sitemap  {
-	background:transparent url(img/topshortcuts-sitemap.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-#bodywrapper #topshortcuts li.topshortcuts-mysettings  {
-	background:transparent url(img/topshortcuts-mysettings.png) no-repeat 0% 50%;
-	padding-left:16px;
-}
-
-#bodywrapper #topshortcuts .topshortcuts-login a  {
-	background:transparent url(img/topshortcuts-login.png) no-repeat left top;
-	padding-left:20px;
-	text-transform:uppercase
-}
-#bodywrapper #topshortcuts .topshortcuts-login a:hover  {
-	background:transparent url(img/topshortcuts-login.png) no-repeat 0px -13px;
-}
-#bodywrapper #topshortcuts .topshortcuts-login a span  {
-	background:transparent url(img/topshortcuts-login.png) no-repeat right top;
-	padding-right:16px;
-}
-#bodywrapper #topshortcuts .topshortcuts-login a span:hover  {
-	background:transparent url(img/topshortcuts-login.png) no-repeat right -13px;
-	padding-right:16px;
-}
 /*loginFormTop*/
 #bodywrapper #loginFormTop {
 	clear:both;

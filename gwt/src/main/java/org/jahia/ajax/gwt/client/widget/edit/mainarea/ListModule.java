@@ -69,7 +69,7 @@ public class ListModule extends ContentPanel implements Module {
         DropTarget target = new ListModuleDropTarget(this);
         target.setAllowSelfAsSource(true);
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
+        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT+Event.ONCONTEXTMENU);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -80,6 +80,7 @@ public class ListModule extends ContentPanel implements Module {
             }
         };
         addListener(Events.OnClick, listener);
+        addListener(Events.OnContextMenu, listener);
         addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
 
         Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {

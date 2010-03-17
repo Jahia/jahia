@@ -2,6 +2,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<template:addResources type="css" resources="shortcuts.css" />
 
 <div id="languages">
     <ui:langBar display="horizontal" linkDisplay="flag" rootPage="${rootPage}"/>

@@ -49,6 +49,7 @@ public class URLGenerator {
     // settings
     private boolean useRelativeSiteURLs = false;
     private int siteURLPortOverride = 0;
+    private String contribute;
 
     public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
@@ -78,6 +79,7 @@ public class URLGenerator {
         live = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         edit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        contribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
@@ -107,6 +109,10 @@ public class URLGenerator {
 
     public String getPreview() {
         return preview;
+    }
+
+    public String getContribute() {
+        return contribute;
     }
 
     public String getLive(String versionNumber) {

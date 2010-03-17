@@ -66,9 +66,12 @@ public class URLGenerator {
     protected void initURL() {
         if (context.isEditMode()) {
             base = getContext() + Edit.getEditServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        } else if (context.isContributionMode()){
+            base = getContext() + Contribute.getContributeServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         } else {
             base = getContext() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         }
+
 
         final String resourcePath = context.getMainResource().getNode().getPath() + ".html";
 

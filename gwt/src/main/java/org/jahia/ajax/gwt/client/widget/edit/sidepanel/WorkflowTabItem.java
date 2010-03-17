@@ -27,7 +27,6 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +135,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
         List<Module> modules = ModuleHelper.getModules();
         List<String> list = new ArrayList<String>();
         for (Module m : modules) {
-            if (!m.getPath().endsWith("*") && !(m instanceof TextModule)) {
+            if (!m.getPath().endsWith("*")) {
                 list.add(m.getPath());
             }
         }

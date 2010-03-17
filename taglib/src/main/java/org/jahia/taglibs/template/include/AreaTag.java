@@ -109,20 +109,4 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
     }
 
-    protected Resource createNewResource(Resource oldResource) {
-        JCRNodeWrapper w = new JCRNodeDecorator(node) {
-
-            public boolean isNodeType(String s) throws RepositoryException {
-                return nodeTypes == null ? super.isNodeType(s) : nodeTypes.contains(s);
-            }
-
-            public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-                JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
-                return new EditablePropertyWrapper(p);
-            }
-        };
-        oldResource = new Resource(w, oldResource.getTemplateType(), oldResource.getTemplate(), oldResource.getForcedTemplate());
-        return oldResource;
-    }
-
 }

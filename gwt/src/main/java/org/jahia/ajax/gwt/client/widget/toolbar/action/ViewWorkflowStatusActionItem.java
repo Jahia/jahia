@@ -42,7 +42,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
         List<Module> modules = ModuleHelper.getModules();
         List<Module> list = new ArrayList<Module>();
         for (Module m : modules) {
-            if (!m.getPath().endsWith("*") && !(m instanceof TextModule)) {
+            if (!m.getPath().endsWith("*")) {
                 list.add(m);
             }
         }

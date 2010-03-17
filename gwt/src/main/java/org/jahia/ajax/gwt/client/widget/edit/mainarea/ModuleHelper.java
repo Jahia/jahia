@@ -98,7 +98,7 @@ public class ModuleHelper {
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {
-            if (!s.endsWith("*") && !(modulesByPath.get(s) instanceof TextModule)) {
+            if (!s.endsWith("*")) {
                 list.add(s);
             }
         }

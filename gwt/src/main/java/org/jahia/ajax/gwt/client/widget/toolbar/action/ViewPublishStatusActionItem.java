@@ -18,7 +18,6 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.TextModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
         List<Module> modules = ModuleHelper.getModules();
         List<Module> list = new ArrayList<Module>();
         for (Module m : modules) {
-            if (!m.getPath().endsWith("*") && !(m instanceof TextModule)) {
+            if (!m.getPath().endsWith("*")) {
                 list.add(m);
             }
         }

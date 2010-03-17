@@ -148,21 +148,4 @@ public class AreaModule extends ContentPanel implements Module {
         return isDraggable;
     }
 
-//    private class AreaModuleDropTarget extends ModuleDropTarget {
-//        public AreaModuleDropTarget(AreaModule areaModule) {
-//            super(areaModule);
-//        }
-//
-//        @Override
-//        protected void onDragEnter(DNDEvent e) {
-//            super.onDragEnter(e);
-//            if (getModule().getNode().isWriteable()) {
-//                boolean allowed = checkNodeType(e, nodeTypes);
-//                e.getStatus().setStatus(allowed);
-//                e.setCancelled(false);
-//            } else {
-//                e.getStatus().setStatus(false);
-//            }
-//        }
-//    }
 }

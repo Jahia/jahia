@@ -62,7 +62,7 @@
 </c:if>
 <jsp:doBody var="options"/>
 <c:if test="${empty options}">
-    <c:set var="options" value="{dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn: 'both'}"/>
+    <c:set var="options" value="{dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn: 'both'}"/>
 </c:if>
 <script type="text/javascript">
     /* <![CDATA[ */

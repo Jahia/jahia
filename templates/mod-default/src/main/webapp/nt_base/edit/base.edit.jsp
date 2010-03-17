@@ -78,14 +78,14 @@
                     month = "0" + birth.getMonth();
                 } else month = birth.getMonth();
                 var hour = '00';
-                if($("#hour"+submitId).length) {
-                    hour=$("#hour"+submitId).text().trim();
+                if ($("#hour" + submitId).length) {
+                    hour = $("#hour" + submitId).text().trim();
                 }
                 var min = '00';
-                if($("#min"+submitId).length) {
-                    min=$("#min"+submitId).text().trim();
+                if ($("#min" + submitId).length) {
+                    min = $("#min" + submitId).text().trim();
                 }
-                data[submitId] = birth.getFullYear() + '-' + month + '-' + birth.getDate() + 'T'+hour+':'+min+':00';
+                data[submitId] = birth.getFullYear() + '-' + month + '-' + birth.getDate() + 'T' + hour + ':' + min + ':00';
                 data['methodToCall'] = 'put';
                 $.post(url, data, function(result) {
                 }, "json");
@@ -114,6 +114,7 @@
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
+            <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
                 <span class="label">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</span>
                 <c:choose>
@@ -122,8 +123,9 @@
                         </c:if>
                     </c:when>
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                        <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-                        <span id="${fn:replace(propertyDefinition.name,':','_')}" class="dateEdit"
+                        <c:set var="dateTimePicker"
+                               value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
+                        <span id="${scriptPropName}" class="dateEdit"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy"/>
@@ -138,13 +140,38 @@
                         </c:if>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                        <jcr:propertyInitializers var="options" nodeType="${type.name}"
+                                                  name="${propertyDefinition.name}"/>
+                        <script>
+                            var ${scriptPropName}Map = "{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}";
+                            $(document).ready(function() {
+                                $(".choicelistEdit${scriptPropName}").editable(function (value, settings) {
+                                    var url = $(this).attr('jcr:url');
+                                    var submitId = $(this).attr('id').replace("_", ":");
+                                    var data = {};
+                                    data[submitId] = value;
+                                    data['methodToCall'] = 'put';
+                                    $.post(url, data, null, "json");
+                                    return eval("values=" + ${scriptPropName}Map)[value];
+                                }, {
+                                    type    : 'select',
+                                    data   : ${scriptPropName}Map,
+                                    onblur : 'ignore',
+                                    submit : 'OK',
+                                    cancel : 'Cancel',
+                                    tooltip : 'Click to edit'
+                                });
+                            });
+                        </script>
+                        <span id="${scriptPropName}" class="choicelistEdit${scriptPropName}"
+                              jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                        <span id="${fn:replace(propertyDefinition.name,':','_')}" class="ckeditorEdit"
+                        <span id="${scriptPropName}" class="ckeditorEdit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                     </c:when>
                     <c:otherwise>
-                        <span id="${fn:replace(propertyDefinition.name,':','_')}" class="edit"
+                        <span id="${scriptPropName}" class="edit"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                     </c:otherwise>
                 </c:choose>

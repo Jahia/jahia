@@ -33,12 +33,14 @@ package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
@@ -162,8 +164,7 @@ public class FormFieldCreator {
                     store.add(propDefinition.getValueConstraints());
                     if (propDefinition.isMultiple()) {
 
-                        final DualListField<GWTJahiaValueDisplayBean> lists = new DualListField<GWTJahiaValueDisplayBean>();
-
+                        final CustomDualListField<GWTJahiaValueDisplayBean> lists = new CustomDualListField<GWTJahiaValueDisplayBean>();
                         ListField<GWTJahiaValueDisplayBean> from = lists.getFromList();
                         from.setStore(store);
                         from.setDisplayField("display");
@@ -262,25 +263,14 @@ public class FormFieldCreator {
                             for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
                                 if(displayBean.getValue().equals(val)) {
                                     selection.add(displayBean);
-                                    ((DualListField<GWTJahiaValueDisplayBean>) field).getFromList().getStore().remove(displayBean);
+                                    ((CustomDualListField<GWTJahiaValueDisplayBean>) field).getFromList().getStore().remove(displayBean);
                                 }
                             }
                         }
                     }
                     final ListStore<GWTJahiaValueDisplayBean> store = ((DualListField<GWTJahiaValueDisplayBean>) field).getToList().getStore();
                     store.add(selection);
-                    store.addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>(){
-                        @Override
-                        public void storeAdd(StoreEvent<GWTJahiaValueDisplayBean> se) {
-                            field.setData("addedField", "true");
-                        }
-
-                        @Override
-                        public void storeRemove(StoreEvent<GWTJahiaValueDisplayBean> se) {
-                            field.setData("addedField", "true");
-                        }
-                    });
-
+                    ((CustomDualListField<GWTJahiaValueDisplayBean>) field).setCustomOriginalValue(selection);
                 } else {
                     String val = values.get(0).getString();
                     for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
@@ -367,4 +357,24 @@ public class FormFieldCreator {
     '</tpl>'
     ].join("");
   }-*/;
+
+    private static class CustomDualListField<D extends ModelData> extends DualListField<D> {
+        private List<D> originalValue = new ArrayList<D>();
+
+        public void setCustomOriginalValue(List<D> originalValue) {
+            this.originalValue = originalValue;
+        }
+
+        @Override
+        public boolean isDirty() {
+            return !originalValue.equals(getToList().getStore().getModels());
+        }
+
+        @Override
+        protected void onRender(Element target, int index) {
+            super.onRender(target, index);
+            getFromList().getListView().el().makePositionable();
+            getToList().getListView().el().makePositionable();
+        }
+    }
 }

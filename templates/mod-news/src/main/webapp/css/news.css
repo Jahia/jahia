@@ -1,0 +1,178 @@
+/******************************************************************************
+*  News generic
+******************************************************************************/
+#bodywrapper p.newsInfo {
+    font-size: 90%;
+    margin: 0.5em 0;
+    padding: 0.2em;
+    line-height: 1em;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+#bodywrapper .newsImg {
+    float: left;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsImg img {
+    border: 1px solid #eaeaea;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsimg-right {
+    float: right;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsimg-right img {
+    border: 1px solid #eaeaea;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsMeta {
+    clear: both;
+    font-size: 80%;
+    color: #999999;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .newsMeta a,
+    #bodywrapper .newsMeta a:link,
+    #bodywrapper .newsMeta a:visited {
+    color: #999999;
+    text-decoration: none;
+}
+
+#bodywrapper .newsMeta a:hover,
+    #bodywrapper .newsMeta a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper span.newsLabelName,
+    #bodywrapper span.newsLabelDate,
+    #bodywrapper span.newsLabelLocation {
+    color: #333333;
+}
+
+#bodywrapper span.newsName,
+    #bodywrapper span.newsDate,
+    #bodywrapper span.newsLocation {
+    color: #333333;
+}
+
+/******************************************************************************
+*  News List
+******************************************************************************/
+#bodywrapper .newsList {
+    clear: both;
+}
+
+#bodywrapper .newsTitle {
+    float: left;
+}
+
+#bodywrapper div.newsRss {
+    float: right;
+    color: #333333;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0.4em 0.5em 0.4em 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsRss a,
+    #bodywrapper .newsRss a:link,
+    #bodywrapper .newsRss a:visited {
+    color: #990000;
+    text-decoration: none;
+    background: none;
+    background: url( img/newsrss.png ) no-repeat top right;
+    padding-right: 20px;
+}
+
+#bodywrapper .newsRss a:hover,
+    #bodywrapper .newsRss a:active {
+    color: #990000;
+    text-decoration: underline;
+}
+
+#bodywrapper .newsList h3 {
+    margin: 0 0 0.5em 0;
+}
+
+#bodywrapper .newsListItem {
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative;
+}
+
+#bodywrapper .newsListItem p {
+    margin-top: 0.5em;
+}
+
+#bodywrapper .newsListItem h4 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 2em;
+    font-weight: normal;
+}
+
+#bodywrapper .newsListItem h4 a,
+    #bodywrapper .newsListItem h4 a:link,
+    #bodywrapper .newsListItem h4 a:visited {
+    color: #333333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper .newsListItem h4 a:hover,
+    #bodywrapper .newsListItem h4 a:active {
+    color: #990000;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper .newsListItem .newsResume {
+    text-align: justify;
+    margin: 0;
+}
+
+#bodywrapper .newsListItem .newsMore {
+    font-size: 80%;
+    font-size: 11px;
+    font-weight: bold;
+    float: right;
+    line-height: 14px;
+}
+
+/******************************************************************************
+*  News Item
+******************************************************************************/
+#bodywrapper .newsItem.newsResume {
+    font-weight: bold;
+    margin: 0;
+}
+
+#bodywrapper .newsItem .newsInfo {
+    margin-bottom: 2em;
+}
+
+#bodywrapper .relatedNews {
+    width: 30%;
+    float: right;
+    margin: 0.5em;
+}
+
+#bodywrapper .relatedNews h3 {
+    line-height: 2em;
+    color: #333333;
+}

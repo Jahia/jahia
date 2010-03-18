@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="news.css"/>
 
 
  <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
@@ -21,9 +22,9 @@
         </p>
 
         <c:if test="${not empty newsImage}"><div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div></c:if>
-        <p class="newsResume">
+        <div class="newsResume">
             ${currentNode.properties.desc.string}
-        </p>
+        </div>
 
         <div class="more"><span><a href="${url.current}"><fmt:message key="label.read"/>: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></span></div>
         <div class="clear"> </div>

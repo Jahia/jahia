@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<template:addResources type="css" resources="news.css"/>
 
  <jcr:nodeProperty node="${currentNode}" name="date" var="newsDate"/>
  <jcr:nodeProperty node="${currentNode}" name="desc" var="newsDesc"/>

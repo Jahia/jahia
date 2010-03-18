@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="news.css"/>
 
  <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="newsTitle"/>
  <jcr:nodeProperty node="${currentNode}" name="date" var="newsDate"/>
@@ -24,9 +25,9 @@
         </p>
 
         <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
-        <p class="newsResume">
+        <div class="newsResume">
             <textarea rows="10" cols="80" name="newsDesc">${newsDesc.string}</textarea>
-        </p>
+        </div>
 
         <div class="more">    <input type="submit"/>
        </div>

@@ -6,26 +6,30 @@
 <template:addResources type="css" resources="news.css"/>
 
 
- <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
+<jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
 
 
-    <div class="newsListItem"><!--start newsListItem -->
+<div class="newsListItem"><!--start newsListItem -->
 
-        <h4><a href="${url.current}"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
+    <h4><a href="${url.current}"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
-        <p class="newsInfo">
-            <span class="newsLabelDate"><fmt:message key="label.date"/> :</span>
+    <p class="newsInfo">
+        <span class="newsLabelDate"><fmt:message key="label.date"/>:</span>
             <span class="newsDate">
-                <fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/>
+                <fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate
+                    value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/>
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
             </span>
-        </p>
+    </p>
 
-        <c:if test="${not empty newsImage}"><div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div></c:if>
-        <div class="newsResume">
-            ${currentNode.properties.desc.string}
-        </div>
-
-        <div class="more"><span><a href="${url.current}"><fmt:message key="label.read"/>: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></span></div>
-        <div class="clear"> </div>
+    <c:if test="${not empty newsImage}">
+        <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
+    </c:if>
+    <div class="newsResume">
+        ${currentNode.properties.desc.string}
     </div>
+
+    <div class="more"><span><a href="${url.current}"><fmt:message key="label.read"/>: <jcr:nodeProperty
+            node="${currentNode}" name="jcr:title"/></a></span></div>
+    <div class="clear"></div>
+</div>

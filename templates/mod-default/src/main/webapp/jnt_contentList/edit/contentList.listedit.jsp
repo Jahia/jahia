@@ -31,11 +31,11 @@
                onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')"/>
 
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
-            <c:if test="${status.index gt 0}">
+            <c:if test="${not status.first}">
                 <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="Move up"
                        onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
             </c:if>
-            <c:if test="${status.index lt listTotalSize-1}">
+            <c:if test="${not status.last}">
                 <input type="button" value="Move down"
                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()"/>
             </c:if>

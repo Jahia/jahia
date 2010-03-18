@@ -31,6 +31,8 @@
  */
 package org.jahia.taglibs.functions;
 
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -116,7 +118,12 @@ public class Functions {
     }
 
     public static String removeHtmlTags(String value) {
-        return JahiaTools.removeTags(value);
+        Source source = new Source(value);
+        TextExtractor textExtractor = source.getTextExtractor();
+        textExtractor.setExcludeNonHTMLElements(true);
+        textExtractor.setConvertNonBreakingSpaces(false);
+        textExtractor.setIncludeAttributes(false);
+        return textExtractor.toString();
     }
 
     public static Boolean memberOf(String groups) {

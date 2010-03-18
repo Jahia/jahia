@@ -36,7 +36,7 @@
 	<span class="value">
         <c:if test="${property.definition.multiple && fn:length(property.values) > 0}">
             <c:forEach items="${property.values}" var="val">
-                <span>${fn:escapeXml(functions:abbreviate(val.string, 500))}</span>
+                <span>${functions:abbreviate(functions:removeHtmlTags(val.string), 500,520,'...')}</span>
             </c:forEach>
         </c:if>
         <c:if test="${!property.definition.multiple}">
@@ -59,7 +59,7 @@
                     <span style="background-color:${property.string}">${property.string}</span>
                 </c:when>
                 <c:otherwise> <%-- other types --%>
-                    <span>${fn:escapeXml(functions:abbreviate(property.string, 500))}</span>
+                    <span>${functions:abbreviate(functions:removeHtmlTags(property.string), 500,520,'...')}</span>
                 </c:otherwise>
             </c:choose>
         </c:if>

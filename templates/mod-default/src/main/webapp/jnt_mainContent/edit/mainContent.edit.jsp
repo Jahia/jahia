@@ -19,6 +19,10 @@
             <span>click here to attach a file</span>
         </div>
     </c:if>
+    <jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
+    <span jcr:id="align" class="choicelistEdit${currentNode.identifier}"
+                              jcr:url="${url.base}${currentNode.path}"
+                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">Image Alignment${currentNode.properties.align.string}</span>
         <span jcr:id="body" class="ckeditorEdit${currentNode.identifier}"
               id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
               jcr:url="${url.base}${currentNode.path}">${currentNode.properties.body.string}</span>

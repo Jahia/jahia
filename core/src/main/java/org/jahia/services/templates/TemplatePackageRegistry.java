@@ -290,6 +290,7 @@ class TemplatePackageRegistry {
             if (!sourcePack.isDefault()) {
             	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");
             	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
+                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             }
         }
         

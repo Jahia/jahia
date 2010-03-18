@@ -42,7 +42,6 @@ import java.util.Map;
 
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.fields.JahiaField;
-import org.jahia.engines.applications.Application_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -152,7 +151,6 @@ public class JahiaObjectTool
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getDefinition().getName();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getName();
             case CATEGORY_TYPE:      return ((Category) engineMap.get("categoryKey")).getKey();
-            case APPLICATION_TYPE:   return ((ApplicationBean) engineMap.get(Application_Engine.APPLICATION_SESSION_NAME)).getName();
 
             default:                 throw new JahiaException (MSG_INTERNAL_ERROR,
                                                                "Incompatible Object Type passed to JahiaObjectTool.getObjectName(objectType, engineMap)",

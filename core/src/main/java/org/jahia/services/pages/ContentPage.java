@@ -792,70 +792,7 @@ public class ContentPage extends ContentObject implements
     public JahiaPage getPage(EntryLoadRequest loadRequest, String operationMode,
                              JahiaUser user)
             throws JahiaException {
-        JahiaPage page = new JahiaPage(this, getPageTemplate(loadRequest), getACL(), loadRequest);
-
-        // Check for expired page
-        ProcessingContext context = Jahia.getThreadParamBean();
-        if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
-            if (ParamBean.NORMAL.equals(operationMode) && !this.isAvailable()){
-                return null;
-            }
-        }
-
-        if ((loadRequest != null) && (user != null) && (operationMode != null)) {
-            if (!page.checkReadAccess(user)) {
-                return null;
-            }
-
-            if (operationMode.equals(ProcessingContext.NORMAL)) {
-                // // do not allow null titles in normal mode
-                if (page.getTitle() == null && !getSite().isMixLanguagesActive()) {
-                    return null;
-                } else {
-                    if (loadRequest.getFirstLocale(true) != null && !page.hasEntry(ContentPage.ACTIVE_PAGE_INFOS, loadRequest.getFirstLocale(true).toString()) && !getSite().isMixLanguagesActive()) {
-                        return null;
-                    }
-                }
-            } else {
-                boolean writeAccess = page.checkWriteAccess(user);
-
-                if (!operationMode.equals(ProcessingContext.COMPARE)) {
-
-                    // only return page in edit or preview mode if we have write
-                    // access to it.
-                    if (!writeAccess) {
-                        if (isAvailable()) {
-                            EntryLoadRequest activeLoadRequest = new EntryLoadRequest(
-                                    EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0,
-                                    loadRequest.getLocales());
-                            if (getTitle(activeLoadRequest) == null && !getSite().isMixLanguagesActive()) {
-                                return null;
-                            }
-                            page = new JahiaPage(this, this
-                                    .getPageTemplate(activeLoadRequest), this
-                                    .getACL(), activeLoadRequest);
-                        } else {
-                            return null;
-                        }
-                    }
-                }
-                // @todo complete TimeBased publishing with Preview mode
-                /*
-                 * if (operationMode.equals(ProcessingContext.PREVIEW) //&& !this.isAvailable() ) { ) { return null; }
-                 */
-                if (operationMode.equals(ProcessingContext.COMPARE)
-                        && !this.isAvailable() && !writeAccess) {
-                    return null;
-                }
-            }
-        } else {
-            logger.warn(
-                    "No LoadRequest or User passed, assuming normal mode and using site guest user to check for read access");
-            if (!this.checkGuestAccess(getJahiaID())) {
-                return null;
-            }
-        }
-        return page;
+        return null;
     }
 
     /**
@@ -3536,36 +3473,6 @@ public class ContentPage extends ContentObject implements
      */
     public boolean isReachableByUser(EntryLoadRequest loadRequest,
                                      String operationMode, JahiaUser user) {
-        ProcessingContext context = Jahia.getThreadParamBean();
-        if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
-            if (ParamBean.NORMAL.equals(operationMode) && !this.isAvailable()){
-                return false;
-        }
-        }
-
-        if ((loadRequest != null) && (user != null) && (operationMode != null)) {
-            if (!checkReadAccess(user)) {
-                return false;
-            }
-
-            if (!ProcessingContext.NORMAL.equals(operationMode)) {
-                boolean writeAccess = checkWriteAccess(user);
-
-                if (!writeAccess && !isAvailable()) {
-                    return false;
-                }
-                // @todo complete TimeBased publishing with Preview mode
-                /*
-                 * if (operationMode.equals(ProcessingContext.PREVIEW) //&& !this.isAvailable() ) { ) { return null; }
-                 */
-            }
-        } else {
-            logger
-                    .warn("No LoadRequest or User passed, assuming normal mode and using site guest user to check for read access");
-            if (!checkGuestAccess(getJahiaID())) {
-                return false;
-            }
-        }
         return true;
     }
 

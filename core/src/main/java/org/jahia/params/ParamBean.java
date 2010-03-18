@@ -119,7 +119,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
-import org.jahia.engines.login.Login_Engine;
 import org.jahia.exceptions.*;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.security.license.LicenseActionChecker;
@@ -272,15 +271,8 @@ public class ParamBean extends ProcessingContext {
                 setUserGuest();
             }
         }
-        resolveJahiaPage();
-        if (getContentPage() != null) {
-            if (getPage() == null
-                    && !getEngine().equals(Login_Engine.ENGINE_NAME)) {
-                throw new JahiaForbiddenAccessException();
-            }
-            if (getPage() == null)
-                throw new JahiaPageNotFoundException(getContentPage().getPageID());
-        }
+
+
     }
 
     /**
@@ -374,11 +366,7 @@ public class ParamBean extends ProcessingContext {
             }
 
             if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
-                if (isPageRequestedByID()) {
-                    setContentPageToPageWithID();
-                } else if (isPageRequestedByKey()) {
-                    setContentPageToPageWithURLKey();
-                } else if (getSite() != null) {
+                if (getSite() != null) {
                     setContentPage(getSite().getHomeContentPage());
                 }
             }
@@ -392,39 +380,13 @@ public class ParamBean extends ProcessingContext {
             setUserAgent(resolveUserAgent());
 
             if (getSite() != null) {
-                final int pageID = resolvePageID();
-
-//                if (getContentPage() == null) {
-//                    throw new JahiaPageNotFoundException(pageID);
-//                }
-
-                resolveOpMode(getSessionState());
-
                 resolveLocales(getRequest().getSession(false));
-
-                processLockAction(response, pageID);
-
-                final String verInfo = resolveEntryState();
-
-                resolveDiffVersionID(verInfo);
-
-                // checkLocales();
-                // checkPageAccess(pageID);
             }
-
-            resolveJahiaPage();
 
             // last engine name
             setLastEngineName((String) getRequest().getSession(false).getAttribute(SESSION_LAST_ENGINE_NAME));
             setEngineHasChanged(getLastEngineName() == null || !getLastEngineName().equals(getEngine()));
 
-            resolveCacheStatus();
-
-            processActivationAction();
-//            if (getContentPage() != null && getPage() == null
-//                    && !getEngine().equals(Login_Engine.ENGINE_NAME)) {
-//                throw new JahiaForbiddenAccessException();
-//            }
             // /////////////////////////////////////////////////////////////////////////////////////
             // FIXME -Fulco-
             //
@@ -638,113 +600,12 @@ public class ParamBean extends ProcessingContext {
      */
     public void invalidateSession() throws JahiaSessionExpirationException {
         Object locale = null;
-        Object oldRequestUri = null;
         if (getRequest().getSession(false) != null) {
             locale = getRequest().getSession().getAttribute(SESSION_LOCALE);
-            oldRequestUri = getRequest().getSession().getAttribute(Login_Engine.REQUEST_URI);
             getRequest().getSession().invalidate();
         }
         sessionState = new HttpSessionState(getRequest().getSession(true));
         sessionState.setAttribute(SESSION_LOCALE, locale);
-        sessionState.setAttribute(Login_Engine.REQUEST_URI, oldRequestUri);
-    }
-
-    /**
-     * Used to swith user session in User Aliasing mode
-     * @throws JahiaSessionExpirationException
-     */
-    public void switchUserSession(JahiaUser oldUser, JahiaUser newUser) throws JahiaSessionExpirationException {
-        if (getRequest().getSession(false) != null) {
-            backupUserSession(oldUser);
-            restoreUserSession(newUser);
-        }
-    }
-
-    protected void backupUserSession(JahiaUser user) throws JahiaSessionExpirationException {
-        initSharedSessionAttributes ();
-        if (getRequest().getSession(false) != null) {
-            Enumeration<?> names = getRequest().getSession().getAttributeNames();
-            Map<String, Map<String, Object>> backupedSessions = (Map<String, Map<String, Object>>)getRequest().getSession().getAttribute(SESSION_BACKUP);
-            if (backupedSessions == null){
-                backupedSessions = new HashMap<String, Map<String, Object>>();
-                getRequest().getSession().setAttribute(SESSION_BACKUP,backupedSessions);
-            }
-            Map<String, Object> backupedSession = new HashMap<String, Object>();
-            backupedSessions.put(user.getUserKey(),backupedSession);
-            while (names.hasMoreElements()){
-                String name = (String)names.nextElement();
-                Object att = getRequest().getSession().getAttribute(name);
-                if (!sharedSessionAttributes.contains(name)){
-                    backupedSession.put(name,att);
-                    getRequest().getSession().removeAttribute(name);
-                }
-            }
-        }
-    }
-
-    protected void restoreUserSession(JahiaUser user) throws JahiaSessionExpirationException {
-        initSharedSessionAttributes ();
-        if (getRequest().getSession(false) != null) {
-            Map<String, Map<String, Object>> backupedSessions = (Map<String, Map<String, Object>>)getRequest().getSession().getAttribute(SESSION_BACKUP);
-            if (backupedSessions == null){
-                return;
-            }
-            Map<String, Object> backupedSession = backupedSessions.get(user.getUserKey());
-            if (backupedSession == null){
-                return;
-            }
-            for (String name : backupedSession.keySet()){
-                Object att = backupedSession.get(name);
-                if (!sharedSessionAttributes.contains(name)){
-                    getRequest().getSession().setAttribute(name,att);
-                }
-            }
-        }
-    }
-
-    private static void initSharedSessionAttributes() {
-        if (sharedSessionAttributes == null){
-            SpringContextSingleton springSingleton = SpringContextSingleton.getInstance();
-            sharedSessionAttributes = (List<Object>)springSingleton.getContext().getBean("sharedSessionAttributeNames");
-            if (sharedSessionAttributes == null){
-                sharedSessionAttributes = new ArrayList<Object>();
-            }
-        }
-    }
-
-    /**
-     * Removes all objects that are stored in the session, but does NOT call a session.invalidate. This should work better for login /
-     * logout.
-     *
-     * @throws JahiaSessionExpirationException
-     *          if the session cannot be retrieved from the request object.
-     */
-    public void purgeSession() throws JahiaSessionExpirationException {
-        final HttpSession session = getRequest().getSession(false);
-        if (session == null) {
-            throw new JahiaSessionExpirationException();
-        }
-        REGISTRY.getLockService().purgeLockForContext(getUser().getUserKey());
-        logger.debug("Purging session of all objects...");
-
-        // a little hack to be able to remove objects later, because during an
-        // Iterator we can't remove objects.
-        String[] attr = session.getValueNames();
-
-        for (int i = 0; i < attr.length; i++) {
-            String curAttributeName = attr[i];
-            if (!"org.apache.jetspeed.container.session.PortalSessionMonitor"
-                    .equals(curAttributeName)) {
-                session.removeAttribute(curAttributeName);
-            }
-        }
-
-        // keep the last language
-        session.setAttribute(ParamBean.SESSION_LOCALE, this.currentLocale);
-        // added by PAP: for Struts and JSTL applications
-        session.setAttribute(Globals.LOCALE_KEY, this.currentLocale);
-        Config.set(session, Config.FMT_LOCALE, this.currentLocale);
-
     }
 
     /**
@@ -754,7 +615,6 @@ public class ParamBean extends ProcessingContext {
      */
     public void changeLanguage(final Locale locale) throws JahiaException {
         super.changeLanguage(locale);
-        resolveJahiaPage();
         // added by PAP: for Struts and JSTL applications
         this.getSession().setAttribute(Globals.LOCALE_KEY, locale);
         Config.set(this.getSession(), Config.FMT_LOCALE, locale);
@@ -1021,30 +881,6 @@ public class ParamBean extends ProcessingContext {
             newSiteURL.append(theSite.getSiteKey());
         }
 
-        if (withOperationMode) {
-            try {
-                final HttpSession session = this.getSession();
-                if (session.getAttribute(OPERATION_MODE_PARAMETER) != null) {
-                    final String oldOpMode = (String) session
-                            .getAttribute(OPERATION_MODE_PARAMETER);
-                    newSiteURL.append(getOpModeURLPart(oldOpMode));
-                } else {
-                    if (this.getOperationMode() != null) {
-                        newSiteURL.append(getOpModeURLPart(this
-                                .getOperationMode()));
-                    }
-                }
-            } catch (JahiaSessionExpirationException jsee) {
-                // this is not an error, we simply don't add the operation mode
-                // if we don't find it in the session.
-            }
-        }
-
-        if (pageID != -1) {
-            newSiteURL.append(getPageURLKeyPart(pageID));
-            newSiteURL.append(getPageURLPart(pageID));
-        }
-
         if (withSessionID) {
             String serverURL = encodeURL(newSiteURL.toString());
             if (sessionIDStr != null) {
@@ -1056,21 +892,6 @@ public class ParamBean extends ProcessingContext {
         } else {
             return newSiteURL.toString();
         }
-    }
-
-    private void processLockAction(final HttpServletResponse response,
-                                   final int pageID) throws JahiaException {
-        // #ifdef LOCK
-        // let's unlock the object
-        try {
-            String lockKeyStr = processLockAction();
-            if (lockKeyStr != null) {
-                response.sendRedirect(composePageUrl(pageID));
-            }
-        } catch (java.io.IOException ioe) {
-            logger.error("Problem with sendRedirect response", ioe);
-        }
-        // #endif
     }
 
     private void resolveLocales(final HttpSession session)

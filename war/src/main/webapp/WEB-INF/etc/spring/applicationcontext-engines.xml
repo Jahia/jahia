@@ -5,16 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
-    <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine">
-    	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
-    </bean>
-    <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine">
-    	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
-    </bean>
     <bean id="selectPageEngine" class="org.jahia.engines.selectpage.SelectPage_Engine" />
     <bean id="selectUGEngine" class="org.jahia.engines.users.SelectUG_Engine" />
-    <bean id="lockEngine" class="org.jahia.engines.lock.LockEngine" />
-    <bean id="mySettingsEngine" class="org.jahia.engines.mysettings.MySettingsEngine" />
     <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
     <bean id="appDispatcherEngine" class="org.jahia.engines.applications.FullScreenDispatcherEngine" />
@@ -23,12 +15,8 @@
         <property name="engineInstances">
             <list>
                 <ref bean="coreEngine" />
-                <ref bean="loginEngine" />
-                <ref bean="logoutEngine" />
                 <ref bean="selectPageEngine" />
                 <ref bean="selectUGEngine" />
-                <ref bean="lockEngine" />
-                <ref bean="mySettingsEngine" />
                 <ref bean="exportEngine" />
                 <ref bean="applicationEngine" />
                 <ref bean="appDispatcherEngine" />

@@ -35,7 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.engines.login.Login_Engine;
 import org.jahia.engines.mysettings.MySettingsEngine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -92,8 +91,7 @@ public class LoginEngineAuthValveImpl implements Valve {
             JahiaUser theUser = null;
             boolean ok = false;
 
-            if ("1".equals(jParams.getParameter(LOGIN_TAG_PARAMETER)) ||
-                    (Login_Engine.ENGINE_NAME.equals(jParams.getEngine()) && "save".equals(theScreen))) {
+            if ("1".equals(jParams.getParameter(LOGIN_TAG_PARAMETER))) {
 
                 final String username = jParams.getParameter("username");
                 final String password = jParams.getParameter("password");
@@ -191,17 +189,7 @@ public class LoginEngineAuthValveImpl implements Valve {
     private void checkRedirect(ParamBean ctx) {
         String redirectUrl = null;
         try {
-            if (GO_TO_HOMEPAGE.equals(ctx.getParameter(LOGIN_CHOICE_PARAMETER))) {
-                JahiaPage loginPage = Login_Engine.getHomepage(ctx.getSite(), ctx.getUser(), ctx);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("User homepage is " + loginPage != null ? loginPage.getTitle() : "null");
-                }
-                int loginPageId = loginPage == null ? 0 : loginPage.getID();            
-                if (loginPageId == 0) {
-                    loginPageId = ctx.getSite().getHomePageID();
-                }
-                redirectUrl = ctx.composePageUrl (loginPageId, ctx.getLocale().toString());
-            } else if ("POST".equals(ctx.getRequest().getMethod())) {
+            if ("POST".equals(ctx.getRequest().getMethod())) {
                 String doRedirect = ctx.getRequest().getParameter(DO_REDIRECT);
                 if (doRedirect != null && (Boolean.valueOf(doRedirect) || "1".equals(doRedirect))) {
                     redirectUrl = ctx.composePageUrl();

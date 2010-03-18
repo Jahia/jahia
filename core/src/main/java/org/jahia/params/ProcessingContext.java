@@ -111,14 +111,13 @@
 
 package org.jahia.params;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
-import org.jahia.content.ContentPageKey;
 import org.jahia.engines.importexport.ExportEngine;
-import org.jahia.engines.login.Login_Engine;
-import org.jahia.exceptions.*;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaSessionExpirationException;
+import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
@@ -129,14 +128,12 @@ import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.PageProperty;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.StateModificationContext;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -158,52 +155,27 @@ public class ProcessingContext {
     public static final String ENGINE_NAME_PARAMETER = "engineName";
 
     public static final String SITE_KEY_PARAMETER = "site";
-    public static final String PAGE_ID_PARAMETER = "pid"; // refers to the same as current page or new requested page
-    public static final String APPUNIQUE_ID_PARAMETER = "appid";
     public static final String PLUTO_PREFIX = "__";
-    public static final String PLUTO_PORTLET_ID = "pd";
     public static final String PLUTO_ACTION = "ac";
     public static final String PLUTO_RESOURCE = "rs";
 
-    public static final String OPERATION_MODE_PARAMETER = "op";
-    public static final String USERALIASING_MODE_PARAMETER = "useraliasing";
-    public static final String CACHE_MODE_PARAMETER = "cache";
-    public static final String CONTAINERCACHE_MODE_PARAMETER = "containercache";
-    public static final String ENTRY_STATE_PARAMETER = "entrystate";
-    public static final String SHOW_REVISION_DIFF_PARAMETER = "showrevdiff";
-    public static final String VALIDATE_PARAMETER = "validate";
     public static final String CONTAINER_SCROLL_PREFIX_PARAMETER = "ctnscroll_";
     public static final String LANGUAGE_CODE = "lang";
     public static final String STEAL_LOCK = "stealLock";
     public static final String RELEASE_LOCK = "releaseLock";
-    public static final String TEMPLATE_PARAMETER = "template";
-
-    public static final String DEFAULT_SITE_PROPERTY = "defaultSite";
-
-    /**
-     * default page id
-     */
-    public static final String DEFAULT_PAGE_ID = "1";
 
     /**
      * Engine core name
      */
     public static final String CORE_ENGINE_NAME = "core";
-    protected static final String XMLSOURCE_ENGINE_NAME = "xmlsource";
 
     // http modes
     public static final int GET_METHOD = 1;
     public static final int POST_METHOD = 2;
 
-    // content filtering status
-    public static final int FILTER_ENABLED_STATE = 1;
-    public static final int FILTER_DISABLED_STATE = 0;
-    public static final int FILTER_UNDEFINED_STATE = -1;
-
     // navigation operations
     public static final String NORMAL = "normal"; // normal navigation
     public static final String EDIT = "edit"; // edit navigation
-    public static final String DEBUG = "debug"; // debug navigation
     public static final String PREVIEW = "preview"; // preview staging navigation
     public static final String COMPARE = "compare"; // show difference between staging and active
 
@@ -235,8 +207,6 @@ public class ProcessingContext {
     protected int httpMethod = 0;
     protected String engineName = "";
     protected String opMode = "";
-    protected JahiaPage thePage;
-    protected ContentPage contentPage;
     protected JahiaUser theUser = null;
     protected String userAgent = "";
     protected Locale currentLocale = null;
@@ -319,19 +289,6 @@ public class ProcessingContext {
         getDefaultParameterValues().setProperty(
                 ProcessingContext.ENGINE_NAME_PARAMETER,
                 ProcessingContext.CORE_ENGINE_NAME);
-        getDefaultParameterValues().setProperty(
-                ProcessingContext.OPERATION_MODE_PARAMETER,
-                ProcessingContext.NORMAL);
-        getDefaultParameterValues().setProperty(
-                ProcessingContext.SITE_KEY_PARAMETER, "");
-        getDefaultParameterValues().setProperty(
-                ProcessingContext.CACHE_MODE_PARAMETER,
-                ProcessingContext.CACHE_ON);
-        getDefaultParameterValues().setProperty(
-                ProcessingContext.SHOW_REVISION_DIFF_PARAMETER,
-                "0");
-        // defaultParameterValues.setProperty(ProcessingContext.PAGE_ID_PARAMETER, ProcessingContext.DEFAULT_PAGE_ID); // doesn't work yet
-        // because of logout engine URL mess
     }
 
     protected static final ServicesRegistry REGISTRY = ServicesRegistry.getInstance();
@@ -470,48 +427,20 @@ public class ProcessingContext {
                 setSiteInfoFromSiteFound();
             }
 
-            if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
-                if (isPageRequestedByID()) {
-                    setContentPageToPageWithID();
-                } else if (isPageRequestedByKey()) {
-                    setContentPageToPageWithURLKey();
-                } else if (getSite() != null) {
-                    setContentPage(getSite().getHomeContentPage());
-                }
-            }
-
             resolveUser();
 
             if (getSite() != null) {
-                final int pageID = resolvePageID();
-
-                resolveOpMode(getSessionState());
-
                 resolveLocales();
 
                 processLockAction();
 
-                final String verInfo = resolveEntryState();
-
-                resolveDiffVersionID(verInfo);
-
-                checkLocales();
-
-                checkPageAccess(pageID);
-
             }
-
-            resolveJahiaPage();
 
             // last engine name
             this.setLastEngineName((String) getSessionState().getAttribute(
                     SESSION_LAST_ENGINE_NAME));
             this.setEngineHasChanged((getLastEngineName() == null || !getLastEngineName()
                             .equals(getEngine())));
-
-            resolveCacheStatus();
-
-            processActivationAction();
 
             // /////////////////////////////////////////////////////////////////////////////////////
             // FIXME -Fulco-
@@ -595,17 +524,15 @@ public class ProcessingContext {
     }
 
     public ContentPage getContentPage() {
-        return contentPage;
+        return null;
     }
 
     public JahiaPage getPage() {
-        return getThePage();
+        return null;
     }
 
     public int getPageID() {
-        if (getContentPage() == null)
-            return -1;
-        return getContentPage().getID();
+        return -1;
     }
 
     public int getLastRequestedPageID() {
@@ -882,7 +809,6 @@ public class ProcessingContext {
                 getLocales(), getEntryLoadRequest().isWithMarkedForDeletion()));
         resetSubstituteEntryLoadRequest();
         setParameter(ProcessingContext.LANGUAGE_CODE, this.getCurrentLocale().toString());
-        resolveJahiaPage();
     }
 
     /**
@@ -1056,7 +982,6 @@ public class ProcessingContext {
         if (getContentPage().getJahiaID() != getSiteID()) {
             setContentPage(getSite().getHomeContentPage());
         }
-        resolveJahiaPage();
     }
 
     /**
@@ -1072,66 +997,6 @@ public class ProcessingContext {
 
     public void flushLocaleListCache() {
         setLocaleList(null);
-    }
-
-    /**
-     * Set instance var contentPage to loaded content page from page id specified in URL.
-     *
-     * @throws JahiaException
-     */
-    protected void setContentPageToPageWithID() throws JahiaException {
-        int pageID = NumberUtils.toInt(getParameter(PAGE_ID_PARAMETER), 0);
-        setContentPage(REGISTRY.getJahiaPageService().lookupContentPage(pageID,
-                true));
-    }
-
-    /**
-     * Retrieve page properties that have value equals to key specified in URL and the name PAGE_URL_KEY_PROPNAME. Multiple result can
-     * happen since an URL key is unique in only one site. Load page props that we want and get page associated with this property via the
-     * page cache. N.b: site must be resolved before calling this, since we need the siteID.
-     *
-     * @throws JahiaException
-     */
-    protected void setContentPageToPageWithURLKey() throws JahiaException {
-        /*final String pageURLKey = (String) pageURLKeys
-                .get(pageURLKeys.size() - 1);
-        int pageID = 0;
-        int currentParentPageID = 0;
-
-        for (String curURLKey : pageURLKeys) {
-            List<PageProperty> pageProperties = REGISTRY.getJahiaPageService()
-                    .getPagePropertiesByNameValueSiteIDAndParentID(PageProperty.PAGE_URL_KEY_PROPNAME, curURLKey, siteID, currentParentPageID);
-            if (pageProperties.size() != 1) {
-                logger.debug("Invalid URL key in path '" + curURLKey + "', defaulting to unique URL key resolution");
-                currentParentPageID = 0;
-                break;
-            }
-            final PageProperty pageProperty = (PageProperty) pageProperties.get(0);
-            currentParentPageID = pageProperty.getPageID();
-        }
-        if (currentParentPageID != 0) {
-            setContentPage(ContentPage.getPage(currentParentPageID));
-            return;
-        }
-
-        logger.debug("Couldn't resolve page with new mechanism, reverting to default unique page URL key");
-
-        List<PageProperty> pageProperties = REGISTRY.getJahiaPageService()
-                .getPagePropertiesByValueAndSiteID(pageURLKey, siteID);
-        for (Iterator<PageProperty> it = pageProperties.iterator(); it.hasNext()
-                && pageID == 0;) {
-            final PageProperty pageProperty = (PageProperty) it.next();
-            if (PageProperty.PAGE_URL_KEY_PROPNAME.equals(pageProperty
-                    .getName())) {
-                pageID = pageProperty.getPageID();
-            }
-        }
-        if (pageID > 0) {
-            setContentPage(ContentPage.getPage(pageID));
-        }
-//        else {
-//            setContentPage(getSite().getHomeContentPage());
-//        }*/
     }
 
     protected void setSiteInfoFromSiteFound() {
@@ -1269,18 +1134,9 @@ public class ProcessingContext {
     public static boolean isReservedKeyword(String str) {
         if (ProcessingContext.ENGINE_NAME_PARAMETER.equals(str)
                 || ProcessingContext.SITE_KEY_PARAMETER.equals(str)
-                || ProcessingContext.PAGE_ID_PARAMETER.equals(str)
-                || ProcessingContext.APPUNIQUE_ID_PARAMETER.equals(str)
-                || ProcessingContext.OPERATION_MODE_PARAMETER.equals(str)
-                || ProcessingContext.ENTRY_STATE_PARAMETER.equals(str)
-                || ProcessingContext.SHOW_REVISION_DIFF_PARAMETER.equals(str)
-                || ProcessingContext.VALIDATE_PARAMETER.equals(str)
                 || ProcessingContext.LANGUAGE_CODE.equals(str)
                 || ProcessingContext.RELEASE_LOCK.equals(str)
-                || ProcessingContext.STEAL_LOCK.equals(str)
-                || ProcessingContext.TEMPLATE_PARAMETER.equals(str)
-                || ProcessingContext.CACHE_MODE_PARAMETER.equals(str)
-                || ProcessingContext.CONTAINERCACHE_MODE_PARAMETER.equals(str))
+                || ProcessingContext.STEAL_LOCK.equals(str))
             return true;
         else if (isContainerScroll(str) == true)
             return true;
@@ -1331,8 +1187,6 @@ public class ProcessingContext {
             return true;
         } if (findSiteByHostName()) {
             return true;
-        } else if (isPageRequestedByID() && findSiteByPageID()) {
-            return true;
         } else if (findSiteByRequestParam()) {
             return true;
         } else if (findSiteFromSession()) {
@@ -1359,54 +1213,6 @@ public class ProcessingContext {
         logger.debug("No site found in URL, serverName or via page ID, trying default site...");
         site = getDefaultSite();
         return site != null;
-    }
-
-    /**
-     * Tells if page id was passed in URL. ( Page requested by ID )
-     *
-     * @return true if PAGE_ID_PARAMETER is in URL and its a number bigger then 0.
-     */
-    protected boolean isPageRequestedByID() {
-        final String pageIDStr = getParameter(PAGE_ID_PARAMETER);
-        return pageIDStr != null && NumberUtils.toInt(pageIDStr, 0) > 0;
-    }
-
-    /**
-     * @return true if page was requested by key.
-     */
-    protected boolean isPageRequestedByKey() {
-        return !isPageRequestedByID() && !getPageURLKeys().isEmpty();
-    }
-
-    /**
-     * Find site via the page id. this.site will be set if its found.
-     *
-     * @return true if site was found using page id
-     * @throws JahiaException
-     */
-    private boolean findSiteByPageID() throws JahiaException {
-        final int pageID = NumberUtils
-                .toInt(getParameter(PAGE_ID_PARAMETER), 0);
-        try {
-            setContentPage(REGISTRY.getJahiaPageService().lookupContentPage(
-                    pageID, true));
-        } catch (JahiaPageNotFoundException ex) {
-
-        }
-        setContentPageLoadedWhileTryingToFindSiteByPageID(true);
-
-        if (getContentPage() == null)
-            return false;
-
-        setSite(REGISTRY.getJahiaSitesService().getSite(
-                getContentPage().getJahiaID()));
-
-        if (getSite() == null)
-            return false;
-
-        setSiteResolvedByKeyOrPageId(true);
-
-        return true;
     }
 
     /**
@@ -1457,10 +1263,6 @@ public class ProcessingContext {
      * @throws JahiaException
      */
     private boolean findSiteByItsKey() throws JahiaException {
-        if (!isSiteKeyPresent())
-            return false;
-        setSite(REGISTRY.getJahiaSitesService().getSiteByKey(
-                getParameter(SITE_KEY_PARAMETER)));
         if (getSite() == null)
             return false;
         logger.debug("Found site info in parameters...");
@@ -1493,10 +1295,6 @@ public class ProcessingContext {
         setSiteResolvedByKeyOrPageId(true);
 
         return true;
-    }
-
-    private boolean isSiteKeyPresent() {
-        return getParameter(SITE_KEY_PARAMETER) != null;
     }
 
     /**
@@ -1539,17 +1337,6 @@ public class ProcessingContext {
     // - added error check.
     // MJ 29 May. 2001 : get http path from request instead of settings,
 
-    /**
-     * Compose an URL by adding default parameters (like the page id, the session id, ...) to the passed in parameter string.
-     *
-     * @param params String of parameters.
-     * @return Return a valid URL by adding default parameters. Return an non-null empty string on any error.
-     */
-    public String composeUrl(final String params) throws JahiaException {
-        return composeUrl(
-                getContentPage() != null ? getPageURLKeyPart(getContentPage()) : "",
-                getContentPage() != null ? getPageURLPart(getContentPage(), false) : "", null, null, null, params);
-    }
 
     // -------------------------------------------------------------------------
     // EV 20 Nov. 2000 : Original implementation
@@ -1567,35 +1354,19 @@ public class ProcessingContext {
      * @throws JahiaException
      */
     public String composePageUrl(final int pageID) throws JahiaException {
-        return composeUrl(getPageURLKeyPart(pageID), getPageURLPart(pageID),
+        return composeUrl(null,null,
                 pageID, null, getLocale().toString(), null);
-    }
-
-    /**
-     * Compose page url parameter form.
-     *
-     * @param pageID      page id.
-     * @param pathParams  path parameters
-     * @param queryParams query parameters
-     * @return String containing the generated URL.
-     * @throws JahiaException
-     */
-    public String composePageUrl(final int pageID, final Map<String, Object> pathParams,
-                                 Map<String, Object> queryParams) throws JahiaException {
-        // compose pathParams as string
-        return composeUrl(pageID, pathParams, queryParams, getLocale()
-                .toString());
     }
 
     public String composePageUrl(final int pageID, final String languageCode)
             throws JahiaException {
-        return composeUrl(getPageURLKeyPart(pageID), getPageURLPart(pageID),
+        return composeUrl(null,null,
                 pageID, null, languageCode, null);
     }
 
     public String composePageUrl(ContentPage page, final String languageCode)
             throws JahiaException {
-        return composeUrl(getPageURLKeyPart(page), getPageURLPart(page, false),
+        return composeUrl(null,null,
                 page, null, languageCode, null);
     }
 
@@ -1605,81 +1376,9 @@ public class ProcessingContext {
     }
 
     public String composePageUrl(final JahiaPage page) throws JahiaException {
-        return composeUrl(getPageURLKeyPart(page.getContentPage()),
-                getPageURLPart(page.getContentPage(), false), page.getContentPage(),
+        return composeUrl(null,
+                null, page.getContentPage(),
                 null, this.getLocale().toString(), null);
-    }
-
-    public String composePageUrl(final JahiaPage page, final String languageCode)
-            throws JahiaException {
-        return composeUrl(getPageURLKeyPart(page.getContentPage()),
-                getPageURLPart(page.getContentPage(), false), page.getContentPage(),
-                null, languageCode, null);
-    }
-
-    /**
-     * Compose page url parameter form.
-     *
-     * @param pageID       page id.
-     * @param pathParams   path parameters
-     * @param queryParams  query parameters
-     * @param languageCode language code
-     * @return String containing the generated URL.
-     * @throws JahiaException
-     */
-    public String composeUrl(final int pageID, final Map<String, Object> pathParams,
-                             Map<String, Object> queryParams, String languageCode) throws JahiaException {
-        // compose pathParams as string
-        final StringBuilder pathParamsAsString = new StringBuilder();
-        if (pathParams != null && !pathParams.isEmpty()) {
-            Iterator<String> it = pathParams.keySet().iterator();
-            boolean isFirst = true;
-            while (it.hasNext()) {
-                String name = it.next().toString();
-                String value = pathParams.get(name).toString();
-                if (isFirst) {
-                    pathParamsAsString.append("/");
-                    isFirst = false;
-                }
-                pathParamsAsString.append(name).append("/").append(value);
-                if (it.hasNext()) {
-                    pathParamsAsString.append("/");
-                }
-
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Path params is [" + pathParamsAsString + "]");
-            }
-        } else if (logger.isDebugEnabled()) {
-            logger.debug("Path params is empty");
-        }
-
-        // compose queryParams as String
-        final StringBuilder queryParamsAsString = new StringBuilder();
-        if (queryParams != null && !queryParams.isEmpty()) {
-            Iterator<String> it = queryParams.keySet().iterator();
-            boolean isFirst = true;
-            while (it.hasNext()) {
-                String name = it.next().toString();
-                String value = queryParams.get(name).toString();
-                if (isFirst) {
-                    queryParamsAsString.append("?");
-                    isFirst = false;
-                } else {
-                    queryParamsAsString.append("&");
-                }
-                queryParamsAsString.append(name).append("=").append(value);
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Query params is [" + queryParamsAsString + "]");
-            }
-        } else if (logger.isDebugEnabled()) {
-            logger.debug("Query params is empty");
-        }
-
-        return composeUrl(getPageURLKeyPart(pageID), getPageURLPart(pageID),
-                pageID, pathParamsAsString.toString(), languageCode,
-                queryParamsAsString.toString());
     }
 
     private String composeUrl(final String pageUrlKey, final String pageUrl,
@@ -1689,36 +1388,8 @@ public class ProcessingContext {
         final StringBuffer theUrl = new StringBuffer();
         theUrl.append(getJahiaCoreHttpPath());
         theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
-        if (aContentPage == null) {
-            theUrl.append(getSiteURLPart(getSite().getSiteKey()));
-        } else if (aContentPage != null) { /*
-                                            * && this.isForceAppendSiteKey() &&
-                                            * aContentPage.getSiteID() !=
-                                            * getSite().getID()) {
-                                            */
-            if (getSiteByHostName() != null
-                    && !aContentPage.getSite().getSiteKey().equals(
-                            getSiteByHostName().getSiteKey())) {
-                return getSiteURL(aContentPage.getSite(),
-                        aContentPage != null ? aContentPage.getID() : 0, false,
-                        opMode, languageCode, false);
-            }
-            // this case can happens when a page from another site is listened
-            // in the search result
-            // when a search is done on several site
-            theUrl.append(this.getSiteURLPart(aContentPage.getSite()
-                    .getSiteKey()));
-        }
-        String paramOpMode = getParameter(OPERATION_MODE_PARAMETER);
-        String opModeToUse = paramOpMode != null ? paramOpMode : getOpMode();
-        theUrl.append(getOpModeURLPart(opModeToUse));
         if (languageCode != null) {
             theUrl.append(condAppendURL(LANGUAGE_CODE, languageCode));
-        }
-        if (COMPARE.equals(opModeToUse)) {
-            theUrl
-                    .append(getEntryStateURLPart(getParameter(ENTRY_STATE_PARAMETER)));
-            theUrl.append(getShowRevisionDiffURLPart(getDiffVersionID()));
         }
         if (pathParams != null) {
             theUrl.append(pathParams);
@@ -1803,18 +1474,6 @@ public class ProcessingContext {
 
         if (theEngineName != null) {
             theUrl.append(getEngineURLPart(theEngineName));
-        }
-
-        theUrl.append(getSiteURLPart());
-        if (params == null || params.indexOf("engine_params=logout") == -1) {
-            theUrl.append(getOpModeURLPart(getOpMode()));
-        }
-        if (getContentPage() != null) {
-            theUrl.append(getPageURLKeyPart(getContentPage().getID()));
-            if (extraJahiaParams == null
-                    || !extraJahiaParams.containsKey(PAGE_ID_PARAMETER)) {
-                theUrl.append(getPageURLPart(getContentPage().getID()));
-            }
         }
 
         if (extraJahiaParams != null) {
@@ -1911,107 +1570,10 @@ public class ProcessingContext {
         boolean old = useQueryStringParameterUrl;
         useQueryStringParameterUrl = true;
         StringBuffer theUrl = new StringBuffer();
-        String paramValue = getSiteURLPart();
-        String paramSep = paramSepFirst;
-        if (paramValue != null && paramValue.trim().length() > 0) {
-            theUrl.append(paramSep);
-            theUrl.append(paramValue);
-            paramSep = "&";
-        }
-        paramValue = getOpModeURLPart(opMode);
-        if (paramValue != null && paramValue.trim().length() > 0) {
-            theUrl.append(paramSep);
-            theUrl.append(paramValue);
-            paramSep = "&";
-        }
-        if (contentPage != null) {
-            paramValue = getPageURLPart(contentPage.getID(), true);
-            if (paramValue != null && paramValue.trim().length() > 0) {
-                theUrl.append(paramSep);
-                theUrl.append(paramValue);
-            }
-        }
         useQueryStringParameterUrl = old;
         return theUrl.toString();
     }
 
-    // @author Khue Nguyen
-
-    /**
-     * Supplementary version that allows us to add parameters in standard Jahia parameter form.
-     *
-     * @param facesPage the face page part of the URL to generate. the queryString
-     * @param params    standard URL parameters in the form of a string that starts with &
-     * @return String containing the generated URL.
-     * @throws JahiaException
-     */
-    public String composeFacesUrl(final String facesPage, final String params)
-            throws JahiaException {
-        return composeFacesUrl(facesPage, new Properties(), params);
-    }
-
-    /**
-     * Supplementary version that allows us to add parameters in standard Jahia parameter form.
-     *
-     * @param facesPage        the faces page part of the URL to generate.
-     * @param extraJahiaParams additional name=value parameter to insert in the queryString
-     * @param params           standard URL parameters in the form of a string that starts with &
-     * @return String containing the generated URL.
-     * @throws JahiaException
-     */
-    public String composeFacesUrl(final String facesPage,
-                                  Properties extraJahiaParams, final String params)
-            throws JahiaException {
-        if (extraJahiaParams == null) {
-            extraJahiaParams = new Properties();
-        }
-
-        setUseQueryStringParameterUrl(true);
-
-        final StringBuffer theUrl = new StringBuffer();
-        theUrl.append(Jahia.getContextPath());
-        if (!facesPage.startsWith("/")) {
-            theUrl.append("/");
-        }
-        theUrl.append(facesPage);
-        String paramSep = "?";
-        if (getContentPage() != null) {
-            final String paramValue = getPageURLKeyPart(getContentPage()
-                    .getID());
-            if (paramValue != null && paramValue.trim().length() > 0) {
-                theUrl.append(paramSep);
-                theUrl.append(paramValue);
-                paramSep = "&";
-            }
-        }
-
-        String urlParams = getSiteAndModeAndPageAsURLParams(paramSep);
-        theUrl.append(urlParams);
-        if (urlParams.length() > 0)
-            paramSep = "&";
-
-        String paramValue;
-        final Enumeration<?> propertyNames = extraJahiaParams.propertyNames();
-        while (propertyNames.hasMoreElements()) {
-            final String propertyName = (String)propertyNames.nextElement();
-            final String propertyValue = extraJahiaParams
-                    .getProperty(propertyName);
-            paramValue = condAppendURL(propertyName, propertyValue);
-            if (paramValue != null && paramValue.trim().length() > 0) {
-                theUrl.append(paramSep);
-                theUrl.append(paramValue);
-                paramSep = "&";
-            }
-        }
-
-        appendParams(theUrl, params);
-
-        appendAnchor(theUrl);
-
-        setUseQueryStringParameterUrl(false);
-
-        return encodeURL(theUrl.toString());
-    }
 
     // -------------------------------------------------------------------------
     // EV 20 Nov. 2000 : Original implementation
@@ -2028,10 +1590,6 @@ public class ProcessingContext {
 
         theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
         // @Fixme: as operation links are always attached to a page, we don't nee to add the siteKey
-        theUrl.append(getSiteURLPart());
-        if (operationMode != null) {
-            theUrl.append(getOpModeURLPart(operationMode));
-        }
 
         String languageCode = getLocale().toString();
 
@@ -2039,76 +1597,10 @@ public class ProcessingContext {
             theUrl.append(condAppendURL(LANGUAGE_CODE, languageCode));
         }
 
-        if (getContentPage() != null) {
-            theUrl.append(getPageURLKeyPart(getContentPage().getID()));
-            theUrl.append(getPageURLPart(getContentPage().getID()));
-        }
         appendParams(theUrl, params);
 
         return encodeURL(theUrl.toString());
     } // end composeOperationUrl
-
-    /**
-     * composeOperationUrl EV 21.11.2000
-     *
-     * @param revisionDiffID 0 to compare with staging, 1 with active
-     * @param operationMode
-     * @param params
-     * @return
-     * @throws JahiaException
-     */
-    public String composeRevDifferenceUrl(final int revisionDiffID,
-                                          final String operationMode, final String params)
-            throws JahiaException {
-        return composeRevDifferenceUrl(revisionDiffID == 0 ? "a" : "s",
-                revisionDiffID, operationMode, params);
-    }
-
-    /**
-     * Generate a page url in compare mode between entryStateVersion version and revisionDiffVersion version.
-     *
-     * @param entryStateVersion
-     * @param revisionDiffVersion
-     * @param operationMode
-     * @param params
-     * @return
-     * @throws JahiaException
-     */
-    public String composeRevDifferenceUrl(int entryStateVersion,
-                                          final int revisionDiffVersion, final String operationMode,
-                                          final String params) throws JahiaException {
-        String entryStateString = String.valueOf(entryStateVersion);
-        if (entryStateVersion == 1){
-            entryStateString = "a";
-        } else if (entryStateVersion == 2){
-            entryStateString = "s";
-        }
-        return composeRevDifferenceUrl(entryStateString,revisionDiffVersion, operationMode, params);
-    }
-
-    protected String composeRevDifferenceUrl(String entryStateVersionOrState,
-                                             final int revisionDiffVersion, final String operationMode,
-                                             final String params) throws JahiaException {
-        final StringBuffer theUrl = new StringBuffer();
-        theUrl.append(this.getJahiaCoreHttpPath());
-
-        theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
-        theUrl.append(getSiteURLPart());
-        if (operationMode != null) {
-            theUrl.append(getOpModeURLPart(ParamBean.COMPARE));
-        }
-//        theUrl.append(getCacheModeURLPart(ParamBean.CACHE_OFFONCE));
-
-        if (getContentPage() != null) {
-            theUrl.append(this.getEntryStateURLPart(entryStateVersionOrState));
-            theUrl.append(this.getShowRevisionDiffURLPart(revisionDiffVersion));
-            theUrl.append(getPageURLKeyPart(getContentPage().getID()));
-            theUrl.append(getPageURLPart(getContentPage().getID()));
-        }
-        appendParams(theUrl, params);
-        return encodeURL(theUrl.toString());
-    }
-
 
     public String composeLanguageURL(final String code) throws JahiaException {
         return composeLanguageURL(code, getPageID());
@@ -2130,38 +1622,13 @@ public class ProcessingContext {
         final StringBuffer theUrl = new StringBuffer();
         theUrl.append(getJahiaCoreHttpPath());
         theUrl.append(getEngineURLPart(preserveEngine ? getEngineName() : CORE_ENGINE_NAME));
-        theUrl.append(getSiteURLPart());
-        String paramOpMode = getParameter(OPERATION_MODE_PARAMETER);
-        String opModeToUse = paramOpMode != null ? paramOpMode : getOpMode();
-        theUrl.append(getOpModeURLPart(opModeToUse));
         theUrl.append(appendParam(LANGUAGE_CODE, code));
 
-        final ContentPage contentPage1 = (pid>0?ContentPage.getPage(pid):getContentPage());
-        if (contentPage1 != null) {
-            if (COMPARE.equals(opModeToUse)) {
-                theUrl.append(getEntryStateURLPart(getParameter(ENTRY_STATE_PARAMETER)));
-                theUrl.append(getShowRevisionDiffURLPart(getDiffVersionID()));
-            }
-
-            theUrl.append(getPageURLKeyPart(contentPage1.getID()));
-            theUrl.append(getPageURLPart(contentPage1.getID()));
-        }
         String queryString = this.getQueryString();
         if (queryString != null && queryString.length() > 0) {
             theUrl.append("?").append(queryString);
         }
         return encodeURL(theUrl.toString());
-    }
-
-    // #ifdef LOCK
-    public String composeStealLockURL(final LockKey lockKey)
-            throws JahiaException {
-        return composeLockURL(lockKey, ProcessingContext.STEAL_LOCK);
-    }
-
-    public String composeReleaseLockURL(final LockKey lockKey)
-            throws JahiaException {
-        return composeLockURL(lockKey, ProcessingContext.RELEASE_LOCK);
     }
 
     private String composeLockURL(final LockKey lockKey, String lockAction)
@@ -2189,17 +1656,6 @@ public class ProcessingContext {
         theUrl.append(getJahiaCoreHttpPath());
 
         theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
-        theUrl.append(getSiteURLPart(aSite.getSiteKey()));
-        String paramOpMode = getParameter(OPERATION_MODE_PARAMETER);
-        String opModeToUse = paramOpMode != null ? paramOpMode : getOpMode();
-        theUrl.append(getOpModeURLPart(opModeToUse));
-
-        if (COMPARE.equals(opModeToUse)) {
-            theUrl.append(getEntryStateURLPart(getParameter(ENTRY_STATE_PARAMETER)));
-            theUrl.append(getShowRevisionDiffURLPart(getDiffVersionID()));
-        }
-        theUrl.append(getPageURLKeyPart(aSite.getHomePageID()));
-        theUrl.append(getPageURLPart(aSite.getHomePageID()));
         return encodeURL(theUrl.toString());
     }
 
@@ -2263,39 +1719,6 @@ public class ProcessingContext {
             // reset the anchorID
             this.anchor = null;
         }
-    }
-
-    // -------------------------------------------------------------------------
-
-    /**
-     * Set the active anchor, that is the field id
-     *
-     * @param val the anchor
-     */
-    public void setAnchor(final String val) {
-        this.anchor = val;
-    }
-
-    // -------------------------------------------------------------------------
-
-    /**
-     */
-    public String getAnchor() {
-        return this.anchor;
-    }
-
-    // -------------------------------------------------------------------------
-    // @author NK
-
-    /**
-     * Returns a String containing the full content generated by Jahia so far. Please note that calling this before all processing if
-     * finished will returns incomplete content.
-     *
-     * @return a String containing the generated content.
-     * @throws IOException if there was an error during output of content.
-     */
-    public String getGeneratedOutput() throws IOException {
-        return generatedOutput;
     }
 
     /**
@@ -2365,177 +1788,6 @@ public class ProcessingContext {
     // MJ 21 Mar. 2001 : replaced URL params with context PathInfo elements
     protected String getEngineURLPart(final String theEngineName) {
         return condAppendURL(ENGINE_NAME_PARAMETER, theEngineName);
-    }
-
-    // -------------------------------------------------------------------------
-    // NK 17 Avr. 2001 :
-    public String getSiteURLPart(final String val) {
-        if (isForceAppendSiteKey() || settings().isSiteIDInURL()
-                || (!isSiteResolvedByServername() && (getDefaultSite() != null && !val.equals(getDefaultSite().getSiteKey())))) {
-            return condAppendURL(SITE_KEY_PARAMETER, val);
-        }
-        return "";
-    }
-
-    // -------------------------------------------------------------------------
-    // NK 17 Avr. 2001 :
-    protected String getSiteURLPart() {
-        return getSiteURLPart(getSite().getSiteKey());
-    }
-
-    // -------------------------------------------------------------------------
-    // FH 21 Jan. 2001 : Original implementation
-    // MJ 21 Mar. 2001 : replaced URL params with context PathInfo elements
-    public String getPageURLPart(final int id) {
-        return getPageURLPart(id, false);
-    }
-
-    // -------------------------------------------------------------------------
-    // FH 21 Jan. 2001 : Original implementation
-    // MJ 21 Mar. 2001 : replaced URL params with context PathInfo elements
-    public String getPageURLPart(final int id, final boolean forceRender) {
-        String pageURLPart = "";
-        try {
-            if (id > 0) {
-                pageURLPart = getPageURLPart(ContentPage.getPage(id), forceRender);
-            }
-        } catch (JahiaException e) {
-            logger.error("Error while setting page URL ID for page " + id,
-                    e);
-        }
-        return pageURLPart;
-    }
-
-    protected String getPageURLPart(final ContentPage aContentPage,
-                                    final boolean forceRender) {
-        boolean mustRender = true;
-        try {
-            if (aContentPage
-                    .getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME) != null) {
-                mustRender = false;
-            }
-        } catch (JahiaException je) {
-            logger.error(
-                    "Error while testing existing of page URL key for page "
-                            + aContentPage, je);
-        }
-
-        return !mustRender && !forceRender ? "" : condAppendURL(
-                PAGE_ID_PARAMETER, Integer.toString(aContentPage.getID()));
-    }
-
-    public String getPageURLKeyPart(final int id) {
-        String pageURLKeysPart = "";
-        try {
-            if (id > 0) {
-                pageURLKeysPart = getPageURLKeyPart(ContentPage.getPage(id));
-            }
-        } catch (JahiaException e) {
-            logger.error("Error while testing existing of page URL key for page " + id,
-                    e);
-        }
-        return pageURLKeysPart;
-    }
-
-    protected String getPageURLKeyPart(final ContentPage curContentPage) {
-        // first we must find all parent pages and their URL keys.
-        final StringBuffer pageURLKeysPartBuf = new StringBuffer();
-        final LinkedList<String> pageURLKeyList = new LinkedList<String>();
-        ContentPage curParentPage = null;
-        boolean triedToSetPageURLKeyOfCurrentPage = false;
-        try {
-            final Iterator<ContentPage> pagePathEnum = curContentPage.getContentPagePath(this);
-            while (pagePathEnum.hasNext()) {
-                curParentPage = (ContentPage) pagePathEnum
-                        .next();
-                if (curParentPage.getID() == curContentPage.getID()) {
-                    triedToSetPageURLKeyOfCurrentPage = true;
-                }
-                final PageProperty urlKeyProp = curParentPage
-                        .getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-                if (urlKeyProp != null) {
-                    pageURLKeyList.add(urlKeyProp.getValue());
-                }
-            }
-        } catch (JahiaException je) {
-            logger.error("Error while testing existing of page URL key for page " + curParentPage,
-                    je);
-            // at least set the current page URL key, otherwise even the page-ID will not be set
-            if (!triedToSetPageURLKeyOfCurrentPage) {
-                try {
-                    final PageProperty urlKeyProp = curContentPage
-                            .getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-                    if (urlKeyProp != null) {
-                        pageURLKeyList.add(urlKeyProp.getValue());
-                    }
-                } catch (JahiaException e) {
-                    logger.error("Error while testing existing of page URL key for page " + curContentPage,
-                            je);
-                }
-            }
-        }
-        if (!pageURLKeyList.isEmpty()) {
-            for (String curURLKey : pageURLKeyList) {
-                pageURLKeysPartBuf.append("/");
-                pageURLKeysPartBuf.append(curURLKey);
-            }
-        }
-        return pageURLKeysPartBuf.toString();
-    }
-
-    // -------------------------------------------------------------------------
-    // FH 21 Jan. 2001 : Original implementation
-    // MJ 21 Mar. 2001 : replaced URL params with context PathInfo elements
-    protected String getOpModeURLPart(final String mode) {
-        return condAppendURL(OPERATION_MODE_PARAMETER, mode);
-
-    }
-
-    // -------------------------------------------------------------------------
-    // SH 12 Oct. 2001 : Original implementation
-    protected String getCacheModeURLPart(final String mode) {
-        return condAppendURL(CACHE_MODE_PARAMETER, mode);
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * @param status "s" for staging, "a" for active
-     */
-    protected String getEntryStateURLPart(final String status) {
-        return condAppendURL(ProcessingContext.ENTRY_STATE_PARAMETER, status);
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * by default show revision difference with the staging first else with the active version
-     */
-    protected String getShowRevisionDiffURLPart() {
-        return getShowRevisionDiffURLPart(2);
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * by default show revision difference. If the versionID == 0 -> show diff with staging ( active if not exists )
-     *
-     * @param versionID
-     */
-    protected String getShowRevisionDiffURLPart(final int versionID) {
-        final String value;
-        if (versionID == 2) {
-            value = condAppendURL(
-                    ProcessingContext.SHOW_REVISION_DIFF_PARAMETER, "s");
-        } else if (versionID == 1) {
-            value = condAppendURL(
-                    ProcessingContext.SHOW_REVISION_DIFF_PARAMETER, "a");
-        } else {
-            value = condAppendURL(
-                    ProcessingContext.SHOW_REVISION_DIFF_PARAMETER, String
-                    .valueOf(versionID));
-        }
-        return value;
     }
 
     // -------------------------------------------------------------------------
@@ -2644,15 +1896,6 @@ public class ProcessingContext {
         String operationMode = null;
         if (withOperationMode) {
             final SessionState session = this.getSessionState();
-            if (session.getAttribute(OPERATION_MODE_PARAMETER) != null) {
-                if (session.getAttribute(OPERATION_MODE_PARAMETER) instanceof String) {
-                    String oldOpMode = (String) session
-                            .getAttribute(OPERATION_MODE_PARAMETER);
-                    operationMode = oldOpMode;
-                }
-            } else {
-                operationMode = this.getOperationMode();
-            }
         }
 
         return getSiteURL(theSite, pageID, withSessionID, operationMode, languageCode, forceServerNameInURL);
@@ -2733,17 +1976,8 @@ public class ProcessingContext {
             newSiteURL.append(theSite.getSiteKey());
         }
 
-        if (operationMode != null) {
-            newSiteURL.append(getOpModeURLPart(operationMode));
-        }
-
         if (languageCode != null) {
             newSiteURL.append(appendParam(LANGUAGE_CODE, languageCode));
-        }
-
-        if (pageID != -1) {
-            newSiteURL.append(getPageURLKeyPart(pageID));
-            newSiteURL.append(getPageURLPart(pageID));
         }
 
         if (withSessionID) {
@@ -2760,29 +1994,6 @@ public class ProcessingContext {
     }
 
     /**
-     * @return a date which is the expiration date at which the page cache will expire. If null, the page cache will never expire on a basis
-     *         of time (but may be flush upon content changes or other events).
-     */
-    public Date getCacheExpirationDate() {
-        if (cacheExpirationDate != null)
-            return cacheExpirationDate;
-        else if (delayFromNow > -1) {
-            return new Date(System.currentTimeMillis() + delayFromNow);
-        }
-        return null;
-    }
-
-    /**
-     * Sets the current page's cache expiration date.
-     *
-     * @param aCacheExpirationDate a date which is the expiration date at which the page cache will expire. If set to null or never set, the page cache
-     *                             will never expire on a basis of time (but may be flush upon content changes or other events).
-     */
-    final public void setCacheExpirationDate(Date aCacheExpirationDate) {
-        this.cacheExpirationDate = aCacheExpirationDate;
-    }
-
-    /**
      * Sets the current page's cache expiration delay, starting from the current locale time.
      *
      * @param aDelayFromNow an long value specifying the delay in milliseconds from now for the expiration of the current page's cache.
@@ -2796,213 +2007,6 @@ public class ProcessingContext {
      */
     final public long getCacheExpirationDelay() {
         return delayFromNow;
-    }
-
-    protected void processActivationAction() throws JahiaException {
-        // read validate as parameter
-        final String validate = getParameter(VALIDATE_PARAMETER);
-        if (validate != null) {
-            if (validate.equals("on")) {
-                if ((getContentPage() != null) && (getTheUser() != null)) {
-                    logger.debug("Validating page");
-                    final Map<String, Integer> languageStates = getContentPage()
-                            .getLanguagesStates(true);
-                    final Set<String> languageCodes = languageStates.keySet();
-                    REGISTRY.getJahiaVersionService().activateStagedPage(
-                            getContentPage().getID(),
-                            getTheUser(),
-                            this,
-                            new StateModificationContext(new ContentPageKey(
-                                    getContentPage().getID()), languageCodes,
-                                    false));
-                } else {
-                    logger.debug("Can't validate page, user or page not found");
-                }
-            }
-        }
-    }
-
-    protected void resolveCacheStatus() {
-    }
-
-    protected void resolveJahiaPage() throws JahiaException {
-        if (getContentPage() != null) {
-            setThePage(getContentPage().getPage(getEntryLoadRequest(),
-                    getOperationMode(), getUser()));
-        }
-    }
-
-    public void checkPageAccess() throws JahiaException {
-        if (getContentPage() != null) {
-            checkPageAccess(getContentPage().getID());
-        }
-    }
-
-    private void checkPageAccess(final int pageID) throws JahiaException {
-        if (settings().isReadOnlyMode()
-                && CORE_ENGINE_NAME.equals(this.getEngine())
-                && !NORMAL.equals(getOpMode()))
-            throw new JahiaInvalidModeException();
-
-        if (getContentPage() != null) {
-            int pageType = getContentPage().getPageType(getEntryLoadRequest());
-            if (pageType > -1 && pageType != ContentPage.TYPE_DIRECT) {
-                logger.warn("Trying to display non-direct page ID " + pageID);
-                throw new JahiaPageNotFoundException(pageID);
-            }
-
-            final int deleteVersionID = getContentPage().getDeleteVersionID();
-            if (deleteVersionID != -1) {
-                // page has been recently deleted, let's check if we can
-                // display it or not.
-                if (NORMAL.equals(getOpMode())) {
-                    // this is the case of try to access a deleted page in NORMAL
-                    // mode which is not allowed.
-                    throw new JahiaPageNotFoundException(pageID);
-
-                } else if (CORE_ENGINE_NAME.equals(this.getEngine())
-                        && EDIT.equals(getOpMode())
-                        && (!getContentPage().hasStagingEntries() /* || getContentPage().isMarkedForDelete() */)) {
-                    // try to access a deleted page in EDIT mode is not allowed.
-                    throw new JahiaPageNotFoundException(pageID);
-
-                } else if ((COMPARE.equals(getOpMode()) || (PREVIEW.equals(getOpMode())))
-                        && (!getContentPage().checkWriteAccess(getTheUser()))) {
-                    // we can view a deleted page in compare and preview mode
-                    // only if we can do edition operations on the page.
-                    throw new JahiaPageNotFoundException(pageID);
-                }
-            }
-
-            if (!org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects()) {
-                if (getContentPage().isMarkedForDelete()) {
-                    if (getContentPage().getActiveVersionID() <= 0) {
-                        changePage(getSite().getHomePageID());
-                    }
-                }
-
-            } else {
-                if (CORE_ENGINE_NAME.equals(getEngine()) && EDIT.equals(getOpMode()) &&
-                        !getEntryLoadRequest().isWithMarkedForDeletion()) {
-                    // try to access a marked for delete in EDIT mode is not allowed.
-                    setEntryLoadRequest(new EntryLoadRequest(
-                            EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
-                            getLocales(), true));
-                    // reset substitute entry load request
-                    resetSubstituteEntryLoadRequest();
-                }
-            }
-
-            // if the page is not found, throw the associated exception
-            if (NORMAL.equals(getOpMode())
-                    && !getContentPage().hasActiveEntries()
-                    && deleteVersionID == -1) {
-
-                setOperationMode(EDIT);
-                setEntryLoadRequest(new EntryLoadRequest(
-                        EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
-                        getLocales(), org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects()));
-                // reset substitute entry load request
-                resetSubstituteEntryLoadRequest();
-                if (!getEngine().equals(Login_Engine.ENGINE_NAME)) {
-                    if (JahiaUserManagerService.isGuest(getUser())) {
-                        throw new JahiaUnauthorizedException();
-                    } else {
-                        throw new JahiaForbiddenAccessException();
-                    }
-                }
-            }
-        }
-
-        if ((getContentPage() == null)
-                || ((getOpMode().equals(NORMAL) || getOpMode().equals(COMPARE))
-                && getEntryLoadRequest().isCurrent() && !getContentPage().hasActiveEntries())
-                || ((getOpMode().equals(NORMAL) || getOpMode().equals(COMPARE))
-                && getEntryLoadRequest().isCurrent() && getContentPage().getTitle(getEntryLoadRequest()) == null)) {
-            throw new JahiaPageNotFoundException(pageID);
-        }
-        // Ensure if the requested page is a page of the current site
-        if (getContentPage().getJahiaID() != getSiteID()) {
-            setContentPage(getSite().getHomeContentPage());
-        }
-        if (contentPage != null && getPage() == null
-                && !getEngine().equals(Login_Engine.ENGINE_NAME)) {
-            throw new JahiaForbiddenAccessException();
-        }
-        // last requested page
-        Integer lrpID = (Integer) getSessionState().getAttribute(
-                SESSION_LAST_REQUESTED_PAGE_ID);
-        if (lrpID == null) {
-            lrpID = new Integer(-1);
-        }
-        setNewPageRequest(lrpID.intValue() != getPageID());
-        setLastRequestedPageID(lrpID.intValue());
-    }
-
-    public void checkLocales() throws JahiaException {
-        if (getOpMode().equals(NORMAL) && getContentPage() != null
-                && !getContentPage().hasEntries(ContentPage.ACTIVE_PAGE_INFOS,
-                getLocale().toString())) {
-            final List<Locale> siteLanguages = getSite()
-                    .getLanguagesAsLocales();
-            boolean skip = getSite().isMixLanguagesActive();
-            for (int i = 0, siteLanguagesSize = siteLanguages.size(); i < siteLanguagesSize && !skip; i++) {
-                final Locale locale = siteLanguages.get(i);
-                if (getContentPage().hasEntries(ContentPage.ACTIVE_PAGE_INFOS,
-                        locale.toString())) {
-                    changeLanguage(locale);
-                    skip = true;
-                }
-            }
-        }
-    }
-
-    protected void resolveDiffVersionID(String verInfo) {
-        // read difference version id
-        verInfo = getParameter(ProcessingContext.SHOW_REVISION_DIFF_PARAMETER);
-        if (verInfo != null) {
-            if ("s".equals(verInfo)) {
-                setDiffVersionID(2); // staging
-            } else if ("a".equals(verInfo)) {
-                setDiffVersionID(1); // active
-            } else {
-                try {
-                    int ver = Integer.parseInt(verInfo);
-                    setDiffVersionID(ver);
-                } catch (NumberFormatException nfe) {
-                    logger.debug("Diff VersionID format exception", nfe);
-                }
-            }
-        }
-    }
-
-    protected String resolveEntryState() throws JahiaException {
-        // read version info as parameter
-        final String verInfo = getParameter(ENTRY_STATE_PARAMETER);
-        if (verInfo != null) {
-            if ("s".equals(verInfo)) {
-                setEntryLoadRequest(new EntryLoadRequest(
-                        EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
-                        getLocales(), true));
-            } else if ("a".equals(verInfo)) {
-                setEntryLoadRequest(new EntryLoadRequest(
-                        EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, getLocales()));
-            } else {
-                try {
-                    final int ver = Integer.parseInt(verInfo);
-                    setEntryLoadRequest(new EntryLoadRequest(
-                            EntryLoadRequest.VERSIONED_WORKFLOW_STATE, ver,
-                            getLocales()));
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Using entry load request specified : "
-                                + getEntryLoadRequest());
-                    }
-                } catch (NumberFormatException nfe) {
-                    logger.debug("VersionID format exception", nfe);
-                }
-            }
-        }
-        return verInfo;
     }
 
     protected String processLockAction() {
@@ -3092,109 +2096,6 @@ public class ProcessingContext {
         }
         setUILocale(locale);
         getSessionState().setAttribute(SESSION_UI_LOCALE, getUILocale());        
-    }
-
-    public boolean canEditCurrentPage() {
-        if (getCanEdit() == null) {
-            // JahiaBaseACL cpAcl = contentPage.getACL();
-            if (getContentPage() == null) {
-                return true;
-            }
-            setCanEdit(Boolean.valueOf((getContentPage().checkWriteAccess(getTheUser(), true) ||
-                                        getContentPage().checkAdminAccess(getTheUser(), true) ) &&
-                                        getUser().isPermitted(new PermissionIdentity("edit-mode", "actions", getSiteKey()))));
-        }
-
-        return getCanEdit().booleanValue();
-    }
-
-    protected void resolveOpMode(final SessionState aSessionState)
-            throws JahiaInitializationException,
-            JahiaSessionExpirationException {
-        // Define the requested Operation
-        String paramOpMode = getParameter(OPERATION_MODE_PARAMETER);
-        if (paramOpMode != null) {
-            if (NORMAL.equals(paramOpMode))
-                setOpMode(NORMAL);
-            else if (COMPARE.equals(paramOpMode))
-                setOpMode(canEditCurrentPage() ? COMPARE : NORMAL);
-            else if (EDIT.equals(paramOpMode))
-                setOpMode(canEditCurrentPage() ? EDIT : NORMAL);
-            else if (PREVIEW.equals(paramOpMode)) {
-                setOpMode((canEditCurrentPage())
-                        ? PREVIEW : NORMAL);
-            } else if (DEBUG.equals(paramOpMode))
-                setOpMode(contentPage.checkAdminAccess(theUser) ? DEBUG
-                        : NORMAL);
-        }
-
-        if (NORMAL.equals(getOpMode()) && getContentPage() != null
-                && !getContentPage().hasActiveEntries() && canEditCurrentPage()) {
-            try {
-                final int deleteVersionID = getContentPage()
-                        .getDeleteVersionID();
-                if (deleteVersionID == -1) {
-                    // switch to edit mode because no active version available
-                    setOpMode(EDIT);
-                }
-            } catch (JahiaException je) {
-                logger.error("Error while trying to test if page was deleted",
-                        je);
-            }
-        }
-
-        // only store mode in session if we are not in administration
-        // servlet.
-        if (!isInAdminMode()) {
-            getSessionState().setAttribute(OPERATION_MODE_PARAMETER,
-                    getOpMode());
-        }
-
-        if ((EDIT.equals(getOpMode())) || (PREVIEW.equals(getOpMode()))
-                || (COMPARE.equals(getOpMode()))) {
-            // we are in an "editing" mode, we expand the session's expiration time
-            // we first save the previous inactive interval, that we will restore on logout
-            if (getSessionState().getAttribute("previousInactiveInterval") == null) {
-                int previousInactiveInterval = getSessionState()
-                        .getMaxInactiveInterval();
-                getSessionState().setAttribute("previousInactiveInterval",
-                        new Integer(previousInactiveInterval));
-                getSessionState().setMaxInactiveInterval(
-                        settings().getEditModeSessionTimeout());
-            }
-        }
-
-    }
-
-    protected int resolvePageID() throws JahiaPageNotFoundException {
-        int pageID = -1;
-        if (this.getContentPage() == null) {
-            // Get the page information, if no page info is specified, then
-            // load the default page.
-            String pageIDStr = getParameter(PAGE_ID_PARAMETER);
-            if (pageIDStr == null
-                    && (this.getEngine().equals(CORE_ENGINE_NAME)
-                    || this.getEngine().equals("login")
-                    || this.getEngine().equals("export") || XMLSOURCE_ENGINE_NAME
-                    .equals(this.getEngine()))) {
-                pageIDStr = Integer.toString(this.getSite().getHomePageID());
-            }
-
-            if (pageIDStr != null) {
-                // try to get the page reference.
-                try {
-
-                    pageID = Integer.parseInt(pageIDStr);
-                } catch (NumberFormatException nfe) {
-                    logger.debug("Number format exception");
-                    logger.debug("Request URI = " + getRequestURI());
-                    throw new JahiaPageNotFoundException(pageIDStr);
-                }
-            }
-        } else {
-            pageID = this.getPageID();
-        }
-        return pageID;
     }
 
     protected void resolveUser() throws JahiaException {
@@ -3323,15 +2224,13 @@ public class ProcessingContext {
     }
 
     public JahiaPage getThePage() {
-        return thePage;
+        return null;
     }
 
     public void setThePage(final JahiaPage aPage) {
-        this.thePage = aPage;
     }
 
     public void setContentPage(final ContentPage aContentPage) {
-        this.contentPage = aContentPage;
     }
 
     public JahiaUser getTheUser() {
@@ -3352,10 +2251,6 @@ public class ProcessingContext {
 
     public void setSite(final JahiaSite aSite) {
         this.site = aSite;
-    }
-
-    public boolean isSiteHasChanged() {
-        return siteHasChanged;
     }
 
     public void setSiteHasChanged(final boolean aSiteHasChanged) {
@@ -3415,16 +2310,8 @@ public class ProcessingContext {
         this.diffVersionID = aDiffVersionID;
     }
 
-    public void setGeneratedOutput(final String aGeneratedOutput) {
-        this.generatedOutput = aGeneratedOutput;
-    }
-
     public void setContentType(final String aContentType) {
         this.contentType = aContentType;
-    }
-
-    public void setPageURLKeys(final List<String> pageURLKeyList) {
-        this.pageURLKeys = pageURLKeyList;
     }
 
     public Locale getCurrentLocale() {
@@ -3463,23 +2350,8 @@ public class ProcessingContext {
         this.customParameters = parameterMap;
     }
 
-    public Map<String, Object> getAttributeMap() {
-        return attributeMap;
-    }
-
-    public void setAttributeMap(final Map<String, Object> anAttributeMap) {
-        this.attributeMap = anAttributeMap;
-    }
-
     public Object getAttribute(final String attributeName) {
         return attributeMap.get(attributeName);
-    }
-
-    public Object getAttributeSafeNoNullPointer(final String attributeName) {
-        if (attributeMap != null) {
-            return attributeMap.get(attributeName);
-        }
-        return null;
     }
 
     public void setAttribute(final String attributeName,
@@ -3515,92 +2387,12 @@ public class ProcessingContext {
         this.remoteAddr = aRemoteAddr;
     }
 
-    public String getRemoteHost() {
-        return remoteHost;
-    }
-
     public void setRemoteHost(final String aRemoteHost) {
         this.remoteHost = aRemoteHost;
     }
 
-    public String getCharacterEncoding() {
-        return characterEncoding;
-    }
-
     public void setCharacterEncoding(final String aCharacterEncoding) {
         this.characterEncoding = aCharacterEncoding;
-    }
-
-    /**
-     * enable the application of a filter
-     *
-     * @param filterName
-     */
-    public void enableFilter(String filterName) {
-        if (filterName != null) {
-            getFilterStatusMap().put(filterName,
-                    new Integer(FILTER_ENABLED_STATE));
-        }
-    }
-
-    /**
-     * disable the application of a filter
-     *
-     * @param filterName
-     */
-    public void disableFilter(String filterName) {
-        if (filterName != null) {
-            getFilterStatusMap().put(filterName,
-                    new Integer(FILTER_DISABLED_STATE));
-        }
-    }
-
-    /**
-     * Returns true if the given filter is enabled or not
-     *
-     * @param filterName
-     * @return
-     */
-    public boolean isFilterEnabled(String filterName) {
-        if (filterName == null) {
-            return false;
-        }
-        Integer status = (Integer) getFilterStatusMap().get(filterName);
-        return (status != null && status.intValue() == FILTER_ENABLED_STATE);
-    }
-
-    /**
-     * Returns true if the given filter is really disabled. If the state is not defined, return true.
-     *
-     * @param filterName
-     * @return
-     */
-    public boolean isFilterDisabled(String filterName) {
-        if (filterName == null) {
-            return false;
-        }
-        Integer status = (Integer) getFilterStatusMap().get(filterName);
-        return (status != null && status.intValue() == FILTER_DISABLED_STATE);
-    }
-
-    /**
-     * set to undefined state for the given filter
-     *
-     * @param filterName
-     */
-    public void resetFilterStatus(String filterName) {
-        if (filterName != null) {
-            getFilterStatusMap().remove(filterName);
-        }
-    }
-
-    private Map<String, Integer> getFilterStatusMap() {
-        Map<String, Integer> map = filtersStatus.get();
-        if (map == null) {
-            map = new HashMap<String, Integer>();
-            filtersStatus.set(map);
-        }
-        return map;
     }
 
     protected void setData(JahiaSite jSite, JahiaUser jUser) {
@@ -3636,10 +2428,6 @@ public class ProcessingContext {
         this.siteResolvedByKeyOrPageId = siteResolvedByKeyOrPageIdFlag;
     }
 
-    protected boolean isSiteResolvedByServername() {
-        return siteResolvedByServername;
-    }
-
     protected void setSiteResolvedByServername(boolean siteResolvedByServername) {
         this.siteResolvedByServername = siteResolvedByServername;
     }
@@ -3648,14 +2436,6 @@ public class ProcessingContext {
                              boolean forceServerNameInURL) {
 
         return getSiteURL(getSite(), getPageID(), withSessionID, withOperationMode, null, forceServerNameInURL);
-    }
-
-    public boolean isInEditMode() {
-        return getOperationMode().equals(ProcessingContext.EDIT);
-    }
-
-    public boolean isInPreviewMode() {
-        return getOperationMode().equals(ProcessingContext.PREVIEW);
     }
 
     /**

@@ -233,9 +233,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     protected String getPageUrl(int pageId) {
         // TODO consider page URL key
-        return pageId > 0 ? getSiteUrl() + "/"
-                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
-                : getSiteUrl();
+        return getSiteUrl();
     }
 
     protected Locale getPreferredLocale() {
@@ -485,10 +483,6 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         StringBuilder siteUrl = new StringBuilder(32).append(
                 Jahia.getContextPath()).append(Jahia.getServletPath());
         JahiaSite site = getSite();
-        if (site != null && !site.isDefault()) {
-            siteUrl.append("/" + ProcessingContext.SITE_KEY_PARAMETER + "/")
-                    .append(site.getSiteKey());
-        }
         relativeSiteUrl = siteUrl.toString();
     }
 

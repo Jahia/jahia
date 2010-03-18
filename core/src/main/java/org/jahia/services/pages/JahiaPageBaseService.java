@@ -1780,7 +1780,7 @@ public class JahiaPageBaseService extends JahiaPageService {
         JahiaPage page = null;
         if (contentPage != null) {
             ProcessingContext context = Jahia.getThreadParamBean();
-            if (context == null || !context.isFilterDisabled(CoreFilterNames.TIME_BASED_PUBLISHING_FILTER)) {
+            if (context == null) {
                 if (ParamBean.NORMAL.equals(operationMode) && !contentPage.isAvailable()){
                     return null;
                 }

@@ -48,7 +48,6 @@ import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.engines.login.Login_Engine;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.registries.ServicesRegistry;
@@ -191,12 +190,6 @@ public class ErrorServlet extends HttpServlet {
 
         int errorCode = getErrorCode(request);
 
-        try {
-            request.getSession(true).removeAttribute(Login_Engine.REQUEST_URI);
-        } catch (IllegalStateException ex) {
-            // ignore it
-        }
-
         switch (errorCode) {
         case SC_SERVICE_UNAVAILABLE: {
             // special handling for server overloaded exception --> set
@@ -224,16 +217,6 @@ public class ErrorServlet extends HttpServlet {
         }
 
         case SC_FORBIDDEN: {
-            try {
-                request
-                        .getSession()
-                        .setAttribute(
-                                Login_Engine.REQUEST_URI,
-                                request
-                                        .getAttribute("javax.servlet.error.request_uri"));
-            } catch (IllegalStateException e) {
-                // do nothing
-            }
 
             break;
         }

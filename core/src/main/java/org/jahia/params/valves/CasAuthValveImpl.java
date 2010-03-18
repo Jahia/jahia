@@ -127,11 +127,6 @@ public class CasAuthValveImpl extends SsoValve {
         redirectUrl.append(processingContext.getContextPath());
         redirectUrl.append(Jahia.getServletPath());
 
-        if (pid != -1) {
-            String pageURLPart = processingContext.getPageURLPart(pid);
-            logger.debug("pageURLpart = "+pageURLPart );
-            redirectUrl.append(pageURLPart);
-        }
         return redirectUrl.toString();
     }
 

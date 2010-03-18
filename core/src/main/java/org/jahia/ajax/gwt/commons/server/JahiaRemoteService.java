@@ -152,11 +152,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     }
 
     protected String createExtraParam(String mode, int pid, String siteKey) {
-        String urlParams = "?params=/" + ProcessingContext.OPERATION_MODE_PARAMETER + "/" + mode + "/" + ProcessingContext.PAGE_ID_PARAMETER + "/" + pid;
-        if (siteKey != null) {
-            urlParams += "/" + ProcessingContext.SITE_KEY_PARAMETER + "/" + siteKey;
-        }
-        return urlParams;
+        return null;
     }
 
     protected Locale getEngineLocale() {
@@ -381,8 +377,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         if (pidInteger != null) {
             pid = pidInteger;
         }
-        String mode = (String) session.getAttribute(ProcessingContext.OPERATION_MODE_PARAMETER);
-        return retrieveParamBean(pid, mode);
+//        String mode = (String) session.getAttribute(ProcessingContext.OPERATION_MODE_PARAMETER);
+        return retrieveParamBean(pid, null);
     }
 
     /**
@@ -417,7 +413,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             try {
                 // build jParam
                 JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid, site != null ? site.getSiteKey() : null));
+                jParams = pcf.getContext(request, response, context, null);
                 request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
                 return jParams;
             } catch (JahiaSiteNotFoundException e) {

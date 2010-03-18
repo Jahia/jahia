@@ -78,8 +78,6 @@ public class FullScreenDispatcherEngine implements JahiaEngine {
 
         Properties paramPairs = new Properties ();
         // paramPairs.setProperty("fieldid", )
-        paramPairs.setProperty (ProcessingContext.PAGE_ID_PARAMETER,
-                Integer.toString (jParams.getPageID ()));
 
         resultURL = jParams.composeEngineUrl (ENGINE_NAME, paramPairs, EMPTY_STRING);
         return resultURL;

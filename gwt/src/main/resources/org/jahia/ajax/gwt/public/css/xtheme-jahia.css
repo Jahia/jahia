@@ -814,44 +814,44 @@ background-color:#E1E9EE;
 
 
 .hover-top-list-secondary {
-    border-top: 1px solid #999;
+    border-top: 0px solid #999;
 }
 .hover-bottom-list-secondary {
-    border-bottom: 1px solid #999;
+    border-bottom: 0px solid #999;
 }
 .hover-left-list-secondary {
-    border-left: 1px solid #999;
+    border-left: 0px solid #999;
 }
 .hover-right-list-secondary {
-    border-right: 1px solid #999;
+    border-right: 0px solid #999;
 }
 
 
 .hover-top-simple-secondary {
-    border-top: 1px solid #999;
+    border-top: 0px solid #999;
 }
 .hover-bottom-simple-secondary {
-    border-bottom: 1px solid #999;
+    border-bottom: 0px solid #999;
 }
 .hover-left-simple-secondary {
-    border-left: 1px solid #999;
+    border-left: 0px solid #999;
 }
 .hover-right-simple-secondary {
-    border-right: 1px solid #999;
+    border-right: 0px solid #999;
 }
 
 
 .hover-top-area-secondary {
-    border-top: 1px solid #999;
+    border-top: 0px solid #999;
 }
 .hover-bottom-area-secondary {
-    border-bottom: 1px solid #999;
+    border-bottom: 0px solid #999;
 }
 .hover-left-area-secondary {
-    border-left: 1px solid #999;
+    border-left: 0px solid #999;
 }
 .hover-right-area-secondary {
-    border-right: 1px solid #999;
+    border-right: 0px solid #999;
 }
 
 /****************************************************************************/

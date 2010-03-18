@@ -4,6 +4,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +24,7 @@ public interface Action {
 
     public abstract String getName();
 
-    public abstract JCRNodeWrapper getNewNode();
-
-    public abstract void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                                   Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
+    public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
+                                           Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
 
 }

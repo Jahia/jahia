@@ -93,15 +93,14 @@ function invert(source, target, urlbase, callbackId, callbackUrl) {
     data["target"] = target;
     data["source"] = source;
     var url = urlbase + source + ".move.do";
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: data,
-        complete: function(result) {
+    $.post(
+        url,
+        data,
+        function(result) {
             replace(callbackId, callbackUrl, '');
         },
-        dataType: 'json'
-    });
+        'json'
+    );
 
 }
 
@@ -109,13 +108,38 @@ function deleteNode(source, urlbase, callbackId, callbackUrl) {
     var data = {};
     data["methodToCall"] = "delete";
     var url = urlbase + source;
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: data,
-        complete: function(result) {
+    $.post(
+        url,
+        data,
+        function(result) {
             replace(callbackId, callbackUrl, '');
         },
-        dataType: 'json'
-    });
+        'json'
+    );
+}
+
+function startWorkflow(source, urlbase, callbackId, callbackUrl) {
+    var data = {};
+    var url = urlbase + source + ".startWorkflow.do";
+    $.post(
+        url,
+        data,
+        function(result) {
+            replace(callbackId, callbackUrl, '');
+        },
+        'json'
+    );
+}
+
+function executeTask(source, urlbase, callbackId, callbackUrl) {
+    var data = {};
+    var url = urlbase + source + ".executeTask.do";
+    $.post(
+        url,
+        data,
+        function(result) {
+            replace(callbackId, callbackUrl, '');
+        },
+        'json'
+    );
 }

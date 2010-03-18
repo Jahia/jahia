@@ -6,5 +6,19 @@
 	<bean name="org.jahia.modules.default.ModuleRegistry" class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
 		<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
 	</bean>
-	
+
+    <bean class="org.jahia.modules.defaultmodule.MoveAction">
+        <property name="name" value="move"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.StartWorkflowAction">
+        <property name="name" value="startWorkflow"/>
+        <property name="workflowService" ref="workflowService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.ExecuteTaskAction">
+        <property name="name" value="executeTask"/>
+        <property name="workflowService" ref="workflowService"/>
+    </bean>
 </beans>

@@ -34,14 +34,14 @@ package org.jahia.modules.formbuilder.actions;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
-import org.jahia.bin.DefaultPostActionResult;
+import org.jahia.bin.ActionResult;
+import org.jahia.bin.DefaultPostAction;
 import org.jahia.bin.Render;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +59,7 @@ import java.util.Map;
 public class ChainAction implements Action, InitializingBean {
     private transient static Logger logger = Logger.getLogger(ChainAction.class);
     private JahiaTemplateManagerService templateService;
+    private DefaultPostAction defaultPostAction;
     public static final String ACTION_NAME = "chain";
     public static final String CHAIN_OF_ACTION = "chainOfAction";
 
@@ -66,53 +67,35 @@ public class ChainAction implements Action, InitializingBean {
         return ACTION_NAME;
     }
 
-    public JCRNodeWrapper getNewNode() {
-        return null;
-    }
-
     public void setTemplateService(JahiaTemplateManagerService templateService) {
         this.templateService = templateService;
     }
 
-    public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                          Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
+    public void setDefaultPostAction(DefaultPostAction defaultPostAction) {
+        this.defaultPostAction = defaultPostAction;
+    }
+
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
+                                  Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
         List<String> chainOfactions = parameters.get(CHAIN_OF_ACTION);
         if (chainOfactions != null) {
             String[] actions = chainOfactions.get(0).split(",");
             Map<String, Action> actionsMap = templateService.getActions();
-            JCRNodeWrapper newNode = null;
+            ActionResult result = null;
             for (String actionToDo : actions) {
-                if (DefaultPostActionResult.ACTION_NAME.equals(actionToDo)) {
-                    Action defaultPostActionResult = new DefaultPostActionResult();
+                if (DefaultPostAction.ACTION_NAME.equals(actionToDo)) {
                     String s = urlResolver.getUrlPathInfo().replace(".chain.do", "/*");
                     URLResolver resolver = new URLResolver(s, urlResolver.getSiteKey());
-                    defaultPostActionResult.doExecute(req, resp, renderContext, resource, parameters, resolver);
-                    newNode = defaultPostActionResult.getNewNode();
+                    result = defaultPostAction.doExecute(req, renderContext, resource, parameters, resolver);
                 } else {
                     Action action = actionsMap.get(actionToDo);
-                    action.doExecute(req, resp, renderContext, resource, parameters, urlResolver);
-                    if (action.getNewNode() != null) {
-                        newNode = action.getNewNode();
-                    }
+                    result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
                 }
             }
-            if (newNode != null) {
-                String url = newNode.getPath();
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                final String requestWith = req.getHeader("x-requested-with");
-                if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
-                        "XMLHttpRequest")) {
-                    try {
-                        Render.serializeNodeToJSON(resp, newNode);
-                    } catch (JSONException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                } else {
-                    Render.performRedirect(url, urlResolver.getPath(), req, resp, parameters);
-                }
-            }
+            return result;
         }
+        return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
     }
 
     /**

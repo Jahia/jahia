@@ -42,18 +42,20 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
-import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.tools.files.FileUpload;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.json.JSONObject;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -63,25 +65,31 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 11 mars 2010
  */
-public class DefaultPostActionResult implements Action {
-    private JCRNodeWrapper newNode;
+public class DefaultPostAction implements Action {
     public static final String ACTION_NAME = "default";
 
-    public DefaultPostActionResult() {
+    private MetricsLoggingService loggingService;
+
+    public DefaultPostAction() {
     }
 
-    public JCRNodeWrapper getNewNode() {
-        return newNode;
+    public MetricsLoggingService getLoggingService() {
+        return loggingService;
+    }
+
+    public void setLoggingService(MetricsLoggingService loggingService) {
+        this.loggingService = loggingService;
     }
 
     public String getName() {
         return ACTION_NAME;
     }
 
-    public void doExecute(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource,
-                          Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
                                                                                           urlResolver.getLocale());
+        JCRNodeWrapper newNode = null;
         String[] subPaths = urlResolver.getPath().split("/");
         String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
@@ -104,8 +112,8 @@ public class DefaultPostActionResult implements Action {
                 nodeType = (String) ((List) parameters.get(Render.NODE_TYPE)).get(0);
             }
             if (StringUtils.isBlank(nodeType)) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
-                return;
+//                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST,null,null);
             }
             String nodeName = null;
             if (parameters.containsKey(Render.NODE_NAME)) {
@@ -176,6 +184,20 @@ public class DefaultPostActionResult implements Action {
                     0)).length() > 0) {
                 newNode.checkin();
             }
+        }
+
+        String sessionID = "";
+        HttpSession httpSession = req.getSession(false);
+        if (httpSession != null) {
+            sessionID = httpSession.getId();
+        }
+        loggingService.logContentEvent(renderContext.getUser().getName(), req
+                .getRemoteAddr(), sessionID, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
+
+        if (newNode != null) {
+            return new ActionResult(HttpServletResponse.SC_CREATED, newNode.getPath(), Render.serializeNodeToJSON(newNode));
+        } else {
+            return null;
         }
     }
 }

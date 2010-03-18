@@ -37,6 +37,7 @@ import groovy.lang.Binding;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
+import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.params.ParamBean;
@@ -52,6 +53,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
+import org.json.JSONObject;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -84,10 +86,6 @@ public class MailAction implements Action {
         return name;
     }
 
-    public JCRNodeWrapper getNewNode() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
     }
@@ -96,8 +94,8 @@ public class MailAction implements Action {
         this.userManagerService = userManagerService;
     }
 
-    public void doExecute(HttpServletRequest req, HttpServletResponse resp, final RenderContext renderContext,
-                          final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
+                                  final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         if (!mailService.isEnabled()) {
             logger.info("Mail service is disabled. Skip sending e-mail notification for form action");
         }
@@ -169,5 +167,6 @@ public class MailAction implements Action {
             
             logger.info("Form data is sent by e-mail");
         }
+        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 }

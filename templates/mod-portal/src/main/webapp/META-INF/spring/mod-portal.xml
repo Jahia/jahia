@@ -6,14 +6,6 @@
         <property name="key" value="portal"/>
         <property name="displayName" value="My Portal"/>
     </bean>
-    <bean class="org.jahia.modules.portal.MoveAction">
-        <property name="name" value="move"/>
-        <property name="contentManager" ref="ContentManagerHelper"/>
-    </bean>
-    <bean class="org.jahia.modules.portal.DeleteAction">
-        <property name="name" value="delete"/>
-        <property name="contentManager" ref="ContentManagerHelper"/>
-    </bean>
     <bean class="org.jahia.modules.portal.CloneAction">
         <property name="name" value="clone"/>
         <property name="contentManager" ref="ContentManagerHelper"/>

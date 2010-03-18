@@ -14,26 +14,28 @@
         </property>
     </bean>
 
+
+    <bean name="abstractRender" class="org.jahia.bin.Render">
+        <property name="loggingService" ref="loggingService"/>
+        <property name="templateService" ref="JahiaTemplateManagerService"/>
+        <property name="defaultPostAction" >
+            <bean class="org.jahia.bin.DefaultPostAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/render/**">
-                    <bean name="org.jahia.bin.Render" class="org.jahia.bin.Render">
-                        <property name="loggingService" ref="loggingService"/>
-                        <property name="templateService" ref="JahiaTemplateManagerService"/>
-                    </bean>
+                    <bean name="org.jahia.bin.Render" parent="abstractRender" />
                 </entry>
                 <entry key="/contribute/**">
-                    <bean name="org.jahia.bin.Edit" class="org.jahia.bin.Contribute">
-                        <property name="loggingService" ref="loggingService"/>
-                        <property name="templateService" ref="JahiaTemplateManagerService"/>
-                    </bean>
+                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute"/>
                 </entry>
                 <entry key="/edit/**">
-                    <bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit">
-                        <property name="loggingService" ref="loggingService"/>
-                        <property name="templateService" ref="JahiaTemplateManagerService"/>
-                    </bean>
+                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit"/>
                 </entry>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find"/>
@@ -57,4 +59,5 @@
             </map>
         </property>
     </bean>
+
 </beans>

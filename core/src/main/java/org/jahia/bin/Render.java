@@ -31,7 +31,6 @@
  */
 package org.jahia.bin;
 
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -71,8 +70,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -108,6 +105,7 @@ public class Render extends HttpServlet implements Controller,
 
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
+    private Action defaultPostAction;
 
     static {
         reservedParameters = new HashSet<String>();
@@ -124,6 +122,7 @@ public class Render extends HttpServlet implements Controller,
     }
 
     private transient ServletConfig servletConfig;
+
 
     /**
      * Returns the time the <code>HttpServletRequest</code> object was last modified, in milliseconds since midnight January 1, 1970 GMT. If
@@ -237,7 +236,7 @@ public class Render extends HttpServlet implements Controller,
         if (req.getHeader("accept").contains("application/json")
                 && requestWith != null && requestWith.equals("XMLHttpRequest")) {
             try {
-                serializeNodeToJSON(resp, node);
+                serializeNodeToJSON(node).write(resp.getWriter());
             } catch (JSONException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -255,7 +254,7 @@ public class Render extends HttpServlet implements Controller,
                 new JSONObject(req.getParameterMap()).toString());
     }
 
-    public static void serializeNodeToJSON(HttpServletResponse resp,
+    public static JSONObject serializeNodeToJSON(
             JCRNodeWrapper node) throws RepositoryException, IOException,
             JSONException {
         final PropertyIterator stringMap = node.getProperties();
@@ -278,7 +277,7 @@ public class Render extends HttpServlet implements Controller,
             }
         }
         JSONObject nodeJSON = new JSONObject(map);
-        nodeJSON.write(resp.getWriter());
+        return nodeJSON;
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp,
@@ -310,8 +309,10 @@ public class Render extends HttpServlet implements Controller,
             performRedirect("",urlResolver.getPath(),req, resp, parameters);
             return;
         }
+        Action action;
+        Resource resource = null;
         if (urlResolver.getPath().endsWith(".do")) {
-            Resource resource = urlResolver.getResource(getVersionDate(req));
+            resource = urlResolver.getResource(getVersionDate(req));
             renderContext.setMainResource(resource);
             renderContext.setSite(Jahia.getThreadParamBean().getSite());
             renderContext.setSiteNode(JCRSessionFactory.getInstance()
@@ -321,41 +322,34 @@ public class Render extends HttpServlet implements Controller,
                                     + Jahia.getThreadParamBean().getSite()
                                             .getSiteKey()));
 
-            Action action = templateService.getActions().get(
+            action = templateService.getActions().get(
                     resource.getResolvedTemplate());
-            if (action == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
-            } else {
-                action.doExecute(req, resp, renderContext, resource,parameters,urlResolver);
-            }
-            return;
+        } else {
+            action = defaultPostAction;
         }
-        JCRNodeWrapper newNode;
-        Action defaultPostActionResult = new DefaultPostActionResult();
-        defaultPostActionResult.doExecute(req, resp, renderContext, null, parameters, urlResolver);
-        newNode = defaultPostActionResult.getNewNode();
-        if (newNode != null) {
-            String url = newNode.getPath();
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            final String requestWith = req.getHeader("x-requested-with");
-            if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
-                    "XMLHttpRequest")) {
-                try {
-                    serializeNodeToJSON(resp, newNode);
-                } catch (JSONException e) {
-                    logger.error(e.getMessage(), e);
+        if (action == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        } else {
+            ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+            if (result != null) {
+                if (result.getResultCode() < 300) {
+                    resp.setStatus(result.getResultCode());
+                    final String requestWith = req.getHeader("x-requested-with");
+                    if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
+                            "XMLHttpRequest") && result.getJson() != null) {
+                        try {
+                            result.getJson().write(resp.getWriter());
+                        } catch (JSONException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    } else {
+                        performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters);
+                    }
+                } else {
+                    resp.sendError(result.getResultCode());
                 }
-            } else {
-                performRedirect(url, urlResolver.getPath(), req, resp, parameters);
             }
         }
-        String sessionID = "";
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession != null) {
-            sessionID = httpSession.getId();
-        }
-        loggingService.logContentEvent(renderContext.getUser().getName(), req
-                .getRemoteAddr(), sessionID, urlResolver.getPath(), (String) ((List) parameters.get(NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
     }
 
     private Map<String, List<String>> toParameterMapOfListOfString(HttpServletRequest req) {
@@ -622,6 +616,10 @@ public class Render extends HttpServlet implements Controller,
 
     public void setTemplateService(JahiaTemplateManagerService templateService) {
         this.templateService = templateService;
+    }
+
+    public void setDefaultPostAction(Action defaultPostActionResult) {
+        this.defaultPostAction = defaultPostActionResult;
     }
 
     public static Set<String> getReservedParameters() {

@@ -4,16 +4,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 
 <template:include templateType="html" template="hidden.header"/>
-<hr/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
 
     <%-- buttons --%>
-    <div style="border:1px solid;">
+    <div class="listEditToolbar">
         <c:if test="${child.locked ne 'true'}">
             <input type="button" value="Edit"
                    onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields()')"/>
@@ -26,16 +26,16 @@
 
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
             <c:if test="${status.index gt 0}">
-                <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="move up"
+                <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="Move up"
                        onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
             </c:if>
             <c:if test="${status.index lt listTotalSize-1}">
-                <input type="button" value="move down"
+                <input type="button" value="Move down"
                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()"/>
             </c:if>
         </c:if>
         <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-            <input type="button" value="delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+            <input type="button" value="Delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
         </c:if>
 
         <workflow:workflowsForNode var="workflows" node="${child}"/>
@@ -57,6 +57,7 @@
     <div id="edit-${child.identifier}">
         <template:module templateType="html" node="${child}"/>
     </div>
+   <hr/>
 </c:forEach>
 <div class="clear"></div>
 <c:if test="${editable and renderContext.editMode}">

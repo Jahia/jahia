@@ -32,15 +32,19 @@ $.editable.addInputType('ajaxupload', {
         form.attr("enctype", "multipart/form-data");
         $("button:submit", form).bind('click', function() {
             //$(".message").show();
+            var target = settings.target;
+            if($.isFunction(settings.target)) {
+                target = settings.target.apply(this,null);
+            }
             $.ajaxFileUpload({
-                url: settings.target,
+                url: target,
                 secureuri:false,
                 fileElementId: 'upload',
                 dataType: 'json',
                 success: function (data, status) {
                     original.editing = false;                    
                     if(settings.callback)
-                    settings.callback(data, status);
+                    settings.callback(data, status,original);
                 },
                 error: function (data, status, e) {
                     alert(e);

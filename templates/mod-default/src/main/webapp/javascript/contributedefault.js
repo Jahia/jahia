@@ -1,5 +1,5 @@
-function initEditFields() {
-    $(".edit").editable(function (value, settings) {
+function initEditFields(id) {
+    $(".edit" + id).editable(function (value, settings) {
         var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id');
         var data = {};
@@ -15,7 +15,7 @@ function initEditFields() {
         tooltip : 'Click to edit'
     });
 
-    $(".ckeditorEdit").editable(function (value, settings) {
+    $(".ckeditorEdit" + id).editable(function (value, settings) {
         var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id');
         var data = {};
@@ -31,7 +31,7 @@ function initEditFields() {
         tooltip : 'Click to edit'
     });
 
-    $(".dateEdit").editable(function (value, settings) {
+    $(".dateEdit" + id).editable(function (value, settings) {
         var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id');
         var data = {};
@@ -47,9 +47,45 @@ function initEditFields() {
         cancel : 'Cancel',
         tooltip : 'Click to edit'
     });
-};
 
-$(document).ready(initEditFields);
+    $(".choicelistEdit" + id).editable(function (value, settings) {
+        var url = $(this).attr('jcr:url');
+        var submitId = $(this).attr('jcr:id').replace("_", ":");
+        var data = {};
+        data[submitId] = value;
+        data['methodToCall'] = 'put';
+        $.post(url, data, null, "json");
+        return eval("values=" + $(this).attr('jcr:options'))[value];
+    }, {
+        type    : 'select',
+        data   : function() {
+            return $(this).attr('jcr:options');
+        },
+        onblur : 'ignore',
+        submit : 'OK',
+        cancel : 'Cancel',
+        tooltip : 'Click to edit'
+    });
+
+    $(".file" + id).editable('', {
+        type : 'ajaxupload',
+        onblur : 'ignore',
+        submit : 'OK',
+        cancel : 'Cancel',
+        tooltip : 'Click to edit',
+        target : function() {
+            return $(this).attr('jcr:url');
+        },
+        callback : function (data, status,original) {
+            var datas = {};
+            datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
+            datas['methodToCall'] = 'put';
+            $.post($(original).attr('jcr:url'), datas, function(result) {
+                $(original).html($('<span>file uploaded click on preview to see the new file</span>'));
+            }, "json");
+        }
+    });
+}
 
 function invert(source, target, urlbase, callbackId, callbackUrl) {
     var data = {};

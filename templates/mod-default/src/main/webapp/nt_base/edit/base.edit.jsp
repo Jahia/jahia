@@ -43,26 +43,8 @@
             <c:choose>
                 <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                     <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
-                        <script>
-                            $(document).ready(function() {
-                                $("#file${currentNode.name}${scriptPropName}").editable('${url.base}${currentNode.path}', {
-                                    type : 'ajaxupload',
-                                    onblur : 'ignore',
-                                    submit : 'OK',
-                                    cancel : 'Cancel',
-                                    tooltip : 'Click to edit',
-                                    callback : function (data, status) {
-                                        var datas = {};
-                                        datas['${propertyDefinition.name}'] = data.uuids[0];
-                                        datas['methodToCall'] = 'put';
-                                        $.post('${url.base}${currentNode.path}', datas, function(result) {
-                                            $("#file${currentNode.name}${scriptPropName}").html($('<span>file uploaded</span>'));
-                                        }, "json");
-                                    }
-                                });
-                            })
-                        </script>
-                        <div id="file${currentNode.name}${scriptPropName}">
+                        <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                             jcr:url="${url.base}${currentNode.path}">
                             <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
                         </div>
                         <template:module node="${prop.node}" template="default" templateType="html"/>
@@ -71,7 +53,8 @@
                 <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                     <c:set var="dateTimePicker"
                            value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-                        <span jcr:id="${propertyDefinition.name}" class="dateEdit"
+                        <span jcr:id="${propertyDefinition.name}" class="dateEdit${currentNode.identifier}"
+                              id="dateEdit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
@@ -81,36 +64,18 @@
                 <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                     <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                               name="${propertyDefinition.name}"/>
-                    <script>
-                        var ${scriptPropName}Map = "{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}";
-                        $(document).ready(function() {
-                            $(".choicelistEdit${currentNode.name}${scriptPropName}").editable(function (value, settings) {
-                                var url = $(this).attr('jcr:url');
-                                var submitId = $(this).attr('jcr:id').replace("_", ":");
-                                var data = {};
-                                data[submitId] = value;
-                                data['methodToCall'] = 'put';
-                                $.post(url, data, null, "json");
-                                return eval("values=" + ${scriptPropName}Map)[value];
-                            }, {
-                                type    : 'select',
-                                data   : ${scriptPropName}Map,
-                                onblur : 'ignore',
-                                submit : 'OK',
-                                cancel : 'Cancel',
-                                tooltip : 'Click to edit'
-                            });
-                        });
-                    </script>
-                        <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.name}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
+                        <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
+                              jcr:url="${url.base}${currentNode.path}"
+                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</span>
                 </c:when>
                 <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                        <span jcr:id="${propertyDefinition.name}" class="ckeditorEdit"
+                        <span jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
+                              id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                 </c:when>
                 <c:otherwise>
-                        <span jcr:id="${propertyDefinition.name}" class="edit"
+                        <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
+                              id="edit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
                 </c:otherwise>
             </c:choose>

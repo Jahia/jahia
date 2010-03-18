@@ -7,8 +7,14 @@
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-
 <template:include templateType="html" template="hidden.header"/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
 
@@ -16,7 +22,7 @@
     <div class="listEditToolbar">
         <c:if test="${child.locked ne 'true'}">
             <input type="button" value="Edit"
-                   onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields()')"/>
+                   onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')"/>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
             <input type="button" value="Locked" disabled="true"/>

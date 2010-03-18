@@ -69,6 +69,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
+        // @todo to be implemented.
         return super.getNode(s);
     }
 

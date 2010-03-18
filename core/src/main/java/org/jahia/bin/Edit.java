@@ -1,5 +1,7 @@
 package org.jahia.bin;
 
+import org.apache.log4j.Logger;
+import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -14,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see Render
  */
 public class Edit extends Render {
-
+    private static Logger logger = Logger.getLogger(Edit.class);
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
@@ -24,5 +26,16 @@ public class Edit extends Render {
 	public static String getEditServletPath() {
 	    // TODO move this into configuration
 	    return "/cms/edit";
+    }
+
+    protected boolean hasAccess(JahiaUser user, String site) {
+        if (user == null) {
+            return false;
+        }
+
+        if (site == null) {
+            logger.error("Site key is null.");
+        }
+        return user.isPermitted(new PermissionIdentity("edit-mode","actions", site));
     }
 }

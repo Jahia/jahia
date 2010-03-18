@@ -21,6 +21,7 @@
    	    </admin>
    	    <actions jcr:primaryType="jnt:permissionGroup">
    		    <edit-mode jcr:primaryType="jnt:permission"/>
+            <contribute-mode jcr:primaryType="jnt:permission"/>   
    		    <import jcr:primaryType="jnt:permission"/> 	    
    	    </actions>   	    
    	    <managers jcr:primaryType="jnt:permissionGroup">

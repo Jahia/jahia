@@ -127,11 +127,11 @@ public class Render extends HttpServlet implements Controller,
     /**
      * Returns the time the <code>HttpServletRequest</code> object was last modified, in milliseconds since midnight January 1, 1970 GMT. If
      * the time is unknown, this method returns a negative number (the default).
-     * 
+     *
      * <p>
      * Servlets that support HTTP GET requests and can quickly determine their last modification time should override this method. This
      * makes browser and proxy caches work more effectively, reducing the load on server and network resources.
-     * 
+     *
      * @return a <code>long</code> integer specifying the time the <code>HttpServletRequest</code> object was last modified, in milliseconds
      *         since midnight, January 1, 1970 GMT, or -1 if the time is not known
      */
@@ -380,7 +380,7 @@ public class Render extends HttpServlet implements Controller,
             if (isTargetDirectoryDefined) {
                 target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
             }
-            final JCRNodeWrapper targetDirectory = session.getNode(target);            
+            final JCRNodeWrapper targetDirectory = session.getNode(target);
             List<String> uuids = new ArrayList<String>();
             List<String> files = new ArrayList<String>();
 
@@ -483,8 +483,17 @@ public class Render extends HttpServlet implements Controller,
                     ParamBean.SESSION_SITE);
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
-            
-            URLResolver urlResolver = new URLResolver(req.getPathInfo(), paramBean.getSiteKey());            
+
+            // check permission
+            if (!hasAccess(Jahia.getThreadParamBean().getUser(), Jahia.getThreadParamBean().getSiteKey())) {
+                logger.info("User [" + Jahia.getThreadParamBean().getUser().getUserKey() + "] is not authorized to access ["+req.getRequestURI()+"]");
+                final int respStatus = HttpServletResponse.SC_FORBIDDEN;
+                resp.setStatus(respStatus);
+                req.getRequestDispatcher("/errors/error_"+respStatus+".jsp").forward(req, resp);
+                return null;
+            }
+
+            URLResolver urlResolver = new URLResolver(req.getPathInfo(), paramBean.getSiteKey());
 
             req.getSession().setAttribute("workspace",
                     urlResolver.getWorkspace());
@@ -592,6 +601,10 @@ public class Render extends HttpServlet implements Controller,
             }
         }
         return null;
+    }
+
+    protected boolean hasAccess(JahiaUser user, String site) {
+        return true;
     }
 
     public void setServletConfig(ServletConfig servletConfig) {

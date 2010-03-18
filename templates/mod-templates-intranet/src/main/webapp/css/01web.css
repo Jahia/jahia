@@ -1400,3 +1400,8 @@ color:#666;
 
 #bodywrapper .more span {
 }
+#bodywrapper a.returnLink {
+    float: left;
+    background: transparent url( img/returnlink.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}

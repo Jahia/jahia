@@ -165,6 +165,9 @@ public class Render extends HttpServlet implements Controller,
     protected Date getVersionDate(HttpServletRequest req){
         // we assume here that the date has been passed as milliseconds.
         String msString = req.getParameter("v");
+        if (msString == null) {
+            return null;
+        }
         try {
             long msLong = Long.parseLong(msString);
             return new Date(msLong);

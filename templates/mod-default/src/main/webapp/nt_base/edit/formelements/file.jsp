@@ -20,6 +20,12 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
+
+<div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
+    <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+</div>
 <script>
     $(document).ready(function() {
         $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('${url.base}${currentNode.path}', {
@@ -28,20 +34,11 @@
             submit : 'OK',
             cancel : 'Cancel',
             tooltip : 'Click to edit',
-            callback : function (data, status) {
-                uploadedImageCallback(data, status);
+            callback : function (data, status,original) {
+                var id = $(original).attr('jcr:id');
+                $("#"+id).val(data.uuids[0]);
+                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html($('<span>file uploaded</span>'));
             }
         });
-
-        function uploadedImageCallback(data, status) {
-            $("#${propertyDefinition.name}").val(data.uuids[0]);
-            $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html($('<span>file uploaded</span>'));
-        }
     });
 </script>
-<label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-<input type="hidden" name="${propertyDefinition.name}" id="${propertyDefinition.name}"/>
-
-<div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
-    <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
-</div>

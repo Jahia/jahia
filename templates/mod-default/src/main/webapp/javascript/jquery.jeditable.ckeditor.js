@@ -37,8 +37,8 @@
         },
         reset : function(settings, original) {
             var id = get_id(original);
-            editor[id] = CKEDITOR.replace(id, { toolbar : 'User'});
             original.reset();
+            editor[id] = CKEDITOR.replace(id, { toolbar : 'User'});            
         }
     });
 })(jQuery);

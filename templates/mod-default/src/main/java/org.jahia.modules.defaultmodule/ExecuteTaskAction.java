@@ -1,7 +1,9 @@
 package org.jahia.modules.defaultmodule;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +41,14 @@ public class ExecuteTaskAction implements Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        System.out.println("start");
+        String action = parameters.get("action").get(0);
+        String actionId = StringUtils.substringAfter(action, ":");
+        String providerKey = StringUtils.substringBefore(action, ":");
+        String outcome = parameters.get("outcome").get(0);
+
+        workflowService.assignTask(actionId, providerKey, renderContext.getUser());
+        workflowService.completeTask(actionId, providerKey, outcome, new HashMap<String, Object>());
+
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 }

@@ -2,6 +2,7 @@ package org.jahia.taglibs.workflow;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -12,6 +13,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +28,9 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
 
     private JCRNodeWrapper node;
     private String var;
+
+    private String workflowAction;
+
     private int scope = PageContext.PAGE_SCOPE;
 
     @Override
@@ -33,12 +38,20 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
         List<WorkflowDefinition> defs = null;
         try {
             defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser());
+
+            if (workflowAction != null) {
+                defs.retainAll(WorkflowService.getInstance().getWorkflowsForAction(workflowAction));
+            }
         } catch (RepositoryException e) {
-            logger.error("Could not retrieve workflows");
+            logger.error("Could not retrieve workflows",e);
         }
+
+
+
         pageContext.setAttribute(var, defs, scope);
         node = null;
         var = null;
+        workflowAction = null;
         scope = PageContext.PAGE_SCOPE;
         return super.doEndTag();
     }
@@ -49,6 +62,10 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public void setWorkflowAction(String workflowAction) {
+        this.workflowAction = workflowAction;
     }
 
     public void setScope(String scope) {

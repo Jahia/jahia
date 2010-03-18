@@ -40,20 +40,22 @@
                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()"/>
             </c:if>
         </c:if>
-        <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-            <input type="button" value="Delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+        <c:if test="${child.locked ne 'true'}">
+            <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
+                <input type="button" value="Delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+            </c:if>
+
+            <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
+
+            [ <c:forEach items="${workflows}" var="wf" >
+                <input type="button" value="${wf.name}" onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
+            </c:forEach> ]
         </c:if>
-
-        <workflow:workflowsForNode var="workflows" node="${child}"/>
-
-        <c:forEach items="${workflows}" var="wf" >
-            <%--${wf.name}--%>
-        </c:forEach>
 
         <workflow:tasksForNode var="tasks" node="${child}"/>
         <c:forEach items="${tasks}" var="task" >
             [ <c:forEach items="${task.outcomes}" var="outcome" >
-                <input type="button" value="${outcome}" />
+                <input type="button" value="${outcome}" onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
             </c:forEach> ]
         </c:forEach>
 

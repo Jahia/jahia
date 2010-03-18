@@ -118,8 +118,8 @@ function deleteNode(source, urlbase, callbackId, callbackUrl) {
     );
 }
 
-function startWorkflow(source, urlbase, callbackId, callbackUrl) {
-    var data = {};
+function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
+    var data = { process: process };
     var url = urlbase + source + ".startWorkflow.do";
     $.post(
         url,
@@ -131,8 +131,8 @@ function startWorkflow(source, urlbase, callbackId, callbackUrl) {
     );
 }
 
-function executeTask(source, urlbase, callbackId, callbackUrl) {
-    var data = {};
+function executeTask(source, action, outcome, urlbase, callbackId, callbackUrl) {
+    var data = { action:action , outcome:outcome };
     var url = urlbase + source + ".executeTask.do";
     $.post(
         url,

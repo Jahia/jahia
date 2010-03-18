@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <process name="2 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
-    <start name="start" g="41,310,80,40">
+    <start g="33,307,80,40" name="start">
         <transition to="lock"/>
     </start>
-    <custom class="org.jahia.services.workflow.jbpm.custom.Lock" name="lock" g="125,311,80,40">
+    <custom class="org.jahia.services.workflow.jbpm.custom.Lock" g="119,311,80,40" name="lock">
         <transition to="first review"/>
     </custom>
-    <task name="first review" g="243,310,80,40">
+    <task g="243,310,80,40" name="first review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <transition name="accept" to="final review" g="371,290:-18,-17"/>
-        <transition name="reject" to="unlock" g="343,372:133,-16"/>
+        <transition g="-18,-17" name="accept" to="final review"/>
+        <transition g="343,372:133,-16" name="reject" to="unlock"/>
+        <transition name="correction needed" to="unlock for correction" g="-55,-8"/>
     </task>
-    <task name="final review" g="449,265,80,40">
+    <task g="449,265,80,40" name="final review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <transition name="publish" to="publication" g="-23,-19"/>
-        <transition name="reject" to="unlock" g="-30,3"/>
-        <transition name="correction needed" to="first review" g="381,325:-34,3"/>
+        <transition g="-23,-19" name="publish" to="publication"/>
+        <transition g="-30,3" name="reject" to="unlock"/>
+        <transition g="452,220:-34,-15" name="correction needed" to="unlock for correction"/>
     </task>
-    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" name="unlock" g="585,310,80,40">
+    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" g="585,310,80,40" name="unlock">
         <transition to="end"/>
     </custom>
-    <custom class="org.jahia.services.workflow.jbpm.custom.Publish" name="publication" g="582,223,80,40">
+    <custom class="org.jahia.services.workflow.jbpm.custom.Publish" g="582,223,80,40" name="publication">
         <transition to="end"/>
     </custom>
-    <end name="end" g="683,263,80,40"/>
+    <end g="683,263,80,40" name="end"/>
+    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" name="unlock for correction" g="259,203,133,39">
+        <transition to="finish correction"/>
+    </custom>
+    <task name="finish correction" g="104,205,116,39">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+        <transition name="finished" to="lock" g="-45,-11"/>
+    </task>
 </process>

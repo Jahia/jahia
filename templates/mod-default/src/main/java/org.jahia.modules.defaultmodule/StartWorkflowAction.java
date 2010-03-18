@@ -1,5 +1,6 @@
 package org.jahia.modules.defaultmodule;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.render.RenderContext;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,12 @@ public class StartWorkflowAction implements Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        System.out.println("exec");
+        String process = parameters.get("process").get(0);
+        String workflowDefinitionKey = StringUtils.substringAfter(process, ":");
+        String providerKey = StringUtils.substringBefore(process, ":");
+
+        
+        workflowService.startProcess(resource.getNode(), workflowDefinitionKey, providerKey, new HashMap<String, Object>());
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 }

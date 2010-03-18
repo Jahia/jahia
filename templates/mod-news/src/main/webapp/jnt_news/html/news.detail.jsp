@@ -39,7 +39,7 @@
     <div class="newsImg"><img src="${newsImage.node.url}"/></div>
 
     <div class="newsText">
-        <p>${newsDesc.string}</p>
+        ${newsDesc.string}
     </div>
     <a class="returnLink" href="${url.base}${jcr:getParentOfType(currentNode, 'jnt:page').path}.html" title='<fmt:message key="backToPreviousPage"/>'><fmt:message key='backToPreviousPage'/></a>
 

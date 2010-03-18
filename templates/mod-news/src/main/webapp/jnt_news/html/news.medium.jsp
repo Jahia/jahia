@@ -11,10 +11,12 @@
  <jcr:nodeProperty node="${currentNode}" name="desc" var="newsDesc"/>
  <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
 
-<li class="summary">
+<ul class="newsSummary">
+<li>
     <!--start newsListItem -->
-    <div class="summaryImg"><img src="${newsImage.node.url}" alt='<jcr:nodeProperty node="${currentNode}" name="jcr:title"/>'/></div>
-    <h4><a href="${url.current}"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
-    <p class="summaryresume"> ${fn:substring(newsDesc.string,0,120)}</p>
+    <div class="newsSummaryImg"><img src="${newsImage.node.url}" alt='<jcr:nodeProperty node="${currentNode}" name="jcr:title"/>'/></div>
+    <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
+    <p class="newsSummaryresume"> ${fn:substring(newsDesc.string,0,120)}</p>
     <div class="clear"> </div>
 </li>
+</ul>

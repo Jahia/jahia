@@ -24,9 +24,9 @@
 
     <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a>
     </div>
-    <p class="newsResume">
+    <div class="newsResume">
         ${newsDesc.string}
-    </p>
+    </div>
 
     <div class="more"><span><a href="${url.base}${currentNode.path}.detail.html">
         <fmt:message key="label.read"/>: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/>

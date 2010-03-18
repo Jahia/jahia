@@ -3,6 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+
 <template:addResources type="css" resources="news.css"/>
 
 
@@ -10,8 +12,7 @@
 
 
 <div class="newsListItem"><!--start newsListItem -->
-
-    <h4><a href="${url.current}"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
+    <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
     <p class="newsInfo">
         <span class="newsLabelDate"><fmt:message key="label.date"/>:</span>
@@ -23,13 +24,13 @@
     </p>
 
     <c:if test="${not empty newsImage}">
-        <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
+        <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a></div>
     </c:if>
-    <div class="newsResume">
-        ${currentNode.properties.desc.string}
-    </div>
+    <p class="newsResume">
+        ${functions:abbreviate(functions:removeHtmlTags(currentNode.properties.desc.string),400,450,'...')}
+    </p>
 
-    <div class="more"><span><a href="${url.current}"><fmt:message key="label.read"/>: <jcr:nodeProperty
+    <div class="more"><span><a href="${url.base}${currentNode.path}.detail.html"><fmt:message key="label.read"/>: <jcr:nodeProperty
             node="${currentNode}" name="jcr:title"/></a></span></div>
     <div class="clear"></div>
 </div>

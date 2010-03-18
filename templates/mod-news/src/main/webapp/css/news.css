@@ -1,4 +1,63 @@
 /******************************************************************************
+*  newsSummary
+******************************************************************************/
+
+#bodywrapper ul.newsSummary {
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    height: 1%;
+    list-style: none;
+
+}
+#bodywrapper .newsSummary p {
+    margin: 0 ;
+	padding:0;
+}
+#bodywrapper .newsSummary li {
+    margin: 0 0 0.5em 0;
+    padding: 0.5em 0;
+    background-image: none;
+    width: 100%;
+    border-bottom: 1px solid #eaeaea;
+    list-style: none;
+}
+
+#bodywrapper .newsSummary h4 a,
+    #bodywrapper .newsSummary h4 a:link,
+    #bodywrapper .newsSummary h4 a:visited {
+    text-decoration: none;
+}
+
+#bodywrapper .newsSummary h4 a:hover,
+    #bodywrapper .newsSummary h4 a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper .newsSummary h4 {
+    font-size: 1em;
+    line-height: normal;
+    margin: 0;
+    padding: 0;
+    border-bottom: none
+}
+
+#bodywrapper .newsSummary img {
+    float: left;
+    margin-right: 0.5em;
+    padding: 0;
+    border: 1px solid #cccccc;
+    width: 50px;
+    height: 50px;
+}
+
+#bodywrapper .newsSummary .newsSummaryresume {
+    line-height: normal;
+    font-size: 90%;
+    margin: 0;
+    padding: 0;
+}
+/******************************************************************************
 *  News generic
 ******************************************************************************/
 #bodywrapper p.newsInfo {

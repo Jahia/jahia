@@ -14,6 +14,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
@@ -96,11 +97,8 @@ public class VersioningTest extends TestCase {
             int index = 0;
             for (VersionInfo curVersionInfo : liveVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
-                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
-                String versionTitle = versionNode.getPropertyAsString("jcr:title");
-                String title = "title" + index;
-                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
-                assertEquals(title, versionTitle);
+                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                 index++;
             }
             logger.debug("number of version: " + index);
@@ -110,11 +108,8 @@ public class VersioningTest extends TestCase {
             index = 0;
             for (VersionInfo curVersionInfo : editVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
-                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersion(curVersionInfo.getVersion().getName());
-                String versionTitle = versionNode.getPropertyAsString("jcr:title");
-                String title = "title" + index;
-                logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
-                assertEquals(title, versionTitle);
+                JCRNodeWrapper versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                 index++;
             }
             logger.debug("number of version: " + index);
@@ -124,6 +119,30 @@ public class VersioningTest extends TestCase {
             logger.warn("Exception during test", ex);
             throw ex;
         }
+    }
+
+    private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName, JCRNodeWrapper versionNode) throws RepositoryException {
+        String versionTitle = versionNode.getPropertyAsString("jcr:title");
+        String title = "title" + index;
+        logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+        assertEquals(title, versionTitle);
+        // let's check the version node's path
+        assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1", versionNode.getPath());
+        // let's check the node type
+        assertEquals("Versioned node should be viewed as a node type jnt:page", "jnt:page", versionNode.getPrimaryNodeTypeName());
+        // let's check the mixin types
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType("jmix:basemetadata"));
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:hierarchyNode", versionNode.isNodeType("jmix:hierarchyNode"));
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:renderable", versionNode.isNodeType("jmix:renderable"));
+
+        // now let's check the parent
+        JCRNodeWrapper parentVersionNode = versionNode.getParent();
+        assertEquals("Parent node name is not correct", "home", parentVersionNode.getName());
+        assertEquals("Parent node type is not of type jnt:page", "jnt:page", parentVersionNode.getPrimaryNodeTypeName());
+        assertEquals("Parent node path invalid", SITECONTENT_ROOT_NODE + "/home", parentVersionNode.getPath());
+
+        // now let's check the child objects.
+
     }
 
 

@@ -1,11 +1,9 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRVersionService;
-import org.jahia.services.content.NodeIteratorImpl;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
@@ -58,7 +56,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                     String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
                     childEntries.add(getSession().getNodeByUUID(uuid));
                 } else {
-                    // @tofdo implement this correctly
+                    // @todo implement this correctly
                     childEntries.add(getSession().getNodeByUUID(child.getIdentifier()));
                 }
             } catch (ItemNotFoundException e) {
@@ -82,12 +80,12 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        return super.getNodes(nameGlobs);
+        return ChildrenCollectorFilter.collectChildNodes(this, nameGlobs);
     }
 
     @Override
-    public NodeIterator getNodes(String s) throws RepositoryException {
-        return super.getNodes(s);
+    public NodeIterator getNodes(String namePattern) throws RepositoryException {
+        return ChildrenCollectorFilter.collectChildNodes(this, namePattern);
     }
 
     @Override
@@ -114,6 +112,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public List<String> getNodeTypes() throws RepositoryException {
+        // @todo to be implemented.
         return super.getNodeTypes();
     }
 
@@ -144,13 +143,13 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public PropertyIterator getProperties(String s) throws RepositoryException {
-        return super.getProperties(s);
+    public PropertyIterator getProperties(String namePattern) throws RepositoryException {
+        return super.getProperties(namePattern);
     }
 
     @Override
-    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        return super.getProperties(strings);
+    public PropertyIterator getProperties(String[] nameGlobs) throws RepositoryException {
+        return super.getProperties(nameGlobs);
     }
 
     @Override
@@ -184,5 +183,29 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             }
         }
         return result;
+    }
+
+    @Override
+    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        // @todo to be implemented.
+        return super.getAncestor(i);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<JCRItemWrapper> getAncestors() throws RepositoryException {
+        // @todo to be implemented.
+        return super.getAncestors();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
+        // @todo to be implemented.
+        return super.getMixinNodeTypes();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getPath() {
+        // @todo to be implemented.
+        return super.getPath();    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

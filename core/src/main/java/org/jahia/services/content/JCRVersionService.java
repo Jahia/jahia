@@ -58,7 +58,7 @@ public class JCRVersionService extends JahiaService {
         Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
-            JCRNodeWrapper versionNode = node.getFrozenVersion(v    .getName());
+            JCRNodeWrapper versionNode = node.getFrozenVersion(v.getName());
             long versionRevisionNumber = -1;
             if (versionNode.hasProperty("j:revisionNumber")) {
                 versionRevisionNumber = versionNode.getProperty("j:revisionNumber").getLong();

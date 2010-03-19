@@ -7,6 +7,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import java.lang.reflect.Array;
@@ -153,7 +155,82 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return super.getParent();
+        JCRNodeWrapper parentNode = super.getParent();
+
+        if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
+            return new JCRFrozenNodeAsRegular(parentNode, versionDate);
+        } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
+            JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
+            if (closestVersionedChildNode != null) {
+                return new JCRFrozenNodeAsRegular(closestVersionedChildNode.getParent(), versionDate);
+            } else {
+                return null;
+            }
+        } else {
+            // this shouldn't happen, EVER !
+            logger.error("Integrity error, found frozen node with a parent that is not a frozen node nor a version node ! Ignoring it !");
+            return null;
+        }
+    }
+
+    private JCRNodeWrapper findClosestParentVersionedChildNode(Version version) throws RepositoryException {
+        Query childQuery = getSession().getWorkspace().getQueryManager().createQuery("select * from [nt:versionedChild] where [jcr:childVersionHistory] = '" + version.getContainingHistory().getIdentifier() + "'", Query.JCR_SQL2);
+        QueryResult childQueryResult = childQuery.execute();
+        NodeIterator childIterator = childQueryResult.getNodes();
+        long shortestLapse = Long.MAX_VALUE;
+        JCRNodeWrapper closestVersionedChildNode = null;
+        while (childIterator.hasNext()) {
+            JCRNodeWrapper childNode = (JCRNodeWrapper) childIterator.nextNode();
+            JCRNodeWrapper parentFrozenNode = childNode.getParent();
+            if (parentFrozenNode.getParent().isNodeType(Constants.NT_VERSION)) {
+                Version parentVersion = (Version) parentFrozenNode.getParent();
+                long currentLapse = versionDate.getTime() - parentVersion.getCreated().getTime().getTime();
+                if ((currentLapse >= 0) && (currentLapse < shortestLapse)) {
+                    shortestLapse = currentLapse;
+                    closestVersionedChildNode = childNode;
+                }
+            } else if (parentFrozenNode.getParent().isNodeType(Constants.NT_FROZENNODE)) {
+                // we must iterate up until we find the version node.
+                Node currentFrozenNodeParent = parentFrozenNode.getParent();
+                while ((currentFrozenNodeParent != null) && (currentFrozenNodeParent.isNodeType(Constants.NT_FROZENNODE))) {
+                    currentFrozenNodeParent = currentFrozenNodeParent.getParent();
+                }
+                if (currentFrozenNodeParent.isNodeType(Constants.NT_VERSION)) {
+                    Version parentVersion = (Version) currentFrozenNodeParent.getParent();
+                    long currentLapse = versionDate.getTime() - parentVersion.getCreated().getTime().getTime();
+                    if ((currentLapse >= 0) && (currentLapse < shortestLapse)) {
+                        shortestLapse = currentLapse;
+                        closestVersionedChildNode = childNode;
+                    }
+                } else {
+                    // this shouldn't happen, EVER !
+                    logger.error("Integrity error, found frozen node with a parent that is not a frozen node nor a version node ! Ignoring it !");
+                }
+            }
+        }
+        return closestVersionedChildNode;
+    }
+
+    @Override
+    public String getName() {
+
+        try {
+            JCRNodeWrapper parentNode = super.getParent();
+            if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
+                return super.getName();
+            } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
+                JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
+                if (closestVersionedChildNode != null) {
+                    return closestVersionedChildNode.getName();
+                }
+                return null;
+            } else {
+                return null;
+            }
+        } catch (RepositoryException re) {
+            logger.error("Error retrieving node name for versioned frozen node ", re);
+            return null;
+        }
     }
 
     @Override
@@ -210,12 +287,14 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     @Override
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         // @todo to be implemented.
+        logger.warn("Method not (yet) implemented, defaulting to calling superclass method !");
         return super.getAncestor(i);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
         // @todo to be implemented.
+        logger.warn("Method not (yet) implemented, defaulting to calling superclass method !");
         return super.getAncestors();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
@@ -237,7 +316,17 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public String getPath() {
-        // @todo to be implemented.
-        return super.getPath();    //To change body of overridden methods use File | Settings | File Templates.
+        String currentPath = "/" + getName();
+        JCRNodeWrapper currentParent = null;
+        try {
+            currentParent = getParent();
+            while (currentParent != null) {
+                currentPath = currentParent.getName() + currentPath;
+                currentParent = currentParent.getParent();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return currentPath;
     }
 }

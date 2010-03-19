@@ -61,10 +61,10 @@ import org.jahia.utils.LanguageCodeConverters;
 
 /**
  * Class to resolve URLs and URL paths, so that the workspace / locale / node-path information is
- * returned. 
- * 
+ * returned.
+ *
  * There are also convenience methods to directly return the Node or Resource where the URL points to.
- * 
+ *
  * The method also considers vanity URL mappings and resolves them to the mapped nodes, so that
  * the URL resolver will return the info as if no mapping have been used.
  *
@@ -89,8 +89,8 @@ public class URLResolver {
     /**
      * Initializes an instance of this class. This constructor is mainly used when
      * resolving URLs of incoming requests.
-     * 
-     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo()) 
+     *
+     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      * @param siteKey  the site-key resolved via the URL (e.g. via domain to sitekey mapping)
      */
     public URLResolver(String urlPathInfo, String siteKey) {
@@ -106,8 +106,8 @@ public class URLResolver {
     /**
      * Initializes an instance of this class. This constructor is mainly used when
      * trying to find mapping for URLs in outgoing requests.
-     * 
-     * @param url   URL in HTML links of outgoing requests       
+     *
+     * @param url   URL in HTML links of outgoing requests
      * @param request  The current request in order to obtain the context path
      */
     public URLResolver(String url, HttpServletRequest request) {
@@ -134,7 +134,7 @@ public class URLResolver {
         locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
                 : LanguageCodeConverters.languageCodeToLocale(langCode);
         path = "/" + StringUtils.substringAfter(path, "/");
-        
+
         // TODO: this is perhaps a temporary limitation as URL points to special templates
         String lastPart = StringUtils.substringAfterLast(path, "/");
         if (lastPart.length() > 0
@@ -146,11 +146,11 @@ public class URLResolver {
 
     private boolean resolveUrlMapping() {
         boolean mappingResolved = false;
-        String tempPath = null; 
+        String tempPath = null;
         try {
             String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(
-                    getPath(), "/"), DEFAULT_WORKSPACE);            
-            tempPath = StringUtils.substringAfter(getPath(), "/");            
+                    getPath(), "/"), DEFAULT_WORKSPACE);
+            tempPath = StringUtils.substringAfter(getPath(), "/");
             if (getSiteKey() == null) {
                 setSiteKey(StringUtils.substringBetween(getPath(), "/sites/",
                         "/"));
@@ -189,7 +189,7 @@ public class URLResolver {
 
     /**
      * Gets the pathInfo of the given URL (@link javax.servlet.http.HttpServletRequest.getPathInfo())
-     * @return the pathInfo of the given URL 
+     * @return the pathInfo of the given URL
      */
     public String getUrlPathInfo() {
         return urlPathInfo;
@@ -221,7 +221,7 @@ public class URLResolver {
 
     /**
      * Creates a node from the path in the URL.
-     * 
+     *
      * @return The node, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
@@ -235,9 +235,9 @@ public class URLResolver {
      * Creates a resource from the path in the URL.
      * <p/>
      * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
-     * 
+     *
      * Workspace, locale and path are taken from the given resolved URL.
-     * 
+     *
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
@@ -251,11 +251,11 @@ public class URLResolver {
      * Creates a versioned resource from the path in the URL.
      * <p/>
      * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
-     * 
-     * Workspace, locale and path are taken from the given resolved URL. 
-     * 
+     *
+     * Workspace, locale and path are taken from the given resolved URL.
+     *
      * @param versionDate
-     *            The version date to get the resource of a versioned node, or the closest before this date  
+     *            The version date to get the resource of a versioned node, or the closest before this date
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
@@ -271,7 +271,7 @@ public class URLResolver {
      * Creates a node from the specified path.
      * <p/>
      * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
-     * 
+     *
      * @param workspace
      *            The workspace where to get the node
      * @param locale
@@ -322,9 +322,7 @@ public class URLResolver {
                                         .getCurrentUserSession(
                                                 workspace,
                                                 locale,
-                                                LanguageCodeConverters
-                                                        .languageCodeToLocale(site
-                                                                .getDefaultLanguage()));
+                                                null);
 
                         try {
                             node = userSession.getNode(nodePath);
@@ -341,7 +339,7 @@ public class URLResolver {
      * Creates a resource from the specified path.
      * <p/>
      * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
-     * 
+     *
      * @param workspace
      *            The workspace where to get the node
      * @param locale
@@ -349,7 +347,7 @@ public class URLResolver {
      * @param path
      *            The path of the node, in the specified workspace
      * @param versionDate
-     *            The version date to get the resource of a versioned node, or the closest before this date            
+     *            The version date to get the resource of a versioned node, or the closest before this date
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
@@ -461,18 +459,18 @@ public class URLResolver {
     }
 
     /**
-     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity URLs. 
+     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity URLs.
      * @return true if current node can be mapped to vanity URLs, otherwise false
      */
     public boolean isMappable() {
         return mappable;
-    }  
-    
+    }
+
     /**
-     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity 
-     * URLs. If this is the case then also check if there already is a mapping for the current node.  
+     * Checks whether the URL points to a Jahia content object, which can be mapped to vanity
+     * URLs. If this is the case then also check if there already is a mapping for the current node.
      * @return true if mappings exist(ed) for the current node, otherwise false
-     */    
+     */
     public boolean isMapped() {
         boolean mapped = mappable;
         if (mapped) {

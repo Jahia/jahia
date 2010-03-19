@@ -50,12 +50,9 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                         childEntries.add(new JCRFrozenNodeAsRegular((JCRNodeWrapper)closestVersion.getFrozenNode(), versionDate));
                     }
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    // @todo implement this correctly
-                    String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                    childEntries.add(getSession().getNodeByUUID(uuid));
+                    childEntries.add(new JCRFrozenNodeAsRegular((JCRNodeWrapper) child, versionDate));
                 } else {
-                    // @todo implement this correctly
-                    childEntries.add(getSession().getNodeByUUID(child.getIdentifier()));
+                    // skip
                 }
             } catch (ItemNotFoundException e) {
                 // item does not exist in this workspace
@@ -89,8 +86,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                         throw new ItemNotFoundException(relPath);
                     }
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    // @todo implement this correctly
-                    throw new ItemNotFoundException(relPath);
+                    return new JCRFrozenNodeAsRegular(child, versionDate);
                 } else {
                     throw new ItemNotFoundException(relPath);
                 }
@@ -135,12 +131,6 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     public String getPrimaryNodeTypeName() throws RepositoryException {
         String frozenPrimaryNodeType = node.getPropertyAsString(Constants.JCR_FROZENPRIMARYTYPE);
         return frozenPrimaryNodeType;
-    }
-
-    @Override
-    public List<String> getNodeTypes() throws RepositoryException {
-        // @todo to be implemented.
-        return super.getNodeTypes();
     }
 
     @Override

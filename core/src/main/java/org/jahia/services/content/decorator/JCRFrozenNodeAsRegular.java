@@ -9,6 +9,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import javax.jcr.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -196,16 +197,11 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             return result;
         }
         // let's let's check the mixin types;
-        JCRPropertyWrapper property = node.getProperty(Constants.JCR_FROZENMIXINTYPES);
-        if (property != null) {
-            Value[] values = property.getValues();
-            for (Value value : values) {
-                String curMixinTypeName = value.getString();
-                ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(curMixinTypeName);
-                result = mixinNodeType.isNodeType(path);
-                if (result) {
-                    return result;
-                }
+        ExtendedNodeType[] mixins = getMixinNodeTypes();
+        for (ExtendedNodeType mixin : mixins) {
+            result = mixin.isNodeType(path);
+            if (result) {
+                return result;
             }
         }
         return result;
@@ -225,8 +221,18 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
-        // @todo to be implemented.
-        return super.getMixinNodeTypes();    //To change body of overridden methods use File | Settings | File Templates.
+        if (node.hasProperty(Constants.JCR_FROZENMIXINTYPES)) {
+            List<ExtendedNodeType> mixin = new ArrayList<ExtendedNodeType>();
+            JCRPropertyWrapper property = node.getProperty(Constants.JCR_FROZENMIXINTYPES);
+            Value[] values = property.getValues();
+            for (Value value : values) {
+                String curMixinTypeName = value.getString();
+                mixin.add(NodeTypeRegistry.getInstance().getNodeType(curMixinTypeName));
+            }
+            return mixin.toArray(new ExtendedNodeType[mixin.size()]);
+        } else {
+            return new ExtendedNodeType[0];
+        }
     }
 
     @Override

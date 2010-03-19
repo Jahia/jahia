@@ -154,11 +154,24 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             if (closestVersionedChildNode != null) {
                 return new JCRFrozenNodeAsRegular(closestVersionedChildNode.getParent(), versionDate);
             } else {
-                return null;
+                return findRegularParentNode();
             }
         } else {
             // this shouldn't happen, EVER !
             logger.error("Integrity error, found frozen node with a parent that is not a frozen node nor a version node ! Ignoring it !");
+            return null;
+        }
+    }
+
+    private JCRNodeWrapper findRegularParentNode() throws RepositoryException {
+        // This can happen in the case that the parent is not versioned (yet), so we must search in the regular
+        // workspace.
+        String frozenUUID = getProperty(Constants.JCR_FROZENUUID).getString();
+        JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenUUID);
+        if (regularNode != null) {
+            return regularNode.getParent();
+        } else {
+            // this can happen in the case the node was deleted.
             return null;
         }
     }
@@ -212,6 +225,12 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                 JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
                 if (closestVersionedChildNode != null) {
                     return closestVersionedChildNode.getName();
+                } else {
+                    String frozenUUID = getProperty(Constants.JCR_FROZENUUID).getString();
+                    JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenUUID);
+                    if (regularNode != null) {
+                        return regularNode.getName();
+                    }
                 }
                 return null;
             } else {
@@ -306,13 +325,20 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public String getPath() {
-        String currentPath = "/" + getName();
+        String currentPath = getName();
         JCRNodeWrapper currentParent = null;
         try {
             currentParent = getParent();
             while (currentParent != null) {
-                currentPath = currentParent.getName() + currentPath;
-                currentParent = currentParent.getParent();
+                currentPath = currentParent.getName() + "/" + currentPath;
+                try {
+                    currentParent = currentParent.getParent();
+                } catch (ItemNotFoundException infe) {
+                    currentParent = null;
+                }
+            }
+            if ((currentPath != null) && (!currentPath.startsWith("/"))) {
+                currentPath = "/" + currentPath;
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

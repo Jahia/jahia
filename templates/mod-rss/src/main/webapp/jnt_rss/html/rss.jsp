@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="rss.css" />
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="url" var="feedUrl"/>
@@ -13,7 +14,9 @@
 <%-- load the feed using RSSUtil --%>
 <c:set var="syndFeed" value="${rss.feed}"/>
 <c:if test="${not empty title && not empty title.string}">
-	<h3>${fn:escapeXml(title.string)}</h3>
+    <h3 class="titlerss">
+        <img title="" alt="" src="${url.currentModule}/images/rss.png"/> ${fn:escapeXml(title.string)}
+    </h3>
 </c:if>
 <c:if test="${empty syndFeed}">
     <jcr:nodeProperty node="${currentNode}" name="url" var="feedUrl"/>

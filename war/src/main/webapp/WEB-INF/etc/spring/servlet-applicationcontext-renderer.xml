@@ -56,11 +56,13 @@
                         <property name="captchaProducer" ref="captchaProducer"/>
                     </bean>
                 </entry>
+                <!-- 
                 <entry key="/convert">
                     <bean class="org.jahia.bin.DocumentConverter">
                         <property name="converterService" ref="org.jahia.services.transform.DocumentConverterService"/>
                     </bean>
                 </entry>
+                 -->
             </map>
         </property>
     </bean>

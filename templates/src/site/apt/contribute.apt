@@ -1,0 +1,290 @@
+Contribute Mode
+
+* Introduction
+
+  Jahia now provide a contribute mode which allows to create/delete/update content directly in the page.
+ This mode has some restrictions, only some specified lists defined by the power editors are editable in contribute mode.
+ In each list the power editor have restrict the type of content the contributors can create in this list.
+
+  By default when a list is editable and displayed in contribute mode, on each element we append a toolbar allowing to
+ move it up/down in the list (only one step at a time), you can also edit/delete your content, launch a workflow.
+
+  At the bottom of the list you have a button per type of new content you can create on this list.
+
+* Contribution
+
+  Update of existing content is done by cliking on the dit button of the content you want to edit. That will turn the
+ content into an inline editable version of the content, click on any field to edit it. The edition is done filed by field
+ each time you click on the 'Ok' button the field is saved.
+
+  New content are created by filling a standard form (one per type of content). The creation is done when clicking on the
+ 'Create' button.
+
+* Resolution of templates in contribute mode
+
+  For inline edition or new content form the contribute mode use specific templates.
+
+--------------------------------------------
+default/nt_base
+|____html
+| |____base.debug.basic.jsp
+| |____base.debug.tree.jsp
+| |____base.wrapper.fullpage.jsp
+| |____base.debug.compact.jsp
+| |____base.debug.version.jsp
+| |____base.jsp
+| |____base.debug.full.jsp
+|____edit
+| |____base.add.jsp
+| |____base.edit.jsp
+| |____formelements
+| | |____file.jsp
+| | |____datepicker.jsp
+| | |____richtext.jsp
+--------------------------------------------
+
+  The contribute template are found in the edit sub directory, the <<add>> template (<base.add.jsp>) is for new content, the
+ <<edit>> template (<base.edit.jsp>) is for existing content.
+
+* Automatic Generation of inline edition/ new content form
+
+  The system will automatically render inline edition and new content form based on the definition of the content. The field will
+ appear in the order of the definition.
+
+** New content form
+
+   The new content form iterate over the properties in the definition for the specified type of content. For each property
+  a specific rendering is done.
+
+   Simple properties like string or choice list are directly rendered in <base.add.jsp>, complex property like richtext, file, date
+  are rendered using some include file.
+
+   If some type are missing or you want to customize content creation (globally) you can override those templates in your template set.
+
+   This template will generate a regular form, that will be submitted using ajax call to avoid refreshing of all the page.
+
+   We will explain how it is built in the customization section.
+
+** Inline edition
+
+   The automatic inline edition template <base.edit.jsp> will also iterate over all the properties of the definition and will
+  use the jquery jeditable plugin to add inline edition capabilities to each property.
+
+   If some type are missing or you want to customize inline edition (globally) you can override those templates in your template set.
+
+* Customization on a per content basis
+
+   We will show you how to customize your new content form and your edition template for a specific type of node.
+
+   Those examples are base on the <jnt:maincontent> definition.
+
+   Here is the definition :
+
+-------------------------------------
+[jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent
+ - body (string, richtext) i18n
+ - image (weakreference, file[mime='image/*']) i18n
+ - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
+-------------------------------------
+
+   Here is the directory structure for <jnt:maincontent> :
+
+-------------------------------------
+default/jnt_maincontent
+|____html
+| |____mainContent.jsp
+|____edit
+| |____mainContent.add.jsp
+| |____mainContent.edit.jsp
+--------------------------------------
+
+** The <maincontent.add.jsp> template
+
+*** The Form
+
+      The first step is to create the form itself :
+
+--------------------------------------
+<form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}jnt_mainContentForm">
+  <input type="hidden" name="nodeType" value="jnt:mainContent"/>
+    |
+    |
+    |
+  <div class="divButton">
+    <input class="button" type="submit" value="<fmt:message key="label.add.new.content.submit"/>"/>
+    <input class="button" type="reset" value="<fmt:message key="label.add.new.content.reset"/>"/>
+  </div>
+
+  <script>
+    var options${currentNode.name}jnt_mainContentForm = {
+      success: function() {
+        replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
+        $.each(richTextEditors, function(key, value) {value.setData("");});
+      },
+      dataType: "json",
+      resetForm : true
+    };
+    // wait for the DOM to be loaded
+    $(document).ready(function() {
+      // bind 'myForm' and provide a simple callback function
+      $('#${currentNode.identifier}jnt_mainContentForm').ajaxForm(options${currentNode.name}jnt_mainContentForm);
+    });
+  </script>
+</form>
+--------------------------------------
+
+      As always the id of the form must be unique in the page that is why we use here the definition name and the list id or name.
+    The action lead to <${url.base}${currentNode.path}/*> to create a new object, and we define the type of object we want to create
+    in an hidden input name <nodeType>.
+
+      At the end of the form two buttons, one to submit and another one to reset the form.
+
+      We also add a small javascript to handle the submission of the form in ajax and to on success reload the list to display the
+    new content and reset the form also.
+
+*** Edit a simple text
+
+      Example of how to add an input for the property <jcr:title> from the <jnt:maincontent> definition (defined in <mix:title>).
+
+------------------------------------
+<input type="text" name="jcr:title" id="${currentNode.identifier}jnt_mainContentTitle"/>
+------------------------------------
+
+      Here two important things, first the name must match the name of the property (if not an error will be thrown by the server when submitting).
+    Second the id must be unique in the page so once again we use the current node identifier, the definition name and the property name.
+
+*** Edit a rich text
+
+      Example of how to add a rich text editor like CKEDITOR to edit the property <body> of <jnt:maincontent>.
+
+------------------------------------
+<input type="hidden" name="body" id="${currentNode.identifier}jnt_mainContentBody"/>
+<textarea rows="50" cols="40" id="ckeditor${currentNode.identifier}jnt_mainContentBody"></textarea>
+<script>
+  $(document).ready(function() {
+    richTextEditors['${currentNode.identifier}jnt_mainContentBody'] = CKEDITOR.replace("ckeditor${currentNode.identifier}jnt_mainContentBody", { toolbar : 'User'});
+  });
+
+  $("#${currentNode.identifier}jnt_mainContentForm").submit(function() {
+    $("#${currentNode.identifier}jnt_mainContentBody").val(richTextEditors['${currentNode.identifier}jnt_mainContentBody'].getData());
+  });
+</script>
+------------------------------------
+
+      We define an hidden input that will contains the value to be submitted, a textarea that will be masked by CKEDITOR.
+    And a piece of javascript to first mask the textarea with CKEDITOR.
+
+      Another javascript function so that before submit we copy the value of the CKEDITOR to the hidden field.
+
+*** Edit a choice list
+
+      Example of how to define a select drop down list to edit the property <align> of <jnt:maincontent>.
+
+-----------------------------------
+<jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
+<select name="align" id="${currentNode.identifier}jnt_mainContentAlign">
+  <c:forEach items="${options}" var="option">
+    <option value="${option.value.string}">${option.displayName}</option>
+  </c:forEach>
+</select>
+-----------------------------------
+
+      Here we first get the list of options for the property <align> of <jnt:maincontent>, then we iterate other the options
+    to add them in the dropdown.
+
+*** Upload a file in the user directory
+
+      Example of how to define an upload field for the property <image> of <jnt:maincontent>.
+
+-------------------------------------
+<input type="hidden" name="image" id="${currentNode.identifier}jnt_mainContentImage"/>
+
+<div id="file${currentNode.identifier}jnt_mainContentImage">
+  <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $("#file${currentNode.identifier}jnt_mainContentImage").editable('${url.base}${currentNode.path}', {
+      type : 'ajaxupload',
+      onblur : 'ignore',
+      submit : 'OK',
+      cancel : 'Cancel',
+      tooltip : 'Click to edit',
+      callback : function (data, status, original) {
+        $("#${currentNode.identifier}jnt_mainContentImage").val(data.uuids[0]);
+        $("#file${currentNode.identifier}jnt_mainContentImage").html($('<span>file uploaded</span>'));
+      }
+    });
+  });
+</script>
+-------------------------------------
+
+      Here like for the rich text editor we define an hidden input that will contains the reference to the ajax uploaded file.
+
+      The div will be made inline editable when clicking on it the user choose a file, click on <Ok> to upload it, this file
+    will be stored in the user <files> directory. If upload is successfull we store the id of the newly uploaded file in the
+    hidden field.
+
+** The <maincontent.edit.jsp> template
+
+*** The Form
+
+      As we want to use inline editing no global form here. But you can use one if you want, see previous example for
+    doing so, just initialize each field with its current value.
+
+*** Edit a simple text
+
+      Example of how to edit the property <jcr:title> from the <jnt:maincontent> definition (defined in <mix:title>).
+
+------------------------------------
+<h3 class="title edit${currentNode.identifier}" jcr:id="jcr:title" jcr:url="${url.base}${currentNode.path}">
+  <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+------------------------------------
+
+      Here we display  <jcr:tile> property in an H3 html tag. We make this tag editable by applying to it the class <edit${currentNode.identifier}>.
+    If you want to use the provided inline capabilities then this classes are mandatory.
+
+      We also define two custom attributes called <jcr:id> and <jcr:url> that refer to the name of the property to update
+    and the url of the node to update respectively.
+
+     Those attributes are mandatory.
+
+*** Edit a rich text
+
+      Example of how to edit the property <body> of <jnt:maincontent> using CKEDITOR.
+
+------------------------------------
+<span class="ckeditorEdit${currentNode.identifier}" id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
+  jcr:url="${url.base}${currentNode.path}" jcr:id="body">${currentNode.properties.body.string}</span>
+------------------------------------
+
+      Here it works the same as previously, but we need also a javascript id <id="ckeditorEdit${currentNode.identifier}${scriptPropName}">.
+    This id is mandatory also.
+
+*** Edit a choice list
+
+      Example of how to edit a select drop down list for the property <align> of <jnt:maincontent>.
+
+-----------------------------------
+<jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
+<span class="choicelistEdit${currentNode.identifier}" jcr:url="${url.base}${currentNode.path}" jcr:id="align"
+  jcr:options="{<c:forEach items="${options}" varStatus="status" var="option">
+  <c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">
+  Image Alignment${currentNode.properties.align.string}</span>
+-----------------------------------
+
+      Here the new thing is the <jcr:options> attributes that contains the options available for the dropdown list.
+    This attribute is mandatory also for choicelist.
+
+*** Upload a file in the user directory
+
+      Example of how to edit an existing file for the property <image> of <jnt:maincontent>.
+
+-------------------------------------
+<div class="imagefloat${currentNode.properties.align.string} file${currentNode.identifier}" jcr:id="image" jcr:url="${url.base}${currentNode.path}">
+  <img src="${image.node.url}" alt="${image.node.url}"/>
+</div>
+-------------------------------------
+
+      Here we only define a div that when click will handle the upload of the file.

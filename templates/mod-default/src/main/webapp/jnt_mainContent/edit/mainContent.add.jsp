@@ -25,71 +25,68 @@
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
 <div class="maincontent">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="jnt_mainContentForm">
+    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}jnt_mainContentForm">
         <input type="hidden" name="nodeType" value="jnt:mainContent"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-        <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
-        <h3 class="title"><label for="jnt_mainContentTitle">Title</label><input type="text" name="jcr:title"
-                                                                                id="jnt_mainContentTitle"/></h3>
-        <label for="filejnt_mainContentImage">Image</label>
-        <input type="hidden" name="image" id="jnt_mainContentImage"/>
+        <h3 class="title"><label for="${currentNode.identifier}jnt_mainContentTitle">Title</label><input type="text"
+                                                                                                         name="jcr:title"
+                                                                                                         id="${currentNode.identifier}jnt_mainContentTitle"/>
+        </h3>
+        <label for="file${currentNode.identifier}jnt_mainContentImage">Image</label>
+        <input type="hidden" name="image" id="${currentNode.identifier}jnt_mainContentImage"/>
 
-        <div id="filejnt_mainContentImage">
+        <div id="file${currentNode.identifier}jnt_mainContentImage">
             <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
         </div>
         <script>
             $(document).ready(function() {
-                $("#filejnt_mainContentImage").editable('${url.base}${currentNode.path}', {
+                $("#file${currentNode.identifier}jnt_mainContentImage").editable('${url.base}${currentNode.path}', {
                     type : 'ajaxupload',
                     onblur : 'ignore',
                     submit : 'OK',
                     cancel : 'Cancel',
                     tooltip : 'Click to edit',
                     callback : function (data, status, original) {
-                        $("#jnt_mainContentImage").val(data.uuids[0]);
-                        $("#filejnt_mainContentImage").html($('<span>file uploaded</span>'));
+                        $("#${currentNode.identifier}jnt_mainContentImage").val(data.uuids[0]);
+                        $("#file${currentNode.identifier}jnt_mainContentImage").html($('<span>file uploaded</span>'));
                     }
                 });
             });
         </script>
-        <label for="jnt_mainContentAlign">Image Alignment</label>
+        <label for="${currentNode.identifier}jnt_mainContentAlign">Image Alignment</label>
         <jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
         <select name="align"
-                id="jnt_mainContentAlign">
+                id="${currentNode.identifier}jnt_mainContentAlign">
             <c:forEach items="${options}" var="option">
-                <option value="${option.value.string}"
-                        style="background:url(${option.properties.image}) no-repeat top left;padding-left:25px">${option.displayName}</option>
+                <option value="${option.value.string}">${option.displayName}</option>
             </c:forEach>
         </select>
-        <label for="ckeditorjnt_mainContentBody">Body</label>
-        <input type="hidden" name="body" id="jnt_mainContentBody"/>
-        <textarea rows="50" cols="40" id="ckeditorjnt_mainContentBody"></textarea>
+        <label for="ckeditor${currentNode.identifier}jnt_mainContentBody">Body</label>
+        <input type="hidden" name="body" id="${currentNode.identifier}jnt_mainContentBody"/>
+        <textarea rows="50" cols="40" id="ckeditor${currentNode.identifier}jnt_mainContentBody"></textarea>
         <script>
-            var editorjnt_mainContentBody = undefined;
 
             $(document).ready(function() {
-                editorjnt_mainContentBody = CKEDITOR.replace("ckeditorjnt_mainContentBody", { toolbar : 'User'});
+                richTextEditors['${currentNode.identifier}jnt_mainContentBody'] = CKEDITOR.replace("ckeditor${currentNode.identifier}jnt_mainContentBody", { toolbar : 'User'});
             });
 
-            $("#jnt_mainContentForm").submit(function() {
-                $("#jnt_mainContentBody").val(editorjnt_mainContentBody.getData());
+            $("#${currentNode.identifier}jnt_mainContentForm").submit(function() {
+                $("#${currentNode.identifier}jnt_mainContentBody").val(richTextEditors['${currentNode.identifier}jnt_mainContentBody'].getData());
             });
 
-            var optionsjnt_mainContentForm = {
+            var options${currentNode.name}jnt_mainContentForm = {
                 success: function() {
                     replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
-                    if(editorjnt_mainContentBody != undefined) {
-                        editorjnt_mainContentBody.setData("");
-                    }
+                    $.each(richTextEditors, function(key, value) {
+                        value.setData("");
+                    });
                 },
                 dataType: "json",
                 resetForm : true
             };// wait for the DOM to be loaded
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function
-                $('#jnt_mainContentForm').ajaxForm(optionsjnt_mainContentForm);
+                $('#${currentNode.identifier}jnt_mainContentForm').ajaxForm(options${currentNode.name}jnt_mainContentForm);
             });
         </script>
 

@@ -26,6 +26,7 @@ under the License.
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
+            <item name="Contribution Mode" href="./contribute.html"/>
             <item name="Dynamic Module" href="./dynamic_module.html"/>
             <item name="Rendering filters" href="./filter.html"/>
             <item name="Reusable component" href="./reusableComponent.html"/>

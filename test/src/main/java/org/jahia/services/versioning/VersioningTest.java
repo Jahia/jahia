@@ -70,6 +70,9 @@ public class VersioningTest extends TestCase {
             editSession.checkout(stageNode);
             JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
             stagedSubPage.setProperty("jcr:title", "title0");
+
+            JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
+            stagedSubSubPage.setProperty("jcr:title", "subtitle0");
             editSession.save();
 
             // publish it
@@ -82,6 +85,11 @@ public class VersioningTest extends TestCase {
 
                 // each time the node i published, a new version should be created
                 jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
+
+                editSession.checkout(stagedSubSubPage);
+                stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
+                editSession.save();
+                jcrService.publish(stagedSubSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
             }
 
             // now let's do a little system versioning ourselves...
@@ -104,7 +112,7 @@ public class VersioningTest extends TestCase {
             logger.debug("number of version: " + index);
             assertEquals(11, index);
 
-            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stageNode);
+            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stagedSubPage);
             index = 0;
             for (VersionInfo curVersionInfo : editVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
@@ -134,6 +142,11 @@ public class VersioningTest extends TestCase {
         assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType("jmix:basemetadata"));
         assertTrue("Versioned node should be viewed as a mixin node type jmix:hierarchyNode", versionNode.isNodeType("jmix:hierarchyNode"));
         assertTrue("Versioned node should be viewed as a mixin node type jmix:renderable", versionNode.isNodeType("jmix:renderable"));
+
+        // getNode check
+        assertEquals("Versioned node getNode() returns invalid node name", "home_subsubpage1", versionNode.getNode("home_subsubpage1").getName());
+        assertEquals("Versioned node getNode() returns invalid nodetype", "jnt:page", versionNode.getNode("home_subsubpage1").getPrimaryNodeType().getName());
+        assertEquals("Versioned node getNode(..) returns invalid node name", "home", versionNode.getNode("..").getName());
 
         // now let's check the parent
         JCRNodeWrapper parentVersionNode = versionNode.getParent();

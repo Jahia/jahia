@@ -80,12 +80,16 @@
         </fieldset>
     </form>
     <script type="text/javascript">
+        var options${currentNode.name}${scriptTypeName} = {
+            success: function() {
+                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}','');
+            },
+            dataType: "json"
+        };
         // wait for the DOM to be loaded
         $(document).ready(function() {
             // bind 'myForm' and provide a simple callback function
-            $('#${currentNode.name}${scriptTypeName}').ajaxForm(function() {
-                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',''); 
-            });
+            $('#${currentNode.name}${scriptTypeName}').ajaxForm(options${currentNode.name}${scriptTypeName});
         });
     </script>
 </div>

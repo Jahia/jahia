@@ -9,6 +9,7 @@ import org.jahia.services.content.nodetypes.OnConflictAction;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
 import java.util.*;
 
 /**
@@ -90,49 +91,29 @@ public class ConflictResolver {
     private void computeDifferences() throws RepositoryException {
         JCRVersionHistory vh = (JCRVersionHistory) sourceNode.getVersionHistory();
 
-        JCRVersion s = vh.getVersion(sourceNode.getBaseVersion().getName());
-        JCRVersion t = vh.getVersion(targetNode.getBaseVersion().getName());
-
-        JCRVersion base = null;
-
-        List<String> vsh = new ArrayList<String>();
-//        List<String> vth = getLinearHistory(t);
-
-        JCRVersion[] sourcePreds = s.getPredecessors();
-        while (sourcePreds.length == 1) {
-            vsh.add(sourcePreds[0].getName());
-            sourcePreds = sourcePreds[0].getPredecessors();
+        VersionIterator targetHistory = targetNode.getVersionHistory().getAllLinearVersions();
+        List<String> targetHistoryList = new ArrayList<String>();
+        while (targetHistory.hasNext()) {
+            targetHistoryList.add(targetHistory.nextVersion().getName());
         }
-        if (sourcePreds.length > 1) {
-            for (JCRVersion pred : sourcePreds) {
-                vsh.add(pred.getName());
-            }
-        }
-        JCRVersion[] targetPreds = t.getPredecessors();
-        while (base == null) {
-            for (JCRVersion pred : targetPreds) {
-                if (vsh.contains(pred.getName())) {
-                    base = pred;
+
+        JCRVersion sourceVersion = vh.getVersion(sourceNode.getBaseVersion().getName());
+        JCRVersion baseSourceVersion = null;
+        JCRVersion baseTargetVersion = null;
+        while (baseSourceVersion == null) {
+            JCRVersion[] successors = sourceVersion.getSuccessors();
+            for (JCRVersion successor : successors) {
+                if (targetHistoryList.contains(successor.getName())) {
+                    baseSourceVersion = sourceVersion;
+                    baseTargetVersion = successor;
                     break;
                 }
             }
-            if (targetPreds.length == 0) {
-                base = vh.getRootVersion();
-            } else {
-                targetPreds = targetPreds[0].getPredecessors();
-            }
+            sourceVersion = sourceVersion.getLinearPredecessor();
         }
 
-        computeDifferences(base.getFrozenNode());
-    }
-
-    private void computeDifferences(JCRNodeWrapper frozenBase) throws RepositoryException{
-//        JCRNodeWrapper frozenBase = baseVersion.getFrozenNode();
-//        JCRNodeWrapper frozenSource = sourceVersion.getFrozenNode();
-//        JCRNodeWrapper frozenTarget = targetVersion.getFrozenNode();
-
-        List<Diff> sourceDiff = compare(frozenBase, sourceNode);
-        List<Diff> targetDiff = compare(frozenBase, targetNode);
+        List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode);
+        List<Diff> targetDiff = compare(baseTargetVersion.getFrozenNode(), targetNode);
 
         sourceDiff.removeAll(targetDiff);
 
@@ -320,11 +301,9 @@ public class ConflictResolver {
                 if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
                     String uuid = vh.getRootVersion().getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                    session.getNodeByUUID(uuid);
                     childEntries.put(uuid, child.getName());
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
                     String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                    session.getNodeByUUID(uuid);
                     childEntries.put(uuid, child.getName());
                 } else {
                     session.getNodeByUUID(child.getIdentifier());
@@ -402,9 +381,9 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
-                return true;
-            }
+//            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
+//                return true;
+//            }
             targetNode.getRealNode().getSession().save();
             JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
             return true;
@@ -449,9 +428,9 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
-                return true;
-            }
+//            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
+//                return true;
+//            }
             targetNode.getNode(oldName).remove();
             return true;
         }

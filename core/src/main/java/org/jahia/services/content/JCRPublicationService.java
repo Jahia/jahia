@@ -350,8 +350,9 @@ public class JCRPublicationService extends JahiaService {
 
     private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         try {
-            node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            String path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
             doClone(node, null, sourceSession, destinationSession);
+            destinationSession.getWorkspace().getVersionManager().checkin(path);
         } catch (ItemNotFoundException e) {
             cloneParents(node.getParent(), sourceSession, destinationSession);
         }
@@ -384,7 +385,7 @@ public class JCRPublicationService extends JahiaService {
             }
         }
         for (JCRNodeWrapper node : modified) {
-            System.out.println("-- setting last published : "+node.getPath());
+            logger.debug("Setting last published : "+node.getPath());
 //            if (!sourceSession.getWorkspace().getName().equals("live")) {
                 if (!node.isCheckedOut()) {
                     node.checkout();
@@ -479,6 +480,7 @@ public class JCRPublicationService extends JahiaService {
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
                 doClone(node, prunedSourcePath, sourceSession, destinationSession);
+                destinationVersionManager.checkin(node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
             }
         }
     }
@@ -492,8 +494,8 @@ public class JCRPublicationService extends JahiaService {
 
         doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
 
-//        VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
-//        destinationVersionManager.checkin(sourceNode.getParent().getPath());
+        VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
+        destinationVersionManager.checkin(sourceNode.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
     }
 
     void doClone(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
@@ -587,7 +589,7 @@ public class JCRPublicationService extends JahiaService {
             JahiaAccessManager.setDeniedPathes(null);
         }
         JCRNodeWrapper destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
-        if (pruneNodes != null) {
+        if (pruneNodes != null && sourceNode.getNodes().hasNext()) {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
@@ -604,6 +606,9 @@ public class JCRPublicationService extends JahiaService {
                     }
                 }
             }
+            destinationNode.checkin();
+        } else {
+            destinationNode.checkpoint();
         }
         logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , dest node v=" + destinationNode.getBaseVersion().getName() +

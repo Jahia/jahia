@@ -1,3 +1,5 @@
+var richTextEditors = {};
+
 function initEditFields(id) {
     $(".edit" + id).editable(function (value, settings) {
         var url = $(this).attr('jcr:url');

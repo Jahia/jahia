@@ -21,7 +21,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-
+<template:addResources type="javascript" resources="jquery.form.js"/>
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
 <div class="maincontent">
@@ -74,16 +74,28 @@
             });
 
             $("#jnt_mainContentForm").submit(function() {
-                if (editorjnt_mainContentBody !== undefined) {
-                    $("#jnt_mainContentBody").val(editorjnt_mainContentBody.getData());
-                    CKEDITOR.remove(editorjnt_mainContentBody);
-                    editorjnt_mainContentBody = undefined;
-                }
+                $("#jnt_mainContentBody").val(editorjnt_mainContentBody.getData());
+            });
+
+            var optionsjnt_mainContentForm = {
+                success: function() {
+                    replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
+                    if(editorjnt_mainContentBody != undefined) {
+                        editorjnt_mainContentBody.setData("");
+                    }
+                },
+                dataType: "json",
+                resetForm : true
+            };// wait for the DOM to be loaded
+            $(document).ready(function() {
+                // bind 'myForm' and provide a simple callback function
+                $('#jnt_mainContentForm').ajaxForm(optionsjnt_mainContentForm);
             });
         </script>
 
         <div class="divButton">
-            <input class="button" type="submit" value="Submit"/>
+            <input class="button" type="submit" value="<fmt:message key="label.add.new.content.submit"/>"/>
+            <input class="button" type="reset" value="<fmt:message key="label.add.new.content.reset"/>"/>
         </div>
     </form>
 </div>

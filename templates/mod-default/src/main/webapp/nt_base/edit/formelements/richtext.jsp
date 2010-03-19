@@ -24,14 +24,12 @@
        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"></textarea>
 <script>
-    var editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = undefined;
-
     $(document).ready(function() {
-        editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = CKEDITOR.replace("ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
+        richTextEditors['${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}'] = CKEDITOR.replace("ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
     });
 
     $("#${currentNode.name}${scriptTypeName}").submit(function() {
-        $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}.getData());
+        $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(richTextEditors['${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}'].getData());
 
     });
 </script>

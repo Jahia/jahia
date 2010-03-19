@@ -1,6 +1,5 @@
 package org.jahia.services.content.decorator;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
@@ -10,11 +9,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import javax.jcr.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * JCR Frozen node that acts as a regular node, to be able to render them using our regular templating mechanism.
@@ -68,9 +63,37 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
-        // @todo to be implemented.
-        return super.getNode(s);
+    public JCRNodeWrapper getNode(String relPath) throws PathNotFoundException, RepositoryException {
+        if (relPath.startsWith("/")) {
+            throw new IllegalArgumentException("relPath in not a relative path "+relPath);
+        }
+        StringTokenizer st = new StringTokenizer(relPath,"/");
+        JCRNodeWrapper current = this;
+        while (st.hasMoreTokens()) {
+            String next = st.nextToken();
+            if (next.equals("..")) {
+                current = current.getParent();
+            } else if (next.equals(".")) {
+
+            } else {
+                JCRNodeWrapper child = super.getNode(next);
+                if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
+                    VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
+                    Version closestVersion = JCRVersionService.findClosestVersion(vh, versionDate);
+                    if (closestVersion != null) {
+                        current = new JCRFrozenNodeAsRegular((JCRNodeWrapper) closestVersion.getFrozenNode(), versionDate);
+                    } else {
+                        throw new ItemNotFoundException(relPath);
+                    }
+                } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
+                    // @todo implement this correctly
+                    throw new ItemNotFoundException(relPath);
+                } else {
+                    throw new ItemNotFoundException(relPath);
+                }
+            }
+        }
+        return current;
     }
 
     @Override
@@ -154,8 +177,9 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-        return super.getProperty(s);
+    public JCRPropertyWrapper getProperty(String
+        path) throws PathNotFoundException, RepositoryException {
+        return super.getProperty(path);
     }
 
     @Override
@@ -164,9 +188,10 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public boolean isNodeType(String s) throws RepositoryException {
+    public boolean isNodeType(String
+        path) throws RepositoryException {
         ExtendedNodeType primaryNodeType = getPrimaryNodeType();
-        boolean result = primaryNodeType.isNodeType(s);
+        boolean result = primaryNodeType.isNodeType(path);
         if (result) {
             return result;
         }
@@ -177,7 +202,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             for (Value value : values) {
                 String curMixinTypeName = value.getString();
                 ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(curMixinTypeName);
-                result = mixinNodeType.isNodeType(s);
+                result = mixinNodeType.isNodeType(path);
                 if (result) {
                     return result;
                 }

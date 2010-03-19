@@ -44,7 +44,6 @@ import org.artofsolving.jodconverter.StandardConversionTask;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.artofsolving.jodconverter.document.DocumentFormat;
 import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.artofsolving.jodconverter.office.OfficeManager;
 import org.artofsolving.jodconverter.office.OfficeTask;
@@ -190,20 +189,16 @@ public class DocumentConverterService {
         if (!isEnabled()) {
             return;
         }
+        if (officeManager == null) {
+            logger.warn("OfficeManager instance is not initialized initialized correctly. Disabling service.");
+            setEnabled(false);
+            return;
+        }
+
+        logger.info("Starting OpenOffice manager...");
+
         try {
-            if (officeManager == null) {
-                officeManager = new DefaultOfficeManagerConfiguration().setOfficeHome(
-                        "c:\\Program Files (x86)\\OpenOffice.org 3").buildOfficeManager();
-                // throw new
-                // OfficeException("OfficeManager instance is not initialized");
-            }
-
-            logger.info("Starting OpenOffice manager...");
-
             officeManager.start();
-
-            // convert(new File("c:\\Downloads\\Manfrotto-20070629.doc"),
-            // new File("c:\\Downloads\\Manfrotto-20070629.pdf"));
 
             logger.info("...OpenOffice manager started.");
         } catch (Exception e) {
@@ -219,7 +214,9 @@ public class DocumentConverterService {
     public void stop() throws OfficeException {
         if (isEnabled() && officeManager != null) {
             try {
+                logger.info("Stopping OfficeManager...");
                 officeManager.stop();
+                logger.info("...OfficeManager successfully stopped.");
             } catch (Exception e) {
                 logger.warn("Error stopping OfficeManager. Cause: " + e.getMessage(), e);
             }

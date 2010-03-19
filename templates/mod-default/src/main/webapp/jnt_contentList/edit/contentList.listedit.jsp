@@ -49,16 +49,16 @@
 
             <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
 
-            [ <c:forEach items="${workflows}" var="wf" >
-                <input type="button" value="${wf.name}" onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
-            </c:forEach> ]
+            <c:forEach items="${workflows}" var="wf" >
+                <input class="workflow" type="button" value="${wf.name}" onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
+            </c:forEach>
         </c:if>
 
         <workflow:tasksForNode var="tasks" node="${child}"/>
         <c:forEach items="${tasks}" var="task" >
-            [ <c:forEach items="${task.outcomes}" var="outcome" >
-                <input type="button" value="${outcome}" onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
-            </c:forEach> ]
+           <c:forEach items="${task.outcomes}" var="outcome" >
+                <input class="workflowaction" type="button" value="${outcome}" onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
+            </c:forEach>
         </c:forEach>
 
         <c:set var="previousChild" value="${child}"/>
@@ -78,9 +78,9 @@
 <c:if test="${empty param.ajaxcall}">
     <%-- include add nodes forms --%>
     <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
-    <p>
-        <fmt:message key="label.add.new.content" />
-    </p>
+    <h3 class="titleaddnewcontent">
+        <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content" />
+    </h3>
     <script type="text/javascript">
         <c:forEach items="${types}" var="type" varStatus="status">
             animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');

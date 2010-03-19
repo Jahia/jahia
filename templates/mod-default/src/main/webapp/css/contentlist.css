@@ -20,7 +20,33 @@
 }
 #bodywrapper .listEditToolbar input:hover {
 	background-image:none;
-    background-color:#cccccc;
+    background-color:#999;
     color: #333;
 	cursor: pointer
+}
+#bodywrapper .listEditToolbar input.workflow {
+    background-color :#33cc00;
+	color: #333;
+}
+#bodywrapper .listEditToolbar input.workflow:hover {
+    background-color:#339900;
+    color: #fff;
+}
+#bodywrapper .listEditToolbar input.workflowaction {
+    background-color :#ff9900;
+	color: #333;
+}
+#bodywrapper .listEditToolbar input.workflowaction:hover {
+    background-color:#ff6600;
+    color: #fff;
+}
+
+#bodywrapper h3.titleaddnewcontent {
+	color:#333333;
+	font-size:1.8em;
+	padding:0 0 15px 0;
+}
+#bodywrapper h3.titleaddnewcontent img {
+	vertical-align: text-bottom;
+	margin-right:5px
 }

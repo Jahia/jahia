@@ -62,7 +62,9 @@ public class TemplateHelper {
             r.pushWrapper(templateWrapper);
 
             JahiaSite site = node.resolveSite();
-
+            if (site == null) {
+                site = ctx.getSite();
+            }
             if (site != null) {
                 ctx.setSite(site);
                 ctx.setContentPage(site.getHomeContentPage());

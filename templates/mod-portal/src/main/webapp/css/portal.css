@@ -46,6 +46,8 @@
 #columns .widget .widget-head h3 {
     padding: 0 5px;
     float: left;
+	margin:0;
+	font-size:1em
 }
 #columns .widget .widget-content {
     /*background: #333 url(img/widget-content-bg.png) repeat-x;*/

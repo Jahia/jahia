@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
@@ -15,6 +16,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="animatedcollapse.js"/>
 <template:include templateType="html" template="hidden.header"/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
 
@@ -76,30 +78,26 @@
 <c:if test="${empty param.ajaxcall}">
     <%-- include add nodes forms --%>
     <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
-
+    <p>
+        <fmt:message key="label.add.new.content" />
+    </p>
     <script type="text/javascript">
-        function hideAdd(id, index) {
         <c:forEach items="${types}" var="type" varStatus="status">
-            if (index == ${status.index}) {
-                document.getElementById('add' + id + '-${status.index}').style.display = 'block';
-            } else {
-                document.getElementById('add' + id + '-${status.index}').style.display = 'none';
-            }
+            animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
         </c:forEach>
-        }
+        animatedcollapse.init();
     </script>
     <c:if test="${types != null}">
-        <a name="add" id="add"></a>Add :
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <a href="#add"
-               onclick="hideAdd('${currentNode.identifier}',${status.index})">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</a>
+            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
         </c:forEach>
 
         <c:forEach items="${types}" var="type" varStatus="status">
             <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
             <template:module node="${currentNode}" templateType="edit" template="add">
                 <template:param name="resourceNodeType" value="${type.string}"/>
+                <template:param name="currentListURL" value="${url.current}?ajaxcall=true"/>
             </template:module>
             </div>
         </c:forEach>

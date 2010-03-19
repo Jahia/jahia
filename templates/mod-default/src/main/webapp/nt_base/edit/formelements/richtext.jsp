@@ -20,7 +20,8 @@
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
 <label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-<input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
+<input type="hidden" name="${propertyDefinition.name}"
+       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"></textarea>
 <script>
     var editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = undefined;
@@ -30,10 +31,7 @@
     });
 
     $("#${currentNode.name}${scriptTypeName}").submit(function() {
-        if (editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} !== undefined) {
-            $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}.getData());
-            CKEDITOR.remove(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')});
-            editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')} = undefined;
-        }
+        $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(editor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}.getData());
+
     });
 </script>

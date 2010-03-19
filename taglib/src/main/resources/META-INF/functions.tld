@@ -17,7 +17,7 @@
      		"Now is the time for all good men" into "Now is the time for..."
 		</description>
 		<name>abbreviate</name>
-		<function-class>org.apache.commons.lang.WordUtils</function-class>
+		<function-class>org.jahia.taglibs.functions.Functions</function-class>
 		<function-signature>java.lang.String abbreviate(java.lang.String, int, int,java.lang.String)</function-signature>
 		<example>
 			${functions:abbreviate(field.value, 100,120,'...')}

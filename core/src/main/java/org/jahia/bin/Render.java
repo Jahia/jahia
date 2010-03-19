@@ -423,20 +423,29 @@ public class Render extends HttpServlet implements Controller,
         return false;
     }
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp,
-            RenderContext renderContext, URLResolver urlResolver)
-            throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(urlResolver.getWorkspace(),
-                        urlResolver.getLocale());
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
+                            URLResolver urlResolver) throws RepositoryException, IOException {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
+                                                                                          urlResolver.getLocale());
         Node node = session.getNode(urlResolver.getPath());
         Node parent = node.getParent();
         node.remove();
         session.save();
         String url = parent.getPath();
         session.save();
-        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        performRedirect(url, urlResolver.getPath(), req, resp,toParameterMapOfListOfString(req));
+        final String requestWith = req.getHeader("x-requested-with");
+        if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
+                "XMLHttpRequest")) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            try {
+                new JSONObject().write(resp.getWriter());
+            } catch (JSONException e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            performRedirect(url, urlResolver.getPath(), req, resp, toParameterMapOfListOfString(req));
+        }
     }
 
     public static void performRedirect(String url, String path,

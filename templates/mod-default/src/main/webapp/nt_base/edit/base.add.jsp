@@ -18,6 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="960.css"/>
 <template:addResources type="css" resources="formcontribute.css"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
@@ -78,4 +79,13 @@
             </div>
         </fieldset>
     </form>
+    <script type="text/javascript">
+        // wait for the DOM to be loaded
+        $(document).ready(function() {
+            // bind 'myForm' and provide a simple callback function
+            $('#${currentNode.name}${scriptTypeName}').ajaxForm(function() {
+                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',''); 
+            });
+        });
+    </script>
 </div>

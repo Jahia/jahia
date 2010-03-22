@@ -13,11 +13,13 @@
 		<h2><c:out value="${title.string}"/></h2>
 	</c:if>
     <c:forEach items="${currentNode.nodes}" var="menuItem">
-        <template:module node="${menuItem}" template="default" editable="true"/>
+        <template:module node="${menuItem}" editable="true">
+        	<template:param name="subNodesTemplate" value="navMenuItem"/>
+        </template:module>
     </c:forEach>
     <c:if test="${renderContext.editMode}">
     	<div class="addelements">
-        	<span>Add your menu items here</span>
+        	<span>???Add your menu items here???</span>
         	<template:module path="*"/>
         </div>
     </c:if>

@@ -619,6 +619,12 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
@@ -898,17 +904,6 @@
 
         <!-- End of Shindig dependencies -->
         
-        <dependency>
-			<groupId>atg.taglib.json</groupId>
-			<artifactId>json-taglib</artifactId>
-			<version>0.4.1</version>
-		</dependency>
-
-        <dependency>
-            <groupId>com.google.code.kaptcha</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>2.3</version>
-        </dependency>
     </dependencies>
 
     <build>

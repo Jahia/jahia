@@ -12,6 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 
@@ -52,18 +53,20 @@
 </div><!--stop boxdocspace -->
 <div class='clear'></div></div><!--stop grid_12-->
 <%--list all users write write access to current node--%>
-<jcr:sql var="users" sql="select "
 
 <div class='grid_4'><!--start grid_4-->
     <h4 class="boxdocspace-title">Users</h4>
 
     <ul class="docspacelist docspacelistusers">
+        <c:forEach items="${currentNode.aclEntries}" var="acls">
         <li>
             <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" />
-            <a class="floatleft" href="#" >le nom du user</a>
+            <a class="floatleft" href="#" ><c:out value="${acls.key}"/></a>
             <div class='clear'></div>
         </li>
+        </c:forEach>
     </ul>
+    <template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
     <div class='clear'></div></div><!--stop grid_4-->
 <div class='grid_16'><!--start grid_16-->
     <!--<div class="boxdocspace">

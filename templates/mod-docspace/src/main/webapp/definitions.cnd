@@ -4,5 +4,6 @@
 
 [jnt:docspace] > jnt:content, mix:title, jmix:tagged
 + filesList (jnt:docFilesList)
++ searchUsers (jnt:searchUsers)
 + * (jnt:file)
 

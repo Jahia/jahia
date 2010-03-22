@@ -1,7 +1,6 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -19,15 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Module filter for parameter resolution.
  * User: toto
  * Date: Jan 18, 2010
  * Time: 3:59:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TemplateAttributesFilter extends AbstractFilter {
-
-    private static Logger logger = Logger.getLogger(BaseAttributesFilter.class);
 
     public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
@@ -76,8 +72,6 @@ public class TemplateAttributesFilter extends AbstractFilter {
             if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
                 if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
                     params.put(pkey, node.getProperty(key).getString());
-                } else {
-                    params.put(pkey, null);
                 }
             }
         }

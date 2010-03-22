@@ -399,10 +399,13 @@ public class ContentManagerHelper {
                         try {
                             name = findAvailableName(targetParent, name, currentUserSession);
                             if (targetParent.isWriteable() && !targetParent.isLocked()) {
-                                res.add(navigation.getGWTJahiaNode(doPaste(targetParent, node, name, cut, reference)));
+                                final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+
                                 if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                     targetParent.orderBefore(name, targetNode.getName());
                                 }
+                                currentUserSession.save();
+                                res.add(navigation.getGWTJahiaNode(copy));
                             } else {
                                 missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());
                             }
@@ -418,7 +421,6 @@ public class ContentManagerHelper {
                     missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read ").append(" - ACCESS DENIED").toString());
                 }
             }
-            targetParent.save();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

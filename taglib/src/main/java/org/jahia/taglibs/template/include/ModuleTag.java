@@ -33,7 +33,6 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -41,17 +40,11 @@ import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.version.VersionException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -282,33 +275,28 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                 if (renderContext.isEditMode() && editable) {
                     try {
-                        if (node.isNodeType("jmix:link")) {
-                            // no placeholder at all for links
-                            render(renderContext, resource);
-                        } else {
-                            String type = getModuleType();
-                            Script script = null;
-                            try {
-                                script = RenderService.getInstance().resolveScript(resource, renderContext);
-                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
-                            } catch (TemplateNotFoundException e) {
-                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
-                            }
-
-                            resource = createNewResource(resource);
-
-                            if (nodeTypes != null) {
-                                pageContext.setAttribute("areaNodeTypesRestriction", nodeTypes, PageContext.REQUEST_SCOPE);
-                                pageContext.setAttribute("areaNodeTypesRestrictionLevel", pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE), PageContext.REQUEST_SCOPE);
-                            }
-                            render(renderContext, resource);
-                            if (nodeTypes != null) {
-                                pageContext.removeAttribute("areaNodeTypesRestriction", PageContext.REQUEST_SCOPE);
-                                pageContext.removeAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
-                            }
-
-                            printModuleEnd();
+                        String type = getModuleType();
+                        Script script = null;
+                        try {
+                            script = RenderService.getInstance().resolveScript(resource, renderContext);
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                        } catch (TemplateNotFoundException e) {
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
+
+                        resource = createNewResource(resource);
+
+                        if (nodeTypes != null) {
+                            pageContext.setAttribute("areaNodeTypesRestriction", nodeTypes, PageContext.REQUEST_SCOPE);
+                            pageContext.setAttribute("areaNodeTypesRestrictionLevel", pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE), PageContext.REQUEST_SCOPE);
+                        }
+                        render(renderContext, resource);
+                        if (nodeTypes != null) {
+                            pageContext.removeAttribute("areaNodeTypesRestriction", PageContext.REQUEST_SCOPE);
+                            pageContext.removeAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
+                        }
+
+                        printModuleEnd();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }

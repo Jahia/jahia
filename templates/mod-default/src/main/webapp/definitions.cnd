@@ -116,3 +116,5 @@
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no
 
+[jnt:menu] > jnt:content, mix:title, jmix:interactiveContent
+ + * (nt:base)

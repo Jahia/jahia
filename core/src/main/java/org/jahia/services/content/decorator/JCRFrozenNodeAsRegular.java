@@ -62,21 +62,25 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         return childEntries;
     }
 
+    private JCRNodeWrapper superGetNode(String relPath) throws RepositoryException {
+        return super.getNode(relPath);
+    }
+
     @Override
     public JCRNodeWrapper getNode(String relPath) throws PathNotFoundException, RepositoryException {
         if (relPath.startsWith("/")) {
             throw new IllegalArgumentException("relPath in not a relative path "+relPath);
         }
         StringTokenizer st = new StringTokenizer(relPath,"/");
-        JCRNodeWrapper current = this;
+        JCRFrozenNodeAsRegular current = this;
         while (st.hasMoreTokens()) {
             String next = st.nextToken();
             if (next.equals("..")) {
-                current = current.getParent();
+                current = (JCRFrozenNodeAsRegular) current.getParent();
             } else if (next.equals(".")) {
 
             } else {
-                JCRNodeWrapper child = super.getNode(next);
+                JCRNodeWrapper child = current.superGetNode(next);
                 if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
                     Version closestVersion = JCRVersionService.findClosestVersion(vh, versionDate);
@@ -86,7 +90,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                         throw new ItemNotFoundException(relPath);
                     }
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    return new JCRFrozenNodeAsRegular(child, versionDate);
+                    current = new JCRFrozenNodeAsRegular(child, versionDate);
                 } else {
                     throw new ItemNotFoundException(relPath);
                 }

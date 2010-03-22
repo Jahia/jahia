@@ -31,6 +31,8 @@ public class VersioningTest extends TestCase {
     private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrVersioningTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private static final String MAIN_CONTENT_TITLE = "Main content title update ";
+    private static final String MAIN_CONTENT_BODY = "Main content body update ";
 
     protected void setUp() throws Exception {
         try {
@@ -80,8 +82,8 @@ public class VersioningTest extends TestCase {
             stagedRow1.setProperty("column", "2col106");
             JCRNodeWrapper stagedCol1 = stagedRow1.addNode("col1", "jnt:contentList");
             JCRNodeWrapper mainContent = stagedCol1.addNode("mainContent", "jnt:mainContent");
-            mainContent.setProperty("jcr:title", "Main content update 1");
-            mainContent.setProperty("body", "Main content body update 1");
+            mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
+            mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
 
             JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
             stagedSubSubPage.setProperty("jcr:title", "subtitle0");
@@ -94,6 +96,14 @@ public class VersioningTest extends TestCase {
                 editSession.checkout(stagedSubPage);
                 stagedSubPage.setProperty("jcr:title", "title" + i);
                 editSession.save();
+
+                for (int j = 0; j < 2; j++) {
+                    editSession.checkout(mainContent);
+                    int updateNumber = (i-1)*2 + j+1;
+                    mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
+                    mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
+                    jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+                }
 
                 // each time the node i published, a new version should be created
                 jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
@@ -167,6 +177,9 @@ public class VersioningTest extends TestCase {
         assertEquals("Parent node path invalid", SITECONTENT_ROOT_NODE + "/home", parentVersionNode.getPath());
 
         // now let's check the child objects.
+        JCRNodeWrapper mainContentNode = versionNode.getNode("pagecontent/row1/col1/mainContent");
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + index, mainContentNode.getProperty("jcr:title").getString());
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + index, mainContentNode.getProperty("body").getString());
 
     }
 

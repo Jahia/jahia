@@ -12,6 +12,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -19,6 +20,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Unit test to test version listing created during publication
@@ -32,7 +34,7 @@ public class VersioningTest extends TestCase {
 
     protected void setUp() throws Exception {
         try {
-            site = TestHelper.createSite(TESTSITE_NAME);
+            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES, null);
             ctx = Jahia.getThreadParamBean();
             assertNotNull(site);
         } catch (Exception ex) {
@@ -50,8 +52,10 @@ public class VersioningTest extends TestCase {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession();
-            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
+            Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
+
+            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale);
+            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
 
 
             JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
@@ -70,6 +74,14 @@ public class VersioningTest extends TestCase {
             editSession.checkout(stageNode);
             JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
             stagedSubPage.setProperty("jcr:title", "title0");
+
+            JCRNodeWrapper stagedPageContent = stagedSubPage.addNode("pagecontent", "jnt:contentList");
+            JCRNodeWrapper stagedRow1 = stagedPageContent.addNode("row1", "jnt:row");
+            stagedRow1.setProperty("column", "2col106");
+            JCRNodeWrapper stagedCol1 = stagedRow1.addNode("col1", "jnt:contentList");
+            JCRNodeWrapper mainContent = stagedCol1.addNode("mainContent", "jnt:mainContent");
+            mainContent.setProperty("jcr:title", "Main content update 1");
+            mainContent.setProperty("body", "Main content body update 1");
 
             JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
             stagedSubSubPage.setProperty("jcr:title", "subtitle0");

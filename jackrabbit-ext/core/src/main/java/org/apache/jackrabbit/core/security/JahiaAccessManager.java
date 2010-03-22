@@ -192,16 +192,17 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
 
+        String absPathStr = absPath.toString();
         if (p.isSystem() && deniedPathes.get() == null) {
             return true;
         }
 
-        if (permissions == READ && absPath.toString().equals("{}")) {
+        if (permissions == READ && absPathStr.equals("{}")) {
             return true;
         }
 
-        if (cache.containsKey(absPath.toString() + " : " + permissions)) {
-            return cache.get(absPath.toString() + " : " + permissions);
+        if (cache.containsKey(absPathStr + " : " + permissions)) {
+            return cache.get(absPathStr + " : " + permissions);
         }
         
         try {
@@ -211,12 +212,12 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             String jcrPath = pr.getJCRPath(absPath);
 
             if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
-                cache.put(absPath.toString() + " : " + permissions, false);
+                cache.put(absPathStr + " : " + permissions, false);
                 return false;
             }
 
             if (p.isSystem()) {
-                cache.put(absPath.toString() + " : " + permissions, true);
+                cache.put(absPathStr + " : " + permissions, true);
                 return true;
             }
 
@@ -226,7 +227,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 if (i.isNode() && permissions != Permission.READ) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
-                        cache.put(absPath.toString() + " : " + permissions, false);
+                        cache.put(absPathStr + " : " + permissions, false);
                         return false;
                     }
                 }
@@ -236,7 +237,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
             // Administrators are always granted
             if (service.isServerAdmin(p.getName())) {
-                cache.put(absPath.toString() + " : " + permissions, true);
+                cache.put(absPathStr + " : " + permissions, true);
                 return true;
             }
 
@@ -270,7 +271,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             }
 
             if (service.isAdmin(p.getName(),site)) {
-                cache.put(absPath.toString() + " : " + permissions, true);
+                cache.put(absPathStr + " : " + permissions, true);
                 return true;
             }
 
@@ -278,7 +279,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        cache.put(absPath.toString() + " : " + permissions, false);
+        cache.put(absPathStr + " : " + permissions, false);
         return false;
     }
 

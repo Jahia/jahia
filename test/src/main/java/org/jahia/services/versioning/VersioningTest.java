@@ -131,7 +131,7 @@ public class VersioningTest extends TestCase {
                 validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                 index++;
             }
-            logger.debug("number of version: " + index);
+            logger.debug("number of version: " + index);                                                        
             assertEquals(11, index);
 
             List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stagedSubPage);

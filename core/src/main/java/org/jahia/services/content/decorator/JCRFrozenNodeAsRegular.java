@@ -31,6 +31,8 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         org.apache.log4j.Logger.getLogger(JCRFrozenNodeAsRegular.class);
 
     private Date versionDate;
+    private boolean parentAlreadyResolved = false;
+    private JCRNodeWrapper resolvedParentNode = null;
 
     public JCRFrozenNodeAsRegular(JCRNodeWrapper node, Date versionDate) {
         super(node);
@@ -149,16 +151,25 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        if (parentAlreadyResolved) {
+            return resolvedParentNode;
+        }
         JCRNodeWrapper parentNode = super.getParent();
 
         if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
-            return new JCRFrozenNodeAsRegular(parentNode, versionDate);
+            resolvedParentNode = new JCRFrozenNodeAsRegular(parentNode, versionDate);
+            parentAlreadyResolved = true;
+            return resolvedParentNode;
         } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
             JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
             if (closestVersionedChildNode != null) {
-                return new JCRFrozenNodeAsRegular(closestVersionedChildNode.getParent(), versionDate);
+                resolvedParentNode = new JCRFrozenNodeAsRegular(closestVersionedChildNode.getParent(), versionDate);
+                parentAlreadyResolved = true;
+                return resolvedParentNode;
             } else {
-                return findRegularParentNode();
+                resolvedParentNode = findRegularParentNode();
+                parentAlreadyResolved = true;
+                return resolvedParentNode;
             }
         } else {
             // this shouldn't happen, EVER !

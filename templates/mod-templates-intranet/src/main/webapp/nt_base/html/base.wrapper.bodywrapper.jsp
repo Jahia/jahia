@@ -128,7 +128,7 @@
 <div class="container container_16">
 
 <div class="container container_16"> <!--start container_16-->
-	<template:area path="${rootPage.path}/top footer (Add jnt_row)"/>
+	<template:area path="${rootPage.path}/top footer"/>
 <div class="clear"></div></div> <!--stop container_16-->
 <div class="clear"></div>
         

@@ -12,10 +12,6 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +60,7 @@ public class ReusableComponentTest extends TestCase {
         JCRNodeWrapper testReusableComponentNode = session.getNode(TEST_REUSABLE_COMPONENT_PATH);
 
         // now let's use the reusableComponent to create content.
-        assertTrue("Error while instantiating reusableComponent", testReusableComponentNode.copyFile(stageNode, "newTestReusableComponent"));
+        assertTrue("Error while instantiating reusableComponent", testReusableComponentNode.copy(stageNode, "newTestReusableComponent", true));
 
         session.save();
 

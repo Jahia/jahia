@@ -118,4 +118,7 @@
     </categories>
 
     <reusableComponents jcr:primaryType="jnt:reusableComponentsRoot"/>
+
+    <templatesSet jcr:primaryType="jnt:folder"/>
+
 </content>

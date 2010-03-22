@@ -3,55 +3,49 @@
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
          xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
-    <reusableComponents jcr:primaryType="jnt:reusableComponentsRoot">
-        <Jahia_x0020_Intranet_x0020_Templates jcr:primaryType="jnt:reusableComponentsFolder">
-            <jnt_virtualsite jcr:primaryType="jnt:reusableComponentsFolder">
-                <defaultSite jcr:primaryType="jnt:reusableComponent">
-                    <j:target jcr:primaryType="jnt:virtualsite">
-                        <contents jcr:primaryType="jnt:folder">
-                            <site_components jcr:primaryType="jnt:folder">
-                                <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
-                                                  jcr:primaryType="jnt:simpleSearchForm"/>
-                                <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68" j:maxDepth="1"
-                                        jcr:mixinTypes="jmix:renderable" j:template="dropDown" jcr:primaryType="jnt:navBar"
-                                        j:startLevel="0"/>
-                                <login-to-jahia jcr:primaryType="jnt:loginForm"
-                                                jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646">
-                                    <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia"
-                                                   jcr:language="en"/>
-                                </login-to-jahia>
-                            </site_components>
-                        </contents>
-                        <home j:template="default" jcr:primaryType="jnt:page">
-                            <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation"
-                                           jcr:title_en="Home" jcr:language="en"/>
-                            <maincontent jcr:primaryType="jnt:contentList"/>
-                            <logo jcr:primaryType="jnt:contentList"/>
-                            <simpleSearch jcr:primaryType="jnt:contentList">
-                                <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
-                            </simpleSearch>
-                            <topMenu jcr:primaryType="jnt:contentList">
-                                <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
-                            </topMenu>
-                            <footer jcr:primaryType="jnt:contentList"/>
-                            <pagecontent jcr:primaryType="jnt:contentList">
-                                <row1 jcr:primaryType="jnt:row" column="2col106" >
-                                    <col1 jcr:primaryType="jnt:contentList"/>
-                                    <col2 jcr:primaryType="jnt:contentList">
-                                        <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
-                                    </col2>
-                                </row1>
-                            </pagecontent>
-                        </home>
-                    </j:target>
-                </defaultSite>
-            </jnt_virtualsite>
-            <jnt_page jcr:primaryType="jnt:reusableComponentsFolder">
-                <simple jcr:primaryType="jnt:reusableComponent">
-                    <j:target j:template="default" jcr:primaryType="jnt:page">
-                        <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation"
-                                       jcr:title_en="Home" jcr:language="en"/>
-                        <maincontent jcr:primaryType="jnt:contentList"/>
+
+
+    <templatesSet>
+        <Jahia_x0020_Intranet_x0020_Templates jcr:primaryType="jnt:folder">
+            <defaultSite jcr:primaryType="jnt:virtualsite">
+                <contents jcr:primaryType="jnt:folder">
+                    <site_components jcr:primaryType="jnt:folder">
+                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
+                                          jcr:primaryType="jnt:simpleSearchForm"/>
+                        <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68" j:maxDepth="1"
+                                jcr:mixinTypes="jmix:renderable" j:template="dropDown" jcr:primaryType="jnt:navBar"
+                                j:startLevel="0"/>
+                        <login-to-jahia jcr:primaryType="jnt:loginForm"
+                                        jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646">
+                            <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia"
+                                           jcr:language="en"/>
+                        </login-to-jahia>
+                    </site_components>
+                </contents>
+                <home j:template="default" jcr:primaryType="jnt:page">
+                    <j:translation column="2col106" j:template="grid" jcr:primaryType="jnt:translation"
+                                   jcr:title_en="Home" jcr:language="en"/>
+                    <maincontent jcr:primaryType="jnt:contentList"/>
+                    <logo jcr:primaryType="jnt:contentList"/>
+                    <simpleSearch jcr:primaryType="jnt:contentList">
+                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
+                    </simpleSearch>
+                    <topMenu jcr:primaryType="jnt:contentList">
+                        <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
+                    </topMenu>
+                    <footer jcr:primaryType="jnt:contentList"/>
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <row1 jcr:primaryType="jnt:row" column="2col106">
+                            <col1 jcr:primaryType="jnt:contentList"/>
+                            <col2 jcr:primaryType="jnt:contentList">
+                                <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
+                            </col2>
+                        </row1>
+                    </pagecontent>
+                </home>
+                <templates jcr:primaryType="jnt:folder">
+                    <simple j:template="default" jcr:primaryType="jnt:page">
+                        <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Simple" jcr:language="en"/>
                         <logo jcr:primaryType="jnt:contentList"/>
                         <simpleSearch jcr:primaryType="jnt:contentList">
                             <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
@@ -61,14 +55,30 @@
                         </topMenu>
                         <footer jcr:primaryType="jnt:contentList"/>
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <row1 jcr:primaryType="jnt:row" column="1col16" >
+                            <row1 jcr:primaryType="jnt:row" column="2col124">
                                 <col1 jcr:primaryType="jnt:contentList"/>
                             </row1>
                         </pagecontent>
-                    </j:target>
-                </simple>
-            </jnt_page>
+                    </simple>
+                    <double j:template="default" jcr:primaryType="jnt:page">
+                        <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Double" jcr:language="en"/>
+                        <logo jcr:primaryType="jnt:contentList"/>
+                        <simpleSearch jcr:primaryType="jnt:contentList">
+                            <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
+                        </simpleSearch>
+                        <topMenu jcr:primaryType="jnt:contentList">
+                            <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
+                        </topMenu>
+                        <footer jcr:primaryType="jnt:contentList"/>
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <row1 jcr:primaryType="jnt:row" column="3col664">
+                                <col1 jcr:primaryType="jnt:contentList"/>
+                            </row1>
+                        </pagecontent>
+                    </double>
+                </templates>
+            </defaultSite>
         </Jahia_x0020_Intranet_x0020_Templates>
-    </reusableComponents>
+    </templatesSet>
 </content>
         

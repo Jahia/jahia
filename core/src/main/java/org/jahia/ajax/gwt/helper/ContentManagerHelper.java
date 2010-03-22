@@ -464,7 +464,7 @@ public class ContentManagerHelper {
             }
 
         } else {
-            node.copyFile(targetNode.getPath(), name);
+            node.copy(targetNode, name, true);
         }
         return targetNode.getNode(name);
     }

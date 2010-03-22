@@ -173,8 +173,8 @@ public class JCRSitesProvider {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        JCRNodeWrapper defaultSite = session.getNode("/reusableComponents/"+site.getTemplatePackageName()+"/jnt_virtualsite/defaultSite/j:target");
-                        defaultSite.copyFile("/sites/",site.getSiteKey());
+                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/"+site.getTemplatePackageName()+"/defaultSite");
+                        defaultSite.copy(session.getNode("/sites"),site.getSiteKey(), false);
                         session.save();
                     } catch (PathNotFoundException e) {
                     } catch (RepositoryException e) {

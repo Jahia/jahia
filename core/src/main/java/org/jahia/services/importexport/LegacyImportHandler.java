@@ -7,6 +7,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -57,13 +58,17 @@ public class LegacyImportHandler extends DefaultHandler {
     private Map<String, String> pathMapping = new HashMap<String, String>();
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
+    private JCRSessionWrapper session;
+
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
     private static final String LINK = "link";
     private static final String URL = "url";
 
 
-    public LegacyImportHandler(JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry, DefinitionsMapping mapping, Locale locale) {
+    public LegacyImportHandler(JCRSessionWrapper session, JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry, DefinitionsMapping mapping, Locale locale) {
+        this.session = session;
+        this.uuidMapping = session.getUuidMapping();
         this.currentSiteNode = currentSiteNode;
 
         this.registry = registry;
@@ -74,14 +79,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
         this.mapping = mapping;
         this.locale = locale;
-    }
-
-    public Map getUuidMapping() {
-        return uuidMapping;
-    }
-
-    public void setUuidMapping(Map uuidMapping) {
-        this.uuidMapping = uuidMapping;
     }
 
     public void setPathMapping(Map pathMapping) {
@@ -262,7 +259,7 @@ public class LegacyImportHandler extends DefaultHandler {
         JCRNodeWrapper subPage;
         ExtendedNodeType t = registry.getNodeType(primaryType);
         if (uuidMapping.containsKey(uuid)) {
-            subPage = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
+            subPage = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
             JCRNodeWrapper parent = (currentCtx.isEmpty() ? currentSiteNode : getCurrentPageNode());
 
@@ -305,9 +302,49 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
 
+
+
+
+//       private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
+//        String value = mapping.getMappedItem(getCurrentContentType().getName(), listDefinition.getName());
+//        JCRNodeWrapper node = getCurrentContentNode();
+//        StringTokenizer st = new StringTokenizer(value, ".");
+//        while (st.hasMoreTokens()) {
+//            String nodeName = st.nextToken();
+//            String nodeType = Constants.JAHIANT_CONTENTLIST;
+////            if (nodeName.indexOf(".") > 0) {
+////                nodeType = StringUtils.substringBefore(nodeName, ".");
+////                nodeName = StringUtils.substringAfter(nodeName, ".");
+////            }
+//
+////        if (nodeName.equals("merge")) {
+////            currentCtx.peek().pushMerge(listDefinition.getRequiredPrimaryTypes()[0]);
+////            return;
+////        }
+//
+//
+//            if (node.hasNode(nodeName)) {
+//                node = node.getNode(nodeName);
+//            } else {
+//                ExtendedNodeType parentNodeType = node.getPrimaryNodeType();
+//                if (parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+//                    String[] strings = parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName).getRequiredPrimaryTypeNames();
+//                    node = node.addNode(nodeName, strings[0]);
+//                } else {
+//                    node = node.addNode(nodeName, nodeType);
+//                }
+//                autosetProperties(mapping.getAutosetPropertiesForItem(getCurrentContentType().getName(), listDefinition.getName()), node);
+//                uuidMapping.put(uuid, node.getIdentifier());
+//            }
+//        }
+//        ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
+//        currentCtx.peek().pushList(node, listType);
+//    }
+
+
     private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
         String nodeName = mapping.getMappedItem(getCurrentContentType().getName(), listDefinition.getName());
-        String nodeType = Constants.JAHIANT_CONTENTLIST;
+            String nodeType = Constants.JAHIANT_CONTENTLIST;
         if (nodeName.indexOf(".") > 0) {
             nodeType = StringUtils.substringBefore(nodeName, ".");
             nodeName = StringUtils.substringAfter(nodeName, ".");
@@ -321,17 +358,17 @@ public class LegacyImportHandler extends DefaultHandler {
         JCRNodeWrapper node;
         if (parent.hasNode(nodeName)) {
             node = parent.getNode(nodeName);
-        } else {
-            ExtendedNodeType parentNodeType = parent.getPrimaryNodeType();
-            if (parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName) != null) {
-                String[] strings = parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName).getRequiredPrimaryTypeNames();
-                node = parent.addNode(nodeName, strings[0]);
             } else {
+            ExtendedNodeType parentNodeType = parent.getPrimaryNodeType();
+                if (parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+                    String[] strings = parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName).getRequiredPrimaryTypeNames();
+                node = parent.addNode(nodeName, strings[0]);
+                } else {
                 node = parent.addNode(nodeName, nodeType);
+                }
+                autosetProperties(mapping.getAutosetPropertiesForItem(getCurrentContentType().getName(), listDefinition.getName()), node);
+                uuidMapping.put(uuid, node.getIdentifier());
             }
-            autosetProperties(mapping.getAutosetPropertiesForItem(getCurrentContentType().getName(), listDefinition.getName()), node);
-            uuidMapping.put(uuid, node.getIdentifier());
-        }
         ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
         currentCtx.peek().pushList(node, listType);
     }
@@ -358,7 +395,7 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.peek().pushShareable(t);
         } else {
             if (uuidMapping.containsKey(uuid)) {
-                JCRNodeWrapper node = currentSiteNode.getSession().getNodeByIdentifier(uuidMapping.get(uuid));
+                JCRNodeWrapper node = session.getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
 //                JCRNodeWrapper node = getCurrentContentNode().addNode(
@@ -615,7 +652,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                     }
                                 }
                             }
-                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(value);
+                            JCRNodeWrapper file = session.getNode(value);
                             return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
                         } catch (PathNotFoundException e) {
 
@@ -625,7 +662,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             String providerKey = StringUtils.substringBefore(value, ":");
                             String uuid = StringUtils.substringAfter(value, ":");
                             if (!uuid.equals("/")) {
-                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid);
+                                JCRNodeWrapper file = session.getNodeByUUID(providerKey, uuid);
                                 return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
                             }
                         } catch (ItemNotFoundException e) {

@@ -480,7 +480,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (name.equals(REPOSITORY_XML)) {
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
 
-                    documentViewImportHandler.setUuidMapping(uuidMapping);
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setPathMapping(pathMapping);
                     documentViewImportHandler.setNoRoot(true);
@@ -581,8 +580,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-                        LegacyImportHandler importHandler = new LegacyImportHandler(siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
-                        importHandler.setUuidMapping(uuidMapping);
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
                         importHandler.setReferences(references);
                         importHandler.setPathMapping(pathMapping);
                         handleImport(zis, importHandler);
@@ -962,7 +960,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (name.equals(REPOSITORY_XML)) {
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList, null);
 
-                    documentViewImportHandler.setUuidMapping(uuidMapping);
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setPathMapping(pathMapping);
                     documentViewImportHandler.setNoRoot(noRoot);

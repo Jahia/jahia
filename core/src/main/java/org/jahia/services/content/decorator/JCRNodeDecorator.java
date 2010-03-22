@@ -248,16 +248,16 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.rename(newName);
     }
 
-    public boolean copyFile(String dest) throws RepositoryException {
-        return node.copyFile(dest);
+    public boolean copy(String dest) throws RepositoryException {
+        return node.copy(dest);
     }
 
-    public boolean copyFile(String dest, String name) throws RepositoryException {
-        return node.copyFile(dest, name);
+    public boolean copy(String dest, String name) throws RepositoryException {
+        return node.copy(dest, name);
     }
 
-    public boolean copyFile(JCRNodeWrapper dest, String name) throws RepositoryException {
-        return node.copyFile(dest, name);
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes);
     }
 
     public boolean lockAndStoreToken() throws RepositoryException  {

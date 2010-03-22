@@ -14,6 +14,8 @@
 
     <themes jcr:primaryType="jnt:folder"/>
 
+    <templates jcr:primaryType="jnt:folder"/>
+
     <tags jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"

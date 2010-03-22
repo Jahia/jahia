@@ -16,7 +16,7 @@
 <c:if test="${currentNode.nodes.size > 0}">
     <c:set value="${fn:randomInt(currentNode.nodes.size)}" var="itemToDisplay"/>
     <c:forEach items="${currentNode.children}" var="subchild" begin="${itemToDisplay}" end="${itemToDisplay}">
-        <template:module node="${subchild}" editable="true"/>
+        <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" editable="true"/>
     </c:forEach>
 </c:if>
 <c:if test="${renderContext.editMode}">

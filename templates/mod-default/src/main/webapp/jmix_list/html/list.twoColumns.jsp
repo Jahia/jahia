@@ -23,7 +23,7 @@
         </c:if>
         <div class="column-item">
             <div class="spacer">
-                <template:module node="${subchild}" template="${subNodesTemplate}" forcedTemplate="${forcedTemplate}" editable="${editable}">
+                <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" editable="${editable}">
                     <c:if test="${not empty forcedSkin}">
                         <template:param name="forcedSkin" value="${forcedSkin}"/>
                     </c:if>

@@ -23,38 +23,45 @@
     <%-- buttons --%>
     <div class="listEditToolbar">
         <c:if test="${child.locked ne 'true'}">
-            <input type="button" value="Edit"
-                   onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')"/>
+             <button
+                   onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')">
+            <img title="" alt="" src="${url.currentModule}/images/toolbar-edit.png"/>Edit</button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
-            <input type="button" value="Locked" disabled="true"/>
+            <button>
+                <img title="" alt="" src="${url.currentModule}/images/toolbar-lock.png"/>Locked</button>
         </c:if>
-        <input type="button" value="Preview"
-               onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')"/>
+        <button
+               onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')">
+            <img title="" alt="" src="${url.currentModule}/images/toolbar-preview.png"/>Preview</button>
 
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
             <c:if test="${not status.first}">
-                <input id="moveUp-${currentNode.identifier}-${status.index}" type="button" value="Move up"
-                       onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+                 <button id="moveUp-${currentNode.identifier}-${status.index}"
+                       onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
+                     <img title="" alt="" src="${url.currentModule}/images/toolbar-moveup.png"/>Move up</button>
             </c:if>
             <c:if test="${not status.last}">
-                <input type="button" value="Move down"
-                       onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()"/>
+                <button
+                       onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()">
+                    <img title="" alt="" src="${url.currentModule}/images/toolbar-movedown.png"/>Move down</button>
             </c:if>
         </c:if>
         <c:if test="${child.locked ne 'true'}">
             <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-                <input type="button" value="Delete" onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')"/>
+                <button onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
+                    <img title="" alt="" src="${url.currentModule}/images/toolbar-delete.png"/>Delete</button>
             </c:if>
 
             <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
-
+               <br/>
             <c:forEach items="${workflows}" var="wf" >
                 <input class="workflow" type="button" value="${wf.name}" onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />
             </c:forEach>
         </c:if>
 
         <workflow:tasksForNode var="tasks" node="${child}"/>
+        <br/>
         <c:forEach items="${tasks}" var="task" >
            <c:forEach items="${task.outcomes}" var="outcome" >
                 <input class="workflowaction" type="button" value="${outcome}" onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')" />

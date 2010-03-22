@@ -37,6 +37,8 @@ import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
+import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -51,6 +53,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.tools.files.FileUpload;
 import org.joda.time.DateTime;
@@ -426,7 +429,7 @@ public class Render extends HttpServlet implements Controller,
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                             URLResolver urlResolver) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
-                                                                                          urlResolver.getLocale());
+                        urlResolver.getLocale());
         Node node = session.getNode(urlResolver.getPath());
         Node parent = node.getParent();
         node.remove();
@@ -443,9 +446,9 @@ public class Render extends HttpServlet implements Controller,
                 logger.error(e.getMessage(), e);
             }
         } else {
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            performRedirect(url, urlResolver.getPath(), req, resp, toParameterMapOfListOfString(req));
-        }
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        performRedirect(url, urlResolver.getPath(), req, resp,toParameterMapOfListOfString(req));
+    }
     }
 
     public static void performRedirect(String url, String path,
@@ -495,11 +498,11 @@ public class Render extends HttpServlet implements Controller,
 
             // check permission
             if (!hasAccess(Jahia.getThreadParamBean().getUser(), Jahia.getThreadParamBean().getSiteKey())) {
-                logger.info("User [" + Jahia.getThreadParamBean().getUser().getUserKey() + "] is not authorized to access ["+req.getRequestURI()+"]");
-                final int respStatus = HttpServletResponse.SC_FORBIDDEN;
-                resp.setStatus(respStatus);
-                req.getRequestDispatcher("/errors/error_"+respStatus+".jsp").forward(req, resp);
-                return null;
+                if (JahiaUserManagerService.isGuest(Jahia.getThreadParamBean().getUser())) {
+                    throw new JahiaUnauthorizedException();
+                } else {
+                    throw new JahiaForbiddenAccessException();
+                }
             }
 
             URLResolver urlResolver = new URLResolver(req.getPathInfo(), paramBean.getSiteKey());

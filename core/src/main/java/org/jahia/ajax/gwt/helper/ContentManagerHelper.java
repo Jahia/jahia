@@ -183,7 +183,7 @@ public class ContentManagerHelper {
         for (GWTJahiaNodeProperty property : props) {
             if (property != null) {
                 final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-                if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0) {
+                if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0 && propertyValues.get(0).getString() != null) {
                     nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString(), 32);
                 }
             }else{

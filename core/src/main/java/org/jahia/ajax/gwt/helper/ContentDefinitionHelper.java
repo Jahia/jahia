@@ -90,14 +90,16 @@ public class ContentDefinitionHelper {
         return gwt;
     }
 
-    public Map<GWTJahiaNodeType, List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String name, ProcessingContext context, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getPageTemplates(ProcessingContext context, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(name);
-            List<GWTJahiaNode> nodes = getReusableComponents(type, context.getSite(), currentUserSession);
-            GWTJahiaNodeType gwtType = getGWTJahiaNodeType(context, type);
-            Map<GWTJahiaNodeType, List<GWTJahiaNode>> result = new HashMap<GWTJahiaNodeType, List<GWTJahiaNode>>();
-            result.put(gwtType, nodes);
-            return  result;
+            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            JCRNodeWrapper node = currentUserSession.getNode("/sites/" + context.getSiteKey() + "/templates");
+            NodeIterator iterator = node.getNodes();
+            while (iterator.hasNext()) {
+                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
+            }
+            return nodes;
         } catch (RepositoryException e) {
             logger.error("Cannot find type",e);
             throw new GWTJahiaServiceException(e.toString());
@@ -260,20 +262,19 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes(ProcessingContext ctx, JCRSessionWrapper currentUserSession) {
-        Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> map = new HashMap<GWTJahiaNodeType,Map<GWTJahiaNodeType, List<GWTJahiaNode>>>();
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeTypes(ProcessingContext ctx, JCRSessionWrapper currentUserSession) {
+        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType,List<GWTJahiaNodeType>>();
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
             NodeTypeIterator typeIterator = nt.getDeclaredSubtypes();
             while (typeIterator.hasNext()) {
                 ExtendedNodeType mainType = (ExtendedNodeType) typeIterator.next();
-                Map<GWTJahiaNodeType,List<GWTJahiaNode>> l = new HashMap<GWTJahiaNodeType, List<GWTJahiaNode>>();
+                List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 map.put(getGWTJahiaNodeType(ctx, mainType), l);
                 NodeTypeIterator subtypes = mainType.getDeclaredSubtypes();
                 while (subtypes.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
-                    List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx.getSite(), currentUserSession);
-                    l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
+                    l.add(getGWTJahiaNodeType(ctx, nodeType));
                 }
             }
         } catch (Exception e) {
@@ -296,9 +297,9 @@ public class ContentDefinitionHelper {
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
-    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType,
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType,
                                                                                             GWTJahiaNode parentNode, ProcessingContext ctx, JCRSessionWrapper currentUserSession) {
-        Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> map = new HashMap<GWTJahiaNodeType,Map<GWTJahiaNodeType, List<GWTJahiaNode>>>();
+        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType,List<GWTJahiaNodeType>>();
         List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
         try {
@@ -357,14 +358,14 @@ public class ContentDefinitionHelper {
             typeIterator = content.getDeclaredSubtypes();
             while (typeIterator.hasNext()) {
                 ExtendedNodeType mainType = (ExtendedNodeType) typeIterator.next();
-                Map<GWTJahiaNodeType,List<GWTJahiaNode>> l = new HashMap<GWTJahiaNodeType, List<GWTJahiaNode>>();
+                List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 map.put(getGWTJahiaNodeType(ctx, mainType), l);
                 NodeTypeIterator subtypes = mainType.getDeclaredSubtypes();
                 while (subtypes.hasNext()) {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
-                    if(gwtNodeTypes.contains(getGWTJahiaNodeType(ctx, nodeType))) {
-                        List<GWTJahiaNode> nodes = getReusableComponents(nodeType, ctx.getSite(), currentUserSession);
-                        l.put(getGWTJahiaNodeType(ctx, nodeType),nodes);
+                    final GWTJahiaNodeType nt = getGWTJahiaNodeType(ctx, nodeType);
+                    if(gwtNodeTypes.contains(nt)) {
+                        l.add(nt);
                     }
                 }
             }
@@ -375,31 +376,31 @@ public class ContentDefinitionHelper {
         return map;
     }
 
-    private List<GWTJahiaNode> getReusableComponents(ExtendedNodeType nodeType, JahiaSite site, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        try {
-            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
-                    "_"));
-            NodeIterator iterator = node.getNodes();
-            while (iterator.hasNext()) {
-                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
-            }
-        } catch (PathNotFoundException e) {
-        }
-
-        try {
-            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + site.getTemplatePackageName() + "/" +
-                    nodeType.getName().replaceAll(":","_"));
-            NodeIterator iterator = node.getNodes();
-            while (iterator.hasNext()) {
-                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
-            }
-        } catch (PathNotFoundException e) {
-        }
-        return nodes;
-    }
+//    private List<GWTJahiaNode> getReusableComponents(ExtendedNodeType nodeType, JahiaSite site, JCRSessionWrapper currentUserSession) throws RepositoryException {
+//        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+//        try {
+//            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + nodeType.getName().replaceAll(":",
+//                    "_"));
+//            NodeIterator iterator = node.getNodes();
+//            while (iterator.hasNext()) {
+//                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+//                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
+//            }
+//        } catch (PathNotFoundException e) {
+//        }
+//
+//        try {
+//            JCRNodeWrapper node = currentUserSession.getNode("/reusableComponents/" + site.getTemplatePackageName() + "/" +
+//                    nodeType.getName().replaceAll(":","_"));
+//            NodeIterator iterator = node.getNodes();
+//            while (iterator.hasNext()) {
+//                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
+//                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
+//            }
+//        } catch (PathNotFoundException e) {
+//        }
+//        return nodes;
+//    }
 
     public GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
         String theValue;

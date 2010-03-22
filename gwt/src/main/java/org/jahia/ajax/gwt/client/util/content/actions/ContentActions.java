@@ -42,7 +42,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -58,9 +57,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateReusableContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
@@ -560,24 +558,14 @@ public class ContentActions {
     }
 
     /**
-     * Display content wizard with a pre-selected node type
-     *
-     * @param linker
-     * @param nodeType
-     */
-    public static void showContentWizard(final Linker linker, final String nodeType) {
-        showContentWizard(linker, nodeType, false);
-    }
-
-    /**
      * Show content wizard with a selected node type
      *
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizard(final Linker linker, final String nodeType, final boolean displayReusableComponents) {
+    public static void showContentWizard(final Linker linker, final String nodeType) {
         if (nodeType == null) {
-            showContentWizardByNodeType(linker, null, true);
+            showContentWizardByNodeType(linker, null);
             return;
         }
 
@@ -586,7 +574,7 @@ public class ContentActions {
             public void onSuccess(GWTJahiaNodeType jahiaNodeType) {
                 if (jahiaNodeType != null) {
                     Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
-                    showContentWizardByNodeType(linker, jahiaNodeType, displayReusableComponents);
+                    showContentWizardByNodeType(linker, jahiaNodeType);
                 } else {
                     Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");
                 }
@@ -604,10 +592,9 @@ public class ContentActions {
      *
      * @param linker
      * @param nodeType
-     * @param displayReusableComponents
      */
-    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType,
-                                                   boolean displayReusableComponents) {
+    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType
+    ) {
         GWTJahiaNode parent = linker.getSelectedNode();
         if (parent == null) {
             parent = linker.getMainNode();
@@ -619,7 +606,7 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeType, displayReusableComponents).show();
+            new ContentTypeWindow(linker, parent, nodeType).show();
         }
     }
 
@@ -937,50 +924,50 @@ public class ContentActions {
         }
     }
 
-    public static void saveAsReusableComponent(final Linker linker) {
-        final GWTJahiaNode target = linker.getSelectedNode();
-        if (target != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new AsyncCallback<GWTJahiaNodeType>() {
-                public void onFailure(Throwable caught) {
-                    MessageBox.alert("Alert",
-                            "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
-                                    + caught.getLocalizedMessage(),
-                            null);
-                }
-
-                public void onSuccess(final GWTJahiaNodeType nodeType) {
-
-                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
-                        public void onFailure(Throwable caught) {
-                            MessageBox.alert("Alert",
-                                    "Unable to load reusable component node for current site. Cause: "
-                                            + caught.getLocalizedMessage(),
-                                    null);
-                        }
-
-                        public void onSuccess(List<GWTJahiaNode> result) {
-                            if (result.isEmpty()) {
-                                MessageBox.alert("Alert",
-                                        "Unable to load reusable components root node",
-                                        null);
-                            } else {
-                                Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
-                                props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                                new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();
-                            }
-                        }
-                    });
-                }
-            });
-        }
-    }
+//    public static void saveAsReusableComponent(final Linker linker) {
+//        final GWTJahiaNode target = linker.getSelectedNode();
+//        if (target != null) {
+//            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new AsyncCallback<GWTJahiaNodeType>() {
+//                public void onFailure(Throwable caught) {
+//                    MessageBox.alert("Alert",
+//                            "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
+//                                    + caught.getLocalizedMessage(),
+//                            null);
+//                }
+//
+//                public void onSuccess(final GWTJahiaNodeType nodeType) {
+//
+//                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
+//                        public void onFailure(Throwable caught) {
+//                            MessageBox.alert("Alert",
+//                                    "Unable to load reusable component node for current site. Cause: "
+//                                            + caught.getLocalizedMessage(),
+//                                    null);
+//                        }
+//
+//                        public void onSuccess(List<GWTJahiaNode> result) {
+//                            if (result.isEmpty()) {
+//                                MessageBox.alert("Alert",
+//                                        "Unable to load reusable components root node",
+//                                        null);
+//                            } else {
+//                                Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
+//                                props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
+//                                new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();
+//                            }
+//                        }
+//                    });
+//                }
+//            });
+//        }
+//    }
 
     public static void saveAsPortalComponent(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
             JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/shared/portalComponents",null,new AsyncCallback() {
                 public void onFailure(Throwable caught) {
-                    Info.display("Portal Components","Error while making your component available ofr users in their portal page.");
+                    Info.display("Portal Components","Error while making your component available for users in their portal page.");
                 }
 
                 public void onSuccess(Object result) {
@@ -989,5 +976,23 @@ public class ContentActions {
             });
         }
     }
+
+    public static void makeShareableNode(final Linker linker) {
+        final GWTJahiaNode target = linker.getSelectedNode();
+        if (target != null) {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/sites/"+JahiaGWTParameters.getSiteKey()+"/contents",null,new AsyncCallback() {
+                public void onFailure(Throwable caught) {
+                    Info.display("Shared component","Error while sharing component");
+                }
+
+                public void onSuccess(Object result) {
+                    Info.display("Shared component","Component shared.");
+                    linker.refreshLeftPanel();   
+                }
+            });
+        }
+
+    }
+
 
 }

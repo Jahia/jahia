@@ -39,10 +39,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -65,7 +62,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getNodeType(name, retrieveParamBean());
     }
 
-    public Map<GWTJahiaNodeType,Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes() throws GWTJahiaServiceException {
+    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() throws GWTJahiaServiceException {
         return contentDefinition.getNodeTypes(retrieveParamBean(), retrieveCurrentSession());
     }
 
@@ -84,12 +81,12 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) throws GWTJahiaServiceException {
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) throws GWTJahiaServiceException {
         return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean(), retrieveCurrentSession());
     }
 
-    public Map<GWTJahiaNodeType, List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String type) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypeWithReusableComponents(type, retrieveParamBean(), retrieveCurrentSession());
+    public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {
+        return contentDefinition.getPageTemplates(retrieveParamBean(), retrieveCurrentSession());
     }
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {

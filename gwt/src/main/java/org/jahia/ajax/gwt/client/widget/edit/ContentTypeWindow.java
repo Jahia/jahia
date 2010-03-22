@@ -45,15 +45,12 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +69,7 @@ public class ContentTypeWindow extends Window {
     private ContentTypeTree contentTypeTree;
 
 
-    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType, boolean displayReusableComponents) {
+    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType) {
         this.linker = linker;
         if (nodeType != null) {
             this.baseType = nodeType.getName();
@@ -93,7 +90,7 @@ public class ContentTypeWindow extends Window {
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
         contentTypeTree = new ContentTypeTree(linker, nodeType, baseType, parentNode,
-                                                                    displayReusableComponents,true,695,500,25, true,this);
+                695,500,25, true,this);
         add(contentTypeTree);
         contentTypeTree.layout(true);
         layout();

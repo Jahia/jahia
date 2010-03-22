@@ -72,7 +72,7 @@ public class ContentSearchForm extends ContentPanel {
                 saveSearch();
             }
         });
-        save.setIconStyle("gwt-toolbar-icon-saveAsReusableComponent");
+        save.setIconStyle("gwt-toolbar-icon-saveAsSharedComponent");
         save.setToolTip(Messages.getResource("fm_saveSearch"));
 
         // main search field

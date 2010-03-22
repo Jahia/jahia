@@ -21,7 +21,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     CreateContentTabItem() {
         setIcon(ContentModelIconProvider.CONTENT_ICONS.tabAddContent());        
         setLayout(new FitLayout());
-        contentTypeTree = new ContentTypeTree(null, null, "jnt:content", null, true, false, 400, 0, 25);
+        contentTypeTree = new ContentTypeTree(null, null, "jnt:content", null, 400, 0, 25);
 
         add(contentTypeTree);
         gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());

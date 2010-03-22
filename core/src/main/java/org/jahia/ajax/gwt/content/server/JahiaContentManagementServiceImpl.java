@@ -306,14 +306,34 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, retrieveCurrentSession());
     }
 
-    public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
+    public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
         try {
-            String newName = contentManager.generateNameFromTitle(newsProps);
+            String newName = null;
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(retrieveParamBean().getSite().getDefaultLanguage());
+            if (l == null && langCodeProperties.size() > 0) {
+                l = langCodeProperties.values().iterator().next();
+            }
+            if (l != null) {
+                newName = contentManager.generateNameFromTitle(l);
+            }
+
             List<GWTJahiaNode> nodes = contentManager.copy(pathsToCopy, destinationPath, newName, false, false, false, retrieveCurrentSession());
             for (GWTJahiaNode node : nodes) {
                 node.getNodeTypes().addAll(mixin);
             }
             saveProperties(nodes, newsProps);
+
+            // save shared properties
+            if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
+                Iterator<String> langCode = langCodeProperties.keySet().iterator();
+                // save properties per lang
+                while (langCode.hasNext()) {
+                    String currentLangCode = langCode.next();
+                    List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
+                    saveProperties(nodes, properties, currentLangCode);
+                }
+            }
+
             if (acl != null) {
                 for (GWTJahiaNode node : nodes) {
                     setACL(node.getPath(), acl);
@@ -480,7 +500,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (name == null) {
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
-            if (l == null) {
+            if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }
             if (l != null) {
@@ -521,7 +541,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (name == null) {
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
-            if (l == null) {
+            if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }
             if (l != null) {

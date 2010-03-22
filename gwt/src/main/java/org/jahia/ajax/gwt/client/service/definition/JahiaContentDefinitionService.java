@@ -66,11 +66,11 @@ public interface JahiaContentDefinitionService extends RemoteService {
         }
     }
 
-    public GWTJahiaNodeType getNodeType(String names);
+    GWTJahiaNodeType getNodeType(String names);
 
-    public Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>> getNodeTypes() throws GWTJahiaServiceException ;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeTypes() throws GWTJahiaServiceException ;
 
-    public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
+    List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 
     /**
      * Returns a list of node types with name and label populated that are the
@@ -83,9 +83,9 @@ public interface JahiaContentDefinitionService extends RemoteService {
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, Map<GWTJahiaNodeType, List<GWTJahiaNode>>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode)throws GWTJahiaServiceException ;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode)throws GWTJahiaServiceException ;
 
-    Map<GWTJahiaNodeType,List<GWTJahiaNode>> getNodeTypeWithReusableComponents(String type) throws GWTJahiaServiceException;
+    List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException;
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
 

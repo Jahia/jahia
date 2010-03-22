@@ -51,16 +51,18 @@ public interface JahiaContentDefinitionServiceAsync {
 
     void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
 
-    void getNodeTypes(AsyncCallback<Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>>> async);
+    void getNodeTypes(AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<Map<GWTJahiaNodeType, Map<GWTJahiaNodeType,List<GWTJahiaNode>>>> async);
+    void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
-    void getNodeTypeWithReusableComponents(String type, AsyncCallback< Map<GWTJahiaNodeType,List<GWTJahiaNode>>> async);
+    void getPageTemplates(AsyncCallback<List<GWTJahiaNode>> async);
 
     void getAvailableMixin(GWTJahiaNodeType type, AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getAvailableMixin(GWTJahiaNode node, AsyncCallback<List<GWTJahiaNodeType>> async);
+
+//    void getAvailableTemplates(AsyncCallback<List<GWTJahiaNode>> async);
 
 }

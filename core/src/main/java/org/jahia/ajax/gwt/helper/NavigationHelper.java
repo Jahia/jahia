@@ -392,6 +392,11 @@ public class NavigationHelper {
                     root.setDisplayName("sites");
                     userNodes.add(root);
                 }
+                GWTJahiaNode templatesRoot = getNode("/sites/"+ site.getSiteKey() +"/templates", currentUserSession);
+                if (templatesRoot != null) {
+                    templatesRoot.setDisplayName("templates");
+                    userNodes.add(templatesRoot);
+                }
             } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/", currentUserSession);
                 if (root != null) {

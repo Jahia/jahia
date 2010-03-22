@@ -231,11 +231,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                         nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue) ? targetName : nodeNameValue;
                     }
                 }
-            } else if (item instanceof CreatePageTabItem) {
-                String  title = ((CreatePageTabItem) item).getContentTitle();
-                nodeName = title.equals("")?"page":title;
-            }
-            else if (item instanceof RightsTabItem) {
+            } else if (item instanceof RightsTabItem) {
                 AclEditor acl = ((RightsTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
@@ -285,9 +281,9 @@ public class CreateContentEngine extends AbstractContentEngine {
                     if (node.isPage()) {
                         linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
                     }
-                    if (node.getNodeTypes().contains("jnt:reusableComponent")) {
-                        linker.refreshLeftPanel();
-                    }
+//                    if (node.getNodeTypes().contains("jnt:reusableComponent")) {
+//                        linker.refreshLeftPanel();
+//                    }
 
                 }
             });

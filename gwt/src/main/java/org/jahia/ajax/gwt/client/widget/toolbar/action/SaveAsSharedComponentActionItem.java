@@ -40,12 +40,12 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  * 
  * @author Sergiy Shyrkov
  */
-public class SaveAsReusableComponentActionItem extends BaseActionItem {
+public class SaveAsSharedComponentActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = -3579254325077395142L;
 
     public void onComponentSelection() {
-        ContentActions.saveAsReusableComponent(linker);
+        ContentActions.makeShareableNode(linker);
     }
 
     public void handleNewLinkerSelection() {

@@ -2,8 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -17,10 +15,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +44,7 @@ public class CreatePageContentEngine extends CreateContentEngine {
         createPageTab = new CreatePageTabItem(this);
         tabs.add(createPageTab);
 //        tabs.add(new ContentTabItem(this));
-        tabs.add(new LayoutTabItem(this));
+//        tabs.add(new LayoutTabItem(this));
         tabs.add(new MetadataTabItem(this));
         tabs.add(new ClassificationTabItem(this));
         tabs.add(new OptionsTabItem(this));
@@ -58,11 +53,12 @@ public class CreatePageContentEngine extends CreateContentEngine {
 
     @Override
     protected void save(final boolean closeAfterSave) {
-        if (createPageTab.getReusableComponent().isEmpty()) {
+        if (createPageTab.getTemplate().isEmpty()) {
             super.save(closeAfterSave);
         } else {
             String nodeName = null;
             final List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
             final List<String> mixin = new ArrayList<String>();
 
             // new acl
@@ -70,11 +66,25 @@ public class CreatePageContentEngine extends CreateContentEngine {
 
             for (TabItem item : tabs.getItems()) {
                 if (item instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                     PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
                     if (pe != null) {
-                        props.addAll(pe.getProperties());
+                        // props.addAll(pe.getProperties());
                         mixin.addAll(pe.getAddedTypes());
                         mixin.addAll(pe.getTemplateTypes());
+                    }
+
+                    // handle multilang
+                    if (propertiesTabItem.isMultiLang()) {
+                        // for now only contentTabItem  has multilang. properties
+                        langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
+                        if (pe != null) {
+                            props.addAll(pe.getProperties(false, true, false));
+                        }
+                    } else {
+                        if (pe != null) {
+                            props.addAll(pe.getProperties());
+                        }
                     }
                 } else if (item instanceof RightsTabItem) {
                     AclEditor acl = ((RightsTabItem) item).getRightsEditor();
@@ -83,13 +93,11 @@ public class CreatePageContentEngine extends CreateContentEngine {
                     }
                 } else if (item instanceof ClassificationTabItem) {
                     ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), props, mixin);
-                } else if (item instanceof CreatePageTabItem) {
-                    props.add(new GWTJahiaNodeProperty("jcr:title",new GWTJahiaNodePropertyValue(((CreatePageTabItem) item).getContentTitle(),  GWTJahiaNodePropertyType.STRING)));
                 }
             }
 
-            final GWTJahiaNode gwtJahiaNode = createPageTab.getReusableComponent().get(0);
-            contentService.copyAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()+ "/j:target"), parentNode.getPath(), mixin , newNodeACL, props, new AsyncCallback() {
+            final GWTJahiaNode gwtJahiaNode = createPageTab.getTemplate().get(0);
+            contentService.copyAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, props, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Window.alert("error1: "+caught);
                 }

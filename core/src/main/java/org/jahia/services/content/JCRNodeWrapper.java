@@ -552,7 +552,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean copyFile(String dest) throws RepositoryException;
+    boolean copy(String dest) throws RepositoryException;
 
     /**
      * Copy the current file node to another destination and name it differently
@@ -561,16 +561,17 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean copyFile(String dest, String name) throws RepositoryException;
+    boolean copy(String dest, String name) throws RepositoryException;
 
     /**
      * Copy the current file node to another destination node and name it differently
      * @param node The destination node
      * @param name The new name of the copied file node
+     * @param allowsExternalSharedNodes
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean copyFile(JCRNodeWrapper node, String name) throws RepositoryException;
+    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
     /**
      * Get a lock on this node and store the lock token

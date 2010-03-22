@@ -93,6 +93,8 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
+    private Map<String, String> uuidMapping = new HashMap<String,String>();
+
     private boolean eventsDisabled = false;
     private boolean isSystem;
 
@@ -701,6 +703,10 @@ public class JCRSessionWrapper implements Session {
 
     public boolean isEventsDisabled() {
         return eventsDisabled;
+    }
+
+    public Map<String, String> getUuidMapping() {
+        return uuidMapping;
     }
 
     public Locale getFallbackLocale() {

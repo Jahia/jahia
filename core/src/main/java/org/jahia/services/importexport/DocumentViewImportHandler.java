@@ -73,7 +73,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
     private Stack<String> pathes = new Stack<String>();
 
-    private Map<String, String> uuidMapping = new HashMap<String, String>();
+    private Map<String, String> uuidMapping;
     private Map<String, String> pathMapping = new HashMap<String, String>();
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
@@ -98,6 +98,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         JCRNodeWrapper node = null;
         try {
             this.session = session;
+            this.uuidMapping = session.getUuidMapping();
             if (rootPath == null) {
                 node = (JCRNodeWrapper) session.getRootNode();
             } else {
@@ -426,20 +427,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
     }
 
-    public Map<String, String> getUuidMapping() {
-        return uuidMapping;
-    }
-
     public Map<String, String> getPathMapping() {
         return pathMapping;
     }
 
     public Map<String, List<String>> getReferences() {
         return references;
-    }
-
-    public void setUuidMapping(Map<String, String> uuidMapping) {
-        this.uuidMapping = uuidMapping;
     }
 
     public void setPathMapping(Map<String, String> pathMapping) {

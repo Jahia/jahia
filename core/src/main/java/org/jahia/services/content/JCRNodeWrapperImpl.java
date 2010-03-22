@@ -1258,21 +1258,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean copyFile(String dest) throws RepositoryException {
-        return copyFile(dest, getName());
+    public boolean copy(String dest) throws RepositoryException {
+        return copy(dest, getName());
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean copyFile(String dest, String name) throws RepositoryException {
+    public boolean copy(String dest, String name) throws RepositoryException {
         JCRNodeWrapper node = (JCRNodeWrapper) session.getItem(dest);
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
         if (!sameProvider) {
-            copyFile(node, name);
+            copy(node, name, true);
             node.save();
         } else {
-            copyFile(node, name);
+            copy(node, name, true);
         }
         return true;
     }
@@ -1280,7 +1280,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean copyFile(JCRNodeWrapper dest, String name) throws RepositoryException {
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -1291,6 +1291,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (PathNotFoundException ex) {
             // node does not exist
         }
+
+        final Map<String, String> uuidMapping = getSession().getUuidMapping();
+
         if (copy == null || copy.getDefinition().allowsSameNameSiblings()) {
             if (!dest.isCheckedOut()) {
                 dest.checkout();
@@ -1317,6 +1320,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (copy != null) {
+            uuidMapping.put(getIdentifier(), copy.getIdentifier());
             if (hasProperty("jcr:language")) {
                 copy.setProperty("jcr:language", getProperty("jcr:language").getString());
             }
@@ -1339,8 +1343,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!isFile()) {
-            for (JCRNodeWrapper source : getChildren()) {
-                source.copyFile(copy, source.getName());
+            NodeIterator ni = getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
+                if (source.isNodeType("mix:shareable")) {
+                    if (uuidMapping.containsKey(source.getIdentifier())) {
+                        // ugly save because to make node really shareable
+                        session.save();
+                        copy = copy.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
+                    } else if (allowsExternalSharedNodes) {
+                        copy = copy.clone(source, source.getName());                        
+                    } else {
+                        source.copy(copy, source.getName(), allowsExternalSharedNodes);
+                    }
+                } else {
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes);
+                }
             }
         }
 

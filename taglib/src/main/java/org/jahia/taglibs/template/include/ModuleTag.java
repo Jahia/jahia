@@ -34,7 +34,6 @@ package org.jahia.taglibs.template.include;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
@@ -284,8 +283,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
 
-                        resource = createNewResource(resource);
-
                         if (nodeTypes != null) {
                             pageContext.setAttribute("areaNodeTypesRestriction", nodeTypes, PageContext.REQUEST_SCOPE);
                             pageContext.setAttribute("areaNodeTypesRestrictionLevel", pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE), PageContext.REQUEST_SCOPE);
@@ -356,12 +353,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             pageContext.getOut().print(buffer);
             buffer.delete(0, buffer.length());
         }
-    }
-
-    protected Resource createNewResource(Resource oldResource) {
-        JCRNodeWrapper w = new JCRNodeDecorator(node);
-        oldResource = new Resource(w, oldResource.getTemplateType(), oldResource.getTemplate(), oldResource.getForcedTemplate());
-        return oldResource;
     }
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException {

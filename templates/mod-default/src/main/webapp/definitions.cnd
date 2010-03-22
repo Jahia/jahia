@@ -116,5 +116,17 @@
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no
 
-[jnt:menu] > jnt:content, mix:title, jmix:interactiveContent
- + * (nt:base)
+//---------------------------------------------------------
+// Navigation menu
+//---------------------------------------------------------
+[jmix:navMenuItem] mixin
+
+[jnt:navMenu] > jnt:content, mix:title, jmix:interactiveContent
+ + * (jmix:navMenuItem)
+
+[jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem, jmix:interactiveContent
+
+[jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem, jmix:interactiveContent
+
+[jnt:navMenuQuery] > jnt:query, jmix:navMenuItem, jmix:interactiveContent
+//---------------------------------------------------------

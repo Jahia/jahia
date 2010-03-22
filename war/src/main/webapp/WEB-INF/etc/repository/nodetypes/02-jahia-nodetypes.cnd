@@ -381,9 +381,9 @@
 [jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  + j:node (mix:shareable)
 
-[jnt:nodeLink] > jnt:nodeReference, jmix:link, jmix:interactiveContent
+[jnt:nodeLink] > jnt:nodeReference, jmix:link
 
-[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:link, jmix:basemetadata, jmix:interactiveContent
+[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:link, jmix:basemetadata
  - j:url (string)
 
 [jnt:referenceInField] > nt:base

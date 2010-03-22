@@ -222,7 +222,7 @@ public class JCRPublicationService extends JahiaService {
      */
     public void publish(final String path, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
                         final boolean system, final boolean allSubTree) throws RepositoryException {
-//        unlockForPublication(path, sourceWorkspace, languages, system, allSubTree);
+        unlockForPublication(path, sourceWorkspace, languages, system, allSubTree);
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {

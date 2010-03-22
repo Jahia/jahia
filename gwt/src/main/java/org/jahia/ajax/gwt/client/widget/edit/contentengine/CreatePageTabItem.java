@@ -48,7 +48,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
         final ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>();
 
         combo = new ComboBox<GWTJahiaNode>();
-        combo.setFieldLabel("My Template");
+        combo.setFieldLabel("Template");
         combo.setName("template");
         combo.setStore(store);
         combo.setDisplayField("displayName");

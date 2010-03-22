@@ -2,6 +2,15 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+
 <template:addResources type="css" resources="loginForm.css"/>
 
 <script type="text/javascript">
@@ -18,6 +27,7 @@
 <c:if test="${renderContext.editMode}">
     <legend> Login form : ${currentNode.properties['jcr:title'].string}</legend>
 </c:if>
+<c:if test="${!renderContext.loggedIn}">
 <ui:loginArea class="Form loginForm" action="${pageContext.request.contextPath}/cms/login">
     <h3 class="loginIcon">${currentNode.properties['jcr:title'].string}</h3>
     <ui:isLoginError>
@@ -47,3 +57,9 @@
     </div>
 
 </ui:loginArea>
+</c:if>
+<c:if test="${renderContext.loggedIn}">
+    <p>Logged as ${renderContext.user.username}</p>
+    <p><a class="loginFormTopLogoutShortcuts"
+                                       href='${url.logout}'><span>logout</span></a></p>
+</c:if>

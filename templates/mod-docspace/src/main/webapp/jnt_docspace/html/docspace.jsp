@@ -51,29 +51,22 @@
     </div>
 </div><!--stop boxdocspace -->
 <div class='clear'></div></div><!--stop grid_12-->
-<div class='grid_4'><!--start grid_4-->
-<h4 class="boxdocspace-title">Users</h4>
+<%--list all users write write access to current node--%>
+<jcr:sql var="users" sql="select "
 
-<ul class="docspacelist docspacelistusers">
-<li>
-        <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-<div class='clear'></div></li>
-<li><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-<div class='clear'></div></li>
-<li><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-        <div class='clear'></div></li>
-<li><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-        <div class='clear'></div></li>
-        <li><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-        <div class='clear'></div></li>
-        <li><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-        <div class='clear'></div></li>
-<li class="last"><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" /><a class="floatleft" href="#" >le nom du user</a>
-        <div class='clear'></div></li>
-</ul>
-<div class='clear'></div></div><!--stop grid_4-->
+<div class='grid_4'><!--start grid_4-->
+    <h4 class="boxdocspace-title">Users</h4>
+
+    <ul class="docspacelist docspacelistusers">
+        <li>
+            <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" />
+            <a class="floatleft" href="#" >le nom du user</a>
+            <div class='clear'></div>
+        </li>
+    </ul>
+    <div class='clear'></div></div><!--stop grid_4-->
 <div class='grid_16'><!--start grid_16-->
-<!--<div class="boxdocspace">
+    <!--<div class="boxdocspace">
 <div class="edit"><a href="#" title="editer" ><span class="hidden">editer</span></a></div>
         <div class=" boxdocspaceyellow boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">

@@ -1,5 +1,0 @@
-
-
-CACHE
-
-* HTML container cache

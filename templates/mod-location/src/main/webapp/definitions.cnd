@@ -5,7 +5,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:location] > jnt:container, jmix:structuredContent
+[jnt:location] > jnt:content, mix:title, jmix:structuredContent
  - street (string)
  - zipCode (string) analyzer='keyword'
  - town (string) i18n facetable

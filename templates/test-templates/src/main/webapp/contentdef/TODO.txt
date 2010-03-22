@@ -1,7 +1,0 @@
-
-
-CONTENT DEFINITIONS
-
-* All page definitions (direct, link, external URL, move, link,...)
-* Boxes (custom boxes)
-* dynamic definitions (in JSP)

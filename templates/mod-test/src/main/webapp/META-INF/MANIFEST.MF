@@ -1,3 +1,11 @@
 Manifest-Version: 1.0
-Class-Path: 
+Class-Path: webtemplates-6.5-SNAPSHOT.zip webtemplates65-6.5-SNAPSHOT.
+ zip testSite-6.5-SNAPSHOT.zip urlrewritefilter-3.1.0.jar stax-api-1.0
+ .1.jar ojdbc5-11.2.0.1.0.jar orai18n-11.2.0.1.0.jar sqljdbc-1.2-fixed
+ .jar mysql-connector-java-5.1.9.jar derbyclient-10.4.2.0.jar postgres
+ ql-8.4-701.jdbc3.jar shindig-gadgets-1.1-BETA3-incubating-SNAPSHOT.ja
+ r commons-beanutils-core-1.7.0.jar caja-r3574.jar htmlparser-1.0.7.ja
+ r json_simple-r1.jar sanselan-0.97-incubator.jar shindig-features-1.1
+ -BETA3-incubating-SNAPSHOT.jar nutch-1.0.jar hadoop-core-0.19.1.jar d
+ erby-10.4.2.0.jar json-taglib-0.4.1.jar commons-el-1.0.jar
 

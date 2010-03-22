@@ -57,11 +57,15 @@
             <c:set target="${colMap}" property="col2" value="6"/>
         </c:otherwise>
     </c:choose>
-
+<c:set var="inRow" value="false"/>
+<c:if test="${!empty jcr:getParentOfType(currentNode, 'jnt:row')}">
+    <c:set var="inRow" value="true"/>
+</c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <c:choose>
         <c:when test="${col.value > 8}">
-            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+            <div class='grid_${col.value} <c:if test="${inRow&&(count eq 1)}">alpha</c:if><c:if test="${inRow&&(count eq fn:length(colMap))}">omega</c:if>'>
+            <!--start grid_${col.value}-->
 				<template:area path="${col.key}"/>
 				<div class='clear'></div>
 			</div>

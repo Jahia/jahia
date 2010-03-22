@@ -1,6 +1,0 @@
-
-
-INTERNATIONALIZATION (i18n)
-
-* resource bundles (message formatting, date/time formatting,...)
-* ... 

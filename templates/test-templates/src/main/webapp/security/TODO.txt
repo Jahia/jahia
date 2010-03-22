@@ -1,7 +1,0 @@
-
-
-SECURITY
-
-* different login-box integrations (popup, inline)
-* custom realms
-* ... 

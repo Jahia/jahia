@@ -1,8 +1,0 @@
-
-
-TEMPLATE DEVELOPMENT TECHNIQUES
-
-* Template inheritance examples
-* Inclusion examples (Components, Modules, JSP, JSP Fragment, execute-super)
-* EL, Struts-Taglib, Worker JavaBean, scriptlet example
-* AJAX (layout manager)

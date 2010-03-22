@@ -1,7 +1,0 @@
-
-
-MISCALLANEOUS
-
-* event listener
-* scheduler
-* ... 

@@ -1,8 +1,0 @@
-
-
-METADATA
-
-* default metadata tests
-* custom metadata definitions
-* category tests
-* ... 

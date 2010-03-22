@@ -19,7 +19,6 @@
 	}
 }
 </script>
-
         <td rowspan="2"><jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
     <c:if test="${not empty picture}">
         <div class="peoplePhoto"><img src="${picture.node.thumbnailUrls['thumbnail']}" alt="${currentNode.properties.lastname.string} picture" width="85" height="85"></div>
